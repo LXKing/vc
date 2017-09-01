@@ -10,8 +10,8 @@ spring:
       port: 3717
       username: dba
       password: office_97
-      database: vc_history
-      authenticationDatabase: vc_history
+      database: vc_remote
+      authenticationDatabase: vc_remote
 dubbo:
   scan:
     annotationPackage: com.ccclubs.command,com.ccclubs.frm.mongodb,com.ccclubs.frm.redis,com.ccclubs.mongodb,com.ccclubs.common
