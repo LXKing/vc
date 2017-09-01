@@ -19,7 +19,7 @@
 	<properties>
 		<!-- system -->
 		<project.encoding>UTF-8</project.encoding>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<!-- spring -->
 		<springboot.version>1.4.5.RELEASE</springboot.version>
 		<spring.cloud.version>Camden.SR7</spring.cloud.version>
