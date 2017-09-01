@@ -1,0 +1,29 @@
+server:
+  port: 8081
+spring:
+  http: 
+    encoding: 
+      charset: UTF-8
+      enable: true
+      force: true
+name: zkj
+test:
+  string: abc
+  encryp: '{cipher}AIA5fE9B8tE4gUWx6wFWNvOt6E8Q3cP4hHjtDU3FvJsXiSL2zLIW8ZfGW3Qe0eVkXg1esu2N1NSd8t0G1//5/9dywAf9DnDUcSNJbHdMzj9CrfHAja171raywj0J98cDxjBXIWanFrX/6JQXz8H6mgxjo++/Scc14kt4MG/cB5QHsW1DlyBFigMZNmnkeIDqHTJepEKpJf3vh2TcngmbOzdq'
+dubbo:
+  scan: 
+    annotationPackage: com.ccclubs.demo.api,com.ccclubs.frm.spring
+  application:
+    name: api
+  registry:
+    address: 115.29.5.157:2181,115.29.5.157:2182,115.29.5.157:2183
+    protocol: zookeeper
+    #port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1

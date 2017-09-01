@@ -1,0 +1,27 @@
+server:
+  port: 11114
+hbase:
+  #zookeeper所在主机地址
+  zookeeper_hosts: hadoop-master
+  #zookeeper端口号
+  port: 2181
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.hbase.inf
+  application:
+    name: srv
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+    port: 20663
+  protocol:
+    name: dubbo
+    threads: 100
+    port: 20663
+  provider:
+    timeout: 120000
+    retries: -1
+
+
+

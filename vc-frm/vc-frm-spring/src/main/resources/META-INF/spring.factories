@@ -1,0 +1,3 @@
+# autoconfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ccclubs.frm.spring.config.WebConfiguration

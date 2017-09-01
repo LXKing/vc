@@ -1,0 +1,101 @@
+server:
+  port: 11115
+
+spring:
+  redis:
+    host: 127.0.0.1
+  data:
+    mongodb:
+      host: 114.55.24.97
+      port: 3717
+      username: zkj_user
+      password: zkj2017
+      database: history
+      authenticationDatabase: history
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.engine,com.ccclubs.frm.redis,com.ccclubs.frm.mqtt,com.ccclubs.frm.ons,com.ccclubs.frm.mongodb,com.ccclubs.mongodb,com.ccclubs.common
+  application:
+    name: rule-engine-srv
+  registry:
+    address: zookeeper://127.0.0.1:2181
+    protocol: zookeeper
+    port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+
+#MQ topic
+mq:
+  topic: terminal
+  car: car
+  protocol: protocol
+  #应用日志
+  log:
+    showSource: true
+
+#阿里云 MQ Consumer 配置
+ons:
+  producerId: PID_terminal_ser
+  consumerId: CID_terminal_ser
+  accessKey: M6dHCyKyKYUCNbW4
+  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
+  consumeThreadNums: 30
+  topic: ser
+  # Tag
+  expression: GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C
+
+mqttAliyun:
+  #阿里云 mqtt broker 地址
+  host: tcp://mqtt.cn-hangzhou.aliyuncs.com
+  #阿里云 mqtt broker 端口
+  port: 1883
+  #阿里云 mqClient ID 前缀
+  preId: GID_car
+  #阿里云用户名
+  userName: M6dHCyKyKYUCNbW4
+  #阿里云密码
+  pwd: yiBjv0+ZHCqnSXlQCA/W/8EYCkk=
+  #是否记录上行记录
+  logUpDown: true
+
+mqttOwn:
+  #自有 mqtt broker 地址
+  host: tcp://10.252.93.25
+  #阿里云 mqtt broker 端口
+  port: 27736
+  #自有 mqClient ID 前缀
+  preId: rule
+  #用户名
+  userName: qsxiaogang
+  #密码
+  pwd: 513387369
+  #是否记录上行记录
+  logUpDown: true
+
+druid:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  initialSize: 2
+  maxActive: 4
+  maxIdle: 2
+  minIdle: 1
+  maxWait: 60000
+  timeBetweenEvictionRunsMillis: 3000
+  minEvictableIdleTimeMillis: 300000
+  maxPoolPreparedStatementPerConnectionSize: 20
+  filters:

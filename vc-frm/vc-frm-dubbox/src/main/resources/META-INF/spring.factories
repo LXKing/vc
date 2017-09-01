@@ -1,0 +1,7 @@
+# contextinit
+org.springframework.context.ApplicationContextInitializer=\
+com.ccclubs.frm.dubbox.DubboInitializer
+
+# autoconfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.ccclubs.frm.dubbox.DubboxAutoConfiguration

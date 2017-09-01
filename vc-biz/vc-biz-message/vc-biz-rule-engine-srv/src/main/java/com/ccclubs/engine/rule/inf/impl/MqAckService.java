@@ -1,0 +1,128 @@
+package com.ccclubs.engine.rule.inf.impl;
+
+
+import com.ccclubs.engine.rule.inf.IMqAckService;
+import com.ccclubs.engine.rule.inf.IMqMessageSender;
+import com.ccclubs.protocol.dto.mqtt.*;
+import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MqAckService implements IMqAckService {
+
+    private static Logger logger = LoggerFactory.getLogger(MqAckService.class);
+
+    private IMqMessageSender messageSender;
+
+    @Override
+    public void beginAck(MqMessage msg) {
+        if (getMessageSender() == null) {
+            return;
+        }
+
+        byte headerType = msg.getFucCode();
+
+        switch (headerType) {
+            case 0x41:
+            case 0x66:
+                // 同步时间
+                sendGeneralAck(msg);
+                break;
+            case 0x45:
+                // 取车应答
+                ackTakeCar(msg);
+                break;
+            case 0x42:
+            case 0x64:
+                // 还车应答
+                ackFurtherCar(msg);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void sendGeneralAck(MqMessage msgFromTerminal) {
+//    byte[] byteMsg = msgFromTerminal.WriteToBytes();
+        try {
+            MQTT_66 mqtt_66 = new MQTT_66();
+            mqtt_66.ReadFromBytes(msgFromTerminal.getMsgBody());
+            synchronizeCarTime(msgFromTerminal, mqtt_66);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void synchronizeCarTime(MqMessage msg, MQTT_66 mqtt_66) {
+        try {
+            if (StringUtils.empty(msg.getCarNumber())) {
+                return;
+            }
+            long now = System.currentTimeMillis();
+            // 如果时间相差大于设置的阈值，则进行时间校正，发送时间同步
+            if (Math.abs(now - mqtt_66.getTime())
+                    > ConstantUtils.TimeSynchronizationDur) {
+                TimeSynchronization timeSynchronization = new TimeSynchronization(
+                        msg.getCarNumber(), 0l,
+                        ProtocolTools.transformToTerminalTime(System.currentTimeMillis()),
+                        (short) 0xC000,
+                        (short) 0x0002);
+                // 设置获取数据时间
+                MqMessage mqMessage = new MqMessage();
+                mqMessage.ReadFromBytes(timeSynchronization.getBytes());
+                getMessageSender().sendMqMessage(mqMessage);
+//        logger.info("给 " + msg.getCarNumber() + "发送同步时间");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void ackTakeCar(MqMessage msg) {
+        try {
+            TakeCarReply replay = new TakeCarReply(msg.getCarNumber(), msg.getTransId());
+
+            MqMessage mqMessage = new MqMessage();
+            mqMessage.ReadFromBytes(replay.getBytes());
+
+            getMessageSender().sendMqMessage(mqMessage);
+//      logger.info("收到来自 车牌号：" + replay.mCarNum + "，订单号：" + replay.mOrderId + " 取车回复，发送取车确认");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void ackFurtherCar(MqMessage msg) {
+        try {
+            FurtherCarReply replay = new FurtherCarReply(msg.getCarNumber(), msg.getTransId(),
+                    msg.getFucCode());
+
+            MqMessage mqMessage = new MqMessage();
+            mqMessage.ReadFromBytes(replay.getBytes());
+
+            getMessageSender().sendMqMessage(mqMessage);
+//      logger.info("收到来自 车牌号：" + replay.mCarNum + "，订单号：" + replay.mOrderId + " 还车回复，发送还车确认");
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void setMessageSender(IMqMessageSender handler) {
+        this.messageSender = handler;
+    }
+
+    public IMqMessageSender getMessageSender() {
+        return messageSender;
+    }
+
+}

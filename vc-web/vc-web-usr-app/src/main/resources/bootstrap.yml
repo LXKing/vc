@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: usr-app
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      #profile: dev
+      #label: master
+      uri: http://localhost:11112
+      

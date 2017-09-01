@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: command-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: business-param,command-api
+      #profile: dev
+      #label: master
+      uri: ${spring.cloud.config.uri}
+
+      

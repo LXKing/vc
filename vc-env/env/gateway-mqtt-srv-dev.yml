@@ -1,0 +1,47 @@
+server:
+  port: 8902
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.gateway
+  application:
+    name: srv
+  registry:
+    address: zookeeper://127.0.0.1:2181
+    protocol: zookeeper
+    port: 21001
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20880
+  provider:
+    timeout: 120000
+    retries: -1
+  monitor:
+    protocol: registry
+#国标网关转发到MQ的topic
+mq.topic: ser
+
+#阿里云 MQ 配置
+ons:
+  producerId: PID_terminal_ser
+  accessKey: M6dHCyKyKYUCNbW4
+  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
+
+mqttOwn:
+  #自有 mqtt broker 地址
+  host: tcp://10.252.93.25
+  #自有 mqtt broker 端口
+  port: 27736
+  #mqClient ID 前缀
+  preId: gateway
+  #用户名
+  userName: qsxiaogang
+  #密码
+  pwd: 513387369
+  #订阅主题
+  subTopic: ser/car/jhz/rt_0/#,ser/car/cha/rt_0/#
+  #是否记录上行记录
+  logUpDown: true
+

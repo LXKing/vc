@@ -1,0 +1,951 @@
+package com.ccclubs.protocol.dto.mqtt;
+
+import com.ccclubs.protocol.inf.IMachineAdditionalItem;
+import com.ccclubs.protocol.inf.IMessageBody;
+import com.ccclubs.protocol.util.AccurateOperationUtils;
+import com.ccclubs.protocol.util.MyBuffer;
+import com.ccclubs.protocol.util.Tools;
+import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 终端基础信息，终端推送信息，包含：
+ * <ul>
+ * <li>车机号</li>
+ * <li>订单号</li>
+ * <li>0x6001</li>
+ * <li>序列号</li>
+ * <li>手机号</li>
+ * <li>车架号</li>
+ * <li>适配车型</li>
+ * <li>硬件版本</li>
+ * <li>软件版本1</li>
+ * <li>软件版本2</li>
+ * <li>蓝牙版本</li>
+ * <li>网络类型</li>
+ * <li>协议类型</li>
+ * <li>CCID</li>
+ * <li>蓝牙MAC地址</li>
+ * <li>车机屏APP版本</li>
+ * <li>最新APP版本</li>
+ * <li>服务器名</li>
+ * <li>端口</li>
+ * <li>插枪还车校验值</li>
+ * <li>CAN波特率</li>
+ * <li>系统当前时间</li>
+ * <li>系统运行时间</li>
+ * </ul>
+ * Created by qsxiaogang on 2017/4/17.
+ */
+public class CCCLUBS_60 implements IMessageBody {
+
+  private static Logger logger = LoggerFactory.getLogger(CCCLUBS_60.class);
+  private int subFucCode;
+
+  private java.util.ArrayList<IMachineAdditionalItem> additionals;
+
+  /**
+   * 序列号
+   */
+  public String getCfxId() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x01) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Serial additionalSerial = (MachineAdditional_Serial) additionalItem;
+      return additionalSerial.getCfxId().trim();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 手机号
+   */
+  public String getSimNo() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x02) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_SimNo additionalSimNo = (MachineAdditional_SimNo) additionalItem;
+      return additionalSimNo.getSimNo().trim();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取VIN码
+   */
+  public String getVin() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x03) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Vin additionalVin = (MachineAdditional_Vin) additionalItem;
+      return additionalVin.getVin().trim();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 适配车型
+   */
+  public Integer getModel() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x04) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Model additionalModel = (MachineAdditional_Model) additionalItem;
+      return additionalModel.getModel();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 硬件版本
+   */
+  public Integer getVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x05) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Version additionalVersion = (MachineAdditional_Version) additionalItem;
+      return additionalVersion.getVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * <b>通领专用<b/>主版本，软件版本1,十六进制形式
+   */
+  public String getSoftwareVersionI() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x06) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_SoftwareVersionI softwareVersionI = (MachineAdditional_SoftwareVersionI) additionalItem;
+      return Tools.ToHexString(softwareVersionI.getSoftwareVersion());
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * <b>通领专用<b/>插件版本，软件版本2
+   */
+  public Integer getSoftwareVersionII() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x07) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_SoftwareVersionII softwareVersionII = (MachineAdditional_SoftwareVersionII) additionalItem;
+      return softwareVersionII.getSoftwareVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取中导硬件版本
+   */
+  public Integer getZHardWareVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 28) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Z_HardWareVersion hardWareVersion = (MachineAdditional_Z_HardWareVersion) additionalItem;
+      return hardWareVersion.getHardWareVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取中导软件版本，十六进制表示
+   */
+  public String getZSoftWareVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 29) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Z_SoftWareVersion softWareVersion = (MachineAdditional_Z_SoftWareVersion) additionalItem;
+      return Tools.ToHexString(softWareVersion.getSoftWareVersion());
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取中导插件版本
+   */
+  public Integer getZPluginVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 30) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Z_PluginVersion pluginVersion = (MachineAdditional_Z_PluginVersion) additionalItem;
+      return pluginVersion.getPluginVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取蓝牙版本
+   */
+  public Integer getBleVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x08) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_BleVersion bleVersion = (MachineAdditional_BleVersion) additionalItem;
+      return bleVersion.getBleVersion() & 0xFFFF;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取蓝牙密钥
+   */
+  public String getBleKey() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 33) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_BleKey additionalSerial = (MachineAdditional_BleKey) additionalItem;
+      return additionalSerial.getBleKey().trim();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取终端网络类型
+   */
+  public Integer getNetworkType() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x09) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_NetworkType networkType = (MachineAdditional_NetworkType) additionalItem;
+      return networkType.getNetworkType();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 终端协议版本
+   */
+  public Integer getProtocol() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0A) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Protocol protocol = (MachineAdditional_Protocol) additionalItem;
+      return protocol.getProtocol();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取ICCID
+   */
+  public String getIccid() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0B) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_ICCID iccid = (MachineAdditional_ICCID) additionalItem;
+      return iccid.getIccid().trim();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取蓝牙地址
+   */
+  public String getMacAddress() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0C) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_MacAddress macAddress = (MachineAdditional_MacAddress) additionalItem;
+      return macAddress.getMacAddress().trim();
+    } else {
+      return null;
+    }
+  }
+
+  public Integer getMediaCurrentVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0D) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_MediaCurrentVersion mediaCurrentVersion = (MachineAdditional_MediaCurrentVersion) additionalItem;
+      return mediaCurrentVersion.getMediaCurrentVersion();
+    } else {
+      return null;
+    }
+  }
+
+  public Integer getMediaNewVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0E) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_MediaNewVersion mediaNewVersion = (MachineAdditional_MediaNewVersion) additionalItem;
+      return mediaNewVersion.getMediaNewVersion();
+    } else {
+      return null;
+    }
+  }
+
+  public String getServerName() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x0F) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Server server = (MachineAdditional_Server) additionalItem;
+      return server.getServerName().trim().replaceAll("\"", "").replaceAll("\\[", "")
+          .replaceAll("\\]", "")
+          .replaceAll(" ", "");
+    } else {
+      return null;
+    }
+  }
+
+  public Integer getPort() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x10) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Port port = (MachineAdditional_Port) additionalItem;
+      return port.getPort();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取插枪还车状态
+   */
+  public Integer getPlugGun() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x11) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_PlugGun plugGun = (MachineAdditional_PlugGun) additionalItem;
+      return plugGun.getPlugGun();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取波特率
+   */
+  public Integer getCanBaudRate() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x12) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_CanBaudRate canBaudRate = (MachineAdditional_CanBaudRate) additionalItem;
+      return canBaudRate.getCanBaudRate();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取PEPS版本
+   */
+  public Integer getPepsVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 34) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_PepsVersion pepsVersion = (MachineAdditional_PepsVersion) additionalItem;
+      return pepsVersion.getPepsVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 系统当前时间
+   */
+  public Integer getCurrentTime() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x14) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_SystemTime systemTime = (MachineAdditional_SystemTime) additionalItem;
+      return systemTime.getCurrentTime();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 系统运行时间
+   */
+  public Integer getRunTime() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x15) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_RunTime runTime = (MachineAdditional_RunTime) additionalItem;
+      return runTime.getRunTime();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取车厘子终端发布主题
+   */
+  public String getPublishTopic() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x16) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_F_PublishTopic publishTopic = (MachineAdditional_F_PublishTopic) additionalItem;
+      return publishTopic.getPublishTopic();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取车厘子终端订阅主题
+   */
+  public String getSubscribeTopic() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x16) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_F_SubscribeTopic subscribeTopic = (MachineAdditional_F_SubscribeTopic) additionalItem;
+      return subscribeTopic.getSubscribeTopic();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 富士康硬件版本
+   */
+  public Integer getFVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x19) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_F_Version fVersion = (MachineAdditional_F_Version) additionalItem;
+      return fVersion.getVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 富士康IAP版本
+   */
+  public Integer getFIapVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x1A) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_F_IapVersion iapVersion = (MachineAdditional_F_IapVersion) additionalItem;
+      return iapVersion.getIapVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 富士康软件版本
+   */
+  public Integer getFAppVersion() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 0x1B) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_F_AppVersion appVersion = (MachineAdditional_F_AppVersion) additionalItem;
+      return appVersion.getAppVersion();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取OBD里程
+   */
+  public Integer getObdMile() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 116) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_ObdMile obdMile = (MachineAdditional_ObdMile) additionalItem;
+      return obdMile.getObdMile();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取SOC
+   */
+  public Integer getSoc() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 118) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_SOC soc = (MachineAdditional_SOC) additionalItem;
+      return soc.getSoc();
+    } else {
+      return null;
+    }
+  }
+
+  //###############################终端触发数据######################################
+
+  /**
+   * 触发数据：GPS经度
+   */
+  public BigDecimal getTriggerGpsLongitude() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 113) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_GpsStatus gpsStatus = (MachineAdditional_GpsStatus) additionalItem;
+      return AccurateOperationUtils
+          .add(gpsStatus.getLongitude(), gpsStatus.getLongitudeDecimal() * 0.000001)
+          .setScale(6, BigDecimal.ROUND_HALF_UP);
+    } else {
+      return new BigDecimal(0);
+    }
+  }
+
+  /**
+   * 触发数据：GPS纬度
+   */
+  public BigDecimal getTriggerGpsLatitude() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 113) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_GpsStatus gpsStatus = (MachineAdditional_GpsStatus) additionalItem;
+      return AccurateOperationUtils
+          .add(gpsStatus.getLatitude(), gpsStatus.getLatitudeDecimal() * 0.000001)
+          .setScale(6, BigDecimal.ROUND_HALF_UP);
+    } else {
+      return new BigDecimal(0);
+    }
+  }
+
+  /**
+   * 触发数据：发动机状态
+   */
+  public Integer getTriggerEngineStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 103) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_EngineStatus engineStatus = (MachineAdditional_EngineStatus) additionalItem;
+      return engineStatus.getEngineStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 触发数据：钥匙状态
+   */
+  public Integer getTriggerKeyStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 105) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_KeyStatus keyStatus = (MachineAdditional_KeyStatus) additionalItem;
+      return keyStatus.getKeyStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 触发数据：灯状态
+   */
+  public Integer getTriggerLightStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 107) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_LightsStatus lightsStatus = (MachineAdditional_LightsStatus) additionalItem;
+      return lightsStatus.getLightsStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 车灯状态带mask
+   */
+  public Integer getTriggerLightStatusWithMask() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 206) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_LightsStatusWithMask lightsStatusWithMask = (MachineAdditional_LightsStatusWithMask) additionalItem;
+      return lightsStatusWithMask.getLightsStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 触发数据：门锁状态
+   */
+  public Integer getTriggerDoorLockStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 109) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_DoorLockStatus doorLockStatus = (MachineAdditional_DoorLockStatus) additionalItem;
+      return doorLockStatus.getDoorLockStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取门锁状态带mask
+   */
+  public Short getTriggerDoorLockStatusWithMask() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 204) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_DoorLockStatusWithMask doorLockStatusWithMask = (MachineAdditional_DoorLockStatusWithMask) additionalItem;
+      return doorLockStatusWithMask.getDoorLockStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 门状态
+   */
+  public Byte getTriggerMergeDoorStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 112) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_MergeDoorStatus mergeDoorStatus = (MachineAdditional_MergeDoorStatus) additionalItem;
+      return mergeDoorStatus.getDoorStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 车门状态，带mask
+   */
+  public Short getTriggerMergeDoorStatusWithMask() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 202) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_MergeDoorStatusWithMask mergeDoorStatusWithMask = (MachineAdditional_MergeDoorStatusWithMask) additionalItem;
+      return mergeDoorStatusWithMask.getDoorStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 触发数据：充电状态
+   * 在充电(0：未充电或无效，1：慢充，2：快充)
+   */
+  public Integer getTriggerChargeStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 104) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_ChargeStatus chargeStatus = (MachineAdditional_ChargeStatus) additionalItem;
+      return chargeStatus.getChargeStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取挡位信息
+   */
+  public Integer getTriggerGearStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 108) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_GearStatus chargeStatus = (MachineAdditional_GearStatus) additionalItem;
+      return chargeStatus.getGearStatus();
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 触发数据：车窗状态
+   */
+  public Integer getTriggerWindowStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if (item.getAdditionalId() == 106) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_WindowsStatus windowsStatus = (MachineAdditional_WindowsStatus) additionalItem;
+      return windowsStatus.getWindowsStatus();
+    } else {
+      return null;
+    }
+  }
+
+
+  @Override
+  public byte[] WriteToBytes() {
+    MyBuffer buff = new MyBuffer();
+    buff.put((byte) getSubFucCode());
+    if (getAdditionals() != null && getAdditionals().size() > 0) {
+      for (IMachineAdditionalItem ad : getAdditionals()) {
+        buff.put(ad.getAdditionalId());
+        buff.put(ad.getAdditionalLength());
+        buff.put(ad.WriteToBytes());
+      }
+    }
+    return buff.array();
+  }
+
+  @Override
+  public void ReadFromBytes(byte[] messageBodyBytes) {
+    MyBuffer buff = new MyBuffer(messageBodyBytes);
+    setSubFucCode(buff.get());
+    setAdditionals(new java.util.ArrayList<IMachineAdditionalItem>());
+
+    while (buff.hasRemain()) {
+      byte additionalId = buff.get();
+      byte additionalLength = buff.get();
+      byte[] additionalBytes = buff.gets(additionalLength);
+      IMachineAdditionalItem item = MachineAdditionalFactory
+          .createMachineAdditionalFactory(additionalId, additionalLength, additionalBytes);
+      if (item != null) {
+        getAdditionals().add(item);
+      } else {
+        logger.info("未知的终端基础属性:" + additionalId + ",附加长度:" + additionalLength);
+      }
+    }
+  }
+
+  public int getSubFucCode() {
+    return subFucCode & 0xFF;
+  }
+
+  public void setSubFucCode(int subFucCode) {
+    this.subFucCode = subFucCode;
+  }
+
+  public final java.util.ArrayList<IMachineAdditionalItem> getAdditionals() {
+    return additionals;
+  }
+
+  public final void setAdditionals(java.util.ArrayList<IMachineAdditionalItem> value) {
+    additionals = value;
+  }
+
+}

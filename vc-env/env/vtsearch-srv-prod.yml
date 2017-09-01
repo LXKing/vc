@@ -1,0 +1,66 @@
+server:
+  port: 11113
+
+spring:
+  redis:
+    host: r-bp10b96658d427c4.redis.rds.aliyuncs.com
+    password: zgjrB7aUk83plwCpyrEk
+    database: 7
+    pool:
+      maxIdle: 8
+      minIdle: 0
+      maxActive: 64
+      maxWait: -1
+  data:
+    mongodb:
+      uri: mongodb://vc_user:0c33a326e0c943d3b5f9eabc73d09d2f@dds-bp1810d170d2e1742.mongodb.rds.aliyuncs.com:3717,dds-bp1810d170d2e1741.mongodb.rds.aliyuncs.com:3717/vcloud_db?replicaSet=mgset-4431147&maxPoolSize=20
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.vehicle,com.ccclubs.terminal,com.ccclubs.frm.redis,com.ccclubs.common,com.ccclubs.frm.mongodb,com.ccclubs.mongodb
+  application:
+    name: vtsearch-srv
+  registry:
+    address: 10.47.97.150:2181,10.25.4.117:2182,10.24.24.188:2183
+    protocol: zookeeper
+    port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+druid:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url: jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
+    username: tmp_user
+    password: RsyKWvf4U0bHSuzTfZTG
+  initialSize: 2
+  maxActive: 50
+  maxIdle: 2
+  minIdle: 1
+  maxWait: 60000
+  timeBetweenEvictionRunsMillis: 3000
+  minEvictableIdleTimeMillis: 300000
+  maxPoolPreparedStatementPerConnectionSize: 20
+  filters:
+
+#配置业务参数 TODO 临时方案
+#各类型终端的最新插件版本
+terminal:
+  #富士康（车厘子）
+  latestVersionMap[0]: 1327,n/a
+  #中导
+  latestVersionMap[1]: 1027,n/a
+  #慧翰
+  latestVersionMap[2]: 0,n/a
+  #通领
+  latestVersionMap[3]: 1075,SHENGJI(7948CC_1075).fx1
+

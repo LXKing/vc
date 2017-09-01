@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: quota-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: quota-api
+      uri: ${spring.cloud.config.uri}
+      

@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: vtsearch-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: business-param,vtsearch-api
+      #profile: dev
+      #label: master
+      uri: ${spring.cloud.config.uri}
+#    server:
+#      encrypt:
+#        #是否暴露加解密接口，true显示加密解密接口
+#        enabled: true
+
+
+      

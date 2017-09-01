@@ -1,0 +1,64 @@
+server:
+  port: 11113
+
+spring:
+  redis:
+    host: 10.24.24.241
+  data:
+    mongodb:
+      host: 114.55.24.97
+      port: 3717
+      username: zkj_user
+      password: zkj2017
+      database: history
+      authenticationDatabase: history
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.vehicle,com.ccclubs.terminal,com.ccclubs.frm.redis,com.ccclubs.common,com.ccclubs.frm.mongodb,com.ccclubs.mongodb
+  application:
+    name: vtsearch-srv
+  registry:
+    address: 115.29.5.157:2181,115.29.5.157:2182,115.29.5.157:2183
+    protocol: zookeeper
+    port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+druid:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  initialSize: 2
+  maxActive: 4
+  maxIdle: 2
+  minIdle: 1
+  maxWait: 60000
+  timeBetweenEvictionRunsMillis: 3000
+  minEvictableIdleTimeMillis: 300000
+  maxPoolPreparedStatementPerConnectionSize: 20
+  filters:
+
+#配置业务参数 TODO 临时方案
+#各类型终端的最新插件版本
+terminal:
+  #富士康（车厘子）
+  latestVersionMap[0]: 1327,n/a
+  #中导
+  latestVersionMap[1]: 1027,n/a
+  #慧翰
+  latestVersionMap[2]: 0,n/a
+  #通领
+  latestVersionMap[3]: 1072,SHENGJI(7837CC_1072).fx1
+

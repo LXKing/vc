@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: upgrade-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: upgrade-api
+      #profile: dev
+      #label: master
+      uri: ${spring.cloud.config.uri}
+
+      

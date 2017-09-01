@@ -1,0 +1,41 @@
+server:
+  port: 11115
+
+spring:
+  redis:
+    host: 127.0.0.1
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.upgrade,com.ccclubs.frm.redis
+  application:
+    name: upgrade-srv
+  registry:
+    address: zookeeper://127.0.0.1:2181
+    protocol: zookeeper
+    port: 20880
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20880
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+
+#appId&appKey
+api:
+  security:
+    1000001: pfadf2pfavyybd
+    1000002: appkey
+    1000003: lfj@qew#ofj_gq
+    1000004: lfwg_seet-w#ofj_gq
+    1000005: fa@sd_n38f2f_3qb
+    1000006: f_A@Sd_n33vd-da4$jhb
+    1000007: lz@6k5hiw@c0
+    1000008: d@j3m&s12$@2

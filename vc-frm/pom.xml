@@ -1,0 +1,27 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>www.ccclubs</groupId>
+        <artifactId>vc</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>vc-frm</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>vc-frm-dubbox</module>
+        <module>vc-frm-redis</module>
+        <module>vc-frm-mongodb</module>
+        <module>vc-frm-mybatis</module>
+        <module>vc-frm-logger</module>
+        <module>vc-frm-spring</module>
+        <module>vc-frm-test</module>
+        <module>vc-frm-swagger</module>
+        <module>vc-frm-core</module>
+        <module>vc-frm-encryp</module>
+        <module>vc-frm-validation</module>
+      <module>vc-frm-mqtt</module>
+      <module>vc-frm-ons</module>
+        <module>vc-frm-hbase</module>
+    </modules>
+</project>

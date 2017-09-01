@@ -1,0 +1,100 @@
+package com.ccclubs.command.util;
+
+import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.ccclubs.command.dto.AirAllOutput;
+import com.ccclubs.command.dto.CommonOutput;
+import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
+import com.ccclubs.frm.spring.constant.ApiEnum;
+import com.ccclubs.frm.spring.exception.ApiException;
+import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.protocol.dto.CommonResult;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * 指令发送结果查询
+ *
+ * @author jianghaiyang
+ * @create 2017-07-06
+ **/
+@Component
+public class ResultHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(ResultHelper.class);
+
+    @Resource
+    private MyStringRedisTemplate myRedisTemplate;
+
+    public <T> T confirmResult(CsRemote csRemote, Integer resultType, T output) {
+        switch (resultType) {
+            case 1://async
+                CommonOutput object = new CommonOutput();
+                object.setMessageId(csRemote.getCsrId());
+                BeanUtils.copyProperties(object, output);
+                break;
+            case 2://sync
+                output = confirmResultSync(csRemote, output);
+                break;
+            case 3://http
+                break;
+        }
+        return output;
+    }
+
+    /**
+     * 从redis内拿返回结果并设置过期时间10秒，有两个来源1、超时，轮询；2、正常返回，由终端返回 TODO 采用线程锁的方式来处理，开启线程轮询结果
+     */
+    private  <T> T confirmResultSync(CsRemote csRemote, T output) {
+        Long startTime = System.currentTimeMillis();
+        String key = AssembleHelper.assembleKey(csRemote.getCsrId());
+        try {
+            while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
+                // 规则引擎负责把完整结果写入redis
+                ValueOperations<String, String> ops = myRedisTemplate.opsForValue();
+                String result = ops.get(key);
+                if (null != result && !"".equals(result)) {
+                    logger.info("command {} send successfully.", csRemote.getCsrType());
+                    CommonResult commonResult = JSON.parseObject(result, new TypeReference<CommonResult>() {
+                    });
+
+                    if (commonResult.isSuccess()) {
+                        return null;//不返回data
+                    } else {
+                        throw new ApiException(ApiEnum.COMMAND_EXECUTE_FAILED.code(),
+                                commonResult.getMessage());
+                    }
+                }
+                Thread.sleep(100l);
+            }
+            logger.error("command timeout and exit.");
+            throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
+        } catch (ApiException ex) {
+            throw ex;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            throw new ApiException(ApiEnum.SYSTEM_ERROR);
+        }
+    }
+
+    /*public static void main(String[] args) {
+        CsRemote csRemote = new CsRemote();
+        csRemote.setCsrId(1231231L);
+        AirAllOutput output = new AirAllOutput();
+        output = new ResultHelper().confirmResult(csRemote,1, output);
+        System.err.println(output);
+    }*/
+}

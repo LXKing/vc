@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>www.ccclubs</groupId>
+        <artifactId>vc</artifactId>
+        <version>1.0.0</version>
+    </parent>
+    <artifactId>vc-biz</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>vc-biz-demo-inf</module>
+        <module>vc-biz-demo-srv</module>
+        <module>vc-biz-demo-orm</module>
+        <module>vc-biz-pub-orm</module>
+        <module>vc-biz-vehicle-inf</module>
+        <module>vc-biz-vehicle-srv</module>
+        <module>vc-biz-terminal-inf</module>
+        <module>vc-biz-terminal-srv</module>
+        <module>vc-biz-command-inf</module>
+        <module>vc-biz-command-srv</module>
+        <module>vc-biz-usr-orm</module>
+  		<module>vc-biz-usr-inf</module>
+  		<module>vc-biz-usr-srv</module>
+        <module>vc-biz-mongodb-orm</module>
+        <module>vc-biz-common-srv</module>
+        <module>vc-biz-message</module>
+        <module>vc-biz-olap</module>
+        <module>vc-biz-protocol-inf</module>
+        <module>vc-biz-protocol-srv</module>
+        <module>vc-biz-quota-orm</module>
+        <module>vc-biz-quota-inf</module>
+        <module>vc-biz-quota-srv</module>
+        <module>vc-biz-hbase-inf</module>
+        <module>vc-biz-hbase-srv</module>
+    </modules>
+</project>
