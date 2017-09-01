@@ -1,9 +1,8 @@
 server:
-  port: 8905
+  port: 12001
 spring:
   redis:
-    host: r-bp10b96658d427c4.redis.rds.aliyuncs.com
-    password: zgjrB7aUk83plwCpyrEk
+    host: 10.24.24.241
     database: 7
     pool:
       maxIdle: 8
