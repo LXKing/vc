@@ -10,7 +10,7 @@ spring:
       port: 3717
       username: dba
       password: office_97
-      database: office_97
+      database: history
       authenticationDatabase: history
 dubbo:
   scan:
