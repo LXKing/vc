@@ -11,8 +11,8 @@ spring:
       port: 3717
       username: dba
       password: office_97
-      database: history
-      authenticationDatabase: history
+      database: vc_history
+      authenticationDatabase: vc_history
 dubbo:
   scan:
     annotationPackage: com.ccclubs.vehicle,com.ccclubs.terminal,com.ccclubs.frm.redis,com.ccclubs.common,com.ccclubs.frm.mongodb,com.ccclubs.mongodb
