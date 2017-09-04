@@ -4,6 +4,7 @@ server:
 spring:
   redis:
     host: 10.24.24.241
+    database: 7
   data:
     mongodb:
       host: 10.24.24.241
