@@ -16,8 +16,8 @@ spring:
       port: 3717
       username: dba
       password: office_97
-      database: history
-      authenticationDatabase: history
+      database: vc_history
+      authenticationDatabase: vc_history
 
 dubbo:
   scan:
@@ -27,12 +27,12 @@ dubbo:
   registry:
     address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
-    port: 20664
+    port: 20666
   protocol:
     name: dubbo
     threads: 100
     #host: 10.0.10.96
-    port: 20664
+    port: 20666
   provider:
     timeout: 120000
     retries: -1
