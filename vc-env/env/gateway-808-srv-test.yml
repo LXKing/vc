@@ -15,13 +15,13 @@ spring:
       port: 3717
       username: dba_user
       password: office_97
-      database: history
-      authenticationDatabase: history
+      database: vc_history
+      authenticationDatabase: vc_history
 dubbo:
   scan:
     annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongodb,com.ccclubs.common
   application:
-    name: gateway-808-srv
+    name: gateway-808-srv-test
   registry:
     address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
@@ -73,7 +73,7 @@ mqttAliyun:
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
-    url: jdbc:mysql://10.132.27.108:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    url: jdbc:mysql://10.132.27.108:3306/vc_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
     username: alpha_user
     password: 3CvQMOiJFihcVnOLOw6J
   initialSize: 2
