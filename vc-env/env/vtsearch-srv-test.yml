@@ -17,7 +17,7 @@ dubbo:
   scan:
     annotationPackage: com.ccclubs.vehicle,com.ccclubs.terminal,com.ccclubs.frm.redis,com.ccclubs.common,com.ccclubs.frm.mongodb,com.ccclubs.mongodb
   application:
-    name: vtsearch-srv
+    name: vtsearch-srv-test
   registry:
     address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
