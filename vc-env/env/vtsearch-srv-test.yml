@@ -6,11 +6,11 @@ spring:
     host: 10.24.24.241
   data:
     mongodb:
-      host: 114.55.24.97
+      host: 10.24.24.241
       port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
+      username: dba
+      password: office_97
+      database: office_97
       authenticationDatabase: history
 dubbo:
   scan:
@@ -18,7 +18,7 @@ dubbo:
   application:
     name: vtsearch-srv
   registry:
-    address: 115.29.5.157:2181,115.29.5.157:2182,115.29.5.157:2183
+    address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
     port: 20660
   protocol:
@@ -37,9 +37,9 @@ dubbo:
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
-    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
-    username: zkj_user
-    password: kANXZYqf2UzghVY7DnjP
+    url: jdbc:mysql://10.132.27.108:3306/vc_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: alpha_user
+    password: 3CvQMOiJFihcVnOLOw6J
   initialSize: 2
   maxActive: 4
   maxIdle: 2
