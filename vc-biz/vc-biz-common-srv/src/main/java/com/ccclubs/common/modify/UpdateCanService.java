@@ -2,15 +2,12 @@ package com.ccclubs.common.modify;
 
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.dao.CsHistoryCanDao;
-import com.ccclubs.mongodb.orm.model.CsHistoryCan;
-import com.ccclubs.mongodb.orm.model.CsHistoryState;
+import com.ccclubs.mongo.orm.dao.CsHistoryCanDao;
+import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.pub.orm.mapper.CsCanMapper;
 import com.ccclubs.pub.orm.model.CsCan;
-import com.ccclubs.pub.orm.model.CsState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 /**
  * 更新can

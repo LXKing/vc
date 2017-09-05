@@ -7,7 +7,7 @@ import com.ccclubs.common.modify.UpdateRemoteService;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.engine.core.util.*;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.*;
 import com.ccclubs.protocol.dto.transform.TerminalPartStatus;

@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-mongodb-orm</artifactId>
+            <artifactId>vc-biz-mongo-orm</artifactId>
             <version>${biz.version}</version>
         </dependency>
         <dependency>

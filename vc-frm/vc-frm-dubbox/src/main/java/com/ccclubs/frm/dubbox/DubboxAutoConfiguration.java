@@ -36,6 +36,9 @@ public class DubboxAutoConfiguration {
     @Bean
     public ProviderConfig requestProviderConfig() {
     	ProviderConfig pc = dubboxProperties.getProvider();
+    	if(null == pc){
+    	    return pc;
+        }
     	pc.setFilter("-exception,DubboxException");
         return pc;
     }

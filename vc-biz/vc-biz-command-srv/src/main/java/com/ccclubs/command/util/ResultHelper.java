@@ -10,7 +10,7 @@ import com.ccclubs.command.dto.CommonOutput;
 import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 
 import javax.annotation.Resource;
