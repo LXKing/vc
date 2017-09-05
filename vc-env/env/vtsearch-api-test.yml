@@ -11,7 +11,7 @@ dubbo:
   scan:
     annotationPackage: com.ccclubs.vtsearch.api,com.ccclubs.frm.spring
   application:
-    name: vtsearch-api
+    name: vtsearch-api-test
   registry:
     address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
