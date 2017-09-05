@@ -14,7 +14,7 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;

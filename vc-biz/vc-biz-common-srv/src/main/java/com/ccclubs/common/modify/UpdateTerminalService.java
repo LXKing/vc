@@ -4,10 +4,8 @@ import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsMachineMapper;
 import com.ccclubs.pub.orm.mapper.CsTerminalMapper;
-import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsTerminal;
-import com.ccclubs.pub.orm.model.CsVehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

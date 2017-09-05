@@ -1,6 +1,6 @@
 package com.ccclubs.command.process;
 
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.pub.orm.model.CsMachine;
 
 public interface CommandProcessInf {

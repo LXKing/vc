@@ -22,7 +22,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongodb,com.ccclubs.common
+    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
   application:
     name: gateway-808-srv
   registry:

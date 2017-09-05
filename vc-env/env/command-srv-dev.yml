@@ -15,7 +15,7 @@ spring:
       authenticationDatabase: history
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.command,com.ccclubs.frm.mongodb,com.ccclubs.frm.redis,com.ccclubs.mongodb,com.ccclubs.common
+    annotationPackage: com.ccclubs.command,com.ccclubs.frm.mongodb,com.ccclubs.frm.redis,com.ccclubs.mongo,com.ccclubs.common
   application:
     name: command-srv
   registry:
