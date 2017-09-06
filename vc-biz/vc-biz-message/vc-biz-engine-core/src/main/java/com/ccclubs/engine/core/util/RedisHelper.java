@@ -34,7 +34,7 @@ public class RedisHelper {
     }
 
     /**
-     * 设置映射关系缓存-NotExist(MachineMapping)
+     * 缓存指令执行结果，缓存30s
      *
      * @param keyPart
      * @return
