@@ -59,7 +59,7 @@
             <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
-        <!-- 此日志文件只记录warn级别的 -->
+        <!-- 此日志文件只记录error级别的 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>error</level>
             <onMatch>ACCEPT</onMatch>
@@ -69,9 +69,10 @@
     <!-- 开发环境 -->
     <springProfile name="dev">
         <!-- additivity="false" 不向上一次打印日志 -->
-        <logger name="com.ccclubs" level="INFO">
+        <logger name="com.ccclubs" level="DEBUG" additivity="false">
             <appender-ref ref="ALL_FILE"/>
             <appender-ref ref="ERROR_FILE"/>
+            <appender-ref ref="STDOUT"/>
         </logger>
         <root level="${LOG_LEVEL:-DEBUG}">
             <appender-ref ref="STDOUT"/>
@@ -81,7 +82,7 @@
     <!-- 测试环境 -->
     <springProfile name="test">
         <!-- additivity="false" 不向上一次打印日志 -->
-        <logger name="com.ccclubs" level="DEBUG">
+        <logger name="com.ccclubs" level="INFO" additivity="false">
             <appender-ref ref="ALL_FILE"/>
             <appender-ref ref="ERROR_FILE"/>
         </logger>
@@ -96,7 +97,7 @@
             <appender-ref ref="ALL_FILE"/>
         </appender>
         <!-- additivity="false" 不向上一次打印日志 -->
-        <logger name="com.ccclubs" level="INFO">
+        <logger name="com.ccclubs" level="INFO" additivity="false">
             <appender-ref ref="ALL_FILE"/>
             <appender-ref ref="ERROR_FILE"/>
         </logger>
