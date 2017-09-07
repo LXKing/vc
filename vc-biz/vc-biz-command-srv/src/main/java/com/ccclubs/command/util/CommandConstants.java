@@ -8,7 +8,7 @@ package com.ccclubs.command.util;
  **/
 public class CommandConstants {
     // 众行EVPOP，远程控制指令ID在redis中存储的Key
-    public static final String REMOTE_REDIS_PRE = "remoteOrder";
+    public static final String REMOTE_REDIS_PRE = "cmd:";
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static long TIMEOUT = 10 * 1000;
     // Map key

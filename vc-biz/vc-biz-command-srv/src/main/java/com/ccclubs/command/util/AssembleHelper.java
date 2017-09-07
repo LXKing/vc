@@ -9,7 +9,7 @@ package com.ccclubs.command.util;
 public class AssembleHelper {
 
     public static String assembleKey(Long csrId) {
-        return "OBJ." + CommandConstants.REMOTE_REDIS_PRE + "." + csrId;
+        return CommandConstants.REMOTE_REDIS_PRE + csrId;
     }
 
     public static String get(String flag, String key) {

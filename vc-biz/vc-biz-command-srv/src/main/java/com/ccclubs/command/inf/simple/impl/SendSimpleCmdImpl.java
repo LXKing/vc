@@ -24,6 +24,7 @@ import com.ccclubs.pub.orm.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import javax.annotation.Resource;
@@ -50,7 +51,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private CsStructMapper sdao;
 
     @Resource
-    private MyStringRedisTemplate myRedisTemplate;
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private CommandProp commandProp;
@@ -160,7 +161,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         try {
             while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
                 // 规则引擎负责把完整结果写入redis
-                ValueOperations<String, String> ops = myRedisTemplate.opsForValue();
+                ValueOperations<String, String> ops = redisTemplate.opsForValue();
                 String result = ops.get(AssembleHelper.assembleKey(csRemote.getCsrId()));
                 if (null != result && !"".equals(result)) {
                     logger.info("command {} send successfully.", structId);

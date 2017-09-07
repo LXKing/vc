@@ -6,10 +6,12 @@ package com.ccclubs.engine.core.util;
 public class RuleEngineConstant {
 
     public static final String REDIS_KEY_VIN = "mappings:vin";
-    public static final String REDIS_KEY_TENO = "mappings:teno";
     public static final String REDIS_KEY_SIMNO = "mappings:simno";
     public static final String REDIS_KEY_CARNUM = "mappings:carnum";
+    public static final String REDIS_KEY_TENO = "mappings:teno";
     public static final String REDIS_KEY_NOT_EXIST = "not-exist:";
+    /*指令执行结果*/
+    public static final String REDIS_KEY_CMD_REMOTE = "cmd:";
 
     public static final String REDIS_KEY_CAN2STATE = "Can2State";
     public static final String REDIS_KEY_MANCHINE = "CsMachine";

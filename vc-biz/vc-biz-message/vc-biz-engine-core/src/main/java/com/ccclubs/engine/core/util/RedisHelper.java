@@ -41,7 +41,7 @@ public class RedisHelper {
      */
     public void setRemote(String keyPart,Object value) {
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(AssembleHelper.getKey(ConstantUtils.REMOTE_REDIS_PRE, keyPart),
+        valueOperations.set(AssembleHelper.getKey(RuleEngineConstant.REDIS_KEY_CMD_REMOTE, keyPart),
                 value,
                 RuleEngineConstant.RENOTE_EXPIRE, TimeUnit.SECONDS);
     }
