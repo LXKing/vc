@@ -350,7 +350,7 @@ public class CommandApi {
         ValueOperations ops = redisTemplate.opsForValue();
         Object count = ops.get(REDIS_KEY_NOW_CMD + vin);
         if (null == count) {
-            ops.set(REDIS_KEY_NOW_CMD + vin, 0, 10, TimeUnit.SECONDS);
+            ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
             return false;
         } else {
             Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
@@ -360,7 +360,5 @@ public class CommandApi {
                 return false;
             }
         }
-
-
     }
 }
