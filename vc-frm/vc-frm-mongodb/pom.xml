@@ -13,5 +13,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>www.ccclubs</groupId>
+			<artifactId>vc-frm-spring</artifactId>
+			<version>${frm.version}</version>
+		</dependency>
 	</dependencies>
 </project>

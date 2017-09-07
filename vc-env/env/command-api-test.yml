@@ -6,7 +6,9 @@ spring:
       charset: UTF-8
       enable: true
       force: true
-
+  redis:
+    host: 10.24.24.241
+    database: 7
 dubbo:
   scan: 
     annotationPackage: com.ccclubs.command.api,com.ccclubs.frm.spring

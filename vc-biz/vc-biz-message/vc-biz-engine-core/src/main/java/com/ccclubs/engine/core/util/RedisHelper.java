@@ -34,14 +34,14 @@ public class RedisHelper {
     }
 
     /**
-     * 设置映射关系缓存-NotExist(MachineMapping)
+     * 缓存指令执行结果，缓存30s
      *
      * @param keyPart
      * @return
      */
     public void setRemote(String keyPart,Object value) {
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(AssembleHelper.getKey(ConstantUtils.REMOTE_REDIS_PRE, keyPart),
+        valueOperations.set(AssembleHelper.getKey(RuleEngineConstant.REDIS_KEY_CMD_REMOTE, keyPart),
                 value,
                 RuleEngineConstant.RENOTE_EXPIRE, TimeUnit.SECONDS);
     }

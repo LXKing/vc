@@ -1,8 +1,8 @@
 package com.ccclubs.usr.inf.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.ccclubs.mongodb.orm.dao.VcApiLogDao;
-import com.ccclubs.mongodb.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.dao.VcApiLogDao;
+import com.ccclubs.mongo.orm.model.VcApiLog;
 import com.ccclubs.usr.dto.ApiLogInput;
 import com.ccclubs.usr.dto.ApiLogOutput;
 import com.ccclubs.usr.inf.ApiLogInf;

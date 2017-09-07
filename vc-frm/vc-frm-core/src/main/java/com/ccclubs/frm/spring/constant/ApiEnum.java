@@ -21,6 +21,7 @@ public enum ApiEnum {
 	SIGN_CHECK_APPKEY_ISNULL(100009, "appKey is null", "appKey不能为空"),
 	DATA_ACCESS_CHECK_FAILED(100010, "data access check failed", "数据权限校验失败"),
 	UPDATE_ID_NOT_SET(100011, "update obj can not be null", "更新ID不能为空"),
+	API_RATE_LIMIT(100012, "api call too many times in one minute", "一分钟内调用API太多次"),
 	VEHICLE_NOT_FOUND(101001, "vehicle not found", "未查询到车辆"),
 	TERMINAL_NOT_FOUND(101002, "terminal not found", "未查询到终端"),
 	TERMINAL_NOT_TL(101003, "terminal not tongling", "此终端不是通领类型，暂不支持升级"),

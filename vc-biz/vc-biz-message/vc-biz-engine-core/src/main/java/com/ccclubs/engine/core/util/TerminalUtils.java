@@ -3,11 +3,11 @@ package com.ccclubs.engine.core.util;
 
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
-import com.ccclubs.mongodb.orm.dao.CsLoggerDao;
-import com.ccclubs.mongodb.orm.model.CsAlarm;
-import com.ccclubs.mongodb.orm.model.CsHistoryCan;
-import com.ccclubs.mongodb.orm.model.CsHistoryState;
-import com.ccclubs.mongodb.orm.model.CsLogger;
+import com.ccclubs.mongo.orm.dao.CsLoggerDao;
+import com.ccclubs.mongo.orm.model.CsAlarm;
+import com.ccclubs.mongo.orm.model.CsHistoryCan;
+import com.ccclubs.mongo.orm.model.CsHistoryState;
+import com.ccclubs.mongo.orm.model.CsLogger;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
