@@ -6,7 +6,9 @@ spring:
       charset: UTF-8
       enable: true
       force: true
-name: zkj
+  redis:
+    host: 127.0.0.1
+
 dubbo:
   scan: 
     annotationPackage: com.ccclubs.command.api,com.ccclubs.frm.spring

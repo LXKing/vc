@@ -4,7 +4,6 @@ server:
 spring:
   redis:
     host: 127.0.0.1
-    #password: jhy
   data:
     mongodb:
       host: 114.55.24.97
