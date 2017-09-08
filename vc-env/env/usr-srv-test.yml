@@ -1,33 +1,32 @@
 server:
-  port: 12005
+  port: 11116
 
 spring:
   redis:
     host: 10.24.24.241
     database: 7
-  data:
+  data:  
     mongodb:
       host: 10.24.24.241
       port: 3717
       username: dba
       password: office_97
-      database: vc_remote
-      authenticationDatabase: vc_remote
-
+      database: vc_history
+      authenticationDatabase: vc_history
+      
 dubbo:
-  scan:
-    annotationPackage: com.ccclubs.engine,com.ccclubs.frm.redis,com.ccclubs.frm.mqtt,com.ccclubs.frm.ons,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
+  scan: 
+    annotationPackage: com.ccclubs.usr,com.ccclubs.frm.redis,com.ccclubs.frm.mongodb,com.ccclubs.mongo
   application:
-    name: cmd-engine-srv-test
+    name: usr-srv
   registry:
     address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
-    port: 20665
+    port: 20666
   protocol:
     name: dubbo
     threads: 100
-    #host: 10.0.10.96
-    port: 20665
+    port: 20666
   provider:
     timeout: 120000
     retries: -1
@@ -36,26 +35,6 @@ dubbo:
     check: false
 #  monitor:
 #    protocol: registry
-
-#MQ topic
-mq:
-  topic: terminal
-  car: car
-  protocol: protocol
-  #应用日志
-  log:
-    showSource: true
-
-#阿里云 MQ Consumer 配置
-ons:
-  producerId: PID_terminal_ser
-  consumerId: CID_ser_operation_test
-  accessKey: M6dHCyKyKYUCNbW4
-  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
-  consumeThreadNums: 10
-  topic: ser_test
-  # Tag
-  expression: MQTT_03||MQTT_05||MQTT_06||MQTT_0F||MQTT_10||MQTT_46||MQTT_47||MQTT_48||MQTT_49||MQTT_50||MQTT_6F||MQTT_F0
 
 druid:
   driver: com.mysql.jdbc.Driver
@@ -71,4 +50,4 @@ druid:
   timeBetweenEvictionRunsMillis: 3000
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
-  filters:
+  filters: 

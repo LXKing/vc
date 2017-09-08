@@ -13,7 +13,6 @@ import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
-import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.CsRemote;
