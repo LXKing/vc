@@ -13,27 +13,14 @@ import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.orm.model.CsIndexReport;
 import com.ccclubs.quota.vo.CsIndexReportInput;
 import com.github.pagehelper.PageInfo;
-
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
 @RefreshScope
 @RestController
 public class CsIndexQuotaApi {
-
-//    @Value("${csIndexReport.templateReportPath}")
-//    private String  templateReportPath="D://www//templateReportPath//excel模板.xls";
-//
-//   @Value("${csIndexReport.conditionReportPath}")
-//    private String  conditionReportPath="D://www//conditionReportPath";
-//
-//   @Value("${csIndexReport.generateReportPath}")
-//    private String  generateReportPath="D://www//generateReportPath//众泰报表统计.xls";
-//
-
 
     @Value("${csIndexReport.templateReportPath}")
     private String  templateReportPath;
@@ -94,14 +81,15 @@ public class CsIndexQuotaApi {
                 conditionFile.mkdirs();
             }
 
-            File generateFile=new File(generateReportPath.substring(0,generateReportPath.lastIndexOf(File.separator)));
+
+            File generateFile=new File(generateReportPath.substring(0,generateReportPath.lastIndexOf("/")));
             if (!generateFile.exists()){
                 generateFile.mkdirs();
             }
 
             String conditionPath=null;
             for(MultipartFile uploadedFile : files) {
-                File file = new File(conditionReportPath +File.separator+ uploadedFile.getOriginalFilename());
+                File file = new File(conditionReportPath +"//"+ uploadedFile.getOriginalFilename());
                 uploadedFile.transferTo(file);
                 conditionPath=conditionReportPath+File.separator+ uploadedFile.getOriginalFilename();
                 break;
@@ -118,7 +106,7 @@ public class CsIndexQuotaApi {
      */
     @RequestMapping(value = "/csIndex/downloadFile", method = RequestMethod.GET)
     public void downloadTemplateFile(HttpServletResponse res) {
-        String fileName = templateReportPath.substring(templateReportPath.lastIndexOf(File.separator));
+        String fileName = templateReportPath.substring(templateReportPath.lastIndexOf("/"));
         getFileContent(fileName,templateReportPath,res);
     }
 
@@ -128,7 +116,7 @@ public class CsIndexQuotaApi {
      */
     @RequestMapping(value = "/csIndex/getReport", method = RequestMethod.GET)
     public void getReport(HttpServletResponse res) {
-        String fileName = generateReportPath.substring(generateReportPath.lastIndexOf(File.separator));
+        String fileName = generateReportPath.substring(generateReportPath.lastIndexOf("/"));
         getFileContent(fileName,generateReportPath,res);
     }
 

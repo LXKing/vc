@@ -31,6 +31,6 @@ dubbo:
     check: false
 
 csIndexReport:
-  templateReportPath: "D://www/templateReportPath/excel模板.xls"
-  conditionReportPath: "D://www/conditionReportPath"
-  generateReportPath: "D://www\\generateReportPath\\众泰报表统计.xls"
+  templateReportPath: "/var/report/templateReportPath/excelTemplate.xls"
+  conditionReportPath: "/var/report/conditionReportPath"
+  generateReportPath: "/var/report/generateReportPath/zhong_tai_report.xls"
