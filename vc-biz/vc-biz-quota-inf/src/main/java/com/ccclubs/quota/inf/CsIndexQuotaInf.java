@@ -23,4 +23,7 @@ public interface CsIndexQuotaInf {
 	void reportBuilder();
 	
 	PageInfo<CsIndexReport> bizQuota(CsIndexReportInput input);
+
+	//报表导出
+	void reportExport(String conditonFilePath,String generateFilePath);
 }

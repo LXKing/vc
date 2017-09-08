@@ -32,3 +32,8 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
+
+csIndexReport:
+  templateReportPath: "D://www/templateReportPath/excel模板.xls"
+  conditionReportPath: "D://www/conditionReportPath"
+  generateReportPath: "D://www\\generateReportPath\\众泰报表统计.xls"
