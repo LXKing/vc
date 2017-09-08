@@ -1,9 +1,10 @@
 package com.ccclubs.frm.mongodb.listener;
 
 import com.ccclubs.frm.mongodb.document.LZPrimary;
-import com.ccclubs.frm.mongodb.lang.AutomaticSequence;
 import java.lang.reflect.Field;
 import javax.annotation.Resource;
+
+import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;

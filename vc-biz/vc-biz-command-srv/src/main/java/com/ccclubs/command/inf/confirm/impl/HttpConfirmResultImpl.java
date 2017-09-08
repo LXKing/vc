@@ -10,7 +10,7 @@ import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 
 import javax.annotation.Resource;

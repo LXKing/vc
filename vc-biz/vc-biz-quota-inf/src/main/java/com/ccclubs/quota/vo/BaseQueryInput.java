@@ -7,8 +7,8 @@ public class BaseQueryInput implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5128618118897123420L;
-	private Integer pageSize;
-	private Integer pageNum;
+	private Integer pageSize = 10;
+	private Integer pageNum = 1;
 	private String sortField;
 	private String sortOrder;
 	public Integer getPageSize() {

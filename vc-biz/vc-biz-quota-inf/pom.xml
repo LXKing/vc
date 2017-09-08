@@ -29,5 +29,10 @@
 			<artifactId>spring-context</artifactId>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-mongo-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+    </dependencies>
 </project>

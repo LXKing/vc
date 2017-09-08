@@ -1,7 +1,7 @@
 package com.ccclubs.common.modify;
 
-import com.ccclubs.mongodb.orm.dao.CsRemoteDao;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.dao.CsRemoteDao;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

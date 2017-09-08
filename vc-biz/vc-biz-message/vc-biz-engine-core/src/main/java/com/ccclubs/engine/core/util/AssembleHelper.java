@@ -17,7 +17,7 @@ public class AssembleHelper {
     }
 
     public static String getKey(String prefix, String unique) {
-        return prefix + ":" + unique;
+        return prefix + unique;
     }
 
 }
