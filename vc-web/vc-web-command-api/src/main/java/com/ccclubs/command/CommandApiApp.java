@@ -1,5 +1,6 @@
 package com.ccclubs.command;
 
+import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.frm.swagger.Swagger2Config;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
@@ -8,7 +9,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 
 @SpringBootApplication
-@ImportAutoConfiguration({Swagger2Config.class})
+@ImportAutoConfiguration({Swagger2Config.class, RedisAutoConfiguration.class})
 public class CommandApiApp extends SpringBootServletInitializer {
 
     /**
