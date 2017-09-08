@@ -21,8 +21,8 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+#  monitor:
+#    protocol: registry
 #国标网关转发到MQ的topic
 mq.topic: ser
 

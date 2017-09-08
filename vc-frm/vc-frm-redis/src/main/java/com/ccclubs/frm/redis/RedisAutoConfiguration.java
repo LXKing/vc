@@ -1,7 +1,5 @@
 package com.ccclubs.frm.redis;
 
-import com.ccclubs.frm.redis.old.MyRedisSerializer;
-import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +21,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.util.Assert;
@@ -170,38 +167,6 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
     }
 
     @Primary
-    @Bean(name = "ttpRedisTemplate")
-    @Qualifier(value = "ttpRedisConnectionFactory")
-    public StringRedisTemplate ttpRedisTemplate(JedisConnectionFactory connectionFactory) {
-
-        StringRedisTemplate redisTemplate = new StringRedisTemplate(connectionFactory);
-
-        // 设置序列化类
-        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-
-        redisTemplate.afterPropertiesSet();
-
-        return redisTemplate;
-
-    }
-
-    @Bean(name = "myRedisTemplate")
-    @Qualifier(value = "ttpRedisConnectionFactory")
-    public MyStringRedisTemplate myRedisTemplate(JedisConnectionFactory connectionFactory) {
-
-        MyStringRedisTemplate redisTemplate = new MyStringRedisTemplate(connectionFactory);
-
-        // 设置老系统redis序列化
-        MyRedisSerializer stringRedisSerializer = new MyRedisSerializer();
-        redisTemplate.setValueSerializer(stringRedisSerializer);
-
-        redisTemplate.afterPropertiesSet();
-
-        return redisTemplate;
-
-    }
-
     @Bean(name = "redisTemplate")
     @Qualifier(value = "ttpRedisConnectionFactory")
     public RedisTemplate redisTemplate(JedisConnectionFactory connectionFactory) {
@@ -217,7 +182,6 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
-
     }
 
     @Bean

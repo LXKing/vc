@@ -3,11 +3,8 @@ package com.ccclubs.command.util;
 import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.ccclubs.command.dto.AirAllOutput;
 import com.ccclubs.command.dto.CommonOutput;
-import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.CsRemote;
@@ -22,8 +19,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 指令发送结果查询
