@@ -343,7 +343,7 @@ public class CommandApi {
     RedisTemplate redisTemplate;
 
     //当前正在处理指令的终端
-    public static final String REDIS_KEY_NOW_CMD = "cmd:";
+    public static final String REDIS_KEY_NOW_CMD = "rates:";
 
     private boolean isRateLimit(String vin) {
 
@@ -353,7 +353,8 @@ public class CommandApi {
             ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
             return false;
         } else {
-            Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
+            ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
+            long current = (Integer) ops.get(REDIS_KEY_NOW_CMD + vin);
             if (current > 5) {
                 return true;
             } else {
