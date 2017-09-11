@@ -2,6 +2,7 @@ package com.ccclubs.engine.cmd.srv;
 
 import java.io.IOException;
 
+import com.ccclubs.engine.cmd.inf.config.CmdEngineConfig;
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.ons.OnsProperties;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
@@ -23,7 +24,7 @@ import org.springframework.context.annotation.Import;
  **/
 @SpringBootApplication
 @Import({MybatisConfig.class})
-@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class})
+@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class, CmdEngineConfig.class})
 public class CmdEngineSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(CmdEngineSrvApp.class);
 
