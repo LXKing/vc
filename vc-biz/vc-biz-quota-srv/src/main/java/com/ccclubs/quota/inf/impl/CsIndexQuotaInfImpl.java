@@ -1,8 +1,5 @@
 package com.ccclubs.quota.inf.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,12 +11,8 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import com.ccclubs.quota.tools.ClassUtil;
-import com.ccclubs.quota.tools.ExportExcelTemp;
-import com.ccclubs.quota.tools.ReadExcel;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -583,23 +576,18 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	}
 
 	/**
-	 * 报表导出
-	 * @param conditonFilePath :上传的excel保存路径
-	 * @param generateFilePath :
+	 * 获取车辆指标存在vin/不存在vin的数据
+	 * @param readExcelList
+	 * @return
 	 */
 	@Override
-	public void reportExport(String conditonFilePath, String generateFilePath) {
+	public Map<String,List<CsIndexReport>>  ztReportExport(List<CsIndexReport> readExcelList) {
 		//1.先获取到前端传进来的条件
-		File readFile=   new File(conditonFilePath);
-		List<List<Object>> readExcelList=  ReadExcel.readExcel(readFile);
-		//2.根据条件查询数据
 		readExcelList.remove(0);
 		//从excel获取到所有条件的vin码
 		List<String>vinList=new ArrayList<>();
-		for (List<Object> rowList:readExcelList){
-			if(rowList!=null&&rowList.size()>0){
-				vinList.add(rowList.get(0).toString());
-			}
+		for (CsIndexReport csIndexReport:readExcelList){
+			vinList.add(csIndexReport.getCsVin());
 		}
 		//
 		CsIndexReportExample example = new CsIndexReportExample();
@@ -608,75 +596,34 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		List<CsIndexReport> exlist=new ArrayList<>();
 		if(vinList!=null&&vinList.size()>0){
 			//根据条件查询的数据
-			 exlist = csIndexReportMapper.selectByExample(example);
+			exlist = csIndexReportMapper.selectByExample(example);
 		}
 		//统计查询出的数据在条件中不存在vin码的数据
-		List<CsIndexReport> notllit=new ArrayList<>();
-		for (List<Object>  alldateRowList:readExcelList){
+		List<CsIndexReport> notVinList=new ArrayList<>();
+			for (CsIndexReport  conditionCsIndexReport:readExcelList){
 			boolean flag=false;
-			if(alldateRowList!=null&&alldateRowList.size()>0){
-				String vin=alldateRowList.get(0).toString();
-				for(CsIndexReport csIndexReport:exlist){
-					if(vin.equals(csIndexReport.getCsVin().trim())){
-						flag=true;
-						break;
-					}
-				}
 
-				if(!flag){
-					CsIndexReport csIndexReport=new CsIndexReport();
-					csIndexReport.setCsVin(vin);
-					notllit.add(csIndexReport);
+			String vin=conditionCsIndexReport.getCsVin();
+			for(CsIndexReport csIndexReport:exlist){
+				if(vin.equals(csIndexReport.getCsVin().trim())){
+					flag=true;
+					break;
 				}
+			}
+			if(!flag){
+				CsIndexReport csIndexReport=new CsIndexReport();
+				csIndexReport.setCsVin(vin);
+				notVinList.add(csIndexReport);
 			}
 		}
 		//
 		Map<String,List<CsIndexReport>> dateMap=new HashMap<>();
 		//
-		String[] headers;
 		dateMap.put("存在的vin",exlist);
-		if(notllit!=null||notllit.size()>0){
-			dateMap.put("不存在的vin",notllit);
+		if(notVinList!=null||notVinList.size()>0){
+			dateMap.put("不存在的vin",notVinList);
 		}
 		//
-
-		headers= ClassUtil.getClassAttribute(CsIndexReport.class);
-		outToExcel(dateMap,headers,generateFilePath);
-	}
-
-	private static  void outToExcel(Map<String,List<CsIndexReport>> dateMap, String[] headers, String generateFilePath){
-		ExportExcelTemp eeu = new ExportExcelTemp(generateFilePath);
-		HSSFWorkbook workbook=eeu.getWorkbook();
-		int sheetNumber=eeu.getSheetNumber();
-		//输出地址
-		OutputStream out=null;
-		try{
-			//输出地址
-			out = new FileOutputStream(generateFilePath);
-			//
-			for(String weekkey:dateMap.keySet()){
-				List<CsIndexReport> data=dateMap.get(weekkey);
-				int exist= workbook.getSheetIndex(weekkey);
-				if(exist==0){//存在则删除
-					workbook.removeSheetAt(workbook.getSheetIndex(weekkey));
-					sheetNumber--;
-				}
-				eeu.exportExcel(workbook, sheetNumber++, weekkey, headers, data, out);
-			}
-
-			workbook.write(out);
-			out.close();
-			eeu.close();
-		}catch (Exception e){
-			e.printStackTrace();
-			try{
-				if(out!=null){
-					out.close();
-				}
-				eeu.close();
-			}catch (Exception e1){
-				e1.printStackTrace();
-			}
-		}
+		return dateMap;
 	}
 }

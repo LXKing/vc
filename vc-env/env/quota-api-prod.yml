@@ -32,8 +32,3 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-
-csIndexReport:
-  templateReportPath: "/var/report/templateReportPath/excelTemplate.xls"
-  conditionReportPath: "/var/report/conditionReportPath"
-  generateReportPath: "/var/report/generateReportPath/zhong_tai_report.xls"

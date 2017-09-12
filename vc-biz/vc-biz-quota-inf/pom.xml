@@ -34,5 +34,5 @@
             <artifactId>vc-biz-mongo-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
-    </dependencies>
+	</dependencies>
 </project>

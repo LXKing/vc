@@ -1,4 +1,4 @@
-package com.ccclubs.quota.tools;
+package com.ccclubs.quota.api.util;
 
 
 import org.apache.poi.hssf.usermodel.*;
@@ -7,6 +7,7 @@ import org.apache.poi.hssf.util.HSSFColor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -17,7 +18,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ExportExcelTemp<T> {
+public class ExportExcelTemp<T> implements Serializable{
 
     private HSSFWorkbook workbook ;
     private int sheetNumber = 0;
@@ -38,6 +39,14 @@ public class ExportExcelTemp<T> {
 
     public void setSheetNumber(int sheetNumber) {
         this.sheetNumber = sheetNumber;
+    }
+
+
+    public ExportExcelTemp(){
+        HSSFWorkbook workbook;
+        workbook = new HSSFWorkbook();
+        setWorkbook(workbook);
+        setSheetNumber(0);
     }
 
     public ExportExcelTemp(String savePath){
@@ -89,12 +98,10 @@ public class ExportExcelTemp<T> {
      * @param sheetTitle  （sheet的名称）
      * @param headers    （表格的标题）
      * @param dataset   （表格的数据）
-     * @param out  （输出流）
      * @throws Exception
      */
     public void exportExcel(HSSFWorkbook workbook, int sheetNum,
-                            String sheetTitle, String[] headers, Collection<T> dataset,
-                            OutputStream out) throws Exception {
+                            String sheetTitle, String[] headers, Collection<T> dataset) throws Exception {
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet();
         workbook.setSheetName(sheetNum, sheetTitle);
