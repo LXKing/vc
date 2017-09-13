@@ -1,6 +1,6 @@
 package com.ccclubs.command.remote;
 
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import org.springframework.stereotype.Component;

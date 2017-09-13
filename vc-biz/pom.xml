@@ -22,10 +22,10 @@
         <module>vc-biz-usr-orm</module>
   		<module>vc-biz-usr-inf</module>
   		<module>vc-biz-usr-srv</module>
-        <module>vc-biz-mongodb-orm</module>
+        <module>vc-biz-mongo-inf</module>
+        <module>vc-biz-mongo-orm</module>
         <module>vc-biz-common-srv</module>
         <module>vc-biz-message</module>
-        <module>vc-biz-olap</module>
         <module>vc-biz-protocol-inf</module>
         <module>vc-biz-protocol-srv</module>
         <module>vc-biz-quota-orm</module>

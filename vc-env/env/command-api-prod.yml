@@ -6,7 +6,15 @@ spring:
       charset: UTF-8
       enable: true
       force: true
-
+  redis:
+    host: r-bp10b96658d427c4.redis.rds.aliyuncs.com
+    password: zgjrB7aUk83plwCpyrEk
+    database: 7
+    pool:
+      maxIdle: 8
+      minIdle: 0
+      maxActive: 64
+      maxWait: -1
 dubbo:
   scan: 
     annotationPackage: com.ccclubs.command.api,com.ccclubs.frm.spring

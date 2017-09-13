@@ -3,14 +3,11 @@ package com.ccclubs.command.util;
 import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.ccclubs.command.dto.AirAllOutput;
 import com.ccclubs.command.dto.CommonOutput;
-import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 
 import javax.annotation.Resource;
@@ -18,11 +15,10 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 指令发送结果查询
@@ -36,7 +32,7 @@ public class ResultHelper {
     private static final Logger logger = LoggerFactory.getLogger(ResultHelper.class);
 
     @Resource
-    private MyStringRedisTemplate myRedisTemplate;
+    private RedisTemplate redisTemplate;
 
     public <T> T confirmResult(CsRemote csRemote, Integer resultType, T output) {
         switch (resultType) {
@@ -63,7 +59,7 @@ public class ResultHelper {
         try {
             while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
                 // 规则引擎负责把完整结果写入redis
-                ValueOperations<String, String> ops = myRedisTemplate.opsForValue();
+                ValueOperations<String, String> ops = redisTemplate.opsForValue();
                 String result = ops.get(key);
                 if (null != result && !"".equals(result)) {
                     logger.info("command {} send successfully.", csRemote.getCsrType());

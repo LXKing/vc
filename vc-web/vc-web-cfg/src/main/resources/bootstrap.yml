@@ -12,10 +12,13 @@ spring:
           #是否暴露加解密接口
           enabled: true
         git:
-          uri: http://120.26.220.241/zhangkejiang/vc.git
+          uri: http://120.26.220.241/BurningGroup/vc.git
           searchPaths:  vc-env/env
           username: zhangkejiang
           password: ss123456
+          #取分支 默认master
+          #default-label: develop
+
 encrypt:
   keyStore:
     location: classpath:/vckey.jks

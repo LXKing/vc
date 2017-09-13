@@ -20,7 +20,10 @@ import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 指令发送
@@ -81,6 +85,9 @@ public class CommandApi {
     @PostMapping("oneKeyUpgrade")
     public ApiMessage<UpgradeOutput> oneKeyUpgrade(@RequestHeader("appId") String appId, UpgradeInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         VersionQryInput qryInput = new VersionQryInput();
         qryInput.setVin(input.getVin());
         VersionQryOutput version = versionInf.isLatestVersion(qryInput);
@@ -108,6 +115,9 @@ public class CommandApi {
     @PostMapping("sendSimpleCmd")
     public ApiMessage<SimpleCmdOutput> sendSimpleCmd(@RequestHeader("appId") String appId, SimpleCmdInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         SimpleCmdOutput output = simpleCmd.sendSimpleCmd(input);
         return new ApiMessage<>(output);
     }
@@ -123,6 +133,9 @@ public class CommandApi {
     @PostMapping("powerModeSwitch")
     public ApiMessage<PowerModeOutput> powerModeSwitch(@RequestHeader("appId") String appId, PowerModeInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         PowerModeOutput output = powerModeSwitchCmd.powerModeSwitch(input);
         return new ApiMessage<>(output);
     }
@@ -138,6 +151,9 @@ public class CommandApi {
     @PostMapping("timeSynchronization")
     public ApiMessage<TimeSyncOutput> timeSynchronization(@RequestHeader("appId") String appId, TimeSyncInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         TimeSyncOutput output = timeSyncCmd.timeSynchronization(input);
         return new ApiMessage<>(output);
     }
@@ -153,6 +169,9 @@ public class CommandApi {
     @PostMapping("airConditionerMonoCtrl")
     public ApiMessage<AirMonoOutput> airConditionerMonoCtrl(@RequestHeader("appId") String appId, AirMonoInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         AirMonoOutput output = airCmd.airConditionerMonoCtrl(input);
         return new ApiMessage<>(output);
     }
@@ -168,6 +187,9 @@ public class CommandApi {
     @PostMapping("airConditionerAllCtrl")
     public ApiMessage<AirAllOutput> airConditionerAllCtrl(@RequestHeader("appId") String appId, AirAllInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         AirAllOutput output = airCmd.airConditionerAllCtrl(input);
         return new ApiMessage<>(output);
     }
@@ -183,6 +205,9 @@ public class CommandApi {
     @PostMapping("issueOrderData")
     public ApiMessage<IssueOrderOutput> issueOrderData(@RequestHeader("appId") String appId, IssueOrderInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         IssueOrderOutput output = orderCmd.issueOrderData(input);
         return new ApiMessage<>(output);
     }
@@ -254,10 +279,13 @@ public class CommandApi {
      * @return
      */
     @ApiSecurity
-    @ApiOperation(value = "下发订单数据--需要授权信息",notes = "下发订单数据--需要授权信息")
+    @ApiOperation(value = "下发订单数据--需要授权信息", notes = "下发订单数据--需要授权信息")
     @PostMapping("issueAuthOrderData")
     public ApiMessage<IssueAuthOrderOutput> issueAuthOrderData(@RequestHeader("appId") String appId, IssueAuthOrderInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         IssueAuthOrderOutput output = orderCmd.issueAuthOrderData(input);
         return new ApiMessage<>(output);
     }
@@ -269,10 +297,13 @@ public class CommandApi {
      * @return
      */
     @ApiSecurity
-    @ApiOperation(value = "设置DVD车载APP最新版本",notes = "设置DVD车载APP最新版本（仅设置版本号）")
+    @ApiOperation(value = "设置DVD车载APP最新版本", notes = "设置DVD车载APP最新版本（仅设置版本号）")
     @PostMapping("setDvdVersion")
     public ApiMessage<DvdVersionOutput> setDvdVersion(@RequestHeader("appId") String appId, DvdVersionIntput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         DvdVersionOutput output = setDvdVersionInf.setDvdVersion(input);
         return new ApiMessage<>(output);
     }
@@ -284,10 +315,13 @@ public class CommandApi {
      * @return
      */
     @ApiSecurity
-    @ApiOperation(value = "设置充电还车配置",notes = "配置还车时是否校验充电状态0：还车时，终端不校验车辆充电；1：还车时，终端需要校验车辆充电，不充电不允许还车。")
+    @ApiOperation(value = "设置充电还车配置", notes = "配置还车时是否校验充电状态0：还车时，终端不校验车辆充电；1：还车时，终端需要校验车辆充电，不充电不允许还车。")
     @PostMapping("setReturn")
     public ApiMessage<ReturnCheckOutput> setReturn(@RequestHeader("appId") String appId, ReturnCheckInput input) {
         input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
         ReturnCheckOutput output = returnCheckInf.setReturn(input);
         return new ApiMessage<>(output);
     }
@@ -303,5 +337,28 @@ public class CommandApi {
     @PostMapping("confirm")
     public ApiMessage confirm(ConfirmInput input) {
         return new ApiMessage<>(httpConfirmInf.confirm(input));
+    }
+
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    //当前正在处理指令的终端
+    public static final String REDIS_KEY_NOW_CMD = "rates:";
+
+    private boolean isRateLimit(String vin) {
+
+        ValueOperations ops = redisTemplate.opsForValue();
+        Object count = ops.get(REDIS_KEY_NOW_CMD + vin);
+        if (null == count) {
+            ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
+            return false;
+        } else {
+            Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
+            if (current > 5) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 }

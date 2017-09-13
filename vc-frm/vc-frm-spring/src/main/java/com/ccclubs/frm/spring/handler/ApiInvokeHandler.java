@@ -27,7 +27,7 @@ import java.util.Date;
  * @author jianghaiyang
  * @create 2017-08-28
  **/
-//@Aspect
+@Aspect
 @Component
 public class ApiInvokeHandler {
 

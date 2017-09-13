@@ -19,7 +19,7 @@
 	<properties>
 		<!-- system -->
 		<project.encoding>UTF-8</project.encoding>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<!-- spring -->
 		<springboot.version>1.4.5.RELEASE</springboot.version>
 		<spring.cloud.version>Camden.SR7</spring.cloud.version>
@@ -155,7 +155,7 @@
 			<id>test</id>
 			<properties>
 				<profiles.active>test</profiles.active>
-				<spring.cloud.config.uri>http://127.0.0.1:11112</spring.cloud.config.uri>
+				<spring.cloud.config.uri>http://10.122.73.208:11112</spring.cloud.config.uri>
 			</properties>
 		</profile>
 		<profile>

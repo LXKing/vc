@@ -1,10 +1,9 @@
 server:
-  port: 11115
+  port: 12004
 
 spring:
   redis:
-    host: r-bp10b96658d427c4.redis.rds.aliyuncs.com
-    password: zgjrB7aUk83plwCpyrEk
+    host: 10.24.24.241
     database: 7
     pool:
       maxIdle: 8
@@ -13,31 +12,35 @@ spring:
       maxWait: -1
   data:
     mongodb:
-      uri: mongodb://p2p_user:f5b4037f7d0791dc973#@dds-bp17a26e642a28741.mongodb.rds.aliyuncs.com:3717,dds-bp17a26e642a28742.mongodb.rds.aliyuncs.com:3717/ccclubs_p2p_data?replicaSet=mgset-2415881&maxPoolSize=50
-
+      host: 10.24.24.241
+      port: 3717
+      username: dba
+      password: office_97
+      database: vc_history
+      authenticationDatabase: vc_history
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.engine,com.ccclubs.frm.redis,com.ccclubs.frm.mqtt,com.ccclubs.frm.ons,com.ccclubs.frm.mongodb,com.ccclubs.mongodb,com.ccclubs.common
+    annotationPackage: com.ccclubs.engine,com.ccclubs.frm.redis,com.ccclubs.frm.mqtt,com.ccclubs.frm.ons,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
   application:
-    name: rule-engine-srv
+    name: rule-engine-srv-test
   registry:
-    address: 10.47.97.150:2181,10.25.4.117:2182,10.24.24.188:2183
+    address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
-    port: 20660
+    port: 20666
   protocol:
     name: dubbo
     threads: 100
     #host: 10.0.10.96
-    port: 20660
+    port: 20666
   provider:
     timeout: 120000
     retries: -1
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+#  monitor:
+#    protocol: registry
 
 #MQ topic
 mq:
@@ -54,7 +57,7 @@ ons:
   consumerId: CID_terminal_ser_test
   accessKey: M6dHCyKyKYUCNbW4
   secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
-  consumeThreadNums: 30
+  consumeThreadNums: 10
   topic: ser_test
   # Tag
   expression: GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C
@@ -90,9 +93,9 @@ mqttOwn:
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
-    url: jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
-    username: tmp_user
-    password: RsyKWvf4U0bHSuzTfZTG
+    url: jdbc:mysql://10.132.27.108:3306/vc_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: alpha_user
+    password: 3CvQMOiJFihcVnOLOw6J
   initialSize: 2
   maxActive: 50
   maxIdle: 2

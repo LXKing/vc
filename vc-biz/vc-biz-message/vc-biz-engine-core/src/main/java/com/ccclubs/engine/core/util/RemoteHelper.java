@@ -1,8 +1,8 @@
 package com.ccclubs.engine.core.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.mongodb.orm.dao.CsRemoteDao;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.dao.CsRemoteDao;
+import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;

@@ -1,7 +1,8 @@
 package com.ccclubs.common.modify;
 
-import com.ccclubs.mongodb.orm.dao.CsRemoteDao;
-import com.ccclubs.mongodb.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.dao.CsRemoteDao;
+import com.ccclubs.mongo.orm.model.CsRemote;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,20 +24,51 @@ public class UpdateRemoteService {
 
     public void update(CsRemote remote) {
         Query query = new Query(Criteria.where("csrId").is(remote.getCsrId()));
-        Update update = new Update().set("csrAccess", remote.getCsrAccess())
-                .set("csrHost", remote.getCsrHost())
-                .set("csrNumber", remote.getCsrNumber())
-                .set("csrCar", remote.getCsrCar())
-                .set("csrWay", remote.getCsrWay())
-                .set("csrType", remote.getCsrType())
-                .set("csrCode", remote.getCsrCode())
-                .set("csrResultCode", remote.getCsrResultCode())
-                .set("csrResult", remote.getCsrResult())
-                .set("csrEditor", remote.getCsrEditor())
-                .set("csrRemark", remote.getCsrRemark())
-                .set("csrUpdateTime", new Date().getTime())
-                .set("csrState", remote.getCsrState())
-                .set("csrStatus", remote.getCsrStatus());
+        Update update = new Update();
+        if (null != remote.getCsrAccess()) {
+            update.set("csrAccess", remote.getCsrAccess());
+        }
+        if (null != remote.getCsrHost()) {
+            update.set("csrHost", remote.getCsrHost());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrNumber())) {
+            update.set("csrNumber", remote.getCsrNumber());
+        }
+        if (null != remote.getCsrCar()) {
+            update.set("csrCar", remote.getCsrCar());
+        }
+        if (null != remote.getCsrWay()) {
+            update.set("csrWay", remote.getCsrWay());
+        }
+        if (null != remote.getCsrType()) {
+            update.set("csrType", remote.getCsrType());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrCode())) {
+            update.set("csrCode", remote.getCsrCode());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrResultCode())) {
+            update.set("csrResultCode", remote.getCsrResultCode());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrResult())) {
+            update.set("csrResult", remote.getCsrResult());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrEditor())) {
+            update.set("csrEditor", remote.getCsrEditor());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrRemark())) {
+            update.set("csrRemark", remote.getCsrRemark());
+        }
+        if (null != remote.getCsrState()) {
+            update.set("csrState", remote.getCsrState());
+        }
+        if (null != remote.getCsrStatus()) {
+            update.set("csrStatus", remote.getCsrStatus());
+        }
+        if (StringUtils.isNotEmpty(remote.getCsrResultCode())) {
+            update.set("csrResultCode", remote.getCsrResultCode());
+        }
+
+        update.set("csrUpdateTime", new Date().getTime());
 
         dao.update(query, update);
     }

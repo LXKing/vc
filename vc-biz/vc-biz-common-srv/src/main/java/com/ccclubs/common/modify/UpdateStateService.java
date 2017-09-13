@@ -2,14 +2,13 @@ package com.ccclubs.common.modify;
 
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongodb.orm.dao.CsHistoryStateDao;
-import com.ccclubs.mongodb.orm.model.CsHistoryState;
+import com.ccclubs.mongo.orm.dao.CsHistoryStateDao;
+import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.pub.orm.mapper.CsStateMapper;
 import com.ccclubs.pub.orm.model.CsState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * 车机状态数据更新服务

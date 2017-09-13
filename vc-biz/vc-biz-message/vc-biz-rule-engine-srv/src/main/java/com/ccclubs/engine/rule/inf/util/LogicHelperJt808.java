@@ -8,8 +8,8 @@ import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
-import com.ccclubs.mongodb.orm.model.CsHistoryCan;
-import com.ccclubs.mongodb.orm.model.CsHistoryState;
+import com.ccclubs.mongo.orm.model.CsHistoryCan;
+import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.protocol.dto.jt808.*;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -63,7 +62,7 @@ public class LogicHelperJt808 {
     public void saveStatusData(final T808Message message, final JT_0200 jvi) {
         try {
             HashOperations ops = redisTemplate.opsForHash();
-            MachineMapping mapping = (MachineMapping) ops.get(RuleEngineConstant.REDIS_KEY_VIN, message.getSimNo());
+            MachineMapping mapping = (MachineMapping) ops.get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
             if (mapping == null || mapping.getMachine() == null || StringUtils.empty(mapping.getNumber())) {
                 return;
             }
@@ -341,8 +340,8 @@ public class LogicHelperJt808 {
     public void saveCanData(final T808Message message, final JT_0900_can canData,
                             final String type) {
         try {
-            ValueOperations<String, Object> ops = redisTemplate.opsForValue();
-            MachineMapping mapping = (MachineMapping) ops.get(message.getSimNo());
+            HashOperations ops = redisTemplate.opsForHash();
+            MachineMapping mapping = (MachineMapping) ops.get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
             if (mapping == null || mapping.getMachine() == null || StringUtils.empty(mapping.getNumber())) {
                 redisHelper.setNotExist(message.getSimNo(), true);
                 return;

@@ -67,8 +67,8 @@ vc-web-quota-srv         |           port:11115
 vc-web-gateway-808-srv     |         port:12001
 vc-web-gateway-mqtt-srv     |        port:12002
 vc-web-gateway-gb-srv       |        port:12003
-vc-web-cmd-engine-srv |   port:12004
-vc-web-rule-engine-srv |  port:12005
+vc-web-rule-engine-srv |   port:12004
+vc-web-cmd-engine-srv |  port:12005
 
 
 ### mybatis generate自动生成插件(具体参考demo)
