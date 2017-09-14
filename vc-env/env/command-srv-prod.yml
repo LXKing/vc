@@ -119,9 +119,9 @@ command:
   cmdMap[14]: 7
   #新系统支持的终端版本号
   #富士康
-  supportVersionMap[0]: 1327
+  supportVersionMap[0]: 4898
   #中导
-  supportVersionMap[1]: 1027
+  supportVersionMap[1]: 8215
   #慧翰
   supportVersionMap[2]: 0
   #通领
