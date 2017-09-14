@@ -1,25 +1,28 @@
 server:
-  port: 8901
+  port: 12003
 
 dubbo:
   scan:
     annotationPackage: com.ccclubs.gateway
   application:
-    name: srv
+    name: gateway-gb-srv
   registry:
-    address: zookeeper://127.0.0.1:2181
+    address: 10.122.72.180:2181,10.122.72.180:2182,10.122.72.180:2183
     protocol: zookeeper
-    port: 21001
+    port: 20661
   protocol:
     name: dubbo
     threads: 100
     #host: 10.0.10.96
-    port: 20880
+    port: 20661
   provider:
     timeout: 120000
     retries: -1
-  monitor:
-    protocol: registry
+  consumer:
+    timeout: 120000
+    check: false
+#  monitor:
+#    protocol: registry
 #国标网关转发到MQ的topic
 mq:
   topic: ser
@@ -50,4 +53,3 @@ mqttAliyun:
   subTopic: protocol/gb/#
   #是否记录上行记录
   logUpDown: true
-

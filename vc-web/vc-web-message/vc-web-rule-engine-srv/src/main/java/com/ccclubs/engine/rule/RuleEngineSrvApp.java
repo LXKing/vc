@@ -1,5 +1,6 @@
 package com.ccclubs.engine.rule;
 
+import com.ccclubs.engine.rule.inf.config.RuleEngineConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.MqttOwnProperties;
 import com.ccclubs.frm.mybatis.MybatisConfig;
@@ -26,7 +27,7 @@ import java.io.IOException;
 @SpringBootApplication
 @Import({MybatisConfig.class})
 @ImportAutoConfiguration({RedisAutoConfiguration.class,OnsProperties.class,
-        MqttAliyunProperties.class, MqttOwnProperties.class})
+        MqttAliyunProperties.class, MqttOwnProperties.class, RuleEngineConfig.class})
 public class RuleEngineSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(RuleEngineSrvApp.class);
 

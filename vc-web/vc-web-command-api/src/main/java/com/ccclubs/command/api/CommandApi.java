@@ -343,7 +343,7 @@ public class CommandApi {
     RedisTemplate redisTemplate;
 
     //当前正在处理指令的终端
-    public static final String REDIS_KEY_NOW_CMD = "cmd:";
+    public static final String REDIS_KEY_NOW_CMD = "rates:";
 
     private boolean isRateLimit(String vin) {
 
