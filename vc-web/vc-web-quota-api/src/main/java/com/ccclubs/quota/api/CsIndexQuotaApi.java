@@ -109,7 +109,7 @@ public class CsIndexQuotaApi {
             }
             //
             String token= request.getSession().getId()+System.currentTimeMillis();
-            ByteArrayOutputStream buff=  CsIndexReportUtil.outToExcel(dateMap);
+            ByteArrayOutputStream buff=  CsIndexReportUtil.outToExcel(dateMap,vinList);
             CsIndexReportUtil.excelBinaryMap.put(token,buff);
             Map<String,Object> map=new HashMap<>();
             map.put("token",token);
