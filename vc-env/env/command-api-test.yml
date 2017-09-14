@@ -11,7 +11,7 @@ spring:
     database: 7
 dubbo:
   scan: 
-    annotationPackage: com.ccclubs.command.api,com.ccclubs.frm.spring
+    annotationPackage: com.ccclubs
   application:
     name: command-api-test
   registry:

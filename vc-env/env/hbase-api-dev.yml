@@ -9,7 +9,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.hbase.api,com.ccclubs.hbase.inf
+    annotationPackage: com.ccclubs
   application:
     name: api
   registry:

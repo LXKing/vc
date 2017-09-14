@@ -19,7 +19,7 @@ spring:
       authenticationDatabase: vc_history
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
+    annotationPackage: com.ccclubs
   application:
     name: gateway-808-srv-test
   registry:

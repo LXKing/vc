@@ -16,7 +16,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.engine,com.ccclubs.frm.redis,com.ccclubs.frm.mqtt,com.ccclubs.frm.ons,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
+    annotationPackage: com.ccclubs
   application:
     name: cmd-engine-srv-test
   registry:
