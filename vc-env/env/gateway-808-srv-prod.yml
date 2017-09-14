@@ -18,7 +18,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongodb,com.ccclubs.common
+    annotationPackage: com.ccclubs
   application:
     name: gateway-808-srv
   registry:

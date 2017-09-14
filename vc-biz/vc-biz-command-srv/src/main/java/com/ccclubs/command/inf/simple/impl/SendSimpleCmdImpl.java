@@ -119,10 +119,10 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 oldAdapter(csMachine, input, structId);
                 break;
             case 13:
-                notAdapter(csMachine, input, structId);
+                oldAdapter(csMachine, input, structId);
                 break;
             case 14:
-                notAdapter(csMachine, input, structId);
+                oldAdapter(csMachine, input, structId);
                 break;
         }
 
@@ -238,7 +238,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     }
 
     /**
-     * 指令2,3,4,5,6,9,10,11,12 适配老机型
+     * 指令2,3,4,5,6,9,10,11,12,13,14 适配老机型
      *
      * @param csMachine
      * @param input

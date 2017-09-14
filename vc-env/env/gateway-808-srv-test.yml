@@ -19,7 +19,7 @@ spring:
       authenticationDatabase: vc_history
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
+    annotationPackage: com.ccclubs
   application:
     name: gateway-808-srv-test
   registry:
@@ -41,7 +41,7 @@ dubbo:
 #    protocol: registry
 #jt808网关转发到MQ的topic
 mq:
-  topic: ser
+  topic: ser_test
 #jt808网关监听的端口
 jt808Server:
   port: 26700

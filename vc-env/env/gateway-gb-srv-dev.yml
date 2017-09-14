@@ -3,9 +3,9 @@ server:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway
+    annotationPackage: com.ccclubs
   application:
-    name: srv
+    name: gateway-gb-srv
   registry:
     address: zookeeper://127.0.0.1:2181
     protocol: zookeeper
@@ -18,11 +18,14 @@ dubbo:
   provider:
     timeout: 120000
     retries: -1
+  consumer:
+    timeout: 120000
+    check: false
 #  monitor:
 #    protocol: registry
 #国标网关转发到MQ的topic
 mq:
-  topic: ser
+  topic: ser_test
 #国标网关监听的端口
 gbServer:
   port: 27700

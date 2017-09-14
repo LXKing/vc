@@ -3,7 +3,7 @@ server:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway
+    annotationPackage: com.ccclubs
   application:
     name: gateway-mqtt-srv
   registry:
