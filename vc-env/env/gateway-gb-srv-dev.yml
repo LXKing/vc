@@ -22,7 +22,7 @@ dubbo:
 #    protocol: registry
 #国标网关转发到MQ的topic
 mq:
-  topic: ser
+  topic: ser_test
 #国标网关监听的端口
 gbServer:
   port: 27700
