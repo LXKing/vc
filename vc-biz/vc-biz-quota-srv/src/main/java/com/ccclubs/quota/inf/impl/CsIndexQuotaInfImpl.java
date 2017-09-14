@@ -574,4 +574,56 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		PageInfo<CsIndexReport> pinfo = new PageInfo<CsIndexReport>(list);
 		return pinfo;
 	}
+
+	/**
+	 * 获取车辆指标存在vin/不存在vin的数据
+	 * @param readExcelList
+	 * @return
+	 */
+	@Override
+	public Map<String,List<CsIndexReport>>  ztReportExport(List<CsIndexReport> readExcelList) {
+		//1.先获取到前端传进来的条件
+		readExcelList.remove(0);
+		//从excel获取到所有条件的vin码
+		List<String>vinList=new ArrayList<>();
+		for (CsIndexReport csIndexReport:readExcelList){
+			vinList.add(csIndexReport.getCsVin());
+		}
+		//
+		CsIndexReportExample example = new CsIndexReportExample();
+		CsIndexReportExample.Criteria criteria=example.createCriteria();
+		criteria.andCsVinIn(vinList);
+		List<CsIndexReport> exlist=new ArrayList<>();
+		if(vinList!=null&&vinList.size()>0){
+			//根据条件查询的数据
+			exlist = csIndexReportMapper.selectByExample(example);
+		}
+		//统计查询出的数据在条件中不存在vin码的数据
+		List<CsIndexReport> notVinList=new ArrayList<>();
+			for (CsIndexReport  conditionCsIndexReport:readExcelList){
+			boolean flag=false;
+
+			String vin=conditionCsIndexReport.getCsVin();
+			for(CsIndexReport csIndexReport:exlist){
+				if(vin.equals(csIndexReport.getCsVin().trim())){
+					flag=true;
+					break;
+				}
+			}
+			if(!flag){
+				CsIndexReport csIndexReport=new CsIndexReport();
+				csIndexReport.setCsVin(vin);
+				notVinList.add(csIndexReport);
+			}
+		}
+		//
+		Map<String,List<CsIndexReport>> dateMap=new HashMap<>();
+		//
+		dateMap.put("存在的vin",exlist);
+		if(notVinList!=null||notVinList.size()>0){
+			dateMap.put("不存在的vin",notVinList);
+		}
+		//
+		return dateMap;
+	}
 }
