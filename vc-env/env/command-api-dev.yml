@@ -11,7 +11,7 @@ spring:
 
 dubbo:
   scan: 
-    annotationPackage: com.ccclubs.command.api,com.ccclubs.frm.spring
+    annotationPackage: com.ccclubs
   application:
     name: command-api
   registry:

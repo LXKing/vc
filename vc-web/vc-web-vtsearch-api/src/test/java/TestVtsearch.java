@@ -100,7 +100,7 @@ public class TestVtsearch {
     public void isLatestVersion() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         //114.55.109.165:7001
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/search/isLatestVersion");
+        HttpPost httpPost = new HttpPost("http://101.37.178.63/search/isLatestVersion");
         httpPost.setHeader("Content-Type", "application/json");
         VersionQryInput input = new VersionQryInput();
         input.setVin("LJ8E3C1M9GB003295");
@@ -281,7 +281,7 @@ public class TestVtsearch {
 //        System.out.println(DigestUtils.md5Hex(Base64.encodeBase64String(UUID.randomUUID().toString().replaceAll("-", "").getBytes("UTF-8"))));
 //        System.out.println(DigestUtils.md5Hex(Base64.encodeBase64String(UUID.randomUUID().toString().replaceAll("-", "").getBytes("UTF-8"))));
 
-        int id = 1000002;
+        int id = 1000003;
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         System.out.println(DigestUtils.md5Hex(String.valueOf(id) + Base64.encodeBase64String(uuid.getBytes("UTF-8")) + String.valueOf(id)));
         System.err.println("==="+"1000002".equals(Integer.toString(id)));
