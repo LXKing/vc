@@ -105,17 +105,23 @@ command:
   cmdMap[8]: 75
   #初始化
   cmdMap[9]: 4
+  cmdMap[59]: 4
   #发动机启动
   cmdMap[10]: 25
+  cmdMap[510]: 25
   #发动机停止
   cmdMap[11]: 26
+  cmdMap[511]: 26
   #终端重启
   cmdMap[12]: 9
+  cmdMap[512]: 9
   #取车（远程取车）
   cmdMap[13]: 6
+  cmdMap[513]: 6
   #还车（远程还车）
   cmdMap[14]: 7
-  #新系统支持的终端版本号
+  cmdMap[514]: 7
+  #新系统支持的终端版本号 10进制
   #富士康
   supportVersionMap[0]: 4898
   #中导
