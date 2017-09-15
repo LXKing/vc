@@ -9,7 +9,7 @@ spring:
 
 dubbo:
   scan: 
-    annotationPackage: com.ccclubs.vtsearch.api,com.ccclubs.frm.spring
+    annotationPackage: com.ccclubs
   application:
     name: vtsearch-api
   registry:

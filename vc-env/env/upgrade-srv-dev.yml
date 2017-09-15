@@ -7,7 +7,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.upgrade,com.ccclubs.frm.redis
+    annotationPackage: com.ccclubs
   application:
     name: upgrade-srv
   registry:

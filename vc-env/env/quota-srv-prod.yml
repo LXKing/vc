@@ -17,7 +17,7 @@ spring:
       
 dubbo:
   scan: 
-    annotationPackage: com.ccclubs.quota.cache,com.ccclubs.quota.inf,com.ccclubs.quota.mono
+    annotationPackage: com.ccclubs
   application:
     name: srv
   registry:
@@ -31,7 +31,9 @@ dubbo:
   provider:
     timeout: 120000
     retries: -1
-
+  consumer:
+    timeout: 120000
+    check: false
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:

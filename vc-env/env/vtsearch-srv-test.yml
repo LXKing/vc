@@ -15,7 +15,7 @@ spring:
       authenticationDatabase: vc_history
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.vehicle,com.ccclubs.terminal,com.ccclubs.frm.redis,com.ccclubs.common,com.ccclubs.frm.mongodb,com.ccclubs.mongo
+    annotationPackage: com.ccclubs
   application:
     name: vtsearch-srv-test
   registry:

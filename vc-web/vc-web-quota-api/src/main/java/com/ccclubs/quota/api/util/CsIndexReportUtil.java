@@ -11,10 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/9/11 0011.
@@ -47,14 +44,13 @@ public class CsIndexReportUtil {
                         HSSFCell cell = hssfRow.getCell(0);
                         if (cell != null) {
                             String value = cell.getStringCellValue();
-                            csIndexReport.setCsVin(value);
+                            csIndexReport.setCsVin(value.toUpperCase());
                             vinList.add(csIndexReport);
                         }
                     }
                 }
                 break;
             }
-
             return vinList;
         }catch (Exception e) {
             e.printStackTrace();
@@ -62,14 +58,17 @@ public class CsIndexReportUtil {
         return null;
     }
 
-
-
-    public static ByteArrayOutputStream outToExcel(Map<String,List<CsIndexReport>> dateMap){
+    public static ByteArrayOutputStream outToExcel(Map<String,List<CsIndexReport>> dateMap,List<CsIndexReport> vinList){
 
         String[] headers ={"vin码","车机号","月均行驶里程(km)","平均单日运行时间(h)","百公里耗电量(kw/100km)","纯电续航里程(km)"
                 ,"最大充电功率(kw/h)","车辆一次充满电所用最少时间(h)","累计行驶里程(km)","累计充电量(kw)"};
 
-       //
+
+        String[] headersNotExit={"不存在的vin码","重复的vin码"};
+
+
+        writeRepeatVin(vinList,dateMap);
+        //
         ExportExcelTemp eeu = new ExportExcelTemp();
         HSSFWorkbook workbook=eeu.getWorkbook();
         int sheetNumber=eeu.getSheetNumber();
@@ -78,6 +77,10 @@ public class CsIndexReportUtil {
         try{
             //
             for(String weekkey:dateMap.keySet()){
+                if(!"存在的vin".equals(weekkey)){
+                    headers=headersNotExit;
+                }
+
                 List<CsIndexReport> data=dateMap.get(weekkey);
                 int exist= workbook.getSheetIndex(weekkey);
                 if(exist==0){//存在则删除
@@ -99,13 +102,32 @@ public class CsIndexReportUtil {
         }
         return   outPutByte;
     }
+    public static void writeRepeatVin( List<CsIndexReport> vinList,Map<String,List<CsIndexReport>> dateMap){
 
+        List<CsIndexReport> notExit=  dateMap.get("不存在的vin");
+        Set<CsIndexReport> uniqueSet = new HashSet(vinList);
+        int i=0;
+        for (CsIndexReport temp : uniqueSet) {
+            if(Collections.frequency(vinList, temp)>1){
+                if (notExit.get(i)==null){
+                    CsIndexReport csIndexReport=new CsIndexReport();
+                    csIndexReport.setCsNumber(temp.getCsVin());
+                    notExit.add(csIndexReport);
+                }else {
+                    notExit.get(i).setCsNumber(temp.getCsVin());
+                    i++;
+                }
+            }
+        }
+    }
 
     @Scheduled(cron="0 15 3 * * ?")
     public void clearExcelBinaryMap(){
             //清除excel内存中的数据
             excelBinaryMap.clear();
     }
+
+
 
 
 }
