@@ -266,52 +266,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessEqualTo(Short value) {
+        public Criteria andCssAccessEqualTo(Integer value) {
             addCriterion("css_access =", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessNotEqualTo(Short value) {
+        public Criteria andCssAccessNotEqualTo(Integer value) {
             addCriterion("css_access <>", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessGreaterThan(Short value) {
+        public Criteria andCssAccessGreaterThan(Integer value) {
             addCriterion("css_access >", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssAccessGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_access >=", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessLessThan(Short value) {
+        public Criteria andCssAccessLessThan(Integer value) {
             addCriterion("css_access <", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessLessThanOrEqualTo(Short value) {
+        public Criteria andCssAccessLessThanOrEqualTo(Integer value) {
             addCriterion("css_access <=", value, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessIn(List<Short> values) {
+        public Criteria andCssAccessIn(List<Integer> values) {
             addCriterion("css_access in", values, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessNotIn(List<Short> values) {
+        public Criteria andCssAccessNotIn(List<Integer> values) {
             addCriterion("css_access not in", values, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessBetween(Short value1, Short value2) {
+        public Criteria andCssAccessBetween(Integer value1, Integer value2) {
             addCriterion("css_access between", value1, value2, "cssAccess");
             return (Criteria) this;
         }
 
-        public Criteria andCssAccessNotBetween(Short value1, Short value2) {
+        public Criteria andCssAccessNotBetween(Integer value1, Integer value2) {
             addCriterion("css_access not between", value1, value2, "cssAccess");
             return (Criteria) this;
         }
@@ -326,52 +326,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssHostEqualTo(Short value) {
+        public Criteria andCssHostEqualTo(Integer value) {
             addCriterion("css_host =", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostNotEqualTo(Short value) {
+        public Criteria andCssHostNotEqualTo(Integer value) {
             addCriterion("css_host <>", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostGreaterThan(Short value) {
+        public Criteria andCssHostGreaterThan(Integer value) {
             addCriterion("css_host >", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssHostGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_host >=", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostLessThan(Short value) {
+        public Criteria andCssHostLessThan(Integer value) {
             addCriterion("css_host <", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostLessThanOrEqualTo(Short value) {
+        public Criteria andCssHostLessThanOrEqualTo(Integer value) {
             addCriterion("css_host <=", value, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostIn(List<Short> values) {
+        public Criteria andCssHostIn(List<Integer> values) {
             addCriterion("css_host in", values, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostNotIn(List<Short> values) {
+        public Criteria andCssHostNotIn(List<Integer> values) {
             addCriterion("css_host not in", values, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostBetween(Short value1, Short value2) {
+        public Criteria andCssHostBetween(Integer value1, Integer value2) {
             addCriterion("css_host between", value1, value2, "cssHost");
             return (Criteria) this;
         }
 
-        public Criteria andCssHostNotBetween(Short value1, Short value2) {
+        public Criteria andCssHostNotBetween(Integer value1, Integer value2) {
             addCriterion("css_host not between", value1, value2, "cssHost");
             return (Criteria) this;
         }
@@ -1086,52 +1086,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedEqualTo(Short value) {
+        public Criteria andCssSpeedEqualTo(Integer value) {
             addCriterion("css_speed =", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotEqualTo(Short value) {
+        public Criteria andCssSpeedNotEqualTo(Integer value) {
             addCriterion("css_speed <>", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedGreaterThan(Short value) {
+        public Criteria andCssSpeedGreaterThan(Integer value) {
             addCriterion("css_speed >", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssSpeedGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_speed >=", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedLessThan(Short value) {
+        public Criteria andCssSpeedLessThan(Integer value) {
             addCriterion("css_speed <", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedLessThanOrEqualTo(Short value) {
+        public Criteria andCssSpeedLessThanOrEqualTo(Integer value) {
             addCriterion("css_speed <=", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedIn(List<Short> values) {
+        public Criteria andCssSpeedIn(List<Integer> values) {
             addCriterion("css_speed in", values, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotIn(List<Short> values) {
+        public Criteria andCssSpeedNotIn(List<Integer> values) {
             addCriterion("css_speed not in", values, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedBetween(Short value1, Short value2) {
+        public Criteria andCssSpeedBetween(Integer value1, Integer value2) {
             addCriterion("css_speed between", value1, value2, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotBetween(Short value1, Short value2) {
+        public Criteria andCssSpeedNotBetween(Integer value1, Integer value2) {
             addCriterion("css_speed not between", value1, value2, "cssSpeed");
             return (Criteria) this;
         }
@@ -1336,52 +1336,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryEqualTo(Byte value) {
+        public Criteria andCssEvBatteryEqualTo(Integer value) {
             addCriterion("css_ev_battery =", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryNotEqualTo(Byte value) {
+        public Criteria andCssEvBatteryNotEqualTo(Integer value) {
             addCriterion("css_ev_battery <>", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryGreaterThan(Byte value) {
+        public Criteria andCssEvBatteryGreaterThan(Integer value) {
             addCriterion("css_ev_battery >", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssEvBatteryGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_ev_battery >=", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryLessThan(Byte value) {
+        public Criteria andCssEvBatteryLessThan(Integer value) {
             addCriterion("css_ev_battery <", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryLessThanOrEqualTo(Byte value) {
+        public Criteria andCssEvBatteryLessThanOrEqualTo(Integer value) {
             addCriterion("css_ev_battery <=", value, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryIn(List<Byte> values) {
+        public Criteria andCssEvBatteryIn(List<Integer> values) {
             addCriterion("css_ev_battery in", values, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryNotIn(List<Byte> values) {
+        public Criteria andCssEvBatteryNotIn(List<Integer> values) {
             addCriterion("css_ev_battery not in", values, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryBetween(Byte value1, Byte value2) {
+        public Criteria andCssEvBatteryBetween(Integer value1, Integer value2) {
             addCriterion("css_ev_battery between", value1, value2, "cssEvBattery");
             return (Criteria) this;
         }
 
-        public Criteria andCssEvBatteryNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssEvBatteryNotBetween(Integer value1, Integer value2) {
             addCriterion("css_ev_battery not between", value1, value2, "cssEvBattery");
             return (Criteria) this;
         }
@@ -1396,52 +1396,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingEqualTo(Byte value) {
+        public Criteria andCssChargingEqualTo(Integer value) {
             addCriterion("css_charging =", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingNotEqualTo(Byte value) {
+        public Criteria andCssChargingNotEqualTo(Integer value) {
             addCriterion("css_charging <>", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingGreaterThan(Byte value) {
+        public Criteria andCssChargingGreaterThan(Integer value) {
             addCriterion("css_charging >", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssChargingGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_charging >=", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingLessThan(Byte value) {
+        public Criteria andCssChargingLessThan(Integer value) {
             addCriterion("css_charging <", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingLessThanOrEqualTo(Byte value) {
+        public Criteria andCssChargingLessThanOrEqualTo(Integer value) {
             addCriterion("css_charging <=", value, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingIn(List<Byte> values) {
+        public Criteria andCssChargingIn(List<Integer> values) {
             addCriterion("css_charging in", values, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingNotIn(List<Byte> values) {
+        public Criteria andCssChargingNotIn(List<Integer> values) {
             addCriterion("css_charging not in", values, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingBetween(Byte value1, Byte value2) {
+        public Criteria andCssChargingBetween(Integer value1, Integer value2) {
             addCriterion("css_charging between", value1, value2, "cssCharging");
             return (Criteria) this;
         }
 
-        public Criteria andCssChargingNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssChargingNotBetween(Integer value1, Integer value2) {
             addCriterion("css_charging not between", value1, value2, "cssCharging");
             return (Criteria) this;
         }
@@ -1666,52 +1666,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureEqualTo(Short value) {
+        public Criteria andCssTemperatureEqualTo(Integer value) {
             addCriterion("css_temperature =", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotEqualTo(Short value) {
+        public Criteria andCssTemperatureNotEqualTo(Integer value) {
             addCriterion("css_temperature <>", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureGreaterThan(Short value) {
+        public Criteria andCssTemperatureGreaterThan(Integer value) {
             addCriterion("css_temperature >", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssTemperatureGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_temperature >=", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureLessThan(Short value) {
+        public Criteria andCssTemperatureLessThan(Integer value) {
             addCriterion("css_temperature <", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureLessThanOrEqualTo(Short value) {
+        public Criteria andCssTemperatureLessThanOrEqualTo(Integer value) {
             addCriterion("css_temperature <=", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureIn(List<Short> values) {
+        public Criteria andCssTemperatureIn(List<Integer> values) {
             addCriterion("css_temperature in", values, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotIn(List<Short> values) {
+        public Criteria andCssTemperatureNotIn(List<Integer> values) {
             addCriterion("css_temperature not in", values, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureBetween(Short value1, Short value2) {
+        public Criteria andCssTemperatureBetween(Integer value1, Integer value2) {
             addCriterion("css_temperature between", value1, value2, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotBetween(Short value1, Short value2) {
+        public Criteria andCssTemperatureNotBetween(Integer value1, Integer value2) {
             addCriterion("css_temperature not between", value1, value2, "cssTemperature");
             return (Criteria) this;
         }
@@ -1726,52 +1726,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqEqualTo(Short value) {
+        public Criteria andCssCsqEqualTo(Integer value) {
             addCriterion("css_csq =", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqNotEqualTo(Short value) {
+        public Criteria andCssCsqNotEqualTo(Integer value) {
             addCriterion("css_csq <>", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqGreaterThan(Short value) {
+        public Criteria andCssCsqGreaterThan(Integer value) {
             addCriterion("css_csq >", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssCsqGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_csq >=", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqLessThan(Short value) {
+        public Criteria andCssCsqLessThan(Integer value) {
             addCriterion("css_csq <", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqLessThanOrEqualTo(Short value) {
+        public Criteria andCssCsqLessThanOrEqualTo(Integer value) {
             addCriterion("css_csq <=", value, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqIn(List<Short> values) {
+        public Criteria andCssCsqIn(List<Integer> values) {
             addCriterion("css_csq in", values, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqNotIn(List<Short> values) {
+        public Criteria andCssCsqNotIn(List<Integer> values) {
             addCriterion("css_csq not in", values, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqBetween(Short value1, Short value2) {
+        public Criteria andCssCsqBetween(Integer value1, Integer value2) {
             addCriterion("css_csq between", value1, value2, "cssCsq");
             return (Criteria) this;
         }
 
-        public Criteria andCssCsqNotBetween(Short value1, Short value2) {
+        public Criteria andCssCsqNotBetween(Integer value1, Integer value2) {
             addCriterion("css_csq not between", value1, value2, "cssCsq");
             return (Criteria) this;
         }
@@ -1976,52 +1976,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidEqualTo(Byte value) {
+        public Criteria andCssGpsValidEqualTo(Integer value) {
             addCriterion("css_gps_valid =", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidNotEqualTo(Byte value) {
+        public Criteria andCssGpsValidNotEqualTo(Integer value) {
             addCriterion("css_gps_valid <>", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidGreaterThan(Byte value) {
+        public Criteria andCssGpsValidGreaterThan(Integer value) {
             addCriterion("css_gps_valid >", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssGpsValidGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_gps_valid >=", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidLessThan(Byte value) {
+        public Criteria andCssGpsValidLessThan(Integer value) {
             addCriterion("css_gps_valid <", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidLessThanOrEqualTo(Byte value) {
+        public Criteria andCssGpsValidLessThanOrEqualTo(Integer value) {
             addCriterion("css_gps_valid <=", value, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidIn(List<Byte> values) {
+        public Criteria andCssGpsValidIn(List<Integer> values) {
             addCriterion("css_gps_valid in", values, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidNotIn(List<Byte> values) {
+        public Criteria andCssGpsValidNotIn(List<Integer> values) {
             addCriterion("css_gps_valid not in", values, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidBetween(Byte value1, Byte value2) {
+        public Criteria andCssGpsValidBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_valid between", value1, value2, "cssGpsValid");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsValidNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssGpsValidNotBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_valid not between", value1, value2, "cssGpsValid");
             return (Criteria) this;
         }
@@ -2036,52 +2036,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnEqualTo(Short value) {
+        public Criteria andCssGpsCnEqualTo(Integer value) {
             addCriterion("css_gps_cn =", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnNotEqualTo(Short value) {
+        public Criteria andCssGpsCnNotEqualTo(Integer value) {
             addCriterion("css_gps_cn <>", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnGreaterThan(Short value) {
+        public Criteria andCssGpsCnGreaterThan(Integer value) {
             addCriterion("css_gps_cn >", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssGpsCnGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_gps_cn >=", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnLessThan(Short value) {
+        public Criteria andCssGpsCnLessThan(Integer value) {
             addCriterion("css_gps_cn <", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnLessThanOrEqualTo(Short value) {
+        public Criteria andCssGpsCnLessThanOrEqualTo(Integer value) {
             addCriterion("css_gps_cn <=", value, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnIn(List<Short> values) {
+        public Criteria andCssGpsCnIn(List<Integer> values) {
             addCriterion("css_gps_cn in", values, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnNotIn(List<Short> values) {
+        public Criteria andCssGpsCnNotIn(List<Integer> values) {
             addCriterion("css_gps_cn not in", values, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnBetween(Short value1, Short value2) {
+        public Criteria andCssGpsCnBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_cn between", value1, value2, "cssGpsCn");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCnNotBetween(Short value1, Short value2) {
+        public Criteria andCssGpsCnNotBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_cn not between", value1, value2, "cssGpsCn");
             return (Criteria) this;
         }
@@ -2096,52 +2096,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountEqualTo(Short value) {
+        public Criteria andCssGpsCountEqualTo(Integer value) {
             addCriterion("css_gps_count =", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountNotEqualTo(Short value) {
+        public Criteria andCssGpsCountNotEqualTo(Integer value) {
             addCriterion("css_gps_count <>", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountGreaterThan(Short value) {
+        public Criteria andCssGpsCountGreaterThan(Integer value) {
             addCriterion("css_gps_count >", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssGpsCountGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_gps_count >=", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountLessThan(Short value) {
+        public Criteria andCssGpsCountLessThan(Integer value) {
             addCriterion("css_gps_count <", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountLessThanOrEqualTo(Short value) {
+        public Criteria andCssGpsCountLessThanOrEqualTo(Integer value) {
             addCriterion("css_gps_count <=", value, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountIn(List<Short> values) {
+        public Criteria andCssGpsCountIn(List<Integer> values) {
             addCriterion("css_gps_count in", values, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountNotIn(List<Short> values) {
+        public Criteria andCssGpsCountNotIn(List<Integer> values) {
             addCriterion("css_gps_count not in", values, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountBetween(Short value1, Short value2) {
+        public Criteria andCssGpsCountBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_count between", value1, value2, "cssGpsCount");
             return (Criteria) this;
         }
 
-        public Criteria andCssGpsCountNotBetween(Short value1, Short value2) {
+        public Criteria andCssGpsCountNotBetween(Integer value1, Integer value2) {
             addCriterion("css_gps_count not between", value1, value2, "cssGpsCount");
             return (Criteria) this;
         }
@@ -2226,52 +2226,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularEqualTo(Byte value) {
+        public Criteria andCssCircularEqualTo(Integer value) {
             addCriterion("css_circular =", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularNotEqualTo(Byte value) {
+        public Criteria andCssCircularNotEqualTo(Integer value) {
             addCriterion("css_circular <>", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularGreaterThan(Byte value) {
+        public Criteria andCssCircularGreaterThan(Integer value) {
             addCriterion("css_circular >", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssCircularGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_circular >=", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularLessThan(Byte value) {
+        public Criteria andCssCircularLessThan(Integer value) {
             addCriterion("css_circular <", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularLessThanOrEqualTo(Byte value) {
+        public Criteria andCssCircularLessThanOrEqualTo(Integer value) {
             addCriterion("css_circular <=", value, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularIn(List<Byte> values) {
+        public Criteria andCssCircularIn(List<Integer> values) {
             addCriterion("css_circular in", values, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularNotIn(List<Byte> values) {
+        public Criteria andCssCircularNotIn(List<Integer> values) {
             addCriterion("css_circular not in", values, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularBetween(Byte value1, Byte value2) {
+        public Criteria andCssCircularBetween(Integer value1, Integer value2) {
             addCriterion("css_circular between", value1, value2, "cssCircular");
             return (Criteria) this;
         }
 
-        public Criteria andCssCircularNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssCircularNotBetween(Integer value1, Integer value2) {
             addCriterion("css_circular not between", value1, value2, "cssCircular");
             return (Criteria) this;
         }
@@ -2286,52 +2286,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcEqualTo(Byte value) {
+        public Criteria andCssPtcEqualTo(Integer value) {
             addCriterion("css_ptc =", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcNotEqualTo(Byte value) {
+        public Criteria andCssPtcNotEqualTo(Integer value) {
             addCriterion("css_ptc <>", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcGreaterThan(Byte value) {
+        public Criteria andCssPtcGreaterThan(Integer value) {
             addCriterion("css_ptc >", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssPtcGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_ptc >=", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcLessThan(Byte value) {
+        public Criteria andCssPtcLessThan(Integer value) {
             addCriterion("css_ptc <", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcLessThanOrEqualTo(Byte value) {
+        public Criteria andCssPtcLessThanOrEqualTo(Integer value) {
             addCriterion("css_ptc <=", value, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcIn(List<Byte> values) {
+        public Criteria andCssPtcIn(List<Integer> values) {
             addCriterion("css_ptc in", values, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcNotIn(List<Byte> values) {
+        public Criteria andCssPtcNotIn(List<Integer> values) {
             addCriterion("css_ptc not in", values, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcBetween(Byte value1, Byte value2) {
+        public Criteria andCssPtcBetween(Integer value1, Integer value2) {
             addCriterion("css_ptc between", value1, value2, "cssPtc");
             return (Criteria) this;
         }
 
-        public Criteria andCssPtcNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssPtcNotBetween(Integer value1, Integer value2) {
             addCriterion("css_ptc not between", value1, value2, "cssPtc");
             return (Criteria) this;
         }
@@ -2346,52 +2346,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresEqualTo(Byte value) {
+        public Criteria andCssCompresEqualTo(Integer value) {
             addCriterion("css_compres =", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresNotEqualTo(Byte value) {
+        public Criteria andCssCompresNotEqualTo(Integer value) {
             addCriterion("css_compres <>", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresGreaterThan(Byte value) {
+        public Criteria andCssCompresGreaterThan(Integer value) {
             addCriterion("css_compres >", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssCompresGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_compres >=", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresLessThan(Byte value) {
+        public Criteria andCssCompresLessThan(Integer value) {
             addCriterion("css_compres <", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresLessThanOrEqualTo(Byte value) {
+        public Criteria andCssCompresLessThanOrEqualTo(Integer value) {
             addCriterion("css_compres <=", value, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresIn(List<Byte> values) {
+        public Criteria andCssCompresIn(List<Integer> values) {
             addCriterion("css_compres in", values, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresNotIn(List<Byte> values) {
+        public Criteria andCssCompresNotIn(List<Integer> values) {
             addCriterion("css_compres not in", values, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresBetween(Byte value1, Byte value2) {
+        public Criteria andCssCompresBetween(Integer value1, Integer value2) {
             addCriterion("css_compres between", value1, value2, "cssCompres");
             return (Criteria) this;
         }
 
-        public Criteria andCssCompresNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssCompresNotBetween(Integer value1, Integer value2) {
             addCriterion("css_compres not between", value1, value2, "cssCompres");
             return (Criteria) this;
         }
@@ -2406,52 +2406,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssFanEqualTo(Byte value) {
+        public Criteria andCssFanEqualTo(Integer value) {
             addCriterion("css_fan =", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanNotEqualTo(Byte value) {
+        public Criteria andCssFanNotEqualTo(Integer value) {
             addCriterion("css_fan <>", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanGreaterThan(Byte value) {
+        public Criteria andCssFanGreaterThan(Integer value) {
             addCriterion("css_fan >", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssFanGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_fan >=", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanLessThan(Byte value) {
+        public Criteria andCssFanLessThan(Integer value) {
             addCriterion("css_fan <", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanLessThanOrEqualTo(Byte value) {
+        public Criteria andCssFanLessThanOrEqualTo(Integer value) {
             addCriterion("css_fan <=", value, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanIn(List<Byte> values) {
+        public Criteria andCssFanIn(List<Integer> values) {
             addCriterion("css_fan in", values, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanNotIn(List<Byte> values) {
+        public Criteria andCssFanNotIn(List<Integer> values) {
             addCriterion("css_fan not in", values, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanBetween(Byte value1, Byte value2) {
+        public Criteria andCssFanBetween(Integer value1, Integer value2) {
             addCriterion("css_fan between", value1, value2, "cssFan");
             return (Criteria) this;
         }
 
-        public Criteria andCssFanNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssFanNotBetween(Integer value1, Integer value2) {
             addCriterion("css_fan not between", value1, value2, "cssFan");
             return (Criteria) this;
         }
@@ -2466,52 +2466,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingEqualTo(Byte value) {
+        public Criteria andCssSavingEqualTo(Integer value) {
             addCriterion("css_saving =", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingNotEqualTo(Byte value) {
+        public Criteria andCssSavingNotEqualTo(Integer value) {
             addCriterion("css_saving <>", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingGreaterThan(Byte value) {
+        public Criteria andCssSavingGreaterThan(Integer value) {
             addCriterion("css_saving >", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssSavingGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_saving >=", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingLessThan(Byte value) {
+        public Criteria andCssSavingLessThan(Integer value) {
             addCriterion("css_saving <", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingLessThanOrEqualTo(Byte value) {
+        public Criteria andCssSavingLessThanOrEqualTo(Integer value) {
             addCriterion("css_saving <=", value, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingIn(List<Byte> values) {
+        public Criteria andCssSavingIn(List<Integer> values) {
             addCriterion("css_saving in", values, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingNotIn(List<Byte> values) {
+        public Criteria andCssSavingNotIn(List<Integer> values) {
             addCriterion("css_saving not in", values, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingBetween(Byte value1, Byte value2) {
+        public Criteria andCssSavingBetween(Integer value1, Integer value2) {
             addCriterion("css_saving between", value1, value2, "cssSaving");
             return (Criteria) this;
         }
 
-        public Criteria andCssSavingNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssSavingNotBetween(Integer value1, Integer value2) {
             addCriterion("css_saving not between", value1, value2, "cssSaving");
             return (Criteria) this;
         }
@@ -2596,52 +2596,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineEqualTo(Byte value) {
+        public Criteria andCssEngineEqualTo(Integer value) {
             addCriterion("css_engine =", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineNotEqualTo(Byte value) {
+        public Criteria andCssEngineNotEqualTo(Integer value) {
             addCriterion("css_engine <>", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineGreaterThan(Byte value) {
+        public Criteria andCssEngineGreaterThan(Integer value) {
             addCriterion("css_engine >", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssEngineGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_engine >=", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineLessThan(Byte value) {
+        public Criteria andCssEngineLessThan(Integer value) {
             addCriterion("css_engine <", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineLessThanOrEqualTo(Byte value) {
+        public Criteria andCssEngineLessThanOrEqualTo(Integer value) {
             addCriterion("css_engine <=", value, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineIn(List<Byte> values) {
+        public Criteria andCssEngineIn(List<Integer> values) {
             addCriterion("css_engine in", values, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineNotIn(List<Byte> values) {
+        public Criteria andCssEngineNotIn(List<Integer> values) {
             addCriterion("css_engine not in", values, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineBetween(Byte value1, Byte value2) {
+        public Criteria andCssEngineBetween(Integer value1, Integer value2) {
             addCriterion("css_engine between", value1, value2, "cssEngine");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssEngineNotBetween(Integer value1, Integer value2) {
             addCriterion("css_engine not between", value1, value2, "cssEngine");
             return (Criteria) this;
         }
@@ -2656,52 +2656,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyEqualTo(Byte value) {
+        public Criteria andCssKeyEqualTo(Integer value) {
             addCriterion("css_key =", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyNotEqualTo(Byte value) {
+        public Criteria andCssKeyNotEqualTo(Integer value) {
             addCriterion("css_key <>", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyGreaterThan(Byte value) {
+        public Criteria andCssKeyGreaterThan(Integer value) {
             addCriterion("css_key >", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssKeyGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_key >=", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyLessThan(Byte value) {
+        public Criteria andCssKeyLessThan(Integer value) {
             addCriterion("css_key <", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyLessThanOrEqualTo(Byte value) {
+        public Criteria andCssKeyLessThanOrEqualTo(Integer value) {
             addCriterion("css_key <=", value, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyIn(List<Byte> values) {
+        public Criteria andCssKeyIn(List<Integer> values) {
             addCriterion("css_key in", values, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyNotIn(List<Byte> values) {
+        public Criteria andCssKeyNotIn(List<Integer> values) {
             addCriterion("css_key not in", values, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyBetween(Byte value1, Byte value2) {
+        public Criteria andCssKeyBetween(Integer value1, Integer value2) {
             addCriterion("css_key between", value1, value2, "cssKey");
             return (Criteria) this;
         }
 
-        public Criteria andCssKeyNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssKeyNotBetween(Integer value1, Integer value2) {
             addCriterion("css_key not between", value1, value2, "cssKey");
             return (Criteria) this;
         }
@@ -2716,52 +2716,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssGearEqualTo(Byte value) {
+        public Criteria andCssGearEqualTo(Integer value) {
             addCriterion("css_gear =", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearNotEqualTo(Byte value) {
+        public Criteria andCssGearNotEqualTo(Integer value) {
             addCriterion("css_gear <>", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearGreaterThan(Byte value) {
+        public Criteria andCssGearGreaterThan(Integer value) {
             addCriterion("css_gear >", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssGearGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_gear >=", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearLessThan(Byte value) {
+        public Criteria andCssGearLessThan(Integer value) {
             addCriterion("css_gear <", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearLessThanOrEqualTo(Byte value) {
+        public Criteria andCssGearLessThanOrEqualTo(Integer value) {
             addCriterion("css_gear <=", value, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearIn(List<Byte> values) {
+        public Criteria andCssGearIn(List<Integer> values) {
             addCriterion("css_gear in", values, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearNotIn(List<Byte> values) {
+        public Criteria andCssGearNotIn(List<Integer> values) {
             addCriterion("css_gear not in", values, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearBetween(Byte value1, Byte value2) {
+        public Criteria andCssGearBetween(Integer value1, Integer value2) {
             addCriterion("css_gear between", value1, value2, "cssGear");
             return (Criteria) this;
         }
 
-        public Criteria andCssGearNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssGearNotBetween(Integer value1, Integer value2) {
             addCriterion("css_gear not between", value1, value2, "cssGear");
             return (Criteria) this;
         }
@@ -2896,52 +2896,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeEqualTo(Byte value) {
+        public Criteria andCssNetTypeEqualTo(Integer value) {
             addCriterion("css_net_type =", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeNotEqualTo(Byte value) {
+        public Criteria andCssNetTypeNotEqualTo(Integer value) {
             addCriterion("css_net_type <>", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeGreaterThan(Byte value) {
+        public Criteria andCssNetTypeGreaterThan(Integer value) {
             addCriterion("css_net_type >", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeGreaterThanOrEqualTo(Byte value) {
+        public Criteria andCssNetTypeGreaterThanOrEqualTo(Integer value) {
             addCriterion("css_net_type >=", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeLessThan(Byte value) {
+        public Criteria andCssNetTypeLessThan(Integer value) {
             addCriterion("css_net_type <", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeLessThanOrEqualTo(Byte value) {
+        public Criteria andCssNetTypeLessThanOrEqualTo(Integer value) {
             addCriterion("css_net_type <=", value, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeIn(List<Byte> values) {
+        public Criteria andCssNetTypeIn(List<Integer> values) {
             addCriterion("css_net_type in", values, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeNotIn(List<Byte> values) {
+        public Criteria andCssNetTypeNotIn(List<Integer> values) {
             addCriterion("css_net_type not in", values, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeBetween(Byte value1, Byte value2) {
+        public Criteria andCssNetTypeBetween(Integer value1, Integer value2) {
             addCriterion("css_net_type between", value1, value2, "cssNetType");
             return (Criteria) this;
         }
 
-        public Criteria andCssNetTypeNotBetween(Byte value1, Byte value2) {
+        public Criteria andCssNetTypeNotBetween(Integer value1, Integer value2) {
             addCriterion("css_net_type not between", value1, value2, "cssNetType");
             return (Criteria) this;
         }

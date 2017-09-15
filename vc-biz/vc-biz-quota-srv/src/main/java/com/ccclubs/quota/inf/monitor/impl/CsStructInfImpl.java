@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.quota.inf.monitor.CsStructInf;
 import com.ccclubs.quota.orm.mapper.CsStructMapper;
@@ -20,32 +22,41 @@ public class CsStructInfImpl implements CsStructInf {
 	@Resource
 	private CsStructMapper csStructMapper;
 
-	public CsStructInfImpl() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public void add(CsStructAddInput input) {
-		// TODO Auto-generated method stub
-
+		CsStructWithBLOBs record = new CsStructWithBLOBs();
+		record.setCssName(input.getCssName());
+		record.setCssReqCode(input.getCssReqCode());
+		record.setCssRequest(input.getCssRequest());
+		record.setCssStatus(input.getCssStatus());
+		record.setCssType(input.getCssType());
+		csStructMapper.insertSelective(record);
 	}
 
 	@Override
 	public void del(BaseDeleteKeysInput input) {
-		// TODO Auto-generated method stub
-
+		CsStructExample ex = new CsStructExample();
+		CsStructExample.Criteria excri = ex.createCriteria();
+		excri.andCssIdIn(input.getIds());
+		csStructMapper.deleteByExample(ex);
 	}
 
 	@Override
 	public void mod(CsStructAddInput input) {
-		// TODO Auto-generated method stub
-
+		CsStructWithBLOBs record = new CsStructWithBLOBs();
+		record.setCssId(input.getCssId());
+		record.setCssName(input.getCssName());
+		record.setCssReqCode(input.getCssReqCode());
+		record.setCssRequest(input.getCssRequest());
+		record.setCssStatus(input.getCssStatus());
+		record.setCssType(input.getCssType());
+		csStructMapper.updateByPrimaryKeyWithBLOBs(record);
 	}
 
 	@Override
-	public CsStructWithBLOBs mod(Long cstId) {
-		// TODO Auto-generated method stub
-		return null;
+	public CsStructWithBLOBs mod(Long cssId) {
+		CsStructWithBLOBs cswb = csStructMapper.selectByPrimaryKey(cssId);
+		return cswb;
 	}
 
 	@Override
@@ -55,7 +66,19 @@ public class CsStructInfImpl implements CsStructInf {
 		PageHelper.startPage(pageNum, pageSize);
 		
 		CsStructExample ex = new CsStructExample();
-		//CsStructExample.Criteria excri = ex.createCriteria();
+		CsStructExample.Criteria excri = ex.createCriteria();
+		if(null != input.getCssId()){
+			excri.andCssIdEqualTo(input.getCssId());
+		}
+		if(null != input.getCssStatus()){
+			excri.andCssStatusEqualTo(input.getCssStatus());
+		}
+		if(null != input.getCssType()){
+			excri.andCssTypeEqualTo(input.getCssType());
+		}
+		if(StringUtils.isNotBlank(input.getCssName())){
+			excri.andCssNameEqualTo(input.getCssName());
+		}
 		List<CsStructWithBLOBs>  list = csStructMapper.selectByExampleWithBLOBs(ex);
 		PageInfo<CsStructWithBLOBs> pinfo = new PageInfo<CsStructWithBLOBs>(list);
 		return pinfo;

@@ -21,7 +21,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssAccess;
+    private Integer cssAccess;
 
     /**
      *
@@ -30,7 +30,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssHost;
+    private Integer cssHost;
 
     /**
      *
@@ -138,7 +138,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssSpeed;
+    private Integer cssSpeed;
 
     /**
      *
@@ -174,7 +174,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssEvBattery;
+    private Integer cssEvBattery;
 
     /**
      *
@@ -183,7 +183,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssCharging;
+    private Integer cssCharging;
 
     /**
      *
@@ -219,7 +219,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssTemperature;
+    private Integer cssTemperature;
 
     /**
      *
@@ -228,7 +228,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssCsq;
+    private Integer cssCsq;
 
     /**
      *
@@ -264,7 +264,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssGpsValid;
+    private Integer cssGpsValid;
 
     /**
      *
@@ -273,7 +273,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssGpsCn;
+    private Integer cssGpsCn;
 
     /**
      *
@@ -282,7 +282,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssGpsCount;
+    private Integer cssGpsCount;
 
     /**
      *
@@ -300,7 +300,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssCircular;
+    private Integer cssCircular;
 
     /**
      *
@@ -309,7 +309,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssPtc;
+    private Integer cssPtc;
 
     /**
      *
@@ -318,7 +318,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssCompres;
+    private Integer cssCompres;
 
     /**
      *
@@ -327,7 +327,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssFan;
+    private Integer cssFan;
 
     /**
      *
@@ -336,7 +336,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssSaving;
+    private Integer cssSaving;
 
     /**
      *
@@ -354,7 +354,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssEngine;
+    private Integer cssEngine;
 
     /**
      *
@@ -363,7 +363,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssKey;
+    private Integer cssKey;
 
     /**
      *
@@ -372,7 +372,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssGear;
+    private Integer cssGear;
 
     /**
      *
@@ -399,7 +399,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Byte cssNetType;
+    private Integer cssNetType;
 
     /**
      *
@@ -477,7 +477,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssAccess() {
+    public Integer getCssAccess() {
         return cssAccess;
     }
 
@@ -489,7 +489,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssAccess(Short cssAccess) {
+    public void setCssAccess(Integer cssAccess) {
         this.cssAccess = cssAccess;
     }
 
@@ -501,7 +501,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssHost() {
+    public Integer getCssHost() {
         return cssHost;
     }
 
@@ -513,7 +513,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssHost(Short cssHost) {
+    public void setCssHost(Integer cssHost) {
         this.cssHost = cssHost;
     }
 
@@ -789,7 +789,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssSpeed() {
+    public Integer getCssSpeed() {
         return cssSpeed;
     }
 
@@ -801,7 +801,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssSpeed(Short cssSpeed) {
+    public void setCssSpeed(Integer cssSpeed) {
         this.cssSpeed = cssSpeed;
     }
 
@@ -885,7 +885,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssEvBattery() {
+    public Integer getCssEvBattery() {
         return cssEvBattery;
     }
 
@@ -897,7 +897,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssEvBattery(Byte cssEvBattery) {
+    public void setCssEvBattery(Integer cssEvBattery) {
         this.cssEvBattery = cssEvBattery;
     }
 
@@ -909,7 +909,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssCharging() {
+    public Integer getCssCharging() {
         return cssCharging;
     }
 
@@ -921,7 +921,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssCharging(Byte cssCharging) {
+    public void setCssCharging(Integer cssCharging) {
         this.cssCharging = cssCharging;
     }
 
@@ -1005,7 +1005,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssTemperature() {
+    public Integer getCssTemperature() {
         return cssTemperature;
     }
 
@@ -1017,7 +1017,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssTemperature(Short cssTemperature) {
+    public void setCssTemperature(Integer cssTemperature) {
         this.cssTemperature = cssTemperature;
     }
 
@@ -1029,7 +1029,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssCsq() {
+    public Integer getCssCsq() {
         return cssCsq;
     }
 
@@ -1041,7 +1041,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssCsq(Short cssCsq) {
+    public void setCssCsq(Integer cssCsq) {
         this.cssCsq = cssCsq;
     }
 
@@ -1125,7 +1125,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssGpsValid() {
+    public Integer getCssGpsValid() {
         return cssGpsValid;
     }
 
@@ -1137,7 +1137,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssGpsValid(Byte cssGpsValid) {
+    public void setCssGpsValid(Integer cssGpsValid) {
         this.cssGpsValid = cssGpsValid;
     }
 
@@ -1149,7 +1149,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssGpsCn() {
+    public Integer getCssGpsCn() {
         return cssGpsCn;
     }
 
@@ -1161,7 +1161,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssGpsCn(Short cssGpsCn) {
+    public void setCssGpsCn(Integer cssGpsCn) {
         this.cssGpsCn = cssGpsCn;
     }
 
@@ -1173,7 +1173,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssGpsCount() {
+    public Integer getCssGpsCount() {
         return cssGpsCount;
     }
 
@@ -1185,7 +1185,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssGpsCount(Short cssGpsCount) {
+    public void setCssGpsCount(Integer cssGpsCount) {
         this.cssGpsCount = cssGpsCount;
     }
 
@@ -1221,7 +1221,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssCircular() {
+    public Integer getCssCircular() {
         return cssCircular;
     }
 
@@ -1233,7 +1233,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssCircular(Byte cssCircular) {
+    public void setCssCircular(Integer cssCircular) {
         this.cssCircular = cssCircular;
     }
 
@@ -1245,7 +1245,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssPtc() {
+    public Integer getCssPtc() {
         return cssPtc;
     }
 
@@ -1257,7 +1257,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssPtc(Byte cssPtc) {
+    public void setCssPtc(Integer cssPtc) {
         this.cssPtc = cssPtc;
     }
 
@@ -1269,7 +1269,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssCompres() {
+    public Integer getCssCompres() {
         return cssCompres;
     }
 
@@ -1281,7 +1281,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssCompres(Byte cssCompres) {
+    public void setCssCompres(Integer cssCompres) {
         this.cssCompres = cssCompres;
     }
 
@@ -1293,7 +1293,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssFan() {
+    public Integer getCssFan() {
         return cssFan;
     }
 
@@ -1305,7 +1305,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssFan(Byte cssFan) {
+    public void setCssFan(Integer cssFan) {
         this.cssFan = cssFan;
     }
 
@@ -1317,7 +1317,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssSaving() {
+    public Integer getCssSaving() {
         return cssSaving;
     }
 
@@ -1329,7 +1329,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssSaving(Byte cssSaving) {
+    public void setCssSaving(Integer cssSaving) {
         this.cssSaving = cssSaving;
     }
 
@@ -1365,7 +1365,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssEngine() {
+    public Integer getCssEngine() {
         return cssEngine;
     }
 
@@ -1377,7 +1377,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssEngine(Byte cssEngine) {
+    public void setCssEngine(Integer cssEngine) {
         this.cssEngine = cssEngine;
     }
 
@@ -1389,7 +1389,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssKey() {
+    public Integer getCssKey() {
         return cssKey;
     }
 
@@ -1401,7 +1401,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssKey(Byte cssKey) {
+    public void setCssKey(Integer cssKey) {
         this.cssKey = cssKey;
     }
 
@@ -1413,7 +1413,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssGear() {
+    public Integer getCssGear() {
         return cssGear;
     }
 
@@ -1425,7 +1425,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssGear(Byte cssGear) {
+    public void setCssGear(Integer cssGear) {
         this.cssGear = cssGear;
     }
 
@@ -1485,7 +1485,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Byte getCssNetType() {
+    public Integer getCssNetType() {
         return cssNetType;
     }
 
@@ -1497,7 +1497,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssNetType(Byte cssNetType) {
+    public void setCssNetType(Integer cssNetType) {
         this.cssNetType = cssNetType;
     }
 
