@@ -619,9 +619,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		//
 		Map<String,List<CsIndexReport>> dateMap=new HashMap<>();
 		//
-		dateMap.put("存在的vin",exlist);
+		dateMap.put("存在的VIN码",exlist);
 		if(notVinList!=null||notVinList.size()>0){
-			dateMap.put("不存在的vin",notVinList);
+			dateMap.put("异常的VIN码",notVinList);
 		}
 		//
 		return dateMap;

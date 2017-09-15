@@ -60,11 +60,11 @@ public class CsIndexReportUtil {
 
     public static ByteArrayOutputStream outToExcel(Map<String,List<CsIndexReport>> dateMap,List<CsIndexReport> vinList){
 
-        String[] headers ={"vin码","车机号","月均行驶里程(km)","平均单日运行时间(h)","百公里耗电量(kw/100km)","纯电续航里程(km)"
+        String[] headersExit ={"VIN码","车机号","月均行驶里程(km)","平均单日运行时间(h)","百公里耗电量(kw/100km)","车辆纯电续驶里程(km)"
                 ,"最大充电功率(kw/h)","车辆一次充满电所用最少时间(h)","累计行驶里程(km)","累计充电量(kw)"};
 
 
-        String[] headersNotExit={"不存在的vin码","重复的vin码"};
+        String[] headersNotExit={"不存在的VIN码","重复的VIN码"};
 
 
         writeRepeatVin(vinList,dateMap);
@@ -76,11 +76,14 @@ public class CsIndexReportUtil {
         ByteArrayOutputStream outPutByte = new ByteArrayOutputStream();
         try{
             //
+            String headers[];
             for(String weekkey:dateMap.keySet()){
-                if(!"存在的vin".equals(weekkey)){
+                if("存在的VIN码".equals(weekkey)){
+                    headers=headersExit;
+                }else {
                     headers=headersNotExit;
                 }
-
+                //
                 List<CsIndexReport> data=dateMap.get(weekkey);
                 int exist= workbook.getSheetIndex(weekkey);
                 if(exist==0){//存在则删除
@@ -104,7 +107,7 @@ public class CsIndexReportUtil {
     }
     public static void writeRepeatVin( List<CsIndexReport> vinList,Map<String,List<CsIndexReport>> dateMap){
 
-        List<CsIndexReport> notExit=  dateMap.get("不存在的vin");
+        List<CsIndexReport> notExit=  dateMap.get("异常的VIN码");
         Set<CsIndexReport> uniqueSet = new HashSet(vinList);
         int i=0;
         for (CsIndexReport temp : uniqueSet) {
