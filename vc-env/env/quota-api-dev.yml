@@ -14,7 +14,7 @@ api:
 
 dubbo:
   scan: 
-    annotationPackage: com.ccclubs.quota.api,com.ccclubs.frm.spring
+    annotationPackage: com.ccclubs
   application:
     name: api
   registry:
@@ -29,3 +29,4 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
+

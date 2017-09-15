@@ -353,8 +353,7 @@ public class CommandApi {
             ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
             return false;
         } else {
-            ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
-            long current = (Integer) ops.get(REDIS_KEY_NOW_CMD + vin);
+            Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
             if (current > 5) {
                 return true;
             } else {

@@ -68,18 +68,12 @@ public class QueryTerminalService {
      }
 
     public CsMachine queryTerminalByCarNumber(String carNumber) {
-        CsVehicleExample example = new CsVehicleExample();
-        CsVehicleExample.Criteria criteria = example.createCriteria();
-        criteria.andCsvCarNoEqualTo(carNumber);
-        List<CsVehicle> list = vdao.selectByExample(example);
-
-        if (list.size() == 1) {
-            CsVehicle vehicle = list.get(0);
-            if (vehicle.getCsvMachine() == null) {
-                return null;
-            }
-            CsMachine machine = mdao.selectByPrimaryKey(vehicle.getCsvMachine());
-            return machine;
+        CsMachineExample machineExample = new CsMachineExample();
+        CsMachineExample.Criteria  machineCriteria= machineExample.createCriteria();
+        machineCriteria.andCsmNumberEqualTo(carNumber);
+        List<CsMachine> list= mdao.selectByExample(machineExample);
+        if (list.size() > 0) {
+            return list.get(0);
         }
 
         return null;

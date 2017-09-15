@@ -1,5 +1,5 @@
 server:
-  port: 7003
+  port: 7001
 spring:
   http:
     encoding:
@@ -9,7 +9,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.vtsearch.api,com.ccclubs.frm.spring
+    annotationPackage: com.ccclubs
   application:
     name: vtsearch-api
   registry:

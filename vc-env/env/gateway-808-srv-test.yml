@@ -13,13 +13,13 @@ spring:
     mongodb:
       host: 10.24.24.241
       port: 3717
-      username: dba_user
+      username: dba
       password: office_97
       database: vc_history
       authenticationDatabase: vc_history
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.gateway ,com.ccclubs.frm.mongodb,com.ccclubs.mongo,com.ccclubs.common
+    annotationPackage: com.ccclubs
   application:
     name: gateway-808-srv-test
   registry:
