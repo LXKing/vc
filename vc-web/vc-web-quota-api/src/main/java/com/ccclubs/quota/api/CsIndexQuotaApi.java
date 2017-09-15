@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +68,13 @@ public class CsIndexQuotaApi {
     @RequestMapping(value = "/csIndex/getReport", method = RequestMethod.GET)
     public void getReport(String token,HttpServletResponse res) {
         OutputStream os = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateNowStr = sdf.format(System.currentTimeMillis());
+        String fileName="zt_report_"+dateNowStr+".xls";
         try {
             res.setHeader("content-type", "application/vnd.ms-excel");
             res.setContentType("application/vnd.ms-excel");
-            res.setHeader("Content-Disposition", "attachment; filename=" + new String("zhong_tai_report.xls".getBytes("UTF-8"),"ISO8859-1"));
+            res.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("UTF-8"),"ISO8859-1"));
             os = res.getOutputStream();
             //文件路径
             ByteArrayOutputStream  bytes=null;
