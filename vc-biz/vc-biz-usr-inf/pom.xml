@@ -13,5 +13,10 @@
 			<artifactId>vc-frm-validation</artifactId>
 			<version>${frm.version}</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-usr-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+    </dependencies>
 </project>
