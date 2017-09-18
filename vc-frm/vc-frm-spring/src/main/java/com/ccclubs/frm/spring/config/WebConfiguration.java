@@ -2,12 +2,13 @@ package com.ccclubs.frm.spring.config;
 
 import java.util.List;
 
-import com.ccclubs.frm.spring.handler.ApiInvokeHandler;
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.usr.inf.TokenManageInf;
+import com.ccclubs.usr.version.UserServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -25,7 +26,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 @Configuration
 @EnableAsync
-//@EnableAspectJAutoProxy
 @EnableConfigurationProperties({AppIdAndKeyProp.class})
 public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Override
@@ -35,6 +35,9 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
     private AppIdAndKeyProp appIdAndKeyProp;
+
+    @Reference(version = UserServiceVersion.V1)
+    TokenManageInf tokenManager;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -54,8 +57,11 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new ApiHandlerMethodArgumentResolver(appIdAndKeyProp));
-        // TODO Auto-generated method stub
+        ApiHandlerMethodArgumentResolver handler = new ApiHandlerMethodArgumentResolver(appIdAndKeyProp);
+        if (tokenManager != null) {
+            handler.setTokenManager(tokenManager);
+            argumentResolvers.add(handler);
+        }
         super.addArgumentResolvers(argumentResolvers);
     }
 
