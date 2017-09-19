@@ -13,7 +13,6 @@ import java.util.List;
  * Created by Administrator on 2017/5/31 0031.
  */
 
-@ConfigurationProperties(prefix = "databasetemp")
 public class DBHelperZt {
 //    public  String driver;
 //    public  String url;
@@ -28,7 +27,6 @@ public class DBHelperZt {
     public  String url="jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
     public  String  username="quota_user";
     public  String password="jjN(HRXeh$HklmXkQW!IzAs";
-
 
     public void  getZtCurrentOBD(List<CsIndexReport> exlist){
 
@@ -72,6 +70,21 @@ public class DBHelperZt {
                     }
                 }
             }
+            //
+            //当前里程与历史统计里程都统计出来
+//            for (CsIndexReport csIndexReport:exlist){
+//                String csNumber=csIndexReport.getCsNumber();
+//
+//                for (Object object:jsonArray){
+//                    JSONObject jsonObject = (JSONObject)object;
+//                    String  csState_csNumber=((JSONObject) object).getString("css_number");
+//                    if(csNumber.equals(csState_csNumber)){
+//                        String css_obd_mile=((JSONObject) object).getString("css_obd_mile");
+//                        BigDecimal bd = new BigDecimal(css_obd_mile);
+//                        csIndexReport.setCurrentCumulativeMileage(bd);
+//                    }
+//                }
+//            }
             rs.close();
             pst.close();
             conn.close();

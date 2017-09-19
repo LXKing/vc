@@ -2,34 +2,78 @@ package com.ccclubs.quota.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
+import com.ccclubs.olap.orm.model.CsCar;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/5/31 0031.
  */
 
-@ConfigurationProperties(prefix = "databasetemp")
-public class DBHelper {
-    public  String driver;
-    public  String url;
-    public  String  username;
-    public static String password;
+
+public class DBHelperZf {
+//    public  String driver;
+//    public  String url;
+//    public  String  username;
+//    public static String password;
     //
     public  Connection conn = null;
     public PreparedStatement pst = null;
     public Statement st = null;
     //
-//    public  String driver="com.mysql.jdbc.Driver";
-//    public  String url="jdbc:mysql://127.0.0.1:3306/ccclubs_cg_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
-//    public  String  user="root";
-//    public  String password="123456";
+    public static String driver="com.mysql.jdbc.Driver";
+    public static String url="jdbc:mysql://127.0.0.1:3306/ccclubs_cg_platform?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
+    public static String  username="root";
+    public static String password;
+
+
+    /**
+     * 获取所有车辆的信息
+     */
+    public List<CsCar>  getCsCarALL(){
+        List<CsCar> csCarsList=new ArrayList<>();
+        try{
+            String sql="SELECT csc_number ,csc_car_no ,csc_model ,csc_code  from cs_car";
+            pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            ResultSetMetaData metaData = rs.getMetaData();
+
+            while(rs.next()){
+                CsCar csCar=new CsCar();
+                for(int i=1;i<=metaData.getColumnCount();i++){
+                    String columnName = metaData.getColumnName(i);
+                    if (columnName.equals("csc_number")){
+                        csCar.setCscNumber(rs.getString(columnName));
+                    }else if(columnName.equals("csc_car_no")){
+                        csCar.setCscCarNo(rs.getString(columnName));
+                    }else if(columnName.equals("csc_model")){
+                        csCar.setCscModel(rs.getInt(columnName));
+                    }else if(columnName.equals("csc_code")){
+                        csCar.setCscCode(rs.getString(columnName));
+                    }
+                }
+                csCarsList.add(csCar);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return csCarsList;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public JSONArray queryRecords(String sql,long limit,long offset) throws SQLException {
@@ -100,21 +144,6 @@ public class DBHelper {
         return jsonArray;
     }
 
-//    public void deleteRecords(String sql) throws Exception {
-//        pst = conn.prepareStatement(sql);
-//        pst.executeUpdate();
-//        conn.commit();
-//    }
-//
-//    public void insertRecords(List<String> sql_list)throws SQLException{
-//        st = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-//        for(String sql:sql_list){
-//            st.addBatch(sql);
-//        }
-//        st.executeBatch();
-//        conn.commit();
-//    }
-
 
     public String getDriver() {
         return driver;
@@ -133,21 +162,19 @@ public class DBHelper {
     }
 
     public String getUsername() {
-        System.out.println(username);
         return username;
     }
 
     public void setUsername(String username) {
-        System.out.println(username);
         this.username = username;
     }
 
-    public static String getPassword() {
+    public  String getPassword() {
         return password;
     }
 
-    public static void setPassword(String password) {
-        DBHelper.password = password;
+    public  void setPassword(String password) {
+        this.password = password;
     }
 
 }

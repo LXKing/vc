@@ -16,22 +16,21 @@ import java.util.Map;
  * Created by Administrator on 2017/9/15 0015.
  */
 @Component
-public class ZhiFaSchedule {
+public class ZhiFaScheduleTask {
+
 
     @Autowired
-    ZhiFaMilesBasicService zhiFaMilesBasicService;
+    ZhiFaScheduleInsert zhiFaMilesBasicService;
 
-    //执行数据统计任务
-    @Scheduled(cron="0 15 5 ? * 2") //每周一的5点15执行
+//    @Scheduled(fixedDelay=1000*60*1)
+//    //执行数据统计任务
+    @Scheduled(cron="0 15 2 ? * MON") //每周一的2点15执行
     public void executeCensusTask(){
         //获取要计算的所有周的列表
         Calendar cal = Calendar.getInstance();
         String current_datetime = DateTimeUtil.getDateTimeByFormat1(cal.getTimeInMillis());
         List<WeekBeanOutput> weekBeanList = DateTimeUtil.getWeekList(current_datetime,1);
         for(WeekBeanOutput weekBean:weekBeanList){
-//            String start_time ="2017-09-04 00:00:00";//一周开始时间
-//            String end_time = "2017-09-10 59:59:59";//一周结束时间
-
             String start_time = weekBean.getMonday_datetime();
             String end_time = weekBean.getSunday_datetime();
             //
@@ -45,7 +44,7 @@ public class ZhiFaSchedule {
                 cal_count++;
                 Map.Entry<String,List<Vehicle_zhifa>> entry = iterator.next();
                 String cs_number = entry.getKey();
-                System.out.println("正在计算车机号为: "+cs_number+" 车辆的指标,计算进度为  "+cal_count+"/"+vehicle_map.size());
+//                System.out.println("正在计算车机号为: "+cs_number+" 车辆的指标,计算进度为  "+cal_count+"/"+vehicle_map.size());
                 //
                 List<Vehicle_zhifa> vehicle_zhifa_list = entry.getValue();
                 Map<Long,PaceBlock> blockMap = DateTimeUtil.generateBlockMap(start_time,end_time);
@@ -57,7 +56,7 @@ public class ZhiFaSchedule {
                 zhiFaMilesBasicService.insertSocMiles(socPaceList,start_time,end_time);
 
             }
-        }        System.out.println("计算完成");
+        }
     }
 }
 
