@@ -120,10 +120,79 @@
              	<columnOverride column="cst_color" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
              	<columnOverride column="cst_status" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
              </table> -->
-             <table tableName="cs_struct" schema=""> 
+             <!-- <table tableName="cs_struct" schema=""> 
              	<columnOverride column="css_type" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
              	<columnOverride column="css_status" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
+             </table> -->
+             <!-- <table tableName="cs_vehicle" schema=""> 
+             	<columnOverride column="csv_color" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csv_color_code" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csv_status" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table> -->
+             <!-- <table tableName="tb_upgrade" schema=""> 
+             	<columnOverride column="tbu_te_type" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
+             	<columnOverride column="tbu_protocol" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
+             	<columnOverride column="tbu_editor" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
+             	<columnOverride column="tbu_status" javaType="java.lang.Integer" jdbcType="BIGINT"></columnOverride>
+             	<columnOverride column="tbu_editor" javaType="java.lang.Integer" jdbcType="SMALLINT"></columnOverride>
+             	<columnOverride column="tbu_id" javaType="java.lang.Integer" jdbcType="BIGINT"></columnOverride>
+             	<columnOverride column="tbu_machine" javaType="java.lang.Integer" jdbcType="BIGINT"></columnOverride>
              </table>
+             <table tableName="srv_host" schema=""> 
+             	<columnOverride column="sh_status" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table> -->
+             <!-- <table tableName="cs_state" schema=""> 
+             	<columnOverride column="css_access" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_host" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_speed" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_ev_battery" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_charging" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_temperature" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_csq" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_valid" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_cn" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_count" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_circular" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_ptc" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_compres" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_fan" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_saving" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_engine" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_key" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gear" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_net_type" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table> -->
+             <table tableName="cs_can" schema=""> 
+             	<columnOverride column="csc_model" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csc_type" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csc_status" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table>
+             <!-- <table tableName="cs_can_biz" schema=""  enableDeleteByExample="false" enableDeleteByPrimaryKey="false" enableUpdateByExample="false" enableUpdateByPrimaryKey="false" enableInsert="false"> 
+             	<columnOverride column="csc_model" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csc_type" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="csc_status" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table> -->
+             <!-- <table tableName="cs_state_biz" schema=""  enableDeleteByExample="false" enableDeleteByPrimaryKey="false" enableUpdateByExample="false" enableUpdateByPrimaryKey="false" enableInsert="false"> 
+             	<columnOverride column="css_access" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_host" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_speed" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_ev_battery" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_charging" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_temperature" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_csq" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_valid" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_cn" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gps_count" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_circular" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_ptc" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_compres" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_fan" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_saving" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_engine" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_key" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_gear" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             	<columnOverride column="css_net_type" javaType="java.lang.Integer" jdbcType="TINYINT"></columnOverride>
+             </table> -->
              <!-- <table tableName="vc_district" schema=""/> 
   			 <table tableName="vc_district_gps" schema=""/>
   			 <table tableName="vc_district_polyline" schema=""/>
