@@ -157,7 +157,7 @@
 			<id>test</id>
 			<properties>
 				<profiles.active>test</profiles.active>
-				<spring.cloud.config.uri>http://10.122.73.208:11112</spring.cloud.config.uri>
+				<spring.cloud.config.uri>http://10.27.0.161:11112</spring.cloud.config.uri>
 			</properties>
 		</profile>
 		<profile>
