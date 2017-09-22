@@ -8,7 +8,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.*;
@@ -58,16 +57,29 @@ public class CsIndexReportUtil {
         return null;
     }
 
-    public static ByteArrayOutputStream outToExcel(Map<String,List<CsIndexReport>> dateMap,List<CsIndexReport> vinList){
+    public static ByteArrayOutputStream outToExcel(Map<String,CsIndexReport> existDateMap,List<CsIndexReport> vinList){
 
         String[] headersExit ={"VIN码","车机号","月均行驶里程(km)","平均单日运行时间(h)","百公里耗电量(kw/100km)","车辆纯电续驶里程(km)"
                 ,"最大充电功率(kw/h)","车辆一次充满电所用最少时间(h)","累计行驶里程(km)","累计充电量(kw)"};
-
-
-        String[] headersNotExit={"不存在的VIN码","重复的VIN码"};
-
-
-        writeRepeatVin(vinList,dateMap);
+        vinList.remove(0);
+        for (CsIndexReport csIndexReport:vinList){
+            if (existDateMap.containsKey(csIndexReport.getCsVin())){
+                CsIndexReport tempCsIndexReport=existDateMap.get(csIndexReport.getCsVin());
+                //
+                csIndexReport.setCsNumber(tempCsIndexReport.getCsNumber());
+                csIndexReport.setMonthlyAvgMile(tempCsIndexReport.getMonthlyAvgMile());
+                csIndexReport.setAvgDriveTimePerDay(tempCsIndexReport.getAvgDriveTimePerDay());
+                csIndexReport.setPowerConsumePerHundred(tempCsIndexReport.getPowerConsumePerHundred());
+                csIndexReport.setElectricRange(tempCsIndexReport.getElectricRange());
+                csIndexReport.setMaxChargePower(tempCsIndexReport.getMaxChargePower());
+                csIndexReport.setMinChargeTime(tempCsIndexReport.getMinChargeTime());
+                csIndexReport.setCumulativeMileage(tempCsIndexReport.getCumulativeMileage());
+                csIndexReport.setCumulativeCharge(tempCsIndexReport.getCumulativeCharge());
+            }
+        }
+        //
+        Map<String,List<CsIndexReport>>dateMap=new HashMap<>();
+        dateMap.put("查询结果",vinList);
         //
         ExportExcelTemp eeu = new ExportExcelTemp();
         HSSFWorkbook workbook=eeu.getWorkbook();
@@ -76,13 +88,8 @@ public class CsIndexReportUtil {
         ByteArrayOutputStream outPutByte = new ByteArrayOutputStream();
         try{
             //
-            String headers[];
+            String headers[]=headersExit;
             for(String weekkey:dateMap.keySet()){
-                if("存在的VIN码".equals(weekkey)){
-                    headers=headersExit;
-                }else {
-                    headers=headersNotExit;
-                }
                 //
                 List<CsIndexReport> data=dateMap.get(weekkey);
                 int exist= workbook.getSheetIndex(weekkey);
@@ -104,24 +111,6 @@ public class CsIndexReportUtil {
             }
         }
         return   outPutByte;
-    }
-    public static void writeRepeatVin( List<CsIndexReport> vinList,Map<String,List<CsIndexReport>> dateMap){
-
-        List<CsIndexReport> notExit=  dateMap.get("异常的VIN码");
-        Set<CsIndexReport> uniqueSet = new HashSet(vinList);
-        int i=0;
-        for (CsIndexReport temp : uniqueSet) {
-            if(Collections.frequency(vinList, temp)>1){
-                if (notExit.get(i)==null){
-                    CsIndexReport csIndexReport=new CsIndexReport();
-                    csIndexReport.setCsNumber(temp.getCsVin());
-                    notExit.add(csIndexReport);
-                }else {
-                    notExit.get(i).setCsNumber(temp.getCsVin());
-                    i++;
-                }
-            }
-        }
     }
 
     @Scheduled(cron="0 15 3 * * ?")

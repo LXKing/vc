@@ -56,5 +56,17 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math3</artifactId>
 		</dependency>
-	</dependencies>
+
+	  <dependency>
+		  <groupId>www.ccclubs</groupId>
+		  <artifactId>vc-biz-olap-orm</artifactId>
+		  <version>${biz.version}</version>
+	  </dependency>
+
+	  <dependency>
+		  <groupId>www.ccclubs</groupId>
+		  <artifactId>vc-frm-spring</artifactId>
+		  <version>${frm.version}</version>
+	  </dependency>
+  </dependencies>
 </project>

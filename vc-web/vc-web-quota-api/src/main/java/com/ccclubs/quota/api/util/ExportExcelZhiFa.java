@@ -1,10 +1,10 @@
 package com.ccclubs.quota.api.util;
 
+
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -15,12 +15,11 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ExportExcelTemp<T> implements Serializable{
+public class ExportExcelZhiFa<T> {
 
     private HSSFWorkbook workbook ;
     private int sheetNumber = 0;
     //
-    FileInputStream readFile;
 
     public HSSFWorkbook getWorkbook() {
         return workbook;
@@ -38,21 +37,26 @@ public class ExportExcelTemp<T> implements Serializable{
         this.sheetNumber = sheetNumber;
     }
 
-
-    public ExportExcelTemp(){
+    public ExportExcelZhiFa(){
         HSSFWorkbook workbook;
         workbook = new HSSFWorkbook();
         setWorkbook(workbook);
         setSheetNumber(0);
     }
 
-    public ExportExcelTemp(String savePath){
+
+
+
+
+
+    public ExportExcelZhiFa(String savePath){
+
          try {
              File file = new File(savePath);
              HSSFWorkbook workbook;
              int sheetNumber = 0;
              if (file.exists()) {
-                  readFile = new FileInputStream(file);
+                 FileInputStream readFile = new FileInputStream(file);
                  // 创建一个WorkBook，从指定的文件流中创建，即上面指定了的文件流
                  workbook = new HSSFWorkbook(readFile);
                  sheetNumber = workbook.getNumberOfSheets();
@@ -65,26 +69,10 @@ public class ExportExcelTemp<T> implements Serializable{
              setSheetNumber(sheetNumber);
 
          }catch (Exception e){
-
-
              e.printStackTrace();
          }
     }
 
-    public void close(){
-        try{
-            if(readFile!=null){
-                readFile.close();
-            }
-            if(workbook!=null){
-                workbook.close();
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
     /**
      * @Title: exportExcel
      * @Description: 导出Excel的方法
@@ -94,10 +82,12 @@ public class ExportExcelTemp<T> implements Serializable{
      * @param sheetTitle  （sheet的名称）
      * @param headers    （表格的标题）
      * @param dataset   （表格的数据）
+
      * @throws Exception
      */
     public void exportExcel(HSSFWorkbook workbook, int sheetNum,
-                            String sheetTitle, String[] headers, Collection<T> dataset) throws Exception {
+                            String sheetTitle, String[] headers, Collection<T> dataset
+                            ) throws Exception {
         // 生成一个表格
         HSSFSheet sheet = workbook.createSheet();
         workbook.setSheetName(sheetNum, sheetTitle);
@@ -124,12 +114,6 @@ public class ExportExcelTemp<T> implements Serializable{
         // 指定当单元格内容显示不下时自动换行
         style.setWrapText(true);
 
-        /**
-         *数据空时设置的背景色
-         */
-//        HSSFCellStyle styleground = workbook.createCellStyle();
-//        styleground.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);// 设置背景色
-//        styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         // 产生表格标题行
         HSSFRow row = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++) {
@@ -155,26 +139,36 @@ public class ExportExcelTemp<T> implements Serializable{
                 fields=srcfield;
             }
             for (short i = 0; i < fields.length; i++) {
+                HSSFCell cell = row.createCell(i);
                 Field field = fields[i];
                 String fieldName = field.getName();
-                //
+
                 if("serialVersionUID".equals(fieldName)||"dataType".equals(fieldName)){
                     continue;
                 }
 
-                HSSFCell cell = row.createCell(i);
+                //
                 String getMethodName = "get"
                         + fieldName.substring(0, 1).toUpperCase()
                         + fieldName.substring(1);
                 try {
                     Class tCls = t.getClass();
-
                     Method getMethod = tCls.getMethod(getMethodName,
                             new Class[] {});
                     Object value = getMethod.invoke(t, new Object[] {});
-
                     // 判断值的类型后进行强制类型转换
                     String textValue = null;
+                    if("csc_car_no".equals(fieldName)){
+                        if ("kong".equals(value)){
+                            for (int k=0;k<5;k++){
+                                index++;
+                                row = sheet.createRow(index);
+                            }
+                            break;
+                        }
+
+                    }
+
 
                     if (value instanceof Date) {
                         Date date = (Date) value;
@@ -201,7 +195,10 @@ public class ExportExcelTemp<T> implements Serializable{
                         if(value!=null){
                             textValue = value.toString();
                         }
+
                     }
+
+
                     // 如果不是图片数据，就利用正则表达式判断textValue是否全部由数字组成
                     if (textValue != null) {
                         Pattern p = Pattern.compile("^//d+(//.//d+)?$");
@@ -209,8 +206,27 @@ public class ExportExcelTemp<T> implements Serializable{
 
                         HSSFRichTextString richString = new HSSFRichTextString(
                                 textValue);
+
                         cell.setCellValue(richString);
+                        if("波谷".equals(textValue)){
+                            HSSFCellStyle styleground = workbook.createCellStyle();
+                            styleground.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);// 设置背景色
+                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                            cell.setCellStyle(styleground);
+                        }else if("波峰".equals(textValue)){
+                            HSSFCellStyle styleground = workbook.createCellStyle();
+                            styleground.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);// 设置背景色
+                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                            cell.setCellStyle(styleground);
+                        }else if("一周内未使用的车辆".equals(textValue)){
+                            HSSFCellStyle styleground = workbook.createCellStyle();
+                            styleground.setFillForegroundColor(HSSFColor.RED.index);// 设置背景色
+                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+                            cell.setCellStyle(styleground);
+                            break;
+                        }
                     }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }finally {
