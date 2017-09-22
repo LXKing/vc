@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
+import com.ccclubs.quota.util.DBHelperZt;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.slf4j.Logger;
@@ -596,13 +597,18 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		List<CsIndexReport> exlist=new ArrayList<>();
 		if(vinList!=null&&vinList.size()>0){
 			//根据条件查询的数据
-			exlist = csIndexReportMapper.selectByExampleRelateCsState(example);
+			exlist = csIndexReportMapper.selectByExample(example);
 		}
 		Map<String,CsIndexReport> dateMap=new HashMap<>();
 		//
 		for(CsIndexReport csIndexReport: exlist){
 			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
 		}
+
+		DBHelperZt dbHelperZt= new DBHelperZt();
+		dbHelperZt.getDBConnect();
+		dbHelperZt.getZtCurrentOBD(exlist);
+
 		//
 		return dateMap;
 	}
