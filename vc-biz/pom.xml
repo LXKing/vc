@@ -33,5 +33,6 @@
         <module>vc-biz-quota-srv</module>
         <module>vc-biz-hbase-inf</module>
         <module>vc-biz-hbase-srv</module>
+        <module>vc-biz-olap-orm</module>
     </modules>
 </project>

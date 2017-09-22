@@ -581,7 +581,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	 * @return
 	 */
 	@Override
-	public Map<String,List<CsIndexReport>>  ztReportExport(List<CsIndexReport> readExcelList) {
+	public Map<String,CsIndexReport>  ztReportExport(List<CsIndexReport> readExcelList) {
 		//1.先获取到前端传进来的条件
 		readExcelList.remove(0);
 		//从excel获取到所有条件的vin码
@@ -596,32 +596,12 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		List<CsIndexReport> exlist=new ArrayList<>();
 		if(vinList!=null&&vinList.size()>0){
 			//根据条件查询的数据
-			exlist = csIndexReportMapper.selectByExample(example);
+			exlist = csIndexReportMapper.selectByExampleRelateCsState(example);
 		}
-		//统计查询出的数据在条件中不存在vin码的数据
-		List<CsIndexReport> notVinList=new ArrayList<>();
-			for (CsIndexReport  conditionCsIndexReport:readExcelList){
-			boolean flag=false;
-
-			String vin=conditionCsIndexReport.getCsVin();
-			for(CsIndexReport csIndexReport:exlist){
-				if(vin.equals(csIndexReport.getCsVin().trim())){
-					flag=true;
-					break;
-				}
-			}
-			if(!flag){
-				CsIndexReport csIndexReport=new CsIndexReport();
-				csIndexReport.setCsVin(vin);
-				notVinList.add(csIndexReport);
-			}
-		}
+		Map<String,CsIndexReport> dateMap=new HashMap<>();
 		//
-		Map<String,List<CsIndexReport>> dateMap=new HashMap<>();
-		//
-		dateMap.put("存在的VIN码",exlist);
-		if(notVinList!=null||notVinList.size()>0){
-			dateMap.put("异常的VIN码",notVinList);
+		for(CsIndexReport csIndexReport: exlist){
+			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
 		}
 		//
 		return dateMap;

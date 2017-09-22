@@ -63,4 +63,7 @@ public interface CsIndexReportMapper {
      */
     int updateByExample(@Param("record") CsIndexReport record,
         @Param("example") CsIndexReportExample example);
+
+    List<CsIndexReport> selectByExampleRelateCsState(CsIndexReportExample example);
+
 }

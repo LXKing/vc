@@ -62,7 +62,7 @@ public class CsIndexQuotaApi {
 
 
     /**
-     *报表产生
+     *众泰报表产生
      * @param res
      */
     @RequestMapping(value = "/csIndex/getReport", method = RequestMethod.GET)
@@ -98,8 +98,7 @@ public class CsIndexQuotaApi {
     }
 
     /**
-     * 多文件上传
-
+     * 众泰_多文件上传
      */
     @RequestMapping("/file/uploads")
     public Map<String,Object> upload(@RequestParam("files[]") MultipartFile[] files, HttpServletRequest request) {
@@ -107,13 +106,13 @@ public class CsIndexQuotaApi {
         try{
             List<CsIndexReport> vinList= CsIndexReportUtil.getConditionVinList(files);
             //
-            Map<String,List<CsIndexReport>> dateMap=new HashMap<>();
+            Map<String,CsIndexReport> existDateMap=new HashMap<>();
             if (vinList!=null&&vinList.size()>0){
-                dateMap= csIndexQuotaInf.ztReportExport(vinList);
+                existDateMap= csIndexQuotaInf.ztReportExport(vinList);
             }
             //
             String token= request.getSession().getId()+System.currentTimeMillis();
-            ByteArrayOutputStream buff=  CsIndexReportUtil.outToExcel(dateMap,vinList);
+            ByteArrayOutputStream buff=  CsIndexReportUtil.outToExcel(existDateMap,vinList);
             CsIndexReportUtil.excelBinaryMap.put(token,buff);
             Map<String,Object> map=new HashMap<>();
             map.put("token",token);
