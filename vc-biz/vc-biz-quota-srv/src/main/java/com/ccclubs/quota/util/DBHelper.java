@@ -31,6 +31,7 @@ public class DBHelper {
 //    public  String  user="root";
 //    public  String password="123456";
 
+
     public JSONArray queryRecords(String sql,long limit,long offset) throws SQLException {
 
         JSONArray jsonArray = new JSONArray();
