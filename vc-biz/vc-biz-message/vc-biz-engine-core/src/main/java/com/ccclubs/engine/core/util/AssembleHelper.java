@@ -8,7 +8,7 @@ package com.ccclubs.engine.core.util;
  **/
 public class AssembleHelper {
 
-    public static String cmdKey(Long csrId) {
+    public static String cmdKey(String csrId) {
         return "OBJ." + RuleEngineConstant.REMOTE_REDIS_PRE + "." + csrId;
     }
 

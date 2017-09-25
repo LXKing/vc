@@ -1,5 +1,6 @@
 package com.ccclubs.engine.cmd.srv;
 
+import com.ccclubs.frm.mongodb.config.MongoConfig;
 import java.io.IOException;
 
 import com.ccclubs.engine.cmd.inf.config.CmdEngineConfig;
@@ -24,7 +25,8 @@ import org.springframework.context.annotation.Import;
  **/
 @SpringBootApplication
 @Import({MybatisConfig.class})
-@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class, CmdEngineConfig.class})
+@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class, CmdEngineConfig.class,
+    MongoConfig.class})
 public class CmdEngineSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(CmdEngineSrvApp.class);
 

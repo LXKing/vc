@@ -5,12 +5,12 @@ import com.ccclubs.protocol.util.MyBuffer;
 
 /**
  * Created by qsxiaogang on 2017/4/17.
- * 总里程,终端信息
+ * 累计里程,终端信息
  */
 public class MachineAdditional_ObdMile implements IMachineAdditionalItem {
 
   /**
-   * 单位公里
+   * 累计里程
    */
   private int obdMile;
 

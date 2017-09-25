@@ -7,6 +7,7 @@ import com.ccclubs.protocol.util.MyBuffer;
  * Created by qsxiaogang on 2017/4/17.
  * <b>通领专用<b/>插件版本，软件版本2，终端信息
  */
+@Deprecated
 public class MachineAdditional_SoftwareVersionII implements IMachineAdditionalItem {
 
   /**

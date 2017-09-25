@@ -15,7 +15,7 @@ public final class ConstantUtils {
   public static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
   public static final String TIME_FORMAT_KEY = "_yyyy-MM-dd_HH-mm-ss";
   // 终端实际时间与服务器时间间隔
-  public static final Long TimeSynchronizationDur = 10 * SECOND;
+  public static final Long TimeSynchronizationDur = 5 * SECOND;
   // 2000年的毫秒数
   public static final long MACHINE_TIME = StringUtils.date("2000-01-01 00:00:00", TIME_FORMAT)
       .getTime();

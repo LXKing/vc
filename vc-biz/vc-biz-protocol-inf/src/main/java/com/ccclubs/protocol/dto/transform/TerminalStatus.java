@@ -9,6 +9,7 @@ import java.math.BigDecimal;
  */
 public class TerminalStatus implements Serializable {
 
+
     private static final long serialVersionUID = 1999426779084374974L;
     /**
      * 终端序列号
@@ -32,9 +33,21 @@ public class TerminalStatus implements Serializable {
      */
     private Integer cssRented;
     /**
-     * 车辆OBD里程
+     * 车辆OBD里程，最小0.1km
      */
     private Integer cssObdMile;
+    /**
+     * 发动机状态，1未熄火，2已熄火，0无效
+     */
+    private Integer cssEngine = 0;
+    /**
+     * /** 灯状态，（1未关，2全关，0无效）
+     */
+    private Integer cssLight = 0;
+    /**
+     * 门锁状态，1未关，2全关，0无效
+     */
+    private Integer cssLock = 0;
     /**
      * 发动机温度
      */
@@ -51,7 +64,7 @@ public class TerminalStatus implements Serializable {
     /**
      * 燃油量
      */
-    private Integer cssOil = 0;
+    private Integer cssOil;
 
     /**
      * 蓄电池电量
@@ -126,28 +139,20 @@ public class TerminalStatus implements Serializable {
     /**
      * CN值
      */
-    private Integer cssCn;
+    private Integer cssGpsCn;
     /**
      * 可视卫星数量
      */
-    private Integer cssSatelliteCount;
+    private Integer cssGpsCount;
     /**
      * 卫星有效数位
      */
-    private Integer cssSatelliteEffective;
+    private Integer cssGpsValid;
 
     /**
      * GPS有效性
      */
     private Integer cssGPSValid;
-    /**
-     * GPS CN值
-     */
-    private Integer cssGpsCn;
-    /**
-     * GPS 当前卫星数量
-     */
-    private Integer cssGpsCount;
 
     /**
      * 车辆状态
@@ -184,12 +189,46 @@ public class TerminalStatus implements Serializable {
      */
     private Integer cssGear;
 
+    /**
+     * 终端供应商
+     */
+    private Integer terminalSupplier = 0;
+    /**
+     * 硬件版本
+     */
+    private Integer hardwareVersion = 0;
+    /**
+     * 软件版本I
+     */
+    private Integer softwareI = 0;
+    /**
+     * 软件版本II，备用
+     */
+    private Integer softwareII = 0;
+
+    /**
+     * 分时租赁插件版本
+     */
+    private Integer pluginVersion = 0;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     public String getCssNumber() {
         return cssNumber;
     }
 
     public void setCssNumber(String cssNumber) {
         this.cssNumber = cssNumber;
+    }
+
+    public String getCssVin() {
+        return cssVin;
+    }
+
+    public void setCssVin(String cssVin) {
+        this.cssVin = cssVin;
     }
 
     public Long getCssOrder() {
@@ -222,6 +261,30 @@ public class TerminalStatus implements Serializable {
 
     public void setCssObdMile(Integer cssObdMile) {
         this.cssObdMile = cssObdMile;
+    }
+
+    public Integer getCssEngine() {
+        return cssEngine;
+    }
+
+    public void setCssEngine(Integer cssEngine) {
+        this.cssEngine = cssEngine;
+    }
+
+    public Integer getCssLight() {
+        return cssLight;
+    }
+
+    public void setCssLight(Integer cssLight) {
+        this.cssLight = cssLight;
+    }
+
+    public Integer getCssLock() {
+        return cssLock;
+    }
+
+    public void setCssLock(Integer cssLock) {
+        this.cssLock = cssLock;
     }
 
     public Integer getCssEngineT() {
@@ -376,30 +439,6 @@ public class TerminalStatus implements Serializable {
         this.cssDoor = cssDoor;
     }
 
-    public Integer getCssCn() {
-        return cssCn;
-    }
-
-    public void setCssCn(Integer cssCn) {
-        this.cssCn = cssCn;
-    }
-
-    public Integer getCssSatelliteCount() {
-        return cssSatelliteCount;
-    }
-
-    public void setCssSatelliteCount(Integer cssSatelliteCount) {
-        this.cssSatelliteCount = cssSatelliteCount;
-    }
-
-    public Integer getCssSatelliteEffective() {
-        return cssSatelliteEffective;
-    }
-
-    public void setCssSatelliteEffective(Integer cssSatelliteEffective) {
-        this.cssSatelliteEffective = cssSatelliteEffective;
-    }
-
     public Integer getCssGpsCn() {
         return cssGpsCn;
     }
@@ -414,6 +453,14 @@ public class TerminalStatus implements Serializable {
 
     public void setCssGpsCount(Integer cssGpsCount) {
         this.cssGpsCount = cssGpsCount;
+    }
+
+    public Integer getCssGpsValid() {
+        return cssGpsValid;
+    }
+
+    public void setCssGpsValid(Integer cssGpsValid) {
+        this.cssGpsValid = cssGpsValid;
     }
 
     public Integer getCssGPSValid() {
@@ -480,11 +527,43 @@ public class TerminalStatus implements Serializable {
         this.cssGear = cssGear;
     }
 
-    public String getCssVin() {
-        return cssVin;
+    public Integer getTerminalSupplier() {
+        return terminalSupplier;
     }
 
-    public void setCssVin(String cssVin) {
-        this.cssVin = cssVin;
+    public void setTerminalSupplier(Integer terminalSupplier) {
+        this.terminalSupplier = terminalSupplier;
+    }
+
+    public Integer getHardwareVersion() {
+        return hardwareVersion;
+    }
+
+    public void setHardwareVersion(Integer hardwareVersion) {
+        this.hardwareVersion = hardwareVersion;
+    }
+
+    public Integer getSoftwareI() {
+        return softwareI;
+    }
+
+    public void setSoftwareI(Integer softwareI) {
+        this.softwareI = softwareI;
+    }
+
+    public Integer getSoftwareII() {
+        return softwareII;
+    }
+
+    public void setSoftwareII(Integer softwareII) {
+        this.softwareII = softwareII;
+    }
+
+    public Integer getPluginVersion() {
+        return pluginVersion;
+    }
+
+    public void setPluginVersion(Integer pluginVersion) {
+        this.pluginVersion = pluginVersion;
     }
 }

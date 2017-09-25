@@ -43,6 +43,9 @@ public class LogicHelperJt808 {
     UpdateStateService updateStateService;
 
     @Resource
+    HistoryStateUtils historyStateUtils;
+
+    @Resource
     UpdateCanService updateCanService;
 
     @Resource
@@ -59,12 +62,12 @@ public class LogicHelperJt808 {
      * @param message 上传
      * @param jvi     0x0200数据
      */
-    public void saveStatusData(final T808Message message, final JT_0200 jvi) {
+    public CsState saveStatusData(final T808Message message, final JT_0200 jvi) {
         try {
             HashOperations ops = redisTemplate.opsForHash();
             MachineMapping mapping = (MachineMapping) ops.get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
             if (mapping == null || mapping.getMachine() == null || StringUtils.empty(mapping.getNumber())) {
-                return;
+                return null;
             }
             CsMachine csMachine = new CsMachine();
             csMachine.setCsmAccess(mapping.getAccess().intValue());
@@ -98,16 +101,22 @@ public class LogicHelperJt808 {
                     BigDecimal bigDecimalLat = AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001);
                     csState.setCssLatitude(bigDecimalLat.setScale(6, BigDecimal.ROUND_HALF_UP));
                 }
-                // TODO: 依据系统车型解析出CAN数据对应的SOC，OBD里程
-                Can2State can2State = (Can2State) ops.get(RuleEngineConstant.REDIS_KEY_CAN2STATE, message.getSimNo());
-                if (can2State != null) {
-                    if (can2State.getSoc() != 0) {
-                        csState.setCssEvBattery((byte) can2State.getSoc());
-                    }
-                    if (can2State.getObdMiles() != 0) {
-                        csState.setCssObdMile(can2State.getObdMiles());
+
+                // 终端具备分时租赁功能，则不更新SOC，obd里程，目前按照插件版本>0来判断终端具备分时租赁功能
+                if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
+                    // TODO: 依据系统车型解析出CAN数据对应的SOC，OBD里程
+                    Can2State can2State = (Can2State) ops.get(RuleEngineConstant.REDIS_KEY_CAN2STATE, message.getSimNo());
+                    if (can2State != null) {
+                        if (can2State.getSoc() != 0) {
+                            csState.setCssEvBattery((byte) can2State.getSoc());
+                        }
+                        if (can2State.getObdMiles() != 0) {
+                            csState.setCssObdMile(can2State.getObdMiles());
+                        }
                     }
                 }
+
+
                 updateStateService.update(csState);
 
                 newState = queryStateService.queryStateById(mapping.getState().intValue());
@@ -151,66 +160,17 @@ public class LogicHelperJt808 {
             }
 
             if (newState != null) {
-                saveHistoryData(newState);
+                historyStateUtils.saveHistoryData(newState);
+                return newState;
+            } else {
+                return null;
             }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
+            return null;
         }
-    }
-
-    public void saveHistoryData(CsState csState) {
-        CsHistoryState historyState = new CsHistoryState();
-
-        historyState.setCshsAccess(csState.getCssAccess().intValue());
-        historyState.setCshsHost(csState.getCssHost().intValue());
-        historyState.setCshsCar(csState.getCssCar().intValue());
-
-        historyState.setCshsNumber(csState.getCssNumber());
-        historyState.setCshsWarn(String.valueOf(csState.getCssWarn()));
-        historyState.setCshsPower(String.valueOf(csState.getCssPower()));
-        historyState.setCshsLongitude(String.valueOf(csState.getCssLongitude()));
-        historyState.setCshsLatitude(String.valueOf(csState.getCssLatitude()));
-        historyState.setCshsCsq(String.valueOf(csState.getCssCsq()));
-        historyState.setCshsCurrentTime(csState.getCssCurrentTime());
-        historyState.setCshsDir(String.valueOf(csState.getCssDir()));
-        historyState.setCshsAddTime(new Date());
-        historyState.setCshsMileage(String.valueOf(csState.getCssMileage()));
-        historyState.setCshsOrder(String.valueOf(csState.getCssOrder()));
-        historyState.setCshsTemperature(String.valueOf(csState.getCssTemperature()));
-        historyState.setCshsEngineT(String.valueOf(csState.getCssEngineT()));
-        historyState.setCshsOil(String.valueOf(csState.getCssOil()));
-        historyState.setCshsRented(String.valueOf(csState.getCssRented()));
-        historyState.setCshsPower(String.valueOf(csState.getCssPower()));
-        historyState.setCshsFuelMileage(String.valueOf(csState.getCssFuelMileage()));
-        historyState.setCshsElectricMileage(String.valueOf(csState.getCssElectricMileage()));
-
-        historyState.setCshsCircular(String.valueOf(csState.getCssCircular()));
-        historyState.setCshsPtc(String.valueOf(csState.getCssPtc()));
-        historyState.setCshsCompres(String.valueOf(csState.getCssCompres()));
-        historyState.setCshsFan(String.valueOf(csState.getCssFan()));
-        historyState.setCshsSaving(String.valueOf(csState.getCssSaving()));
-        historyState.setCshsDoor(String.valueOf(csState.getCssDoor()));
-
-        historyState.setCshsEngine(csState.getCssEngine().longValue());
-        historyState.setCshsKey(csState.getCssKey().longValue());
-        historyState.setCshsLight(csState.getCssLight().longValue());
-        historyState.setCshsLock(csState.getCssLock().longValue());
-
-        // TODO:依据车型Can解析
-        historyState.setCshsObdMile(String.valueOf(csState.getCssObdMile()));
-        historyState.setCshsSpeed(String.valueOf(csState.getCssSpeed()));
-        historyState.setCshsEndurance(String.valueOf(csState.getCssEndurance()));
-        historyState.setCshsMotor(String.valueOf(csState.getCssMotor()));
-        historyState.setCshsEvBattery(String.valueOf(csState.getCssEvBattery()));
-        historyState.setCshsCharging(String.valueOf(csState.getCssCharging()));
-        historyState.setCshsMoData(csState.getCssMoData());
-
-        historyState.setCshsGpsValid(Integer.valueOf(csState.getCssGpsValid()));
-        historyState.setCshsGpsCn(Integer.valueOf(csState.getCssGpsCn()));
-        historyState.setCshsGpsCount(Integer.valueOf(csState.getCssGpsCount()));
-        updateStateService.insertHis(historyState);
     }
 
     /**

@@ -1,11 +1,14 @@
 package com.ccclubs.engine.rule.inf.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.*;
 import com.ccclubs.engine.rule.inf.IMqAckService;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
@@ -15,6 +18,9 @@ import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
 import com.ccclubs.protocol.inf.IParseDataService;
 import com.ccclubs.protocol.util.*;
+import com.ccclubs.pub.orm.model.CsMachine;
+import com.ccclubs.pub.orm.model.CsState;
+import com.ccclubs.pub.orm.model.SrvHost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +55,12 @@ public class MqMessageProcessService implements IMqMessageProcessService {
 
     @Resource
     RedisHelper redisHelper;
+
+    @Resource
+    TerminalUtils terminalUtils;
+
+    @Resource
+    QueryAppInfoService queryHostInfoService;
 
     /**
      * 通过 TAG 区分是哪种协议
@@ -90,7 +102,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 if (jvi == null) {
                     return;
                 }
-                logicHelperJt808.saveStatusData(msgFromTerminal, jvi);
+                CsState csState = logicHelperJt808.saveStatusData(msgFromTerminal, jvi);
+                transferToMq(csState);
             } else if (headerType == 0x0704) {
                 // 定位补报，需要将补报的定位信息批量入库
                 JT_0704 rd = (JT_0704) msgFromTerminal.getMessageContents();
@@ -177,9 +190,56 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                     .getMessage(topic, tag, message);
 
             if (mqMessage != null) {
+                CsMachine csMachine = terminalUtils.getCsMachineBySim(RuleEngineConstant.REDIS_KEY_SIMNO,message.getSimNo());
+                // 只有标记为地标类型的终端才转发。
+                if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
+                    .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
+                    return;
+                }
                 client.send(mqMessage);
             } else {
                 logger.error(message.getSimNo() + " 未授权给应用");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+
+    /**
+     * 转发到MQ，已有绑定关系，不具备分时租赁功能的808协议的0200定位数据
+     */
+    private void transferToMq(CsState csState) {
+        try {
+            if (csState == null) {
+                return;
+            }
+
+            MachineMapping mapping = terminalUtils.getMapping(RuleEngineConstant.REDIS_KEY_CARNUM,csState.getCssNumber());
+            // 终端未绑定到车辆，不转发
+            if (mapping == null || mapping.getCar() == null) {
+                return;
+            }
+            // 终端具备分时租赁功能，不转发，目前按照插件版本>0来判断终端具备分时租赁功能
+            CsMachine csMachine = terminalUtils.getCsMachineByNumber(RuleEngineConstant.REDIS_KEY_CARNUM,mapping.getNumber());
+            if (csMachine == null || (csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
+                return;
+            }
+
+            SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+            if (srvHost == null) {
+                return;
+            }
+
+            Message mqMessage = messageFactory
+                .getMessage(srvHost.getShTopic().trim(),
+                    MqTagProperty.MQ_TERMINAL_STATUS + srvHost.getShId(),
+                    JSON.toJSONBytes(TransformUtils
+                        .transform2TerminalStatus(csMachine, mapping.getVin(), csState)));
+
+            if (mqMessage != null) {
+                client.send(mqMessage);
             }
         } catch (Exception e) {
             e.printStackTrace();
