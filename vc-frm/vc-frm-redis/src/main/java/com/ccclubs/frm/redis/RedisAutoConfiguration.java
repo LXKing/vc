@@ -169,7 +169,7 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
 
     }
 
-    @Primary
+
     @Bean(name = "ttpRedisTemplate")
     @Qualifier(value = "ttpRedisConnectionFactory")
     public StringRedisTemplate ttpRedisTemplate(JedisConnectionFactory connectionFactory) {
@@ -202,6 +202,7 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
 
     }
 
+    @Primary
     @Bean(name = "redisTemplate")
     @Qualifier(value = "ttpRedisConnectionFactory")
     public RedisTemplate redisTemplate(JedisConnectionFactory connectionFactory) {
