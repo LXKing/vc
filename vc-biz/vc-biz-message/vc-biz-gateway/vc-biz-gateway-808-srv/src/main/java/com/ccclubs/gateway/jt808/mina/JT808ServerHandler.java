@@ -48,7 +48,7 @@ public class JT808ServerHandler extends IoHandlerAdapter {
 
   private GpsConnection getConnection(long sessionId, T808Message msg) {
     if (msg == null || msg.getSimNo() == null) {
-      logger.error("错误的空消息:");
+      logger.debug("错误的空消息:");
       return null;
     }
     GpsConnection conn = connctionMap.get(msg.getSimNo());
@@ -117,7 +117,7 @@ public class JT808ServerHandler extends IoHandlerAdapter {
     if (session != null) {
       session.closeOnFlush();
     }
-    this.logger.info("与本地服务器断开连接, SimNo:" + simNo);
+    this.logger.debug("与本地服务器断开连接, SimNo:" + simNo);
   }
 
   public void exceptionCaught(IoSession session, Throwable e) throws Exception {
@@ -126,12 +126,12 @@ public class JT808ServerHandler extends IoHandlerAdapter {
     if (session != null) {
       session.closeOnFlush();
     }
-    this.logger.error(getSimNo(session) + "通讯时发生异常：" + e.getMessage());
+    this.logger.debug(getSimNo(session) + "通讯时发生异常：" + e.getMessage());
   }
 
   public void sessionIdle(IoSession session, IdleStatus idle) throws Exception {
     String simNo = getSimNo(session);
-    this.logger.info(simNo + "空闲时间过长，系统将关闭连接");
+    this.logger.debug(simNo + "空闲时间过长，系统将关闭连接");
     session.closeOnFlush();
   }
 

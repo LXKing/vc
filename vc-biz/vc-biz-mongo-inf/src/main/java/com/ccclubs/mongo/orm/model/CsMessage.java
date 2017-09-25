@@ -4,6 +4,7 @@ import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * 报文
@@ -11,6 +12,7 @@ import java.util.Date;
  * @author jianghaiyang
  * @create 2017-08-09
  **/
+@Document(collection = "CsMessage")
 public class CsMessage extends AbstractDocumentOld implements Serializable {
     //编号
     @AutomaticSequence

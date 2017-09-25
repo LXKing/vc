@@ -245,68 +245,111 @@ public class TerminalUtils {
                 csMachineNew.setCsmSuit(terminalInfo.getModel());
             }
         }
-        //0:车厘子 1:中导 2:慧翰 3:通领
-        if (csMachine.getCsmTeType() != null && 3 == csMachine.getCsmTeType().intValue()) {
-            // 通领硬件版本
-            if (terminalInfo.getVersion() != null && !String.valueOf(terminalInfo.getVersion())
-                    .equals(csMachine.getCsmV2())) {
-                csMachineNew.setCsmV2(String.valueOf(terminalInfo.getVersion()));
-            }
 
-            //通领主版本
-            if (!StringUtils.empty(terminalInfo.getSoftwareVersionI()) && !terminalInfo.getSoftwareVersionI()
+        // FIXME 适配老版本车机属性协议，老版本车机属性不上传{MachineAdditional_Type}
+        if (null == terminalInfo.getMachineType()) {
+            //0:车厘子 1:中导 2:慧翰 3:通领
+            if (csMachine.getCsmTeType() != null && 3 == csMachine.getCsmTeType().intValue()) {
+                // 通领硬件版本
+                if (terminalInfo.getVersion() != null && !String.valueOf(terminalInfo.getVersion())
+                    .equals(csMachine.getCsmV2())) {
+                    csMachineNew.setCsmTlV2(terminalInfo.getVersion());
+                }
+
+                //通领主版本
+                if (terminalInfo.getSoftwareVersionI() != null && !String
+                    .valueOf(terminalInfo.getSoftwareVersionI())
                     .equals(csMachine.getCsmTlV1())) {
-                csMachineNew.setCsmTlV1(terminalInfo.getSoftwareVersionI());
-            }
-            //插件版本
-            if (terminalInfo.getSoftwareVersionII() != null) {
-                if (csMachine.getCsmTlV2() == null
+                    csMachineNew.setCsmTlV1(String.valueOf(terminalInfo.getSoftwareVersionI()));
+                }
+
+                //插件版本
+                if (terminalInfo.getSoftwareVersionII() != null) {
+                    if (csMachine.getCsmTlV2() == null
                         || terminalInfo.getSoftwareVersionII().intValue() != csMachine.getCsmTlV2()
                         .intValue()) {
-                    csMachineNew.setCsmTlV2(terminalInfo.getSoftwareVersionII());
+                        csMachineNew.setCsmTlV2(terminalInfo.getSoftwareVersionII());
+                    }
                 }
             }
-        }
 
-        //0:车厘子 1:中导 2:慧翰 3:通领
-        if (csMachine.getCsmTeType() != null && 1 == csMachine.getCsmTeType().intValue()) {
-            // 中导硬件版本
-            if (terminalInfo.getZHardWareVersion() != null && !String
+            //0:车厘子 1:中导 2:慧翰 3:通领
+            if (csMachine.getCsmTeType() != null && 1 == csMachine.getCsmTeType().intValue()) {
+                // 中导硬件版本
+                if (terminalInfo.getZHardWareVersion() != null && !String
                     .valueOf(terminalInfo.getZHardWareVersion())
                     .equals(csMachine.getCsmV2())) {
-                csMachineNew.setCsmV2(String.valueOf(terminalInfo.getZHardWareVersion()));
-            }
+                    csMachineNew.setCsmTlV2(terminalInfo.getZHardWareVersion());
+                }
 
-            //中导主版本
-            if (!StringUtils.empty(terminalInfo.getZSoftWareVersion()) && !terminalInfo.getZSoftWareVersion()
+                //中导主版本
+                if (!StringUtils.empty(terminalInfo.getZSoftWareVersion()) && !String
+                    .valueOf(terminalInfo.getZSoftWareVersion())
                     .equals(csMachine.getCsmTlV1())) {
-                csMachineNew.setCsmTlV1(terminalInfo.getZSoftWareVersion());
-            }
-            //插件版本
-            if (terminalInfo.getZPluginVersion() != null) {
-                if (csMachine.getCsmTlV2() == null
+                    csMachineNew.setCsmTlV1(terminalInfo.getZSoftWareVersion());
+                }
+
+                //插件版本
+                if (terminalInfo.getZPluginVersion() != null) {
+                    if (csMachine.getCsmTlV2() == null
                         || terminalInfo.getZPluginVersion().intValue() != csMachine.getCsmTlV2()) {
-                    csMachineNew.setCsmTlV2(terminalInfo.getZPluginVersion());
+                        csMachineNew.setCsmTlV2( terminalInfo.getZPluginVersion());
+                    }
                 }
             }
-        }
 
-        //0:车厘子 1:中导 2:慧翰 3:通领
-        if (csMachine.getCsmTeType() != null && 0 == csMachine.getCsmTeType().intValue()) {
-            // 富士康硬件版本
-            if (terminalInfo.getFVersion() != null && !Tools
-                    .ToHexString((short) terminalInfo.getFVersion().intValue())
+            //0:车厘子 1:中导 2:慧翰 3:通领
+            if (csMachine.getCsmTeType() != null && 0 == csMachine.getCsmTeType().intValue()) {
+                // 富士康硬件版本
+                if (terminalInfo.getFVersion() != null && !String
+                    .valueOf(terminalInfo.getFVersion())
                     .equals(csMachine.getCsmV2())) {
-                csMachineNew.setCsmV2(Tools.ToHexString((short) terminalInfo.getFVersion().intValue()));
-            }
+                  csMachineNew.setCsmTlV2(terminalInfo.getFVersion());
+                }
 
-            // 富士康软件版本
-            if (terminalInfo.getFIapVersion() != null && terminalInfo.getFAppVersion() != null) {
-                String softVersion =
+                // 富士康软件版本
+                if (terminalInfo.getFIapVersion() != null && terminalInfo.getFIapVersion() != null) {
+                    String softVersion =
                         Tools.ToHexString((short) terminalInfo.getFIapVersion().intValue()) + Tools
-                                .ToHexString((short) terminalInfo.getFAppVersion().intValue());
-                if (!softVersion.equals(csMachine.getCsmV2())) {
-                    csMachineNew.setCsmV1(softVersion);
+                            .ToHexString((short) terminalInfo.getFAppVersion().intValue());
+                    if (!softVersion.equals(csMachine.getCsmV1())) {
+                      csMachineNew.setCsmTlV1(softVersion);
+                    }
+                }
+                // 富士康IAP版本
+                if (terminalInfo.getFIapVersion() != null && !String
+                    .valueOf(terminalInfo.getFIapVersion())
+                    .equals(csMachine.getCsmTlV1())) {
+                  csMachineNew.setCsmTlV1(String.valueOf(terminalInfo.getFIapVersion()));
+                }
+                // 富士康APP软件版本
+                if (terminalInfo.getFAppVersion() != null) {
+                    if (csMachine.getCsmTlV2() == null
+                        || terminalInfo.getFAppVersion().intValue() != csMachine.getCsmTlV2().intValue()) {
+                      csMachineNew.setCsmTlV2(terminalInfo.getFAppVersion());
+                    }
+                }
+            }
+        } else {
+            // 硬件版本
+            if (terminalInfo.getHardwareVersion() != null && !String
+                .valueOf(terminalInfo.getHardwareVersion())
+                .equals(csMachine.getCsmV2())) {
+              csMachineNew.setCsmTlV2(terminalInfo.getHardwareVersion());
+            }
+            // 软件版本I
+            if (terminalInfo.getSoftwareVersionNewI() != null && !String
+                .valueOf(terminalInfo.getSoftwareVersionNewI())
+                .equals(csMachine.getCsmTlV1())) {
+              csMachineNew.setCsmTlV1(String.valueOf(terminalInfo.getSoftwareVersionNewI()));
+            }
+            //TODO 软件版本II
+            // 插件版本
+            if (terminalInfo.getPluginVersion() != null) {
+                if (csMachine.getCsmTlV2() == null
+                    || terminalInfo.getPluginVersion().intValue() != csMachine.getCsmTlV2()
+                    .intValue()) {
+                  csMachineNew.setCsmTlV2(terminalInfo.getPluginVersion());
                 }
             }
         }
@@ -556,7 +599,6 @@ public class TerminalUtils {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
-
         }
     }
 

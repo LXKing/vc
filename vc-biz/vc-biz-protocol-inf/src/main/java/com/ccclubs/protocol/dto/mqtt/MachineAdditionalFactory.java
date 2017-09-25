@@ -4,11 +4,17 @@ package com.ccclubs.protocol.dto.mqtt;
 import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 
 /**
- * 终端相关信息，通过消息ID，消息长度，消息内容格式组装
- * Created by qsxiaogang on 2017/4/17.
+ * 终端相关信息，通过消息ID，消息长度，消息内容格式组装 Created by qsxiaogang on 2017/4/17.
  */
 public class MachineAdditionalFactory {
 
+  /**
+   * 获取指定的车机属性信息
+   *
+   * @param additionalId 车机属性ID
+   * @param length 车机属性长度
+   * @param bytes 车机属性内容
+   */
   public static IMachineAdditionalItem createMachineAdditionalFactory(int additionalId, byte length,
       byte[] bytes) {
     IMachineAdditionalItem additional = null;
@@ -140,7 +146,6 @@ public class MachineAdditionalFactory {
         additional = new MachineAdditional_Z_PluginVersion();
         additional.ReadFromBytes(bytes);
         break;
-
       case 31:
         additional = new MachineAdditional_OnlineTime();
         additional.ReadFromBytes(bytes);
@@ -157,6 +162,26 @@ public class MachineAdditionalFactory {
         break;
       case 34:
         additional = new MachineAdditional_PepsVersion();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 35:
+        additional = new MachineAdditional_Type();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 36:
+        additional = new MachineAdditional_HardwareVersion();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 37:
+        additional = new MachineAdditional_SoftwareVersionNewI();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 38:
+        additional = new MachineAdditional_SoftwareVersionNewII();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 39:
+        additional = new MachineAdditional_PluginVersion();
         additional.ReadFromBytes(bytes);
         break;
 
@@ -214,8 +239,10 @@ public class MachineAdditionalFactory {
         additional.ReadFromBytes(bytes);
         break;
       case 113:
-        additional = new MachineAdditional_GpsStatus();
-        additional.ReadFromBytes(bytes);
+        MachineAdditional_GpsStatus gpsStatus = new MachineAdditional_GpsStatus();
+        gpsStatus.setAdditionalLength(length);
+        gpsStatus.ReadFromBytes(bytes);
+        additional = gpsStatus;
         break;
       case 114:
         additional = new MachineAdditional_BaseStationStatus();
@@ -227,6 +254,123 @@ public class MachineAdditionalFactory {
         break;
       case 118:
         additional = new MachineAdditional_SOC();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 119:
+        additional = new MachineAdditional_Endurance();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 122:
+        additional = new MachineAdditional_Heading();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 123:
+        additional = new MachineAdditional_GpsCn();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 124:
+        additional = new MachineAdditional_GpsSatelliteCount();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 125:
+        additional = new MachineAdditional_GpsValid();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 126:
+        additional = new MachineAdditional_Oil();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 127:
+        additional = new MachineAdditional_Rpm();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 128:
+        additional = new MachineAdditional_Speed();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 129:
+        additional = new MachineAdditional_Csq();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 130:
+        additional = new MachineAdditional_TerminalTemperature();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 131:
+        additional = new MachineAdditional_TankTemperature();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 132:
+        additional = new MachineAdditional_VehicleWorkingStatus();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 133:
+        additional = new MachineAdditional_VehicleSleepTime();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 136:
+        additional = new MachineAdditional_AirConditionerCircular();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 137:
+        additional = new MachineAdditional_TradeNo();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 138:
+        additional = new MachineAdditional_TradeStatus();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 139:
+        additional = new MachineAdditional_TradeMiles();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 140:
+        MachineAdditional_TradeInitCard tradeInitCard = new MachineAdditional_TradeInitCard();
+        tradeInitCard.setAdditionalLength(length);
+        tradeInitCard.ReadFromBytes(bytes);
+        additional = tradeInitCard;
+        break;
+      case 141:
+        MachineAdditional_TradeTakeCard takeCard = new MachineAdditional_TradeTakeCard();
+        takeCard.setAdditionalLength(length);
+        takeCard.ReadFromBytes(bytes);
+        additional = takeCard;
+        break;
+      case 142:
+        additional = new MachineAdditional_TradeStartTime();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 143:
+        additional = new MachineAdditional_TradeEndTime();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 144:
+        additional = new MachineAdditional_Battery();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 145:
+        additional = new MachineAdditional_Alarm();
+        additional.ReadFromBytes(bytes);
+        break;
+
+      case 146:
+        additional = new MachineAdditional_ReceivedRemoteOrders();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 147:
+        additional = new MachineAdditional_FinallyRemoteTime();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 148:
+        additional = new MachineAdditional_ReceivedCanAmount();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 149:
+        additional = new MachineAdditional_FinallyCanTime();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 150:
+        additional = new MachineAdditional_OutputStatus();
         additional.ReadFromBytes(bytes);
         break;
 

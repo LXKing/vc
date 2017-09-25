@@ -10,7 +10,7 @@ import com.ccclubs.protocol.util.MyBuffer;
 public class MachineAdditional_CanBaudRate implements IMachineAdditionalItem {
 
   /**
-   * CAN波特率
+   * CAN波特率，单位k
    */
   private int canBaudRate;
 

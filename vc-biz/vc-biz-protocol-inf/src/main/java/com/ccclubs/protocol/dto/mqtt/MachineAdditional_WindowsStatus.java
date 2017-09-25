@@ -7,6 +7,7 @@ import com.ccclubs.protocol.util.MyBuffer;
  * Created by qsxiaogang on 2017/4/17.
  * 车窗状态,终端信息
  */
+@Deprecated
 public class MachineAdditional_WindowsStatus implements IMachineAdditionalItem {
 
   /**

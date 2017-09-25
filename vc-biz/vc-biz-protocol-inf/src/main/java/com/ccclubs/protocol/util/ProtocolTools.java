@@ -128,6 +128,40 @@ public class ProtocolTools {
     return (mask << 8) + (value & 0xFF);
   }
 
+  /**
+   * 获取空调当前状态
+   * @param airConditioner
+   * @return
+   */
+  public static int getAirConditionerCircular(int airConditioner) {
+    return airConditioner & 0x01;
+  }
+
+  /**
+   * 获取空调PTC状态
+   * @param airConditioner
+   * @return
+   */
+  public static int getAirConditionerPtc(int airConditioner) {
+    return (airConditioner >> 1) & 0x01;
+  }
+
+  /**
+   * 获取空调压缩机状态
+   * @param airConditioner
+   * @return
+   */
+  public static int getAirConditionerCompres(int airConditioner) {
+    return (airConditioner >> 2) & 0x01;
+  }
+
+  /**
+   * 0x0：OFF 0x1：1档风量 0x2：2档风量 0x3：3档风量 0x4：4档风量
+   */
+  public static int getAirConditionerFan(int airConditioner) {
+    return (airConditioner >> 3) & 0x07;
+  }
+
   public static Object[] getArray(List<Map> requests, List<Map> values) {
     List list = new java.util.ArrayList();
 

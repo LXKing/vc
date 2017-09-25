@@ -4,9 +4,9 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * 主驾驶门状态,终端信息
+ * Created by qsxiaogang on 2017/4/17. 主驾驶门状态,终端信息 {@link MQTT_68_03} 后，废弃不用
  */
+@Deprecated
 public class MachineAdditional_MainDriverDoorStatus implements IMachineAdditionalItem {
 
   /**

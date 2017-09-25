@@ -27,6 +27,7 @@ public class MqAckService implements IMqAckService {
         switch (headerType) {
             case 0x41:
             case 0x66:
+            case 0x68:
                 // 同步时间
                 sendGeneralAck(msg);
                 break;
@@ -47,9 +48,18 @@ public class MqAckService implements IMqAckService {
     private void sendGeneralAck(MqMessage msgFromTerminal) {
 //    byte[] byteMsg = msgFromTerminal.WriteToBytes();
         try {
-            MQTT_66 mqtt_66 = new MQTT_66();
-            mqtt_66.ReadFromBytes(msgFromTerminal.getMsgBody());
-            synchronizeCarTime(msgFromTerminal, mqtt_66);
+            if (msgFromTerminal.getFucCode() == 0x66) {
+                MQTT_66 mqtt_66 = new MQTT_66();
+                mqtt_66.ReadFromBytes(msgFromTerminal.getMsgBody());
+                synchronizeCarTime(msgFromTerminal, mqtt_66.getTime());
+            } else if (msgFromTerminal.getFucCode() == 0x68 && msgFromTerminal.getMsgBody().length > 0) {
+                byte subCode = msgFromTerminal.getMsgBody()[0];
+                if (subCode == 0x03) {
+                    MQTT_68_03 mqtt_68_03 = new MQTT_68_03();
+                    mqtt_68_03.ReadFromBytes(msgFromTerminal.getMsgBody());
+                    synchronizeCarTime(msgFromTerminal, mqtt_68_03.getTime());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -57,14 +67,14 @@ public class MqAckService implements IMqAckService {
     }
 
     @Override
-    public void synchronizeCarTime(MqMessage msg, MQTT_66 mqtt_66) {
+    public void synchronizeCarTime(MqMessage msg, long terminalTime) {
         try {
             if (StringUtils.empty(msg.getCarNumber())) {
                 return;
             }
             long now = System.currentTimeMillis();
             // 如果时间相差大于设置的阈值，则进行时间校正，发送时间同步
-            if (Math.abs(now - mqtt_66.getTime())
+            if (Math.abs(now - terminalTime)
                     > ConstantUtils.TimeSynchronizationDur) {
                 TimeSynchronization timeSynchronization = new TimeSynchronization(
                         msg.getCarNumber(), 0l,

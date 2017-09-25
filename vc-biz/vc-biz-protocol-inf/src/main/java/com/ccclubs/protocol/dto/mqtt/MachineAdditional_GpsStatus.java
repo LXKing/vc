@@ -4,10 +4,14 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * GPS数据，终端信息
+ * Created by qsxiaogang on 2017/4/17. GPS数据，终端信息
  */
 public class MachineAdditional_GpsStatus implements IMachineAdditionalItem {
+
+  // 协议版本2时，长度为12
+  private static int SUBCODE_02_LENGTH = 12;
+  // 协议版本3时，长度为8
+  private static int SUBCODE_03_LENGTH = 8;
 
   private byte additionalLength;
   /**
@@ -28,7 +32,7 @@ public class MachineAdditional_GpsStatus implements IMachineAdditionalItem {
   private int latitudeDecimal;
 
   public int getLongitude() {
-    return longitude & 0xFFFF;
+    return longitude;
   }
 
   public void setLongitude(int longitude) {
@@ -44,7 +48,7 @@ public class MachineAdditional_GpsStatus implements IMachineAdditionalItem {
   }
 
   public int getLatitude() {
-    return latitude & 0xFFFF;
+    return latitude;
   }
 
   public void setLatitude(int latitude) {
@@ -76,19 +80,30 @@ public class MachineAdditional_GpsStatus implements IMachineAdditionalItem {
   @Override
   public byte[] WriteToBytes() {
     MyBuffer buff = new MyBuffer();
-    buff.put((short) getLongitude());
-    buff.put(getLongitudeDecimal());
-    buff.put((short) getLatitude());
-    buff.put(getLatitudeDecimal());
+    if (SUBCODE_03_LENGTH == getAdditionalLength()) {
+      buff.put(getLongitude());
+      buff.put(getLatitude());
+    } else {
+      buff.put((short) getLongitude());
+      buff.put(getLongitudeDecimal());
+      buff.put((short) getLatitude());
+      buff.put(getLatitudeDecimal());
+    }
     return buff.array();
   }
 
   @Override
   public void ReadFromBytes(byte[] bytes) {
     MyBuffer buff = new MyBuffer(bytes);
-    setLongitude(buff.getShort());
-    setLongitudeDecimal(buff.getInt());
-    setLatitude(buff.getShort());
-    setLatitudeDecimal(buff.getInt());
+    if (SUBCODE_03_LENGTH == getAdditionalLength()) {
+      setLongitude(buff.getInt());
+      setLatitude(buff.getInt());
+    } else {
+      setLongitude(buff.getShort());
+      setLongitudeDecimal(buff.getInt());
+      setLatitude(buff.getShort());
+      setLatitudeDecimal(buff.getInt());
+    }
+
   }
 }

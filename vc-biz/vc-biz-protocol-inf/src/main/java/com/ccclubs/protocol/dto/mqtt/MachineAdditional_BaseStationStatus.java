@@ -4,8 +4,7 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * 基站数据，终端信息
+ * Created by qsxiaogang on 2017/4/17. 基站数据，终端信息
  */
 public class MachineAdditional_BaseStationStatus implements IMachineAdditionalItem {
 
@@ -20,7 +19,7 @@ public class MachineAdditional_BaseStationStatus implements IMachineAdditionalIt
   private int ci;
 
   public int getLac() {
-    return lac & 0xFFFF;
+    return lac;
   }
 
   public void setLac(int lac) {
