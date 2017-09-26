@@ -64,6 +64,7 @@ vc-web-command-api       |           prot:7004
 vc-web-command-srv       |           prot:11114
 vc-web-quota-api         |           port:7005
 vc-web-quota-srv         |           port:11115
+vc-web-usr-srv         |           port:11116
 vc-web-gateway-808-srv     |         port:12001
 vc-web-gateway-mqtt-srv     |        port:12002
 vc-web-gateway-gb-srv       |        port:12003
