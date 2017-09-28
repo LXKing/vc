@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>www.ccclubs</groupId>
@@ -7,66 +9,69 @@
   </parent>
   <artifactId>vc-biz-quota-srv</artifactId>
   <dependencies>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-biz-quota-inf</artifactId>
-			<version>${biz.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-biz-quota-orm</artifactId>
-			<version>${biz.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-biz-usr-orm</artifactId>
-			<version>${biz.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-frm-mybatis</artifactId>
-			<version>${frm.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-frm-redis</artifactId>
-			<version>${frm.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-frm-dubbox</artifactId>
-			<version>${frm.version}</version>
-		</dependency>
-		<dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-core</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-		<dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-encryp</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-			<groupId>com.google.guava</groupId>
-   			<artifactId>guava</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math3</artifactId>
-		</dependency>
-
-	  <dependency>
-		  <groupId>www.ccclubs</groupId>
-		  <artifactId>vc-biz-olap-orm</artifactId>
-		  <version>${biz.version}</version>
-	  </dependency>
-
-	  <dependency>
-		  <groupId>www.ccclubs</groupId>
-		  <artifactId>vc-frm-spring</artifactId>
-		  <version>${frm.version}</version>
-	  </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-quota-inf</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-quota-orm</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-usr-orm</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-mybatis</artifactId>
+      <version>${frm.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-redis</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-dubbox</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-core</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-encryp</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-math3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-olap-orm</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-spring</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-mongo-orm</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
   </dependencies>
 </project>
