@@ -7,6 +7,7 @@ import com.ccclubs.common.modify.UpdateRemoteService;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
+import com.ccclubs.engine.cmd.inf.util.CmdEngineConstants;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
@@ -34,6 +35,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -89,7 +91,23 @@ public class ParseOperationService implements IParseDataService {
       processMultipleOperation(tm);
     } else if (headerType == 0x54) {// 新版本众车纷享 订单下发指令应答
       processOrderModifyNew(tm);
+    } else if (headerType == 0x07) {
+      // 新版本钥匙状态数据上报
+      processVehicleKeyStatus(tm);
     }
+  }
+
+  /**
+   * 新版本钥匙状态数据上报
+   */
+  private void processVehicleKeyStatus(MqMessage tm) {
+//    MQTT_07 mqtt_07 = new MQTT_07();
+//    mqtt_07.ReadFromBytes(tm.getMsgBody());
+//
+//    if (mqtt_07.getCount() > 0) {
+    ListOperations ops = redisTemplate.opsForList();
+    ops.leftPush(CmdEngineConstants.REDIS_KEY_VEHICLE_KEY_QUEUE, tm);
+//    }
   }
 
   /**

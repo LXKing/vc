@@ -1,6 +1,7 @@
 package com.ccclubs.engine.cmd.inf.impl;
 
 
+import com.ccclubs.engine.cmd.inf.IMqAckService;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
 import com.ccclubs.protocol.inf.IParseDataService;
@@ -17,6 +18,8 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
     private static Logger logger = LoggerFactory.getLogger(OperationMessageProcessService.class);
 
     private IParseDataService parseDataService;
+
+    private IMqAckService mqAckService;
 
     @Override
     public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
@@ -36,6 +39,8 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
                 mqMessage.setTimeStamp(System.currentTimeMillis());
                 // 消息入库
                 logger.info("start update csRemote in mongo...");
+                getMqAckService().beginAck(mqMessage);
+
                 getParseDataService().processMessage(mqMessage);
             }
         }
@@ -47,5 +52,13 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
 
     public void setParseDataService(IParseDataService parseDataService) {
         this.parseDataService = parseDataService;
+    }
+
+    public IMqAckService getMqAckService() {
+        return mqAckService;
+    }
+
+    public void setMqAckService(IMqAckService mqAckService) {
+        this.mqAckService = mqAckService;
     }
 }

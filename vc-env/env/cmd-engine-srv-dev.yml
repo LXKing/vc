@@ -56,6 +56,34 @@ ons:
   # Tag
   expression: MQTT_03||MQTT_05||MQTT_06||MQTT_0F||MQTT_10||MQTT_46||MQTT_47||MQTT_48||MQTT_49||MQTT_50||MQTT_6F||MQTT_F0
 
+mqttAliyun:
+  #阿里云 mqtt broker 地址
+  host: tcp://mqtt.cn-hangzhou.aliyuncs.com
+  #阿里云 mqtt broker 端口
+  port: 1883
+  #阿里云 mqClient ID 前缀
+  preId: GID_car
+  #阿里云用户名
+  userName: M6dHCyKyKYUCNbW4
+  #阿里云密码
+  pwd: yiBjv0+ZHCqnSXlQCA/W/8EYCkk=
+  #是否记录上行记录
+  logUpDown: true
+
+mqttOwn:
+  #自有 mqtt broker 地址
+  host: tcp://10.252.93.25
+  #阿里云 mqtt broker 端口
+  port: 27736
+  #自有 mqClient ID 前缀
+  preId: cmd
+  #用户名
+  userName: qsxiaogang
+  #密码
+  pwd: 513387369
+  #是否记录上行记录
+  logUpDown: true
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
