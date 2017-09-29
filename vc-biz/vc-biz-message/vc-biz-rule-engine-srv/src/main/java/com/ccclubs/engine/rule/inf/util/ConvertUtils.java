@@ -28,6 +28,51 @@ public abstract class ConvertUtils {
         }
         return result;
     }
+    static String convertToString(Integer param){
+        String result=null;
+        try {
+            result=String.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+    static String convertToString(Double param){
+        String result=null;
+        try {
+            result=String.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+    static String convertToString(Float param){
+        String result=null;
+        try {
+            result=String.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+    static String convertToString(Long param){
+        String result=null;
+        try {
+            result=String.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+    static String convertToString(Byte param){
+        String result=null;
+        try {
+            result=String.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
 
     static Integer convertToInterger(Short param){
         Integer result=null;
@@ -43,6 +88,15 @@ public abstract class ConvertUtils {
         Integer result=null;
         try {
             result=param.intValue();
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+    static Integer convertToInterger(String param){
+        Integer result=null;
+        try {
+            result=Integer.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
         }
@@ -67,6 +121,18 @@ public abstract class ConvertUtils {
         }
         return result;
     }
+
+    static Float convertToFloat(String param){
+        Float result=null;
+        try {
+            result=Float.valueOf(param);
+        }catch (NullPointerException e){
+            //e.getMessage();
+        }
+        return result;
+    }
+
+
     static Float convertToFloat(Short param){
         Float result=null;
         try {
@@ -76,6 +142,8 @@ public abstract class ConvertUtils {
         }
         return result;
     }
+
+
     static Double convertToDouble(BigDecimal param){
         Double result=null;
         try {

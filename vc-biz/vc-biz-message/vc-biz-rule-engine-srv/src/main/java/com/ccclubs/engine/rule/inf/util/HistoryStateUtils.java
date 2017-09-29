@@ -8,6 +8,9 @@ import com.ccclubs.pub.orm.model.CsState;
 import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class HistoryStateUtils extends ConvertUtils{
   @Resource
   UpdateStateService updateStateService;
-
+  private static Logger logger= LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
 
   public void saveHistoryData(CsState csState) {
@@ -87,33 +90,33 @@ public class HistoryStateUtils extends ConvertUtils{
 
     csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
     csStateHistory.setCs_access(convertToInterger(csState.getCssAccess()));
-    csStateHistory.setBase_ci(String.valueOf(csState.getCssBaseCi()));
-    csStateHistory.setBase_lac(String.valueOf(csState.getCssBaseLac()));
+    csStateHistory.setBase_ci(convertToString(csState.getCssBaseCi()));
+    csStateHistory.setBase_lac(convertToString(csState.getCssBaseLac()));
     csStateHistory.setCharging_status(convertToInterger(csState.getCssCharging()));
-    csStateHistory.setCircular_mode(Integer.valueOf(csState.getCssCircular()));
+    csStateHistory.setCircular_mode(convertToInterger(csState.getCssCircular()));
     csStateHistory.setCompre_status(convertToInterger(csState.getCssCompres()));
-    csStateHistory.setCur_order(String.valueOf(csState.getCssOrder()));
+    csStateHistory.setCur_order(convertToString(csState.getCssOrder()));
     if (null!=csState.getCssCurrentTime()){
       csStateHistory.setCurrent_time(csState.getCssCurrentTime().getTime());
     }
-    csStateHistory.setDirection_angle(Float.valueOf(csState.getCssDir()));
-    csStateHistory.setDoor_status(Integer.valueOf(csState.getCssDoor()));
-    csStateHistory.setElec_miles(Float.valueOf(csState.getCssElectricMileage()));
-    csStateHistory.setEndur_miles(Float.valueOf(csState.getCssEndurance()));
+    csStateHistory.setDirection_angle(convertToFloat(csState.getCssDir()));
+    csStateHistory.setDoor_status(convertToInterger(csState.getCssDoor()));
+    csStateHistory.setElec_miles(convertToFloat(csState.getCssElectricMileage()));
+    csStateHistory.setEndur_miles(convertToFloat(csState.getCssEndurance()));
 
     csStateHistory.setEngine_status(convertToInterger(csState.getCssEngine()));
     csStateHistory.setEv_battery(convertToFloat(csState.getCssEvBattery()));
     csStateHistory.setFan_mode(convertToInterger(csState.getCssFan()));
-    csStateHistory.setFuel_miles(Float.valueOf(csState.getCssFuelMileage()));
+    csStateHistory.setFuel_miles(convertToFloat(csState.getCssFuelMileage()));
     csStateHistory.setKey_status(convertToInterger(csState.getCssKey()));
     csStateHistory.setLight_status(csState.getCssLight());
     csStateHistory.setLock_status(csState.getCssLock());
     csStateHistory.setNet_strength(convertToInterger(csState.getCssCsq()));
-    csStateHistory.setNet_type(String.valueOf(csState.getCssNetType()));
+    csStateHistory.setNet_type(convertToString(csState.getCssNetType()));
     csStateHistory.setObd_miles(convertToFloat(csState.getCssObdMile()));
-    csStateHistory.setOil_cost(Float.valueOf(csState.getCssOil()));
-    csStateHistory.setPtc_status(Integer.valueOf(csState.getCssPtc()));
-    csStateHistory.setRent_flg(Integer.valueOf(csState.getCssRented()));
+    csStateHistory.setOil_cost(convertToFloat(csState.getCssOil()));
+    csStateHistory.setPtc_status(convertToInterger(csState.getCssPtc()));
+    csStateHistory.setRent_flg(convertToInterger(csState.getCssRented()));
     csStateHistory.setRfid(csState.getCssRfid());
     csStateHistory.setSaving_mode(convertToInterger(csState.getCssSaving()));
     csStateHistory.setSpeed(convertToFloat(csState.getCssSpeed()));
@@ -123,18 +126,19 @@ public class HistoryStateUtils extends ConvertUtils{
     csStateHistory.setMotor_speed(convertToFloat(csState.getCssMotor()));
     csStateHistory.setLongitude(convertToDouble(csState.getCssLongitude()));
     csStateHistory.setLatitude(convertToDouble(csState.getCssLatitude()));
-    csStateHistory.setEngine_tempe(Float.valueOf(csState.getCssEngineT()));
-    csStateHistory.setTempe(Float.valueOf(csState.getCssTemperature()));
-    csStateHistory.setTotal_miles(Float.valueOf(csState.getCssMileage()));
-    csStateHistory.setGps_num(Integer.valueOf(csState.getCssGpsCount()));
-    csStateHistory.setGps_strength(Integer.valueOf(csState.getCssGpsCn()));
-    csStateHistory.setGps_valid(Integer.valueOf(csState.getCssGpsValid()));
-    csStateHistory.setWarn_code(String.valueOf(csState.getCssWarn()));
+    csStateHistory.setEngine_tempe(convertToFloat(csState.getCssEngineT()));
+    csStateHistory.setTempe(convertToFloat(csState.getCssTemperature()));
+    csStateHistory.setTotal_miles(convertToFloat(csState.getCssMileage()));
+    csStateHistory.setGps_num(convertToInterger(csState.getCssGpsCount()));
+    csStateHistory.setGps_strength(convertToInterger(csState.getCssGpsCn()));
+    csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
+    csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
     String objectJson=JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
+    logger.debug("deal json is ok!" +objectJson);
     HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states",objectJson);
-
+    logger.debug("send post !");
   }
 
 }
