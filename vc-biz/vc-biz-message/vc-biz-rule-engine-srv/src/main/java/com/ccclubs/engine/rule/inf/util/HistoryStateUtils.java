@@ -1,9 +1,12 @@
 package com.ccclubs.engine.rule.inf.util;
 
+import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateStateService;
+import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.pub.orm.model.CsState;
 import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Component;
 public class HistoryStateUtils {
   @Resource
   UpdateStateService updateStateService;
+
+  //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
 
   public void saveHistoryData(CsState csState) {
     CsHistoryState historyState = new CsHistoryState();
@@ -68,4 +73,62 @@ public class HistoryStateUtils {
     historyState.setCshsGpsCount(Integer.valueOf(csState.getCssGpsCount()));
     updateStateService.insertHis(historyState);
   }
+
+
+
+
+  public void saveHistoryDataToHbase(CsState csState) {
+    CarStateHistory csStateHistory=new CarStateHistory();
+
+    csStateHistory.setAdd_time(new Date().getTime());
+    csStateHistory.setCs_number(csState.getCssNumber());
+    csStateHistory.setCs_host(csState.getCssHost().longValue());
+    csStateHistory.setCs_access(csState.getCssAccess().intValue());
+    csStateHistory.setBase_ci(String.valueOf(csState.getCssBaseCi()));
+    csStateHistory.setBase_lac(String.valueOf(csState.getCssBaseLac()));
+    csStateHistory.setCharging_status(csState.getCssCharging().intValue());
+    csStateHistory.setCircular_mode(Integer.valueOf(csState.getCssCircular()));
+    csStateHistory.setCompre_status(csState.getCssCompres().intValue());
+    csStateHistory.setCur_order(String.valueOf(csState.getCssOrder()));
+    csStateHistory.setCurrent_time(csState.getCssCurrentTime().getTime());
+    csStateHistory.setDirection_angle(Float.valueOf(csState.getCssDir()));
+    csStateHistory.setDoor_status(Integer.valueOf(csState.getCssDoor()));
+    csStateHistory.setElec_miles(Float.valueOf(csState.getCssElectricMileage()));
+    csStateHistory.setEndur_miles(Float.valueOf(csState.getCssEndurance()));
+    csStateHistory.setEngine_status(csState.getCssEngine().intValue());
+    csStateHistory.setEv_battery(csState.getCssEvBattery().floatValue());
+    csStateHistory.setFan_mode(csState.getCssFan().intValue());
+    csStateHistory.setFuel_miles(Float.valueOf(csState.getCssFuelMileage()));
+    csStateHistory.setKey_status(csState.getCssKey().intValue());
+    csStateHistory.setLight_status(csState.getCssLight());
+    csStateHistory.setLock_status(csState.getCssLock());
+    csStateHistory.setNet_strength(csState.getCssCsq().intValue());
+    csStateHistory.setNet_type(String.valueOf(csState.getCssNetType()));
+    csStateHistory.setObd_miles(csState.getCssObdMile().floatValue());
+    csStateHistory.setOil_cost(Float.valueOf(csState.getCssOil()));
+    csStateHistory.setPtc_status(Integer.valueOf(csState.getCssPtc()));
+    csStateHistory.setRent_flg(Integer.valueOf(csState.getCssRented()));
+    csStateHistory.setRfid(csState.getCssRfid());
+    csStateHistory.setSaving_mode(csState.getCssSaving().intValue());
+    csStateHistory.setSpeed(csState.getCssSpeed().floatValue());
+    csStateHistory.setUser_rfid(csState.getCssRfidDte());
+    csStateHistory.setRelate_car(csState.getCssCar().longValue());
+    csStateHistory.setPower_reserve(csState.getCssPower().floatValue());
+    csStateHistory.setMotor_speed(csState.getCssMotor().floatValue());
+    csStateHistory.setLongitude(csState.getCssLongitude().doubleValue());
+    csStateHistory.setLatitude(csState.getCssLatitude().doubleValue());
+    csStateHistory.setEngine_tempe(Float.valueOf(csState.getCssEngineT()));
+    csStateHistory.setTempe(Float.valueOf(csState.getCssTemperature()));
+    csStateHistory.setTotal_miles(Float.valueOf(csState.getCssMileage()));
+    csStateHistory.setGps_num(Integer.valueOf(csState.getCssGpsCount()));
+    csStateHistory.setGps_strength(Integer.valueOf(csState.getCssGpsCn()));
+    csStateHistory.setGps_valid(Integer.valueOf(csState.getCssGpsValid()));
+    csStateHistory.setWarn_code(String.valueOf(csState.getCssWarn()));
+
+    String objectJson=JSON.toJSONString(csStateHistory);
+    //concurrentLinkedQueue.add(objectJson);
+    HttpClientUtil.doPostJson("http://127.0.0.1:8080/carhistory/states",objectJson);
+
+  }
+
 }
