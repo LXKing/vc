@@ -172,7 +172,8 @@ public class LogicHelperMqtt {
     }
 
     if (newState != null) {
-      historyStateUtils.saveHistoryData(newState);
+      //historyStateUtils.saveHistoryData(newState);
+      historyStateUtils.saveHistoryDataToHbase(newState);
     }
   }
 
@@ -285,7 +286,8 @@ public class LogicHelperMqtt {
     }
 
     if (newState != null) {
-      historyStateUtils.saveHistoryData(newState);
+//      historyStateUtils.saveHistoryData(newState);
+      historyStateUtils.saveHistoryDataToHbase(newState);
     }
   }
 
