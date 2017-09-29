@@ -127,7 +127,7 @@ public class HistoryStateUtils {
 
     String objectJson=JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
-    HttpClientUtil.doPostJson("http://127.0.0.1:8080/carhistory/states",objectJson);
+    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states",objectJson);
 
   }
 
