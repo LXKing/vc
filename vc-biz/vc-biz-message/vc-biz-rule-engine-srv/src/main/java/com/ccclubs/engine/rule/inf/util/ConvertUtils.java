@@ -16,6 +16,8 @@ public abstract class ConvertUtils {
             result=param.longValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -25,6 +27,8 @@ public abstract class ConvertUtils {
             result=param.longValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -34,6 +38,8 @@ public abstract class ConvertUtils {
             result=String.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -43,6 +49,8 @@ public abstract class ConvertUtils {
             result=String.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -52,6 +60,8 @@ public abstract class ConvertUtils {
             result=String.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -61,6 +71,8 @@ public abstract class ConvertUtils {
             result=String.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -71,6 +83,9 @@ public abstract class ConvertUtils {
         }catch (NullPointerException e){
             //e.getMessage();
         }
+        catch (Exception e){
+
+        }
         return result;
     }
 
@@ -80,6 +95,8 @@ public abstract class ConvertUtils {
             result=param.intValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -90,6 +107,8 @@ public abstract class ConvertUtils {
             result=param.intValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -99,6 +118,8 @@ public abstract class ConvertUtils {
             result=Integer.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -109,6 +130,8 @@ public abstract class ConvertUtils {
             result=param.floatValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -118,6 +141,8 @@ public abstract class ConvertUtils {
             result=param.floatValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -128,6 +153,8 @@ public abstract class ConvertUtils {
             result=Float.valueOf(param);
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -139,6 +166,8 @@ public abstract class ConvertUtils {
             result=param.floatValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
@@ -150,6 +179,8 @@ public abstract class ConvertUtils {
             result=param.doubleValue();
         }catch (NullPointerException e){
             //e.getMessage();
+        }catch (Exception e){
+
         }
         return result;
     }
