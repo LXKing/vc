@@ -12,6 +12,8 @@ import com.ccclubs.protocol.dto.mqtt.MQTT_07;
 import com.ccclubs.protocol.dto.mqtt.MQTT_07_Item;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
@@ -67,8 +69,11 @@ public class ProcessJobs implements ApplicationContextAware {
     Object keyStatus = redisTemplate.opsForList()
         .rightPop(CmdEngineConstants.REDIS_KEY_VEHICLE_KEY_QUEUE);
     if (null != keyStatus) {
-      MqMessage input = (MqMessage) keyStatus;
-
+      MqMessage input = new MqMessage();
+      input.ReadFromBytes(Tools.HexString2Bytes(keyStatus.toString()));
+      if (input == null || StringUtils.empty(input.getCarNumber())) {
+        return;
+      }
       CsMachine csMachine = queryTerminalService.queryTerminalByCarNumber(input.getCarNumber());
       if (null == csMachine) {
         logger.warn("{} 终端在系统中不存在", input.getCarNumber());

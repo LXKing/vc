@@ -6,5 +6,5 @@ package com.ccclubs.engine.cmd.inf.util;
  **/
 public class CmdEngineConstants {
     /*钥匙状态队列，主要为了将并发转换为串行*/
-    public static final String REDIS_KEY_VEHICLE_KEY_QUEUE = "upgrades:req";
+    public static final String REDIS_KEY_VEHICLE_KEY_QUEUE = "vehicle:key:req";
 }

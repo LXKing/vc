@@ -163,7 +163,7 @@ public class RuleEngineConfig {
     public MqManager mqManager(IMqAckService ackService) {
         MqManager mqManager = new MqManager();
         mqManager.setMqClient(mqClient());
-        mqManager.setMqClient(mqttClient());
+        mqManager.setMqttClient(mqttClient());
         mqManager.setMqAckService(ackService);
 
         return mqManager;

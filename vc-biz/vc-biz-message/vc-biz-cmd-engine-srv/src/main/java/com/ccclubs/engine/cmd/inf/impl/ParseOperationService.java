@@ -105,8 +105,9 @@ public class ParseOperationService implements IParseDataService {
 //    mqtt_07.ReadFromBytes(tm.getMsgBody());
 //
 //    if (mqtt_07.getCount() > 0) {
+    logger.debug("收到钥匙状态改变数据： {}",tm.getHexString());
     ListOperations ops = redisTemplate.opsForList();
-    ops.leftPush(CmdEngineConstants.REDIS_KEY_VEHICLE_KEY_QUEUE, tm);
+    ops.leftPush(CmdEngineConstants.REDIS_KEY_VEHICLE_KEY_QUEUE, tm.getHexString());
 //    }
   }
 

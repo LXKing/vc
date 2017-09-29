@@ -7,10 +7,12 @@ import com.ccclubs.engine.cmd.inf.IMqAckService;
 import com.ccclubs.engine.cmd.inf.MqManager;
 import com.ccclubs.engine.cmd.inf.impl.MqAckService;
 import com.ccclubs.engine.cmd.inf.impl.MqMessageListener;
+import com.ccclubs.engine.cmd.inf.impl.MqttMessageProcessService;
 import com.ccclubs.engine.cmd.inf.impl.OperationMessageProcessService;
 import com.ccclubs.engine.cmd.inf.impl.ParseOperationService;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.MqttOwnProperties;
+import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
 import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
 import com.ccclubs.frm.ons.OnsProperties;
@@ -51,7 +53,6 @@ public class CmdEngineConfig {
      * @return
      */
     @Bean(name = "mqClient", initMethod = "start", destroyMethod = "stop")
-    @Primary
     public IMqClient mqClient() {
         MqMqttClient mqClient = new MqMqttClient();
         mqClient.setHost(mqttAliyunProperties.getHost());
@@ -63,13 +64,21 @@ public class CmdEngineConfig {
         return mqClient;
     }
 
+//    @Bean(name = "mqttProcess")
+//    @Primary
+//    public IMessageProcessService getMessageProcessService() {
+//        return new MqttMessageProcessService();
+//    }
+
     /**
      * 主要是用于自有MQTT远程控制
      *
      * @return
      */
     @Bean(name = "mqttClient", initMethod = "start", destroyMethod = "stop")
+    @Primary
     public IMqClient mqttClient() {
+        logger.info("init mqttClient...");
         MqMqttClient ownMqClient = new MqMqttClient();
         ownMqClient.setHost(mqttOwnProperties.getHost());
         ownMqClient.setListenPort(mqttOwnProperties.getPort());
@@ -77,6 +86,10 @@ public class CmdEngineConfig {
         ownMqClient.setUserName(mqttOwnProperties.getUserName());
         ownMqClient.setPwd(mqttOwnProperties.getPwd());
         ownMqClient.setLogUpDown(mqttOwnProperties.isLogUpDown());
+
+//        ownMqClient.setSubTopic(mqttOwnProperties.getSubTopic());
+//        ownMqClient.setMqMessageProcessService(getMessageProcessService());
+
         return ownMqClient;
     }
 
@@ -152,7 +165,7 @@ public class CmdEngineConfig {
     public MqManager mqManager(IMqAckService ackService) {
         MqManager mqManager = new MqManager();
         mqManager.setMqClient(mqClient());
-        mqManager.setMqClient(mqttClient());
+        mqManager.setMqttClient(mqttClient());
         mqManager.setMqAckService(ackService);
 
         return mqManager;
