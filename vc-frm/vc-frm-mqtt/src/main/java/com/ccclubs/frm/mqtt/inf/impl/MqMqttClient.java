@@ -58,7 +58,7 @@ public class MqMqttClient implements IMqClient {
         mqttClientReceiver.publish(topic, srcByteArray, 0, false);
 
         if (logUpDown) {
-          logger.info("UP >> " + MqttHelper.toHexString(srcByteArray));
+          logger.info("DOWN >> " + MqttHelper.toHexString(srcByteArray));
         }
 
         return true;
@@ -157,7 +157,7 @@ public class MqMqttClient implements IMqClient {
         Thread.sleep(30 * 1000l);
       } catch (InterruptedException e1) {
       }
-      logger.info("Check alive >> ");
+      logger.info("{} Check alive >> ",mqttClientReceiver.getClientId());
       if (mqttClientReceiver == null) {
         connect();
       } else if (!mqttClientReceiver.isConnected()) {
