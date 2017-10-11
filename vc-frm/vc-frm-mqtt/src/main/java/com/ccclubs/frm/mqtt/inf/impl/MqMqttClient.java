@@ -2,6 +2,7 @@ package com.ccclubs.frm.mqtt.inf.impl;
 
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
+import com.ccclubs.frm.mqtt.util.MqttConstants;
 import com.ccclubs.frm.mqtt.util.MqttHelper;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
@@ -47,15 +48,15 @@ public class MqMqttClient implements IMqClient {
   }
 
   @Override
-  public boolean send(String topic, byte[] srcByteArray) {
+  public boolean send(String topic, byte[] srcByteArray, int qos) {
     try {
       if (null == topic || topic.trim().length() == 0) {
         throw new Exception("downTopic 为空");
       }
 
       if (mqttClientReceiver != null && mqttClientReceiver.isConnected()) {
-        
-        mqttClientReceiver.publish(topic, srcByteArray, 0, false);
+
+        mqttClientReceiver.publish(topic, srcByteArray, qos, false);
 
         if (logUpDown) {
           logger.info("DOWN >> " + MqttHelper.toHexString(srcByteArray));
@@ -71,6 +72,11 @@ public class MqMqttClient implements IMqClient {
       logger.error(e.getMessage());
       return false;
     }
+  }
+
+  @Override
+  public boolean send(String topic, byte[] srcByteArray) {
+    return send(topic, srcByteArray, MqttConstants.QOS_0);
   }
 
   @Override
@@ -157,7 +163,7 @@ public class MqMqttClient implements IMqClient {
         Thread.sleep(30 * 1000l);
       } catch (InterruptedException e1) {
       }
-      logger.info("{} Check alive >> ",mqttClientReceiver.getClientId());
+      logger.info("{} Check alive >> ", mqttClientReceiver.getClientId());
       if (mqttClientReceiver == null) {
         connect();
       } else if (!mqttClientReceiver.isConnected()) {

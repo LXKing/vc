@@ -3,6 +3,7 @@ package com.ccclubs.engine.rule.inf;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
+import com.ccclubs.frm.mqtt.util.MqttConstants;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
@@ -43,7 +44,7 @@ public class MqManager {
      * 默认为p2p，点对点消息
      */
     public void Send(MqMessage msg) {
-        CsMachine csMachine = queryTerminalService.queryTerminalByCarNumber(msg.getCarNumber());
+        CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(msg.getCarNumber());
         if (csMachine == null || msg == null) {
             return;
         }
@@ -60,7 +61,7 @@ public class MqManager {
 
         T808Message ts = ProtocolTools
                 .package2T808Message(csMachine.getCsmMobile().trim(), msg.WriteToBytes());
-        getMqClient().send(downTopic, ts.WriteToBytes());
+        getMqClient().send(downTopic, ts.WriteToBytes(), MqttConstants.QOS_1);
     }
 
     /**

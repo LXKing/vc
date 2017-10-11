@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -67,7 +66,7 @@ public class ValidateService {
             }
         }
         if (StringUtils.isNotEmpty(teNo)) {
-            CsMachine machine = terminalService.queryTerminalByTeNo(teNo);
+            CsMachine machine = terminalService.queryCsMachineByTeNo(teNo);
             if (null != machine) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());

@@ -49,4 +49,15 @@ public class RedisHelper {
     valueOperations.set(AssembleHelper.cmdKey(keyPart), value, RuleEngineConstant.RENOTE_EXPIRE,
         TimeUnit.SECONDS);
   }
+
+  public void setMappingOld(Class modelClass, String keyPart, Object value) {
+    ValueOperations valueOperations = myRedisTemplate.opsForValue();
+    valueOperations
+        .set(new StringBuilder().append("OBJ.")
+                .append(modelClass.getName().replaceAll("[^\\.]*\\.", "")).append(".").append(keyPart),
+            value,
+            RuleEngineConstant.MAPPING_REDIS_EXPIRE,
+            TimeUnit.SECONDS);
+  }
+
 }

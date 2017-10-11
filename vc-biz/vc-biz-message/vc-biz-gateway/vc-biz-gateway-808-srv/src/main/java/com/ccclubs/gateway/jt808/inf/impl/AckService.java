@@ -196,7 +196,7 @@ public class AckService implements IAckService {
         // result = 1;// 车辆已被注册
         // } else {
 
-        CsMachine csMachine =queryTerminalService.queryTerminalByTeNo(registerData.getTerminalId());
+        CsMachine csMachine =queryTerminalService.queryCsMachineByTeNo(registerData.getTerminalId());
         //
         CsTerminal csTerminal = queryTerminalService
             .queryCsTerminalByCstIdd(registerData.getTerminalId());
@@ -238,7 +238,6 @@ public class AckService implements IAckService {
             updateMachine.setCsmUpdateTime(new Date());
             updateMachine.setCsmCeFirst(new Date());
             updateTerminalService.update(updateMachine);
-
           }
         }
 

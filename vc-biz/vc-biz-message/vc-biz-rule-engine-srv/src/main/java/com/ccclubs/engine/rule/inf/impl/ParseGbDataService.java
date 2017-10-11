@@ -2,23 +2,23 @@ package com.ccclubs.engine.rule.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.engine.core.util.MachineMapping;
+import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
-import com.ccclubs.mongo.orm.dao.CsMessageDao;
 import com.ccclubs.mongo.orm.model.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.pub.orm.model.CsVehicle;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 /**
@@ -39,29 +39,25 @@ public class ParseGbDataService implements IParseGbDataService {
 
   @Resource
   private RedisTemplate redisTemplate;
-  @Resource
-  RedisHelper redisHelper;
-  @Resource
-  private CsMessageDao csMessageDao;
+  @Autowired
+  QueryVehicleService queryVehicleService;
+
 
   @Override
   public void processMessage(GBMessage message, byte[] srcByteArray) {
-    HashOperations ops = redisTemplate.opsForHash();
-    MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_VIN, message.getVin());
-    if (mapping == null) {
-      redisHelper.setNotExist(message.getVin(), true);
-      return;
-    }
-    if (mapping.getCar() == null || mapping.getAccess() == null) {
+
+    CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(message.getVin());
+
+    if (null == csVehicle) {
+      logger.info("国标协议终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getVin());
       return;
     }
 
     transferToMq(message);
 
     CsMessage csMessage = new CsMessage();
-    csMessage.setCsmAccess(mapping.getAccess());
-    csMessage.setCsmCar(mapping.getCar());
+    csMessage.setCsmAccess(csVehicle.getCsvAccess());
+    csMessage.setCsmCar(csVehicle.getCsvId().longValue());
     csMessage.setCsmVin(message.getVin());
     csMessage.setCsmProtocol((short) 0);
     csMessage.setCsmType((short) message.getMessageType());
@@ -75,7 +71,12 @@ public class ParseGbDataService implements IParseGbDataService {
     csMessage.setCsmData(message.getPacketDescr());
     csMessage.setCsmStatus((short) 1);
 
-    csMessageDao.save(csMessage);
+    //将 csMessage 放如 redis 队列
+    /**
+     * {@link com.ccclubs.engine.rule.inf.task.BatchHistoryMessageInsertMongoJobs} 等待消费
+     */
+    ListOperations ops = redisTemplate.opsForList();
+    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, csMessage);
   }
 
   /**

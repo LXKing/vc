@@ -64,7 +64,7 @@ public class MessageFactory {
      * @param mqttMessage 需要发送的内容
      */
     public Message getMessage(String topic, String tags, MqMessage mqttMessage) {
-        CsMachine csMachine = queryTerminalService.queryTerminalByCarNumber(mqttMessage.getCarNumber());
+        CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(mqttMessage.getCarNumber());
         if (csMachine == null || csMachine.getCsmId() <= 0) {
             return null;
         }

@@ -7,7 +7,7 @@ import com.ccclubs.common.modify.UpdateRemoteService;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.engine.cmd.inf.util.CmdEngineConstants;
+import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
@@ -35,8 +35,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 处理远程控制结果
@@ -47,17 +45,11 @@ public class ParseOperationService implements IParseDataService {
 
   private Producer client;
 
-//    @Resource
-//    TerminalUtils terminalUtils;
-
   @Resource
   MessageFactory messageFactory;
 
   @Value("${" + ConstantUtils.MQ_TOPIC + "}")
   String topic;
-
-  @Resource
-  private RedisTemplate redisTemplate;
 
   @Resource
   RedisHelper redisHelper;
@@ -73,6 +65,8 @@ public class ParseOperationService implements IParseDataService {
   UpdateTerminalService updateTerminalService;
   @Resource
   UpdateRemoteService updateRemoteService;
+  @Resource
+  EnvironmentUtils environmentUtils;
 
   @Override
   public void processMessage(MqMessage tm) {
@@ -91,24 +85,7 @@ public class ParseOperationService implements IParseDataService {
       processMultipleOperation(tm);
     } else if (headerType == 0x54) {// 新版本众车纷享 订单下发指令应答
       processOrderModifyNew(tm);
-    } else if (headerType == 0x07) {
-      // 新版本钥匙状态数据上报
-      processVehicleKeyStatus(tm);
     }
-  }
-
-  /**
-   * 新版本钥匙状态数据上报
-   */
-  private void processVehicleKeyStatus(MqMessage tm) {
-//    MQTT_07 mqtt_07 = new MQTT_07();
-//    mqtt_07.ReadFromBytes(tm.getMsgBody());
-//
-//    if (mqtt_07.getCount() > 0) {
-    logger.debug("收到钥匙状态改变数据： {}",tm.getHexString());
-    ListOperations ops = redisTemplate.opsForList();
-    ops.leftPush(CmdEngineConstants.REDIS_KEY_VEHICLE_KEY_QUEUE, tm.getHexString());
-//    }
   }
 
   /**
@@ -471,12 +448,9 @@ public class ParseOperationService implements IParseDataService {
    * 修改终端BLE参数，如：MAC地址或蓝牙密钥
    */
   private void modifyTerminalBle(MqMessage message) {
-//        HashOperations ops = redisTemplate.opsForHash();
-//        MachineMapping mapping = (MachineMapping) ops.get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-//        if (mapping == null || mapping.getMachine() == null) {
-//            return;
-//        }
-    CsMachine csMachineBase = queryTerminalService.queryTerminalByCarNumber(message.getCarNumber());
+
+    CsMachine csMachineBase = queryTerminalService
+        .queryCsMachineByCarNumber(message.getCarNumber());
     if (csMachineBase == null) {
       return;
     }
@@ -543,7 +517,6 @@ public class ParseOperationService implements IParseDataService {
    */
   public void processOrderModifyNew(MqMessage message) {
     try {
-//      transferToMq(MqTagProperty.MQ_TERMINAL_ORDER, message);
       OrderUpStreamII orderUpStream = OrderUpStreamII
           .readObject(Tools.HexString2Bytes(message.getHexString()), OrderUpStreamII.class);
       String jsonString;
@@ -578,12 +551,8 @@ public class ParseOperationService implements IParseDataService {
    */
   private void transferRemoteStatus(MqMessage message, String jsonString) {
     try {
-//            CsMachine csMachine = terminalUtils.getMappingMachine(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-//            if (csMachine == null) {
-//                return;
-//            }
 
-      CsMachine csMachine = queryTerminalService.queryTerminalByCarNumber(message.getCarNumber());
+      CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
       if (csMachine == null) {
         return;
       }
@@ -597,7 +566,7 @@ public class ParseOperationService implements IParseDataService {
         Message mqMessage = messageFactory
             .getMessage(topic, MqTagProperty.MQ_TERMINAL_REMOTE,
                 message);
-        if (mqMessage != null) {
+        if (mqMessage != null && environmentUtils.isProdEnvironment()) {
           client.send(mqMessage);
         }
       } else {
@@ -605,7 +574,7 @@ public class ParseOperationService implements IParseDataService {
         Message mqMessage = messageFactory.getMessage(srvHost.getShTopic().trim(),
             MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
             JSON.toJSONBytes(jsonString));
-        if (mqMessage != null) {
+        if (mqMessage != null && environmentUtils.isProdEnvironment()) {
           client.sendOneway(mqMessage);
         }
       }

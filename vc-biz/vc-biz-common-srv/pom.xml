@@ -50,6 +50,11 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-cache</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
