@@ -70,7 +70,7 @@ public class MachineAdditional_GpsStatus implements IMachineAdditionalItem {
 
   @Override
   public byte getAdditionalLength() {
-    return 12;
+    return this.additionalLength;
   }
 
   public void setAdditionalLength(byte additionalLength) {

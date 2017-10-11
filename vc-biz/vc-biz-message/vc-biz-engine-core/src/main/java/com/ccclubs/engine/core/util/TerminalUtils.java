@@ -121,7 +121,7 @@ public class TerminalUtils {
      * @return CsMachine
      */
     public CsMachine getCsMachineByTerno(final String terNo) {
-        CsMachine machine = queryTerminalService.queryTerminalByTeNo(terNo);
+        CsMachine machine = queryTerminalService.queryCsMachineByTeNo(terNo);
         return machine;
     }
 

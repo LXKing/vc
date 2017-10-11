@@ -1,0 +1,5 @@
+autoload:
+  cache:
+    proxy-target-class: true
+    config:
+      namespace: ccclubs

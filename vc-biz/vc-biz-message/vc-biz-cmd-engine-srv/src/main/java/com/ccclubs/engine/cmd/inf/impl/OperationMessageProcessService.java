@@ -1,7 +1,6 @@
 package com.ccclubs.engine.cmd.inf.impl;
 
 
-import com.ccclubs.engine.cmd.inf.IMqAckService;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
 import com.ccclubs.protocol.inf.IParseDataService;
@@ -15,50 +14,38 @@ import org.slf4j.LoggerFactory;
  */
 public class OperationMessageProcessService implements IMqMessageProcessService {
 
-    private static Logger logger = LoggerFactory.getLogger(OperationMessageProcessService.class);
+  private static Logger logger = LoggerFactory.getLogger(OperationMessageProcessService.class);
 
-    private IParseDataService parseDataService;
+  private IParseDataService parseDataService;
 
-    private IMqAckService mqAckService;
-
-    @Override
-    public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
-                                final String hexString) {
-        if (StringUtils.empty(tag)) {
-            return;
-        }
-
-        // MQTT 分时租赁 协议
-        if (tag.startsWith(MqTagUtils.PROTOCOL_MQTT)) {
-            MqMessage mqMessage = new MqMessage();
-            mqMessage.ReadFromBytes(srcByteArray);
-            if (mqMessage != null && StringUtils.notEmpty(mqMessage.getCarNumber())) {
-                mqMessage.setUpTopic(upTopic);
-                mqMessage.setHexString(hexString);
-                // 设置时间有效性，暂时设置为 60*1000 ，主要用于流转
-                mqMessage.setTimeStamp(System.currentTimeMillis());
-                // 消息入库
-                logger.info("start update csRemote in mongo...");
-                getMqAckService().beginAck(mqMessage);
-
-                getParseDataService().processMessage(mqMessage);
-            }
-        }
+  @Override
+  public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
+      final String hexString) {
+    if (StringUtils.empty(tag)) {
+      return;
     }
 
-    public IParseDataService getParseDataService() {
-        return parseDataService;
+    // MQTT 分时租赁 协议
+    if (tag.startsWith(MqTagUtils.PROTOCOL_MQTT)) {
+      MqMessage mqMessage = new MqMessage();
+      mqMessage.ReadFromBytes(srcByteArray);
+      if (mqMessage != null && StringUtils.notEmpty(mqMessage.getCarNumber())) {
+        mqMessage.setUpTopic(upTopic);
+        mqMessage.setHexString(hexString);
+        // 设置时间有效性，暂时设置为 60*1000 ，主要用于流转
+        mqMessage.setTimeStamp(System.currentTimeMillis());
+        // 消息入库
+        logger.info("start update csRemote in mongo...");
+        getParseDataService().processMessage(mqMessage);
+      }
     }
+  }
 
-    public void setParseDataService(IParseDataService parseDataService) {
-        this.parseDataService = parseDataService;
-    }
+  public IParseDataService getParseDataService() {
+    return parseDataService;
+  }
 
-    public IMqAckService getMqAckService() {
-        return mqAckService;
-    }
-
-    public void setMqAckService(IMqAckService mqAckService) {
-        this.mqAckService = mqAckService;
-    }
+  public void setParseDataService(IParseDataService parseDataService) {
+    this.parseDataService = parseDataService;
+  }
 }

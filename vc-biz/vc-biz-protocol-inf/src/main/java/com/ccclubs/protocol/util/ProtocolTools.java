@@ -4,6 +4,7 @@ package com.ccclubs.protocol.util;
 import com.ccclubs.protocol.dto.jt808.JT_0900;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.jt808.T808MessageHeader;
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -130,8 +131,6 @@ public class ProtocolTools {
 
   /**
    * 获取空调当前状态
-   * @param airConditioner
-   * @return
    */
   public static int getAirConditionerCircular(int airConditioner) {
     return airConditioner & 0x01;
@@ -139,8 +138,6 @@ public class ProtocolTools {
 
   /**
    * 获取空调PTC状态
-   * @param airConditioner
-   * @return
    */
   public static int getAirConditionerPtc(int airConditioner) {
     return (airConditioner >> 1) & 0x01;
@@ -148,8 +145,6 @@ public class ProtocolTools {
 
   /**
    * 获取空调压缩机状态
-   * @param airConditioner
-   * @return
    */
   public static int getAirConditionerCompres(int airConditioner) {
     return (airConditioner >> 2) & 0x01;
@@ -230,5 +225,30 @@ public class ProtocolTools {
       }
     }
     return list.toArray();
+  }
+
+  /**
+   * 判断对象的属性是否全为 null
+   *
+   * @param obj 待检查pojo
+   * @return 如果属性全为null返回true
+   */
+  public static boolean isAllFieldNull(Object obj) throws Exception {
+    Class stuCla = obj.getClass();// 得到类对象
+    Field[] fs = stuCla.getDeclaredFields();//得到属性集合
+    boolean flag = true;
+    for (Field f : fs) {//遍历属性
+      f.setAccessible(true); // 设置属性是可以访问的(私有的也可以)
+      // 忽略 serialVersionUID
+      if ("serialVersionUID".equals(f.getName())) {
+        continue;
+      }
+      Object val = f.get(obj);// 得到此属性的值
+      if (val != null) {//只要有1个属性不为空,那么就不是所有的属性值都为空
+        flag = false;
+        break;
+      }
+    }
+    return flag;
   }
 }

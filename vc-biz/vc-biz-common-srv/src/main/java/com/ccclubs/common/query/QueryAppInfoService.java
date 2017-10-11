@@ -1,14 +1,14 @@
 package com.ccclubs.common.query;
 
-import com.ccclubs.pub.orm.mapper.SrvHostMapper;
+import com.ccclubs.frm.cache.CacheConstants;
 import com.ccclubs.pub.orm.mapper.SrvHostMapper;
 import com.ccclubs.pub.orm.model.SrvHost;
 import com.ccclubs.pub.orm.model.SrvHostExample;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Component;
-
+import com.jarvis.cache.annotation.Cache;
+import com.jarvis.cache.annotation.ExCache;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * 查询接入的应用系统信息
@@ -19,30 +19,31 @@ import java.util.List;
 @Component
 public class QueryAppInfoService {
 
-    @Autowired
-    SrvHostMapper dao;
+  @Autowired
+  SrvHostMapper dao;
 
-    /**
-     * 查询车型
-     *
-     * @param appId 系统约定APPID
-     * @return 车型SrvHost
-     */
-    //@Cacheable(cacheNames = "hosts", key = "#appId")
-    public SrvHost queryHostByAppid(String appId) {
-        SrvHostExample example = new SrvHostExample();
-        SrvHostExample.Criteria criteria = example.createCriteria();
-        criteria.andShAppidEqualTo(appId);
-        List<SrvHost> list = dao.selectByExample(example);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
+  /**
+   * 查询车型
+   *
+   * @param appId 系统约定APPID
+   * @return 车型SrvHost
+   */
+  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shAppid:'+#args[0]", autoload = true, exCache = {
+      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shId:'+#retVal.shId", condition = "!#empty(#retVal) && !#empty(#retVal.shId)")})
+  public SrvHost queryHostByAppid(String appId) {
+    SrvHostExample example = new SrvHostExample();
+    SrvHostExample.Criteria criteria = example.createCriteria();
+    criteria.andShAppidEqualTo(appId);
+    List<SrvHost> list = dao.selectByExample(example);
+    if (list.size() > 0) {
+      return list.get(0);
     }
+    return null;
+  }
 
-    public SrvHost queryHostById(Integer id) {
-        SrvHost host = dao.selectByPrimaryKey(id);
-
-        return host;
-    }
+  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shId:'+#args[0]", autoload = true, exCache = {
+      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shAppid:'+#retVal.shAppid", condition = "!#empty(#retVal) && !#empty(#retVal.shAppid)")})
+  public SrvHost queryHostById(Integer id) {
+    return dao.selectByPrimaryKey(id);
+  }
 }

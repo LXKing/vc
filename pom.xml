@@ -70,6 +70,9 @@
 		<janino.version>3.0.6</janino.version>
 		<!-- JWT -->
 		<jjwt.version>0.7.0</jjwt.version>
+		<!-- autoload-cache -->
+		<autoload-cache.version>6.6</autoload-cache.version>
+		<hessian.version>4.0.38</hessian.version>
 	</properties>
 	<build>
 		<plugins>

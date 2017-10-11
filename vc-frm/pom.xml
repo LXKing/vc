@@ -23,5 +23,6 @@
       <module>vc-frm-mqtt</module>
       <module>vc-frm-ons</module>
         <module>vc-frm-hbase</module>
+        <module>vc-frm-cache</module>
     </modules>
 </project>

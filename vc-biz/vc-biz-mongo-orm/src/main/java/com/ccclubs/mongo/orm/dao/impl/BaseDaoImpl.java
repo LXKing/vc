@@ -92,4 +92,12 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     mongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
         this.getClazz());
   }
+
+  public MongoTemplate getMongoTemplate() {
+    return mongoTemplate;
+  }
+
+  public void setMongoTemplate(MongoTemplate mongoTemplate) {
+    this.mongoTemplate = mongoTemplate;
+  }
 }

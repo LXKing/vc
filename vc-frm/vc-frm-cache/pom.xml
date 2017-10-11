@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vc-frm</artifactId>
+    <groupId>www.ccclubs</groupId>
+    <version>1.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>vc-frm-cache</artifactId>
+  <packaging>jar</packaging>
+  <name>vc-frm-cache</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.qiujiayu</groupId>
+      <artifactId>autoload-cache-spring-boot-starter</artifactId>
+      <version>${autoload-cache.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.caucho</groupId>
+      <artifactId>hessian</artifactId>
+      <version>${hessian.version}</version>
+    </dependency>
+  </dependencies>
+</project>

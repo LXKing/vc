@@ -5,12 +5,10 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.engine.core.util.MachineMapping;
-import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.mongo.orm.dao.CsAlarmDao;
 import com.ccclubs.mongo.orm.model.CsAlarm;
-import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.protocol.dto.mqtt.MQTT_43;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
@@ -30,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -54,6 +53,9 @@ public class LogicHelperMqtt {
   HistoryStateUtils historyStateUtils;
 
   @Resource
+  HistoryCanUtils historyCanUtils;
+
+  @Resource
   QueryStateService queryStateService;
 
   @Resource
@@ -62,26 +64,29 @@ public class LogicHelperMqtt {
   @Autowired
   CsAlarmDao csAlarmDao;
 
-  @Resource
-  RedisHelper redisHelper;
+  /**
+   * 仅更新当前状态，并不写入历史数据
+   *
+   * @param csState 等待更新的历史数据
+   */
+  public void updateStatus(CsState csState) {
+    if (null != csState && null != csState.getCssId() && csState.getCssId() > 0) {
+      ListOperations opsForList = redisTemplate.opsForList();
+      // 需要更新的当前状态加入等待队列
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+    }
+  }
 
   /**
    * 保存状态数据
    */
   public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
+    ListOperations opsForList = redisTemplate.opsForList();
 
     HashOperations ops = redisTemplate.opsForHash();
     final MachineMapping mapping = (MachineMapping) ops
         .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-    if (mapping == null) {
-      logger.error("系统中不存在车机：" + message.getCarNumber());
-      return;
-    }
-    if (mapping.getMachine() == null || mapping.getAccess() == null || StringUtils
-        .empty(mapping.getNumber())) {
-      logger.error("系统中不存在车机：" + message.getCarNumber());
-      return;
-    }
+
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess());
     csMachine.setCsmHost(mapping.getHost().intValue());
@@ -95,7 +100,6 @@ public class LogicHelperMqtt {
     }
 
     final CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
-    CsState newState;
     csState.setCssNumber(message.getCarNumber());
     csState.setCssAddTime(new Date());
     csState.setCssRented(String.valueOf(mqtt_66.getCarStatus() & 0xFF));
@@ -108,7 +112,6 @@ public class LogicHelperMqtt {
     csState.setCssKey((byte) mqtt_66.getKeyStatus());
     //目前档位信息不对，暂时不用
 //        csState.setCssGear(mqtt_66.getGear());
-
     csState.setCssOrder(message.getTransId());
     csState.setCssWarn(mqtt_66.getAlarmType() & 0xFFFF);
     csState.setCssTemperature((short) (mqtt_66.getTemperature() & 0xFF));
@@ -138,7 +141,7 @@ public class LogicHelperMqtt {
     csState.setCssMoData(message.getHexString());
     csState.setCssDir(String.valueOf(mqtt_66.getHeading() & 0xFFFF));
 
-    csState.setCssNetType((byte) mqtt_66.getNetType());
+    csState.setCssNetType(mqtt_66.getNetType());
     csState.setCssBaseLac(mqtt_66.getBaseLAC());
     csState.setCssBaseCi(mqtt_66.getBaseCI());
 
@@ -159,8 +162,10 @@ public class LogicHelperMqtt {
             .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
                 BigDecimal.ROUND_HALF_UP));
       }
-      updateStateService.update(csState);
-      newState = queryStateService.queryStateById(mapping.getState().intValue());
+      // 需要更新的当前状态加入等待队列
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+      // 处理历史状态
+      historyStateUtils.saveHistoryData(csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
@@ -168,12 +173,10 @@ public class LogicHelperMqtt {
       csState.setCssLatitude(AccurateOperationUtils
           .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
               BigDecimal.ROUND_HALF_UP));
-      newState = updateStateService.insert(csState);
-    }
-
-    if (newState != null) {
-      //historyStateUtils.saveHistoryData(newState);
-      historyStateUtils.saveHistoryDataToHbase(newState);
+      // 写入当前状态
+      updateStateService.insert(csState);
+      // 处理历史状态
+      historyStateUtils.saveHistoryData(csState);
     }
   }
 
@@ -185,19 +188,12 @@ public class LogicHelperMqtt {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
     }
-
     HashOperations ops = redisTemplate.opsForHash();
+    ListOperations opsForList = redisTemplate.opsForList();
+
     final MachineMapping mapping = (MachineMapping) ops
         .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-    if (mapping == null) {
-      logger.error("系统中不存在车机：" + message.getCarNumber());
-      return;
-    }
-    if (mapping.getMachine() == null || mapping.getAccess() == null || StringUtils
-        .empty(mapping.getNumber())) {
-      logger.error("系统中不存在车机：" + message.getCarNumber());
-      return;
-    }
+
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess());
     csMachine.setCsmHost(mapping.getHost().intValue());
@@ -210,9 +206,6 @@ public class LogicHelperMqtt {
       csVehicle.setCsvId(mapping.getCar().intValue());
     }
     final CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
-
-    CsState newState;
-
     csState.setCssNumber(message.getCarNumber());
     csState.setCssAddTime(new Date());
     csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
@@ -273,8 +266,10 @@ public class LogicHelperMqtt {
             .mul(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
         );
       }
-      updateStateService.update(csState);
-      newState = queryStateService.queryStateById(mapping.getState().intValue());
+      // 需要更新的当前状态加入等待队列
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+      // 处理历史状态
+      historyStateUtils.saveHistoryData(csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
@@ -282,12 +277,10 @@ public class LogicHelperMqtt {
       csState.setCssLatitude(AccurateOperationUtils
           .add(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
       );
-      newState = updateStateService.insert(csState);
-    }
-
-    if (newState != null) {
-//      historyStateUtils.saveHistoryData(newState);
-      historyStateUtils.saveHistoryDataToHbase(newState);
+      // 写入当前状态
+      updateStateService.insert(csState);
+      // 处理历史状态
+      historyStateUtils.saveHistoryData(csState);
     }
   }
 
@@ -297,17 +290,11 @@ public class LogicHelperMqtt {
 
   public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
     HashOperations ops = redisTemplate.opsForHash();
+    ListOperations opsForList = redisTemplate.opsForList();
+
     final MachineMapping mapping = (MachineMapping) ops
         .get(RuleEngineConstant.REDIS_KEY_CARNUM, mqMessage.getCarNumber());
-    if (mapping == null) {
-      redisHelper.setNotExist(mqMessage.getCarNumber(), true);
-      return;
-    }
 
-    if (mapping.getMachine() == null || mapping.getAccess() == null || StringUtils
-        .empty(mapping.getNumber())) {
-      return;
-    }
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
@@ -335,23 +322,15 @@ public class LogicHelperMqtt {
 //    canData.setCscFault(errorInfo);
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
-      updateCanService.update(canData);
+      // 需要更新的当前状态加入等待队列
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
+      // 处理历史状态
+      historyCanUtils.saveHistoryData(canData);
     } else {
       updateCanService.insert(canData);
+      // 处理历史状态
+      historyCanUtils.saveHistoryData(canData);
     }
-
-    CsHistoryCan canHistoryData = terminalUtils.setCsHistoryCan(csVehicle, csMachine);
-
-    canHistoryData.setCshcAddTime(new Date());
-    canHistoryData.setCshcNumber(canZotye.mCarNum);
-    canHistoryData.setCshcData(mqMessage.getHexString());
-    canHistoryData.setCshcModel((short) (canZotye.mSubfuc & 0xff));
-    canHistoryData.setCshcType((short) (canZotye.mCanType & 0xff));
-    // new Date(carStatus.mTime * 1000l + SYSTEM.MACHINE_TIME)
-    canHistoryData.setCshcUploadTime(new Date(ProtocolTools.transformToServerTime(canZotye.mTime)));
-    canHistoryData.setCshcOrder(canZotye.mOrderId);
-    canHistoryData.setCshcFault("");
-    updateCanService.insertHis(canHistoryData);
   }
 
   /**
