@@ -57,9 +57,9 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
       }
     }
     //取出队列中所有等待更新的数据
-    List<CsState> stateListSrc = redisTemplate.opsForList()
-        .range(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, 0, -1);
-    if (stateListSrc.size() > 0) {
+    Long stateListSrcSize = redisTemplate.opsForList()
+        .size(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE);
+    if (stateListSrcSize > 0) {
       long redisListStartTime = System.currentTimeMillis();
       while (redisTemplate.opsForList()
           .range(WAIT_QUEUE_NAME, 0, -1).size() < batchProperties.getUpdateBatchSize()
@@ -69,11 +69,6 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
         redisTemplate.opsForList()
             .rightPopAndLeftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE,
                 WAIT_QUEUE_NAME);
-        try {
-          Thread.sleep(5L);
-        } catch (InterruptedException e) {
-          logger.error(e.getMessage(), e);
-        }
       }
     }
 
@@ -101,7 +96,7 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
   private String getWaiteQueueName() {
     String hostIp = environmentUtils.getCurrentIp();
     if (!StringUtils.empty(hostIp)) {
-      return RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE  + ":" +
+      return RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE + ":" +
           environmentUtils.getCurrentIp().replaceAll("\\.", "#");
     }
     return hostIp;

@@ -70,11 +70,11 @@ public class BatchCanUpdateJobs implements ApplicationContextAware {
         redisTemplate.opsForList()
             .rightPopAndLeftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE,
                 WAIT_QUEUE_NAME);
-        try {
-          Thread.sleep(5L);
-        } catch (InterruptedException e) {
-          logger.error(e.getMessage(), e);
-        }
+//        try {
+//          Thread.sleep(5L);
+//        } catch (InterruptedException e) {
+//          logger.error(e.getMessage(), e);
+//        }
       }
     }
 
