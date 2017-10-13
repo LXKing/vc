@@ -7,6 +7,7 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.bean.ConsumerBean;
 import com.aliyun.openservices.ons.api.bean.Subscription;
+import com.ccclubs.common.BatchProperties;
 import com.ccclubs.engine.rule.inf.IMqAckService;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.engine.rule.inf.MqManager;

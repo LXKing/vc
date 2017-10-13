@@ -34,7 +34,7 @@ public class MappingUpdateJobs implements ApplicationContextAware {
   /**
    * 扫描请求队列
    */
-  @Scheduled(fixedRate = 30 * 1000)
+//  @Scheduled(fixedRate = 30 * 1000)
   public void fixedRateJob() {
     String sql = "select cs_machine.csm_number as number,cs_machine.csm_mobile as mobile,cs_machine.csm_id as machine,cs_machine.csm_te_no as teno,cs_machine.csm_access as access,cs_machine.csm_host as host,cs_vehicle.csv_id as car,cs_vehicle.csv_vin as vin,cs_state.css_id as state,cs_can.csc_id as can from cs_machine LEFT JOIN cs_vehicle on cs_vehicle.csv_machine=cs_machine.csm_id LEFT JOIN cs_state on cs_state.css_number=cs_machine.csm_number LEFT JOIN cs_can on cs_can.csc_number=cs_machine.csm_number  where cs_machine.csm_number IS NOT NULL";
     List<MachineMapping> list = jdbcTemplate

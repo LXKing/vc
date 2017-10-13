@@ -33,14 +33,14 @@ public class StringUtils {
    * 是否为空字符串
    */
   public static Boolean empty(String string) {
-    if (string == null || "".equals(string.trim())) {
+    if (null == string || "".equals(string.trim())) {
       return true;
     }
     return false;
   }
 
   public static Boolean notEmpty(String string) {
-    if (string == null || "".equals(string.trim())) {
+    if (null == string || "".equals(string.trim())) {
       return false;
     }
     return true;
