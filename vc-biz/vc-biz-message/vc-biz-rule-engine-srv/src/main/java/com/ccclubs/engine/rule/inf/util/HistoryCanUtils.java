@@ -1,10 +1,10 @@
 package com.ccclubs.engine.rule.inf.util;
 
-import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.pub.orm.model.CsCan;
 import javax.annotation.Resource;
-import org.springframework.data.redis.core.ListOperations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,8 @@ public class HistoryCanUtils {
 
   @Resource
   private RedisTemplate redisTemplate;
+  @Autowired
+  UpdateCanService updateCanService;
 
   public void saveHistoryData(CsCan csCan) {
 
@@ -36,10 +38,11 @@ public class HistoryCanUtils {
     canHistoryData.setCshcFault(csCan.getCscFault());
 
     // 需要更新的当前状态加入等待队列
-    ListOperations opsForList = redisTemplate.opsForList();
-    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
+//    ListOperations opsForList = redisTemplate.opsForList();
+//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
 //    opsForList
 //        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
+    updateCanService.insertHis(canHistoryData);
   }
 
 }

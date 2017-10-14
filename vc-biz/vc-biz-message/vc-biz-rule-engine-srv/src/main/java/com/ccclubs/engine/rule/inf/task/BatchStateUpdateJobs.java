@@ -7,7 +7,6 @@ import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsState;
-import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,8 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
     logger.debug(" BatchStateUpdateJobs start. {}");
     Long startTime = System.currentTimeMillis();
     if (StringUtils.empty(WAIT_QUEUE_NAME)) {
-      WAIT_QUEUE_NAME = getWaiteQueueName();
+      WAIT_QUEUE_NAME = environmentUtils
+          .getWaiteQueueName(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE);
       if (StringUtils.empty(WAIT_QUEUE_NAME)) {
         logger.error(" host ip not found. WAIT_QUEUE_NAME is null");
         return;
@@ -94,15 +94,6 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
             JSON.toJSONString(stateListWait));
       }
     }
-  }
-
-  private String getWaiteQueueName() {
-    String hostIp = environmentUtils.getCurrentIp();
-    if (!StringUtils.empty(hostIp)) {
-      return RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE + ":" +
-          environmentUtils.getCurrentIp().replaceAll("\\.", "#");
-    }
-    return hostIp;
   }
 
   @Override

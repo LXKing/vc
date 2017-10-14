@@ -1,6 +1,7 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
+import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
@@ -9,6 +10,7 @@ import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,8 @@ public class HistoryStateUtils extends ConvertUtils {
 
   @Resource
   private RedisTemplate redisTemplate;
+  @Autowired
+  UpdateStateService updateStateService;
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
@@ -83,9 +87,10 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsGpsCount(csState.getCssGpsCount());
 
     // 需要更新的当前状态加入等待队列
-    ListOperations opsForList = redisTemplate.opsForList();
-    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
+//    ListOperations opsForList = redisTemplate.opsForList();
+//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, historyState);
+    updateStateService.insertHis(historyState);
   }
 
 

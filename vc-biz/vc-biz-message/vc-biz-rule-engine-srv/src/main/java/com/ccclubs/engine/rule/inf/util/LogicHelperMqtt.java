@@ -166,6 +166,7 @@ public class LogicHelperMqtt {
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
       historyStateUtils.saveHistoryData(csState);
+
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
