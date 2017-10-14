@@ -17,11 +17,11 @@ public class BatchProperties {
   /**
    * update 单次任务批量update数量
    */
-  private int updateBatchSize = 500;
+  private int updateBatchSize = 1000;
   /**
    * update 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int updateMaxDurTime = 1000;
+  private int updateMaxDurTime = 10000;
 
   /**
    * mongo insert 任务定时执行周期，单位毫秒
@@ -34,7 +34,7 @@ public class BatchProperties {
   /**
    * mongo insert 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int mongoInsertMaxDurTime = 5000;
+  private int mongoInsertMaxDurTime = 20000;
 
   /**
    * hbase insert 任务定时执行周期，单位毫秒
@@ -43,11 +43,11 @@ public class BatchProperties {
   /**
    * hbase insert 单次任务批量update数量
    */
-  private int hbaseInsertBatchSize = 1000;
+  private int hbaseInsertBatchSize = 2000;
   /**
    * hbase insert 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int hbaseInsertMaxDurTime = 5000;
+  private int hbaseInsertMaxDurTime = 3000;
 
   public int getUpdateAutoLoadTime() {
     return updateAutoLoadTime;

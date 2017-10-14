@@ -73,7 +73,7 @@ public class ParseGbDataService implements IParseGbDataService {
 
     //将 csMessage 放如 redis 队列
     /**
-     * {@link com.ccclubs.engine.rule.inf.task.BatchHistoryMessageInsertMongoJobs} 等待消费
+     * 等待消费
      */
     ListOperations ops = redisTemplate.opsForList();
     ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, csMessage);

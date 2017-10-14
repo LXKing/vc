@@ -50,7 +50,8 @@ public class BatchHistoryCanInsertHbaseJobs implements ApplicationContextAware {
     logger.debug(" BatchHistoryCanInsertHbaseJobs start. {}");
     Long startTime = System.currentTimeMillis();
     if (StringUtils.empty(WAIT_QUEUE_NAME)) {
-      WAIT_QUEUE_NAME = getWaiteQueueName();
+      WAIT_QUEUE_NAME = environmentUtils
+          .getWaiteQueueName(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
       if (StringUtils.empty(WAIT_QUEUE_NAME)) {
         logger.error(" host ip not found. WAIT_QUEUE_NAME is null");
         return;
@@ -99,15 +100,6 @@ public class BatchHistoryCanInsertHbaseJobs implements ApplicationContextAware {
             JSON.toJSONString(canListWait));
       }
     }
-  }
-
-  private String getWaiteQueueName() {
-    String hostIp = environmentUtils.getCurrentIp();
-    if (!StringUtils.empty(hostIp)) {
-      return RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE + ":" +
-          environmentUtils.getCurrentIp().replaceAll("\\.", "#");
-    }
-    return hostIp;
   }
 
   @Override
