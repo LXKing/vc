@@ -7,6 +7,7 @@ import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsState;
+import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,11 +75,11 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
       }
     }
 
-    logger.debug(" foeach redis list time {} ", System.currentTimeMillis() - startTime);
-
     // 等待更新的队列
     List<CsState> stateListWait = redisTemplate.opsForList()
         .range(WAIT_QUEUE_NAME, 0, -1);
+    logger.debug(" foeach redis list time {} ,size {}", System.currentTimeMillis() - startTime,
+        stateListWait);
 
     if (stateListWait.size() > 0) {
       try {

@@ -1,6 +1,7 @@
 package com.ccclubs.frm.redis;
 
-import com.ccclubs.frm.redis.old.MyRedisSerializer;
+import com.ccclubs.frm.redis.serializer.HessianSerializer;
+import com.ccclubs.frm.redis.serializer.MyRedisSerializer;
 import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.springframework.beans.factory.ObjectProvider;
@@ -211,11 +212,12 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(connectionFactory);
         // 设置序列化类
-        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+//        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+        HessianSerializer hessianSerializer = new HessianSerializer();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setValueSerializer(hessianSerializer);
+        redisTemplate.setHashValueSerializer(hessianSerializer);
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;

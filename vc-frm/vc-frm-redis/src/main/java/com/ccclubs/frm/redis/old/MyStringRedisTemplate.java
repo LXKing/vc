@@ -1,5 +1,6 @@
 package com.ccclubs.frm.redis.old;
 
+import com.ccclubs.frm.redis.serializer.MyRedisSerializer;
 import org.springframework.data.redis.connection.DefaultStringRedisConnection;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
