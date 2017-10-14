@@ -1,5 +1,6 @@
-package com.ccclubs.frm.redis.old;
+package com.ccclubs.frm.redis.serializer;
 
+import com.ccclubs.frm.redis.old.SerializeUtil;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.Assert;
 
