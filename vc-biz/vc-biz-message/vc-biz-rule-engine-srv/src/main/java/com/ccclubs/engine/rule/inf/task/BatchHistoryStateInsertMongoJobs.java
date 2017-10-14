@@ -33,7 +33,7 @@ public class BatchHistoryStateInsertMongoJobs implements ApplicationContextAware
   /**
    * 扫描请求队列
    */
-  @Scheduled(fixedRate = 5)
+  @Scheduled(fixedRate = 20)
   public void fixedRateJob() {
     //取出队列中 等待写入的数据
     Object history = redisTemplate.opsForList()
