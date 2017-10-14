@@ -58,23 +58,25 @@ public class BatchCanUpdateJobs implements ApplicationContextAware {
       }
     }
     //取出队列中所有等待更新的数据
-    List<CsCan> canListSrc = redisTemplate.opsForList()
-        .range(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, 0, -1);
-    if (canListSrc.size() > 0) {
+    Long canListSrcSize = redisTemplate.opsForList()
+        .size(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE);
+    if (canListSrcSize > 0) {
       long redisListStartTime = System.currentTimeMillis();
-      while (redisTemplate.opsForList()
-          .range(WAIT_QUEUE_NAME, 0, -1).size() < batchProperties.getUpdateBatchSize()
-          && System.currentTimeMillis() - redisListStartTime < batchProperties
+      while (System.currentTimeMillis() - redisListStartTime < batchProperties
           .getUpdateMaxDurTime()) {
+        Long canListWaitSize = redisTemplate.opsForList().size(WAIT_QUEUE_NAME);
+        if (canListWaitSize > batchProperties.getUpdateBatchSize()) {
+          break;
+        }
         //取出队列中 等待写入的数据
         redisTemplate.opsForList()
             .rightPopAndLeftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE,
                 WAIT_QUEUE_NAME);
-//        try {
-//          Thread.sleep(5L);
-//        } catch (InterruptedException e) {
-//          logger.error(e.getMessage(), e);
-//        }
+        try {
+          Thread.sleep(1L);
+        } catch (InterruptedException e) {
+          logger.error(e.getMessage(), e);
+        }
       }
     }
 

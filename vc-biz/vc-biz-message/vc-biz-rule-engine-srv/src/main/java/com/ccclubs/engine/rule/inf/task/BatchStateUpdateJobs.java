@@ -61,10 +61,12 @@ public class BatchStateUpdateJobs implements ApplicationContextAware {
         .size(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE);
     if (stateListSrcSize > 0) {
       long redisListStartTime = System.currentTimeMillis();
-      while (redisTemplate.opsForList()
-          .range(WAIT_QUEUE_NAME, 0, -1).size() < batchProperties.getUpdateBatchSize()
-          && System.currentTimeMillis() - redisListStartTime < batchProperties
+      while (System.currentTimeMillis() - redisListStartTime < batchProperties
           .getUpdateMaxDurTime()) {
+        Long stateListWaitSize = redisTemplate.opsForList().size(WAIT_QUEUE_NAME);
+        if (stateListWaitSize > batchProperties.getUpdateBatchSize()) {
+          break;
+        }
         //取出队列中 等待写入的数据
         redisTemplate.opsForList()
             .rightPopAndLeftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE,

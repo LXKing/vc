@@ -54,14 +54,16 @@ public class BatchHistoryStateInsertHbaseJobs implements ApplicationContextAware
       }
     }
     //取出队列中所有等待更新的数据
-    List<CsHistoryState> stateListSrc = redisTemplate.opsForList()
-        .range(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, 0, -1);
-    if (stateListSrc.size() > 0) {
+    Long stateListSrcSize = redisTemplate.opsForList()
+        .size(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE);
+    if (stateListSrcSize > 0) {
       long redisListStartTime = System.currentTimeMillis();
-      while (redisTemplate.opsForList()
-          .range(WAIT_QUEUE_NAME, 0, -1).size() < batchProperties.getHbaseInsertBatchSize()
-          && System.currentTimeMillis() - redisListStartTime < batchProperties
+      while (System.currentTimeMillis() - redisListStartTime < batchProperties
           .getHbaseInsertMaxDurTime()) {
+        Long stateListWaitSize = redisTemplate.opsForList().size(WAIT_QUEUE_NAME);
+        if (stateListWaitSize > batchProperties.getHbaseInsertBatchSize()) {
+          break;
+        }
         //取出队列中 等待写入的数据
         redisTemplate.opsForList()
             .rightPopAndLeftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE,

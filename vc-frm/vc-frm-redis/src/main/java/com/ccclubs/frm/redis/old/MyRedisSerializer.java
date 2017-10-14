@@ -33,6 +33,6 @@ public class MyRedisSerializer implements RedisSerializer<String> {
     }
 
     public byte[] serialize(String string) {
-        return string == null ? null : string.getBytes(this.charset);
+        return string == null ? null : SerializeUtil.serialize(string);
     }
 }
