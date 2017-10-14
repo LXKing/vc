@@ -194,6 +194,7 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
 
         // 设置老系统redis序列化
         MyRedisSerializer stringRedisSerializer = new MyRedisSerializer();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(stringRedisSerializer);
 
         redisTemplate.afterPropertiesSet();
