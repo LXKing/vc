@@ -212,12 +212,12 @@ public class RedisAutoConfiguration extends CachingConfigurerSupport {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(connectionFactory);
         // 设置序列化类
-//        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
-        HessianSerializer hessianSerializer = new HessianSerializer();
+        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+//        HessianSerializer hessianSerializer = new HessianSerializer();
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(hessianSerializer);
-        redisTemplate.setHashValueSerializer(hessianSerializer);
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.afterPropertiesSet();
 
         return redisTemplate;
