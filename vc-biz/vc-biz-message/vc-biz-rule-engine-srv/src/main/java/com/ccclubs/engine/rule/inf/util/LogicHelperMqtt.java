@@ -4,9 +4,9 @@ package com.ccclubs.engine.rule.inf.util;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryStateService;
-import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsAlarmDao;
 import com.ccclubs.mongo.orm.model.CsAlarm;
 import com.ccclubs.protocol.dto.mqtt.MQTT_43;
@@ -27,7 +27,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -83,12 +82,10 @@ public class LogicHelperMqtt {
   public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
     ListOperations opsForList = redisTemplate.opsForList();
 
-    HashOperations ops = redisTemplate.opsForHash();
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+    final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
 
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -189,14 +186,12 @@ public class LogicHelperMqtt {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
     }
-    HashOperations ops = redisTemplate.opsForHash();
     ListOperations opsForList = redisTemplate.opsForList();
 
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+    final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
 
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -290,14 +285,12 @@ public class LogicHelperMqtt {
    */
 
   public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
-    HashOperations ops = redisTemplate.opsForHash();
     ListOperations opsForList = redisTemplate.opsForList();
 
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, mqMessage.getCarNumber());
+    final MachineMapping mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
 
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -339,13 +332,12 @@ public class LogicHelperMqtt {
    */
   public void saveAlarmData(MqMessage mqMessage, MQTT_43 mqtt_43) {
     final CsMachine csMachine = terminalUtils
-        .getCsMachineByNumber(RuleEngineConstant.REDIS_KEY_CARNUM,
-            mqMessage.getCarNumber().toUpperCase());
+        .getMappingMachine(mqMessage.getCarNumber().toUpperCase());
     if (csMachine == null || StringUtils.empty(csMachine.getCsmNumber())) {
       // TODO:记录系统中不存在的车机
       return;
     }
-    final CsVehicle csVehicle = terminalUtils.getCsVehicle(csMachine.getCsmId());
+    final CsVehicle csVehicle = terminalUtils.getCsVehicle(csMachine.getCsmId().longValue());
 
     CsAlarm alarm = terminalUtils.setCsAlarm(csVehicle, csMachine);
 

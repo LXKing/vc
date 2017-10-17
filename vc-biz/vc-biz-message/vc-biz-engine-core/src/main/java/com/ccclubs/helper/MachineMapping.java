@@ -1,4 +1,4 @@
-package com.ccclubs.engine.core.util;
+package com.ccclubs.helper;
 
 import java.io.Serializable;
 
@@ -9,12 +9,13 @@ import java.io.Serializable;
  * @create 2017-08-07
  **/
 public class MachineMapping implements Serializable{
+    private static final long serialVersionUID = 1L;
     String number;
     String mobile;
     String teno;
     String vin;
     Long machine;
-    Integer access;
+    Long access;
     Long host;
     Long car;
     Long can;
@@ -60,11 +61,11 @@ public class MachineMapping implements Serializable{
         this.machine = machine;
     }
 
-    public Integer getAccess() {
+    public Long getAccess() {
         return access;
     }
 
-    public void setAccess(Integer access) {
+    public void setAccess(Long access) {
         this.access = access;
     }
 

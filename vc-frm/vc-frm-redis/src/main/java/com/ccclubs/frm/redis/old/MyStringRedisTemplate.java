@@ -13,9 +13,9 @@ import org.springframework.data.redis.serializer.RedisSerializer;
  * @author jianghaiyang
  * @create 2017-07-18
  **/
-public class MyStringRedisTemplate extends RedisTemplate<String, String> {
+public class MyStringRedisTemplate extends RedisTemplate<String, Object> {
     public MyStringRedisTemplate() {
-        RedisSerializer<String> stringSerializer = new MyRedisSerializer();
+        RedisSerializer<Object> stringSerializer = new MyRedisSerializer();
         this.setKeySerializer(stringSerializer);
         this.setValueSerializer(stringSerializer);
         this.setHashKeySerializer(stringSerializer);
