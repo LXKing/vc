@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author qsxiaogang
  * @create 2017-10-13
  **/
-@ConfigurationProperties(prefix = "ccclubs.batch")
+@ConfigurationProperties(prefix = "ccclubs.data.batch")
 public class BatchProperties {
 
   /**
@@ -17,7 +17,7 @@ public class BatchProperties {
   /**
    * update 单次任务批量update数量
    */
-  private int updateBatchSize = 2000;
+  private int updateBatchSize = 1000;
   /**
    * update 单次任务批量最大时间，建议小于任务定时执行周期
    */
@@ -38,11 +38,11 @@ public class BatchProperties {
   /**
    * mongo insert 单次任务批量update数量
    */
-  private int mongoInsertBatchSize = 1000;
+  private int mongoInsertBatchSize = 2000;
   /**
    * mongo insert 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int mongoInsertMaxDurTime = 20000;
+  private int mongoInsertMaxDurTime = 10000;
   /**
    * mongo insert 单次任务线程池数量
    */
