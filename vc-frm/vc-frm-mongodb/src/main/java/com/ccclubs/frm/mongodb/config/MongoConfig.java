@@ -1,6 +1,7 @@
 package com.ccclubs.frm.mongodb.config;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by qsxiaogang on 2017/7/5.
@@ -45,13 +47,23 @@ public class MongoConfig {
   @Bean
   @Primary
   public MongoDbFactory primaryFactory(MongoProperties mongo) throws Exception {
-    return new SimpleMongoDbFactory(new MongoClient(mongo.getHost(), mongo.getPort()),
-        mongo.getDatabase());
+    if (!StringUtils.isEmpty(mongo.getHost()) && !StringUtils.isEmpty(mongo.getPort())
+        && !StringUtils.isEmpty(mongo.getDatabase())) {
+      return new SimpleMongoDbFactory(new MongoClient(mongo.getHost(), mongo.getPort()),
+          mongo.getDatabase());
+    } else {
+      return new SimpleMongoDbFactory(new MongoClientURI(mongo.getUri()));
+    }
   }
 
   @Bean
   public MongoDbFactory gbStandardFactory(GbStandardMongoProperties mongo) throws Exception {
-    return new SimpleMongoDbFactory(new MongoClient(mongo.getHost(), mongo.getPort()),
-        mongo.getDatabase());
+    if (!StringUtils.isEmpty(mongo.getHost()) && !StringUtils.isEmpty(mongo.getPort())
+        && !StringUtils.isEmpty(mongo.getDatabase())) {
+      return new SimpleMongoDbFactory(new MongoClient(mongo.getHost(), mongo.getPort()),
+          mongo.getDatabase());
+    } else {
+      return new SimpleMongoDbFactory(new MongoClientURI(mongo.getUri()));
+    }
   }
 }
