@@ -76,7 +76,7 @@ public class BatchMessageInsertRunner implements CommandLineRunner {
           }
 
           // 等待更新的队列
-          logger.debug("size:{},time:{},foreach redis list ", waitList.size(),
+          logger.debug("size:{},time:{} check from redis list ", waitList.size(),
               System.currentTimeMillis() - startTime);
 
           if (waitList.size() > 0) {

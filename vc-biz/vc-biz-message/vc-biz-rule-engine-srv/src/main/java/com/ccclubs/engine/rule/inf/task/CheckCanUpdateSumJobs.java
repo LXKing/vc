@@ -32,7 +32,7 @@ public class CheckCanUpdateSumJobs implements ApplicationContextAware {
   /**
    * 每20分钟检查一次队列大小
    */
-  @Scheduled(fixedRate = 20 * 60 * 1000)
+  @Scheduled(fixedRate = 3 * 60 * 1000)
   public void fixedRateJob() {
     logger.debug("CheckCanUpdateSumJobs start.");
     //检查队列中所有等待更新总数

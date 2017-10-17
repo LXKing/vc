@@ -90,7 +90,9 @@ public class HistoryStateUtils extends ConvertUtils {
 //    ListOperations opsForList = redisTemplate.opsForList();
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, historyState);
+    Long startTime = System.currentTimeMillis();
     updateStateService.insertHis(historyState);
+    logger.debug("mongo historyState insert time {}",System.currentTimeMillis()-startTime);
   }
 
 

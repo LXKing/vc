@@ -4,6 +4,8 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.pub.orm.model.CsCan;
 import javax.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class HistoryCanUtils {
 
+  private static Logger logger = LoggerFactory.getLogger(HistoryCanUtils.class);
   @Resource
   private RedisTemplate redisTemplate;
   @Autowired
@@ -42,7 +45,9 @@ public class HistoryCanUtils {
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
 //    opsForList
 //        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
+    Long startTime = System.currentTimeMillis();
     updateCanService.insertHis(canHistoryData);
+    logger.debug("mongo canHistoryData insert time {}",System.currentTimeMillis()-startTime);
   }
 
 }
