@@ -65,9 +65,9 @@ public class ParseGbDataService implements IParseGbDataService {
     if (message.getMessageContents() != null) {
       csMessage
           .setCsmMsgTime(
-              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss"));
+              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss").getTime());
     }
-    csMessage.setCsmAddTime(new Date());
+    csMessage.setCsmAddTime(System.currentTimeMillis());
     csMessage.setCsmData(message.getPacketDescr());
     csMessage.setCsmStatus((short) 1);
 
