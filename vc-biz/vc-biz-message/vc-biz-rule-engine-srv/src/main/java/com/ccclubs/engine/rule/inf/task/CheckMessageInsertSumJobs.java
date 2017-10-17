@@ -30,9 +30,9 @@ public class CheckMessageInsertSumJobs implements ApplicationContextAware {
   BatchProperties batchProperties;
 
   /**
-   * 每20分钟检查一次队列大小
+   * 每分钟检查一次队列大小
    */
-  @Scheduled(fixedRate = 3 * 60 * 1000)
+  @Scheduled(fixedRate = 60 * 1000)
   public void fixedRateJob() {
     logger.debug("CheckMessageInsertSumJobs start.");
     //检查队列中所有等待更新总数
