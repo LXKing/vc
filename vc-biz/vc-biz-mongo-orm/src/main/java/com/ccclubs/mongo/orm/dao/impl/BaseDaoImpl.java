@@ -3,6 +3,7 @@ package com.ccclubs.mongo.orm.dao.impl;
 import com.ccclubs.mongo.orm.dao.BaseDao;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
