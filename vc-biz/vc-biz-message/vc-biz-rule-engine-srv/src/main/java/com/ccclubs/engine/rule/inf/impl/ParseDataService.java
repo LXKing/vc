@@ -7,12 +7,12 @@ import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.utils.EnvironmentUtils;
-import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.CsLogger;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
@@ -42,8 +42,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * 处理除远程控制以外的数据写入
@@ -69,9 +67,6 @@ public class ParseDataService implements IParseDataService {
 
   @Value("${" + ConstantUtils.MQ_TOPIC + "}")
   String topic;
-
-  @Resource
-  private RedisTemplate redisTemplate;
 
   @Resource
   QueryAppInfoService queryHostInfoService;
@@ -125,13 +120,10 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processCarStatus(MqMessage message) {
     try {
-      HashOperations ops = redisTemplate.opsForHash();
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+      MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
 
-      CsMachine csMachine = terminalUtils
-          .getMappingMachine(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-      if (csMachine == null) {
+      CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
+      if (null == mapping || null == csMachine) {
         return;
       }
       SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
@@ -205,9 +197,7 @@ public class ParseDataService implements IParseDataService {
       //TODO: subCode 0x01老协议[对应终端启停数据] ,0x02新协议[对应车辆状态推送]
       byte subCode = message.getMsgBody()[0];
       // mqtt 终端，按照车机号唯一性来确认
-      HashOperations ops = redisTemplate.opsForHash();
-      final MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
       switch (subCode) {
         case 0x01:
           terminalUtils
@@ -264,8 +254,7 @@ public class ParseDataService implements IParseDataService {
             return;
           }
 
-          CsMachine csMachine = terminalUtils
-              .getMappingMachine(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+          CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
           if (csMachine == null) {
             return;
           }
@@ -322,7 +311,7 @@ public class ParseDataService implements IParseDataService {
     terminalTriggerStatus.setCssGear(
         terminalInfo.getTriggerGearStatus() == null ? 0 : terminalInfo.getTriggerGearStatus());
 
-    SrvHost srvHost = queryHostInfoService.queryHostById(mapping.getAccess());
+    SrvHost srvHost = queryHostInfoService.queryHostById(mapping.getAccess().intValue());
 
     Message mqMessage = messageFactory
         .getMessage(srvHost.getShTopic().trim(),
@@ -417,16 +406,14 @@ public class ParseDataService implements IParseDataService {
     try {
       CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
       logCcclubs_6c.ReadFromBytes(message.getMsgBody());
-      if (logCcclubs_6c != null) {
-        CsLogger csLogger = new CsLogger();
-        csLogger.setCslNumber(message.getCarNumber());
-        csLogger.setCslOrder(message.getTransId());
-        csLogger.setCslLog(logCcclubs_6c.getmLog());
-        csLogger.setCslData(message.getHexString());
-        csLogger.setCslAddTime(System.currentTimeMillis());
-        csLogger.setCslStatus((short) 1);
-        loggerDao.save(csLogger);
-      }
+      CsLogger csLogger = new CsLogger();
+      csLogger.setCslNumber(message.getCarNumber());
+      csLogger.setCslOrder(message.getTransId());
+      csLogger.setCslLog(logCcclubs_6c.getmLog());
+      csLogger.setCslData(message.getHexString());
+      csLogger.setCslAddTime(System.currentTimeMillis());
+      csLogger.setCslStatus((short) 1);
+      loggerDao.save(csLogger);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage(), e);
@@ -444,12 +431,9 @@ public class ParseDataService implements IParseDataService {
       mqtt_6B.ReadFromBytes(message.getMsgBody());
       if (!StringUtils.empty(mqtt_6B.getSuperSimNo())) {
         // mqtt 终端，按照车机号唯一性来确认
-        HashOperations ops = redisTemplate.opsForHash();
-        final MachineMapping mapping = (MachineMapping) ops
-            .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-
         CsMachine csMachine = queryTerminalService
-            .queryCsMachineById(mapping.getMachine().intValue());
+            .queryCsMachineByCarNumber(message.getCarNumber());
+
         CsMachine machineUpdate = new CsMachine();
         //设置超级手机号
         if (!StringUtils.empty(mqtt_6B.getSuperSimNo()) && !mqtt_6B.getSuperSimNo()
@@ -522,8 +506,7 @@ public class ParseDataService implements IParseDataService {
   private void transferToMq(String tag, MqMessage message, boolean isCanState) {
     try {
       if (isCanState) {
-        CsMachine csMachine = terminalUtils
-            .getCsMachineByNumber(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
+        CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
         // 只有标记为地标类型的终端才转发。
         if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
             .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {

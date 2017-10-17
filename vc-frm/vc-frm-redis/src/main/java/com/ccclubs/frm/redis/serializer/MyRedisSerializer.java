@@ -1,10 +1,9 @@
 package com.ccclubs.frm.redis.serializer;
 
 import com.ccclubs.frm.redis.old.SerializeUtil;
+import java.nio.charset.Charset;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.Assert;
-
-import java.nio.charset.Charset;
 
 /**
  * 老系统redis序列化
@@ -12,28 +11,29 @@ import java.nio.charset.Charset;
  * @author jianghaiyang
  * @create 2017-07-18
  **/
-public class MyRedisSerializer implements RedisSerializer<String> {
-    private final Charset charset;
+public class MyRedisSerializer<T> implements RedisSerializer<T> {
 
-    public MyRedisSerializer() {
-        this(Charset.forName("UTF8"));
-    }
+  private final Charset charset;
 
-    public MyRedisSerializer(Charset charset) {
-        Assert.notNull(charset, "Charset must not be null!");
-        this.charset = charset;
-    }
+  public MyRedisSerializer() {
+    this(Charset.forName("UTF8"));
+  }
+
+  public MyRedisSerializer(Charset charset) {
+    Assert.notNull(charset, "Charset must not be null!");
+    this.charset = charset;
+  }
 
 //    @Override
 //    public byte[] serialize(Object o) throws SerializationException {
 //        return new byte[0];
 //    }
 
-    public String deserialize(byte[] bytes) {
-        return bytes== null ? null : SerializeUtil.unserialize(bytes).toString();//todo
-    }
+  public T deserialize(byte[] bytes) {
+    return bytes == null ? null : (T) SerializeUtil.unserialize(bytes);//todo
+  }
 
-    public byte[] serialize(String string) {
-        return string == null ? null : SerializeUtil.serialize(string);
-    }
+  public byte[] serialize(T string) {
+    return string == null ? null : SerializeUtil.serialize(string);
+  }
 }

@@ -5,14 +5,13 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.utils.EnvironmentUtils;
-import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.IMqAckService;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.engine.rule.inf.util.LogicHelperJt808;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0201;
@@ -36,8 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 
 public class MqMessageProcessService implements IMqMessageProcessService {
 
@@ -52,9 +49,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
 
   @Value("${" + ConstantUtils.MQ_TOPIC + "}")
   String topic;
-
-  @Resource
-  private RedisTemplate redisTemplate;
 
   @Resource
   MessageFactory messageFactory;
@@ -86,7 +80,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       tag = MqTagUtils.PROTOCOL_MQTT;
     }
 
-    HashOperations ops = redisTemplate.opsForHash();
     // 808协议
     if (tag.startsWith(MqTagUtils.PROTOCOL_JT808)) {
       T808Message msgFromTerminal = new T808Message();
@@ -94,8 +87,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       // 消息类型
       int headerType = msgFromTerminal.getHeader().getMessageType();
 
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_SIMNO, msgFromTerminal.getSimNo());
+      MachineMapping mapping = terminalUtils.getMapping(msgFromTerminal.getSimNo());
       if (mapping == null || mapping.getMachine() == null || StringUtils
           .empty(mapping.getNumber())) {
         logger.info("808协议: {} 当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getSimNo());
@@ -168,8 +160,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       MqMessage mqMessage = new MqMessage();
       mqMessage.ReadFromBytes(srcByteArray);
 
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_CARNUM, mqMessage.getCarNumber());
+      MachineMapping mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
 
       if (mapping == null || mapping.getMachine() == null || StringUtils
           .empty(mapping.getNumber())) {
@@ -202,8 +193,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
           .getMessage(topic, tag, message);
 
       if (mqMessage != null) {
-        CsMachine csMachine = terminalUtils
-            .getCsMachineBySim(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
+        CsMachine csMachine = terminalUtils.getCsMachineBySim(message.getSimNo());
         // 只有标记为地标类型的终端才转发。
         if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
             .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
@@ -231,15 +221,13 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         return;
       }
 
-      MachineMapping mapping = terminalUtils
-          .getMapping(RuleEngineConstant.REDIS_KEY_CARNUM, csState.getCssNumber());
+      MachineMapping mapping = terminalUtils.getMapping(csState.getCssNumber());
       // 终端未绑定到车辆，不转发
       if (mapping == null || mapping.getCar() == null) {
         return;
       }
       // 终端具备分时租赁功能，不转发，目前按照插件版本>0来判断终端具备分时租赁功能
-      CsMachine csMachine = terminalUtils
-          .getCsMachineByNumber(RuleEngineConstant.REDIS_KEY_CARNUM, mapping.getNumber());
+      CsMachine csMachine = terminalUtils.getMappingMachine(mapping.getNumber());
       if (csMachine == null || (csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
         return;
       }

@@ -4,9 +4,9 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
-import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
@@ -28,7 +28,6 @@ import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -70,14 +69,12 @@ public class LogicHelperJt808 {
    */
   public CsState saveStatusData(final T808Message message, final JT_0200 jvi) {
     try {
-      HashOperations ops = redisTemplate.opsForHash();
       ListOperations opsForList = redisTemplate.opsForList();
 
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
+      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
 
       CsMachine csMachine = new CsMachine();
-      csMachine.setCsmAccess(mapping.getAccess());
+      csMachine.setCsmAccess(mapping.getAccess().intValue());
       csMachine.setCsmHost(mapping.getHost().intValue());
       csMachine.setCsmNumber(mapping.getNumber());
 
@@ -191,11 +188,9 @@ public class LogicHelperJt808 {
    */
   public void saveCanData(final T808Message message, final JT_0900_can canData) {
     try {
-      HashOperations ops = redisTemplate.opsForHash();
       ListOperations opsForList = redisTemplate.opsForList();
 
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
+      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
 
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
@@ -302,9 +297,7 @@ public class LogicHelperJt808 {
   public void saveCanData(final T808Message message, final JT_0900_can canData,
       final String type) {
     try {
-      HashOperations ops = redisTemplate.opsForHash();
-      MachineMapping mapping = (MachineMapping) ops
-          .get(RuleEngineConstant.REDIS_KEY_SIMNO, message.getSimNo());
+      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
 
       CanStatusZotye zotyeStatus = new CanStatusZotye();
       zotyeStatus.mCanNum = canData.getCount();
