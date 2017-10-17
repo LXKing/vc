@@ -46,7 +46,7 @@ public class RedisHelper {
    */
   public MachineMapping getMappingOld(String keyPart) {
     return (MachineMapping) myRedisTemplate.opsForValue()
-        .get(new StringBuilder().append("OBJ.MachineMapping.").append(keyPart));
+        .get(new StringBuilder().append("OBJ.MachineMapping.").append(keyPart).toString());
   }
 
 }
