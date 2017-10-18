@@ -81,7 +81,7 @@ public class BatchMessageInsertRunner implements CommandLineRunner {
 
           if (waitList.size() > 0) {
             csMessageDao.batchInsert(waitList);
-            logger.info("size:{},time:{} BatchMessageInsertRunner batch update  ", waitList.size(),
+            logger.info("size:{},time:{} BatchMessageInsertRunner batch insert  ", waitList.size(),
                 System.currentTimeMillis() - startTime);
 
           }
