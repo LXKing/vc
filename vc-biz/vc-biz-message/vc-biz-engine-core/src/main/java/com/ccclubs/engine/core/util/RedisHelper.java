@@ -47,7 +47,7 @@ public class RedisHelper {
    */
   public MachineMapping getMappingOld(String keyPart) {
     return (MachineMapping) myRedisTemplate.opsForValue()
-        .get(new StringBuilder().append("OBJ.MachineMapping.").append(keyPart).toString());
+        .get("OBJ.MachineMapping." + keyPart);
   }
 
 
@@ -56,7 +56,7 @@ public class RedisHelper {
    */
   public Can2State getCan2State(String simNo) {
     return (Can2State) redisTemplate.opsForValue()
-        .get(new StringBuilder().append("Can2State:").append(simNo).toString());
+        .get("Can2State:" + simNo);
   }
 
   /**
@@ -64,6 +64,6 @@ public class RedisHelper {
    */
   public void setCan2State(String simNo) {
     redisTemplate.opsForValue()
-        .set(new StringBuilder().append("Can2State:").append(simNo).toString(), 3 * 60 * 60);
+        .set("Can2State:" + simNo, 3 * 60 * 60);
   }
 }
