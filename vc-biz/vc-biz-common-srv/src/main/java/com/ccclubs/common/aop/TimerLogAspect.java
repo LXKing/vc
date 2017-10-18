@@ -1,5 +1,7 @@
 package com.ccclubs.common.aop;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Around;
@@ -58,7 +60,8 @@ public class TimerLogAspect {
   //在方法执行后执行
   @After("logTime()")
   public void after() {
-    logger.error("{}.{}, use time:{}ms", cls.getName(), method, System.nanoTime() - start);
+    logger.error("{}.{}, use time:{} ms", cls.getName(), method,
+        new BigDecimal((System.nanoTime() - start) * 0.000001).setScale(2, RoundingMode.HALF_UP));
   }
 
 }

@@ -74,7 +74,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
    * @param srcByteArray 原始字节数组
    * @param hexString 原始字节十六进制字符串
    */
-  @Timer
   @Override
   public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
       final String hexString) {
