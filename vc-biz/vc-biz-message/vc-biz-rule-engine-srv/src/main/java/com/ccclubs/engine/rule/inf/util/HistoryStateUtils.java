@@ -6,7 +6,10 @@ import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.pub.orm.model.CsState;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,9 +99,52 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
+
+
+  public void saveHistoryDataToHbase(List<CsState> csStateList){
+    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistory(csStateList);
+    if(null==carStateHistoryList||carStateHistoryList.size()<1){
+      logger.warn("carStateHistoryList is null! nothing history state date saved");
+      return ;
+    }
+    String objectJson = JSON.toJSONString(carStateHistoryList);
+    //concurrentLinkedQueue.add(objectJson);
+    logger.debug("deal json is ok!" + objectJson);
+    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states", objectJson);
+    logger.debug("send post !");
+
+  }
+
+
   public void saveHistoryDataToHbase(CsState csState) {
+
+    CarStateHistory csStateHistory=dealCsStateToCarStateHistory(csState);
+    String objectJson = JSON.toJSONString(csStateHistory);
+    //concurrentLinkedQueue.add(objectJson);
+    logger.debug("deal json is ok!" + objectJson);
+    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/state", objectJson);
+    logger.debug("send post !");
+  }
+
+
+
+  public List<CarStateHistory> dealCsStateListToCarStateHistory(List<CsState> csStateList){
+    if(null==csStateList||csStateList.size()<1){
+      logger.warn("csStateList is null!");
+      return null;
+    }
+    List<CarStateHistory> carStateHistoryList=new ArrayList<>();
+    for (int i=0;i<csStateList.size();i++){
+      carStateHistoryList.add(dealCsStateToCarStateHistory(csStateList.get(i)));
+    }
+    return  carStateHistoryList;
+  }
+
+
+
+  public CarStateHistory dealCsStateToCarStateHistory(CsState csState){
     if (null == csState) {
-      return;
+      return null;
     }
 
     CarStateHistory csStateHistory = new CarStateHistory();
@@ -152,11 +198,13 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
-    String objectJson = JSON.toJSONString(csStateHistory);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
-    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states", objectJson);
-    logger.debug("send post !");
+    return  csStateHistory;
   }
+
+
+
+
+
+
 
 }

@@ -5,6 +5,7 @@ import com.ccclubs.common.BatchProperties;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.engine.rule.inf.util.HistoryStateUtils;
 import com.ccclubs.pub.orm.model.CsState;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
   @Autowired
   UpdateStateService updateStateService;
 
+  @Autowired
+  HistoryStateUtils historyStateUtils;
   @Autowired
   EnvironmentUtils environmentUtils;
   @Autowired
@@ -78,7 +81,8 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
               System.currentTimeMillis() - startTime);
 
           if (waitList.size() > 0) {
-              //FIXME: HBase 批量写入
+              //TODO: HBase 批量写入
+            historyStateUtils.saveHistoryDataToHbase(waitList);
 //            updateStateService.batchUpdate(waitList);
             logger.info("size:{},time:{} BatchHistoryStateHbaseRunner batch insert  ", waitList.size(),
                 System.currentTimeMillis() - startTime);
