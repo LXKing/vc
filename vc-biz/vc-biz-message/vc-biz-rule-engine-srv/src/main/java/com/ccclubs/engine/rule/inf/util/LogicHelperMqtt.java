@@ -286,7 +286,7 @@ public class LogicHelperMqtt {
   /**
    * 保存CAN数据
    */
-
+  @Timer
   public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
     ListOperations opsForList = redisTemplate.opsForList();
 

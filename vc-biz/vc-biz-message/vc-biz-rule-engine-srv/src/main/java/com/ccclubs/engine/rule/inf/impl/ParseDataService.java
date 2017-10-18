@@ -84,7 +84,6 @@ public class ParseDataService implements IParseDataService {
   @Autowired
   EnvironmentUtils environmentUtils;
 
-  @Timer
   @Override
   public void processMessage(MqMessage tm) {
 
@@ -120,7 +119,6 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
-  @Timer
   public void processCarStatus(MqMessage message) {
     try {
       MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
@@ -293,6 +291,7 @@ public class ParseDataService implements IParseDataService {
   /**
    * 转发触发数据
    */
+  @Timer
   private void transferTriggerStatus(MqMessage message, CCCLUBS_60 terminalInfo,
       MachineMapping mapping) {
     TerminalTriggerStatus terminalTriggerStatus = new TerminalTriggerStatus();
@@ -407,6 +406,7 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
+  @Timer
   public void processTerminalLog(MqMessage message) {
     try {
       CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
@@ -467,6 +467,7 @@ public class ParseDataService implements IParseDataService {
   /**
    * 更新车机基础信息
    */
+  @Timer
   public void processTerminalInfo(MqMessage message) {
     try {
       // 转发车机属性信息
