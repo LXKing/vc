@@ -288,8 +288,6 @@ public class LogicHelperMqtt {
    */
   @Timer
   public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
-    ListOperations opsForList = redisTemplate.opsForList();
-
     final MachineMapping mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
 
     CsMachine csMachine = new CsMachine();
@@ -320,6 +318,7 @@ public class LogicHelperMqtt {
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
       // 处理历史状态
       historyCanUtils.saveHistoryData(canData);

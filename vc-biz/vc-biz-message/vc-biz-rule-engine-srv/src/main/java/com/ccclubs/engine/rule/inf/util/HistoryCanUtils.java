@@ -47,7 +47,7 @@ public class HistoryCanUtils {
 //        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
     Long startTime = System.currentTimeMillis();
     updateCanService.insertHis(canHistoryData);
-    logger.debug("mongo canHistoryData insert time {}",System.currentTimeMillis()-startTime);
+    logger.info("mongo canHistoryData insert time {}",System.currentTimeMillis()-startTime);
   }
 
 }
