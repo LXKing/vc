@@ -1,7 +1,6 @@
 package com.ccclubs.engine.core.util;
 
 
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.helper.MachineMapping;
@@ -541,7 +540,6 @@ public class TerminalUtils {
    * @param hexString 原始十六进制数据
    * @param order 订单号
    */
-  @Timer
   public void processTerminalLog(String carNumber, String content, String hexString,
       Long order) {
     try {

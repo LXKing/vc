@@ -22,7 +22,6 @@ public class TransformUtils {
     /**
      * 把状态数据转换成对外输出的JSON数据
      */
-    @Timer
     public static TerminalStatus transform2TerminalStatus(CsMachine csMachine, String vin,
         MQTT_66 mqtt_66,
         MqMessage message) {
@@ -96,7 +95,6 @@ public class TransformUtils {
     /**
      * 新版本状态数据推送
      */
-    @Timer
     public static TerminalStatus transform2TerminalStatus(CsMachine csMachine, String vin,
         MQTT_68_03 mqtt_68_03,
         MqMessage message) {
