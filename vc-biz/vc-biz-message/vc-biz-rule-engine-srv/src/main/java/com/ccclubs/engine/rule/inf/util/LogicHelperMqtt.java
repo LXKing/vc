@@ -1,6 +1,7 @@
 package com.ccclubs.engine.rule.inf.util;
 
 
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryStateService;
@@ -79,6 +80,7 @@ public class LogicHelperMqtt {
   /**
    * 保存状态数据
    */
+  @Timer
   public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
     ListOperations opsForList = redisTemplate.opsForList();
 
@@ -182,6 +184,7 @@ public class LogicHelperMqtt {
   /**
    * 保存新版本状态数据
    */
+  @Timer
   public void saveStatusData(final MqMessage message, final MQTT_68_03 mqtt_68_03) {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
