@@ -119,6 +119,10 @@ mqttOwn:
   #是否记录上行记录
   logUpDown: true
 
+hbseSrv:
+  host: 120.26.164.203
+  port: 8080
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:

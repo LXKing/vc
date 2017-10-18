@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,11 @@ public class HistoryStateUtils extends ConvertUtils {
   private RedisTemplate redisTemplate;
   @Autowired
   UpdateStateService updateStateService;
+
+  @Value("${hbseSrv.ip:127.0.0.1}")
+  private String ip;
+  @Value("${hbseSrv.port:8080}")
+  private String port;
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
@@ -110,7 +116,8 @@ public class HistoryStateUtils extends ConvertUtils {
     String objectJson = JSON.toJSONString(carStateHistoryList);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal json is ok!" + objectJson);
-    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states", objectJson);
+    String url="http://"+ip+":"+port+"/carhistory/states";
+    HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post !");
 
   }
@@ -122,7 +129,8 @@ public class HistoryStateUtils extends ConvertUtils {
     String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal json is ok!" + objectJson);
-    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/state", objectJson);
+    String url="http://"+ip+":"+port+"/carhistory/state";
+    HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post !");
   }
 
