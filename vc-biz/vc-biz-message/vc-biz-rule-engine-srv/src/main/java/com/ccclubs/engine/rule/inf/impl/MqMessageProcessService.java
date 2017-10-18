@@ -188,7 +188,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   /**
    * 转发到MQ，topic：terminal，tag
    */
-  @Timer
   private void transferToMq(T808Message message, String tag) {
     try {
       Message mqMessage = messageFactory
@@ -216,7 +215,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   /**
    * 转发到MQ，已有绑定关系，不具备分时租赁功能的808协议的0200定位数据
    */
-  @Timer
   private void transferToMq(CsState csState) {
     try {
       if (csState == null) {

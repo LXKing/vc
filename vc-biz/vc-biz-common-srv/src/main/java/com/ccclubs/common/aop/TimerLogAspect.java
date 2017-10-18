@@ -1,5 +1,6 @@
 package com.ccclubs.common.aop;
 
+import com.alibaba.fastjson.JSONObject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -27,6 +28,7 @@ public class TimerLogAspect {
   private long start;
   private Class cls;
   private String method;
+  private String params;
 
   @Pointcut("@annotation(com.ccclubs.common.aop.Timer)")
   public void logTime() {
@@ -53,15 +55,22 @@ public class TimerLogAspect {
      */
     cls = joinPoint.getTarget().getClass();// 获取被拦截的Class
     method = joinPoint.getSignature().getName(); //获取被拦截的方法
-
+    Object[] args = joinPoint.getArgs();
+    if (args != null && args.length >= 1) {
+      params = JSONObject.toJSONString(args[0]);
+    }
     return joinPoint.proceed();
   }
 
   //在方法执行后执行
   @After("logTime()")
   public void after() {
-    logger.error("{}.{}, use time:{} ms", cls.getName(), method,
-        new BigDecimal((System.nanoTime() - start) * 0.000001).setScale(2, RoundingMode.HALF_UP));
+    long consumeTime = System.nanoTime() - start;
+    if (consumeTime > 8 * 1000000) {
+      logger.error("{}.{}, use time:{} ms, params : {}", cls.getName(), method,
+          new BigDecimal((System.nanoTime() - start) * 0.000001).setScale(2, RoundingMode.HALF_UP),
+          params);
+    }
   }
 
 }

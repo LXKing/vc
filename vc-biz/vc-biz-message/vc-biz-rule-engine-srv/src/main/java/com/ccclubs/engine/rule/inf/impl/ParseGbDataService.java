@@ -45,7 +45,6 @@ public class ParseGbDataService implements IParseGbDataService {
 
 
   @Override
-  @Timer
   public void processMessage(GBMessage message, byte[] srcByteArray) {
 
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(message.getVin());
