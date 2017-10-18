@@ -27,7 +27,6 @@ import com.ccclubs.pub.orm.model.CsVehicle;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.annotation.Resource;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.ListOperations;
@@ -70,12 +69,10 @@ public class LogicHelperJt808 {
    * @param jvi 0x0200数据
    */
   @Timer
-  public CsState saveStatusData(final T808Message message, final JT_0200 jvi) {
+  public CsState saveStatusData(final MachineMapping mapping, final T808Message message,
+      final JT_0200 jvi) {
     try {
       long startTime = System.nanoTime();
-      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
-      logger.info("saveStatusData()1 terminalUtils.getMapping time {} 微秒",
-          System.nanoTime() - startTime);
 
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess().intValue());
@@ -207,14 +204,10 @@ public class LogicHelperJt808 {
    * @param canData 0x0900 透传数据
    */
   @Timer
-  public void saveCanData(final T808Message message, final JT_0900_can canData) {
+  public void saveCanData(MachineMapping mapping, final T808Message message,
+      final JT_0900_can canData) {
     try {
       long startTime = System.nanoTime();
-      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
-      logger.info("saveCanData()1 terminalUtils.getMapping time {} 微秒",
-          System.nanoTime() - startTime);
-
-      startTime = System.nanoTime();
 
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
@@ -310,7 +303,7 @@ public class LogicHelperJt808 {
       // 众泰E200车型不包含分时租赁插件的终端需要更新obd里程跟SOC
       if (mapping.getAccess() != null && mapping.getAccess() != 3 && mapping.getAccess() != 4
           && mapping.getAccess() != 5) {
-        csMachine = terminalUtils.getCsMachineBySim(message.getSimNo());
+        csMachine = terminalUtils.getMappingMachine(mapping);
         // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
           if (mapping.getState() != null && (soc != 0 || obdMiles != 0)) {
@@ -349,15 +342,11 @@ public class LogicHelperJt808 {
    * @param canData 0x0900 透传数据
    */
   @Timer
-  public void saveCanData(final T808Message message, final JT_0900_can canData,
+  public void saveCanData(MachineMapping mapping, final T808Message message,
+      final JT_0900_can canData,
       final String type) {
     try {
       long startTime = System.nanoTime();
-      MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
-      logger.info("saveCanData()2 terminalUtils.getMapping time {} 微秒",
-          System.nanoTime() - startTime);
-
-      startTime = System.nanoTime();
 
       CanStatusZotye zotyeStatus = new CanStatusZotye();
       zotyeStatus.mCanNum = canData.getCount();

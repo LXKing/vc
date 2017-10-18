@@ -81,11 +81,9 @@ public class LogicHelperMqtt {
    * 保存状态数据
    */
   @Timer
-  public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
+  public void saveStatusData(final MachineMapping mapping, final MqMessage message,
+      final MQTT_66 mqtt_66) {
     long startTime = System.nanoTime();
-    final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
-    logger.info("saveStatusData() terminalUtils.getMapping time {} 微秒",
-        System.nanoTime() - startTime);
 
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
@@ -296,10 +294,9 @@ public class LogicHelperMqtt {
    * 保存CAN数据
    */
   @Timer
-  public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
+  public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
+      CanStatusZotye canZotye) {
     long startTime = System.nanoTime();
-    final MachineMapping mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
-    logger.info("saveCanData() terminalUtils.getMapping time {} 微秒", System.nanoTime() - startTime);
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
@@ -352,9 +349,9 @@ public class LogicHelperMqtt {
   /**
    * 保存报警数据
    */
-  public void saveAlarmData(MqMessage mqMessage, MQTT_43 mqtt_43) {
+  public void saveAlarmData(final MachineMapping mapping, MqMessage mqMessage, MQTT_43 mqtt_43) {
     final CsMachine csMachine = terminalUtils
-        .getMappingMachine(mqMessage.getCarNumber().toUpperCase());
+        .getMappingMachine(mapping);
     if (csMachine == null || StringUtils.empty(csMachine.getCsmNumber())) {
       // TODO:记录系统中不存在的车机
       return;

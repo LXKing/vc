@@ -56,25 +56,11 @@ public class TerminalUtils {
     return redisHelper.getMappingOld(keyPart);
   }
 
-  /**
-   * 通过车机号 获取 CsMachine
-   */
-  public CsMachine getMappingMachine(String carNumber) {
-    MachineMapping mapping = getMapping(carNumber);
+  public CsMachine getMappingMachine(MachineMapping mapping) {
     if (null == mapping || null == mapping.getMachine()) {
       return null;
     }
     return queryTerminalService.queryCsMachineById(mapping.getMachine().intValue());
-  }
-
-  /**
-   * 通过手机号查找对应的设备信息
-   *
-   * @param simNo 手机号
-   * @return CsMachine
-   */
-  public CsMachine getCsMachineBySim(final String simNo) {
-    return getMappingMachine(simNo);
   }
 
   /**
