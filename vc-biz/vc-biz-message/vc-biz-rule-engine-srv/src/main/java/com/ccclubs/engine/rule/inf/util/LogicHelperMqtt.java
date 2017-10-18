@@ -285,7 +285,6 @@ public class LogicHelperMqtt {
   @Timer
   public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
       CanStatusZotye canZotye) {
-    long startTime = System.nanoTime();
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
@@ -314,24 +313,15 @@ public class LogicHelperMqtt {
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
       // 需要更新的当前状态加入等待队列
-      startTime = System.nanoTime();
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
-      logger.info("opsForList.leftPush() time {} 微秒", System.nanoTime() - startTime);
 
-      startTime = System.nanoTime();
       // 处理历史状态
       historyCanUtils.saveHistoryData(canData);
-
-      logger.info("historyCanUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     } else {
-      startTime = System.nanoTime();
       updateCanService.insert(canData);
-      logger.info("updateCanService.insert time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
-      startTime = System.nanoTime();
       historyCanUtils.saveHistoryData(canData);
-      logger.info("historyCanUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     }
   }
 
