@@ -2,6 +2,7 @@ package com.ccclubs.engine.core.util;
 
 import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.protocol.dto.jt808.Can2State;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -49,4 +50,20 @@ public class RedisHelper {
         .get(new StringBuilder().append("OBJ.MachineMapping.").append(keyPart).toString());
   }
 
+
+  /**
+   * 老系统中，获取 MachineMapping
+   */
+  public Can2State getCan2State(String simNo) {
+    return (Can2State) redisTemplate.opsForValue()
+        .get(new StringBuilder().append("Can2State:").append(simNo).toString());
+  }
+
+  /**
+   * 老系统中，获取 MachineMapping
+   */
+  public void setCan2State(String simNo) {
+    redisTemplate.opsForValue()
+        .set(new StringBuilder().append("Can2State:").append(simNo).toString(), 3 * 60 * 60);
+  }
 }

@@ -68,7 +68,7 @@ public class TimerLogAspect {
     long consumeTime = System.nanoTime() - start;
     if (consumeTime > 8 * 1000000) {
       logger.error("{}.{}, use time:{} ms, params : {}", cls.getName(), method,
-          new BigDecimal((System.nanoTime() - start) * 0.000001).setScale(2, RoundingMode.HALF_UP),
+          new BigDecimal(consumeTime * 0.000001).setScale(2, RoundingMode.HALF_UP),
           params);
     }
   }
