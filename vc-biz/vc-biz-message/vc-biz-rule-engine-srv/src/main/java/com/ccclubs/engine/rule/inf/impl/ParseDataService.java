@@ -274,7 +274,7 @@ public class ParseDataService implements IParseDataService {
                     .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
                 message);
           }
-          logicHelperMqtt.saveStatusData(message, mqtt_68_03);
+          logicHelperMqtt.saveStatusData(mapping, message, mqtt_68_03);
           break;
         default:
           break;
