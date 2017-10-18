@@ -27,6 +27,7 @@ import com.ccclubs.pub.orm.model.CsVehicle;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.annotation.Resource;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.ListOperations;
@@ -71,9 +72,10 @@ public class LogicHelperJt808 {
   @Timer
   public CsState saveStatusData(final T808Message message, final JT_0200 jvi) {
     try {
-      ListOperations opsForList = redisTemplate.opsForList();
-
+      long startTime = System.nanoTime();
       MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
+      logger.info("saveStatusData()1 terminalUtils.getMapping time {} 微秒",
+          System.nanoTime() - startTime);
 
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess().intValue());
@@ -104,10 +106,17 @@ public class LogicHelperJt808 {
           csState.setCssLatitude(bigDecimalLat.setScale(6, BigDecimal.ROUND_HALF_UP));
         }
 
+        startTime = System.nanoTime();
         // 需要更新的当前状态加入等待队列
+        ListOperations opsForList = redisTemplate.opsForList();
         opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+        logger.info("saveStatusData()1 opsForList.leftPush time {} 微秒",
+            System.nanoTime() - startTime);
         // 合并为完整的状态数据，并写入历史数据
+        startTime = System.nanoTime();
         CsState csStateCurrent = queryStateService.queryStateByIdFor808(csState.getCssId());
+        logger.info("saveStatusData()1 queryStateService.queryStateByIdFor808 time {} 微秒",
+            System.nanoTime() - startTime);
         csStateCurrent.setCssCsq(csState.getCssCsq());
         csStateCurrent.setCssCurrentTime(csState.getCssCurrentTime());
         csStateCurrent.setCssAddTime(csState.getCssAddTime());
@@ -118,7 +127,10 @@ public class LogicHelperJt808 {
           csStateCurrent.setCssLatitude(csState.getCssLatitude());
         }
         // 处理历史状态
+        startTime = System.nanoTime();
         historyStateUtils.saveHistoryData(csStateCurrent);
+        logger.info("saveStatusData()1 historyStateUtils.saveHistoryData time {} 微秒",
+            System.nanoTime() - startTime);
 
         // 含分时租赁插件的 808 终端，不转发 0x0200 定位数据
         // 终端具备分时租赁功能，则不更新SOC，obd里程，目前按照插件版本>0来判断终端具备分时租赁功能
@@ -128,6 +140,7 @@ public class LogicHelperJt808 {
           return null;
         }
       } else {
+        startTime = System.nanoTime();
         // 808 原始0200数据，以下业务数据不做更新
         CsState csStateInsert = terminalUtils.setCsStatus(csVehicle, csMachine);
         csStateInsert.setCssNumber(mapping.getNumber());
@@ -171,8 +184,13 @@ public class LogicHelperJt808 {
         csStateInsert.setCssLatitude(AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001));
 
         updateStateService.insert(csStateInsert);
+        logger.info("saveStatusData()1 updateStateService.insert time {} 微秒",
+            System.nanoTime() - startTime);
         // 处理历史状态
+        startTime = System.nanoTime();
         historyStateUtils.saveHistoryData(csStateInsert);
+        logger.info("saveStatusData()1 historyStateUtils.saveHistoryData time {} 微秒",
+            System.nanoTime() - startTime);
         return csStateInsert;
       }
     } catch (Exception e) {
@@ -191,9 +209,12 @@ public class LogicHelperJt808 {
   @Timer
   public void saveCanData(final T808Message message, final JT_0900_can canData) {
     try {
-      ListOperations opsForList = redisTemplate.opsForList();
-
+      long startTime = System.nanoTime();
       MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
+      logger.info("saveCanData()1 terminalUtils.getMapping time {} 微秒",
+          System.nanoTime() - startTime);
+
+      startTime = System.nanoTime();
 
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
@@ -264,14 +285,27 @@ public class LogicHelperJt808 {
       final String errorInfo = "";// CanHelperFactory.parseCanErrorData(canDataStr);
       csCan.setCscFault(errorInfo);
 
+      logger.info("saveCanData()1 init csCan time {} 微秒",
+          System.nanoTime() - startTime);
+
       if (mapping.getCan() != null) {
         csCan.setCscId(mapping.getCan());
         // 需要更新的当前CAN数据加入等待队列
+        startTime = System.nanoTime();
+        ListOperations opsForList = redisTemplate.opsForList();
         opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
+        logger.info("saveCanData()1 opsForList.leftPush time {} 微秒",
+            System.nanoTime() - startTime);
       } else {
+        startTime = System.nanoTime();
         updateCanService.insert(csCan);
+        logger.info("saveCanData()1 opsForList.leftPush time {} 微秒",
+            System.nanoTime() - startTime);
       }
+      startTime = System.nanoTime();
       historyCanUtils.saveHistoryData(csCan);
+      logger.info("saveCanData()1 historyCanUtils.saveHistoryData time {} 微秒",
+          System.nanoTime() - startTime);
 
       // 众泰E200车型不包含分时租赁插件的终端需要更新obd里程跟SOC
       if (mapping.getAccess() != null && mapping.getAccess() != 3 && mapping.getAccess() != 4
@@ -280,7 +314,13 @@ public class LogicHelperJt808 {
         // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
           if (mapping.getState() != null && (soc != 0 || obdMiles != 0)) {
+            startTime = System.nanoTime();
             CsState csState = queryStateService.queryStateByIdFor808(mapping.getState().intValue());
+
+            logger.info("saveCanData()1 queryStateService.queryStateByIdFor808 time {} 微秒",
+                System.nanoTime() - startTime);
+
+            startTime = System.nanoTime();
             if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile()) {
               CsState csStateNew = new CsState();
               csStateNew.setCssId(mapping.getState().intValue());
@@ -289,6 +329,8 @@ public class LogicHelperJt808 {
               csStateNew.setCssAddTime(new Date());
 
               updateStateService.updateFor808(csState);
+              logger.info("saveCanData()1 updateStateService.updateFor808 time {} 微秒",
+                  System.nanoTime() - startTime);
               // 需要更新的当前状态加入等待队列
 //          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             }
@@ -310,7 +352,12 @@ public class LogicHelperJt808 {
   public void saveCanData(final T808Message message, final JT_0900_can canData,
       final String type) {
     try {
+      long startTime = System.nanoTime();
       MachineMapping mapping = terminalUtils.getMapping(message.getSimNo());
+      logger.info("saveCanData()2 terminalUtils.getMapping time {} 微秒",
+          System.nanoTime() - startTime);
+
+      startTime = System.nanoTime();
 
       CanStatusZotye zotyeStatus = new CanStatusZotye();
       zotyeStatus.mCanNum = canData.getCount();
@@ -341,18 +388,27 @@ public class LogicHelperJt808 {
 
       final String hexString = Tools.ToHexString(buff.array());
 
+      logger.info("saveCanData()2 init csCan time {} 微秒",
+          System.nanoTime() - startTime);
+
       CsCan csCanNew;
       if (mapping.getCan() != null) {
         // 获取车机号，access，host，car 等信息
+        startTime = System.nanoTime();
         csCanNew = queryCanService.queryCanById(mapping.getCan());
+        logger.info("saveCanData()2 queryCanService.queryCanById time {} 微秒",
+            System.nanoTime() - startTime);
       } else {
         return;
       }
       if (csCanNew != null) {
         // 设置上传时间，原始数据
+        startTime = System.nanoTime();
         csCanNew.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
         csCanNew.setCscData(hexString);
         historyCanUtils.saveHistoryData(csCanNew);
+        logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
+            System.nanoTime() - startTime);
       }
     } catch (Exception e) {
       e.printStackTrace();
