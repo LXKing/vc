@@ -3,6 +3,7 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
@@ -73,6 +74,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
    * @param srcByteArray 原始字节数组
    * @param hexString 原始字节十六进制字符串
    */
+  @Timer
   @Override
   public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
       final String hexString) {
@@ -187,6 +189,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   /**
    * 转发到MQ，topic：terminal，tag
    */
+  @Timer
   private void transferToMq(T808Message message, String tag) {
     try {
       Message mqMessage = messageFactory
@@ -211,10 +214,10 @@ public class MqMessageProcessService implements IMqMessageProcessService {
     }
   }
 
-
   /**
    * 转发到MQ，已有绑定关系，不具备分时租赁功能的808协议的0200定位数据
    */
+  @Timer
   private void transferToMq(CsState csState) {
     try {
       if (csState == null) {

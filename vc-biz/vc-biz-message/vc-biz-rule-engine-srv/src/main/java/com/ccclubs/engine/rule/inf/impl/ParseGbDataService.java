@@ -2,6 +2,7 @@ package com.ccclubs.engine.rule.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
@@ -44,6 +45,7 @@ public class ParseGbDataService implements IParseGbDataService {
 
 
   @Override
+  @Timer
   public void processMessage(GBMessage message, byte[] srcByteArray) {
 
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(message.getVin());

@@ -63,6 +63,8 @@ public class UpdateStateService {
   }
 
   public CsState insert(CsState csState) {
+    // 数据库设置了
+//    if ()
     dao.insertSelective(csState);
     return csState;
   }
