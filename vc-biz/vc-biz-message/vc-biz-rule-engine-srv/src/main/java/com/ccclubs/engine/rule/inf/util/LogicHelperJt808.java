@@ -105,7 +105,7 @@ public class LogicHelperJt808 {
         // 需要更新的当前状态加入等待队列
         opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
         // 合并为完整的状态数据，并写入历史数据
-        CsState csStateCurrent = queryStateService.queryStateById(csState.getCssId());
+        CsState csStateCurrent = queryStateService.queryStateByIdFor808(csState.getCssId());
         csStateCurrent.setCssCsq(csState.getCssCsq());
         csStateCurrent.setCssCurrentTime(csState.getCssCurrentTime());
         csStateCurrent.setCssAddTime(csState.getCssAddTime());
@@ -128,7 +128,7 @@ public class LogicHelperJt808 {
       } else {
         // 808 原始0200数据，以下业务数据不做更新
         CsState csStateInsert = terminalUtils.setCsStatus(csVehicle, csMachine);
-
+        csStateInsert.setCssNumber(mapping.getNumber());
         csStateInsert.setCssCsq(jvi.getCsq());
         csStateInsert.setCssCurrentTime(StringUtils.date(jvi.getTime(), ConstantUtils.TIME_FORMAT));
         csStateInsert.setCssAddTime(new Date());
@@ -258,8 +258,9 @@ public class LogicHelperJt808 {
           csState.setCssEvBattery((byte) soc);
           csState.setCssAddTime(new Date());
 
+          updateStateService.updateFor808(csState);
           // 需要更新的当前状态加入等待队列
-          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+//          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
         }
       }
 
@@ -277,7 +278,7 @@ public class LogicHelperJt808 {
 
       if (mapping.getCan() != null) {
         csCan.setCscId(mapping.getCan());
-        // 需要更新的当前状态加入等待队列
+        // 需要更新的当前CAN数据加入等待队列
         opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
       } else {
         updateCanService.insert(csCan);
@@ -330,6 +331,7 @@ public class LogicHelperJt808 {
 
       CsCan csCanNew;
       if (mapping.getCan() != null) {
+        // 获取车机号，access，host，car 等信息
         csCanNew = queryCanService.queryCanById(mapping.getCan());
       } else {
         return;

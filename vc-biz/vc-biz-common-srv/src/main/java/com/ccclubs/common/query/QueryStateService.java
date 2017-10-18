@@ -1,8 +1,10 @@
 package com.ccclubs.common.query;
 
+import com.ccclubs.frm.cache.CacheConstants;
 import com.ccclubs.pub.orm.mapper.CsStateMapper;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsStateExample;
+import com.jarvis.cache.annotation.Cache;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,4 +84,13 @@ public class QueryStateService {
     return null;
   }
 
+  /**
+   * 让不含分时租赁插件的终端，查询时走缓存
+   * @param id
+   * @return
+   */
+  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsState:jt808:cssId:'+#args[0]", autoload = true)
+  public CsState queryStateByIdFor808(Integer id) {
+    return dao.selectByPrimaryKey(id);
+  }
 }
