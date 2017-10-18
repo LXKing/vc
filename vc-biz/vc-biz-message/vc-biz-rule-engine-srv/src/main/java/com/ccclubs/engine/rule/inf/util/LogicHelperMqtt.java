@@ -82,9 +82,10 @@ public class LogicHelperMqtt {
    */
   @Timer
   public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
-    ListOperations opsForList = redisTemplate.opsForList();
-
+    long startTime = System.nanoTime();
     final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+    logger.info("saveStatusData() terminalUtils.getMapping time {} 微秒",
+        System.nanoTime() - startTime);
 
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
@@ -161,11 +162,15 @@ public class LogicHelperMqtt {
             .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
                 BigDecimal.ROUND_HALF_UP));
       }
+      startTime = System.nanoTime();
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+      logger.info("opsForList.leftPush time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
+      startTime = System.nanoTime();
       historyStateUtils.saveHistoryData(csState);
-
+      logger.info("historyStateUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
@@ -173,10 +178,15 @@ public class LogicHelperMqtt {
       csState.setCssLatitude(AccurateOperationUtils
           .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
               BigDecimal.ROUND_HALF_UP));
+
       // 写入当前状态
+      startTime = System.nanoTime();
       updateStateService.insert(csState);
+      logger.info("updateStateService.insert time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
+      startTime = System.nanoTime();
       historyStateUtils.saveHistoryData(csState);
+      logger.info("historyStateUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     }
   }
 
@@ -189,8 +199,6 @@ public class LogicHelperMqtt {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
     }
-    ListOperations opsForList = redisTemplate.opsForList();
-
     final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
 
     CsMachine csMachine = new CsMachine();
@@ -266,6 +274,7 @@ public class LogicHelperMqtt {
         );
       }
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
       historyStateUtils.saveHistoryData(csState);
@@ -288,8 +297,9 @@ public class LogicHelperMqtt {
    */
   @Timer
   public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
+    long startTime = System.nanoTime();
     final MachineMapping mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
-
+    logger.info("saveCanData() terminalUtils.getMapping time {} 微秒", System.nanoTime() - startTime);
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
@@ -318,14 +328,24 @@ public class LogicHelperMqtt {
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
       // 需要更新的当前状态加入等待队列
+      startTime = System.nanoTime();
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
+      logger.info("opsForList.leftPush() time {} 微秒", System.nanoTime() - startTime);
+
+      startTime = System.nanoTime();
       // 处理历史状态
       historyCanUtils.saveHistoryData(canData);
+
+      logger.info("historyCanUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     } else {
+      startTime = System.nanoTime();
       updateCanService.insert(canData);
+      logger.info("updateCanService.insert time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
+      startTime = System.nanoTime();
       historyCanUtils.saveHistoryData(canData);
+      logger.info("historyCanUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     }
   }
 

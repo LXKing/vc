@@ -6,7 +6,6 @@ import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.mongo.orm.dao.CsMessageDao;
 import com.ccclubs.mongo.orm.model.CsMessage;
-import com.ccclubs.pub.orm.model.CsState;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -73,6 +72,9 @@ public class BatchMessageInsertRunner implements CommandLineRunner {
                 waitList.add((CsMessage) item);
               }
             }
+          } else {
+            Thread.sleep(500L);
+            continue;
           }
 
           // 等待更新的队列
