@@ -1,5 +1,6 @@
 package com.ccclubs.engine.rule.inf.util;
 
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
@@ -21,6 +22,7 @@ public class TransformUtils {
     /**
      * 把状态数据转换成对外输出的JSON数据
      */
+    @Timer
     public static TerminalStatus transform2TerminalStatus(CsMachine csMachine, String vin,
         MQTT_66 mqtt_66,
         MqMessage message) {
@@ -94,6 +96,7 @@ public class TransformUtils {
     /**
      * 新版本状态数据推送
      */
+    @Timer
     public static TerminalStatus transform2TerminalStatus(CsMachine csMachine, String vin,
         MQTT_68_03 mqtt_68_03,
         MqMessage message) {

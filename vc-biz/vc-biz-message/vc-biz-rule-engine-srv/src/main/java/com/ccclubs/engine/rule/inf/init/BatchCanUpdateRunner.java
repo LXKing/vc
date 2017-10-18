@@ -74,12 +74,12 @@ public class BatchCanUpdateRunner implements CommandLineRunner {
           }
 
           // 等待更新的队列
-          logger.debug("size:{},time:{} check from redis list ", waitList.size(),
+          logger.info("size:{},time:{}ms check from redis list ", waitList.size(),
               System.currentTimeMillis() - startTime);
-
+          startTime = System.currentTimeMillis();
           if (waitList.size() > 0) {
             updateCanService.batchUpdate(waitList);
-            logger.debug("size:{},time:{} BatchCanUpdateRunner batch update  ", waitList.size(),
+            logger.info("size:{},time:{}ms BatchCanUpdateRunner batch update  ", waitList.size(),
                 System.currentTimeMillis() - startTime);
           }
         } catch (Exception ex) {

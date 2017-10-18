@@ -1,5 +1,6 @@
 package com.ccclubs.engine.rule.inf.util;
 
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
@@ -67,6 +68,7 @@ public class LogicHelperJt808 {
    * @param message 上传
    * @param jvi 0x0200数据
    */
+  @Timer
   public CsState saveStatusData(final T808Message message, final JT_0200 jvi) {
     try {
       ListOperations opsForList = redisTemplate.opsForList();
@@ -186,6 +188,7 @@ public class LogicHelperJt808 {
    * @param message 上传
    * @param canData 0x0900 透传数据
    */
+  @Timer
   public void saveCanData(final T808Message message, final JT_0900_can canData) {
     try {
       ListOperations opsForList = redisTemplate.opsForList();
@@ -295,6 +298,7 @@ public class LogicHelperJt808 {
    * @param message 上传
    * @param canData 0x0900 透传数据
    */
+  @Timer
   public void saveCanData(final T808Message message, final JT_0900_can canData,
       final String type) {
     try {

@@ -3,6 +3,7 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
@@ -168,6 +169,7 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
+  @Timer
   public void processCanStatus(MqMessage message) {
     try {
       transferToMq(MqTagProperty.MQ_TERMINAL_CAN, message, true);
@@ -192,6 +194,7 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
+  @Timer
   public void processStartStopStatus(MqMessage message) {
     try {
       //TODO: subCode 0x01老协议[对应终端启停数据] ,0x02新协议[对应车辆状态推送]
@@ -288,6 +291,7 @@ public class ParseDataService implements IParseDataService {
   /**
    * 转发触发数据
    */
+  @Timer
   private void transferTriggerStatus(MqMessage message, CCCLUBS_60 terminalInfo,
       MachineMapping mapping) {
     TerminalTriggerStatus terminalTriggerStatus = new TerminalTriggerStatus();
@@ -402,6 +406,7 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
+  @Timer
   public void processTerminalLog(MqMessage message) {
     try {
       CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
@@ -462,6 +467,7 @@ public class ParseDataService implements IParseDataService {
   /**
    * 更新车机基础信息
    */
+  @Timer
   public void processTerminalInfo(MqMessage message) {
     try {
       // 转发车机属性信息
@@ -503,6 +509,7 @@ public class ParseDataService implements IParseDataService {
   /**
    * 转发到MQ，topic：terminal，tag
    */
+  @Timer
   private void transferToMq(String tag, MqMessage message, boolean isCanState) {
     try {
       if (isCanState) {
@@ -534,6 +541,7 @@ public class ParseDataService implements IParseDataService {
     }
   }
 
+  @Timer
   private void transferToMq(SrvHost srvHost, TerminalStatus terminalStatus, MqMessage message) {
     Message mqMessage = messageFactory
         .getMessage(srvHost.getShTopic().trim(),
