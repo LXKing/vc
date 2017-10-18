@@ -83,8 +83,6 @@ public class LogicHelperMqtt {
   @Timer
   public void saveStatusData(final MachineMapping mapping, final MqMessage message,
       final MQTT_66 mqtt_66) {
-    long startTime = System.nanoTime();
-
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
@@ -160,15 +158,11 @@ public class LogicHelperMqtt {
             .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
                 BigDecimal.ROUND_HALF_UP));
       }
-      startTime = System.nanoTime();
       // 需要更新的当前状态加入等待队列
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
-      logger.info("opsForList.leftPush time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
-      startTime = System.nanoTime();
       historyStateUtils.saveHistoryData(csState);
-      logger.info("historyStateUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
@@ -178,13 +172,9 @@ public class LogicHelperMqtt {
               BigDecimal.ROUND_HALF_UP));
 
       // 写入当前状态
-      startTime = System.nanoTime();
       updateStateService.insert(csState);
-      logger.info("updateStateService.insert time {} 微秒", System.nanoTime() - startTime);
       // 处理历史状态
-      startTime = System.nanoTime();
       historyStateUtils.saveHistoryData(csState);
-      logger.info("historyStateUtils.saveHistoryData time {} 微秒", System.nanoTime() - startTime);
     }
   }
 
@@ -193,12 +183,11 @@ public class LogicHelperMqtt {
    * 保存新版本状态数据
    */
   @Timer
-  public void saveStatusData(final MqMessage message, final MQTT_68_03 mqtt_68_03) {
+  public void saveStatusData(MachineMapping mapping, final MqMessage message,
+      final MQTT_68_03 mqtt_68_03) {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
     }
-    final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
-
     CsMachine csMachine = new CsMachine();
     csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
