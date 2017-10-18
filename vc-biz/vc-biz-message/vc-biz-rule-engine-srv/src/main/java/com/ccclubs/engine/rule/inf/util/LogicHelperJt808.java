@@ -252,21 +252,6 @@ public class LogicHelperJt808 {
         }
       }
 
-      // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles
-      if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
-        if (mapping.getState() != null && (soc != 0 || obdMiles != 0)) {
-          CsState csState = new CsState();
-          csState.setCssId(mapping.getState().intValue());
-          csState.setCssObdMile(obdMiles);
-          csState.setCssEvBattery((byte) soc);
-          csState.setCssAddTime(new Date());
-
-          updateStateService.updateFor808(csState);
-          // 需要更新的当前状态加入等待队列
-//          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
-        }
-      }
-
       final String hexString = Tools.ToHexString(buff.array());
 
       csCan.setCscAddTime(new Date());
@@ -287,6 +272,29 @@ public class LogicHelperJt808 {
         updateCanService.insert(csCan);
       }
       historyCanUtils.saveHistoryData(csCan);
+
+      // 众泰E200车型不包含分时租赁插件的终端需要更新obd里程跟SOC
+      if (mapping.getAccess() != null && mapping.getAccess() != 3 && mapping.getAccess() != 4
+          && mapping.getAccess() != 5) {
+        csMachine = terminalUtils.getCsMachineBySim(message.getSimNo());
+        // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles
+        if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
+          if (mapping.getState() != null && (soc != 0 || obdMiles != 0)) {
+            CsState csState = queryStateService.queryStateByIdFor808(mapping.getState().intValue());
+            if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile()) {
+              CsState csStateNew = new CsState();
+              csStateNew.setCssId(mapping.getState().intValue());
+              csStateNew.setCssObdMile(obdMiles);
+              csStateNew.setCssEvBattery((byte) soc);
+              csStateNew.setCssAddTime(new Date());
+
+              updateStateService.updateFor808(csState);
+              // 需要更新的当前状态加入等待队列
+//          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+            }
+          }
+        }
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
