@@ -43,6 +43,10 @@ ccclubs:
       mongoInsertMaxDurTime: 10000
       mongoInsertThreads: 20
       mongoInsertQueueMax: 200000
+      hbaseSrv:
+        host: 120.26.164.203
+        port: 8080
+
 
 
 dubbo:
@@ -118,6 +122,7 @@ mqttOwn:
   subTopic: ser/car/jhz/rt_0/#,
   #是否记录上行记录
   logUpDown: true
+
 
 druid:
   driver: com.mysql.jdbc.Driver

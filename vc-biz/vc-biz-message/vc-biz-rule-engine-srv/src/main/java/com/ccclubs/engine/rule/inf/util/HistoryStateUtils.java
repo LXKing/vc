@@ -6,11 +6,15 @@ import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.pub.orm.model.CsState;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -26,6 +30,11 @@ public class HistoryStateUtils extends ConvertUtils {
   private RedisTemplate redisTemplate;
   @Autowired
   UpdateStateService updateStateService;
+
+  @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
+  private String ip;
+  @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
+  private String port;
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
@@ -87,21 +96,66 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsGpsCount(csState.getCssGpsCount());
 
     // 需要更新的当前状态加入等待队列
-//    ListOperations opsForList = redisTemplate.opsForList();
+    ListOperations opsForList = redisTemplate.opsForList();
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
-//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, historyState);
     updateStateService.insertHis(historyState);
+    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
+  }
+
+
+
+
+  public void saveHistoryDataToHbase(List<CsState> csStateList){
+    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistory(csStateList);
+    if(null==carStateHistoryList||carStateHistoryList.size()<1){
+      logger.warn("carStateHistoryList is null! nothing history state date saved");
+      return ;
+    }
+    String objectJson = JSON.toJSONString(carStateHistoryList);
+    //concurrentLinkedQueue.add(objectJson);
+    logger.debug("deal json is ok!" + objectJson);
+    String url="http://"+ip+":"+port+"/carhistory/states";
+    HttpClientUtil.doPostJson(url, objectJson);
+    logger.debug("send post !");
+
   }
 
 
   public void saveHistoryDataToHbase(CsState csState) {
+
+    CarStateHistory csStateHistory=dealCsStateToCarStateHistory(csState);
+    String objectJson = JSON.toJSONString(csStateHistory);
+    //concurrentLinkedQueue.add(objectJson);
+    logger.debug("deal json is ok!" + objectJson);
+    String url="http://"+ip+":"+port+"/carhistory/state";
+    HttpClientUtil.doPostJson(url, objectJson);
+    logger.debug("send post !");
+  }
+
+
+
+  public List<CarStateHistory> dealCsStateListToCarStateHistory(List<CsState> csStateList){
+    if(null==csStateList||csStateList.size()<1){
+      logger.warn("csStateList is null!");
+      return null;
+    }
+    List<CarStateHistory> carStateHistoryList=new ArrayList<>();
+    for (int i=0;i<csStateList.size();i++){
+      carStateHistoryList.add(dealCsStateToCarStateHistory(csStateList.get(i)));
+    }
+    return  carStateHistoryList;
+  }
+
+
+
+  public CarStateHistory dealCsStateToCarStateHistory(CsState csState){
     if (null == csState) {
-      return;
+      return null;
     }
 
     CarStateHistory csStateHistory = new CarStateHistory();
 
-    csStateHistory.setAdd_time(new Date().getTime());
+    csStateHistory.setAdd_time(System.currentTimeMillis());
     csStateHistory.setCs_number(csState.getCssNumber());
 
     csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
@@ -150,11 +204,13 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
-    String objectJson = JSON.toJSONString(csStateHistory);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
-    HttpClientUtil.doPostJson("http://120.26.164.203:8080/carhistory/states", objectJson);
-    logger.debug("send post !");
+    return  csStateHistory;
   }
+
+
+
+
+
+
 
 }
