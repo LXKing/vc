@@ -31,9 +31,9 @@ public class HistoryStateUtils extends ConvertUtils {
   @Autowired
   UpdateStateService updateStateService;
 
-  @Value("${hbseSrv.ip:127.0.0.1}")
+  @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
   private String ip;
-  @Value("${hbseSrv.port:8080}")
+  @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
   private String port;
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
@@ -96,10 +96,10 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsGpsCount(csState.getCssGpsCount());
 
     // 需要更新的当前状态加入等待队列
-//    ListOperations opsForList = redisTemplate.opsForList();
+    ListOperations opsForList = redisTemplate.opsForList();
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
-//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, historyState);
     updateStateService.insertHis(historyState);
+    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
   }
 
 
@@ -155,7 +155,7 @@ public class HistoryStateUtils extends ConvertUtils {
 
     CarStateHistory csStateHistory = new CarStateHistory();
 
-    csStateHistory.setAdd_time(new Date().getTime());
+    csStateHistory.setAdd_time(System.currentTimeMillis());
     csStateHistory.setCs_number(csState.getCssNumber());
 
     csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
