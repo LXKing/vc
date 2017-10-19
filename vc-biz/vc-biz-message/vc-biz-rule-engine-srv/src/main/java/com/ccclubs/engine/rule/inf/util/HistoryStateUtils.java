@@ -103,10 +103,8 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
-
-
   public void saveHistoryDataToHbase(List<CsState> csStateList){
-    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistory(csStateList);
+    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
@@ -133,8 +131,7 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
-
-  public List<CarStateHistory> dealCsStateListToCarStateHistory(List<CsState> csStateList){
+  public List<CarStateHistory> dealCsStateListToCarStateHistoryLsit(List<CsState> csStateList){
     if(null==csStateList||csStateList.size()<1){
       logger.warn("csStateList is null!");
       return null;
@@ -145,7 +142,6 @@ public class HistoryStateUtils extends ConvertUtils {
     }
     return  carStateHistoryList;
   }
-
 
 
   public CarStateHistory dealCsStateToCarStateHistory(CsState csState){
@@ -206,10 +202,6 @@ public class HistoryStateUtils extends ConvertUtils {
 
     return  csStateHistory;
   }
-
-
-
-
 
 
 

@@ -84,9 +84,8 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
               System.currentTimeMillis() - startTime);
 
           if (waitList.size() > 0) {
-              //TODO: HBase 批量写入
             historyStateUtils.saveHistoryDataToHbase(waitList);
-            //FIXME: HBase 批量写入
+
 //            updateStateService.batchUpdate(waitList);
             logger.info("size:{},time:{} BatchHistoryStateHbaseRunner batch insert  ",
                 waitList.size(),
