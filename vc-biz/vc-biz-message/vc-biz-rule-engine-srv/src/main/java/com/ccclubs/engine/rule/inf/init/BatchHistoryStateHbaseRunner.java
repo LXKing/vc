@@ -74,6 +74,9 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
                 waitList.add((CsState) item);
               }
             }
+          } else {
+            Thread.sleep(500L);
+            continue;
           }
 
           // 等待更新的队列
@@ -83,8 +86,10 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
           if (waitList.size() > 0) {
               //TODO: HBase 批量写入
             historyStateUtils.saveHistoryDataToHbase(waitList);
+            //FIXME: HBase 批量写入
 //            updateStateService.batchUpdate(waitList);
-            logger.info("size:{},time:{} BatchHistoryStateHbaseRunner batch insert  ", waitList.size(),
+            logger.info("size:{},time:{} BatchHistoryStateHbaseRunner batch insert  ",
+                waitList.size(),
                 System.currentTimeMillis() - startTime);
 
           }

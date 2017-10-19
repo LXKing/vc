@@ -3,13 +3,11 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
@@ -86,7 +84,6 @@ public class ParseDataService implements IParseDataService {
 
   @Override
   public void processMessage(MqMessage tm) {
-
     // 消息类型
     int headerType = tm.getFucCode();
 
@@ -123,8 +120,9 @@ public class ParseDataService implements IParseDataService {
     try {
       MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
 
-      CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
+      CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
       if (null == mapping || null == csMachine) {
+        logger.info("MQTT协议终端 或 808协议含分时租赁插件终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getCarNumber());
         return;
       }
       SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
@@ -136,7 +134,7 @@ public class ParseDataService implements IParseDataService {
       mqtt_66.ReadFromBytes(message.getMsgBody());
       // 众行EVPOP特殊处理
       if (topic.equals(srvHost.getShTopic())) {
-        transferToMq(MqTagProperty.MQ_TERMINAL_STATUS, message, false);
+        transferToMq(mapping, MqTagProperty.MQ_TERMINAL_STATUS, message, false);
       } else {
         // 如果未绑定车辆，则不转发到业务平台
         if (null != mapping.getVin()) {
@@ -146,7 +144,7 @@ public class ParseDataService implements IParseDataService {
               message);
         }
       }
-      logicHelperMqtt.saveStatusData(message, mqtt_66);
+      logicHelperMqtt.saveStatusData(mapping, message, mqtt_66);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("saveStatusData error : " + message.getHexString());
@@ -169,10 +167,10 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
-  @Timer
   public void processCanStatus(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_CAN, message, true);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_CAN, message, true);
 
       byte[] byteMsg = message.WriteToBytes();
       CanStatusZotye canZotye = CanStatusZotye.readObject(byteMsg, CanStatusZotye.class);
@@ -186,7 +184,7 @@ public class ParseDataService implements IParseDataService {
         canZotye.mCanNum = (byte) ((byteMsg.length - canZotyeLength) / canTypeILength);
         canZotye.mCanType = 0x01;
       }
-      logicHelperMqtt.saveCanData(message, canZotye);
+      logicHelperMqtt.saveCanData(mapping, message, canZotye);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage(), e);
@@ -194,7 +192,6 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
-  @Timer
   public void processStartStopStatus(MqMessage message) {
     try {
       //TODO: subCode 0x01老协议[对应终端启停数据] ,0x02新协议[对应车辆状态推送]
@@ -254,10 +251,11 @@ public class ParseDataService implements IParseDataService {
           // 新版本状态数据
           if (mapping == null || StringUtils.empty(mapping.getNumber())
               || mapping.getMachine() == null || mapping.getAccess() == null) {
+            logger.info("MQTT协议终端 或 808协议含分时租赁插件终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getCarNumber());
             return;
           }
 
-          CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
+          CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
           if (csMachine == null) {
             return;
           }
@@ -276,7 +274,7 @@ public class ParseDataService implements IParseDataService {
                     .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
                 message);
           }
-          logicHelperMqtt.saveStatusData(message, mqtt_68_03);
+          logicHelperMqtt.saveStatusData(mapping, message, mqtt_68_03);
           break;
         default:
           break;
@@ -291,7 +289,6 @@ public class ParseDataService implements IParseDataService {
   /**
    * 转发触发数据
    */
-  @Timer
   private void transferTriggerStatus(MqMessage message, CCCLUBS_60 terminalInfo,
       MachineMapping mapping) {
     TerminalTriggerStatus terminalTriggerStatus = new TerminalTriggerStatus();
@@ -343,7 +340,8 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processOrderModify(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_ORDER, message, false);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_ORDER, message, false);
 
       terminalUtils.processTerminalLog(message.getCarNumber(), "订单续订数据", message.getHexString(),
           message.getTransId());
@@ -356,7 +354,8 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processTakeCarStatus(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_TAKECAR, message, false);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_TAKECAR, message, false);
 
       terminalUtils.processTerminalLog(message.getCarNumber(), "取车数据", message.getHexString(),
           message.getTransId());
@@ -369,7 +368,8 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processOrderStatus(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_ORDER, message, false);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_ORDER, message, false);
 
       terminalUtils.processTerminalLog(message.getCarNumber(), "订单回复数据", message.getHexString(),
           message.getTransId());
@@ -382,7 +382,8 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processOrderDetailStatus(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_ORDER, message, false);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_ORDER, message, false);
 
       terminalUtils.processTerminalLog(message.getCarNumber(), "订单详细数据", message.getHexString(),
           message.getTransId());
@@ -395,7 +396,8 @@ public class ParseDataService implements IParseDataService {
   @Override
   public void processFurtherCarStatus(MqMessage message) {
     try {
-      transferToMq(MqTagProperty.MQ_TERMINAL_FURTHERCAR, message, false);
+      final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      transferToMq(mapping, MqTagProperty.MQ_TERMINAL_FURTHERCAR, message, false);
 
       terminalUtils.processTerminalLog(message.getCarNumber(), "还车数据", message.getHexString(),
           message.getTransId());
@@ -406,7 +408,6 @@ public class ParseDataService implements IParseDataService {
   }
 
   @Override
-  @Timer
   public void processTerminalLog(MqMessage message) {
     try {
       CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
@@ -467,12 +468,8 @@ public class ParseDataService implements IParseDataService {
   /**
    * 更新车机基础信息
    */
-  @Timer
   public void processTerminalInfo(MqMessage message) {
     try {
-      // 转发车机属性信息
-      transferToMq(MqTagProperty.MQ_TERMINAL_INFO, message, false);
-
       CCCLUBS_60 terminalInfo = new CCCLUBS_60();
       terminalInfo.ReadFromBytes(message.getMsgBody());
 
@@ -509,11 +506,11 @@ public class ParseDataService implements IParseDataService {
   /**
    * 转发到MQ，topic：terminal，tag
    */
-  @Timer
-  private void transferToMq(String tag, MqMessage message, boolean isCanState) {
+  private void transferToMq(final MachineMapping mapping, String tag, MqMessage message,
+      boolean isCanState) {
     try {
       if (isCanState) {
-        CsMachine csMachine = terminalUtils.getMappingMachine(message.getCarNumber());
+        CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
         // 只有标记为地标类型的终端才转发。
         if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
             .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
@@ -541,7 +538,6 @@ public class ParseDataService implements IParseDataService {
     }
   }
 
-  @Timer
   private void transferToMq(SrvHost srvHost, TerminalStatus terminalStatus, MqMessage message) {
     Message mqMessage = messageFactory
         .getMessage(srvHost.getShTopic().trim(),

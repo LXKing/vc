@@ -71,6 +71,9 @@ public class BatchStateUpdateRunner implements CommandLineRunner {
                 waitList.add((CsState) item);
               }
             }
+          } else {
+            Thread.sleep(500L);
+            continue;
           }
 
           // 等待更新的队列

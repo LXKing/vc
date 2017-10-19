@@ -71,6 +71,9 @@ public class BatchCanUpdateRunner implements CommandLineRunner {
                 waitList.add((CsCan) item);
               }
             }
+          }else {
+            Thread.sleep(500L);
+            continue;
           }
 
           // 等待更新的队列
