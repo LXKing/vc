@@ -111,10 +111,10 @@ public class HistoryStateUtils extends ConvertUtils {
     }
     String objectJson = JSON.toJSONString(carStateHistoryList);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
+    logger.debug("deal csState list json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/states";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post !");
+    logger.debug("send post for csStateList !");
 
   }
 
@@ -124,10 +124,10 @@ public class HistoryStateUtils extends ConvertUtils {
     CarStateHistory csStateHistory=dealCsStateToCarStateHistory(csState);
     String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
+    logger.debug("deal csState data json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/state";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post !");
+    logger.debug("send post for csState !");
   }
 
 
