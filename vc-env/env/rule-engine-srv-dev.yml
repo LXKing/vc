@@ -23,14 +23,14 @@ spring:
 ccclubs:
   data:
     mongodb:
-          #国标mongodb配置
-          gbstandard:
-            host: 114.55.24.97
-            port: 3717
-            username: zkj_user
-            password: zkj2017
-            database: history
-            authenticationDatabase: history
+      #国标mongodb配置
+      gbstandard:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: history
+        authenticationDatabase: history
     #批量任务配置
     batch:
       #批量更新单次最大值，最大间隔时间，线程池数量，队列最大长度
@@ -46,8 +46,6 @@ ccclubs:
       hbaseSrv:
         host: 120.26.164.203
         port: 8080
-
-
 
 dubbo:
   scan:
