@@ -172,9 +172,12 @@ public class TerminalUtils {
   public CsMachine setUpdateMapBaseInfo(CCCLUBS_60 terminalInfo, CsMachine csMachine) {
     CsMachine csMachineNew = new CsMachine();
     //终端序列号
-    if (StringUtils.notEmpty(terminalInfo.getCfxId()) && !terminalInfo.getCfxId()
+    if (!StringUtils.empty(terminalInfo.getCfxId()) && !terminalInfo.getCfxId()
         .equals(csMachine.getCsmTeNo())) {
-      csMachineNew.setCsmTeNo(terminalInfo.getCfxId());
+      if (csMachine.getCsmTeType() != null && 0 == csMachine.getCsmTeType().intValue()
+          && terminalInfo.getCfxId().length() == 15 && terminalInfo.getCfxId().startsWith("CFX")) {
+        csMachineNew.setCsmTeNo(terminalInfo.getCfxId());
+      }
     }
     //适配车型
     if (terminalInfo.getModel() != null) {
