@@ -103,20 +103,18 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
-
-
   public void saveHistoryDataToHbase(List<CsState> csStateList){
-    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistory(csStateList);
+    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
     }
     String objectJson = JSON.toJSONString(carStateHistoryList);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
+    logger.debug("deal csState list json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/states";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post !");
+    logger.debug("send post for csStateList !");
 
   }
 
@@ -126,15 +124,14 @@ public class HistoryStateUtils extends ConvertUtils {
     CarStateHistory csStateHistory=dealCsStateToCarStateHistory(csState);
     String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal json is ok!" + objectJson);
+    logger.debug("deal csState data json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/state";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post !");
+    logger.debug("send post for csState !");
   }
 
 
-
-  public List<CarStateHistory> dealCsStateListToCarStateHistory(List<CsState> csStateList){
+  public List<CarStateHistory> dealCsStateListToCarStateHistoryLsit(List<CsState> csStateList){
     if(null==csStateList||csStateList.size()<1){
       logger.warn("csStateList is null!");
       return null;
@@ -145,7 +142,6 @@ public class HistoryStateUtils extends ConvertUtils {
     }
     return  carStateHistoryList;
   }
-
 
 
   public CarStateHistory dealCsStateToCarStateHistory(CsState csState){
@@ -206,10 +202,6 @@ public class HistoryStateUtils extends ConvertUtils {
 
     return  csStateHistory;
   }
-
-
-
-
 
 
 

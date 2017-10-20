@@ -135,7 +135,7 @@ public class LogicHelperJt808 {
         csStateInsert.setCssGpsValid(jvi.isValid() ? (byte) 1 : (byte) 0);
         // 保存的 消息体
         csStateInsert.setCssMoData(message.getPacketDescr());
-        csStateInsert.setCssOrder(0l);
+        csStateInsert.setCssOrder(0L);
         csStateInsert.setCssWarn(0);
         csStateInsert.setCssPower(0);
         csStateInsert.setCssMileage(0);
