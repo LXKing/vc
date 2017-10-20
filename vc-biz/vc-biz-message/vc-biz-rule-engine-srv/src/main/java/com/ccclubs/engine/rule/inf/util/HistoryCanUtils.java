@@ -2,6 +2,7 @@ package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateCanService;
+import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.hbase.vo.model.CarCanHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.pub.orm.model.CsCan;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -57,16 +59,18 @@ public class HistoryCanUtils {
 //    opsForList
 //        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
     updateCanService.insertHis(canHistoryData);
+    ListOperations opsForList = redisTemplate.opsForList();
+    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
   }
 
   public void saveHistoryDataToHbase(CsCan csCan){
     CarCanHistory carCanHistory=dealCsCanToCarCanHistory(csCan);
     String objectJson = JSON.toJSONString(carCanHistory);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal can data json is done:" + objectJson);
+    logger.info("deal can data json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/can";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can !");
+    logger.info("send post for can !");
   }
 
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
@@ -77,10 +81,10 @@ public class HistoryCanUtils {
     List<CarCanHistory> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
     String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal can list json is done:" + objectJson);
+    logger.info("deal can list json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/cans";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can list !");
+    logger.info("send post for can list !");
   }
 
   public List<CarCanHistory> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){
