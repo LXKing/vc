@@ -36,6 +36,7 @@ public class GpsDataService implements IGpsDataService {
   // 获取实时数据
   // 保存终端参数
   // 处理GPS数据
+  @Override
   public final void processMessage(T808Message message) {
     // 消息类型
     int headerType = message.getHeader().getMessageType();
@@ -60,6 +61,10 @@ public class GpsDataService implements IGpsDataService {
    * 将jt808协议数据转发到消息中间件MQ，topic：ser，tag：jt808
    */
   private void transferToMQ(T808Message message, String messageTag) {
+    if (null == message || null == message.getHeader() || null == message.getMessageContents())
+    {
+      return;
+    }
     // 转发数据，数据流转topic：ser
     Message mqMessage = OnsMessageFactory
         .getProtocolMessage(topic, messageTag,

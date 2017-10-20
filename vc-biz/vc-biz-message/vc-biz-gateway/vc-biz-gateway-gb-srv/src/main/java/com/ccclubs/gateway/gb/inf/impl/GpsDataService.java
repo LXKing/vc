@@ -2,12 +2,12 @@ package com.ccclubs.gateway.gb.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.gb.inf.IGpsDataService;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.Tools;
-import com.ccclubs.frm.ons.OnsMessageFactory;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,11 @@ public class GpsDataService implements IGpsDataService {
   // 获取实时数据
   // 保存终端参数
   // 处理GPS数据
+  @Override
   public final void processMessage(GBMessage message) {
+    if (null == message || null == message.getHeader() || null == message.getMessageContents()) {
+      return;
+    }
     // 消息类型
     transferToMQ(message);
   }
