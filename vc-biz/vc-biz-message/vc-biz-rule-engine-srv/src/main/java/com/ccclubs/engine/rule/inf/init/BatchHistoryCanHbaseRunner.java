@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * CsState 当前状态数据更新
+ * CsCan 当前状态数据更新
  *
  * @author Alban
  * @create 2017-10-14
@@ -87,6 +87,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
+                        logger.info("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
                         //historyStateUtils.saveHistoryDataToHbase(waitList);
                         historyCanUtils.saveHistoryDataToHbase(waitList);
 //            updateStateService.batchUpdate(waitList);
