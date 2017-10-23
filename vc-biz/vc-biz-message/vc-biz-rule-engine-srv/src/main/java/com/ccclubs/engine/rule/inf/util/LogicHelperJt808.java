@@ -284,7 +284,7 @@ public class LogicHelperJt808 {
               csStateNew.setCssEvBattery((byte) soc);
               csStateNew.setCssAddTime(new Date());
 
-              updateStateService.update(csState);
+              updateStateService.updateFor808(csState);
               // 需要更新的当前状态加入等待队列
 //          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             }
