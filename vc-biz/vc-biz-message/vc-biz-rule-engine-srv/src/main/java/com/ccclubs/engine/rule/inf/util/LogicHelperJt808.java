@@ -254,7 +254,7 @@ public class LogicHelperJt808 {
       csCan.setCscData(hexString);
       csCan.setCscType((short) 1);
       csCan.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
-      csCan.setCscOrder(0l);
+      csCan.setCscOrder(0L);
 
       final String errorInfo = "";// CanHelperFactory.parseCanErrorData(canDataStr);
       csCan.setCscFault(errorInfo);
@@ -283,8 +283,9 @@ public class LogicHelperJt808 {
               csStateNew.setCssObdMile(obdMiles);
               csStateNew.setCssEvBattery((byte) soc);
               csStateNew.setCssAddTime(new Date());
+              csStateNew.setCssCurrentTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
 
-              updateStateService.updateFor808(csState);
+              updateStateService.updateFor808(csStateNew);
               // 需要更新的当前状态加入等待队列
 //          opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             }
