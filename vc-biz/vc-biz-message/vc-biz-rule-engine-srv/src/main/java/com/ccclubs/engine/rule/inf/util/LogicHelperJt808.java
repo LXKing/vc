@@ -280,8 +280,12 @@ public class LogicHelperJt808 {
             if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile()) {
               CsState csStateNew = new CsState();
               csStateNew.setCssId(mapping.getState().intValue());
-              csStateNew.setCssObdMile(obdMiles);
-              csStateNew.setCssEvBattery((byte) soc);
+              if (obdMiles != 0) {
+                csStateNew.setCssObdMile(obdMiles);
+              }
+              if (soc != 0) {
+                csStateNew.setCssEvBattery((byte) soc);
+              }
               csStateNew.setCssAddTime(new Date());
               csStateNew.setCssCurrentTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
 
