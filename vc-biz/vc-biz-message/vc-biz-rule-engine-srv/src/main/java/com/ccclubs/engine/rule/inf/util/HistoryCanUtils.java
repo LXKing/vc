@@ -67,10 +67,10 @@ public class HistoryCanUtils {
     CarCanHistory carCanHistory=dealCsCanToCarCanHistory(csCan);
     String objectJson = JSON.toJSONString(carCanHistory);
     //concurrentLinkedQueue.add(objectJson);
-    logger.info("deal can data json is done:" + objectJson);
+    logger.debug("deal can data json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/can";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.info("send post for can !");
+    logger.debug("send post for can !");
   }
 
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
@@ -81,10 +81,10 @@ public class HistoryCanUtils {
     List<CarCanHistory> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
     String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
-    logger.info("deal can list json is done:" + objectJson);
+    logger.debug("deal can list json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/cans";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.info("send post for can list !");
+    logger.debug("send post for can list !");
   }
 
   public List<CarCanHistory> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){
