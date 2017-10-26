@@ -604,11 +604,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		for(CsIndexReport csIndexReport: exlist){
 			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
 		}
-
 		DBHelperZt dbHelperZt= new DBHelperZt();
 		dbHelperZt.getDBConnect();
 		dbHelperZt.getZtCurrentOBD(exlist);
-
 		//
 		return dateMap;
 	}

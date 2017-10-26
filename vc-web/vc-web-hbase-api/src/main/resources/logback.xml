@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true">
 	<!-- 配置系统名称 -->
-	<contextName>quota-api</contextName>
+	<contextName>hbase-api</contextName>
 	<!-- 配置日志路径 -->
-	<property scope="context" name="logback.dir" value="/var/logs/vc/quota-api" />
+	<property scope="context" name="logback.dir" value="/var/logs/vc/hbase-api" />
 	<!-- 配置日志输出 -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     	<encoder>

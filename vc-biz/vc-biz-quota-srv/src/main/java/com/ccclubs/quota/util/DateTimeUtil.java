@@ -110,7 +110,7 @@ public class DateTimeUtil {
         long calSize=0;
         try{
             SimpleDateFormat df = new SimpleDateFormat(format2);
-            long from = df.parse("2017-08-01 00:00:00").getTime();
+            long from = df.parse("2017-10-02 00:00:00").getTime();
             long to = System.currentTimeMillis();
             calSize=(to-from)/(1000*3600*24*7);
         }catch (Exception e){
