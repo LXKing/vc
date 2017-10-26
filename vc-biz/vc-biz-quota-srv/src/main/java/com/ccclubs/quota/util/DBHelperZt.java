@@ -24,16 +24,13 @@ public class DBHelperZt {
     public Statement st = null;
     //
     public  String driver="com.mysql.jdbc.Driver";
-//    public  String url="jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
-//    public  String  username="quota_user";
-//    public  String password="jjN(HRXeh$HklmXkQW!IzAs";
+    public  String url="jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
+    public  String  username="quota_user";
+    public  String password="jjN(HRXeh$HklmXkQW!IzAs";
 
-
-
-
-    public  String url="jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
-    public  String  username="zkj_user";
-    public  String password="kANXZYqf2UzghVY7DnjP";
+//    public  String url="jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false";
+//    public  String  username="zkj_user";
+//    public  String password="kANXZYqf2UzghVY7DnjP";
     public void  getZtCurrentOBD(List<CsIndexReport> exlist){
 
         JSONArray jsonArray = new JSONArray();
@@ -63,21 +60,6 @@ public class DBHelperZt {
                 jsonArray.add(obj);
             }
             //
-//            for (CsIndexReport csIndexReport:exlist){
-//                String csNumber=csIndexReport.getCsNumber();
-//
-//                for (Object object:jsonArray){
-//                    JSONObject jsonObject = (JSONObject)object;
-//                    String  csState_csNumber=((JSONObject) object).getString("css_number");
-//                    if(csNumber.equals(csState_csNumber)){
-//                        String css_obd_mile=((JSONObject) object).getString("css_obd_mile");
-//                        BigDecimal bd = new BigDecimal(css_obd_mile);
-//                        csIndexReport.setCumulativeMileage(bd);
-//                    }
-//                }
-//            }
-            //
-            //当前里程与历史统计里程都统计出来
             for (CsIndexReport csIndexReport:exlist){
                 String csNumber=csIndexReport.getCsNumber();
 
@@ -87,10 +69,25 @@ public class DBHelperZt {
                     if(csNumber.equals(csState_csNumber)){
                         String css_obd_mile=((JSONObject) object).getString("css_obd_mile");
                         BigDecimal bd = new BigDecimal(css_obd_mile);
-                        csIndexReport.setCurrentCumulativeMileage(bd);
+                        csIndexReport.setCumulativeMileage(bd);
                     }
                 }
             }
+            //
+//            //当前里程与历史统计里程都统计出来
+//            for (CsIndexReport csIndexReport:exlist){
+//                String csNumber=csIndexReport.getCsNumber();
+//
+//                for (Object object:jsonArray){
+//                    JSONObject jsonObject = (JSONObject)object;
+//                    String  csState_csNumber=((JSONObject) object).getString("css_number");
+//                    if(csNumber.equals(csState_csNumber)){
+//                        String css_obd_mile=((JSONObject) object).getString("css_obd_mile");
+//                        BigDecimal bd = new BigDecimal(css_obd_mile);
+//                        csIndexReport.setCurrentCumulativeMileage(bd);
+//                    }
+//                }
+//            }
             rs.close();
             pst.close();
             conn.close();

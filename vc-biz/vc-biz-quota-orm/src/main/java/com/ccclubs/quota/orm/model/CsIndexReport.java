@@ -92,15 +92,15 @@ public class CsIndexReport implements Serializable {
     private BigDecimal cumulativeMileage;
 
 
-    private BigDecimal  CurrentCumulativeMileage;
-
-    public BigDecimal getCurrentCumulativeMileage() {
-        return CurrentCumulativeMileage;
-    }
-
-    public void setCurrentCumulativeMileage(BigDecimal currentCumulativeMileage) {
-        CurrentCumulativeMileage = currentCumulativeMileage;
-    }
+//    private BigDecimal  CurrentCumulativeMileage;
+//
+//    public BigDecimal getCurrentCumulativeMileage() {
+//        return CurrentCumulativeMileage;
+//    }
+//
+//    public void setCurrentCumulativeMileage(BigDecimal currentCumulativeMileage) {
+//        CurrentCumulativeMileage = currentCumulativeMileage;
+//    }
 
     /**
      *

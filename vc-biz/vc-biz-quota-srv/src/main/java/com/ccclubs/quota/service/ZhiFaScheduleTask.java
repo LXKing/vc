@@ -24,7 +24,7 @@ public class ZhiFaScheduleTask {
 
 //    @Scheduled(fixedDelay=1000*60*1)
 //    //执行数据统计任务
-    @Scheduled(cron="0 15 2 ? * MON") //每周一的2点15执行
+//    @Scheduled(cron="0 15 2 ? * MON") //每周一的2点15执行
     public void executeCensusTask(){
         //获取要计算的所有周的列表
         Calendar cal = Calendar.getInstance();
