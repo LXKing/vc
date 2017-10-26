@@ -87,7 +87,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
-                        logger.info("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
+                        logger.debug("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
                         //historyStateUtils.saveHistoryDataToHbase(waitList);
                         historyCanUtils.saveHistoryDataToHbase(waitList);
 //            updateStateService.batchUpdate(waitList);
