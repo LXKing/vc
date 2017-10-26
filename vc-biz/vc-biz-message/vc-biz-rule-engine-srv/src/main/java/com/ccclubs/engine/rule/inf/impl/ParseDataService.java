@@ -509,8 +509,11 @@ public class ParseDataService implements IParseDataService {
   private void transferToMq(final MachineMapping mapping, String tag, MqMessage message,
       boolean isCanState) {
     try {
+      CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
+      if (csMachine == null) {
+        return;
+      }
       if (isCanState) {
-        CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
         // 只有标记为地标类型的终端才转发。
         if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
             .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
@@ -518,8 +521,10 @@ public class ParseDataService implements IParseDataService {
         }
       }
 
+      SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+
       Message mqMessage = messageFactory
-          .getMessage(topic, tag, message);
+          .getMessage(srvHost, topic, tag, message);
 
       if (mqMessage != null) {
         mqMessage.setKey(
