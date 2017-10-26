@@ -564,7 +564,7 @@ public class ParseOperationService implements IParseDataService {
       if (topic.equals(srvHost.getShTopic())) {
         // 转发远程控制结果指令
         Message mqMessage = messageFactory
-            .getMessage(topic, MqTagProperty.MQ_TERMINAL_REMOTE,
+            .getMessage(srvHost, topic, MqTagProperty.MQ_TERMINAL_REMOTE,
                 message);
         if (mqMessage != null && environmentUtils.isProdEnvironment()) {
           client.send(mqMessage);

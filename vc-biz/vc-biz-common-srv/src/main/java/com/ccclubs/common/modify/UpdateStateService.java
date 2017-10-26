@@ -12,6 +12,7 @@ import com.jarvis.cache.type.CacheOpType;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 /**
@@ -74,7 +75,9 @@ public class UpdateStateService {
    *
    * @param batchList 等待批量更新的list
    */
+//  @Transactional(rollbackFor = Exception.class)
   public void batchUpdate(List<CsState> batchList) {
+
     dao.batchUpdate(batchList);
   }
 

@@ -183,16 +183,17 @@ public class MqMessageProcessService implements IMqMessageProcessService {
    */
   private void transferToMq(MachineMapping mapping, T808Message message, String tag) {
     try {
+      CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
+      // 只有标记为地标类型的终端才转发。
+      if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
+          .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
+        return;
+      }
+
       Message mqMessage = messageFactory
-          .getMessage(topic, tag, message);
+          .getMessage(csMachine, topic, tag, message);
 
       if (mqMessage != null) {
-        CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
-        // 只有标记为地标类型的终端才转发。
-        if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
-            .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
-          return;
-        }
         if (environmentUtils.isProdEnvironment()) {
           client.send(mqMessage);
         }
