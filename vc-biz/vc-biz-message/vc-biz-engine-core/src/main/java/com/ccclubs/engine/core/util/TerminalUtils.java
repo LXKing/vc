@@ -195,7 +195,7 @@ public class TerminalUtils {
         // 通领硬件版本
         if (terminalInfo.getVersion() != null && !String.valueOf(terminalInfo.getVersion())
             .equals(csMachine.getCsmV2())) {
-          csMachineNew.setCsmTlV2(terminalInfo.getVersion());
+          csMachineNew.setCsmV2(String.valueOf(terminalInfo.getVersion()));
         }
 
         //通领主版本
@@ -221,7 +221,7 @@ public class TerminalUtils {
         if (terminalInfo.getZHardWareVersion() != null && !String
             .valueOf(terminalInfo.getZHardWareVersion())
             .equals(csMachine.getCsmV2())) {
-          csMachineNew.setCsmTlV2(terminalInfo.getZHardWareVersion());
+          csMachineNew.setCsmV2(String.valueOf(terminalInfo.getZHardWareVersion()));
         }
 
         //中导主版本
@@ -246,7 +246,7 @@ public class TerminalUtils {
         if (terminalInfo.getFVersion() != null && !String
             .valueOf(terminalInfo.getFVersion())
             .equals(csMachine.getCsmV2())) {
-          csMachineNew.setCsmTlV2(terminalInfo.getFVersion());
+          csMachineNew.setCsmV2(String.valueOf(terminalInfo.getFVersion()));
         }
 
         // 富士康软件版本
@@ -255,7 +255,7 @@ public class TerminalUtils {
               Tools.ToHexString((short) terminalInfo.getFIapVersion().intValue()) + Tools
                   .ToHexString((short) terminalInfo.getFAppVersion().intValue());
           if (!softVersion.equals(csMachine.getCsmV1())) {
-            csMachineNew.setCsmTlV1(softVersion);
+            csMachineNew.setCsmV1(softVersion);
           }
         }
         // 富士康IAP版本
@@ -277,7 +277,7 @@ public class TerminalUtils {
       if (terminalInfo.getHardwareVersion() != null && !String
           .valueOf(terminalInfo.getHardwareVersion())
           .equals(csMachine.getCsmV2())) {
-        csMachineNew.setCsmTlV2(terminalInfo.getHardwareVersion());
+        csMachineNew.setCsmV2(String.valueOf(terminalInfo.getHardwareVersion()));
       }
       // 软件版本I
       if (terminalInfo.getSoftwareVersionNewI() != null && !String
