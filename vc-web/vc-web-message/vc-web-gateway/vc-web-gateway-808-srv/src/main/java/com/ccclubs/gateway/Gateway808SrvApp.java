@@ -3,6 +3,7 @@ package com.ccclubs.gateway;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.ccclubs.frm.mongodb.config.MongoConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
@@ -47,7 +48,7 @@ import org.springframework.context.annotation.Primary;
 @SpringBootApplication
 @Import({MybatisConfig.class})
 @ImportAutoConfiguration({OnsProperties.class,
-    MqttAliyunProperties.class})
+    MqttAliyunProperties.class, MongoConfig.class})
 public class Gateway808SrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(Gateway808SrvApp.class);
