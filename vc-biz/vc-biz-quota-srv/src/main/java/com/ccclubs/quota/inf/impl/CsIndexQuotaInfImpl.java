@@ -689,7 +689,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		//数据库时间与现在时间相差的天数
 		int dayInterval= DateTimeUtil.daysBetween(modifyDate,DateTimeUtil.getDateTimeByFormat1(System.currentTimeMillis()));
 		//取最新的obd里程，并统计各项指标
-		if(dayInterval>=0){
+		if(dayInterval>7){
 			dbHelperZt.getDBConnect();
 			//返回最新的指标数据并入库
 			dbHelperZt.getZtCurrentOBDTemp(exlist);
