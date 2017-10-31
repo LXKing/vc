@@ -1,22 +1,13 @@
 package com.ccclubs.quota.inf.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.olap.orm.mapper.CsCarMapper;
-import com.ccclubs.olap.orm.mapper.CsHistoryStateMapper;
 import com.ccclubs.olap.orm.mapper.DriveMilesBasicZhifaMapper;
 import com.ccclubs.olap.orm.mapper.SocMilesBasicZhifaMapper;
 import com.ccclubs.olap.orm.model.*;
-import com.ccclubs.quota.service.PaceBlock;
-import com.ccclubs.quota.service.Vehicle_zhifa;
-import com.ccclubs.quota.util.DBHelperZt;
 import com.ccclubs.quota.vo.WeekBeanOutput;
 import com.ccclubs.quota.inf.ZhiFaMilesBasicInf;
-import com.ccclubs.quota.util.BlockUtil;
 import com.ccclubs.quota.util.DBHelperZf;
 import com.ccclubs.quota.util.DateTimeUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;

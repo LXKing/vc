@@ -66,4 +66,5 @@ public interface CsIndexReportMapper {
 
     List<CsIndexReport> selectByExampleRelateCsState(CsIndexReportExample example);
 
+    void updateBatchByExample(List<CsIndexReport> updateCsIndexReport);
 }

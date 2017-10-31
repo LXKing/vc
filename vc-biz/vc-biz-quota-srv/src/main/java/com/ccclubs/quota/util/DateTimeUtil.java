@@ -215,7 +215,6 @@ public class DateTimeUtil {
                 blockMap.put(start_cal.getTimeInMillis(),paceBlock);
                 start_cal.add(Calendar.MINUTE,12);
             }
-
         }
         catch (Exception ex){
             ex.printStackTrace();
@@ -223,7 +222,69 @@ public class DateTimeUtil {
         return blockMap;
     }
 
+
+    public static int getMonthSpace(String date1, String date2)  {
+
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String str1 = date2;
+            String str2 = date1;
+            Calendar bef = Calendar.getInstance();
+            Calendar aft = Calendar.getInstance();
+            bef.setTime(sdf.parse(str1));
+            aft.setTime(sdf.parse(str2));
+            int result = aft.get(Calendar.MONTH) - bef.get(Calendar.MONTH);
+            int month = (aft.get(Calendar.YEAR) - bef.get(Calendar.YEAR)) * 12;
+            //
+            if(Math.abs(month + result)==0){
+                return 1;
+            }else{
+                return Math.abs(month + result);
+            }
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
+
+    /**
+     * 计算两个日期之间相差的天数
+     * @param smdate 较小的时间
+     * @param bdate  较大的时间
+     * @return 相差天数
+     */
+    public static int daysBetween(String smdate,String bdate){
+        long betweenDays=0;
+        try{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(sdf.parse(smdate));
+            long time1 = cal.getTimeInMillis();
+            cal.setTime(sdf.parse(bdate));
+            long time2 = cal.getTimeInMillis();
+            betweenDays =(time2-time1)/(1000*3600*24);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return Integer.parseInt(String.valueOf(betweenDays));
+    }
+
+    public static String dateToString(Date date){
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(date);
+    }
+
+
     public static void main(String[] args) {
 
+
+//      System.out.print(DateTimeUtil.daysBetween("2017-10-23 00:00:00",DateTimeUtil.getDateTimeByFormat1(System.currentTimeMillis())));
+
+      System.out.println(new Date(System.currentTimeMillis()));
+      System.out.println(DateTimeUtil.dateToString(new Date(System.currentTimeMillis())));
+//        System.out.println(daysBetween("2017-10-23 00:00:00","2017-10-26 14:23:26"));
     }
 }

@@ -12,12 +12,13 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.ccclubs.quota.util.DBHelperZt;
+import com.ccclubs.quota.util.DateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.orm.mapper.CsIndexExceptBizMapper;
@@ -68,6 +69,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	private CsIndexReportMapper csIndexReportMapper;
 	@Resource
 	private CsVehicleMachineRelMapper csVehicleMachineRelMapper;
+
+	@Autowired
+	private  DBHelperZt  dbHelperZt;
 
 	@Transactional
 	@Override
@@ -581,6 +585,87 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	 * @param readExcelList
 	 * @return
 	 */
+
+	public Map<String,CsIndexReport>  ztReportExportTempTemp(List<CsIndexReport> readExcelList) {
+		//1.先获取到前端传进来的条件
+		readExcelList.remove(0);
+		//从excel获取到所有条件的vin码
+		List<String>vinList=new ArrayList<>();
+		for (CsIndexReport csIndexReport:readExcelList){
+			vinList.add(csIndexReport.getCsVin());
+		}
+		//
+		CsIndexReportExample example = new CsIndexReportExample();
+		CsIndexReportExample.Criteria criteria=example.createCriteria();
+		criteria.andCsVinIn(vinList);
+		List<CsIndexReport> exlist=new ArrayList<>();
+		if(vinList!=null&&vinList.size()>0){
+			//根据条件查询的数据
+			exlist = csIndexReportMapper.selectByExample(example);
+		}
+		//---上线改掉
+		for (CsIndexReport csIndexReport:exlist){
+			BigDecimal  cumulativeMileage=csIndexReport.getCumulativeMileage();
+			if(cumulativeMileage.intValue()<10){
+				csIndexReport.setCumulativeCharge(null);
+				csIndexReport.setMonthlyAvgMile(null);
+				csIndexReport.setElectricRange(null);
+				csIndexReport.setPowerConsumePerHundred(null);
+				csIndexReport.setMinChargeTime(null);
+				csIndexReport.setMaxChargePower(null);
+				csIndexReport.setAvgDriveTimePerDay(null);
+				csIndexReport.setCumulativeMileage(null);
+			}else {
+				BigDecimal powerHred=csIndexReport.getPowerConsumePerHundred();
+				//累计充电量
+				float ff= cumulativeMileage.floatValue()/(float) 100*powerHred.floatValue();
+				BigDecimal   b   =   new   BigDecimal(ff);
+				BigDecimal   f1   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP);
+				csIndexReport.setCumulativeCharge(f1);
+				//月均行驶里程、
+				float avgf= cumulativeMileage.floatValue()/(float)10;
+				BigDecimal   bb   =   new   BigDecimal(avgf);
+				BigDecimal   fLL   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP);
+				csIndexReport.setMonthlyAvgMile(fLL);
+			}
+		}
+		//------
+		Map<String,CsIndexReport> dateMap=new HashMap<>();
+		//
+		//修正数据部分
+		//先找出剩余三千的车辆cs_number
+		List<String>shengYuVinList=new ArrayList<>();
+		for(String str:vinList){
+			boolean flag=false;
+			for( CsIndexReport csIndexReport:  exlist){
+				if(str.equals(csIndexReport.getCsVin())){
+					flag=true;
+					break;
+				}
+			}
+			if(!flag){
+				shengYuVinList.add(str);
+			}
+		}
+		//
+		dbHelperZt.getDBConnect();
+		List<CsIndexReport> list=dbHelperZt.getZtExceptionData(shengYuVinList);
+		dbHelperZt.dbClose();
+		//
+		exlist.addAll(list);
+		for(CsIndexReport csIndexReport: exlist){
+			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
+		}
+		return dateMap;
+	}
+
+
+
+	/**
+	 * ***
+	 * ***************通过当前里程模拟各项指标数据***************
+	 * @return
+	 */
 	@Override
 	public Map<String,CsIndexReport>  ztReportExport(List<CsIndexReport> readExcelList) {
 		//1.先获取到前端传进来的条件
@@ -599,15 +684,27 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 			//根据条件查询的数据
 			exlist = csIndexReportMapper.selectByExample(example);
 		}
+		//此条数据修改时间
+		String modifyDate=exlist.get(0).getModifyDate();
+		//数据库时间与现在时间相差的天数
+		int dayInterval= DateTimeUtil.daysBetween(modifyDate,DateTimeUtil.getDateTimeByFormat1(System.currentTimeMillis()));
+		//取最新的obd里程，并统计各项指标
+		if(dayInterval>7){
+			dbHelperZt.getDBConnect();
+			//返回最新的指标数据并入库
+			dbHelperZt.getZtCurrentOBDTemp(exlist);
+			dbHelperZt.dbClose();
+			//入库前 --更新
+			csIndexReportMapper.updateBatchByExample(exlist);
+		}
+		//------
 		Map<String,CsIndexReport> dateMap=new HashMap<>();
 		//
 		for(CsIndexReport csIndexReport: exlist){
 			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
 		}
-		DBHelperZt dbHelperZt= new DBHelperZt();
-		dbHelperZt.getDBConnect();
-		dbHelperZt.getZtCurrentOBD(exlist);
 		//
 		return dateMap;
 	}
+
 }
