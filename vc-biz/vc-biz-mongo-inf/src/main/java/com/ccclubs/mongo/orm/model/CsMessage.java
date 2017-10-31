@@ -35,9 +35,9 @@ public class CsMessage extends AbstractDocumentOld implements Serializable {
     //@note(" 1:成功 0:失败  ")
     private Short csmVerify;
     //@caption("报文时间")
-    private Date csmMsgTime;
+    private Long csmMsgTime;
     //@caption("上传时间")
-    private Date csmAddTime;
+    private Long csmAddTime;
     //@caption("原始报文")
     private String csmData;
     //@caption("状态")
@@ -108,19 +108,19 @@ public class CsMessage extends AbstractDocumentOld implements Serializable {
         this.csmVerify = csmVerify;
     }
 
-    public Date getCsmMsgTime() {
+    public Long getCsmMsgTime() {
         return csmMsgTime;
     }
 
-    public void setCsmMsgTime(Date csmMsgTime) {
+    public void setCsmMsgTime(Long csmMsgTime) {
         this.csmMsgTime = csmMsgTime;
     }
 
-    public Date getCsmAddTime() {
+    public Long getCsmAddTime() {
         return csmAddTime;
     }
 
-    public void setCsmAddTime(Date csmAddTime) {
+    public void setCsmAddTime(Long csmAddTime) {
         this.csmAddTime = csmAddTime;
     }
 

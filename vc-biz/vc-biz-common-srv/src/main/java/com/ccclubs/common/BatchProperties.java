@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author qsxiaogang
  * @create 2017-10-13
  **/
-@ConfigurationProperties(prefix = "ccclubs.batch")
+@ConfigurationProperties(prefix = "ccclubs.data.batch")
 public class BatchProperties {
 
   /**
@@ -17,11 +17,19 @@ public class BatchProperties {
   /**
    * update 单次任务批量update数量
    */
-  private int updateBatchSize = 500;
+  private int updateBatchSize = 1000;
   /**
    * update 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int updateMaxDurTime = 1000;
+  private int updateMaxDurTime = 5000;
+  /**
+   * update 单次任务批量开启的线程数
+   */
+  private int updateThreads = 20;
+  /**
+   * update 队列中最大数量
+   */
+  private int updateQueueMax = 5 * 10000;
 
   /**
    * mongo insert 任务定时执行周期，单位毫秒
@@ -30,11 +38,19 @@ public class BatchProperties {
   /**
    * mongo insert 单次任务批量update数量
    */
-  private int mongoInsertBatchSize = 1000;
+  private int mongoInsertBatchSize = 2000;
   /**
    * mongo insert 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int mongoInsertMaxDurTime = 5000;
+  private int mongoInsertMaxDurTime = 10000;
+  /**
+   * mongo insert 单次任务线程池数量
+   */
+  private int mongoInsertThreads = 20;
+  /**
+   * mongo insert 队列中最大数量
+   */
+  private int mongoInsertQueueMax = 20 * 10000;
 
   /**
    * hbase insert 任务定时执行周期，单位毫秒
@@ -43,11 +59,19 @@ public class BatchProperties {
   /**
    * hbase insert 单次任务批量update数量
    */
-  private int hbaseInsertBatchSize = 1000;
+  private int hbaseInsertBatchSize = 2000;
   /**
    * hbase insert 单次任务批量最大时间，建议小于任务定时执行周期
    */
-  private int hbaseInsertMaxDurTime = 5000;
+  private int hbaseInsertMaxDurTime = 3000;
+  /**
+   * hbase insert 单次任务开启的线程数量
+   */
+  private int hbaseInsertThreads = 20;
+  /**
+   * hbase insert 队列中最大数量
+   */
+  private int hbaseInsertQueueMax = 20 * 10000;
 
   public int getUpdateAutoLoadTime() {
     return updateAutoLoadTime;
@@ -119,5 +143,53 @@ public class BatchProperties {
 
   public void setHbaseInsertMaxDurTime(int hbaseInsertMaxDurTime) {
     this.hbaseInsertMaxDurTime = hbaseInsertMaxDurTime;
+  }
+
+  public int getUpdateThreads() {
+    return updateThreads;
+  }
+
+  public void setUpdateThreads(int updateThreads) {
+    this.updateThreads = updateThreads;
+  }
+
+  public int getMongoInsertThreads() {
+    return mongoInsertThreads;
+  }
+
+  public void setMongoInsertThreads(int mongoInsertThreads) {
+    this.mongoInsertThreads = mongoInsertThreads;
+  }
+
+  public int getHbaseInsertThreads() {
+    return hbaseInsertThreads;
+  }
+
+  public void setHbaseInsertThreads(int hbaseInsertThreads) {
+    this.hbaseInsertThreads = hbaseInsertThreads;
+  }
+
+  public int getUpdateQueueMax() {
+    return updateQueueMax;
+  }
+
+  public void setUpdateQueueMax(int updateQueueMax) {
+    this.updateQueueMax = updateQueueMax;
+  }
+
+  public int getMongoInsertQueueMax() {
+    return mongoInsertQueueMax;
+  }
+
+  public void setMongoInsertQueueMax(int mongoInsertQueueMax) {
+    this.mongoInsertQueueMax = mongoInsertQueueMax;
+  }
+
+  public int getHbaseInsertQueueMax() {
+    return hbaseInsertQueueMax;
+  }
+
+  public void setHbaseInsertQueueMax(int hbaseInsertQueueMax) {
+    this.hbaseInsertQueueMax = hbaseInsertQueueMax;
   }
 }

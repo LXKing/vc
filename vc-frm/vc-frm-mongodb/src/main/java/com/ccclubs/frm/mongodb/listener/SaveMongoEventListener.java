@@ -1,10 +1,9 @@
 package com.ccclubs.frm.mongodb.listener;
 
 import com.ccclubs.frm.mongodb.document.LZPrimary;
+import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 import java.lang.reflect.Field;
 import javax.annotation.Resource;
-
-import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,6 +21,8 @@ public class SaveMongoEventListener extends AbstractMongoEventListener<Object> {
 
   @Resource
   private MongoTemplate mongoTemplate;
+  @Resource(name = "gbStandardMongoTemplate")
+  private MongoTemplate gbMongoTemplate;
 
   @Override
   public void onBeforeConvert(final BeforeConvertEvent<Object> event) {
@@ -40,8 +41,12 @@ public class SaveMongoEventListener extends AbstractMongoEventListener<Object> {
                       .getAnnotation(Document.class);
                   collectionName = documentAnnotation.collection();
                 }
-
-                field.set(event.getSource(), getNextId(collectionName));
+                //FIXME：目前通过固定方式选择数据源，后期改造成注解
+                if ("CsMessage".equals(collectionName)) {
+                  field.set(event.getSource(), getNextId(gbMongoTemplate, collectionName));
+                } else {
+                  field.set(event.getSource(), getNextId(mongoTemplate, collectionName));
+                }
               }
             }
           });
@@ -58,7 +63,7 @@ public class SaveMongoEventListener extends AbstractMongoEventListener<Object> {
    *
    * @param collName 集合名
    */
-  private Long getNextId(String collName) {
+  private Long getNextId(MongoTemplate mongoTemplate, String collName) {
     Query query = new Query(Criteria.where("name").is(collName));
     Update update = new Update();
     update.inc("id", 1L);

@@ -1,5 +1,6 @@
 package com.ccclubs.engine.rule.inf.util;
 
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
@@ -186,11 +187,11 @@ public class TransformUtils {
         terminalStatus.setCssGpsCn(csState.getCssGpsCn()&0xFFFF);
         terminalStatus.setCssCompres(csState.getCssCompres()&0xFF);
         terminalStatus.setCssCsq(csState.getCssCsq()&0xFFFF);
-        terminalStatus.setCssDir(Integer.parseInt(csState.getCssDir()));
-        terminalStatus.setCssDoor(Integer.parseInt(csState.getCssDoor()));
+        terminalStatus.setCssDir(StringUtils.empty(csState.getCssDir())?0:Integer.parseInt(csState.getCssDir()));
+        terminalStatus.setCssDoor(StringUtils.empty(csState.getCssDoor())?0:Integer.parseInt(csState.getCssDoor()));
         // TODO:燃油量
-        terminalStatus.setCssOil(Integer.parseInt(csState.getCssOil()));
-        terminalStatus.setCssEndurance(Integer.parseInt(csState.getCssEndurance()));
+        terminalStatus.setCssOil(StringUtils.empty(csState.getCssOil())?0:Integer.parseInt(csState.getCssOil()));
+        terminalStatus.setCssEndurance(StringUtils.empty(csState.getCssEndurance())?0:Integer.parseInt(csState.getCssEndurance()));
         terminalStatus.setCssEngineT(csState.getCssEngineT());
         terminalStatus.setCssEvBattery(csState.getCssEvBattery()&0xFF);
         terminalStatus.setCssFan(csState.getCssFan()&0xFF);
@@ -204,7 +205,7 @@ public class TransformUtils {
         terminalStatus.setCssOrder(csState.getCssOrder());
         terminalStatus.setCssPower(csState.getCssPower());
         terminalStatus.setCssPtc(csState.getCssPtc()&0xFF);
-        terminalStatus.setCssRented(Integer.parseInt(csState.getCssRented()));
+        terminalStatus.setCssRented(StringUtils.empty(csState.getCssRented())?0:Integer.parseInt(csState.getCssRented()));
         terminalStatus.setCssGpsCount(csState.getCssGpsCount().intValue());
         terminalStatus.setCssGpsValid(csState.getCssGpsValid()&0xFF);
         terminalStatus.setCssSaving(csState.getCssSaving()&0xFF);

@@ -1,12 +1,13 @@
 package com.ccclubs.engine.rule.inf.util;
 
 
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryStateService;
-import com.ccclubs.engine.core.util.MachineMapping;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsAlarmDao;
 import com.ccclubs.mongo.orm.model.CsAlarm;
 import com.ccclubs.protocol.dto.mqtt.MQTT_43;
@@ -27,7 +28,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -80,15 +80,11 @@ public class LogicHelperMqtt {
   /**
    * 保存状态数据
    */
-  public void saveStatusData(final MqMessage message, final MQTT_66 mqtt_66) {
-    ListOperations opsForList = redisTemplate.opsForList();
-
-    HashOperations ops = redisTemplate.opsForHash();
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-
+  @Timer
+  public void saveStatusData(final MachineMapping mapping, final MqMessage message,
+      final MQTT_66 mqtt_66) {
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -163,6 +159,7 @@ public class LogicHelperMqtt {
                 BigDecimal.ROUND_HALF_UP));
       }
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
       historyStateUtils.saveHistoryData(csState);
@@ -173,6 +170,7 @@ public class LogicHelperMqtt {
       csState.setCssLatitude(AccurateOperationUtils
           .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
               BigDecimal.ROUND_HALF_UP));
+
       // 写入当前状态
       updateStateService.insert(csState);
       // 处理历史状态
@@ -184,18 +182,14 @@ public class LogicHelperMqtt {
   /**
    * 保存新版本状态数据
    */
-  public void saveStatusData(final MqMessage message, final MQTT_68_03 mqtt_68_03) {
+  @Timer
+  public void saveStatusData(MachineMapping mapping, final MqMessage message,
+      final MQTT_68_03 mqtt_68_03) {
     if (mqtt_68_03 == null || mqtt_68_03.getCcclubs_60() == null) {
       return;
     }
-    HashOperations ops = redisTemplate.opsForHash();
-    ListOperations opsForList = redisTemplate.opsForList();
-
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, message.getCarNumber());
-
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -267,6 +261,7 @@ public class LogicHelperMqtt {
         );
       }
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
       historyStateUtils.saveHistoryData(csState);
@@ -287,16 +282,11 @@ public class LogicHelperMqtt {
   /**
    * 保存CAN数据
    */
-
-  public void saveCanData(MqMessage mqMessage, CanStatusZotye canZotye) {
-    HashOperations ops = redisTemplate.opsForHash();
-    ListOperations opsForList = redisTemplate.opsForList();
-
-    final MachineMapping mapping = (MachineMapping) ops
-        .get(RuleEngineConstant.REDIS_KEY_CARNUM, mqMessage.getCarNumber());
-
+  @Timer
+  public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
+      CanStatusZotye canZotye) {
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess());
+    csMachine.setCsmAccess(mapping.getAccess().intValue());
     csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
@@ -323,7 +313,9 @@ public class LogicHelperMqtt {
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
       // 需要更新的当前状态加入等待队列
+      ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
+
       // 处理历史状态
       historyCanUtils.saveHistoryData(canData);
     } else {
@@ -336,15 +328,14 @@ public class LogicHelperMqtt {
   /**
    * 保存报警数据
    */
-  public void saveAlarmData(MqMessage mqMessage, MQTT_43 mqtt_43) {
+  public void saveAlarmData(final MachineMapping mapping, MqMessage mqMessage, MQTT_43 mqtt_43) {
     final CsMachine csMachine = terminalUtils
-        .getCsMachineByNumber(RuleEngineConstant.REDIS_KEY_CARNUM,
-            mqMessage.getCarNumber().toUpperCase());
+        .getMappingMachine(mapping);
     if (csMachine == null || StringUtils.empty(csMachine.getCsmNumber())) {
       // TODO:记录系统中不存在的车机
       return;
     }
-    final CsVehicle csVehicle = terminalUtils.getCsVehicle(csMachine.getCsmId());
+    final CsVehicle csVehicle = terminalUtils.getCsVehicle(csMachine.getCsmId().longValue());
 
     CsAlarm alarm = terminalUtils.setCsAlarm(csVehicle, csMachine);
 

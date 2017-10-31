@@ -1,6 +1,8 @@
 package com.ccclubs.engine.core.util;
 
 import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
+import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.protocol.dto.jt808.Can2State;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,16 +24,6 @@ public class RedisHelper {
   private MyStringRedisTemplate myRedisTemplate;
 
   /**
-   * 设置映射关系缓存-NotExist(MachineMapping)
-   */
-  public void setNotExist(String keyPart, Object value) {
-    ValueOperations valueOperations = redisTemplate.opsForValue();
-    valueOperations.set(AssembleHelper.getKey(RuleEngineConstant.REDIS_KEY_NOT_EXIST, keyPart),
-        value,
-        RuleEngineConstant.REDIS_EXPIRE, TimeUnit.SECONDS);
-  }
-
-  /**
    * 缓存指令执行结果，缓存30s
    */
   public void setRemote(String keyPart, Object value) {
@@ -50,14 +42,28 @@ public class RedisHelper {
         TimeUnit.SECONDS);
   }
 
-  public void setMappingOld(Class modelClass, String keyPart, Object value) {
-    ValueOperations valueOperations = myRedisTemplate.opsForValue();
-    valueOperations
-        .set(new StringBuilder().append("OBJ.")
-                .append(modelClass.getName().replaceAll("[^\\.]*\\.", "")).append(".").append(keyPart),
-            value,
-            RuleEngineConstant.MAPPING_REDIS_EXPIRE,
-            TimeUnit.SECONDS);
+  /**
+   * 老系统中，获取 MachineMapping
+   */
+  public MachineMapping getMappingOld(String keyPart) {
+    return (MachineMapping) myRedisTemplate.opsForValue()
+        .get("OBJ.MachineMapping." + keyPart);
   }
 
+
+  /**
+   * 老系统中，获取 MachineMapping
+   */
+  public Can2State getCan2State(String simNo) {
+    return (Can2State) redisTemplate.opsForValue()
+        .get("Can2State:" + simNo);
+  }
+
+  /**
+   * 老系统中，获取 MachineMapping
+   */
+  public void setCan2State(String simNo) {
+    redisTemplate.opsForValue()
+        .set("Can2State:" + simNo, 3 * 60 * 60);
+  }
 }

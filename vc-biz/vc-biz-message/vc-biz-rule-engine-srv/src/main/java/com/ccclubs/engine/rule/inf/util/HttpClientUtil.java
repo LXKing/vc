@@ -11,6 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +30,15 @@ public class HttpClientUtil {
     private static final Logger logger = LoggerFactory.getLogger(HttpClientUtil.class);
     public static final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=UTF-8";
     public static final String UTF_8 = "UTF-8";
-    public static final int CONNECTION_TIMEOUT = 60000;
+    public static final int CONNECTION_TIMEOUT = 3000;
 
     public static String doGet(String url, Map<String, String> param) {
 
         // 创建Httpclient对象
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
 
+        httpClient.getParams().setIntParameter(CoreConnectionPNames.SO_TIMEOUT, 3000);
+        httpClient.getParams().setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 3000);
         String resultString = "";
         CloseableHttpResponse response = null;
         try {
@@ -52,7 +55,7 @@ public class HttpClientUtil {
             HttpGet httpGet = new HttpGet(uri);
 
             // 执行请求
-            response = httpclient.execute(httpGet);
+            response = httpClient.execute(httpGet);
             // 判断返回状态是否为200
             if (response.getStatusLine().getStatusCode() == 200) {
                 resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
@@ -64,7 +67,7 @@ public class HttpClientUtil {
                 if (response != null) {
                     response.close();
                 }
-                httpclient.close();
+                httpClient.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

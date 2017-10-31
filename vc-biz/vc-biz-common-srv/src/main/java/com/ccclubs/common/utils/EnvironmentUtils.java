@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -75,6 +76,14 @@ public class EnvironmentUtils {
       return null;
     }
     return null;
+  }
+
+  public String getWaiteQueueName(String queueNamePre) {
+    String hostIp = this.getCurrentIp();
+    if (!StringUtils.isEmpty(hostIp)) {
+      return queueNamePre + ":" + hostIp.replaceAll("\\.", "#");
+    }
+    return hostIp;
   }
 
 }

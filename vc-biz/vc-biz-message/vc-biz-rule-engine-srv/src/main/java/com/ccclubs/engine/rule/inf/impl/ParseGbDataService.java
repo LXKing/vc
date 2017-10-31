@@ -2,6 +2,7 @@ package com.ccclubs.engine.rule.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
@@ -65,15 +66,15 @@ public class ParseGbDataService implements IParseGbDataService {
     if (message.getMessageContents() != null) {
       csMessage
           .setCsmMsgTime(
-              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss"));
+              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss").getTime());
     }
-    csMessage.setCsmAddTime(new Date());
+    csMessage.setCsmAddTime(System.currentTimeMillis());
     csMessage.setCsmData(message.getPacketDescr());
     csMessage.setCsmStatus((short) 1);
 
     //将 csMessage 放如 redis 队列
     /**
-     * {@link com.ccclubs.engine.rule.inf.task.BatchHistoryMessageInsertMongoJobs} 等待消费
+     * 等待消费
      */
     ListOperations ops = redisTemplate.opsForList();
     ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, csMessage);
