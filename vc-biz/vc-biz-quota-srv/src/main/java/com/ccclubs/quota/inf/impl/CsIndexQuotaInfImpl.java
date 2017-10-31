@@ -586,7 +586,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	 * @return
 	 */
 
-	public Map<String,CsIndexReport>  ztReportExport___fff(List<CsIndexReport> readExcelList) {
+	public Map<String,CsIndexReport>  ztReportExportTempTemp(List<CsIndexReport> readExcelList) {
 		//1.先获取到前端传进来的条件
 		readExcelList.remove(0);
 		//从excel获取到所有条件的vin码
@@ -663,7 +663,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 
 	/**
 	 * ***
-	 * ***************呆改**一下方法***************
+	 * ***************通过当前里程模拟各项指标数据***************
 	 * @return
 	 */
 	@Override
