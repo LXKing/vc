@@ -707,7 +707,4 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		return dateMap;
 	}
 
-
-
-
 }

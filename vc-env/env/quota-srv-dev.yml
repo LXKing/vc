@@ -47,3 +47,10 @@ druid:
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
   filters:
+zt:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url:  jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  avgDriveTimePerDay: 0.2,1.5,  1.3,2.5,  2.3,3.5,  3.3,6,  5.3,12

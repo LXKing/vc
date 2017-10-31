@@ -140,7 +140,6 @@ public class DBHelperZt {
         }
     }
 
-
     /**
      * 获取异常数据
      * @param vinList
@@ -271,12 +270,8 @@ public class DBHelperZt {
        float ff=  currentObd/(float)month;
         BigDecimal   b   =   new   BigDecimal(ff);
         BigDecimal   f1   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP);
-        if(  f1.compareTo(new BigDecimal(0))==0){
-                System.out.println("======");
-        }
         return f1 ;
     }
-
 
     ////纯电行驶里程
     public   BigDecimal getElectricRange(){
@@ -287,8 +282,6 @@ public class DBHelperZt {
         BigDecimal   f1   =   ff.setScale(2,   BigDecimal.ROUND_HALF_UP);
         return f1 ;
     }
-
-
 
     public   BigDecimal   getPowerConsumePerHundred(BigDecimal electricRange){
         float ff= (float) (24.5/electricRange.floatValue())*100;
@@ -327,21 +320,8 @@ public class DBHelperZt {
         return f1 ;
     }
 
-
     public   BigDecimal   getAvgDriveTimePerDay(int currentObd){
         BigDecimal ff=new BigDecimal(0);
-//        if(currentObd<1000){
-//            ff  =random(1,configZt.getAvgDriveTimePerDay()[0]  ,configZt.getAvgDriveTimePerDay()[1]);
-//        }else if(currentObd>=1000&&currentObd<5000){
-//            ff  =random(1,1.3f,2.5f).get(0);
-//        }else if(currentObd>=5000&&currentObd<20000){
-//            ff  =random(1,2.3f,3.5f).get(0);
-//        }else if(currentObd>=20000&&currentObd<29000){
-//            ff  =random(1,3.3f,6f).get(0);
-//        }else if(currentObd>=29000){
-//            ff  =random(1,5.3f,12f).get(0);
-//        }
-
         if(currentObd<1000){
             ff  =random(new BigDecimal(avgDriveTimePerDay[0])  ,new BigDecimal(avgDriveTimePerDay[1]));
         }else if(currentObd>=1000&&currentObd<5000){
@@ -353,12 +333,9 @@ public class DBHelperZt {
         }else if(currentObd>=29000){
             ff  =random(new BigDecimal(avgDriveTimePerDay[8])  ,new BigDecimal(avgDriveTimePerDay[9]));
         }
-
         BigDecimal   f1   =   ff.setScale(2,   BigDecimal.ROUND_HALF_UP);
         return f1 ;
     }
-
-
 
     //随机数据产生
     private static BigDecimal random( BigDecimal lower ,BigDecimal upper) {
@@ -367,8 +344,6 @@ public class DBHelperZt {
         BigDecimal result = (new BigDecimal(ra.nextFloat()).multiply(upper.subtract(lower))).add(lower);
          return result ;
     }
-
-
 
     //统计最新的众泰--国标指标数据************************以下修改********************************************
    public  void getZtCurrentOBDTemp(List<CsIndexReport> exVinList){
@@ -473,7 +448,6 @@ public class DBHelperZt {
            e.printStackTrace();
        }
    }
-
 
    public void insertCurrentData(List<CsIndexReport> exVinList){
         try{
