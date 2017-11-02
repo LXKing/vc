@@ -219,6 +219,7 @@ public class LogicHelperJt808 {
 
       int soc = 0;
       int obdMiles = 0;
+      int speed = 0;
 
       for (JT_0900_can_item item : canData.getCanList()) {
         CanDataTypeI canDataTypeI = new CanDataTypeI();
@@ -243,6 +244,8 @@ public class LogicHelperJt808 {
             obdMiles =
                 (canDataTypeI.mCanData3 & 0xff) * 65536 + (canDataTypeI.mCanData4 & 0xff) * 256 + (
                     canDataTypeI.mCanData5 & 0xff);
+          } else if (canDataTypeI.mCanId == 0x300) {
+            speed = (canDataTypeI.mCanData2 & 0xff);
           }
         }
       }
@@ -286,8 +289,12 @@ public class LogicHelperJt808 {
               if (soc != 0) {
                 csStateNew.setCssEvBattery((byte) soc);
               }
+              if (speed != csState.getCssSpeed()) {
+                csStateNew.setCssSpeed((short) speed);
+              }
               csStateNew.setCssAddTime(new Date());
-              csStateNew.setCssCurrentTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
+              csStateNew.setCssCurrentTime(
+                  StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
 
               updateStateService.updateFor808(csStateNew);
               // 需要更新的当前状态加入等待队列
