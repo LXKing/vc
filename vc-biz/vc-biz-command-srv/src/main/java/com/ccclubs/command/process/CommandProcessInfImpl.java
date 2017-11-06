@@ -47,6 +47,17 @@ public class CommandProcessInfImpl implements CommandProcessInf {
   private static Logger logger = LoggerFactory.getLogger(CommandProcessInfImpl.class);
 
   @Override
+  public void dealZdHttpUpdateCommand(CsMachine csMachine, byte[] srcArray) {
+    String downTopic = CommandMessageFactory.getP2pTopic(csMachine);
+    if (StringUtils.empty(downTopic)) {
+      return;
+    }
+    downTopic = downTopic + "update/";
+
+    sendFinalMessage(csMachine, downTopic, srcArray, true);
+  }
+
+  @Override
   public void dealRemoteCommand(CsMachine csMachine, byte[] srcArray, boolean isUpdate) {
     if (isUpdate) {
       String downTopic = CommandMessageFactory.getP2pTopic(csMachine);

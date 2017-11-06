@@ -13,6 +13,7 @@ import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.CsRemote;
@@ -42,6 +43,7 @@ import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 public class SendSimpleCmdImpl implements SendSimpleCmdInf {
 
     private static final Logger logger = LoggerFactory.getLogger(SendSimpleCmdImpl.class);
+    private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
     @Autowired
     private CommandProcessInf process;
@@ -124,6 +126,8 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
             case 14:
                 oldAdapter(csMachine, input, structId);
                 break;
+            default:
+                break;
         }
 
         // 1.查询指令结构体定义
@@ -164,6 +168,10 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 String result = ops.get(AssembleHelper.assembleKey(csRemote.getCsrId()));
                 if (null != result && !"".equals(result)) {
                     logger.info("command {} send successfully.", structId);
+                    csRemote.setCsrUpdateTime(System.currentTimeMillis());
+                    csRemote.setCsrStatus(1);
+                    csRemote.setCsrResult(result);
+                    loggerBusiness.info(JSONObject.toJSONString(csRemote));
                     CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result, new TypeReference<CommonResult<SimpleCmdOutput>>() {
                     });
 
@@ -177,9 +185,12 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                         throw new ApiException(ApiEnum.COMMAND_EXECUTE_FAILED.code(), commonResult.getMessage());
                     }
                 }
-                Thread.sleep(100l);
+                Thread.sleep(100L);
             }
             logger.error("command timeout and exit.");
+            csRemote.setCsrUpdateTime(System.currentTimeMillis());
+            csRemote.setCsrStatus(-1);
+            loggerBusiness.info(JSONObject.toJSONString(csRemote));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
 
         } catch (ApiException ex) {
@@ -203,13 +214,9 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
                 Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                if (null == csMachine.getCsmV1()) {
+                Integer currV = csMachine.getCsmTlV2();
+                if (currV < supportV) {
                     throw new ApiException(ApiEnum.OLD_VERSION_DETECTED, supportV);
-                } else {
-                    Integer currV = Integer.parseInt(csMachine.getCsmV1().substring(4), 16);
-                    if (currV < supportV) {
-                        throw new ApiException(ApiEnum.OLD_VERSION_DETECTED, supportV);
-                    }
                 }
                 break;
             case 1://中导
@@ -248,14 +255,10 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private Integer oldAdapter(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
-                if (null == csMachine.getCsmV1()) {
+                Integer currV = csMachine.getCsmTlV2();
+                Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
+                if (currV < supportV) {
                     structId = commandProp.getCmdMap().get("5" + input.getCmd());
-                } else {
-                    Integer currV = Integer.parseInt(csMachine.getCsmV1().substring(4), 16);
-                    Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                    if (currV < supportV) {
-                        structId = commandProp.getCmdMap().get("5" + input.getCmd());
-                    }
                 }
                 break;
             case 1://中导

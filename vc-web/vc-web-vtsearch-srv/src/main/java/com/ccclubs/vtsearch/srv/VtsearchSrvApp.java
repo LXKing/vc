@@ -1,5 +1,6 @@
 package com.ccclubs.vtsearch.srv;
 
+import com.ccclubs.frm.mongodb.config.MongoConfig;
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.terminal.inf.state.impl.TerminalProp;
@@ -21,7 +22,7 @@ import java.io.IOException;
 @SpringBootApplication
 @Import({MybatisConfig.class})
 @EnableConfigurationProperties({TerminalProp.class, VehicleProp.class})
-@ImportAutoConfiguration({RedisAutoConfiguration.class})
+@ImportAutoConfiguration({RedisAutoConfiguration.class, MongoConfig.class})
 public class VtsearchSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(VtsearchSrvApp.class);
 

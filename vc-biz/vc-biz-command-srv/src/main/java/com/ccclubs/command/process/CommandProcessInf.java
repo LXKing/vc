@@ -13,5 +13,12 @@ public interface CommandProcessInf {
    */
   void dealRemoteCommand(CsMachine csMachine, byte[] srcArray,boolean isUpdate);
 
+  /**
+   * 处理中导Http升级指令
+   * @param csMachine
+   * @param srcArray
+   */
+  void dealZdHttpUpdateCommand(CsMachine csMachine, byte[] srcArray);
+
   void dealRemoteCommand(CsRemote remote, Object[] array);
 }

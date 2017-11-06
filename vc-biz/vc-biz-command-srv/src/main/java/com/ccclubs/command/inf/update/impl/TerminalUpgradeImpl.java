@@ -39,7 +39,6 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
    * 终端升级（直接发送，不返还结果）
    *
    * @param input 升级参数
-   * @return
    */
   @Override
   public UpgradeOutput oneKeyUpgrade(UpgradeInput input) {
@@ -47,14 +46,46 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
     Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
     CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+    if (null == csMachine) {
+      return null;
+    }
+    Integer currentVersion = csMachine.getCsmTlV2();
     // TODO:检查终端是否在线，暂时通过查询状态数据来实现
-    //升级到1072版本
-    T808Message updateMessage = UpdateHelper
-        .getUpdateMessageForTl(csMachine.getCsmMobile(), input.getFilename());
+    switch (csMachine.getCsmTeType()) {
+      case 0:
+        if (currentVersion < 0x1322) {
+          process.dealRemoteCommand(csMachine,
+              UpdateHelper.getUpdateMessageForFskSimple(csMachine.getCsmNumber()), false);
+        } else {
+          process.dealRemoteCommand(csMachine,
+              UpdateHelper.getUpdateMessageForFsk(csMachine.getCsmNumber(), input.getFilename()),
+              false);
+        }
+        break;
+      case 1:
+        if (currentVersion < 0x2018) {
+          byte[] array = UpdateHelper.getUpdateMessageForZdHttp(csMachine.getCsmMobile());
+          if (null != array) {
+            process.dealZdHttpUpdateCommand(csMachine, array);
+          }
+        } else {
+          process.dealRemoteCommand(csMachine,
+              UpdateHelper.getUpdateMessageForZd(csMachine.getCsmMobile(), input.getFilename())
+                  .WriteToBytes(), false);
+        }
+        break;
+      case 3:
+        //升级到最新版本版本，此处的是通领大版本
+        T808Message updateMessage = UpdateHelper
+            .getUpdateMessageForTl(csMachine.getCsmMobile(), input.getFilename());
 
-    process.dealRemoteCommand(csMachine, updateMessage.WriteToBytes(), true);
+        process.dealRemoteCommand(csMachine, updateMessage.WriteToBytes(), true);
 
-    logger.info("给终端（Mobile {}）发送升级指令", csMachine.getCsmMobile());
+        logger.info("给终端（Mobile {}）发送升级指令", csMachine.getCsmMobile());
+        break;
+      default:
+        break;
+    }
 
     return null;
 
