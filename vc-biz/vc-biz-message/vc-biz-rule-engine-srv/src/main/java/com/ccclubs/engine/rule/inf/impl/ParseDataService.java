@@ -56,9 +56,6 @@ public class ParseDataService implements IParseDataService {
   TerminalUtils terminalUtils;
 
   @Resource
-  TransformUtils transformUtils;
-
-  @Resource
   MessageFactory messageFactory;
 
   @Resource
@@ -133,13 +130,13 @@ public class ParseDataService implements IParseDataService {
       MQTT_66 mqtt_66 = new MQTT_66();
       mqtt_66.ReadFromBytes(message.getMsgBody());
       // 众行EVPOP特殊处理
-      if (topic.equals(srvHost.getShTopic())) {
+      if (mapping.getAccess() == 3L ) {
         transferToMq(mapping, MqTagProperty.MQ_TERMINAL_STATUS, message, false);
       } else {
         // 如果未绑定车辆，则不转发到业务平台
         if (null != mapping.getVin()) {
           transferToMq(srvHost,
-              transformUtils
+              TransformUtils
                   .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_66, message),
               message);
         }
@@ -235,7 +232,7 @@ public class ParseDataService implements IParseDataService {
 
           //FIXME 长安出行需要做变更
           // 0x6802 将在0x6803新版本状态数据后弃用
-          if (mapping.getAccess() == 3L || mapping.getAccess() == 4L || mapping.getAccess() == 5L) {
+          if (mapping.getAccess() == 3L ) {
             CsState csState = terminalUtils.setUpdateMapTriggerInfo(terminalInfo);
             csState.setCssAddTime(new Date());
             csState.setCssId(mapping.getState().intValue());

@@ -26,7 +26,7 @@ public enum ApiEnum {
 	UNAUTHORIZED_ERROR(101014, "401 unauthorized", "未授权"),
 	VEHICLE_NOT_FOUND(101001, "vehicle not found", "未查询到车辆"),
 	TERMINAL_NOT_FOUND(101002, "terminal not found", "未查询到终端"),
-	TERMINAL_NOT_TL(101003, "terminal not tongling", "此终端不是通领类型，暂不支持升级"),
+	TERMINAL_NOT_TL(101003, "terminal not service", "此终端不在支持范围内，暂不支持升级"),
 	UNKNOWN_TERMINAL(101004, "unknown terminal", "未查询到该终端类型，当前支持终端类型:车厘子,中导,慧翰,通领"),
 	VEHICLE_STATE_NOT_FOUND(101005, "vehicle state not found", "未查询到车辆实时状态信息"),
 	TERMINAL_BINDING_EXISTS(101006, "terminal has aready bound to vin:{}", "该终端已存在绑定关系，vin码:{}"),

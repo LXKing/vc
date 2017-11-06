@@ -129,49 +129,17 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
     String latest_filename = LV.split(",")[1];
     switch (csMachine.getCsmTeType()) {
       case 0://富士康
-        makeFSKOutput(latest_version, latest_filename, output, csMachine);
-        break;
       case 1://中导
+      case 3://通领
         makeOutput(latest_version, latest_filename, output, csMachine);
         break;
       case 2://慧瀚
         output.setTerminalType(csMachine.getCsmTeType());
         break;
-      case 3://通领
-        makeOutput(latest_version, latest_filename, output, csMachine);
+      default:
         break;
     }
 
-    return output;
-  }
-
-
-  private VersionQryOutput makeFSKOutput(String latest_version, String latest_filename,
-      VersionQryOutput output, CsMachine csMachine) {
-    if (null == csMachine.getCsmV1()) {
-      output.setLatest(false);
-      output.setTerminalType(csMachine.getCsmTeType());
-      output.setLatestV(latest_version);
-      output.setFilename(latest_filename);
-      output.setCurrentV("");
-    } else {
-      if (latest_version
-          .equals(Integer.toString(Integer.parseInt(csMachine.getCsmV1().substring(4), 16)))) {
-        output.setLatest(true);
-        output.setTerminalType(csMachine.getCsmTeType());
-        output.setLatestV(latest_version);
-        output.setFilename(latest_filename);
-        output
-            .setCurrentV(Integer.toString(Integer.parseInt(csMachine.getCsmV1().substring(4), 16)));
-      } else {
-        output.setLatest(false);
-        output.setTerminalType(csMachine.getCsmTeType());
-        output.setLatestV(latest_version);
-        output.setFilename(latest_filename);
-        output
-            .setCurrentV(Integer.toString(Integer.parseInt(csMachine.getCsmV1().substring(4), 16)));
-      }
-    }
     return output;
   }
 
