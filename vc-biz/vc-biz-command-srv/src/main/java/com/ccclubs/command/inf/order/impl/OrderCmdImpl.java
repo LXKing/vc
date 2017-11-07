@@ -72,11 +72,22 @@ public class OrderCmdImpl implements OrderCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
-        // TODO rfid code
+        // add at 2017-11-17 ，兼容长安出行订单下发
+        String rfidCode = StringUtils.empty(input.getRfid()) ? "00000000" : input.getRfid();
+        int code = null == input.getAuthCode() ? 111111 : input.getAuthCode();
+
+        while (rfidCode.length() < 8){
+            rfidCode = "0" + rfidCode;
+        }
+
+        if (code > 999999 || code < 100000){
+            code = 111111;
+        }
+
         OrderDownStreamNew orderDownStream = new OrderDownStreamNew(csMachine.getCsmNumber(),
                 input.getOrderId(), ProtocolTools.transformToTerminalTime(startTime),
                 ProtocolTools.transformToTerminalTime(endTime), input.getOrderId(),
-                "00000000", 111111, input.getRealName(), input.getMobile(), input.getGender());
+            rfidCode, code, input.getRealName(), input.getMobile(), input.getGender());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
