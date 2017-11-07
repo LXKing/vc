@@ -1038,7 +1038,7 @@ public class CCCLUBS_60 implements IMessageBody {
   /**
    * 获取续航里程
    */
-  public Integer getEndurance() {
+  public BigDecimal getEndurance() {
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if (item.getAdditionalId() == 119) {
@@ -1048,9 +1048,15 @@ public class CCCLUBS_60 implements IMessageBody {
     }
     if (additionalItem != null) {
       MachineAdditional_Endurance endurance = (MachineAdditional_Endurance) additionalItem;
-      return endurance.getEndurance() & 0xFFFF;
+      if (SUBCODE_03 == subFucCode) {
+        // 03协议版本，单位为0.1km
+        return AccurateOperationUtils.mul(endurance.getEndurance(), 0.1)
+            .setScale(1, BigDecimal.ROUND_HALF_UP);
+      } else {
+        return new BigDecimal(endurance.getEndurance());
+      }
     } else {
-      return 0;
+      return new BigDecimal(0);
     }
   }
 

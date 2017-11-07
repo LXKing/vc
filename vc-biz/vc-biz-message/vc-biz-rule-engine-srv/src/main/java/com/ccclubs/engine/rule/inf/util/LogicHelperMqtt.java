@@ -204,7 +204,8 @@ public class LogicHelperMqtt {
     csState.setCssAddTime(new Date());
     csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
     csState.setCssRfid(mqtt_68_03.getCcclubs_60().getTradeInitCard());
-    csState.setCssSpeed((short) mqtt_68_03.getSpeed());
+    //FIXME 数据库字段设计为 Decimal
+    csState.setCssSpeed(mqtt_68_03.getSpeed().shortValue());
     csState.setCssMotor(mqtt_68_03.getRpm());
     csState.setCssPower(mqtt_68_03.getBattery());
     csState.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles().intValue());
@@ -218,9 +219,12 @@ public class LogicHelperMqtt {
     csState.setCssCsq((short) mqtt_68_03.getCsq());
     csState.setCssCurrentTime(new Date(mqtt_68_03.getTime()));
     csState.setCssRfidDte(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
-    csState.setCssObdMile(mqtt_68_03.getObdMile());
+    //FIXME 数据库字段设计为 Decimal
+    csState.setCssObdMile(mqtt_68_03.getObdMile().intValue());
     csState.setCssEngineT(mqtt_68_03.getTankTemperature());
-    csState.setCssEndurance(String.valueOf(mqtt_68_03.getCcclubs_60().getEndurance()));
+    //FIXME 数据库字段设计为 Decimal
+    csState.setCssEndurance(String.valueOf(mqtt_68_03.getCcclubs_60().getEndurance().intValue()));
+    //FIXME 数据库字段设计为 Decimal
     csState.setCssOil(String.valueOf(mqtt_68_03.getCcclubs_60().getOil().intValue()));
     csState.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc().byteValue());
     csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
