@@ -101,7 +101,7 @@ public class ParseDataService implements IParseDataService {
       processOrderModify(tm);
     } else if (headerType == 0x60) {//车机属性，记录日志
       processTerminalInfo(tm);
-    } else if (headerType == 0x68) {// 启动、停止数据；车辆状态改变推送
+    } else if (headerType == 0x68) {// 启动、停止数据；车辆状态改变推送；新版本状态数据
       processStartStopStatus(tm);
     } else if (headerType == 0x69) {// CAN数据
       processCanStatus(tm);
@@ -266,11 +266,11 @@ public class ParseDataService implements IParseDataService {
           mqtt_68_03.ReadFromBytes(message.getMsgBody());
           // 如果未配置转发topic，就不转发状态数据
           // TODO：需要以未解析方式转发给长安出行
-          if (!StringUtils.empty(srvHost.getShTopic()) && !StringUtils.empty(mapping.getVin())) {
+//          if (!StringUtils.empty(srvHost.getShTopic()) && !StringUtils.empty(mapping.getVin())) {
             transferToMq(srvHost, TransformUtils
                     .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
                 message);
-          }
+//          }
           logicHelperMqtt.saveStatusData(mapping, message, mqtt_68_03);
           break;
         default:

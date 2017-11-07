@@ -2,9 +2,12 @@ package com.ccclubs.protocol.dto.mqtt;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.protocol.inf.IMessageBody;
+import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.MyBuffer;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.Tools;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * 新版本状态数据0x68，协议版本0x03
@@ -250,12 +253,12 @@ public class MQTT_68_03 implements IMessageBody {
     this.latitude = latitude;
   }
 
-  public int getObdMile() {
-    return obdMile;
+  public BigDecimal getObdMile() {
+    return AccurateOperationUtils.mul(this.obdMile,0.1).setScale(1, RoundingMode.HALF_UP);
   }
 
   public void setObdMile(int obdMile) {
-    this.obdMile = obdMile;
+    this.obdMile = obdMile*10;
   }
 
   public int getHeading() {
@@ -298,12 +301,12 @@ public class MQTT_68_03 implements IMessageBody {
     this.rpm = rpm;
   }
 
-  public int getSpeed() {
-    return speed < 0 ? 0 : speed;
+  public BigDecimal getSpeed() {
+    return AccurateOperationUtils.mul(this.speed,0.1).setScale(1,RoundingMode.HALF_UP);
   }
 
   public void setSpeed(short speed) {
-    this.speed = speed;
+    this.speed = (short) (speed*10);
   }
 
   public int getCsq() {
