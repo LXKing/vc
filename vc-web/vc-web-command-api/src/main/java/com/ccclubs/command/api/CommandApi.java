@@ -351,13 +351,11 @@ public class CommandApi {
 
         ValueOperations ops = redisTemplate.opsForValue();
         String redisKey = REDIS_KEY_NOW_CMD + vin;
-        Object count = ops.get(redisKey);
-        if (null == count) {
-            ops.set(redisKey, 1, timeout, timeUnit);
+        Long current = ops.increment(redisKey, 1);
+        if (1L == current) {
+            redisTemplate.expire(redisKey,timeout,timeUnit);
             return false;
         } else {
-            Long current = ops.increment(redisKey, 1);
-            redisTemplate.expire(redisKey,timeout, timeUnit);
             if (current > 5) {
                 return true;
             } else {
