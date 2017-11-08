@@ -30,9 +30,11 @@ public class GpsDataService implements IGpsDataService {
   // 处理GPS数据
   @Override
   public final void processMessage(GBMessage message) {
-    if (null == message || null == message.getHeader() || null == message.getMessageContents()) {
+    if (null == message || null == message.getHeader() ) {
       return;
     }
+    // 心跳信息，消息体为空
+    // null == message.getMessageContents()
     // 消息类型
     transferToMQ(message);
   }
