@@ -344,16 +344,20 @@ public class CommandApi {
 
     //当前正在处理指令的终端
     public static final String REDIS_KEY_NOW_CMD = "rates:";
+    private static final long timeout = 10L;
+    private static TimeUnit timeUnit = TimeUnit.SECONDS;
 
     private boolean isRateLimit(String vin) {
 
         ValueOperations ops = redisTemplate.opsForValue();
-        Object count = ops.get(REDIS_KEY_NOW_CMD + vin);
+        String redisKey = REDIS_KEY_NOW_CMD + vin;
+        Object count = ops.get(redisKey);
         if (null == count) {
-            ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
+            ops.set(redisKey, 1, timeout, timeUnit);
             return false;
         } else {
-            Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
+            Long current = ops.increment(redisKey, 1);
+            redisTemplate.expire(redisKey,timeout, timeUnit);
             if (current > 5) {
                 return true;
             } else {

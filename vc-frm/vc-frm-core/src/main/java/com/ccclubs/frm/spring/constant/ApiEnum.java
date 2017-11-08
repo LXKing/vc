@@ -21,7 +21,7 @@ public enum ApiEnum {
 	SIGN_CHECK_APPKEY_ISNULL(100009, "appKey is null", "appKey不能为空"),
 	DATA_ACCESS_CHECK_FAILED(100010, "data access check failed", "数据权限校验失败"),
 	UPDATE_ID_NOT_SET(100011, "update obj can not be null", "更新ID不能为空"),
-	API_RATE_LIMIT(100012, "api call too many times in one minute", "一分钟内调用API太多次"),
+	API_RATE_LIMIT(100012, "api call too many times in 10 second", "10秒内调用API太多次"),
 	LOGIN_ERROR(1010013, "invalid account or password", "账号或者密码错误"),
 	UNAUTHORIZED_ERROR(101014, "401 unauthorized", "未授权"),
 	VEHICLE_NOT_FOUND(101001, "vehicle not found", "未查询到车辆"),
