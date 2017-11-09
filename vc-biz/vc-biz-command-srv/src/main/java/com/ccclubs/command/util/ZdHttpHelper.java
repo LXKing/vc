@@ -21,17 +21,17 @@ public class ZdHttpHelper {
 
   private static Logger logger = LoggerFactory.getLogger(ZdHttpHelper.class);
 
-  @Value("zd.update.url")
-  private static String ZD_UPDATE_URL;
-  @Value("zd.validate.url")
-  private static  String ZD_VALIDATE_URL;
+  @Value("${zd.update.url}")
+  private String ZD_UPDATE_URL;
+  @Value("${zd.validate.url}")
+  private String ZD_VALIDATE_URL;
 
   /**
    * 调用http接口，返回json字符串,获取升级指令
    *
    * @param simNo 手机号
    */
-  public static String getCmd(String simNo) {
+  public String getCmd(String simNo) {
     try {
       return JSONObject.parseObject(httpDoGet(ZD_UPDATE_URL + "&simCode=" + simNo, "UTF-8"))
           .getString("cmd");
@@ -41,7 +41,7 @@ public class ZdHttpHelper {
     }
   }
 
-  public static  String validate(String simNo) {
+  public String validate(String simNo) {
     try {
       return JSONObject.parseObject(httpDoGet(ZD_VALIDATE_URL + "&simCode=" + simNo, "UTF-8"))
           .getString("version");
@@ -51,7 +51,7 @@ public class ZdHttpHelper {
     }
   }
 
-  public  static  String httpDoGet(String url, String encoding) throws Exception {
+  public String httpDoGet(String url, String encoding) throws Exception {
     String result = "";
     CloseableHttpClient httpclient = HttpClients
         .createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63

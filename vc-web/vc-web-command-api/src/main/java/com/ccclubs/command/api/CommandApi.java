@@ -91,7 +91,7 @@ public class CommandApi {
         VersionQryInput qryInput = new VersionQryInput();
         qryInput.setVin(input.getVin());
         VersionQryOutput version = versionInf.isLatestVersion(qryInput);
-        if (version.getTerminalType() != 0 ||version.getTerminalType() != 1 ||version.getTerminalType() != 3) {
+        if (!(version.getTerminalType() == 0 || version.getTerminalType() == 1 || version.getTerminalType() == 3)) {
             //当前仅支持通领车机升级 TODO
             throw new ApiException(ApiEnum.TERMINAL_NOT_TL);
         }
