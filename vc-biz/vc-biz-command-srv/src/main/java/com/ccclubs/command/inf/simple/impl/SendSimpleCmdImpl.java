@@ -213,19 +213,11 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private Integer notAdapter(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
-                Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                Integer currV = csMachine.getCsmTlV2();
-                if (currV < supportV) {
-                    throw new ApiException(ApiEnum.OLD_VERSION_DETECTED, supportV);
-                }
-                break;
             case 1://中导
+            case 3://通领
                 structId = getNotAdapterStructId(csMachine, input, structId);
                 break;
             case 2://慧瀚
-                break;
-            case 3://通领
-                structId = getNotAdapterStructId(csMachine, input, structId);
                 break;
         }
         return structId;
@@ -255,19 +247,11 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private Integer oldAdapter(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
-                Integer currV = csMachine.getCsmTlV2();
-                Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                if (currV < supportV) {
-                    structId = commandProp.getCmdMap().get("5" + input.getCmd());
-                }
-                break;
             case 1://中导
+            case 3://通领
                 structId = getAdapterStructId(csMachine, input, structId);
                 break;
             case 2://慧瀚
-                break;
-            case 3://通领
-                structId = getAdapterStructId(csMachine, input, structId);
                 break;
         }
         return structId;

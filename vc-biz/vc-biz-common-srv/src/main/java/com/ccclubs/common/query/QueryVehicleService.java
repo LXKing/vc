@@ -23,14 +23,14 @@ public class QueryVehicleService {
   CsVehicleMapper dao;
 
   /**
-   * 查询车辆
+   * 查询车辆，由于存在批量注册车辆，查询车辆暂时不走缓存
    *
    * @param vin 车辆VIN码
    * @return 车辆CsVehicle
    */
-  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#args[0]", autoload = true, exCache = {
-      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
-      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
+//  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#args[0]", autoload = true, exCache = {
+//      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
+//      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
   public CsVehicle queryVehicleByVin(String vin) {
     CsVehicleExample example = new CsVehicleExample();
     CsVehicleExample.Criteria criteria = example.createCriteria();
