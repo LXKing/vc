@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.Resource;
 
@@ -685,26 +688,50 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 			exlist = csIndexReportMapper.selectByExample(example);
 		}
 		//此条数据修改时间
-		String modifyDate=exlist.get(0).getModifyDate();
+		long modifyDate;
+		if(exlist!=null&&exlist.size()>0){
+			modifyDate=DateTimeUtil.date2UnixFormat(exlist.get(0).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
+			for(int i=1 ;i<exlist.size();i++){
+				long tempTime=DateTimeUtil.date2UnixFormat(exlist.get(i).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
+				if(modifyDate<tempTime){
+					modifyDate=tempTime;
+				}
+			}
+		}else{
+			modifyDate=System.currentTimeMillis();
+		}
 		//数据库时间与现在时间相差的天数
-		int dayInterval= DateTimeUtil.daysBetween(modifyDate,DateTimeUtil.getDateTimeByFormat1(System.currentTimeMillis()));
+		int dayInterval= DateTimeUtil.daysBetween(modifyDate,System.currentTimeMillis());
 		//取最新的obd里程，并统计各项指标
-		if(dayInterval>7){
+		if(dayInterval>dbHelperZt.getUpdateInterval()){
 			dbHelperZt.getDBConnect();
 			//返回最新的指标数据并入库
 			dbHelperZt.getZtCurrentOBDTemp(exlist);
 			dbHelperZt.dbClose();
 			//入库前 --更新
-			csIndexReportMapper.updateBatchByExample(exlist);
+			multiThreadsUpdateTable(exlist);
 		}
-		//------
 		Map<String,CsIndexReport> dateMap=new HashMap<>();
-		//
 		for(CsIndexReport csIndexReport: exlist){
 			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
 		}
-		//
 		return dateMap;
 	}
+
+
+	/**
+	 * 多线程处理：更新table
+	 */
+	private void multiThreadsUpdateTable(List<CsIndexReport>exlist ) {
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				csIndexReportMapper.updateBatchByExample(exlist);
+			}
+		});
+	}
+
+
 
 }

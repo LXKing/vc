@@ -272,6 +272,26 @@ public class DateTimeUtil {
         return Integer.parseInt(String.valueOf(betweenDays));
     }
 
+    /**
+     * 计算两个日期之间相差的天数
+     * @param smdate 较小的时间
+     * @param bdate  较大的时间
+     * @return 相差天数
+     */
+    public static int daysBetween(long smdate,long bdate){
+        long betweenDays=0;
+        try{
+            long time1 =smdate;
+            long time2 = bdate;
+            betweenDays =(time2-time1)/(1000*3600*24);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+        return Integer.parseInt(String.valueOf(betweenDays));
+    }
+
     public static String dateToString(Date date){
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
