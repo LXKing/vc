@@ -11,12 +11,15 @@ import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
+import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_03;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.mqtt.OrderDownStream;
+import com.ccclubs.protocol.dto.mqtt.OrderUpStream;
 import com.ccclubs.protocol.dto.mqtt.OrderUpStreamII;
 import com.ccclubs.protocol.dto.mqtt.RemoteCurtness;
 import com.ccclubs.protocol.dto.mqtt.RemoteOption;
@@ -67,6 +70,8 @@ public class ParseOperationService implements IParseDataService {
   UpdateRemoteService updateRemoteService;
   @Resource
   EnvironmentUtils environmentUtils;
+  @Resource
+  CsRemoteDao remoteDao;
 
   @Override
   public void processMessage(MqMessage tm) {
@@ -85,6 +90,8 @@ public class ParseOperationService implements IParseDataService {
       processMultipleOperation(tm);
     } else if (headerType == 0x54) {// 新版本众车纷享 订单下发指令应答
       processOrderModifyNew(tm);
+    } else if (headerType == 0x44) {// 处理0x44订单下发指令
+      processOrderAck(tm);
     }
   }
 
@@ -540,6 +547,80 @@ public class ParseOperationService implements IParseDataService {
           .getRemote(orderUpStream.mId, message.getHexString(), jsonString,
               orderUpStream.isSuccess());
       updateRemoteService.update(csRemote);
+    } catch (Exception e) {
+      e.printStackTrace();
+      logger.error(e.getMessage(), e);
+    }
+  }
+
+  /**
+   * 处理订单下发指令 0x44
+   */
+  public void processOrderAck(MqMessage message) {
+    try {
+      byte[] srcByteArray = message.WriteToBytes();
+      OrderUpStream orderUpStream = OrderUpStream
+          .readObject(srcByteArray, OrderUpStream.class);
+      String jsonString = "";
+      boolean isSuccess = false;
+      switch (srcByteArray.length) {
+        case 29:
+          //其它情况，如果发送指令跟返回指令一致，则表示成功，或者返回指令是发送指令后附加“0000”
+          CsRemote csRemote = remoteDao.findById(orderUpStream.mId);
+          if (csRemote != null && !StringUtils.empty(csRemote.getCsrCode())) {
+            OrderDownStream orderDownStream = OrderDownStream
+                .readObject(Tools.HexString2Bytes(csRemote.getCsrCode()), OrderDownStream.class);
+            // 下发的订单号与上行的订单号一致，代表成功
+            if (orderDownStream.mId == orderUpStream.mId) {
+              isSuccess = true;
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE, "下发成功"));
+            } else {
+              isSuccess = false;
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "下发失败"));
+            }
+          }
+          break;
+        case 31:
+          byte resultHigh = srcByteArray[29];
+          byte resultLow = srcByteArray[30];
+          if (resultHigh == 0 && resultLow == 0) {
+            isSuccess = true;
+            jsonString = JSON.toJSONString(CommonResult
+                .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE, "下发成功"));
+          } else {
+            isSuccess = false;
+            if ((resultLow & 1) == 1) {
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "当前车辆已有订单"));
+            } else if ((resultLow & 2) == 2) {
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "有取车"));
+            } else if ((resultLow & 8) == 8) {
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "订单号不正确"));
+            } else {
+              jsonString = JSON.toJSONString(CommonResult
+                  .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "下发失败"));
+            }
+          }
+          break;
+        default:
+          break;
+      }
+
+      if (!StringUtils.empty(jsonString)) {
+        redisHelper
+            .setRemote(String.valueOf(orderUpStream.mId),
+                jsonString);
+
+        transferRemoteStatus(message, jsonString);
+
+        CsRemote csRemote = RemoteHelper
+            .getRemote(orderUpStream.mId, message.getHexString(), jsonString, isSuccess);
+        updateRemoteService.update(csRemote);
+      }
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage(), e);
