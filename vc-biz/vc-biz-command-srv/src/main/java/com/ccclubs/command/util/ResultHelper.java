@@ -3,8 +3,10 @@ package com.ccclubs.command.util;
 import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.ccclubs.command.dto.CommonOutput;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.CsRemote;
@@ -30,6 +32,7 @@ import org.springframework.stereotype.Component;
 public class ResultHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ResultHelper.class);
+    private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -63,6 +66,10 @@ public class ResultHelper {
                 String result = ops.get(key);
                 if (null != result && !"".equals(result)) {
                     logger.info("command {} send successfully.", csRemote.getCsrType());
+                    csRemote.setCsrUpdateTime(System.currentTimeMillis());
+                    csRemote.setCsrStatus(1);
+                    csRemote.setCsrResult(result);
+                    loggerBusiness.info(JSONObject.toJSONString(csRemote));
                     CommonResult commonResult = JSON.parseObject(result, new TypeReference<CommonResult>() {
                     });
 
@@ -73,9 +80,12 @@ public class ResultHelper {
                                 commonResult.getMessage());
                     }
                 }
-                Thread.sleep(100l);
+                Thread.sleep(100L);
             }
             logger.error("command timeout and exit.");
+            csRemote.setCsrUpdateTime(System.currentTimeMillis());
+            csRemote.setCsrStatus(-1);
+            loggerBusiness.info(JSONObject.toJSONString(csRemote));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
         } catch (ApiException ex) {
             throw ex;

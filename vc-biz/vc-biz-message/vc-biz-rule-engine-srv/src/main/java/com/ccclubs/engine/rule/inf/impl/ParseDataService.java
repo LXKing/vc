@@ -56,9 +56,6 @@ public class ParseDataService implements IParseDataService {
   TerminalUtils terminalUtils;
 
   @Resource
-  TransformUtils transformUtils;
-
-  @Resource
   MessageFactory messageFactory;
 
   @Resource
@@ -104,7 +101,7 @@ public class ParseDataService implements IParseDataService {
       processOrderModify(tm);
     } else if (headerType == 0x60) {//车机属性，记录日志
       processTerminalInfo(tm);
-    } else if (headerType == 0x68) {// 启动、停止数据；车辆状态改变推送
+    } else if (headerType == 0x68) {// 启动、停止数据；车辆状态改变推送；新版本状态数据
       processStartStopStatus(tm);
     } else if (headerType == 0x69) {// CAN数据
       processCanStatus(tm);
@@ -133,13 +130,13 @@ public class ParseDataService implements IParseDataService {
       MQTT_66 mqtt_66 = new MQTT_66();
       mqtt_66.ReadFromBytes(message.getMsgBody());
       // 众行EVPOP特殊处理
-      if (topic.equals(srvHost.getShTopic())) {
+      if (mapping.getAccess() == 3L ) {
         transferToMq(mapping, MqTagProperty.MQ_TERMINAL_STATUS, message, false);
       } else {
         // 如果未绑定车辆，则不转发到业务平台
         if (null != mapping.getVin()) {
           transferToMq(srvHost,
-              transformUtils
+              TransformUtils
                   .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_66, message),
               message);
         }
@@ -235,7 +232,7 @@ public class ParseDataService implements IParseDataService {
 
           //FIXME 长安出行需要做变更
           // 0x6802 将在0x6803新版本状态数据后弃用
-          if (mapping.getAccess() == 3L || mapping.getAccess() == 4L || mapping.getAccess() == 5L) {
+          if (mapping.getAccess() == 3L ) {
             CsState csState = terminalUtils.setUpdateMapTriggerInfo(terminalInfo);
             csState.setCssAddTime(new Date());
             csState.setCssId(mapping.getState().intValue());
@@ -269,11 +266,11 @@ public class ParseDataService implements IParseDataService {
           mqtt_68_03.ReadFromBytes(message.getMsgBody());
           // 如果未配置转发topic，就不转发状态数据
           // TODO：需要以未解析方式转发给长安出行
-          if (!StringUtils.empty(srvHost.getShTopic()) && !StringUtils.empty(mapping.getVin())) {
+//          if (!StringUtils.empty(srvHost.getShTopic()) && !StringUtils.empty(mapping.getVin())) {
             transferToMq(srvHost, TransformUtils
                     .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
                 message);
-          }
+//          }
           logicHelperMqtt.saveStatusData(mapping, message, mqtt_68_03);
           break;
         default:

@@ -34,14 +34,10 @@ public class IssueOrderInput extends CommonInput implements java.io.Serializable
   @NotNull(message = "性别(0:女 1:男)必填")
   @InArray(message = "性别(0:女 1:男)")
   private Short gender;
-//  @NotNull(message = "RFID号(8位)必填")
-//  @Length(min = 8, max = 8, message = "RFID号(8位)必填")
-//  private String rfid;
 
-//  @NotNull(message = "授权码(6位)必填")
-//  @Min(value = 100000, message = "授权码最小值 100000")
-//  @Max(value = 999999, message = "授权码最大值 999999")
-//  private Integer authCode;
+  private String rfid;
+
+  private Integer authCode;
 
   public String getVin() {
     return vin;
@@ -99,4 +95,19 @@ public class IssueOrderInput extends CommonInput implements java.io.Serializable
     this.gender = gender;
   }
 
+  public String getRfid() {
+    return rfid;
+  }
+
+  public void setRfid(String rfid) {
+    this.rfid = rfid;
+  }
+
+  public Integer getAuthCode() {
+    return authCode;
+  }
+
+  public void setAuthCode(Integer authCode) {
+    this.authCode = authCode;
+  }
 }

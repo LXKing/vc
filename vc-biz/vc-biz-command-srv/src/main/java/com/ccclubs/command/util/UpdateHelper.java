@@ -2,8 +2,11 @@ package com.ccclubs.command.util;
 
 
 import com.ccclubs.protocol.dto.jt808.JT_81F0;
+import com.ccclubs.protocol.dto.jt808.SL_Update;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.jt808.T808MessageHeader;
+import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
 
 /**
  * Created by qsxiaogang on 2017/7/6.
@@ -42,6 +45,46 @@ public class UpdateHelper {
   }
 
   /**
+   * 富士康终端[ 低版本，插件版本 < 0x1322 ]升级
+   *
+   * @param number 车机号
+   */
+  public static byte[] getUpdateMessageForFskSimple(String number) {
+    return Tools.HexString2Bytes(
+        Tools.ToHexString(number) + "0000000001e3816749c0020000");
+  }
+
+  /**
+   * 富士康终端[ 低版本，插件版本 >= 0x1322 ]升级
+   *
+   * @param number 车机号
+   * @param fileName 待升级文件名
+   */
+  public static byte[] getUpdateMessageForFsk(String number, String fileName) {
+    return Tools.HexString2Bytes(
+        Tools.ToHexString(number) + "000000000083C4E210C00200010003"
+            + Tools.ToHexString(fileName) + "0000");
+  }
+
+  /**
+   * 中导FTP升级指令，通过Http方式升级
+   *
+   * @param simNo 终端手机号
+   */
+  public static byte[] getUpdateMessageForZdHttp(String simNo) {
+    String cmd = ZdHttpHelper.getCmd(simNo);
+    if (!StringUtils.empty(cmd)) {
+      SL_Update slUpdate = new SL_Update();
+      slUpdate.setSimId(simNo);
+      slUpdate.setMsgBody(Tools.HexString2Bytes(cmd));
+      return slUpdate.WriteToBytes();
+    } else {
+      return null;
+    }
+  }
+
+
+  /**
    * 中导FTP升级指令
    *
    * @param simNo 终端手机号
@@ -71,4 +114,6 @@ public class UpdateHelper {
 
     return ts;
   }
+
+
 }

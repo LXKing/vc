@@ -123,8 +123,10 @@ public class TransformUtils {
         terminalStatus.setCssGpsCn(mqtt_68_03.getCn());
         terminalStatus.setCssDir(mqtt_68_03.getHeading());
         terminalStatus.setCssDoor(mqtt_68_03.getDoorStatusWithMask());
+        //FIXME 数据库字段设计为 Decimal
         terminalStatus.setCssOil(mqtt_68_03.getCcclubs_60().getOil().intValue());
-        terminalStatus.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance());
+        //FIXME 数据库字段设计为 Decimal
+        terminalStatus.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance().intValue());
         terminalStatus.setCssEngineT(mqtt_68_03.getTankTemperature());
         terminalStatus.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc());
 
@@ -137,8 +139,8 @@ public class TransformUtils {
         terminalStatus.setCssMotor(mqtt_68_03.getRpm());
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
-        terminalStatus.setCssObdMile(
-            AccurateOperationUtils.mul(mqtt_68_03.getObdMile(), 0.1).intValue());
+        //FIXME 数据库字段设计为 Decimal
+        terminalStatus.setCssObdMile(mqtt_68_03.getObdMile().intValue());
         terminalStatus.setCssOrder(message.getTransId());
         terminalStatus.setCssPower(mqtt_68_03.getBattery());
 
@@ -146,8 +148,8 @@ public class TransformUtils {
         terminalStatus.setCssGpsCount(mqtt_68_03.getSatelliteCount());
         terminalStatus.setCssGpsValid(mqtt_68_03.getGpsValid());
         terminalStatus.setCssSaving(mqtt_68_03.getVehicleWorkingStatus());
-        terminalStatus
-            .setCssSpeed(AccurateOperationUtils.mul(mqtt_68_03.getSpeed(), 0.1).intValue());
+        //FIXME 数据库字段设计为 Decimal
+        terminalStatus.setCssSpeed(mqtt_68_03.getSpeed().intValue());
         terminalStatus.setCssTemperature(mqtt_68_03.getTerminalTemperature());
 //    terminalStatus.setCssVehicleSleepTime(mqtt_68_03.getVehicleSleepTime() & 0xFFFF);
 //    terminalStatus.setCssVehicleStatus(mqtt_66.getVehicleStartStatus() & 0xFF);
