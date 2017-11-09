@@ -55,4 +55,5 @@ zt:
     url:  jdbc:mysql://rm-bp1ly42351i7096mj.mysql.rds.aliyuncs.com:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
     username: quota_user
     password: jjN(HRXeh$HklmXkQW!IzAs
+  updateInterval: 7
   avgDriveTimePerDay: 0.2,1.5,  1.3,2.5,  2.3,3.5,  3.3,6,  5.3,12

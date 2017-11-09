@@ -32,6 +32,9 @@ public class DBHelperZt {
     @Value("${zt.avgDriveTimePerDay}")
     public String[] avgDriveTimePerDay;
     //
+    @Value("${zt.updateInterval}")
+    private int updateInterval;
+    //
     public  Connection conn = null;
     public PreparedStatement pst = null;
     public Statement st = null;
@@ -527,19 +530,24 @@ public class DBHelperZt {
         this.avgDriveTimePerDay = avgDriveTimePerDay;
     }
 
+    public int getUpdateInterval() {
+        return updateInterval;
+    }
+
+    public void setUpdateInterval(int updateInterval) {
+        this.updateInterval = updateInterval;
+    }
+
     ///
     public static  void  main(String[] orgs){
-//        Random ra =new Random();
-//
-//       for (int i=0;i<10;i++){
-////           System.out.println(getAvgDriveTimePerDay(901)));
-//           System.out.println(   ra.nextGaussian());
-//
-//       }
-        BigDecimal bigDecimal=new BigDecimal(33);
-        BigDecimal dfd= bigDecimal.divide(new BigDecimal(2),2, RoundingMode.UP);
-        System.out.println("==="+dfd);
 
+        Long ll   =DateTimeUtil.date2UnixFormat("2017-08-07 00:00:00","yyyy-MM-dd HH:mm:ss");
+        Long mm   =DateTimeUtil.date2UnixFormat("2016-08-05 00:00:00","yyyy-MM-dd HH:mm:ss");
+
+        System.out.println(DateTimeUtil.daysBetween(mm,ll));
+
+//            Object v=414+"";
+//            System.out.println(Long.valueOf((String) v));
     }
 
 
