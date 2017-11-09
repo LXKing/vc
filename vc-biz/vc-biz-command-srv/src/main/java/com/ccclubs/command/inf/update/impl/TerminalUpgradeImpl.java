@@ -34,6 +34,8 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
 
   @Resource
   private ValidateHelper validateHelper;
+  @Autowired
+  UpdateHelper updateHelper;
 
   /**
    * 终端升级（直接发送，不返还结果）
@@ -55,28 +57,28 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
       case 0:
         if (currentVersion < 0x1322) {
           process.dealRemoteCommand(csMachine,
-              UpdateHelper.getUpdateMessageForFskSimple(csMachine.getCsmNumber()), false);
+              updateHelper.getUpdateMessageForFskSimple(csMachine.getCsmNumber()), false);
         } else {
           process.dealRemoteCommand(csMachine,
-              UpdateHelper.getUpdateMessageForFsk(csMachine.getCsmNumber(), input.getFilename()),
+              updateHelper.getUpdateMessageForFsk(csMachine.getCsmNumber(), input.getFilename()),
               false);
         }
         break;
       case 1:
         if (currentVersion < 0x2018) {
-          byte[] array = UpdateHelper.getUpdateMessageForZdHttp(csMachine.getCsmMobile());
+          byte[] array = updateHelper.getUpdateMessageForZdHttp(csMachine.getCsmMobile());
           if (null != array) {
             process.dealZdHttpUpdateCommand(csMachine, array);
           }
         } else {
           process.dealRemoteCommand(csMachine,
-              UpdateHelper.getUpdateMessageForZd(csMachine.getCsmMobile(), input.getFilename())
+              updateHelper.getUpdateMessageForZd(csMachine.getCsmMobile(), input.getFilename())
                   .WriteToBytes(), false);
         }
         break;
       case 3:
         //升级到最新版本版本，此处的是通领大版本
-        T808Message updateMessage = UpdateHelper
+        T808Message updateMessage = updateHelper
             .getUpdateMessageForTl(csMachine.getCsmMobile(), input.getFilename());
 
         process.dealRemoteCommand(csMachine, updateMessage.WriteToBytes(), true);
