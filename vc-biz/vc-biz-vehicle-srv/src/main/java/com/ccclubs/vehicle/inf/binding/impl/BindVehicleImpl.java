@@ -51,8 +51,15 @@ public class BindVehicleImpl implements BindVehicleInf {
       throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
     }
 
-    if (machine == null) {
+    if (machine == null || machine.getCsmId() == null) {
       throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
+    }
+
+    // 如果当前车辆所对应的车机正好就是该车机，直接返回
+    if(machine.getCsmId().equals(vehicle.getCsvMachine())){
+      BindVehicleOutput output = new BindVehicleOutput();
+      output.setTeNo(input.getTeNo());
+      return output;
     }
 
     boolean vAble = isVehicleAbleToBind(vehicle);//车辆可绑定
