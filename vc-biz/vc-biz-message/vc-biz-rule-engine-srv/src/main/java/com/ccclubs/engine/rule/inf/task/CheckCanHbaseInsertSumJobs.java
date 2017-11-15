@@ -44,7 +44,7 @@ public class CheckCanHbaseInsertSumJobs implements ApplicationContextAware {
           .trim(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, 0,
               batchProperties.getUpdateQueueMax());
     }
-    logger.info("time {} , CheckCanHbaseInsertSumJobs time consuming.",
+    logger.debug("time {} , CheckCanHbaseInsertSumJobs time consuming.",
         System.currentTimeMillis() - startTime);
   }
 

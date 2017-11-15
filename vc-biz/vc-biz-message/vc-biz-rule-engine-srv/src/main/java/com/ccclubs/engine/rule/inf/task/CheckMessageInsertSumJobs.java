@@ -44,7 +44,7 @@ public class CheckMessageInsertSumJobs implements ApplicationContextAware {
           .trim(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, 0,
               batchProperties.getUpdateQueueMax());
     }
-    logger.info("time {} , CheckMessageInsertSumJobs time consuming.",
+    logger.debug("time {} , CheckMessageInsertSumJobs time consuming.",
         System.currentTimeMillis() - startTime);
   }
 
