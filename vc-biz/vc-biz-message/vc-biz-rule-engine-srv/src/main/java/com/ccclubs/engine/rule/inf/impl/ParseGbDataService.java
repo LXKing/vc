@@ -47,7 +47,7 @@ public class ParseGbDataService implements IParseGbDataService {
   @Override
   public void processMessage(GBMessage message, byte[] srcByteArray) {
 
-    CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(message.getVin());
+    CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(message.getVin());
 
     if (null == csVehicle) {
       logger.info("国标协议终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getVin());

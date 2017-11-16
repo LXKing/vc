@@ -61,7 +61,7 @@ public class ReturnCheckImpl implements ReturnCheckInf{
     @DataAuth
     public ReturnCheckOutput setReturn(ReturnCheckInput input) {
         Integer structId = CommandConstants.CMD_RETURN;
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -85,7 +85,7 @@ public class ReturnCheckImpl implements ReturnCheckInf{
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         ReturnCheckOutput output = new ReturnCheckOutput();

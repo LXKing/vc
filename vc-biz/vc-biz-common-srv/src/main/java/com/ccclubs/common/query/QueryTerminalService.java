@@ -7,6 +7,8 @@ import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsMachineExample;
 import com.ccclubs.pub.orm.model.CsTerminal;
 import com.ccclubs.pub.orm.model.CsTerminalExample;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jarvis.cache.annotation.Cache;
 import com.jarvis.cache.annotation.ExCache;
 import java.util.List;
@@ -105,6 +107,28 @@ public class QueryTerminalService {
   public CsMachine queryCsMachineById(Integer id) {
     CsMachine machine = mdao.selectByPrimaryKey(id);
     return machine;
+  }
+
+  /**
+   * 通过T-Box序列号或手机号查询CsMachine列表
+   */
+  public List<CsMachine> searchCsMachineFuzzyByTenoOrMobile(Integer appId, String teNoOrMobileKey) {
+    CsMachineExample machineExample = new CsMachineExample();
+    CsMachineExample.Criteria machineCriteriaTeNo = machineExample.createCriteria();
+    machineCriteriaTeNo.andCsmAccessEqualTo(appId);
+    machineCriteriaTeNo.andCsmTeNoLike("%" + teNoOrMobileKey + "%");
+
+    CsMachineExample.Criteria machineCriteriaMobile = machineExample.createCriteria();
+    machineCriteriaMobile.andCsmAccessEqualTo(appId);
+    machineCriteriaMobile.andCsmMobileLike("%" + teNoOrMobileKey + "%");
+
+    machineExample.or(machineCriteriaMobile);
+
+    PageHelper.startPage(1, 10);
+    List<CsMachine> list = mdao.selectByExample(machineExample);
+    PageInfo<CsMachine> pinfo = new PageInfo<>(list);
+
+    return pinfo.getList();
   }
 
 

@@ -64,7 +64,7 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
             throw new ApiException(ApiEnum.POWER_MODE_NOT_FOUND);
         }
 
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -88,7 +88,7 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         Long startTime = System.currentTimeMillis();

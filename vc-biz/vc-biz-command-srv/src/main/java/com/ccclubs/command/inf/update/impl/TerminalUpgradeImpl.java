@@ -58,10 +58,12 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         if (currentVersion < 0x1322) {
           process.dealRemoteCommand(csMachine,
               updateHelper.getUpdateMessageForFskSimple(csMachine.getCsmNumber()), false);
+          logger.info("给终端（CsmNumber {}）发送升级指令", csMachine.getCsmNumber());
         } else {
           process.dealRemoteCommand(csMachine,
               updateHelper.getUpdateMessageForFsk(csMachine.getCsmNumber(), input.getFilename()),
               false);
+          logger.info("给终端（CsmNumber {}）发送升级指令", csMachine.getCsmNumber());
         }
         break;
       case 1:
@@ -69,11 +71,13 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
           byte[] array = updateHelper.getUpdateMessageForZdHttp(csMachine.getCsmMobile());
           if (null != array) {
             process.dealZdHttpUpdateCommand(csMachine, array);
+            logger.info("给终端（Mobile {}）发送升级指令", csMachine.getCsmMobile());
           }
         } else {
           process.dealRemoteCommand(csMachine,
               updateHelper.getUpdateMessageForZd(csMachine.getCsmMobile(), input.getFilename())
                   .WriteToBytes(), false);
+          logger.info("给终端（Mobile {}）发送升级指令", csMachine.getCsmMobile());
         }
         break;
       case 3:

@@ -123,7 +123,7 @@ public class MessageFactory {
    * @param gbMessage 需要发送的内容
    */
   public Message getMessage(String topic, String tagsPre, GBMessage gbMessage) {
-    CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(gbMessage.getVin());
+    CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(gbMessage.getVin());
     if (csVehicle == null || csVehicle.getCsvId() <= 0) {
       return null;
     }

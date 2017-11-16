@@ -77,7 +77,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         if (input.getItem() == 4 && Arrays.binarySearch(CommandConstants.FAN, input.getValue()) < 0) {
             throw new ApiException(ApiEnum.AIR_CTRL_FAN_ERROR);
         }
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
@@ -97,7 +97,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
 
         process.dealRemoteCommand(csRemote, array);
 
@@ -113,7 +113,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     public AirAllOutput airConditionerAllCtrl(AirAllInput input) {
         Integer structId = CommandConstants.CMD_AIR;
 
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
@@ -133,7 +133,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         AirAllOutput output = new AirAllOutput();

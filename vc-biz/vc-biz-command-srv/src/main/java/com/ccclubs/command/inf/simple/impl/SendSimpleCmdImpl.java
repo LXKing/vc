@@ -69,7 +69,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
 
         Integer structId = commandProp.getCmdMap().get(input.getCmd() + "");
 
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -141,7 +141,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         SimpleCmdOutput output = new SimpleCmdOutput();
@@ -167,7 +167,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 ValueOperations<String, String> ops = redisTemplate.opsForValue();
                 String result = ops.get(AssembleHelper.assembleKey(csRemote.getCsrId()));
                 if (null != result && !"".equals(result)) {
-                    logger.info("command {} send successfully.", structId);
+                    logger.debug("command {} send successfully.", structId);
                     csRemote.setCsrUpdateTime(System.currentTimeMillis());
                     csRemote.setCsrStatus(1);
                     csRemote.setCsrResult(result);
@@ -187,7 +187,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 }
                 Thread.sleep(100L);
             }
-            logger.error("command timeout and exit.");
+            logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());
             csRemote.setCsrStatus(-1);
             loggerBusiness.info(JSONObject.toJSONString(csRemote));
