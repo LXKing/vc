@@ -45,7 +45,7 @@ public class ApiInvokeHandler {
 
     @Before("apiLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
-        logger.info("New api request handled.");
+        logger.debug("New api request handled.");
         startTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();

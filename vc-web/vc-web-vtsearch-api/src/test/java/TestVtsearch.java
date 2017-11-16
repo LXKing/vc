@@ -1,6 +1,7 @@
 import com.alibaba.fastjson.JSON;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.terminal.dto.TerminalListQryInput;
 import com.ccclubs.terminal.dto.TerminalQryInput;
 import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.vehicle.dto.*;
@@ -85,6 +86,41 @@ public class TestVtsearch {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == 200) {
                 HttpEntity entity = response.getEntity();
+                String s2 = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(s2);
+
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
+
+    @Test
+    public void searchTerminalInfo() throws Exception, Throwable {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        //114.55.109.165:7001
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/search/searchTerminalInfo");
+        httpPost.setHeader("Content-Type", "application/json");
+        TerminalListQryInput input = new TerminalListQryInput();
+        input.setKey("6710");
+
+        String ss = JSON.toJSONString(input);
+        System.err.println(ss);
+        String value = DigestUtils.md5Hex(ss);
+        String sign = HmacUtils.hmacSha1Hex("lfj@qew#ofj_gq", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000003");
+        httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+
                 String s2 = IOUtils.toString(entity.getContent(), "UTF-8");
                 System.out.println(s2);
 

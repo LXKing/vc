@@ -95,7 +95,7 @@ public class MqAckService implements IMqAckService {
         MqMessage mqMessage = new MqMessage();
         mqMessage.ReadFromBytes(timeSynchronization.getBytes());
         getMessageSender().sendMqMessage(mqMessage);
-        logger.info("给 " + msg.getCarNumber() + "发送同步时间");
+        logger.debug("给 " + msg.getCarNumber() + "发送同步时间");
       }
     } catch (Exception e) {
       e.printStackTrace();

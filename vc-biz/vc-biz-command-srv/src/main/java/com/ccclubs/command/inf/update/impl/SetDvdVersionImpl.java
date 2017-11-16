@@ -60,7 +60,7 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
     @DataAuth
     public DvdVersionOutput setDvdVersion(DvdVersionIntput input) {
         Integer structId = CommandConstants.CMD_DVD;
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -84,7 +84,7 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         DvdVersionOutput output = new DvdVersionOutput();

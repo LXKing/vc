@@ -28,9 +28,6 @@ public class QueryVehicleService {
    * @param vin 车辆VIN码
    * @return 车辆CsVehicle
    */
-//  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#args[0]", autoload = true, exCache = {
-//      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
-//      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
   public CsVehicle queryVehicleByVin(String vin) {
     CsVehicleExample example = new CsVehicleExample();
     CsVehicleExample.Criteria criteria = example.createCriteria();
@@ -40,6 +37,13 @@ public class QueryVehicleService {
       return list.get(0);
     }
     return null;
+  }
+
+  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#args[0]", autoload = true, exCache = {
+      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
+      @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
+  public CsVehicle queryVehicleByVinFromCache(String vin) {
+    return queryVehicleByVin(vin);
   }
 
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#args[0]", autoload = true, exCache = {
