@@ -28,20 +28,20 @@ public class ApiLogImpl implements ApiLogInf {
     @Override
     public ApiLogOutput saveLog(ApiLogInput input) {
         VcApiLog log = new VcApiLog();
-        BeanUtils.copyProperties(input, log);
-        log = dao.save(log);
+//        BeanUtils.copyProperties(input, log);
+//        log = dao.save(log);
         ApiLogOutput output = new ApiLogOutput();
-        output.setLogId(log.getLogId());
+//        output.setLogId(log.getLogId());
         return output;
     }
 
     @Override
     public ApiLogOutput updateLog(ApiLogInput input) {
-        Query query = new Query(Criteria.where("logId").is(input.getLogId()));
-        Update update = new Update().set("output", input.getOutput())
-                .set("outTime", input.getOutTime())
-                .set("elapsed", input.getElapsed());
-        dao.update(query, update);
+//        Query query = new Query(Criteria.where("logId").is(input.getLogId()));
+//        Update update = new Update().set("output", input.getOutput())
+//                .set("outTime", input.getOutTime())
+//                .set("elapsed", input.getElapsed());
+//        dao.update(query, update);
         return null;
     }
 }
