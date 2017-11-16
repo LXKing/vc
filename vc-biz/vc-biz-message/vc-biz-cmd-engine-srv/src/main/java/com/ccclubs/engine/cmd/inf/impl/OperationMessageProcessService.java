@@ -6,15 +6,11 @@ import com.ccclubs.protocol.inf.IMqMessageProcessService;
 import com.ccclubs.protocol.inf.IParseDataService;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 处理远程控制
  */
 public class OperationMessageProcessService implements IMqMessageProcessService {
-
-  private static Logger logger = LoggerFactory.getLogger(OperationMessageProcessService.class);
 
   private IParseDataService parseDataService;
 
@@ -35,7 +31,6 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
         // 设置时间有效性，暂时设置为 60*1000 ，主要用于流转
         mqMessage.setTimeStamp(System.currentTimeMillis());
         // 消息入库
-        logger.info("start update csRemote in mongo...");
         getParseDataService().processMessage(mqMessage);
       }
     }
