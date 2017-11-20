@@ -61,7 +61,7 @@ public class GpsDataService implements IGpsDataService {
    * 将jt808协议数据转发到消息中间件MQ，topic：ser，tag：jt808
    */
   private void transferToMQ(T808Message message, String messageTag) {
-    if (null == message || null == message.getHeader() || null == message.getMessageContents())
+    if (null == message || null == message.getHeader())
     {
       return;
     }
