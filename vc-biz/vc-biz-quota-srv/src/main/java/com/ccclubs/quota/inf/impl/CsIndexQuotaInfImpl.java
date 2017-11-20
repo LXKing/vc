@@ -693,7 +693,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 			modifyDate=DateTimeUtil.date2UnixFormat(exlist.get(0).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
 			for(int i=1 ;i<exlist.size();i++){
 				long tempTime=DateTimeUtil.date2UnixFormat(exlist.get(i).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
-				if(modifyDate<tempTime){
+				if(modifyDate>tempTime){
 					modifyDate=tempTime;
 				}
 			}

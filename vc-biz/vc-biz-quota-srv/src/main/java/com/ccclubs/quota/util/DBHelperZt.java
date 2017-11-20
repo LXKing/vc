@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -544,7 +545,8 @@ public class DBHelperZt {
         Long ll   =DateTimeUtil.date2UnixFormat("2017-08-07 00:00:00","yyyy-MM-dd HH:mm:ss");
         Long mm   =DateTimeUtil.date2UnixFormat("2016-08-05 00:00:00","yyyy-MM-dd HH:mm:ss");
 
-        System.out.println(DateTimeUtil.daysBetween(mm,ll));
+        SimpleDateFormat sdf=new SimpleDateFormat("MM-dd HH:mm:ss");
+        System.out.print(sdf.format(new Date())); ;
 
 //            Object v=414+"";
 //            System.out.println(Long.valueOf((String) v));
