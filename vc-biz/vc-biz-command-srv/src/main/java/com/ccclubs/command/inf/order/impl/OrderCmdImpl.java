@@ -102,7 +102,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csRemote, array);
         } catch (ApiException ex) {
@@ -163,7 +163,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csRemote, array);
         } catch (ApiException ex) {
@@ -200,7 +200,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 csMachine.getCsmNumber(), input.getOrderId(), input.getRealName(), input.getMobile(),
                 input.getOrderId(), input.getGender());
         // 发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csMachine, orderDetailDownStream.getBytes(), false);
             return new IssueOrderDetailOutput();
@@ -224,7 +224,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 ProtocolTools.transformToTerminalTime(renewTime), (short) 0x900E, (short) 0x0002);
 
         // 发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csMachine, orederRenew.getBytes(), false);
             return new RenewOrderOutput();
@@ -248,7 +248,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 input.getFlag());
 
         // 发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csMachine, orderModifyReplyFailure.getBytes(), false);
             return new RenewOrderReplyFOutput();
@@ -273,7 +273,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 ProtocolTools.transformToTerminalTime(renewTime));
 
         // 发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         try {
             process.dealRemoteCommand(csMachine, orderModifyReplySuccess.getBytes(), false);
             return new RenewOrderReplySOutput();

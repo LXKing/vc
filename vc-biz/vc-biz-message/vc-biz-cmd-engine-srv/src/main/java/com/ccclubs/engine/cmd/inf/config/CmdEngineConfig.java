@@ -36,7 +36,6 @@ public class CmdEngineConfig {
 
   @Bean(name = "producer", initMethod = "start", destroyMethod = "shutdown")
   public Producer producer() {
-    logger.info("init producer...");
     Properties properties = new Properties();
     properties.put(PropertyKeyConst.ProducerId, onsProperties.getProducerId());
     properties.put(PropertyKeyConst.AccessKey, onsProperties.getAccessKey());
@@ -79,7 +78,6 @@ public class CmdEngineConfig {
   @Bean(name = "concumer", initMethod = "start", destroyMethod = "shutdown")
   @Qualifier(value = "messageListener")
   public Consumer concumer(MessageListener messageListener) {
-    logger.info("init concumer...");
     Properties properties = new Properties();
     properties.put(PropertyKeyConst.ConsumerId, onsProperties.getConsumerId());
     properties.put(PropertyKeyConst.AccessKey, onsProperties.getAccessKey());

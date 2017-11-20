@@ -45,37 +45,37 @@ public class ApiInvokeHandler {
 
     @Before("apiLog()")
     public void doBefore(JoinPoint joinPoint) throws Throwable {
-        logger.info("New api request handled.");
+        logger.debug("New api request handled.");
         startTime.set(System.currentTimeMillis());
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
         // 初始化日志
-        ApiLogInput input = new ApiLogInput();
-        input.setInTime(new Date());
-        input.setAppId(request.getHeader("appId"));
-        input.setUrl(request.getRequestURL().toString());
-        input.setHttpMethod(request.getMethod());
-        input.setIp(request.getRemoteAddr());
-        input.setClassMethod(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-        input.setInput(JSONObject.toJSONString(joinPoint.getArgs()));
-
-        // 保存日志
-        ApiLogOutput output = apiLogInf.saveLog(input);
-        // 记录日志ID
-        logId.set(output.getLogId());
+//        ApiLogInput input = new ApiLogInput();
+//        input.setInTime(new Date());
+//        input.setAppId(request.getHeader("appId"));
+//        input.setUrl(request.getRequestURL().toString());
+//        input.setHttpMethod(request.getMethod());
+//        input.setIp(request.getRemoteAddr());
+//        input.setClassMethod(joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+//        input.setInput(JSONObject.toJSONString(joinPoint.getArgs()));
+//
+//        // 保存日志
+//        ApiLogOutput output = apiLogInf.saveLog(input);
+//        // 记录日志ID
+//        logId.set(output.getLogId());
 
     }
 
     @AfterReturning(returning = "ret", pointcut = "apiLog()")
     public void doAfterReturning(Object ret) throws Throwable {
         // 更新日志
-        ApiLogInput input = new ApiLogInput();
-        input.setElapsed(System.currentTimeMillis()-startTime.get());
-        input.setOutTime(new Date());
-        input.setLogId(logId.get());
-        input.setOutput(JSONObject.toJSONString(ret));
-        apiLogInf.updateLog(input);
+//        ApiLogInput input = new ApiLogInput();
+//        input.setElapsed(System.currentTimeMillis()-startTime.get());
+//        input.setOutTime(new Date());
+//        input.setLogId(logId.get());
+//        input.setOutput(JSONObject.toJSONString(ret));
+//        apiLogInf.updateLog(input);
     }
 
 }

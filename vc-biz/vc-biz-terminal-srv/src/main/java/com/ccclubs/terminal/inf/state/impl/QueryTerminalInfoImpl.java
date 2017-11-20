@@ -2,20 +2,24 @@ package com.ccclubs.terminal.inf.state.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
-import com.ccclubs.pub.orm.model.CsVehicleExample;
+import com.ccclubs.pub.orm.model.SrvHost;
+import com.ccclubs.terminal.dto.TerminalListQryInput;
 import com.ccclubs.terminal.dto.TerminalQryInput;
 import com.ccclubs.terminal.dto.TerminalQryOutput;
 import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import com.ccclubs.terminal.version.TerminalServiceVersion;
+import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,6 +41,8 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
 
   @Autowired
   private TerminalProp terminalProp;
+  @Resource
+  QueryAppInfoService hostService;
 
   @Override
   @DataAuth
@@ -60,13 +66,8 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
     TerminalQryOutput output = new TerminalQryOutput();
     switch (csMachine.getCsmTeType()) {
       case 0://富士康
-        output.setSoftVersion(csMachine.getCsmV1() == null || "".equals(csMachine.getCsmV1()) ? ""
-            : Integer.toString(Integer.parseInt(csMachine.getCsmV1().substring(4), 16)));
-        output.setHardVersion(csMachine.getCsmV2());
-        output.setPluginVersion(csMachine.getCsmV1() == null || "".equals(csMachine.getCsmV1()) ? ""
-            : Integer.toString(Integer.parseInt(csMachine.getCsmV1().substring(4), 16)));
-        break;
       case 1://中导
+      case 3://通领
         output.setSoftVersion(csMachine.getCsmTlV1());
         output.setHardVersion(csMachine.getCsmV2());
         output.setPluginVersion(
@@ -75,16 +76,46 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
         break;
       case 2://慧瀚
         break;
-      case 3://通领
-        output.setSoftVersion(csMachine.getCsmTlV1());
-        output.setHardVersion(csMachine.getCsmV2());
-        output.setPluginVersion(
-            csMachine.getCsmTlV2() == null || "".equals(csMachine.getCsmTlV2()) ? ""
-                : csMachine.getCsmTlV2().toString());
-        break;
+      default:
+          break;
     }
     BeanUtils.copyProperties(csMachine, output);
     return output;
+  }
+
+  @Override
+  public List<TerminalQryOutput> searchTerminalInfo(TerminalListQryInput input) {
+    SrvHost host = hostService.queryHostByAppid(input.getAppId());
+    // 未查询到终端
+    List<CsMachine> csMachineList = queryTerminalService.searchCsMachineFuzzyByTenoOrMobile(host.getShId(),input.getKey());
+    if (null == csMachineList) {
+      throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
+    }
+
+    List<TerminalQryOutput> listOutPut = new ArrayList<>();
+    for (CsMachine csMachine:csMachineList) {
+      //todo 未来会修改此表结构 cs_Machine
+      TerminalQryOutput output = new TerminalQryOutput();
+      switch (csMachine.getCsmTeType()) {
+        case 0://富士康
+        case 1://中导
+        case 3://通领
+          output.setSoftVersion(csMachine.getCsmTlV1());
+          output.setHardVersion(csMachine.getCsmV2());
+          output.setPluginVersion(
+              csMachine.getCsmTlV2() == null || "".equals(csMachine.getCsmTlV2()) ? ""
+                  : csMachine.getCsmTlV2().toString());
+          break;
+        case 2://慧瀚
+          break;
+        default:
+          break;
+      }
+      BeanUtils.copyProperties(csMachine, output);
+      listOutPut.add(output);
+    }
+
+    return listOutPut;
   }
 
   @Override

@@ -82,7 +82,7 @@ public class BatchStateUpdateRunner implements CommandLineRunner {
 
           if (waitList.size() > 0) {
             updateStateService.batchUpdate(waitList);
-            logger.info("size:{},time:{} BatchStateUpdateRunner batch update  ", waitList.size(),
+            logger.debug("size:{},time:{} BatchStateUpdateRunner batch update  ", waitList.size(),
                 System.currentTimeMillis() - startTime);
 
           }

@@ -44,7 +44,7 @@ public class CheckCanUpdateSumJobs implements ApplicationContextAware {
           .trim(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, 0,
               batchProperties.getUpdateQueueMax());
     }
-    logger.info("time {} , CheckCanUpdateSumJobs time consuming.",
+    logger.debug("time {} , CheckCanUpdateSumJobs time consuming.",
         System.currentTimeMillis() - startTime);
   }
 

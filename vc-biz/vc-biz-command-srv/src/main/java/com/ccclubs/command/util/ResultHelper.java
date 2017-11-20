@@ -65,7 +65,7 @@ public class ResultHelper {
                 ValueOperations<String, String> ops = redisTemplate.opsForValue();
                 String result = ops.get(key);
                 if (null != result && !"".equals(result)) {
-                    logger.info("command {} send successfully.", csRemote.getCsrType());
+                    logger.debug("command {} send successfully.", csRemote.getCsrType());
                     csRemote.setCsrUpdateTime(System.currentTimeMillis());
                     csRemote.setCsrStatus(1);
                     csRemote.setCsrResult(result);
@@ -82,7 +82,7 @@ public class ResultHelper {
                 }
                 Thread.sleep(100L);
             }
-            logger.error("command timeout and exit.");
+            logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());
             csRemote.setCsrStatus(-1);
             loggerBusiness.info(JSONObject.toJSONString(csRemote));

@@ -43,15 +43,15 @@ public class ValidateService {
      */
     public boolean validateAuth(String appId, String vin, String teNo) {
 
-        logger.info("validate data auth for appId {} vin {} teNo {} start", appId, vin, teNo);
+        logger.debug("validate data auth for appId {} vin {} teNo {} start", appId, vin, teNo);
 
         SrvHost host = hostService.queryHostByAppid(appId);
         if (null == host) {
-            logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+            logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
             return false;
         }
         if (null == vin && null == teNo) {
-            logger.info("vin and teNo are all null,validate failed", appId, vin, teNo);
+            logger.error("vin and teNo are all null,validate failed", appId, vin, teNo);
             return false;
         }
         if (StringUtils.isNotEmpty(vin)) {
@@ -60,7 +60,7 @@ public class ValidateService {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
                 if (host.getShId() != vehicle.getCsvAccess()) {
-                    logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                    logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
                 }
             }
@@ -71,12 +71,12 @@ public class ValidateService {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
                 if (host.getShId() != machine.getCsmAccess()) {
-                    logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                    logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
                 }
             }
         }
-        logger.info("validate data auth for appId {} vin {} teNo {} success", appId, vin, teNo);
+        logger.debug("validate data auth for appId {} vin {} teNo {} success", appId, vin, teNo);
         return true;
     }
 }
