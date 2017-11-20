@@ -693,7 +693,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 			modifyDate=DateTimeUtil.date2UnixFormat(exlist.get(0).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
 			for(int i=1 ;i<exlist.size();i++){
 				long tempTime=DateTimeUtil.date2UnixFormat(exlist.get(i).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
-				if(modifyDate<tempTime){
+				if(modifyDate>tempTime){
 					modifyDate=tempTime;
 				}
 			}
@@ -723,15 +723,14 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	 * 多线程处理：更新table
 	 */
 	private void multiThreadsUpdateTable(List<CsIndexReport>exlist ) {
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		executor.execute(new Runnable() {
+
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				csIndexReportMapper.updateBatchByExample(exlist);
 			}
-		});
+		}).start();
+
 	}
-
-
 
 }
