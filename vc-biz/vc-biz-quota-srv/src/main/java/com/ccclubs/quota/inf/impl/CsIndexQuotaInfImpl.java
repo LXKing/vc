@@ -723,15 +723,14 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	 * 多线程处理：更新table
 	 */
 	private void multiThreadsUpdateTable(List<CsIndexReport>exlist ) {
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		executor.execute(new Runnable() {
+
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				csIndexReportMapper.updateBatchByExample(exlist);
 			}
-		});
+		}).start();
+
 	}
-
-
 
 }
