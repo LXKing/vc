@@ -2,8 +2,8 @@ package com.ccclubs.manage.inf;
 
 import com.ccclubs.manage.dto.CsVehicleInput;
 import com.ccclubs.manage.dto.CsVehicleOutput;
-import com.ccclubs.manage.model.CsVehicleBiz;
-import com.ccclubs.manage.model.CsVehicle;
+import com.ccclubs.manage.orm.model.CsVehicleBiz;
+import com.ccclubs.manage.orm.model.CsVehicle;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;

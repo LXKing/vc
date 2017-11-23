@@ -1,9 +1,9 @@
 package com.ccclubs.manage.impl;
 
 import com.ccclubs.manage.inf.CsMappingInf;
-import com.ccclubs.manage.mapper.CsMappingMapper;
-import com.ccclubs.manage.model.CsMapping;
-import com.ccclubs.manage.model.CsMappingExample;
+import com.ccclubs.manage.orm.mapper.CsMappingMapper;
+import com.ccclubs.manage.orm.model.CsMapping;
+import com.ccclubs.manage.orm.model.CsMappingExample;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

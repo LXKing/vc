@@ -2,11 +2,11 @@ package com.ccclubs.manage.impl;
 
 import com.ccclubs.manage.dto.CsVehicleInput;
 import com.ccclubs.manage.inf.CsMachineInf;
-import com.ccclubs.manage.model.*;
 import com.ccclubs.manage.dto.CsVehicleOutput;
 import com.ccclubs.manage.inf.CsVehicleInf;
-import com.ccclubs.manage.mapper.CsVehicleBizMapper;
-import com.ccclubs.manage.mapper.CsVehicleMapper;
+import com.ccclubs.manage.orm.mapper.CsVehicleBizMapper;
+import com.ccclubs.manage.orm.mapper.CsVehicleMapper;
+import com.ccclubs.manage.orm.model.*;
 import com.ccclubs.manage.util.EvManageStringUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

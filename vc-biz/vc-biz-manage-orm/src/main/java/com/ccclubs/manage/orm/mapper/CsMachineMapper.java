@@ -1,7 +1,8 @@
-package com.ccclubs.manage.mapper;
+package com.ccclubs.manage.orm.mapper;
 
-import com.ccclubs.manage.model.CsMachine;
-import com.ccclubs.manage.model.CsMachineExample;
+import com.ccclubs.manage.orm.model.CsMachine;
+import com.ccclubs.manage.orm.model.CsMachineExample;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

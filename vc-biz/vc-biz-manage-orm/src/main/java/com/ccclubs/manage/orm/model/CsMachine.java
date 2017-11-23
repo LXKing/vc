@@ -1,4 +1,4 @@
-package com.ccclubs.manage.model;
+package com.ccclubs.manage.orm.model;
 
 import java.io.Serializable;
 import java.util.Date;

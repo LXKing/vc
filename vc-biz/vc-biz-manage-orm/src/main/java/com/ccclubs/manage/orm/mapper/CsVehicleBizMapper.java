@@ -1,7 +1,7 @@
-package com.ccclubs.manage.mapper;
+package com.ccclubs.manage.orm.mapper;
 
-import com.ccclubs.manage.model.CsVehicleBiz;
-import com.ccclubs.manage.model.CsVehicleBizExample;
+import com.ccclubs.manage.orm.model.CsVehicleBiz;
+import com.ccclubs.manage.orm.model.CsVehicleBizExample;
 
 import java.util.List;
 

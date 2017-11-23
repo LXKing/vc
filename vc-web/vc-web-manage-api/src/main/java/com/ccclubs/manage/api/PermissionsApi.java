@@ -3,11 +3,11 @@ package com.ccclubs.manage.api;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.jwt.AuthenticationService;
-import com.ccclubs.manage.model.JwtManage;
+import com.ccclubs.manage.orm.model.JwtManage;
 import com.ccclubs.manage.dto.EvLoginInput;
 import com.ccclubs.manage.dto.EvLoginOutput;
 import com.ccclubs.manage.inf.CsManageInf;
-import com.ccclubs.manage.model.CsManage;
+import com.ccclubs.manage.orm.model.CsManage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/vc")
 public class PermissionsApi {
 
-
-
-
     @Autowired
     private CsManageInf csManageService;
+
     @Autowired
     private AuthenticationService authenticationService;
 

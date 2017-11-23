@@ -1,9 +1,9 @@
 package com.ccclubs.manage.impl;
 
 import com.ccclubs.manage.inf.CsManageInf;
-import com.ccclubs.manage.mapper.CsManageMapper;
-import com.ccclubs.manage.model.CsManage;
-import com.ccclubs.manage.model.CsManageExample;
+import com.ccclubs.manage.orm.mapper.CsManageMapper;
+import com.ccclubs.manage.orm.model.CsManage;
+import com.ccclubs.manage.orm.model.CsManageExample;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 

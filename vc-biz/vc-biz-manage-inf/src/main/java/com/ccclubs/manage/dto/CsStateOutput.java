@@ -1,6 +1,6 @@
 package com.ccclubs.manage.dto;
 
-import com.ccclubs.manage.model.CsState;
+import com.ccclubs.manage.orm.model.CsState;
 
 import java.io.Serializable;
 import java.util.List;

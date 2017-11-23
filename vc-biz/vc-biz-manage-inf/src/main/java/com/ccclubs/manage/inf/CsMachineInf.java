@@ -1,7 +1,7 @@
 package com.ccclubs.manage.inf;
 
 import com.ccclubs.manage.dto.CsMachineInput;
-import com.ccclubs.manage.model.CsMachine;
+import com.ccclubs.manage.orm.model.CsMachine;
 import com.ccclubs.manage.dto.CsMachineOutput;
 import com.github.pagehelper.PageInfo;
 

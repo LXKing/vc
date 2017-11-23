@@ -1,6 +1,6 @@
 package com.ccclubs.manage.dto;
 
-import com.ccclubs.manage.model.CsMachine;
+import com.ccclubs.manage.orm.model.CsMachine;
 
 import java.io.Serializable;
 import java.util.List;

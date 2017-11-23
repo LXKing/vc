@@ -1,7 +1,7 @@
-package com.ccclubs.manage.mapper;
+package com.ccclubs.manage.orm.mapper;
 
-import com.ccclubs.manage.model.CsMapping;
-import com.ccclubs.manage.model.CsMappingExample;
+import com.ccclubs.manage.orm.model.CsMapping;
+import com.ccclubs.manage.orm.model.CsMappingExample;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;

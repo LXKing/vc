@@ -1,6 +1,6 @@
 package com.ccclubs.manage.inf;
 
-import com.ccclubs.manage.model.CsManage;
+import com.ccclubs.manage.orm.model.CsManage;
 
 /**
  * Created with IntelliJ IDEA 2017.

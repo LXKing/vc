@@ -2,7 +2,7 @@ package com.ccclubs.manage.inf;
 
 import com.ccclubs.manage.dto.CsStateInput;
 import com.ccclubs.manage.dto.CsStateOutput;
-import com.ccclubs.manage.model.CsState;
+import com.ccclubs.manage.orm.model.CsState;
 import com.github.pagehelper.PageInfo;
 
 /**
