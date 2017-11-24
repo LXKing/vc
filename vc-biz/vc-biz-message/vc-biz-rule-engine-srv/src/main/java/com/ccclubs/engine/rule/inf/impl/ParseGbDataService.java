@@ -1,5 +1,6 @@
 package com.ccclubs.engine.rule.inf.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.aop.Timer;
@@ -7,8 +8,10 @@ import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.mongo.orm.model.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
+import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
@@ -42,7 +45,7 @@ public class ParseGbDataService implements IParseGbDataService {
   private RedisTemplate redisTemplate;
   @Autowired
   QueryVehicleService queryVehicleService;
-
+  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   @Override
   public void processMessage(GBMessage message, byte[] srcByteArray) {
@@ -50,7 +53,9 @@ public class ParseGbDataService implements IParseGbDataService {
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(message.getVin());
 
     if (null == csVehicle) {
-      logger.info("国标协议终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getVin());
+      loggerBusiness.info(
+          JSON.toJSONString(new TerminalNotRegister(message.getVin(),"GB","国标协议终端，当前在线，但系统中不存在，请排查原因 ", message.getPacketDescr())));
+
       return;
     }
 

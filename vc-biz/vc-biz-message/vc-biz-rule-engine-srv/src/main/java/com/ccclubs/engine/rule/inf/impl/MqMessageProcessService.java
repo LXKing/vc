@@ -11,6 +11,7 @@ import com.ccclubs.engine.rule.inf.IMqAckService;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.engine.rule.inf.util.LogicHelperJt808;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
@@ -20,6 +21,7 @@ import com.ccclubs.protocol.dto.jt808.JT_0900;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
 import com.ccclubs.protocol.inf.IParseDataService;
 import com.ccclubs.protocol.util.ConstantUtils;
@@ -39,6 +41,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class MqMessageProcessService implements IMqMessageProcessService {
 
   private static Logger logger = LoggerFactory.getLogger(MqMessageProcessService.class);
+  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   private IMqAckService mqAckService;
   private IParseDataService parseDataService;
@@ -64,6 +67,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
 
   @Autowired
   EnvironmentUtils environmentUtils;
+
 
   /**
    * 通过 TAG 区分是哪种协议
@@ -91,7 +95,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       mapping = terminalUtils.getMapping(msgFromTerminal.getSimNo());
       if (mapping == null || mapping.getMachine() == null || StringUtils
           .empty(mapping.getNumber())) {
-        logger.info("808协议: {} 当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getSimNo());
+        loggerBusiness.info(
+            JSON.toJSONString(new TerminalNotRegister(msgFromTerminal.getSimNo(),"808","808协议，当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getPacketDescr())));
         return;
       }
       // 0x0200,0x0201,0x0704,0x0900

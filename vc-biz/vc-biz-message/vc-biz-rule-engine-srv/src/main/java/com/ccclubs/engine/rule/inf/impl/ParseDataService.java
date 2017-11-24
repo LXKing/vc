@@ -11,6 +11,7 @@ import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.CsLogger;
@@ -25,6 +26,7 @@ import com.ccclubs.protocol.dto.mqtt.MQTT_6B;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
+import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
 import com.ccclubs.protocol.dto.transform.TerminalTriggerStatus;
 import com.ccclubs.protocol.inf.IParseDataService;
@@ -48,6 +50,7 @@ import org.springframework.beans.factory.annotation.Value;
 public class ParseDataService implements IParseDataService {
 
   private static Logger logger = LoggerFactory.getLogger(ParseDataService.class);
+  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   @Resource(name = "producer")
   private Producer client;
@@ -119,7 +122,7 @@ public class ParseDataService implements IParseDataService {
 
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
       if (null == mapping || null == csMachine) {
-        logger.info("MQTT协议终端 或 808协议含分时租赁插件终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getCarNumber());
+        loggerBusiness.info(JSON.toJSONString(new TerminalNotRegister(message.getCarNumber(),"MQTT","MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
         return;
       }
       SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
@@ -248,7 +251,7 @@ public class ParseDataService implements IParseDataService {
           // 新版本状态数据
           if (mapping == null || StringUtils.empty(mapping.getNumber())
               || mapping.getMachine() == null || mapping.getAccess() == null) {
-            logger.info("MQTT协议终端 或 808协议含分时租赁插件终端：{} 当前在线，但系统中不存在，请排查原因 ", message.getCarNumber());
+            loggerBusiness.info(JSON.toJSONString(new TerminalNotRegister(message.getCarNumber(),"MQTT","MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
             return;
           }
 
