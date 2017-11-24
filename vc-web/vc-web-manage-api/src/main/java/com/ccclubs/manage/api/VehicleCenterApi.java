@@ -1,6 +1,7 @@
 package com.ccclubs.manage.api;
 
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
@@ -32,22 +33,22 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/vc")
 public class VehicleCenterApi {
 
-    @Autowired
+    @Reference(version="1.0.0")
     private CsMachineInf csMachineService;
-    @Autowired
+    @Reference(version="1.0.0")
     private CsVehicleInf csVehicleService;
-    @Autowired
+    @Reference(version="1.0.0")
     private CsStateInf csStateService;
     @Autowired
     private AuthenticationService authenticationService;
-    @Autowired
+    @Reference(version="1.0.0")
     private CsManageInf csManageService;
 
 
     @RequestMapping(path = "/machines/v1", method={RequestMethod.GET})
     public ApiMessage<PageInfo<CsMachine>> getCsMechine(
             HttpServletRequest request,
-            @RequestParam CsMachineInput csMachineInput){
+             CsMachineInput csMachineInput){
         JwtManage jwtManage=(JwtManage)authenticationService.getJwtUserFromToken(request);
         if(null==jwtManage){
             return new ApiMessage<>(ApiEnum.SIGN_CHECK_FAILED);
@@ -58,7 +59,7 @@ public class VehicleCenterApi {
     }
     @RequestMapping(path = "/vehicles/v1", method={RequestMethod.GET})
     public ApiMessage<PageInfo<CsVehicle>> getCsVehicle(HttpServletRequest request,
-                                                        @RequestParam CsVehicleInput csVehicleInput){
+                                                         CsVehicleInput csVehicleInput){
         JwtManage jwtManage=(JwtManage)authenticationService.getJwtUserFromToken(request);
         if(null==jwtManage){
             return new ApiMessage<>(ApiEnum.SIGN_CHECK_FAILED);
@@ -85,7 +86,7 @@ public class VehicleCenterApi {
 
     @RequestMapping(path = "/vehiclesBiz/v1", method={RequestMethod.GET})
     public ApiMessage<PageInfo<CsVehicleBiz>> getCsVehicleBiz(HttpServletRequest request,
-                                                              @RequestParam CsVehicleInput csVehicleInput){
+                                                               CsVehicleInput csVehicleInput){
         JwtManage jwtManage=(JwtManage)authenticationService.getJwtUserFromToken(request);
         if(null==jwtManage){
             return new ApiMessage<>(ApiEnum.SIGN_CHECK_FAILED);
@@ -97,7 +98,7 @@ public class VehicleCenterApi {
     }
 
     @RequestMapping(path = "/states/v1", method={RequestMethod.GET})
-    public ApiMessage<PageInfo<CsState>> getCsStates(HttpServletRequest request, @RequestParam CsStateInput csStateInput){
+    public ApiMessage<PageInfo<CsState>> getCsStates(HttpServletRequest request,  CsStateInput csStateInput){
         JwtManage jwtManage=(JwtManage)authenticationService.getJwtUserFromToken(request);
         if(null==jwtManage){
             return new ApiMessage<>(ApiEnum.SIGN_CHECK_FAILED);
@@ -108,7 +109,7 @@ public class VehicleCenterApi {
     }
 
     @RequestMapping(path = "/state/v1", method={RequestMethod.GET})
-    public ApiMessage<CsState> getCsState(HttpServletRequest request,@RequestParam CsStateInput csStateInput){
+    public ApiMessage<CsState> getCsState(HttpServletRequest request, CsStateInput csStateInput){
         JwtManage jwtManage=(JwtManage)authenticationService.getJwtUserFromToken(request);
         if(null==jwtManage){
             return new ApiMessage<>(ApiEnum.SIGN_CHECK_FAILED);

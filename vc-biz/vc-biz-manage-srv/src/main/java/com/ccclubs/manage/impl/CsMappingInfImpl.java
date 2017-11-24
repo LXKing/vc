@@ -1,10 +1,10 @@
 package com.ccclubs.manage.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.manage.inf.CsMappingInf;
 import com.ccclubs.manage.orm.mapper.CsMappingMapper;
 import com.ccclubs.manage.orm.model.CsMapping;
 import com.ccclubs.manage.orm.model.CsMappingExample;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 15:15
  * Email:fengjun@ccclubs.com
  */
-@Service
+@Service(version = "1.0.0")
 public class CsMappingInfImpl implements CsMappingInf {
 
     @Resource

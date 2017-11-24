@@ -21,7 +21,8 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-mybatis</artifactId>
-            <version>1.0.0</version>
+            <version>${frm.version}</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

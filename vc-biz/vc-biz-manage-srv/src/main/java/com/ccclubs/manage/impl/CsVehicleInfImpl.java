@@ -1,5 +1,6 @@
 package com.ccclubs.manage.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.manage.dto.CsVehicleInput;
 import com.ccclubs.manage.inf.CsMachineInf;
 import com.ccclubs.manage.dto.CsVehicleOutput;
@@ -12,7 +13,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.DateFormat;
@@ -27,7 +27,7 @@ import java.util.List;
  * Time: 16:36
  * Email:fengjun@ccclubs.com
  */
-@Service
+@Service(version = "1.0.0")
 public class CsVehicleInfImpl implements CsVehicleInf {
 
     @Resource

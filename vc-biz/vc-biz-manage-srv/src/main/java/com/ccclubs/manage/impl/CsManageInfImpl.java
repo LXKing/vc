@@ -1,11 +1,11 @@
 package com.ccclubs.manage.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.manage.inf.CsManageInf;
 import com.ccclubs.manage.orm.mapper.CsManageMapper;
 import com.ccclubs.manage.orm.model.CsManage;
 import com.ccclubs.manage.orm.model.CsManageExample;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 14:11
  * Email:fengjun@ccclubs.com
  */
-@Service
+@Service(version = "1.0.0")
 public class CsManageInfImpl implements CsManageInf {
 
     @Resource

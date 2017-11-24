@@ -18,6 +18,23 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-manage-orm</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-spring</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-dubbox</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+
     </dependencies>
 
 

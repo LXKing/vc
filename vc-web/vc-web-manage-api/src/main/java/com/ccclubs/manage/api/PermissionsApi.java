@@ -1,5 +1,6 @@
 package com.ccclubs.manage.api;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.jwt.AuthenticationService;
@@ -25,11 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(path = "/vc")
 public class PermissionsApi {
 
-    @Autowired
+    @Reference(version="1.0.0")
     private CsManageInf csManageService;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    AuthenticationService authenticationService;
 
     @RequestMapping(path = "/login/v1", method={RequestMethod.POST})
     public ApiMessage<EvLoginOutput> loginSystem(@RequestBody EvLoginInput evLoginInput){

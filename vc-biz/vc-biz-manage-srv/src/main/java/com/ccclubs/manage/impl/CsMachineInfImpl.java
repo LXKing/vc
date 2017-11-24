@@ -1,5 +1,6 @@
 package com.ccclubs.manage.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.manage.dto.CsMachineInput;
 import com.ccclubs.manage.dto.CsMachineOutput;
 import com.ccclubs.manage.inf.CsMachineInf;
@@ -12,7 +13,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
  * Time: 16:35
  * Email:fengjun@ccclubs.com
  */
-@Service
+@Service(version = "1.0.0")
 public class CsMachineInfImpl implements CsMachineInf {
 
     @Resource
