@@ -111,7 +111,7 @@ public class HistoryStateUtils extends ConvertUtils {
     }
     String sourceJson = JSON.toJSONString(csStateList);
     String objectJson = JSON.toJSONString(carStateHistoryList);
-    logger.info("source: {} ,target: {}",sourceJson,objectJson);
+    logger.debug("source: {} ,target: {}",sourceJson,objectJson);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState list json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/states";

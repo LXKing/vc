@@ -21,7 +21,7 @@ public class TerminalNotRegister {
     this.protocol = protocol;
     this.des = des;
     this.message = message;
-    this.time = StringUtils.date(new Date(),"YYYY-MM-dd HH:mm");
+    this.time = StringUtils.date(new Date(),"YYYY-MM-dd HH:mm:ss");
   }
 
   public String getKey() {
