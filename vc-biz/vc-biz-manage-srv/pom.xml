@@ -11,6 +11,7 @@
 
     <artifactId>vc-biz-manage-srv</artifactId>
     <dependencies>
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-manage-inf</artifactId>

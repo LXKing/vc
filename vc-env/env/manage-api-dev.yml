@@ -1,5 +1,6 @@
 server:
   port: 9000
+
 spring:
   http:
     encoding:
@@ -25,25 +26,6 @@ dubbo:
     timeout: 120000
     check: false
 
-
-druid:
-  driver: com.mysql.jdbc.Driver
-  jdbc:
-    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
-    username: zkj_user
-    password: kANXZYqf2UzghVY7DnjP
-  initialSize: 2
-  maxActive: 4
-  maxIdle: 2
-  minIdle: 1
-  maxWait: 60000
-  timeBetweenEvictionRunsMillis: 3000
-  minEvictableIdleTimeMillis: 300000
-  maxPoolPreparedStatementPerConnectionSize: 20
-
-mybatis:
-  scan:
-    basePackage: com.ccclubs.**.mapper
 
 
 jwt:
