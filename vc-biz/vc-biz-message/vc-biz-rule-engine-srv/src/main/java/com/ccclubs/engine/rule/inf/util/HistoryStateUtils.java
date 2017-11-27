@@ -109,7 +109,9 @@ public class HistoryStateUtils extends ConvertUtils {
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
     }
+    String sourceJson = JSON.toJSONString(csStateList);
     String objectJson = JSON.toJSONString(carStateHistoryList);
+    logger.debug("source: {} ,target: {}",sourceJson,objectJson);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState list json done:" + objectJson);
     String url="http://"+ip+":"+port+"/carhistory/states";
