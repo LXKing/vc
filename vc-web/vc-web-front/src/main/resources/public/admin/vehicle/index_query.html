@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="csvId" >
+				<dt>编号:</dt>
+				<dd  >
+					<input  name="csvIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvAccess" >
+				<dt>授权系统,0:无所属者</dt>
+				<dd  >
+					<input  name="csvAccessEquals" placeholder="请输入关键字" class="form-control searchinput" dataUrl="/base/access/query">
+				</dd>
+			</dl>
+<dl cond="csvHost" style="display:none;">
+				<dt>子域:</dt>
+				<dd  >
+					<input  name="csvHostEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvCarNo" style="display:none;">
+				<dt>真实车牌:</dt>
+				<dd  >
+					<input  name="csvCarNoLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvVin" style="display:none;">
+				<dt>车架号:</dt>
+				<dd  >
+					<input  name="csvVinEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvEngineNo" style="display:none;">
+				<dt>发动机号</dt>
+				<dd  >
+					<input  name="csvEngineNoEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvCertific" style="display:none;">
+				<dt>合格证号</dt>
+				<dd  >
+					<input  name="csvCertificEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvColor" style="display:none;">
+				<dt>颜色</dt>
+				<dd  >
+					<input  name="csvColorEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvModel" style="display:none;">
+				<dt>车型:</dt>
+				<dd  >
+					<input  name="csvModelEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvMachine" style="display:none;">
+				<dt>车机设备:</dt>
+				<dd  >
+					<input  name="csvMachineEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvMachines" style="display:none;">
+				<dt>历史设备:</dt>
+				<dd  >
+					<input  name="csvMachinesEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvColorCode" style="display:none;">
+				<dt>车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套</dt>
+				<dd  >
+					<input  name="csvColorCodeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvBataccuCode" style="display:none;">
+				<dt>可充电储能系统编码</dt>
+				<dd  >
+					<input  name="csvBataccuCodeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvProdDate" style="display:none;">
+				<dt>出厂日期</dt>
+				<dd  >
+					<input  name="csvProdDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({format: 'YYYY-MM-DD'})">
+				</dd>
+			</dl>
+<dl cond="csvLandmark" style="display:none;">
+				<dt>地标类型</dt>
+				<dd  >
+					<input  name="csvLandmarkEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvStatus" >
+				<dt>状态:1:正常,0:无效;</dt>
+				<dd  >
+					<select class="form-control"  name="csvStatusEquals"  >
+	                    <option></option>
+                         <option value="0">无效</option>
+                         <option value="1">正常</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="csvAddTime" style="display:none;">
+				<dt>添加时间:</dt>
+				<dd  >
+					<input  name="csvAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csvUpdateTime" style="display:none;">
+				<dt>修改时间:</dt>
+				<dd  >
+					<input  name="csvUpdateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="csvId" value="csvId" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >编号:</label></li>
+			        <li><label><input cond="csvAccess" value="csvAccessText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >授权系统,0:无所属者</label></li>
+			        <li><label><input cond="csvHost" value="csvHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >子域:</label></li>
+			        <li><label><input cond="csvCarNo" value="csvCarNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >真实车牌:</label></li>
+			        <li><label><input cond="csvVin" value="csvVin"  type="checkbox" onclick='showHideCondition(this, this.value);' >车架号:</label></li>
+			        <li><label><input cond="csvEngineNo" value="csvEngineNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >发动机号</label></li>
+			        <li><label><input cond="csvCertific" value="csvCertific"  type="checkbox" onclick='showHideCondition(this, this.value);' >合格证号</label></li>
+			        <li><label><input cond="csvColor" value="csvColor"  type="checkbox" onclick='showHideCondition(this, this.value);' >颜色</label></li>
+			        <li><label><input cond="csvModel" value="csvModel"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型:</label></li>
+			        <li><label><input cond="csvMachine" value="csvMachine"  type="checkbox" onclick='showHideCondition(this, this.value);' >车机设备:</label></li>
+			        <li><label><input cond="csvMachines" value="csvMachines"  type="checkbox" onclick='showHideCondition(this, this.value);' >历史设备:</label></li>
+			        <li><label><input cond="csvColorCode" value="csvColorCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套</label></li>
+			        <li><label><input cond="csvBataccuCode" value="csvBataccuCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >可充电储能系统编码</label></li>
+			        <li><label><input cond="csvProdDate" value="csvProdDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >出厂日期</label></li>
+			        <li><label><input cond="csvLandmark" value="csvLandmark"  type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
+			        <li><label><input cond="csvStatus" value="csvStatusText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >状态:1:正常,0:无效;</label></li>
+			        <li><label><input cond="csvAddTime" value="csvAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间:</label></li>
+			        <li><label><input cond="csvUpdateTime" value="csvUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >修改时间:</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>授权系统,0:无所属者</dt>
+					<dd>
+					<input name="csvAccess" placeholder="" class="form-control searchinput" dataUrl="/base/access/query">
+					<label id="csvAccess-error" class="error" for="csvAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>子域:</dt>
+					<dd>
+					<input name="csvHost" placeholder="" class="form-control" >
+					<label id="csvHost-error" class="error" for="csvHost"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>真实车牌:</dt>
+					<dd>
+					<input name="csvCarNo" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车架号:</dt>
+					<dd>
+					<input name="csvVin" placeholder="" class="form-control" >
+					<label id="csvVin-error" class="error" for="csvVin"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>发动机号</dt>
+					<dd>
+					<input name="csvEngineNo" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>合格证号</dt>
+					<dd>
+					<input name="csvCertific" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>颜色</dt>
+					<dd>
+					<input name="csvColor" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型:</dt>
+					<dd>
+					<input name="csvModel" placeholder="" class="form-control" >
+					<label id="csvModel-error" class="error" for="csvModel"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机设备:</dt>
+					<dd>
+					<input name="csvMachine" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>历史设备:</dt>
+					<dd>
+					<input name="csvMachines" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套</dt>
+					<dd>
+					<input name="csvColorCode" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>可充电储能系统编码</dt>
+					<dd>
+					<input name="csvBataccuCode" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>出厂日期</dt>
+					<dd>
+					<input name="csvProdDate" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({format: 'YYYY-MM-DD'})">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>地标类型</dt>
+					<dd>
+					<input name="csvLandmark" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+		</div>
+		
+		<div class="form-group windowButtonBar">
+			<div class="hr-line-dashed"></div>
+			<div class="col-sm-10 col-sm-offset-1">
+				<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>
+				<button class="btn btn-white col-sm-2 col-sm-offset-2" type="reset">清空</button>
+				<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">关闭</button>
+			</div>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+				rules:{
+				"csvAccess":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvProdDate":{
+					"date":true
+				},
+				"csvLandmark":{
+					"maxlength":64
+				},
+				"csvId":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvHost":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvColorCode":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csvVin":{
+					"maxlength":32,
+					"required":true
+				},
+				"csvModel":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvCarNo":{
+					"maxlength":32
+				},
+				"csvMachine":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csvMachines":{
+					"maxlength":64
+				},
+				"csvBataccuCode":{
+					"maxlength":64
+				},
+				"csvCertific":{
+					"maxlength":32
+				},
+				"csvColor":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csvEngineNo":{
+					"maxlength":32
+				}
+			}
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/admin/vehicle/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				},
+				submit:function(){
+					var queryJson = getFormData(this.form);
+			     	console.log("validate success! ===>"+queryJson);
+					ajaxRequest(this.url, "POST", queryJson, function(json) {
+						console.log(json);
+						closeTopWin(true);
+					});
+				}
+			};
+			
+			define.init();
+		});
+	</script>
+</body>

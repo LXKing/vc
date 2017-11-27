@@ -26,6 +26,7 @@
 		<module>vc-web-quota-srv</module>
 		<module>vc-web-hbase-srv</module>
         <module>vc-web-hbase-api</module>
+        <module>vc-web-front</module>
     </modules>
 	<dependencies>
 		<dependency>
