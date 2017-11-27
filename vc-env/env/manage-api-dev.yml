@@ -10,7 +10,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.manage.api
+    annotationPackage: com.ccclubs.manage.api,com.ccclubs.jwt
   application:
     name: api
   registry:
