@@ -21,6 +21,9 @@ public interface CsVehicleInf {
     List<Integer> getMachineIdListByVehicles(List<Integer> ids);
     List<CsVehicle> getVehiclesByIds(List<Integer> ids);
 
+    List<CsVehicle> getVehicleList(CsVehicleInput csVehicleInput);
+
+
     CsVehicle getCsVehicleByCsMachineId(Integer id);
     CsVehicle getCsVehicleByCsVin(String csVin);
     CsVehicle getCsVehicleByCsCarNo(String csCarNo);

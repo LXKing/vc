@@ -34,6 +34,15 @@
             <artifactId>vc-frm-dubbox</artifactId>
             <version>${frm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-redis</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -1,6 +1,8 @@
 package com.ccclubs.manage.dto;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA 2017.
@@ -19,7 +21,7 @@ public class CsStateInput implements Serializable {
     private Integer pageNum;//目标页码
     private Integer id;//数据库ID
 
-    private Integer csAccess=1;//授权系统
+    private Integer csAccess;//授权系统
     private String csNumber;//车机号
 
     /**
@@ -31,6 +33,25 @@ public class CsStateInput implements Serializable {
 
     //private Integer csMachineId;//车机设备
 
+    private Date csCurrentTime;//下机位时间
+
+    private List<String> csNumberList;
+
+    public List<String> getCsNumberList() {
+        return csNumberList;
+    }
+
+    public void setCsNumberList(List<String> csNumberList) {
+        this.csNumberList = csNumberList;
+    }
+
+    public Date getCsCurrentTime() {
+        return csCurrentTime;
+    }
+
+    public void setCsCurrentTime(Date csCurrentTime) {
+        this.csCurrentTime = csCurrentTime;
+    }
 
     public Integer getPageSize() {
         return pageSize;

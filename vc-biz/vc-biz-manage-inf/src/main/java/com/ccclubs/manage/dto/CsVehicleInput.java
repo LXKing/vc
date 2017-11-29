@@ -24,10 +24,12 @@ public class CsVehicleInput implements Serializable {
     private Integer id;//数据库ID
     private String csVin;//车架号
     private Integer csMachineId;//车机设备
-    private Integer csAccess=1;//授权系统
+    private Integer csAccess;//授权系统
     private List<Integer> ids;//数据库ID集合，用于批量删除。
 
     private Short isBind=-1;//-1是不关心是否绑定车机，1为已绑定车机，0为未绑定车机。
+
+    private Integer csModel;
 
     private String addTimeBegin;
     private String addTimeEnd;
@@ -38,6 +40,14 @@ public class CsVehicleInput implements Serializable {
      * 来自车机表 cs_machine
      * */
     private String csNumber;//车机号,根据此值得到车机设备ID。
+
+    public Integer getCsModel() {
+        return csModel;
+    }
+
+    public void setCsModel(Integer csModel) {
+        this.csModel = csModel;
+    }
 
     public List<Integer> getIds() {
         return ids;

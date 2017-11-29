@@ -220,6 +220,21 @@ public class CsVehicleInfImpl implements CsVehicleInf {
     }
 
     @Override
+    public List<CsVehicle> getVehicleList(CsVehicleInput csVehicleInput) {
+        CsVehicleExample csVehicleExample=new CsVehicleExample();
+        CsVehicleExample.Criteria criteria=csVehicleExample.createCriteria();
+
+
+
+        if (null!=csVehicleInput.getCsModel()){
+            criteria.andCsvModelEqualTo(csVehicleInput.getCsModel());
+        }
+
+        List<CsVehicle> csVehicleList=csVehicleMapper.selectByExample(csVehicleExample);
+        return csVehicleList;
+    }
+
+    @Override
     public CsVehicle getCsVehicleByCsMachineId(Integer id) {
         CsVehicle csVehicle=null;
         CsVehicleExample csVehicleExample=new CsVehicleExample();

@@ -129,4 +129,52 @@ public class CsStateInfImpl implements CsStateInf {
         }
         return null;
     }
+
+    @Override
+    public List<CsState> getCsStateList(CsStateInput csStateInput) {
+        CsVehicle csVehicle=null;
+        if (null!=csStateInput.getCsVin()){
+            csVehicle=csVehicleService.getCsVehicleByCsVin(csStateInput.getCsVin());
+        }
+        if (null!=csStateInput.getCsCarNo()){
+            csVehicle=csVehicleService.getCsVehicleByCsCarNo(csStateInput.getCsCarNo());
+        }
+        if (null!=csVehicle){
+            if (csVehicle.getCsvAccess().equals(csStateInput.getCsAccess())){
+                //if (null==csStateInput.getCsVehicleId())
+                {
+                    csStateInput.setCsVehicleId(csVehicle.getCsvId());
+                }
+            }
+        }
+
+        CsStateExample csStateExample=new CsStateExample();
+        CsStateExample.Criteria criteria=csStateExample.createCriteria();
+        if(StringUtils.isNotBlank(csStateInput.getCsNumber())){
+            criteria.andCssNumberEqualTo(csStateInput.getCsNumber());
+        }
+        if (null!=csStateInput.getCsVehicleId()){
+            criteria.andCssCarEqualTo(csStateInput.getCsVehicleId());
+        }
+        if(null!=csStateInput.getCsAccess()&&csStateInput.getCsAccess()>0){
+            //TODO 权限处理应更换为token取值
+            criteria.andCssAccessEqualTo(csStateInput.getCsAccess().byteValue());
+        }
+        if (null!=csStateInput.getId()){
+            criteria.andCssIdEqualTo(csStateInput.getId());
+        }
+        if (null!=csStateInput.getCsNumberList()&&csStateInput.getCsNumberList().size()>0){
+            criteria.andCssNumberIn(csStateInput.getCsNumberList());
+        }
+        if (null!=csStateInput.getCsCurrentTime()){
+            criteria.andCssCurrentTimeGreaterThan(csStateInput.getCsCurrentTime());
+        }
+
+
+        List<CsState> csStateList=csStateMapper.selectByExample(csStateExample);
+        if (null!=csStateList&&csStateList.size()>0){
+            return csStateList;
+        }
+        return null;
+    }
 }

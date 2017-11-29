@@ -98,6 +98,19 @@ public class CsMachineInfImpl implements CsMachineInf {
     }
 
     @Override
+    public List<CsMachine> getCsMachineList(CsMachineInput csMachineInput) {
+
+        CsMachineExample csMachineExample=new CsMachineExample();
+        CsMachineExample.Criteria criteria=csMachineExample.createCriteria();
+        if (null!=csMachineInput.getIds()&&csMachineInput.getIds().size()>0){
+            criteria.andCsmIdIn(csMachineInput.getIds());
+        }
+        List<CsMachine> csMachineList=csMachineMapper.selectByExample(csMachineExample);
+
+        return csMachineList;
+    }
+
+    @Override
     public CsMachine getCsMachineByCsNumber(String csNumber) {
 
         CsMachine csMachine=null;

@@ -4,7 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -29,6 +31,9 @@ public class JwtTokenUtil implements Serializable {
     static final String AUDIENCE_WEB = "web";
     static final String AUDIENCE_MOBILE = "mobile";
     static final String AUDIENCE_TABLET = "tablet";
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     //TODO 此字段应该被Redis存储所替换。现在只做暂时使用。
     private static HashMap<String,JwtUser>  tokenMap=new HashMap<>();

@@ -11,6 +11,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
@@ -19,6 +20,7 @@ import java.io.IOException;
  */
 @SpringBootApplication
 @Import({RedisAutoConfiguration.class,MybatisConfig.class})
+@EnableScheduling
 public class ManageSrvApp extends SpringBootServletInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(ManageSrvApp.class);

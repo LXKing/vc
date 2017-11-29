@@ -5,6 +5,8 @@ import com.ccclubs.manage.orm.model.CsMachine;
 import com.ccclubs.manage.dto.CsMachineOutput;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA 2017.
  * Author: @author FengJun
@@ -15,7 +17,7 @@ import com.github.pagehelper.PageInfo;
 public interface CsMachineInf  {
      PageInfo<CsMachine> getCsMachinePage(CsMachineInput csMachineInput);
      CsMachineOutput getCsMachineAll(CsMachineInput csMachineInput);
-
+     List<CsMachine> getCsMachineList(CsMachineInput csMachineInput);
      CsMachine getCsMachineByCsNumber(String csNumber);
 
      /**

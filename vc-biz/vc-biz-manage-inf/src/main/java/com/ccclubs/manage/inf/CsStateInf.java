@@ -5,6 +5,8 @@ import com.ccclubs.manage.dto.CsStateOutput;
 import com.ccclubs.manage.orm.model.CsState;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA 2017.
  * Author: @author FengJun
@@ -13,7 +15,9 @@ import com.github.pagehelper.PageInfo;
  * Email:fengjun@ccclubs.com
  */
 public interface CsStateInf {
+
     PageInfo<CsState> getCsStatePage(CsStateInput csStateInput);
     CsStateOutput getCsStateAll(CsStateInput csStateInput);
     CsState getCsState(CsStateInput csStateInput);
+    List<CsState> getCsStateList(CsStateInput csStateInput);
 }
