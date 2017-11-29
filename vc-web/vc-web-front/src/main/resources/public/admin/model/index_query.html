@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="csmId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="csmIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmName" >
+				<dt>车型名称</dt>
+				<dd  >
+					<input  name="csmNameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmFlag" style="display:none;">
+				<dt>车型标识</dt>
+				<dd  >
+					<input  name="csmFlagEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmType" style="display:none;">
+				<dt>动力类型</dt>
+				<dd  >
+					<input  name="csmTypeEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="csm_type"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmFile" style="display:none;">
+				<dt>变速箱类型</dt>
+				<dd  >
+					<input  name="csmFileEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="csm_file"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmCatagory" style="display:none;">
+				<dt>车辆种类</dt>
+				<dd  >
+					<input  name="csmCatagoryEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="csm_catagory"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmTankCapacity" style="display:none;">
+				<dt>油箱容量(L)</dt>
+				<dd  >
+					<input  name="csmTankCapacityEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmBatteryCapacity" style="display:none;">
+				<dt>电池容量(KW.H)</dt>
+				<dd  >
+					<input  name="csmBatteryCapacityEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="csmStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmAddTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd  >
+					<input  name="csmAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csmUpdateTime" style="display:none;">
+				<dt>修改时间</dt>
+				<dd  >
+					<input  name="csmUpdateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="csmId" value="csmId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="csmName" value="csmName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车型名称</label></li>
+			        <li><label><input cond="csmFlag" value="csmFlag"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型标识</label></li>
+			        <li><label><input cond="csmType" value="csmTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >动力类型</label></li>
+			        <li><label><input cond="csmFile" value="csmFileText"  type="checkbox" onclick='showHideCondition(this, this.value);' >变速箱类型</label></li>
+			        <li><label><input cond="csmCatagory" value="csmCatagoryText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆种类</label></li>
+			        <li><label><input cond="csmTankCapacity" value="csmTankCapacity"  type="checkbox" onclick='showHideCondition(this, this.value);' >油箱容量(L)</label></li>
+			        <li><label><input cond="csmBatteryCapacity" value="csmBatteryCapacity"  type="checkbox" onclick='showHideCondition(this, this.value);' >电池容量(KW.H)</label></li>
+			        <li><label><input cond="csmStatus" value="csmStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+			        <li><label><input cond="csmAddTime" value="csmAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="csmUpdateTime" value="csmUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >修改时间</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

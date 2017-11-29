@@ -20,35 +20,28 @@
 		<form class="form-horizontal" id="addform" style="margin:15px;">
 			<div class="form-group" id="conditionId" style="height:80%;">
 				<dl  >
-					<dt>授权系统,0:无所属者</dt>
+					<dt>接入商</dt>
 					<dd>
-					<input name="csvAccess" placeholder="" class="form-control searchinput" dataUrl="/base/access/query">
+					<input name="csvAccess" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/base/access/query">
 					<label id="csvAccess-error" class="error" for="csvAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
-					<dt>子域:</dt>
-					<dd>
-					<input name="csvHost" placeholder="" class="form-control" >
-					<label id="csvHost-error" class="error" for="csvHost"><i class="fa fa-info-circle fieldTip">必填</i></label>
-					</dd>
-				</dl>
-				<dl  >
-					<dt>真实车牌:</dt>
+					<dt>车牌号</dt>
 					<dd>
 					<input name="csvCarNo" placeholder="" class="form-control" >
 					
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车架号:</dt>
+					<dt>车架号</dt>
 					<dd>
 					<input name="csvVin" placeholder="" class="form-control" >
 					<label id="csvVin-error" class="error" for="csvVin"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
-					<dt>发动机号</dt>
+					<dt>发动机(电机)编号</dt>
 					<dd>
 					<input name="csvEngineNo" placeholder="" class="form-control" >
 					
@@ -69,30 +62,23 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车型:</dt>
+					<dt>车型</dt>
 					<dd>
-					<input name="csvModel" placeholder="" class="form-control" >
+					<input name="csvModel" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/admin/model/query">
 					<label id="csvModel-error" class="error" for="csvModel"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车机设备:</dt>
+					<dt>车机设备</dt>
 					<dd>
-					<input name="csvMachine" placeholder="" class="form-control" >
+					<input name="csvMachine" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/admin/machine/query">
 					
 					</dd>
 				</dl>
 				<dl  >
-					<dt>历史设备:</dt>
+					<dt>颜色</dt>
 					<dd>
-					<input name="csvMachines" placeholder="" class="form-control" >
-					
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套</dt>
-					<dd>
-					<input name="csvColorCode" placeholder="" class="form-control" >
+					<input name="csvColorCode" placeholder="" class="form-control searchinput" dataWhere="color_code" dataUrl="/base/dict/query">
 					
 					</dd>
 				</dl>
@@ -113,8 +99,15 @@
 				<dl  >
 					<dt>地标类型</dt>
 					<dd>
-					<input name="csvLandmark" placeholder="" class="form-control" >
+					<input name="csvLandmark" placeholder="" class="form-control searchinput" dataWhere="landmark" dataUrl="/base/dict/query">
 					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态</dt>
+					<dd>
+					<input name="csvStatus" placeholder="" class="form-control searchinput" dataWhere="status" dataUrl="/base/dict/query">
+					<label id="csvStatus-error" class="error" for="csvStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 		</div>
@@ -151,23 +144,27 @@
  			 */
 			var validateRuleConfig = {
 				rules:{
+				"csvBataccuCode":{
+					"maxlength":64
+				},
+				"csvCarNo":{
+					"maxlength":32
+				},
+				"csvStatus":{
+					"maxlength":4,
+					"digits":true,
+					"required":true
+				},
+				"csvVin":{
+					"maxlength":32,
+					"required":true
+				},
 				"csvAccess":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
 				},
-				"csvProdDate":{
-					"date":true
-				},
-				"csvLandmark":{
-					"maxlength":64
-				},
 				"csvId":{
-					"maxlength":11,
-					"digits":true,
-					"required":true
-				},
-				"csvHost":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
@@ -176,34 +173,27 @@
 					"maxlength":4,
 					"digits":true
 				},
-				"csvVin":{
-					"maxlength":32,
-					"required":true
-				},
 				"csvModel":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
 				},
-				"csvCarNo":{
-					"maxlength":32
-				},
 				"csvMachine":{
 					"maxlength":11,
 					"digits":true
 				},
-				"csvMachines":{
-					"maxlength":64
+				"csvProdDate":{
+					"date":true
 				},
-				"csvBataccuCode":{
+				"csvLandmark":{
 					"maxlength":64
-				},
-				"csvCertific":{
-					"maxlength":32
 				},
 				"csvColor":{
 					"maxlength":4,
 					"digits":true
+				},
+				"csvCertific":{
+					"maxlength":32
 				},
 				"csvEngineNo":{
 					"maxlength":32

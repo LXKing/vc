@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="id" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="idEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="value" style="display:none;">
+				<dt>数据值</dt>
+				<dd  >
+					<input  name="valueEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="label" >
+				<dt>标签名</dt>
+				<dd  >
+					<input  name="labelLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="type" >
+				<dt>类型</dt>
+				<dd  >
+					<input  name="typeLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="description" style="display:none;">
+				<dt>描述</dt>
+				<dd  >
+					<input  name="descriptionEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sort" style="display:none;">
+				<dt>排序</dt>
+				<dd  >
+					<input  name="sortEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="createBy" style="display:none;">
+				<dt>创建者</dt>
+				<dd  >
+					<input  name="createByEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="createDate" style="display:none;">
+				<dt>创建时间</dt>
+				<dd  >
+					<input  name="createDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="updateBy" style="display:none;">
+				<dt>更新者</dt>
+				<dd  >
+					<input  name="updateByEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="updateDate" style="display:none;">
+				<dt>更新时间</dt>
+				<dd  >
+					<input  name="updateDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="remarks" style="display:none;">
+				<dt>备注信息</dt>
+				<dd  >
+					<input  name="remarksEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="delFlag" style="display:none;">
+				<dt>删除标记</dt>
+				<dd  >
+					<select class="form-control"  name="delFlagEquals"  >
+	                    <option></option>
+                         <option value="1">删除</option>
+                         <option value="0">正常</option>
+                    </select>
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="value" value="value"  type="checkbox" onclick='showHideCondition(this, this.value);' >数据值</label></li>
+			        <li><label><input cond="label" value="label" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >标签名</label></li>
+			        <li><label><input cond="type" value="type" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >类型</label></li>
+			        <li><label><input cond="description" value="description"  type="checkbox" onclick='showHideCondition(this, this.value);' >描述</label></li>
+			        <li><label><input cond="sort" value="sort"  type="checkbox" onclick='showHideCondition(this, this.value);' >排序</label></li>
+			        <li><label><input cond="createBy" value="createBy"  type="checkbox" onclick='showHideCondition(this, this.value);' >创建者</label></li>
+			        <li><label><input cond="createDate" value="createDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >创建时间</label></li>
+			        <li><label><input cond="updateBy" value="updateBy"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新者</label></li>
+			        <li><label><input cond="updateDate" value="updateDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
+			        <li><label><input cond="remarks" value="remarks"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注信息</label></li>
+			        <li><label><input cond="delFlag" value="delFlagText"  type="checkbox" onclick='showHideCondition(this, this.value);' >删除标记</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

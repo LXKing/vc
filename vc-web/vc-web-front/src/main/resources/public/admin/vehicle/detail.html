@@ -20,39 +20,33 @@
 		<form class="form-horizontal" id="addform" style="margin:15px;">
 			<div class="form-group" id="conditionId" style="height:80%;">
 				<dl  >
-					<dt>编号:：</dt>
+					<dt>编号：</dt>
 					<dd>
-					<input name="csvId" placeholder="请输入编号:" class="form-control" >
+					<input name="csvId" placeholder="请输入编号" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
-					<dt>授权系统,0:无所属者：</dt>
+					<dt>接入商：</dt>
 					<dd>
-					<input name="csvAccess" placeholder="请输入关键字" class="form-control searchinput" dataUrl="/base/access/query">
+					<input name="csvAccess" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>子域:：</dt>
+					<dt>车牌号：</dt>
 					<dd>
-					<input name="csvHost" placeholder="请输入子域:" class="form-control" >
+					<input name="csvCarNo" placeholder="请输入车牌号" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
-					<dt>真实车牌:：</dt>
+					<dt>车架号：</dt>
 					<dd>
-					<input name="csvCarNo" placeholder="请输入真实车牌:" class="form-control" >
+					<input name="csvVin" placeholder="请输入车架号" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车架号:：</dt>
+					<dt>发动机(电机)编号：</dt>
 					<dd>
-					<input name="csvVin" placeholder="请输入车架号:" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>发动机号：</dt>
-					<dd>
-					<input name="csvEngineNo" placeholder="请输入发动机号" class="form-control" >
+					<input name="csvEngineNo" placeholder="请输入发动机(电机)编号" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
@@ -68,27 +62,21 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车型:：</dt>
+					<dt>车型：</dt>
 					<dd>
-					<input name="csvModel" placeholder="请输入车型:" class="form-control" >
+					<input name="csvModel" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>车机设备:：</dt>
+					<dt>车机设备：</dt>
 					<dd>
-					<input name="csvMachine" placeholder="请输入车机设备:" class="form-control" >
+					<input name="csvMachine" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/query">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>历史设备:：</dt>
+					<dt>颜色：</dt>
 					<dd>
-					<input name="csvMachines" placeholder="请输入历史设备:" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套：</dt>
-					<dd>
-					<input name="csvColorCode" placeholder="请输入车颜色代码0: 白套红橙1: 白套玫瑰金2: 白套苹果绿3: 红橙套黑4: 红套黑5: 黄/黑6: 黄套黑7: 蓝白套8: 苹果绿/白9: 深空黑/红橙10: 紫白套" class="form-control" >
+					<input name="csvColorCode" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="color_code"  dataUrl="/base/dict/query">
 					</dd>
 				</dl>
 				<dl  >
@@ -106,27 +94,23 @@
 				<dl  >
 					<dt>地标类型：</dt>
 					<dd>
-					<input name="csvLandmark" placeholder="请输入地标类型" class="form-control" >
+					<input name="csvLandmark" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="landmark"  dataUrl="/base/dict/query">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>状态:1:正常,0:无效;：</dt>
+					<dt>状态：</dt>
 					<dd>
-					<select class="form-control m-b" name="csvStatus"  >
-                         <option></option>
-                         <option value="0">无效</option>
-                         <option value="1">正常</option>
-                    </select>
+					<input name="csvStatus" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>添加时间:：</dt>
+					<dt>添加时间：</dt>
 					<dd>
 					<input name="csvAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>修改时间:：</dt>
+					<dt>修改时间：</dt>
 					<dd>
 					<input name="csvUpdateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 					</dd>
@@ -183,7 +167,7 @@
 			define.init();
 			
 			function init(){
-				var url = getServUrl("/admin/vehicle/detail//")+getQueryString("id");
+				var url = getServUrl("/admin/vehicle/detail/")+getQueryString("id");
 				ajaxRequest(url,"GET",{},function(json) {
 					loadFormData(json.value.tbody);
 				});

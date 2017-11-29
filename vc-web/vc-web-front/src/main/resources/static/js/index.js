@@ -17,6 +17,10 @@ $(function(){
 							 .on('click' , '.one' , $.proxy( this.twomenulevel , this))
 							 .on('click' , '.J_menuItem' , $.proxy( this.middleView , this))
 							 .on('mouseover' , '.account' , $.proxy( this.isShow , this))
+							 .on('click' , '.log-out' , $.proxy( this.logOut , this))
+							 .on('click', '.userInfo' , $.proxy( this.popInfo , this))
+					 		 .on('click', '.content-info-hide' , $.proxy( this.hideInfo , this))
+					 		 .on('click', '.reset-password' , $.proxy( this.resetPassword , this))
 			},
 			ajaxInfo: function(){
 				var that = this;
@@ -72,7 +76,13 @@ $(function(){
 			},
 			onemenulevel: function(){
 				var that = this;
-				$('.select-wrap').toggleClass('hide');
+				$('.select-wrap').show(function(){
+					$('body').click(function(){
+						$('.select-wrap').hide(function(){
+							$('body').unbind('click')
+						})
+					})
+				})
 				if(that.menuNav && that.menuNav.firstNav && that.menuNav.firstNav[0]){
 					$('.select-wrap').empty();
 					var template = $('#firstNav').html();
@@ -84,7 +94,7 @@ $(function(){
 			twomenulevel: function(event){
 				var that = this;
 				$('.two').remove()
-				$('.select-wrap').toggleClass('hide');
+				$('.select-wrap').hide();
 				that.menuNav.arr = [];
 				$('.onemenu-wrap').toggleClass('hide');
 				$('.select span').html($(event.target)[0].innerHTML)
@@ -134,6 +144,55 @@ $(function(){
 				$('.username').mouseout(function(){
 					$('.account-msg').addClass('hide')
 				})	
+			},
+			logOut:function(){
+				$('.account-msg').addClass('hide')
+				cookieUtil.unset("token", '');
+				cookieUtil.unset("userId", '');
+				toLogin();
+			},
+			hideInfo:function(){
+				$('.content-info-hide').parent().removeClass('pop');
+			},
+			popInfo:function(){
+				$('.userInfo').parent().addClass('hide').removeClass('show');//隐藏消息
+				$('.content-info').addClass('pop');//弹出消息详细内容
+			},
+			resetPassword:function(){
+				$('.mix-password-wrap').show(function(){
+					$('.sure').click(function(){
+						var oldpass = $('.oldpass').val()
+						var newpass = $('.newpass').val()
+						var Rnewpass = $('.Rnewpass').val()
+						if(newpass === Rnewpass){
+							var Jsondata = {
+								userId:cookieUtil.get("userId"),
+								oldPass:oldpass,
+								newPass:newpass
+							}
+							$.ajax({
+								type:'post',
+								url: authUrl+'/oauth/user/editPassword',
+								async: true,
+								dataType : 'json',
+　　　　　　　　  					contentType : 'application/json',
+								data: JSON.stringify(Jsondata),
+							    beforeSend: function (xhr) {
+						        	var token = cookieUtil.get("token");
+						            xhr.setRequestHeader("Authorization",token);
+						        },
+								success: function(data){
+									alert(data.message)
+									if(data.success == true){
+										window.location.href = 'http://118.178.230.105:8088/login_v2.html?referer=http://localhost:5000/index.html'
+									}
+								}
+							});
+						}else{
+							alert('两次输入的密码不一样')
+						}
+					})
+				})
 			}
 		});
 		vote.init();
@@ -150,6 +209,11 @@ $(function(){
 		            window.location.href = "index.html";
 		        }
 		    }
+		    
+		    var userId = cookieUtil.get("userId");
+    	    if (userId == "") {
+	    		toLogin();
+    	    }
 		})();
 	});
 });

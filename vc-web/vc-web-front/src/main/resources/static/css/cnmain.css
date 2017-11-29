@@ -1,34 +1,118 @@
+.flex-wrap{
+	display: flex;
+	line-height:37px;
+	border-bottom: 1px solid #e5e6e7; 
+}	
+.flex-wrap:last-child{
+	border-bottom: none; 
+}
+.flex{
+	flex:1;
+	text-align: center;
+	border-right: 1px solid #e5e6e7;
+}
+.add-refund{
+	display: inline-block;
+	border:1px solid #eee;
+	width: 70px;
+	height: 30px;
+	line-height: 30px; 
+	color: #333;
+	margin-left: 30px;
+	text-align: center;
+}
+.optionMenu{
+	display: none; 
+	position: absolute; 
+	line-height: auto; 
+	height: auto; 
+	left: 769.967px; 
+	top: 384px; 
+	background-color: white;
+	box-shadow: 5px 5px 3px #f3f3f4; 
+	border:  1px solid #f3f3f4;
+	z-index: 9999;
+}
+.MenuCon{
+	margin: 14px;margin-top: 3px;margin-bottom: 3px;
+}
+.MenuCon li{
+	padding: 3px;
+	cursor: pointer;
+}
+.MenuCon ul li:hover{
+	background-color: #0088CC;
+}
+.keep-open{
+	position:relative;
+}
+.tableMenu{
+	width: 160px;
+	border:1px solid #DDD;
+	border-radius:5px;
+	box-shadow: 5px 5px 3px #f3f3f4; 
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	padding: 2px; 
+	height: 220px; 
+	overflow: auto;
+	position:absolute;
+	z-index: 99999;
+}
+.tableMenu li{
+	padding-left: 6px;
+	font-weight:normal;
+}
+.keep-open .tableMenu li input{
+	margin-right: 10px;
+}
+.form-horizontal .form-group .btn-success{
+	margin-left: 5px;
+}
+
 .jqgrid_div{
-	margin-right: 0px; 
-	margin-left: -15px;
+	margin-right: 0px;
+	padding:8px;
 }
 
 /*-------------检索条件区域------------*/
-
+.fieldTip{
+	font-weight: normal;
+	color: #F4A460;
+}
 .queryForm_wrapper{
-	margin-top: 3px;
+	margin:2px;
 }
 .queryform{
-	
+	border: 1px dashed  #f3f3f4;
+	padding-left: 5px;
 }
 .queryform dl{
 	float: left;margin: 5px 0px;height: 35px;line-height: 35px;
 }
 .queryform dl dt{
-	float: left;line-height:20px;width:80px; height:48px;text-align: right;margin-top: 6px;margin-left: 3px;overflow: hidden;
+	font-weight: normal;
+	float: left;line-height:20px;width:88px; height:48px;text-align: right;margin-top: 6px;margin-left: 3px;overflow: hidden;
 }
 .queryform dl dd{
-	float: left;padding-left: 10px;width:210px; 
+	float: left;padding-left: 10px;width:160px; position: relative;
 }
 .queryform dl dd input{
 	float: left; 
-	width: 160px;
 }
 /*-------------表格区域------------*/
 .grid_oper_btn{
-	padding:2px 3px;margin-top:-6px;margin-bottom:-6px;margin-right:3px;
+	padding:2px 5px;margin-top:-6px;margin-bottom:-6px;margin-right:3px;
 }
 
+
+input .imgfiletext{
+	background-color: white;
+}
+input .mapAreaField{
+	background-color: white;
+}
 
 /**==================notcheckbox===========================*/
 .notcheckbox:checked + label::after {
@@ -138,6 +222,11 @@ input[type="checkbox"] + label {
 .queryform .timergroup dd{
 	width:340px; 
 }
+.queryform .querybtns{
+	float: left; padding-top: 5px;
+	padding: 3px;
+	padding-left: 8px;
+}
 .timegroup .ttt{
 	float: left;
 	width:49%;
@@ -168,8 +257,12 @@ input[type="checkbox"] + label {
 	 float: left;
 	 margin: 5px 0px;
 	 text-align:right;
-	 height: 47px;
-	 line-height: 47px;
+	 height: 53px;
+	 line-height: 53px;
+}
+.form_content img{
+	width: 100%;
+	height:300px;
 }
 .form_content .rowfull{
 	width: 100%;
@@ -184,7 +277,7 @@ input[type="checkbox"] + label {
 	 width: 110px;
 	 float: left;
 	 line-height:20px;
-	 height:48px;
+	 height:53px;
 	 
 	 margin-top: 6px;
 	 margin-left: 3px;
@@ -195,28 +288,50 @@ input[type="checkbox"] + label {
 	 text-align:left;
 	 width: 66%;
 	 float: left;
-	 padding-left: 10px;
+	 padding-left: 5px;
+	 position: relative;
 }
 
 .form_footer{
 	height: 40px;
 }
 
+.menubar{
+	width:100%;
+	float:right;
+	margin-bottom: 1px;
+}
+
+.menubar .buttoncons{
+	float: right;
+}
+
 /*-------------输入搜索组件------------*/
+.searchinputDiv{
+	position: absolute;
+	z-index: 9999;
+}
 .searchWrapper {
 	background: none repeat scroll 0 0 #fff;
 	border: 1px solid #ccc;
 	box-shadow: 1px 1px 3px #ededed;
 	display: none;
-	position: absolute;
 	width: 100%;
-	z-index: 200;
+	position:absolute;
+	z-index: 1000;
+	top: 36px;
 }
 .searchWrapper ul{
 	padding-left: 0px;
 }
 .searchWrapper ul li{
-	padding-left: 10px;
+	padding-left: 2px;
+	cursor:pointer;
+	height:25px;
+	padding-top:3px;
+	vertical-align:middle;
+	text-overflow:ellipsis;overflow:hidden;
+	white-space:nowrap;
 }
 .searchWrapper ul li:hover{
 	background-color: #0088CC;
@@ -234,7 +349,21 @@ input[type="checkbox"] + label {
 }
 
 .searchinput{
-	cursor: default;
+	cursor: pointer;
+}
+.search-icon{
+	background-image: url("search");
+}
+.query-group-btn{
+	width: 34px;
+	top: -34px;
+	right: -117px;
+}
+.add-group-btn{
+	width: 34px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
 }
 
 /*-------------弹出框底部按钮------------*/

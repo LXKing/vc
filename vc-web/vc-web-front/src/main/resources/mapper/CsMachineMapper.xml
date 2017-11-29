@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsMachineMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsMachine">
+		<result column="csm_id" jdbcType="INTEGER" property="csmId" />
+		<result column="csm_access" jdbcType="INTEGER" property="csmAccess" />
+		<result column="csm_host" jdbcType="INTEGER" property="csmHost" />
+		<result column="csm_number" jdbcType="CHAR" property="csmNumber" />
+		<result column="csm_te_no" jdbcType="VARCHAR" property="csmTeNo" />
+		<result column="csm_te_type" jdbcType="TINYINT" property="csmTeType" />
+		<result column="csm_te_model" jdbcType="VARCHAR" property="csmTeModel" />
+		<result column="csm_te_code" jdbcType="VARCHAR" property="csmTeCode" />
+		<result column="csm_te_lot_no" jdbcType="VARCHAR" property="csmTeLotNo" />
+		<result column="csm_te_serial" jdbcType="VARCHAR" property="csmTeSerial" />
+		<result column="csm_mobile" jdbcType="VARCHAR" property="csmMobile" />
+		<result column="csm_iccid" jdbcType="VARCHAR" property="csmIccid" />
+		<result column="csm_password" jdbcType="VARCHAR" property="csmPassword" />
+		<result column="csm_protocol" jdbcType="BIGINT" property="csmProtocol" />
+		<result column="csm_functions" jdbcType="VARCHAR" property="csmFunctions" />
+		<result column="csm_bluetooth_version" jdbcType="INTEGER" property="csmBluetoothVersion" />
+		<result column="csm_bluetooth_mac" jdbcType="VARCHAR" property="csmBluetoothMac" />
+		<result column="csm_bluetooth_psd" jdbcType="VARCHAR" property="csmBluetoothPsd" />
+		<result column="csm_mqtt_flag" jdbcType="VARCHAR" property="csmMqttFlag" />
+		<result column="csm_super_sim" jdbcType="VARCHAR" property="csmSuperSim" />
+		<result column="csm_landmark" jdbcType="VARCHAR" property="csmLandmark" />
+		<result column="csm_v2" jdbcType="VARCHAR" property="csmV2" />
+		<result column="csm_v3" jdbcType="VARCHAR" property="csmV3" />
+		<result column="csm_v3_to" jdbcType="VARCHAR" property="csmV3To" />
+		<result column="csm_suit" jdbcType="INTEGER" property="csmSuit" />
+		<result column="csm_tl_v1" jdbcType="VARCHAR" property="csmTlV1" />
+		<result column="csm_tl_v2" jdbcType="INTEGER" property="csmTlV2" />
+		<result column="csm_net_type" jdbcType="TINYINT" property="csmNetType" />
+		<result column="csm_pro_type" jdbcType="TINYINT" property="csmProType" />
+		<result column="csm_baud_rate" jdbcType="INTEGER" property="csmBaudRate" />
+		<result column="csm_remark" jdbcType="VARCHAR" property="csmRemark" />
+		<result column="csm_update_time" jdbcType="TIMESTAMP" property="csmUpdateTime" />
+		<result column="csm_add_time" jdbcType="TIMESTAMP" property="csmAddTime" />
+		<result column="csm_status" jdbcType="TINYINT" property="csmStatus" />
+	</resultMap>
+	
+	
+</mapper>

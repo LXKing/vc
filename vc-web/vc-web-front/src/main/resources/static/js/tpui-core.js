@@ -1,31 +1,35 @@
 /**
  * 应用服务地址
  */
-var servUrl = "http://118.178.230.105:7004";
+// var servUrl = "http://118.178.230.105:7004";
+var servUrl 	= "http://localhost:9009";
 /**
  * 统一认证地址
  */
-var authUrl = "http://118.178.230.105:8088";
+var authUrl = "http://localhost:9009";
 
 function getServUrl(path) {
-    if (path.indexOf("crback/") != -1) {
-        servUrl = "http://118.178.230.105:7004";
+    // if (path.indexOf("crback/") != -1) {
+    //     servUrl = "http://118.178.230.105:7004";
+    // }
+    // else if (path.indexOf("/base/") != -1) {
+    //     servUrl = "http://118.178.230.105:8085";
+    // } else if (path.indexOf("/user/") != -1) {
+    //     servUrl = "http://118.178.230.105:8081";
+    // } else if (path.indexOf("/vehicle/") != -1) {
+    //     servUrl = "http://118.178.230.105:8082";
+    // } else if (path.indexOf("/carshare/") != -1) {
+    //     servUrl = "http://118.178.230.105:8086";
+    //     servUrl = "http://localhost:8086";
+    // }
+    if(!path.startsWith("/")){
+        path = "/" + path;
     }
-    else if (path.indexOf("/base/") != -1) {
-        servUrl = "http://118.178.230.105:8085";
-    } else if (path.indexOf("/user/") != -1) {
-        servUrl = "http://118.178.230.105:8081";
-    } else if (path.indexOf("/vehicle/") != -1) {
-        servUrl = "http://118.178.230.105:8082";
-    } else if (path.indexOf("/carshare/") != -1) {
-        servUrl = "http://118.178.230.105:8086";
-        servUrl = "http://localhost:8086";
-    }
-    return servUrl + "/" + path ;//+ "?oauth=" + cookieUtil.get("token");
+    return servUrl + path ;//+ "?oauth=" + cookieUtil.get("token");
 }
 
 function toLogin() {
-    top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
+    // top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
 }
 
 /**
@@ -509,6 +513,7 @@ function loadFormData(obj) {
                 element = $('<input name="' + this.name + '_txt" placeholder="' + this.placeholder + '"  class="form-control" type="text">');
             } else {
                 this.url = getServUrl($(element).attr("dataUrl"));
+                this.where = $(element).attr("dataWhere") || "";
                 this.id = $(element).attr("id") || "";
                 this.name = $(element).attr("name") || "";
                 this.initText = $(element).attr("initText") || "";
@@ -530,7 +535,7 @@ function loadFormData(obj) {
             O.showWrapper.append(O.$value);
             O.showText.click(function () {
                 //O.$input.val(O.showText.val());
-                O.load(O.$input.val());
+                O.load(O.$input.val(),O.where);
 
                 O.showWrapper.append(O.$input);
                 O.showWrapper.width(O.showText.css('width'));
@@ -548,12 +553,12 @@ function loadFormData(obj) {
             });
 
             O.$input.keyup(function () {
-                O.load(O.$input.val());
+                O.load(O.$input.val(),O.where);
             });
         },
-        load: function (pvalue) {
+        load: function (pvalue,where) {
             var O = this;
-            ajaxRequest(O.url, "GET", {text: pvalue}, function (json) {
+            ajaxRequest(O.url, "GET", {text: pvalue,where:where}, function (json) {
                 O.$ul.html("");
                 var count = ((json.value || {length: 0}) || json.value).length;
                 if (json && json.value && json.value.length) {
@@ -577,7 +582,7 @@ function loadFormData(obj) {
                         O.showWrapper.hide();
                     });
                 }
-                var container = $("<div></div").append(O.countText.text("总计匹配" + count + "条")).append(O.clearBtn);
+                var container = $("<div></div>").append(O.countText.text("总计匹配" + count + "条")).append(O.clearBtn);
                 O.$ul.append(container);
 
             }, true);

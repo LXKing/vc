@@ -122,7 +122,7 @@ $.extend($.jgrid.defaults, {
                 toLogin();
             });
         }
-        else if (xhr.code != 100000) {
+        else if (xhr.code > 100000) {
             layer.msg("服务异常！", {icon: 7, time: 1600});
         }
     }

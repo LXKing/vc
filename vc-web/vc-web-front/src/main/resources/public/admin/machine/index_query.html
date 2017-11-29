@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="csmId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="csmIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmAccess" style="display:none;">
+				<dt>接入商</dt>
+				<dd  >
+					<input  name="csmAccessEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+				</dd>
+			</dl>
+<dl cond="csmHost" style="display:none;">
+				<dt>子域</dt>
+				<dd  >
+					<input  name="csmHostEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmNumber" >
+				<dt>车机号</dt>
+				<dd  >
+					<input  name="csmNumberLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTeNo" >
+				<dt>序列号</dt>
+				<dd  >
+					<input  name="csmTeNoLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTeType" style="display:none;">
+				<dt>终端类型</dt>
+				<dd  >
+					<input  name="csmTeTypeEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="csm_te_type"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmTeModel" style="display:none;">
+				<dt>终端型号</dt>
+				<dd  >
+					<input  name="csmTeModelEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTeCode" style="display:none;">
+				<dt>厂商代码</dt>
+				<dd  >
+					<input  name="csmTeCodeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTeLotNo" style="display:none;">
+				<dt>终端批号</dt>
+				<dd  >
+					<input  name="csmTeLotNoEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTeSerial" style="display:none;">
+				<dt>终端流水</dt>
+				<dd  >
+					<input  name="csmTeSerialEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmMobile" >
+				<dt>可充电储能系统编码</dt>
+				<dd  >
+					<input  name="csmMobileLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmIccid" style="display:none;">
+				<dt>ICCID</dt>
+				<dd  >
+					<input  name="csmIccidEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmPassword" style="display:none;">
+				<dt>服务密码</dt>
+				<dd  >
+					<input  name="csmPasswordEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmProtocol" style="display:none;">
+				<dt>协议类型</dt>
+				<dd  >
+					<input  name="csmProtocolEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="csm_protocol"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmFunctions" style="display:none;">
+				<dt>功能标签</dt>
+				<dd  >
+					<input  name="csmFunctionsEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmBluetoothVersion" style="display:none;">
+				<dt>蓝牙版本</dt>
+				<dd  >
+					<input  name="csmBluetoothVersionEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmBluetoothMac" style="display:none;">
+				<dt>蓝牙地址</dt>
+				<dd  >
+					<input  name="csmBluetoothMacEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmBluetoothPsd" style="display:none;">
+				<dt>蓝牙密码</dt>
+				<dd  >
+					<input  name="csmBluetoothPsdEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmMqttFlag" style="display:none;">
+				<dt>服务器标识</dt>
+				<dd  >
+					<input  name="csmMqttFlagEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmSuperSim" style="display:none;">
+				<dt>超级手机号</dt>
+				<dd  >
+					<input  name="csmSuperSimEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmLandmark" style="display:none;">
+				<dt>地标类型</dt>
+				<dd  >
+					<input  name="csmLandmarkEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmV2" style="display:none;">
+				<dt>硬件版本</dt>
+				<dd  >
+					<input  name="csmV2Equals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmV3" style="display:none;">
+				<dt>DVD当前版本</dt>
+				<dd  >
+					<input  name="csmV3Equals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmV3To" style="display:none;">
+				<dt>DVD最新版本</dt>
+				<dd  >
+					<input  name="csmV3ToEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmSuit" style="display:none;">
+				<dt>适配车型</dt>
+				<dd  >
+					<input  name="csmSuitEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="suit"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csmTlV1" style="display:none;">
+				<dt>软件版本</dt>
+				<dd  >
+					<input  name="csmTlV1Equals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmTlV2" style="display:none;">
+				<dt>分时租赁版本</dt>
+				<dd  >
+					<input  name="csmTlV2Equals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmNetType" style="display:none;">
+				<dt>网络类型</dt>
+				<dd  >
+					<input  name="csmNetTypeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmProType" style="display:none;">
+				<dt>终端协议</dt>
+				<dd  >
+					<input  name="csmProTypeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmBaudRate" style="display:none;">
+				<dt>CAN1波特率</dt>
+				<dd  >
+					<input  name="csmBaudRateEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmRemark" style="display:none;">
+				<dt>备注信息</dt>
+				<dd  >
+					<input  name="csmRemarkEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csmUpdateTime" style="display:none;">
+				<dt>备注信息</dt>
+				<dd  >
+					<input  name="csmUpdateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csmAddTime" style="display:none;">
+				<dt>备注信息</dt>
+				<dd  >
+					<input  name="csmAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csmStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="csmStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="csmId" value="csmId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="csmAccess" value="csmAccessText"  type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
+			        <li><label><input cond="csmHost" value="csmHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >子域</label></li>
+			        <li><label><input cond="csmNumber" value="csmNumber" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="csmTeNo" value="csmTeNo" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >序列号</label></li>
+			        <li><label><input cond="csmTeType" value="csmTeTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端类型</label></li>
+			        <li><label><input cond="csmTeModel" value="csmTeModel"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端型号</label></li>
+			        <li><label><input cond="csmTeCode" value="csmTeCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >厂商代码</label></li>
+			        <li><label><input cond="csmTeLotNo" value="csmTeLotNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端批号</label></li>
+			        <li><label><input cond="csmTeSerial" value="csmTeSerial"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端流水</label></li>
+			        <li><label><input cond="csmMobile" value="csmMobile" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >可充电储能系统编码</label></li>
+			        <li><label><input cond="csmIccid" value="csmIccid"  type="checkbox" onclick='showHideCondition(this, this.value);' >ICCID</label></li>
+			        <li><label><input cond="csmPassword" value="csmPassword"  type="checkbox" onclick='showHideCondition(this, this.value);' >服务密码</label></li>
+			        <li><label><input cond="csmProtocol" value="csmProtocolText"  type="checkbox" onclick='showHideCondition(this, this.value);' >协议类型</label></li>
+			        <li><label><input cond="csmFunctions" value="csmFunctions"  type="checkbox" onclick='showHideCondition(this, this.value);' >功能标签</label></li>
+			        <li><label><input cond="csmBluetoothVersion" value="csmBluetoothVersion"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓝牙版本</label></li>
+			        <li><label><input cond="csmBluetoothMac" value="csmBluetoothMac"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓝牙地址</label></li>
+			        <li><label><input cond="csmBluetoothPsd" value="csmBluetoothPsd"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓝牙密码</label></li>
+			        <li><label><input cond="csmMqttFlag" value="csmMqttFlag"  type="checkbox" onclick='showHideCondition(this, this.value);' >服务器标识</label></li>
+			        <li><label><input cond="csmSuperSim" value="csmSuperSim"  type="checkbox" onclick='showHideCondition(this, this.value);' >超级手机号</label></li>
+			        <li><label><input cond="csmLandmark" value="csmLandmark"  type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
+			        <li><label><input cond="csmV2" value="csmV2"  type="checkbox" onclick='showHideCondition(this, this.value);' >硬件版本</label></li>
+			        <li><label><input cond="csmV3" value="csmV3"  type="checkbox" onclick='showHideCondition(this, this.value);' >DVD当前版本</label></li>
+			        <li><label><input cond="csmV3To" value="csmV3To"  type="checkbox" onclick='showHideCondition(this, this.value);' >DVD最新版本</label></li>
+			        <li><label><input cond="csmSuit" value="csmSuitText"  type="checkbox" onclick='showHideCondition(this, this.value);' >适配车型</label></li>
+			        <li><label><input cond="csmTlV1" value="csmTlV1"  type="checkbox" onclick='showHideCondition(this, this.value);' >软件版本</label></li>
+			        <li><label><input cond="csmTlV2" value="csmTlV2"  type="checkbox" onclick='showHideCondition(this, this.value);' >分时租赁版本</label></li>
+			        <li><label><input cond="csmNetType" value="csmNetType"  type="checkbox" onclick='showHideCondition(this, this.value);' >网络类型</label></li>
+			        <li><label><input cond="csmProType" value="csmProType"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端协议</label></li>
+			        <li><label><input cond="csmBaudRate" value="csmBaudRate"  type="checkbox" onclick='showHideCondition(this, this.value);' >CAN1波特率</label></li>
+			        <li><label><input cond="csmRemark" value="csmRemark"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注信息</label></li>
+			        <li><label><input cond="csmUpdateTime" value="csmUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注信息</label></li>
+			        <li><label><input cond="csmAddTime" value="csmAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注信息</label></li>
+			        <li><label><input cond="csmStatus" value="csmStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

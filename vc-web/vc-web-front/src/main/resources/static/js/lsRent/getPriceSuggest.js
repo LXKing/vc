@@ -42,7 +42,7 @@ $("#city").bsSuggest("init", {
         $("input[name='operatorId']").val(keyword.id);
         /*门店初始化*/
         $("#store").bsSuggest({
-            url: getServUrl("crback/common/getStores?storeCityId=" + $("input[name='cityId']").val() + "&storeOperatorId=" + keyword.id +"&storeStatus=1&storeName="),
+            url: getServUrl("crback/common/getStores?storeCityId=" + $("input[name='cityId']").val() + "&storeOperatorId=" + keyword.id +"&storeName="),
             idField: "storeId",
             keyField: "storeName",
             getDataMethod: "url",   //获取数据的方式，总是从 URL 获取

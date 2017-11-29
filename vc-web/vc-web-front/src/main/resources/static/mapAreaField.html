@@ -210,7 +210,7 @@
 			init();
 			var data = GetQueryString("data");
 			var drawType = GetQueryString("type");
-			if(data != null && data != undefined){
+			if(data != null && data != undefined && data!=""){
 				switch (drawType) {
 				case "marker":
 					var lnglat = data.split(",");

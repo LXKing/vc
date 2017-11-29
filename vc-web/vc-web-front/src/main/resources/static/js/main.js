@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		   "jquery": "jquery.min.js",
+		   "jquery": "jquery.min",
 　　　　　　"tpui-core": "tpui-core",
 　　　　　　"bootstrap": "bootstrap.min",
 　　　　　　"laydate": "plugins/layer/laydate/laydate",
@@ -16,4 +16,4 @@ require.config({
  	　　　　　　deps: ['jquery'],
  	　　　　　　exports: 'jQuery.fn'
  	　　　　}
-});
+}});
