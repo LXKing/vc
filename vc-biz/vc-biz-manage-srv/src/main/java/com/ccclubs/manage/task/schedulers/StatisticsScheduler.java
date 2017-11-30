@@ -35,7 +35,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
      * 每隔一定的时间计算一次状态数据并且存入数据库。
      * */
     //TODO 这里应该为可以配置的时间大小。
-    @Scheduled(cron="0/3 * * * * ?")
+    @Scheduled(cron="0/8 * * * * ?")
     public void shortTimeJob(){
         long unitTime=30*60*1000;
         EvManageContext.getThreadPool().execute(new StatisticsJob(unitTime));

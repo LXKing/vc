@@ -193,6 +193,9 @@ public class StatisticsExecutor {
     public float calculateTotalPowerConsumption(){return 0;}
     public long calculateTotalRunTime(){return 0;}
 
-    public void saveResult(CsStatistics csStatistics){}
+    public void saveResult(CsStatistics csStatistics){
+
+        csStatisticsService.insertCsStatistics(csStatistics);
+    }
 
 }
