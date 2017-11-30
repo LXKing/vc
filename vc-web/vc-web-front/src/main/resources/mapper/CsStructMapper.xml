@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsStructMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsStruct">
+		<result column="css_id" jdbcType="BIGINT" property="cssId" />
+		<result column="css_name" jdbcType="VARCHAR" property="cssName" />
+		<result column="css_type" jdbcType="SMALLINT" property="cssType" />
+		<result column="css_req_code" jdbcType="VARCHAR" property="cssReqCode" />
+		<result column="css_request" jdbcType="VARCHAR" property="cssRequest" />
+		<result column="css_rep_code" jdbcType="VARCHAR" property="cssRepCode" />
+		<result column="css_response" jdbcType="VARCHAR" property="cssResponse" />
+		<result column="css_status" jdbcType="SMALLINT" property="cssStatus" />
+	</resultMap>
+	
+	
+</mapper>
