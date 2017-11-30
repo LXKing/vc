@@ -40,7 +40,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.manage.inf,com.ccclubs.manage.impl,com.ccclubs.manage.orm.mapper,com.ccclubs.manage.task
+    annotationPackage: com.ccclubs.manage
   application:
     name: srv
   registry:
