@@ -401,6 +401,213 @@ public class SrvHostCrieria{
 	            addCriterion("sh_topic not between", value1, value2, "shTopic");
 	            return (Criteria) this;
 	        }
+	        public Criteria andshTransformRemoteIsNull() {
+	            addCriterion("sh_transform_remote is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteIsNotNull() {
+	            addCriterion("sh_transform_remote is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformRemoteLike(String value) {
+	            addCriterion("sh_transform_remote like", "%"+value+"%", "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteNotLike(String value) {
+	            addCriterion("sh_transform_remote not like", "%"+value+"%", "shTransformRemote");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformRemoteEqualTo(String value) {
+	            addCriterion("sh_transform_remote =", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteNotEqualTo(String value) {
+	            addCriterion("sh_transform_remote <>", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteGreaterThan(String value) {
+	            addCriterion("sh_transform_remote >", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteGreaterThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_remote >=", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteLessThan(String value) {
+	            addCriterion("sh_transform_remote <", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteLessThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_remote <=", value, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteIn(List<String> values) {
+	            addCriterion("sh_transform_remote in", values, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteNotIn(List<String> values) {
+	            addCriterion("sh_transform_remote not in", values, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteBetween(String value1, String value2) {
+	            addCriterion("sh_transform_remote between", value1, value2, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformRemoteNotBetween(String value1, String value2) {
+	            addCriterion("sh_transform_remote not between", value1, value2, "shTransformRemote");
+	            return (Criteria) this;
+	        }
+	        public Criteria andshTransformStatusIsNull() {
+	            addCriterion("sh_transform_status is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusIsNotNull() {
+	            addCriterion("sh_transform_status is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformStatusLike(String value) {
+	            addCriterion("sh_transform_status like", "%"+value+"%", "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusNotLike(String value) {
+	            addCriterion("sh_transform_status not like", "%"+value+"%", "shTransformStatus");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformStatusEqualTo(String value) {
+	            addCriterion("sh_transform_status =", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusNotEqualTo(String value) {
+	            addCriterion("sh_transform_status <>", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusGreaterThan(String value) {
+	            addCriterion("sh_transform_status >", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusGreaterThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_status >=", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusLessThan(String value) {
+	            addCriterion("sh_transform_status <", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusLessThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_status <=", value, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusIn(List<String> values) {
+	            addCriterion("sh_transform_status in", values, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusNotIn(List<String> values) {
+	            addCriterion("sh_transform_status not in", values, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusBetween(String value1, String value2) {
+	            addCriterion("sh_transform_status between", value1, value2, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformStatusNotBetween(String value1, String value2) {
+	            addCriterion("sh_transform_status not between", value1, value2, "shTransformStatus");
+	            return (Criteria) this;
+	        }
+	        public Criteria andshTransformCanIsNull() {
+	            addCriterion("sh_transform_can is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanIsNotNull() {
+	            addCriterion("sh_transform_can is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformCanLike(String value) {
+	            addCriterion("sh_transform_can like", "%"+value+"%", "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanNotLike(String value) {
+	            addCriterion("sh_transform_can not like", "%"+value+"%", "shTransformCan");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andshTransformCanEqualTo(String value) {
+	            addCriterion("sh_transform_can =", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanNotEqualTo(String value) {
+	            addCriterion("sh_transform_can <>", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanGreaterThan(String value) {
+	            addCriterion("sh_transform_can >", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanGreaterThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_can >=", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanLessThan(String value) {
+	            addCriterion("sh_transform_can <", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanLessThanOrEqualTo(String value) {
+	            addCriterion("sh_transform_can <=", value, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanIn(List<String> values) {
+	            addCriterion("sh_transform_can in", values, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanNotIn(List<String> values) {
+	            addCriterion("sh_transform_can not in", values, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanBetween(String value1, String value2) {
+	            addCriterion("sh_transform_can between", value1, value2, "shTransformCan");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andshTransformCanNotBetween(String value1, String value2) {
+	            addCriterion("sh_transform_can not between", value1, value2, "shTransformCan");
+	            return (Criteria) this;
+	        }
 	        public Criteria andshAddTimeIsNull() {
 	            addCriterion("sh_add_time is null");
 	            return (Criteria) this;

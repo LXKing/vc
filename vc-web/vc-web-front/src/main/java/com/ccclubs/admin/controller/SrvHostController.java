@@ -92,6 +92,9 @@ public class SrvHostController {
 	 */
 	void registResolvers(SrvHost data){
 		if(data!=null){
+			data.registResolver(com.ccclubs.admin.resolver.SrvHostResolver.转发指令结果.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.SrvHostResolver.转发状态.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.SrvHostResolver.转发CAN.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.SrvHostResolver.状态.getResolver());
 		}
 	}

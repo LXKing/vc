@@ -42,6 +42,21 @@ public class SrvHost implements java.io.Serializable
 	
 	private   String shTopic;
 	/**
+	 * [sh_transform_remote]转发指令结果0:不转发 1:转发
+	 */
+	
+	private   String shTransformRemote;
+	/**
+	 * [sh_transform_status]转发状态0:不转发 1:转发
+	 */
+	
+	private   String shTransformStatus;
+	/**
+	 * [sh_transform_can]转发CAN0:不转发 1:转发
+	 */
+	
+	private   String shTransformCan;
+	/**
 	 * [sh_add_time]添加时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
@@ -73,17 +88,29 @@ public class SrvHost implements java.io.Serializable
 	}
 	
 	//设置非空字段
-	public SrvHost setNotNull(Integer shId,String shName,String shKey,String shTopic,Date shAddTime,Date shUptTime,Short shStatus){
+	public SrvHost setNotNull(Integer shId,String shName,String shKey,String shTopic,String shTransformRemote,String shTransformStatus,String shTransformCan,Date shAddTime,Date shUptTime,Short shStatus){
 		this.shId=shId;
 		this.shName=shName;
 		this.shKey=shKey;
 		this.shTopic=shTopic;
+		this.shTransformRemote=shTransformRemote;
+		this.shTransformStatus=shTransformStatus;
+		this.shTransformCan=shTransformCan;
 		this.shAddTime=shAddTime;
 		this.shUptTime=shUptTime;
 		this.shStatus=shStatus;
 		return this;
 	}
 	
+	public Object getShTransformRemoteText(){
+		return resolve("shTransformRemoteText");
+	}
+	public Object getShTransformStatusText(){
+		return resolve("shTransformStatusText");
+	}
+	public Object getShTransformCanText(){
+		return resolve("shTransformCanText");
+	}
 	public Object getShStatusText(){
 		return resolve("shStatusText");
 	}
@@ -157,6 +184,48 @@ public class SrvHost implements java.io.Serializable
 	**/
 	public void setShTopic(String shTopic){
 		this.shTopic = shTopic;
+	}
+	/*******************************转发指令结果**********************************/	
+	/**
+	* 转发指令结果 [非空]      
+	**/
+	public String getShTransformRemote(){
+		return this.shTransformRemote;
+	}
+	
+	/**
+	* 转发指令结果 [非空]     
+	**/
+	public void setShTransformRemote(String shTransformRemote){
+		this.shTransformRemote = shTransformRemote;
+	}
+	/*******************************转发状态**********************************/	
+	/**
+	* 转发状态 [非空]      
+	**/
+	public String getShTransformStatus(){
+		return this.shTransformStatus;
+	}
+	
+	/**
+	* 转发状态 [非空]     
+	**/
+	public void setShTransformStatus(String shTransformStatus){
+		this.shTransformStatus = shTransformStatus;
+	}
+	/*******************************转发CAN**********************************/	
+	/**
+	* 转发CAN [非空]      
+	**/
+	public String getShTransformCan(){
+		return this.shTransformCan;
+	}
+	
+	/**
+	* 转发CAN [非空]     
+	**/
+	public void setShTransformCan(String shTransformCan){
+		this.shTransformCan = shTransformCan;
 	}
 	/*******************************添加时间**********************************/	
 	/**

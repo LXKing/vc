@@ -49,6 +49,39 @@
 					</dd>
 				</dl>
 				<dl  >
+					<dt>转发指令结果</dt>
+					<dd>
+					<select class="form-control" name="shTransformRemote"  >
+                         <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				<label id="shTransformRemote-error" class="error" for="shTransformRemote"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>转发状态</dt>
+					<dd>
+					<select class="form-control" name="shTransformStatus"  >
+                         <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				<label id="shTransformStatus-error" class="error" for="shTransformStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>转发CAN</dt>
+					<dd>
+					<select class="form-control" name="shTransformCan"  >
+                         <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				<label id="shTransformCan-error" class="error" for="shTransformCan"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
 					<dt>状态</dt>
 					<dd>
 					<input name="shStatus" placeholder="" class="form-control searchinput" dataWhere="status"  dataUrl="/base/dict/query">
@@ -116,8 +149,20 @@
 				"shAppid":{
 					"maxlength":32
 				},
+				"shTransformRemote":{
+					"maxlength":1,
+					"required":true
+				},
 				"shName":{
 					"maxlength":32,
+					"required":true
+				},
+				"shTransformStatus":{
+					"maxlength":1,
+					"required":true
+				},
+				"shTransformCan":{
+					"maxlength":1,
 					"required":true
 				}
 			}

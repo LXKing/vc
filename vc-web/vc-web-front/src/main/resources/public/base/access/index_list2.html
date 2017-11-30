@@ -34,6 +34,9 @@
 				        <li><label><input value="shName" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接入商</label></li>
 				        <li><label><input value="shKey" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接入KEY</label></li>
 				        <li><label><input value="shTopic" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转发Topic</label></li>
+				        <li><label><input value="shTransformRemoteText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转发指令结果</label></li>
+				        <li><label><input value="shTransformStatusText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转发状态</label></li>
+				        <li><label><input value="shTransformCanText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转发CAN</label></li>
 				        <li><label><input value="shAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >添加时间</label></li>
 				        <li><label><input value="shUptTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >更新时间</label></li>
 				        <li><label><input value="shStatusText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
@@ -158,6 +161,9 @@
 	  		,{field: "shName", title: "接入商", width: 110, sort:true}
 	  		,{field: "shKey", title: "接入KEY", width: 110, sort:true}
 	  		,{field: "shTopic", title: "转发Topic", width: 110, sort:true}
+	  		,{field: "shTransformRemoteText", title: "转发指令结果", width: 110, sort:true}
+	  		,{field: "shTransformStatusText", title: "转发状态", width: 110, sort:true}
+	  		,{field: "shTransformCanText", title: "转发CAN", width: 110, sort:true}
 	  		,{field: "shAddTime", title: "添加时间", width: 110, sort:true}
 	  		,{field: "shUptTime", title: "更新时间", width: 110, sort:true}
 	  		,{field: "shStatusText", title: "状态", width: 110, sort:true}

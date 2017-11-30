@@ -9,6 +9,9 @@
 		<result column="sh_name" jdbcType="VARCHAR" property="shName" />
 		<result column="sh_key" jdbcType="VARCHAR" property="shKey" />
 		<result column="sh_topic" jdbcType="VARCHAR" property="shTopic" />
+		<result column="sh_transform_remote" jdbcType="CHAR" property="shTransformRemote" />
+		<result column="sh_transform_status" jdbcType="CHAR" property="shTransformStatus" />
+		<result column="sh_transform_can" jdbcType="CHAR" property="shTransformCan" />
 		<result column="sh_add_time" jdbcType="TIMESTAMP" property="shAddTime" />
 		<result column="sh_upt_time" jdbcType="TIMESTAMP" property="shUptTime" />
 		<result column="sh_status" jdbcType="TINYINT" property="shStatus" />

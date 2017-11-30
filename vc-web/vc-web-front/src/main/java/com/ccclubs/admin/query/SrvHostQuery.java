@@ -61,6 +61,48 @@ public class SrvHostQuery {
 	private String shTopicLess;
 	
 	private String shTopicGreater;
+	private String shTransformRemoteLike;
+	
+	private String shTransformRemoteEquals;
+	private String[] shTransformRemoteIn;
+	private Boolean shTransformRemoteIsNull;
+	private Boolean shTransformRemoteIsNotNull;
+	
+	private String shTransformRemoteStart;
+	
+	private String shTransformRemoteEnd;
+	
+	private String shTransformRemoteLess;
+	
+	private String shTransformRemoteGreater;
+	private String shTransformStatusLike;
+	
+	private String shTransformStatusEquals;
+	private String[] shTransformStatusIn;
+	private Boolean shTransformStatusIsNull;
+	private Boolean shTransformStatusIsNotNull;
+	
+	private String shTransformStatusStart;
+	
+	private String shTransformStatusEnd;
+	
+	private String shTransformStatusLess;
+	
+	private String shTransformStatusGreater;
+	private String shTransformCanLike;
+	
+	private String shTransformCanEquals;
+	private String[] shTransformCanIn;
+	private Boolean shTransformCanIsNull;
+	private Boolean shTransformCanIsNotNull;
+	
+	private String shTransformCanStart;
+	
+	private String shTransformCanEnd;
+	
+	private String shTransformCanLess;
+	
+	private String shTransformCanGreater;
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private Date shAddTimeEquals;
 	private Date[] shAddTimeIn;
@@ -362,6 +404,195 @@ public class SrvHostQuery {
 	public String getShTopicGreater(){
 		return this.shTopicGreater;
 	}
+	public SrvHostQuery setShTransformRemoteLike(String shTransformRemoteLike){
+		this.shTransformRemoteLike = shTransformRemoteLike;
+		return this;
+	}
+	public String getShTransformRemoteLike(){
+		return this.shTransformRemoteLike;
+	}
+	public SrvHostQuery setShTransformRemoteEquals(String shTransformRemoteEquals){
+		this.shTransformRemoteEquals = shTransformRemoteEquals;
+		return this;
+	}
+	public String getShTransformRemoteEquals(){
+		return this.shTransformRemoteEquals;
+	}
+	public SrvHostQuery setShTransformRemoteIn(String[] shTransformRemoteIn){
+		this.shTransformRemoteIn = shTransformRemoteIn;
+		return this;
+	}
+	public String[] getShTransformRemoteIn(){
+		return this.shTransformRemoteIn;
+	}
+	public SrvHostQuery setShTransformRemoteIsNull(Boolean shTransformRemoteIsNull){
+		this.shTransformRemoteIsNull = shTransformRemoteIsNull;
+		return this;
+	}
+	public Boolean getShTransformRemoteIsNull(){
+		return this.shTransformRemoteIsNull;
+	}
+	public SrvHostQuery setShTransformRemoteIsNotNull(Boolean shTransformRemoteIsNotNull){
+		this.shTransformRemoteIsNotNull = shTransformRemoteIsNotNull;
+		return this;
+	}
+	public Boolean getShTransformRemoteIsNotNull(){
+		return this.shTransformRemoteIsNotNull;
+	}
+	public SrvHostQuery setShTransformRemoteStart(String shTransformRemoteStart){
+		this.shTransformRemoteStart = shTransformRemoteStart;
+		return this;
+	}
+	public String getShTransformRemoteStart(){
+		return this.shTransformRemoteStart;
+	}
+	public SrvHostQuery setShTransformRemoteEnd(String shTransformRemoteEnd){
+		this.shTransformRemoteEnd = shTransformRemoteEnd;
+		return this;
+	}
+	public String getShTransformRemoteEnd(){
+		return this.shTransformRemoteEnd;
+	}
+	public SrvHostQuery setShTransformRemoteLess(String shTransformRemoteLess){
+		this.shTransformRemoteLess = shTransformRemoteLess;
+		return this;
+	}
+	public String getShTransformRemoteLess(){
+		return this.shTransformRemoteLess;
+	}
+	public SrvHostQuery setShTransformRemoteGreater(String shTransformRemoteGreater){
+		this.shTransformRemoteGreater = shTransformRemoteGreater;
+		return this;
+	}
+	public String getShTransformRemoteGreater(){
+		return this.shTransformRemoteGreater;
+	}
+	public SrvHostQuery setShTransformStatusLike(String shTransformStatusLike){
+		this.shTransformStatusLike = shTransformStatusLike;
+		return this;
+	}
+	public String getShTransformStatusLike(){
+		return this.shTransformStatusLike;
+	}
+	public SrvHostQuery setShTransformStatusEquals(String shTransformStatusEquals){
+		this.shTransformStatusEquals = shTransformStatusEquals;
+		return this;
+	}
+	public String getShTransformStatusEquals(){
+		return this.shTransformStatusEquals;
+	}
+	public SrvHostQuery setShTransformStatusIn(String[] shTransformStatusIn){
+		this.shTransformStatusIn = shTransformStatusIn;
+		return this;
+	}
+	public String[] getShTransformStatusIn(){
+		return this.shTransformStatusIn;
+	}
+	public SrvHostQuery setShTransformStatusIsNull(Boolean shTransformStatusIsNull){
+		this.shTransformStatusIsNull = shTransformStatusIsNull;
+		return this;
+	}
+	public Boolean getShTransformStatusIsNull(){
+		return this.shTransformStatusIsNull;
+	}
+	public SrvHostQuery setShTransformStatusIsNotNull(Boolean shTransformStatusIsNotNull){
+		this.shTransformStatusIsNotNull = shTransformStatusIsNotNull;
+		return this;
+	}
+	public Boolean getShTransformStatusIsNotNull(){
+		return this.shTransformStatusIsNotNull;
+	}
+	public SrvHostQuery setShTransformStatusStart(String shTransformStatusStart){
+		this.shTransformStatusStart = shTransformStatusStart;
+		return this;
+	}
+	public String getShTransformStatusStart(){
+		return this.shTransformStatusStart;
+	}
+	public SrvHostQuery setShTransformStatusEnd(String shTransformStatusEnd){
+		this.shTransformStatusEnd = shTransformStatusEnd;
+		return this;
+	}
+	public String getShTransformStatusEnd(){
+		return this.shTransformStatusEnd;
+	}
+	public SrvHostQuery setShTransformStatusLess(String shTransformStatusLess){
+		this.shTransformStatusLess = shTransformStatusLess;
+		return this;
+	}
+	public String getShTransformStatusLess(){
+		return this.shTransformStatusLess;
+	}
+	public SrvHostQuery setShTransformStatusGreater(String shTransformStatusGreater){
+		this.shTransformStatusGreater = shTransformStatusGreater;
+		return this;
+	}
+	public String getShTransformStatusGreater(){
+		return this.shTransformStatusGreater;
+	}
+	public SrvHostQuery setShTransformCanLike(String shTransformCanLike){
+		this.shTransformCanLike = shTransformCanLike;
+		return this;
+	}
+	public String getShTransformCanLike(){
+		return this.shTransformCanLike;
+	}
+	public SrvHostQuery setShTransformCanEquals(String shTransformCanEquals){
+		this.shTransformCanEquals = shTransformCanEquals;
+		return this;
+	}
+	public String getShTransformCanEquals(){
+		return this.shTransformCanEquals;
+	}
+	public SrvHostQuery setShTransformCanIn(String[] shTransformCanIn){
+		this.shTransformCanIn = shTransformCanIn;
+		return this;
+	}
+	public String[] getShTransformCanIn(){
+		return this.shTransformCanIn;
+	}
+	public SrvHostQuery setShTransformCanIsNull(Boolean shTransformCanIsNull){
+		this.shTransformCanIsNull = shTransformCanIsNull;
+		return this;
+	}
+	public Boolean getShTransformCanIsNull(){
+		return this.shTransformCanIsNull;
+	}
+	public SrvHostQuery setShTransformCanIsNotNull(Boolean shTransformCanIsNotNull){
+		this.shTransformCanIsNotNull = shTransformCanIsNotNull;
+		return this;
+	}
+	public Boolean getShTransformCanIsNotNull(){
+		return this.shTransformCanIsNotNull;
+	}
+	public SrvHostQuery setShTransformCanStart(String shTransformCanStart){
+		this.shTransformCanStart = shTransformCanStart;
+		return this;
+	}
+	public String getShTransformCanStart(){
+		return this.shTransformCanStart;
+	}
+	public SrvHostQuery setShTransformCanEnd(String shTransformCanEnd){
+		this.shTransformCanEnd = shTransformCanEnd;
+		return this;
+	}
+	public String getShTransformCanEnd(){
+		return this.shTransformCanEnd;
+	}
+	public SrvHostQuery setShTransformCanLess(String shTransformCanLess){
+		this.shTransformCanLess = shTransformCanLess;
+		return this;
+	}
+	public String getShTransformCanLess(){
+		return this.shTransformCanLess;
+	}
+	public SrvHostQuery setShTransformCanGreater(String shTransformCanGreater){
+		this.shTransformCanGreater = shTransformCanGreater;
+		return this;
+	}
+	public String getShTransformCanGreater(){
+		return this.shTransformCanGreater;
+	}
 	public SrvHostQuery setShAddTimeEquals(Date shAddTimeEquals){
 		this.shAddTimeEquals = shAddTimeEquals;
 		return this;
@@ -612,6 +843,15 @@ public class SrvHostQuery {
 		else if(this.sidx.equals("shTopic")){
 			return "sh_topic";
 		}
+		else if(this.sidx.equals("shTransformRemote")){
+			return "sh_transform_remote";
+		}
+		else if(this.sidx.equals("shTransformStatus")){
+			return "sh_transform_status";
+		}
+		else if(this.sidx.equals("shTransformCan")){
+			return "sh_transform_can";
+		}
 		else if(this.sidx.equals("shAddTime")){
 			return "sh_add_time";
 		}
@@ -702,6 +942,57 @@ public class SrvHostQuery {
 			c.andshTopicGreaterThan(this.getShTopicGreater());
 		}else if(this.getShTopicLess()!=null){
 			c.andshTopicLessThan(this.getShTopicLess());
+		}
+		if(this.getShTransformRemoteEquals()!=null){
+			c.andshTransformRemoteEqualTo(this.getShTransformRemoteEquals());
+		}else if(this.getShTransformRemoteIsNull()!=null && this.getShTransformRemoteIsNull()){
+			c.andshTransformRemoteIsNull();
+		}else if(this.getShTransformRemoteIsNotNull()!=null && this.getShTransformRemoteIsNotNull()){
+			c.andshTransformRemoteIsNotNull();
+		}else if(this.getShTransformRemoteLike()!=null){
+			c.andshTransformRemoteLike(this.getShTransformRemoteLike());
+		}else if(this.getShTransformRemoteIn()!=null){
+			c.andshTransformRemoteIn(java.util.Arrays.asList(this.getShTransformRemoteIn()));
+		}else if(this.getShTransformRemoteStart()!=null && this.getShTransformRemoteEnd()!=null){
+			c.andshTransformRemoteBetween(this.getShTransformRemoteStart(), this.getShTransformRemoteEnd());
+		}else if(this.getShTransformRemoteGreater()!=null){
+			c.andshTransformRemoteGreaterThan(this.getShTransformRemoteGreater());
+		}else if(this.getShTransformRemoteLess()!=null){
+			c.andshTransformRemoteLessThan(this.getShTransformRemoteLess());
+		}
+		if(this.getShTransformStatusEquals()!=null){
+			c.andshTransformStatusEqualTo(this.getShTransformStatusEquals());
+		}else if(this.getShTransformStatusIsNull()!=null && this.getShTransformStatusIsNull()){
+			c.andshTransformStatusIsNull();
+		}else if(this.getShTransformStatusIsNotNull()!=null && this.getShTransformStatusIsNotNull()){
+			c.andshTransformStatusIsNotNull();
+		}else if(this.getShTransformStatusLike()!=null){
+			c.andshTransformStatusLike(this.getShTransformStatusLike());
+		}else if(this.getShTransformStatusIn()!=null){
+			c.andshTransformStatusIn(java.util.Arrays.asList(this.getShTransformStatusIn()));
+		}else if(this.getShTransformStatusStart()!=null && this.getShTransformStatusEnd()!=null){
+			c.andshTransformStatusBetween(this.getShTransformStatusStart(), this.getShTransformStatusEnd());
+		}else if(this.getShTransformStatusGreater()!=null){
+			c.andshTransformStatusGreaterThan(this.getShTransformStatusGreater());
+		}else if(this.getShTransformStatusLess()!=null){
+			c.andshTransformStatusLessThan(this.getShTransformStatusLess());
+		}
+		if(this.getShTransformCanEquals()!=null){
+			c.andshTransformCanEqualTo(this.getShTransformCanEquals());
+		}else if(this.getShTransformCanIsNull()!=null && this.getShTransformCanIsNull()){
+			c.andshTransformCanIsNull();
+		}else if(this.getShTransformCanIsNotNull()!=null && this.getShTransformCanIsNotNull()){
+			c.andshTransformCanIsNotNull();
+		}else if(this.getShTransformCanLike()!=null){
+			c.andshTransformCanLike(this.getShTransformCanLike());
+		}else if(this.getShTransformCanIn()!=null){
+			c.andshTransformCanIn(java.util.Arrays.asList(this.getShTransformCanIn()));
+		}else if(this.getShTransformCanStart()!=null && this.getShTransformCanEnd()!=null){
+			c.andshTransformCanBetween(this.getShTransformCanStart(), this.getShTransformCanEnd());
+		}else if(this.getShTransformCanGreater()!=null){
+			c.andshTransformCanGreaterThan(this.getShTransformCanGreater());
+		}else if(this.getShTransformCanLess()!=null){
+			c.andshTransformCanLessThan(this.getShTransformCanLess());
 		}
 		if(this.getShAddTimeEquals()!=null){
 			c.andshAddTimeEqualTo(this.getShAddTimeEquals());
