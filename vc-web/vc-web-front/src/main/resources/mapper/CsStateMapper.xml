@@ -30,7 +30,6 @@
 		<result column="css_endurance" jdbcType="VARCHAR" property="cssEndurance" />
 		<result column="css_temperature" jdbcType="SMALLINT" property="cssTemperature" />
 		<result column="css_csq" jdbcType="SMALLINT" property="cssCsq" />
-		<result column="css_power_consumption" jdbcType="VARCHAR" property="cssPowerConsumption" />
 		<result column="css_longitude" jdbcType="DECIMAL" property="cssLongitude" />
 		<result column="css_latitude" jdbcType="DECIMAL" property="cssLatitude" />
 		<result column="css_gps_valid" jdbcType="TINYINT" property="cssGpsValid" />

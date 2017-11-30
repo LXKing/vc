@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="cstId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="cstIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstIdd" >
+				<dt>序列号</dt>
+				<dd  >
+					<input  name="cstIddLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstModel" style="display:none;">
+				<dt>型号</dt>
+				<dd  >
+					<input  name="cstModelEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstMade" style="display:none;">
+				<dt>制造商</dt>
+				<dd  >
+					<input  name="cstMadeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstProvince" style="display:none;">
+				<dt>省域</dt>
+				<dd  >
+					<input  name="cstProvinceEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstCity" style="display:none;">
+				<dt>市县域</dt>
+				<dd  >
+					<input  name="cstCityEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstColor" style="display:none;">
+				<dt>车牌颜色</dt>
+				<dd  >
+					<input  name="cstColorEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstNumber" style="display:none;">
+				<dt>车辆标识</dt>
+				<dd  >
+					<input  name="cstNumberEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstMobile" style="display:none;">
+				<dt>SIM</dt>
+				<dd  >
+					<input  name="cstMobileEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cstUpdateTime" style="display:none;">
+				<dt>更新时间</dt>
+				<dd  >
+					<input  name="cstUpdateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="cstAddTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd  >
+					<input  name="cstAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="cstStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<select class="form-control"  name="cstStatusEquals"  >
+	                    <option></option>
+                         <option value="3">未授权</option>
+                         <option value="1">有效</option>
+                         <option value="0">无效</option>
+                    </select>
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="cstId" value="cstId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="cstIdd" value="cstIdd" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >序列号</label></li>
+			        <li><label><input cond="cstModel" value="cstModel"  type="checkbox" onclick='showHideCondition(this, this.value);' >型号</label></li>
+			        <li><label><input cond="cstMade" value="cstMade"  type="checkbox" onclick='showHideCondition(this, this.value);' >制造商</label></li>
+			        <li><label><input cond="cstProvince" value="cstProvince"  type="checkbox" onclick='showHideCondition(this, this.value);' >省域</label></li>
+			        <li><label><input cond="cstCity" value="cstCity"  type="checkbox" onclick='showHideCondition(this, this.value);' >市县域</label></li>
+			        <li><label><input cond="cstColor" value="cstColor"  type="checkbox" onclick='showHideCondition(this, this.value);' >车牌颜色</label></li>
+			        <li><label><input cond="cstNumber" value="cstNumber"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆标识</label></li>
+			        <li><label><input cond="cstMobile" value="cstMobile"  type="checkbox" onclick='showHideCondition(this, this.value);' >SIM</label></li>
+			        <li><label><input cond="cstUpdateTime" value="cstUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
+			        <li><label><input cond="cstAddTime" value="cstAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="cstStatus" value="cstStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

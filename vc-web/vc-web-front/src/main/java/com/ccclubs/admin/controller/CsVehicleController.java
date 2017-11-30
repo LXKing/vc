@@ -113,6 +113,15 @@ public class CsVehicleController {
 		return VoResult.success().setValue(map);
 	}
 	
+	/**
+	 * 更换TBox
+	 * @return
+	 */
+	@RequestMapping(value="/bind", method = RequestMethod.POST)
+	public VoResult<?> bind(CsVehicle data){
+		csVehicleService.updateByPrimaryKeySelective(data);
+		return VoResult.success();
+	}
 	
 	/**
 	 * 根据文本检索车辆信息管理信息
@@ -129,7 +138,6 @@ public class CsVehicleController {
 			Integer val = Integer.valueOf(where);
 			c.andcsvIdEqualTo(val);
 		}
-//		List<CsVehicle> list = csVehicleService.selectByExample(query);
 		PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
 		List<CsVehicle> list = pageInfo.getList();
 

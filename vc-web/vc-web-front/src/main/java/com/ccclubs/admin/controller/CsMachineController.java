@@ -137,10 +137,34 @@ public class CsMachineController {
 		for (CsMachine data : list) {
 			map = new HashMap<String, Object>();
 			map.put("value", data.getCsmId());
-			map.put("text", data.getCsmTeNo());
+			map.put("text", data.getCsmTeNo()+"("+data.getCsmMobile()+")");
 			mapList.add(map);
 		}
 		return VoResult.success().setValue(mapList);
 	}
-	
+
+	/**
+	 * 根据文本检索T-box信息管理信息
+	 */
+	@RequestMapping(value="/search", method = RequestMethod.GET)
+	public VoResult<Map<String, List<Map<String, Object>>>> search(String text , CsMachine queryRecord){
+		CsMachineCrieria query = new CsMachineCrieria();
+		CsMachineCrieria.Criteria c = query.createCriteria();
+		if(!StringUtils.isEmpty(text)){
+			String val = String.valueOf(text);
+			c.andcsmTeNoLike(val);
+		}
+		PageInfo<CsMachine> pageInfo = csMachineService.getPage(query, 0, 10);
+		List<CsMachine> list = pageInfo.getList();
+
+		List<Map<String, Object>> mapList = new ArrayList<Map<String,Object>>(list.size());
+		Map<String, Object> map ;
+		for (CsMachine data : list) {
+			map = new HashMap<String, Object>();
+			map.put("value", data.getCsmNumber());
+			map.put("text", data.getCsmTeNo()+"("+data.getCsmMobile()+")");
+			mapList.add(map);
+		}
+		return VoResult.success().setValue(mapList);
+	}
 }

@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsModel;
 public enum CsModelResolver{
 	
 		动力类型(new Resolver<CsModel>("csmTypeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038815410L;
+		private static final long serialVersionUID = 2038864698L;
 
 			@Override
 			public <T> T execute(CsModel record) {
@@ -21,7 +21,7 @@ public enum CsModelResolver{
 		})
 	,
 		变速箱类型(new Resolver<CsModel>("csmFileText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038898960L;
+		private static final long serialVersionUID = 20388230L;
 
 			@Override
 			public <T> T execute(CsModel record) {
@@ -35,7 +35,7 @@ public enum CsModelResolver{
 		})
 	,
 		车辆种类(new Resolver<CsModel>("csmCatagoryText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038894920L;
+		private static final long serialVersionUID = 2038828917L;
 
 			@Override
 			public <T> T execute(CsModel record) {
@@ -49,7 +49,7 @@ public enum CsModelResolver{
 		})
 	,
 		状态(new Resolver<CsModel>("csmStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038812597L;
+		private static final long serialVersionUID = 2038865178L;
 
 			@Override
 			public <T> T execute(CsModel record) {

@@ -53,6 +53,15 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
+		<div class="btn-group" lay-event="oper" title="更多操作">
+            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper grid_oper_btn" aria-expanded="false">
+            	<i class="glyphicon fa fa-cogs"></i>
+               <span class="caret"></span>
+            </button>
+        </div>
+        <div class="optionMenu state-ui">
+			<ul class="MenuCon"></ul>
+		</div>
 	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
 	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
 		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
@@ -73,6 +82,23 @@
 		},
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
+		},
+		bind:function(e){
+			var o = this;
+			showTopWin({
+				  type: 2,
+				  shade: 0.4,
+				  maxmin: true,
+				  area: ['770px', '425px'],
+				  content: "/admin/vehicle/bind.html?id="+e.data,
+				  zIndex: layer.zIndex, //重点1
+				  end:function(result){
+					  if(result.success){
+						  layer.msg("操作成功！", {icon: 1, time:1600});
+						  grid.reloadData();
+					  }
+				  }
+			});
 		},
 		add:function(){
 			var o = this;
@@ -176,7 +202,7 @@
 	  		,{field: "csvStatusText", title: "状态", width: 110, sort:true}
 	  		,{field: "csvAddTime", title: "添加时间", width: 110, sort:true}
 	  		,{field: "csvUpdateTime", title: "修改时间", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
+      		,{field: 'operate', title: '操作', width: 156, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {
@@ -268,6 +294,7 @@
 					      		operate.update(id)
 					    	} else if(layEvent === 'oper'){
 					    		var menu = [];
+					    		menu.push({text:"更换TBox", data:id, handler:operate.bind});
 					    		showOperMenu($(this), menu);
 					    	}
 					  });

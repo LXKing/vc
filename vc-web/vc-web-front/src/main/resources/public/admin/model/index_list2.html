@@ -1,8 +1,28 @@
 <div class="menubar">
 		<div class="buttoncons">
-			
+			<button type="button" class="btn btn-primary  btn-outline" onclick="operate.add();" sctl="add">
+		 		<i class="glyphicon fa fa-plus-circle"></i>
+		 		新增
+		 	</button>
 
 			 <div class="btn-group" title="列">
+			 	<div class="btn-group">
+		             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper" aria-expanded="false">
+		             	<i class="glyphicon fa fa-cogs"></i>
+		             	 操作
+		                <span class="caret"></span>
+		             </button>
+
+		             <ul class="dropdown-menu">
+		                 <li sctl="exportData">
+		                     <a href="javascript:operate.exportData();">数据导出</a>
+		                 </li>
+		                 <li class="divider"></li>
+		                 <li sctl="batchDel">
+		                     <a href="javascript:operate.batchDel();">批量删除</a>
+		                 </li>
+		             </ul>
+		         </div>
 			 	<div class="btn-group">
 				 	<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 				 		<i class="glyphicon glyphicon-list"></i>
@@ -29,9 +49,9 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	
-	
-		
+	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
 	</div>
 
 <script src="/layui/layui.all.js?t=1510164124207"></script>
@@ -50,9 +70,57 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
-		
-		
-		
+		add:function(){
+			var o = this;
+			showTopWin({
+				  type: 2,
+				  shade: 0.4,
+				  maxmin: true,
+				  area: ['770px', '580px'],
+				  content: "/admin/model/add.html?uuid="+(new Date().getTime()),
+				  zIndex: layer.zIndex, //重点1
+				  end:function(result){
+					  if(result.success){
+						  layer.msg("操作成功！", {icon: 1, time:1600});
+						  grid.reloadData();
+					  }
+				  }
+			});
+		},
+		update:function(id){
+			var o = this;
+			showTopWin({
+				  type: 2,
+				  shade: 0.4,
+				  maxmin: true,
+				  area: ['770px', '580px'],
+				  content: "/admin/model/edit.html?id="+id,
+				  zIndex: layer.zIndex, //重点1
+				  end:function(result){
+					  if(result.success){
+						  layer.msg("操作成功！", {icon: 1, time:1600});
+						  grid.reloadData();
+					  }
+				  }
+			});
+		},
+		del:function(id){
+			var o = this;
+			layer.confirm("您确认删除该条数据吗？", {
+			  	btn: ["删除","取消"]
+			}, function(){
+				ajaxRequest(getServUrl("/admin/model/delete?ids="+id), "DELETE",{},
+				function(r){
+					if(r.success){
+						layer.msg("操作成功！", {icon: 1, time:1600});
+						grid.reloadData();
+					}else{
+						layer.msg(r.message, {icon: 7, time:1600});
+						grid.reloadData();
+					}
+				});
+			}, function(){});
+		},
 		batchDel:function(){
 			var o = this;
 			var ids = grid.getSelectIds();
@@ -100,7 +168,7 @@
 	  		,{field: "csmStatusText", title: "状态", width: 110, sort:true}
 	  		,{field: "csmAddTime", title: "添加时间", width: 110, sort:true}
 	  		,{field: "csmUpdateTime", title: "修改时间", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 0, fixed:'right', toolbar: '#gridToolBar'}
+      		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {

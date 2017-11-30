@@ -24,7 +24,7 @@
 					<input  name="csvCarNoEquals" placeholder="" class="form-control" >
 				</dd>
 			</dl>
-<dl cond="csvVin" style="display:none;">
+<dl cond="csvVin" >
 				<dt>车架号</dt>
 				<dd  >
 					<input  name="csvVinLike" placeholder="" class="form-control" >
@@ -68,19 +68,17 @@
 			</dl>
 <dl cond="csvProdDate" style="display:none;">
 				<dt>出厂日期</dt>
-				<dd class="timergroup" >
-					<input  name="csvProdDateStart"  placeholder="开始日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
-                    <label class="timegrouplabel">-</label>
-                    <input  name="csvProdDateEnd" placeholder="结束日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+				<dd  >
+					<input  name="csvProdDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({format: 'YYYY-MM-DD'})">
 				</dd>
 			</dl>
-<dl cond="csvLandmark" >
+<dl cond="csvLandmark" style="display:none;">
 				<dt>地标类型</dt>
 				<dd  >
 					<input  name="csvLandmarkEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="landmark"  dataUrl="/base/dict/query">
 				</dd>
 			</dl>
-<dl cond="csvStatus" >
+<dl cond="csvStatus" style="display:none;">
 				<dt>状态</dt>
 				<dd  >
 					<input  name="csvStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
@@ -110,7 +108,7 @@
 			        <li><label><input cond="csvId" value="csvId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
 			        <li><label><input cond="csvAccess" value="csvAccessText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
 			        <li><label><input cond="csvCarNo" value="csvCarNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >车牌号</label></li>
-			        <li><label><input cond="csvVin" value="csvVin"  type="checkbox" onclick='showHideCondition(this, this.value);' >车架号</label></li>
+			        <li><label><input cond="csvVin" value="csvVin" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车架号</label></li>
 			        <li><label><input cond="csvEngineNo" value="csvEngineNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >发动机(电机)编号</label></li>
 			        <li><label><input cond="csvCertific" value="csvCertific"  type="checkbox" onclick='showHideCondition(this, this.value);' >合格证号</label></li>
 			        <li><label><input cond="csvModel" value="csvModelText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
@@ -118,8 +116,8 @@
 			        <li><label><input cond="csvColorCode" value="csvColorCodeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >颜色</label></li>
 			        <li><label><input cond="csvBataccuCode" value="csvBataccuCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >可充电储能系统编码</label></li>
 			        <li><label><input cond="csvProdDate" value="csvProdDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >出厂日期</label></li>
-			        <li><label><input cond="csvLandmark" value="csvLandmarkText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
-			        <li><label><input cond="csvStatus" value="csvStatusText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+			        <li><label><input cond="csvLandmark" value="csvLandmarkText"  type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
+			        <li><label><input cond="csvStatus" value="csvStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
 			        <li><label><input cond="csvAddTime" value="csvAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
 			        <li><label><input cond="csvUpdateTime" value="csvUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >修改时间</label></li>
 					</ul>

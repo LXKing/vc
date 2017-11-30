@@ -1,7 +1,6 @@
 package com.ccclubs.admin.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,18 +62,6 @@ public class SrvDictController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(SrvDict data){
-		if (data.getCreateBy() == null) {
-			data.setCreateBy("0");
-		}
-		if (data.getUpdateBy() == null) {
-			data.setUpdateBy("0");
-		}
-		if (data.getCreateDate() == null) {
-			data.setCreateDate(new Date());
-		}
-		if (data.getUpdateDate() == null) {
-			data.setUpdateDate(new Date());
-		}
 		srvDictService.insert(data);
 		return VoResult.success();
 	}
@@ -137,7 +124,6 @@ public class SrvDictController {
 			String val = String.valueOf(where);
 			c.andtypeEqualTo(val);
 		}
-//		List<SrvDict> list = srvDictService.selectByExample(query);
 		PageInfo<SrvDict> pageInfo = srvDictService.getPage(query, 0, 10);
 		List<SrvDict> list = pageInfo.getList();
 

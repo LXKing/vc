@@ -52,7 +52,7 @@ public class CsState implements java.io.Serializable
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date cssAddTime;
 	/**
-	 * [css_current_time]TBox时间
+	 * [css_current_time]报文时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date cssCurrentTime;
@@ -147,11 +147,6 @@ public class CsState implements java.io.Serializable
 	
 	private   Short cssCsq;
 	/**
-	 * [css_power_consumption]功耗
-	 */
-	
-	private   String cssPowerConsumption;
-	/**
 	 * [css_longitude]经度
 	 */
 	
@@ -202,7 +197,7 @@ public class CsState implements java.io.Serializable
 	
 	private   Short cssFan;
 	/**
-	 * [css_saving]功耗模式1未熄火 2已熄火 0无效
+	 * [css_saving]功耗模式0:标准模式 1:最佳省电 2:极度省电
 	 */
 	
 	private   Short cssSaving;
@@ -212,7 +207,7 @@ public class CsState implements java.io.Serializable
 	
 	private   String cssDoor;
 	/**
-	 * [css_engine]发动机状态0:标准模式 1:最佳省电 2:极度省电
+	 * [css_engine]发动机状态1未熄火 2已熄火 0无效
 	 */
 	
 	private   Short cssEngine;
@@ -433,16 +428,16 @@ public class CsState implements java.io.Serializable
 	public void setCssAddTime(Date cssAddTime){
 		this.cssAddTime = cssAddTime;
 	}
-	/*******************************TBox时间**********************************/	
+	/*******************************报文时间**********************************/	
 	/**
-	* TBox时间 [可空]      
+	* 报文时间 [可空]      
 	**/
 	public Date getCssCurrentTime(){
 		return this.cssCurrentTime;
 	}
 	
 	/**
-	* TBox时间 [可空]     
+	* 报文时间 [可空]     
 	**/
 	public void setCssCurrentTime(Date cssCurrentTime){
 		this.cssCurrentTime = cssCurrentTime;
@@ -698,20 +693,6 @@ public class CsState implements java.io.Serializable
 	**/
 	public void setCssCsq(Short cssCsq){
 		this.cssCsq = cssCsq;
-	}
-	/*******************************功耗**********************************/	
-	/**
-	* 功耗 [可空]      
-	**/
-	public String getCssPowerConsumption(){
-		return this.cssPowerConsumption;
-	}
-	
-	/**
-	* 功耗 [可空]     
-	**/
-	public void setCssPowerConsumption(String cssPowerConsumption){
-		this.cssPowerConsumption = cssPowerConsumption;
 	}
 	/*******************************经度**********************************/	
 	/**

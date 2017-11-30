@@ -339,20 +339,6 @@ public class CsStateQuery {
 	private Short cssCsqLess;
 	
 	private Short cssCsqGreater;
-	private String cssPowerConsumptionLike;
-	
-	private String cssPowerConsumptionEquals;
-	private String[] cssPowerConsumptionIn;
-	private Boolean cssPowerConsumptionIsNull;
-	private Boolean cssPowerConsumptionIsNotNull;
-	
-	private String cssPowerConsumptionStart;
-	
-	private String cssPowerConsumptionEnd;
-	
-	private String cssPowerConsumptionLess;
-	
-	private String cssPowerConsumptionGreater;
 	
 	private Double cssLongitudeEquals;
 	private Double[] cssLongitudeIn;
@@ -2101,69 +2087,6 @@ public class CsStateQuery {
 	public Short getCssCsqGreater(){
 		return this.cssCsqGreater;
 	}
-	public CsStateQuery setCssPowerConsumptionLike(String cssPowerConsumptionLike){
-		this.cssPowerConsumptionLike = cssPowerConsumptionLike;
-		return this;
-	}
-	public String getCssPowerConsumptionLike(){
-		return this.cssPowerConsumptionLike;
-	}
-	public CsStateQuery setCssPowerConsumptionEquals(String cssPowerConsumptionEquals){
-		this.cssPowerConsumptionEquals = cssPowerConsumptionEquals;
-		return this;
-	}
-	public String getCssPowerConsumptionEquals(){
-		return this.cssPowerConsumptionEquals;
-	}
-	public CsStateQuery setCssPowerConsumptionIn(String[] cssPowerConsumptionIn){
-		this.cssPowerConsumptionIn = cssPowerConsumptionIn;
-		return this;
-	}
-	public String[] getCssPowerConsumptionIn(){
-		return this.cssPowerConsumptionIn;
-	}
-	public CsStateQuery setCssPowerConsumptionIsNull(Boolean cssPowerConsumptionIsNull){
-		this.cssPowerConsumptionIsNull = cssPowerConsumptionIsNull;
-		return this;
-	}
-	public Boolean getCssPowerConsumptionIsNull(){
-		return this.cssPowerConsumptionIsNull;
-	}
-	public CsStateQuery setCssPowerConsumptionIsNotNull(Boolean cssPowerConsumptionIsNotNull){
-		this.cssPowerConsumptionIsNotNull = cssPowerConsumptionIsNotNull;
-		return this;
-	}
-	public Boolean getCssPowerConsumptionIsNotNull(){
-		return this.cssPowerConsumptionIsNotNull;
-	}
-	public CsStateQuery setCssPowerConsumptionStart(String cssPowerConsumptionStart){
-		this.cssPowerConsumptionStart = cssPowerConsumptionStart;
-		return this;
-	}
-	public String getCssPowerConsumptionStart(){
-		return this.cssPowerConsumptionStart;
-	}
-	public CsStateQuery setCssPowerConsumptionEnd(String cssPowerConsumptionEnd){
-		this.cssPowerConsumptionEnd = cssPowerConsumptionEnd;
-		return this;
-	}
-	public String getCssPowerConsumptionEnd(){
-		return this.cssPowerConsumptionEnd;
-	}
-	public CsStateQuery setCssPowerConsumptionLess(String cssPowerConsumptionLess){
-		this.cssPowerConsumptionLess = cssPowerConsumptionLess;
-		return this;
-	}
-	public String getCssPowerConsumptionLess(){
-		return this.cssPowerConsumptionLess;
-	}
-	public CsStateQuery setCssPowerConsumptionGreater(String cssPowerConsumptionGreater){
-		this.cssPowerConsumptionGreater = cssPowerConsumptionGreater;
-		return this;
-	}
-	public String getCssPowerConsumptionGreater(){
-		return this.cssPowerConsumptionGreater;
-	}
 	public CsStateQuery setCssLongitudeEquals(Double cssLongitudeEquals){
 		this.cssLongitudeEquals = cssLongitudeEquals;
 		return this;
@@ -3499,9 +3422,6 @@ public class CsStateQuery {
 		else if(this.sidx.equals("cssCsq")){
 			return "css_csq";
 		}
-		else if(this.sidx.equals("cssPowerConsumption")){
-			return "css_power_consumption";
-		}
 		else if(this.sidx.equals("cssLongitude")){
 			return "css_longitude";
 		}
@@ -3971,23 +3891,6 @@ public class CsStateQuery {
 			c.andcssCsqGreaterThan(this.getCssCsqGreater());
 		}else if(this.getCssCsqLess()!=null){
 			c.andcssCsqLessThan(this.getCssCsqLess());
-		}
-		if(this.getCssPowerConsumptionEquals()!=null){
-			c.andcssPowerConsumptionEqualTo(this.getCssPowerConsumptionEquals());
-		}else if(this.getCssPowerConsumptionIsNull()!=null && this.getCssPowerConsumptionIsNull()){
-			c.andcssPowerConsumptionIsNull();
-		}else if(this.getCssPowerConsumptionIsNotNull()!=null && this.getCssPowerConsumptionIsNotNull()){
-			c.andcssPowerConsumptionIsNotNull();
-		}else if(this.getCssPowerConsumptionLike()!=null){
-			c.andcssPowerConsumptionLike(this.getCssPowerConsumptionLike());
-		}else if(this.getCssPowerConsumptionIn()!=null){
-			c.andcssPowerConsumptionIn(java.util.Arrays.asList(this.getCssPowerConsumptionIn()));
-		}else if(this.getCssPowerConsumptionStart()!=null && this.getCssPowerConsumptionEnd()!=null){
-			c.andcssPowerConsumptionBetween(this.getCssPowerConsumptionStart(), this.getCssPowerConsumptionEnd());
-		}else if(this.getCssPowerConsumptionGreater()!=null){
-			c.andcssPowerConsumptionGreaterThan(this.getCssPowerConsumptionGreater());
-		}else if(this.getCssPowerConsumptionLess()!=null){
-			c.andcssPowerConsumptionLessThan(this.getCssPowerConsumptionLess());
 		}
 		if(this.getCssLongitudeEquals()!=null){
 			c.andcssLongitudeEqualTo(this.getCssLongitudeEquals());

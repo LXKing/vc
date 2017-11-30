@@ -36,14 +36,14 @@
 					<input  name="cssCarEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/query">
 				</dd>
 			</dl>
-<dl cond="cssAddTime" >
+<dl cond="cssAddTime" style="display:none;">
 				<dt>接收时间</dt>
 				<dd  >
 					<input  name="cssAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="cssCurrentTime" style="display:none;">
-				<dt>TBox时间</dt>
+				<dt>报文时间</dt>
 				<dd  >
 					<input  name="cssCurrentTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
@@ -156,12 +156,6 @@
 					<input  name="cssCsqEquals" placeholder="请输入数字" class="form-control" >
 				</dd>
 			</dl>
-<dl cond="cssPowerConsumption" style="display:none;">
-				<dt>功耗</dt>
-				<dd  >
-					<input  name="cssPowerConsumptionEquals" placeholder="" class="form-control" >
-				</dd>
-			</dl>
 <dl cond="cssLongitude" style="display:none;">
 				<dt>经度</dt>
 				<dd  >
@@ -250,7 +244,9 @@
 				<dd  >
 					<select class="form-control"  name="cssSavingEquals"  >
 	                    <option></option>
-                         <option value="">0无效</option>
+                         <option value="2">极度省电</option>
+                         <option value="1">最佳省电</option>
+                         <option value="0">标准模式</option>
                     </select>
 				</dd>
 			</dl>
@@ -265,9 +261,7 @@
 				<dd  >
 					<select class="form-control"  name="cssEngineEquals"  >
 	                    <option></option>
-                         <option value="2">极度省电</option>
-                         <option value="1">最佳省电</option>
-                         <option value="0">标准模式</option>
+                         <option value="">0无效</option>
                     </select>
 				</dd>
 			</dl>
@@ -362,8 +356,8 @@
 			        <li><label><input cond="cssHost" value="cssHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >子域</label></li>
 			        <li><label><input cond="cssNumber" value="cssNumberText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
 			        <li><label><input cond="cssCar" value="cssCarText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车辆</label></li>
-			        <li><label><input cond="cssAddTime" value="cssAddTime" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接收时间</label></li>
-			        <li><label><input cond="cssCurrentTime" value="cssCurrentTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >TBox时间</label></li>
+			        <li><label><input cond="cssAddTime" value="cssAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >接收时间</label></li>
+			        <li><label><input cond="cssCurrentTime" value="cssCurrentTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文时间</label></li>
 			        <li><label><input cond="cssRented" value="cssRented"  type="checkbox" onclick='showHideCondition(this, this.value);' >租赁状态</label></li>
 			        <li><label><input cond="cssWarn" value="cssWarn"  type="checkbox" onclick='showHideCondition(this, this.value);' >报警码</label></li>
 			        <li><label><input cond="cssRfid" value="cssRfid"  type="checkbox" onclick='showHideCondition(this, this.value);' >RFID卡号</label></li>
@@ -382,7 +376,6 @@
 			        <li><label><input cond="cssEndurance" value="cssEndurance"  type="checkbox" onclick='showHideCondition(this, this.value);' >续航里程</label></li>
 			        <li><label><input cond="cssTemperature" value="cssTemperature"  type="checkbox" onclick='showHideCondition(this, this.value);' >温度</label></li>
 			        <li><label><input cond="cssCsq" value="cssCsq"  type="checkbox" onclick='showHideCondition(this, this.value);' >CSQ</label></li>
-			        <li><label><input cond="cssPowerConsumption" value="cssPowerConsumption"  type="checkbox" onclick='showHideCondition(this, this.value);' >功耗</label></li>
 			        <li><label><input cond="cssLongitude" value="cssLongitude"  type="checkbox" onclick='showHideCondition(this, this.value);' >经度</label></li>
 			        <li><label><input cond="cssLatitude" value="cssLatitude"  type="checkbox" onclick='showHideCondition(this, this.value);' >纬度</label></li>
 			        <li><label><input cond="cssGpsValid" value="cssGpsValidText"  type="checkbox" onclick='showHideCondition(this, this.value);' >GPS有效性</label></li>

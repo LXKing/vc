@@ -56,8 +56,36 @@ public class CsModelController {
 		return r;
 	}
 
+	/**
+	 * 创建保存接入车型管理
+	 * @return
+	 */
+	@RequestMapping(value="/add", method = RequestMethod.POST)
+	public VoResult<?> add(CsModel data){
+		csModelService.insert(data);
+		return VoResult.success();
+	}
 	
+	/**
+	 * 更新接入车型管理
+	 * @param data
+	 * @return
+	 */
+	@RequestMapping(value="/update", method = RequestMethod.POST)
+	public VoResult<?> update(CsModel data){
+		csModelService.updateByPrimaryKeySelective(data);
+		return VoResult.success();
+	}
 	
+	/**
+	 * 删除接入车型管理
+	 * @return
+	 */
+	@RequestMapping(value="delete", method = RequestMethod.DELETE)
+	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+		csModelService.batchDelete(ids);
+		return VoResult.success();
+	}
 	
 	/**
 	 * 注册属性内容解析器
@@ -99,7 +127,6 @@ public class CsModelController {
 			Integer val = Integer.valueOf(where);
 			c.andcsmIdEqualTo(val);
 		}
-//		List<CsModel> list = csModelService.selectByExample(query);
 		PageInfo<CsModel> pageInfo = csModelService.getPage(query, 0, 10);
 		List<CsModel> list = pageInfo.getList();
 

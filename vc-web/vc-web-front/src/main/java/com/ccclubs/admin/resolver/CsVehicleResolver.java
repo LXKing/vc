@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsVehicle;
 public enum CsVehicleResolver{
 	
 		接入商(new Resolver<CsVehicle>("csvAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
-		private static final long serialVersionUID = 2038836083L;
+		private static final long serialVersionUID = 2038833327L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -21,7 +21,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		车型(new Resolver<CsVehicle>("csvModelText", com.ccclubs.admin.metadata.MetaDef.getVehicleModelName) {
-		private static final long serialVersionUID = 2038897394L;
+		private static final long serialVersionUID = 2038818514L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -35,7 +35,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		车机设备(new Resolver<CsVehicle>("csvMachineText", com.ccclubs.admin.metadata.MetaDef.getMachineTeNo) {
-		private static final long serialVersionUID = 2038899658L;
+		private static final long serialVersionUID = 2038821124L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -49,7 +49,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		颜色(new Resolver<CsVehicle>("csvColorCodeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 203888305L;
+		private static final long serialVersionUID = 2038813106L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {
@@ -63,7 +63,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		地标类型(new Resolver<CsVehicle>("csvLandmarkText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038838924L;
+		private static final long serialVersionUID = 2038859196L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {
@@ -77,7 +77,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		状态(new Resolver<CsVehicle>("csvStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038850499L;
+		private static final long serialVersionUID = 2038876582L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {

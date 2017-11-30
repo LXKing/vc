@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>编号：</dt>
+					<dd>
+					<input name="cstId" placeholder="请输入编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>序列号：</dt>
+					<dd>
+					<input name="cstIdd" placeholder="请输入序列号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>型号：</dt>
+					<dd>
+					<input name="cstModel" placeholder="请输入型号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>制造商：</dt>
+					<dd>
+					<input name="cstMade" placeholder="请输入制造商" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>省域：</dt>
+					<dd>
+					<input name="cstProvince" placeholder="请输入省域" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>市县域：</dt>
+					<dd>
+					<input name="cstCity" placeholder="请输入市县域" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车牌颜色：</dt>
+					<dd>
+					<input name="cstColor" placeholder="请输入车牌颜色" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车辆标识：</dt>
+					<dd>
+					<input name="cstNumber" placeholder="请输入车辆标识" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>SIM：</dt>
+					<dd>
+					<input name="cstMobile" placeholder="请输入SIM" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>更新时间：</dt>
+					<dd>
+					<input name="cstUpdateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+					<input name="cstAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+					<select class="form-control m-b" name="cstStatus"  >
+                         <option></option>
+                         <option value="3">未授权</option>
+                         <option value="1">有效</option>
+                         <option value="0">无效</option>
+                    </select>
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/monitor/register/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/monitor/register/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>
