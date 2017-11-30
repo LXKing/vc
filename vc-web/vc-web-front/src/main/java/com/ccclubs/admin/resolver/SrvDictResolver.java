@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.SrvDict;
 public enum SrvDictResolver{
 	
 		删除标记(new Resolver<SrvDict>("delFlagText") {
-		private static final long serialVersionUID = 2038876531L;
+		private static final long serialVersionUID = 203889284L;
 
 		@Override
 		public <T> T execute(SrvDict record) {

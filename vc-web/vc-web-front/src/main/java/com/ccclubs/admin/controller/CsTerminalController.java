@@ -73,7 +73,7 @@ public class CsTerminalController {
 	 */
 	@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
 	public VoResult<Map<String, CsTerminal>> detail(@PathVariable(required = true) Long id){
-		CsTerminal data = csTerminalService.selectByPrimaryKey( id.intValue());
+		CsTerminal data = csTerminalService.selectByPrimaryKey( id );
 		Map<String, CsTerminal> map = new HashMap<String, CsTerminal>();
 		registResolvers(data);
 		map.put("tbody", data);

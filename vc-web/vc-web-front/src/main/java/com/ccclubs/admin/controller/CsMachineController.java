@@ -167,4 +167,5 @@ public class CsMachineController {
 		}
 		return VoResult.success().setValue(mapList);
 	}
+	
 }

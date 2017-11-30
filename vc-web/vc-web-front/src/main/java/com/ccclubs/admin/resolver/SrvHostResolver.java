@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.SrvHost;
 public enum SrvHostResolver{
 	
 		状态(new Resolver<SrvHost>("shStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038893871L;
+		private static final long serialVersionUID = 2038816116L;
 
 			@Override
 			public <T> T execute(SrvHost record) {

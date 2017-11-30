@@ -68,6 +68,7 @@ public class CsCanController {
 			data.registResolver(com.ccclubs.admin.resolver.CsCanResolver.车机号.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsCanResolver.车辆.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsCanResolver.CAN类型.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.CsCanResolver.状态.getResolver());
 		}
 	}
 	
@@ -76,7 +77,7 @@ public class CsCanController {
 	 */
 	@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
 	public VoResult<Map<String, CsCan>> detail(@PathVariable(required = true) Long id){
-		CsCan data = csCanService.selectByPrimaryKey( id.intValue());
+		CsCan data = csCanService.selectByPrimaryKey( id );
 		Map<String, CsCan> map = new HashMap<String, CsCan>();
 		registResolvers(data);
 		map.put("tbody", data);

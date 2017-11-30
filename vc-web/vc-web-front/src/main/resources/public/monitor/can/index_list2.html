@@ -33,7 +33,7 @@
 				        <li><label><input value="cscData" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文数据</label></li>
 				        <li><label><input value="cscUploadTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文时间</label></li>
 				        <li><label><input value="cscAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接收时间</label></li>
-				        <li><label><input value="cscStatus" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
+				        <li><label><input value="cscStatusText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
 					</ul>
 				</div>
 			</div>
@@ -112,7 +112,7 @@
 	  		,{field: "cscData", title: "报文数据", width: 110, sort:true}
 	  		,{field: "cscUploadTime", title: "报文时间", width: 110, sort:true}
 	  		,{field: "cscAddTime", title: "接收时间", width: 110, sort:true}
-	  		,{field: "cscStatus", title: "状态", width: 110, sort:true}
+	  		,{field: "cscStatusText", title: "状态", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

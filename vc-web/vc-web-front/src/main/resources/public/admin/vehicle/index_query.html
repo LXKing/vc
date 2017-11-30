@@ -66,10 +66,12 @@
 					<input  name="csvBataccuCodeEquals" placeholder="" class="form-control" >
 				</dd>
 			</dl>
-<dl cond="csvProdDate" style="display:none;">
+<dl cond="csvProdDate" >
 				<dt>出厂日期</dt>
-				<dd  >
-					<input  name="csvProdDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({format: 'YYYY-MM-DD'})">
+				<dd class="timergroup" >
+					<input  name="csvProdDateStart"  placeholder="开始日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="csvProdDateEnd" placeholder="结束日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
 				</dd>
 			</dl>
 <dl cond="csvLandmark" style="display:none;">
@@ -86,14 +88,18 @@
 			</dl>
 <dl cond="csvAddTime" style="display:none;">
 				<dt>添加时间</dt>
-				<dd  >
-					<input  name="csvAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="csvAddTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="csvAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="csvUpdateTime" style="display:none;">
 				<dt>修改时间</dt>
-				<dd  >
-					<input  name="csvUpdateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="csvUpdateTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="csvUpdateTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 			<div class="querybtns">
@@ -115,7 +121,7 @@
 			        <li><label><input cond="csvMachine" value="csvMachineText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机设备</label></li>
 			        <li><label><input cond="csvColorCode" value="csvColorCodeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >颜色</label></li>
 			        <li><label><input cond="csvBataccuCode" value="csvBataccuCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >可充电储能系统编码</label></li>
-			        <li><label><input cond="csvProdDate" value="csvProdDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >出厂日期</label></li>
+			        <li><label><input cond="csvProdDate" value="csvProdDate" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >出厂日期</label></li>
 			        <li><label><input cond="csvLandmark" value="csvLandmarkText"  type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
 			        <li><label><input cond="csvStatus" value="csvStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
 			        <li><label><input cond="csvAddTime" value="csvAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>

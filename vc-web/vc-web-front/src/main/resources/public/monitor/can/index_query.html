@@ -60,20 +60,24 @@
 			</dl>
 <dl cond="cscUploadTime" style="display:none;">
 				<dt>报文时间</dt>
-				<dd  >
-					<input  name="cscUploadTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="cscUploadTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cscUploadTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="cscAddTime" style="display:none;">
 				<dt>接收时间</dt>
-				<dd  >
-					<input  name="cscAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="cscAddTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cscAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="cscStatus" style="display:none;">
 				<dt>状态</dt>
 				<dd  >
-					<input  name="cscStatusEquals" placeholder="请输入数字" class="form-control" >
+					<input  name="cscStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
 				</dd>
 			</dl>
 			<div class="querybtns">
@@ -95,7 +99,7 @@
 			        <li><label><input cond="cscData" value="cscData"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文数据</label></li>
 			        <li><label><input cond="cscUploadTime" value="cscUploadTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文时间</label></li>
 			        <li><label><input cond="cscAddTime" value="cscAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >接收时间</label></li>
-			        <li><label><input cond="cscStatus" value="cscStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+			        <li><label><input cond="cscStatus" value="cscStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
 					</ul>
 				</div>
 			</div>

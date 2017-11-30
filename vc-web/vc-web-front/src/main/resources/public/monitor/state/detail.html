@@ -136,7 +136,13 @@
 				<dl  >
 					<dt>充电状态：</dt>
 					<dd>
-					<input name="cssCharging" placeholder="请输入充电状态" class="form-control" >
+					<select class="form-control m-b" name="cssCharging"  >
+                         <option></option>
+                         <option value="3">充电完成</option>
+                         <option value="2">快充</option>
+                         <option value="1">慢充</option>
+                         <option value="0">不充电</option>
+                    </select>
 					</dd>
 				</dl>
 				<dl  >
@@ -274,7 +280,9 @@
 					<dd>
 					<select class="form-control m-b" name="cssEngine"  >
                          <option></option>
-                         <option value="">0无效</option>
+                         <option value="2">已熄火</option>
+                         <option value="1">未熄火</option>
+                         <option value="0">无效</option>
                     </select>
 					</dd>
 				</dl>

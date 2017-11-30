@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsMachine;
 public enum CsMachineResolver{
 	
 		接入商(new Resolver<CsMachine>("csmAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
-		private static final long serialVersionUID = 203886309L;
+		private static final long serialVersionUID = 2038833890L;
 
 		@Override
 		public <T> T execute(CsMachine record) {
@@ -21,7 +21,7 @@ public enum CsMachineResolver{
 		})
 	,
 		终端类型(new Resolver<CsMachine>("csmTeTypeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038823457L;
+		private static final long serialVersionUID = 2038826222L;
 
 			@Override
 			public <T> T execute(CsMachine record) {
@@ -35,7 +35,7 @@ public enum CsMachineResolver{
 		})
 	,
 		协议类型(new Resolver<CsMachine>("csmProtocolText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038866873L;
+		private static final long serialVersionUID = 2038810168L;
 
 			@Override
 			public <T> T execute(CsMachine record) {
@@ -49,7 +49,7 @@ public enum CsMachineResolver{
 		})
 	,
 		适配车型(new Resolver<CsMachine>("csmSuitText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038820900L;
+		private static final long serialVersionUID = 2038883083L;
 
 			@Override
 			public <T> T execute(CsMachine record) {
@@ -63,7 +63,7 @@ public enum CsMachineResolver{
 		})
 	,
 		终端协议(new Resolver<CsMachine>("csmProTypeText") {
-		private static final long serialVersionUID = 203886825L;
+		private static final long serialVersionUID = 2038876495L;
 
 		@Override
 		public <T> T execute(CsMachine record) {
@@ -86,7 +86,7 @@ public enum CsMachineResolver{
 		})
 	,
 		状态(new Resolver<CsMachine>("csmStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038863654L;
+		private static final long serialVersionUID = 2038819099L;
 
 			@Override
 			public <T> T execute(CsMachine record) {

@@ -38,14 +38,18 @@
 			</dl>
 <dl cond="cssAddTime" style="display:none;">
 				<dt>接收时间</dt>
-				<dd  >
-					<input  name="cssAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="cssAddTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cssAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="cssCurrentTime" style="display:none;">
 				<dt>报文时间</dt>
-				<dd  >
-					<input  name="cssCurrentTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				<dd class="timergroup" >
+					<input  name="cssCurrentTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cssCurrentTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="cssRented" style="display:none;">
@@ -123,7 +127,13 @@
 <dl cond="cssCharging" style="display:none;">
 				<dt>充电状态</dt>
 				<dd  >
-					<input  name="cssChargingEquals" placeholder="请输入数字" class="form-control" >
+					<select class="form-control"  name="cssChargingEquals"  >
+	                    <option></option>
+                         <option value="3">充电完成</option>
+                         <option value="2">快充</option>
+                         <option value="1">慢充</option>
+                         <option value="0">不充电</option>
+                    </select>
 				</dd>
 			</dl>
 <dl cond="cssFuelMileage" style="display:none;">
@@ -261,7 +271,9 @@
 				<dd  >
 					<select class="form-control"  name="cssEngineEquals"  >
 	                    <option></option>
-                         <option value="">0无效</option>
+                         <option value="2">已熄火</option>
+                         <option value="1">未熄火</option>
+                         <option value="0">无效</option>
                     </select>
 				</dd>
 			</dl>
@@ -370,7 +382,7 @@
 			        <li><label><input cond="cssOil" value="cssOil"  type="checkbox" onclick='showHideCondition(this, this.value);' >燃油量:</label></li>
 			        <li><label><input cond="cssPower" value="cssPower"  type="checkbox" onclick='showHideCondition(this, this.value);' >小电瓶电量</label></li>
 			        <li><label><input cond="cssEvBattery" value="cssEvBattery"  type="checkbox" onclick='showHideCondition(this, this.value);' >SOC</label></li>
-			        <li><label><input cond="cssCharging" value="cssCharging"  type="checkbox" onclick='showHideCondition(this, this.value);' >充电状态</label></li>
+			        <li><label><input cond="cssCharging" value="cssChargingText"  type="checkbox" onclick='showHideCondition(this, this.value);' >充电状态</label></li>
 			        <li><label><input cond="cssFuelMileage" value="cssFuelMileage"  type="checkbox" onclick='showHideCondition(this, this.value);' >订单油里程</label></li>
 			        <li><label><input cond="cssElectricMileage" value="cssElectricMileage"  type="checkbox" onclick='showHideCondition(this, this.value);' >订单电里程</label></li>
 			        <li><label><input cond="cssEndurance" value="cssEndurance"  type="checkbox" onclick='showHideCondition(this, this.value);' >续航里程</label></li>

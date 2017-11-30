@@ -65,9 +65,9 @@ public class CsStateController {
 	void registResolvers(CsState data){
 		if(data!=null){
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.接入商.getResolver());
-			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.充电状态.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.车机号.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.车辆.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.充电状态.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.GPS有效性.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.循环模式.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsStateResolver.PTC启停.getResolver());

@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsTerminal;
 public enum CsTerminalResolver{
 	
 		状态(new Resolver<CsTerminal>("cstStatusText") {
-		private static final long serialVersionUID = 2038810842L;
+		private static final long serialVersionUID = 2038832024L;
 
 		@Override
 		public <T> T execute(CsTerminal record) {

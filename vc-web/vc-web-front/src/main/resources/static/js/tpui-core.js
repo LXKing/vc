@@ -273,6 +273,26 @@ var imageField = {
     }
 };
 
+showOperMenu = function(t, menus){
+  if(menus.length==0)return;
+
+  $(".gridToolBar").show();
+  var menuDIV = $(".optionMenu");
+  menuDIV.children(".MenuCon").html("");
+  for(var i=0;i<menus.length;i++){
+    var menu = $("<li><a href=\"javascript:;\">"+menus[i].text+"</a></li>");
+    menu.bind("click", menus[i].data||{}, menus[i].handler);
+    menuDIV.children(".MenuCon").append(menu);
+  }
+  var top = $(t).offset().top+22, left = $(t).offset().left;
+  menuDIV.css({
+    top:top,
+    left:left
+  }).click(function(){
+    $(this).hide();
+  }).show();
+};
+
 var mapAreaField = {
     set: function (input, type) {
         var input = $(input).parent().prev(".mapAreaField");

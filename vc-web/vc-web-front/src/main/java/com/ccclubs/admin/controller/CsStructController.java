@@ -102,7 +102,7 @@ public class CsStructController {
 	 */
 	@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
 	public VoResult<Map<String, CsStruct>> detail(@PathVariable(required = true) Long id){
-		CsStruct data = csStructService.selectByPrimaryKey( id.intValue());
+		CsStruct data = csStructService.selectByPrimaryKey( id );
 		Map<String, CsStruct> map = new HashMap<String, CsStruct>();
 		registResolvers(data);
 		map.put("tbody", data);

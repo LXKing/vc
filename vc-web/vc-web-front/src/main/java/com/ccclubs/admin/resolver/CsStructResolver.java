@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsStruct;
 public enum CsStructResolver{
 	
 		命令类型(new Resolver<CsStruct>("cssTypeText") {
-		private static final long serialVersionUID = 2038857547L;
+		private static final long serialVersionUID = 2038891900L;
 
 		@Override
 		public <T> T execute(CsStruct record) {
@@ -30,7 +30,7 @@ public enum CsStructResolver{
 		})
 	,
 		状态(new Resolver<CsStruct>("cssStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038898184L;
+		private static final long serialVersionUID = 2038852210L;
 
 			@Override
 			public <T> T execute(CsStruct record) {

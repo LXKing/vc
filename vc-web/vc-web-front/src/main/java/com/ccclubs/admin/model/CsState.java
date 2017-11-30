@@ -117,7 +117,7 @@ public class CsState implements java.io.Serializable
 	
 	private   Short cssEvBattery;
 	/**
-	 * [css_charging]充电状态
+	 * [css_charging]充电状态0:不充电 1:慢充 2:快充 3:充电完成
 	 */
 	
 	private   Short cssCharging;
@@ -207,7 +207,7 @@ public class CsState implements java.io.Serializable
 	
 	private   String cssDoor;
 	/**
-	 * [css_engine]发动机状态1未熄火 2已熄火 0无效
+	 * [css_engine]发动机状态0:无效 1:未熄火 2:已熄火
 	 */
 	
 	private   Short cssEngine;
@@ -301,6 +301,9 @@ public class CsState implements java.io.Serializable
 	}
 	public Object getCssCarText(){
 		return resolve("cssCarText");
+	}
+	public Object getCssChargingText(){
+		return resolve("cssChargingText");
 	}
 	public Object getCssGpsValidText(){
 		return resolve("cssGpsValidText");
