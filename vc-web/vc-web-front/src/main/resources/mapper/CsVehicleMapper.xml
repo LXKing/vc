@@ -11,7 +11,6 @@
 		<result column="csv_vin" jdbcType="VARCHAR" property="csvVin" />
 		<result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo" />
 		<result column="csv_certific" jdbcType="VARCHAR" property="csvCertific" />
-		<result column="csv_color" jdbcType="TINYINT" property="csvColor" />
 		<result column="csv_model" jdbcType="INTEGER" property="csvModel" />
 		<result column="csv_machine" jdbcType="INTEGER" property="csvMachine" />
 		<result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode" />

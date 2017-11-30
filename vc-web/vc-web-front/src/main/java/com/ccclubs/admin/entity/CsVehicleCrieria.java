@@ -530,66 +530,6 @@ public class CsVehicleCrieria{
 	            addCriterion("csv_certific not between", value1, value2, "csvCertific");
 	            return (Criteria) this;
 	        }
-	        public Criteria andcsvColorIsNull() {
-	            addCriterion("csv_color is null");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorIsNotNull() {
-	            addCriterion("csv_color is not null");
-	            return (Criteria) this;
-	        }
-	        
-	        
-	        public Criteria andcsvColorEqualTo(Short value) {
-	            addCriterion("csv_color =", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorNotEqualTo(Short value) {
-	            addCriterion("csv_color <>", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorGreaterThan(Short value) {
-	            addCriterion("csv_color >", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorGreaterThanOrEqualTo(Short value) {
-	            addCriterion("csv_color >=", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorLessThan(Short value) {
-	            addCriterion("csv_color <", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorLessThanOrEqualTo(Short value) {
-	            addCriterion("csv_color <=", value, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorIn(List<Short> values) {
-	            addCriterion("csv_color in", values, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorNotIn(List<Short> values) {
-	            addCriterion("csv_color not in", values, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorBetween(Short value1, Short value2) {
-	            addCriterion("csv_color between", value1, value2, "csvColor");
-	            return (Criteria) this;
-	        }
-
-	        public Criteria andcsvColorNotBetween(Short value1, Short value2) {
-	            addCriterion("csv_color not between", value1, value2, "csvColor");
-	            return (Criteria) this;
-	        }
 	        public Criteria andcsvModelIsNull() {
 	            addCriterion("csv_model is null");
 	            return (Criteria) this;

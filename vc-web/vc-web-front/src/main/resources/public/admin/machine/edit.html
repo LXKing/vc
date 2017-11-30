@@ -91,7 +91,7 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>可充电储能系统编码</dt>
+					<dt>SIM卡</dt>
 					<dd>
 					<input name="csmMobile"  placeholder="" class="form-control" >
 				
@@ -161,13 +161,6 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>地标类型</dt>
-					<dd>
-					<input name="csmLandmark"  placeholder="" class="form-control" >
-				
-					</dd>
-				</dl>
-				<dl  >
 					<dt>硬件版本</dt>
 					<dd>
 					<input name="csmV2"  placeholder="" class="form-control" >
@@ -219,7 +212,11 @@
 				<dl  >
 					<dt>终端协议</dt>
 					<dd>
-					<input name="csmProType"  placeholder="" class="form-control" >
+					<select class="form-control" name="csmProType"  >
+                         <option></option>
+                         <option value="1">mqtt</option>
+                         <option value="2">808</option>
+                    </select>
 				
 					</dd>
 				</dl>
@@ -352,21 +349,18 @@
 				"csmTeSerial":{
 					"maxlength":8
 				},
-				"csmLandmark":{
-					"maxlength":64
-				},
 				"csmMobile":{
 					"maxlength":11
 				},
 				"csmMqttFlag":{
 					"maxlength":32
 				},
-				"csmPassword":{
-					"maxlength":32
-				},
 				"csmProType":{
 					"maxlength":4,
 					"digits":true
+				},
+				"csmPassword":{
+					"maxlength":32
 				},
 				"csmSuperSim":{
 					"maxlength":11,

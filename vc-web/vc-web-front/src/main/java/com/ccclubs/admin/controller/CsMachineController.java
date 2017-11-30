@@ -96,6 +96,7 @@ public class CsMachineController {
 			data.registResolver(com.ccclubs.admin.resolver.CsMachineResolver.终端类型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsMachineResolver.协议类型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsMachineResolver.适配车型.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.CsMachineResolver.终端协议.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsMachineResolver.状态.getResolver());
 		}
 	}
@@ -128,7 +129,6 @@ public class CsMachineController {
 			Integer val = Integer.valueOf(where);
 			c.andcsmIdEqualTo(val);
 		}
-//		List<CsMachine> list = csMachineService.selectByExample(query);
 		PageInfo<CsMachine> pageInfo = csMachineService.getPage(query, 0, 10);
 		List<CsMachine> list = pageInfo.getList();
 

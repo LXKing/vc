@@ -24,10 +24,10 @@
 					<input  name="shKeyLike" placeholder="" class="form-control" >
 				</dd>
 			</dl>
-<dl cond="shTopic" >
+<dl cond="shTopic" style="display:none;">
 				<dt>转发Topic</dt>
 				<dd  >
-					<input  name="shTopicLike" placeholder="" class="form-control" >
+					<input  name="shTopicEquals" placeholder="" class="form-control" >
 				</dd>
 			</dl>
 <dl cond="shAddTime" style="display:none;">
@@ -66,7 +66,7 @@
 			        <li><label><input cond="shId" value="shId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
 			        <li><label><input cond="shName" value="shName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
 			        <li><label><input cond="shKey" value="shKey" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入KEY</label></li>
-			        <li><label><input cond="shTopic" value="shTopic" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >转发Topic</label></li>
+			        <li><label><input cond="shTopic" value="shTopic"  type="checkbox" onclick='showHideCondition(this, this.value);' >转发Topic</label></li>
 			        <li><label><input cond="shAddTime" value="shAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
 			        <li><label><input cond="shUptTime" value="shUptTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
 			        <li><label><input cond="shStatus" value="shStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>

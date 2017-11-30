@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class SrvDict implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1l;
+	private static final long serialVersionUID =         1L;
 	/**
 	 * [id]编号
 	 */

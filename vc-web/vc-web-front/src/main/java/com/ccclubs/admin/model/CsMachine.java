@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsMachine implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1l;
+	private static final long serialVersionUID =         1L;
 	/**
 	 * [csm_id]编号
 	 */
@@ -72,7 +72,7 @@ public class CsMachine implements java.io.Serializable
 	
 	private   String csmTeSerial;
 	/**
-	 * [csm_mobile]可充电储能系统编码
+	 * [csm_mobile]SIM卡
 	 */
 	
 	private   String csmMobile;
@@ -122,11 +122,6 @@ public class CsMachine implements java.io.Serializable
 	
 	private   String csmSuperSim;
 	/**
-	 * [csm_landmark]地标类型
-	 */
-	
-	private   String csmLandmark;
-	/**
 	 * [csm_v2]硬件版本
 	 */
 	
@@ -162,7 +157,7 @@ public class CsMachine implements java.io.Serializable
 	
 	private   Short csmNetType;
 	/**
-	 * [csm_pro_type]终端协议
+	 * [csm_pro_type]终端协议1:mqtt 2:808
 	 */
 	
 	private   Short csmProType;
@@ -177,12 +172,12 @@ public class CsMachine implements java.io.Serializable
 	
 	private   String csmRemark;
 	/**
-	 * [csm_update_time]备注信息
+	 * [csm_update_time]修改时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date csmUpdateTime;
 	/**
-	 * [csm_add_time]备注信息
+	 * [csm_add_time]添加时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date csmAddTime;
@@ -225,6 +220,9 @@ public class CsMachine implements java.io.Serializable
 	}
 	public Object getCsmSuitText(){
 		return resolve("csmSuitText");
+	}
+	public Object getCsmProTypeText(){
+		return resolve("csmProTypeText");
 	}
 	public Object getCsmStatusText(){
 		return resolve("csmStatusText");
@@ -384,16 +382,16 @@ public class CsMachine implements java.io.Serializable
 	public void setCsmTeSerial(String csmTeSerial){
 		this.csmTeSerial = csmTeSerial;
 	}
-	/*******************************可充电储能系统编码**********************************/	
+	/*******************************SIM卡**********************************/	
 	/**
-	* 可充电储能系统编码 [可空]      
+	* SIM卡 [可空]      
 	**/
 	public String getCsmMobile(){
 		return this.csmMobile;
 	}
 	
 	/**
-	* 可充电储能系统编码 [可空]     
+	* SIM卡 [可空]     
 	**/
 	public void setCsmMobile(String csmMobile){
 		this.csmMobile = csmMobile;
@@ -523,20 +521,6 @@ public class CsMachine implements java.io.Serializable
 	**/
 	public void setCsmSuperSim(String csmSuperSim){
 		this.csmSuperSim = csmSuperSim;
-	}
-	/*******************************地标类型**********************************/	
-	/**
-	* 地标类型 [可空]      
-	**/
-	public String getCsmLandmark(){
-		return this.csmLandmark;
-	}
-	
-	/**
-	* 地标类型 [可空]     
-	**/
-	public void setCsmLandmark(String csmLandmark){
-		this.csmLandmark = csmLandmark;
 	}
 	/*******************************硬件版本**********************************/	
 	/**
@@ -678,30 +662,30 @@ public class CsMachine implements java.io.Serializable
 	public void setCsmRemark(String csmRemark){
 		this.csmRemark = csmRemark;
 	}
-	/*******************************备注信息**********************************/	
+	/*******************************修改时间**********************************/	
 	/**
-	* 备注信息 [非空]      
+	* 修改时间 [非空]      
 	**/
 	public Date getCsmUpdateTime(){
 		return this.csmUpdateTime;
 	}
 	
 	/**
-	* 备注信息 [非空]     
+	* 修改时间 [非空]     
 	**/
 	public void setCsmUpdateTime(Date csmUpdateTime){
 		this.csmUpdateTime = csmUpdateTime;
 	}
-	/*******************************备注信息**********************************/	
+	/*******************************添加时间**********************************/	
 	/**
-	* 备注信息 [非空]      
+	* 添加时间 [非空]      
 	**/
 	public Date getCsmAddTime(){
 		return this.csmAddTime;
 	}
 	
 	/**
-	* 备注信息 [非空]     
+	* 添加时间 [非空]     
 	**/
 	public void setCsmAddTime(Date csmAddTime){
 		this.csmAddTime = csmAddTime;

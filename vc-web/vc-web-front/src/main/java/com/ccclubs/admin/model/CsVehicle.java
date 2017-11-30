@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsVehicle implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1l;
+	private static final long serialVersionUID =         1L;
 	/**
 	 * [csv_id]编号
 	 */
@@ -51,11 +51,6 @@ public class CsVehicle implements java.io.Serializable
 	 */
 	
 	private   String csvCertific;
-	/**
-	 * [csv_color]颜色
-	 */
-	
-	private   Short csvColor;
 	/**
 	 * [csv_model]车型
 	 */
@@ -240,20 +235,6 @@ public class CsVehicle implements java.io.Serializable
 	**/
 	public void setCsvCertific(String csvCertific){
 		this.csvCertific = csvCertific;
-	}
-	/*******************************颜色**********************************/	
-	/**
-	* 颜色 [可空]      
-	**/
-	public Short getCsvColor(){
-		return this.csvColor;
-	}
-	
-	/**
-	* 颜色 [可空]     
-	**/
-	public void setCsvColor(Short csvColor){
-		this.csvColor = csvColor;
 	}
 	/*******************************车型**********************************/	
 	/**

@@ -124,7 +124,6 @@ public class SrvHostController {
 			Integer val = Integer.valueOf(where);
 			c.andshIdEqualTo(val);
 		}
-//		List<SrvHost> list = srvHostService.selectByExample(query);
 		PageInfo<SrvHost> pageInfo = srvHostService.getPage(query, 0, 10);
 		List<SrvHost> list = pageInfo.getList();
 

@@ -280,20 +280,6 @@ public class CsMachineQuery {
 	private String csmSuperSimLess;
 	
 	private String csmSuperSimGreater;
-	private String csmLandmarkLike;
-	
-	private String csmLandmarkEquals;
-	private String[] csmLandmarkIn;
-	private Boolean csmLandmarkIsNull;
-	private Boolean csmLandmarkIsNotNull;
-	
-	private String csmLandmarkStart;
-	
-	private String csmLandmarkEnd;
-	
-	private String csmLandmarkLess;
-	
-	private String csmLandmarkGreater;
 	private String csmV2Like;
 	
 	private String csmV2Equals;
@@ -1689,69 +1675,6 @@ public class CsMachineQuery {
 	public String getCsmSuperSimGreater(){
 		return this.csmSuperSimGreater;
 	}
-	public CsMachineQuery setCsmLandmarkLike(String csmLandmarkLike){
-		this.csmLandmarkLike = csmLandmarkLike;
-		return this;
-	}
-	public String getCsmLandmarkLike(){
-		return this.csmLandmarkLike;
-	}
-	public CsMachineQuery setCsmLandmarkEquals(String csmLandmarkEquals){
-		this.csmLandmarkEquals = csmLandmarkEquals;
-		return this;
-	}
-	public String getCsmLandmarkEquals(){
-		return this.csmLandmarkEquals;
-	}
-	public CsMachineQuery setCsmLandmarkIn(String[] csmLandmarkIn){
-		this.csmLandmarkIn = csmLandmarkIn;
-		return this;
-	}
-	public String[] getCsmLandmarkIn(){
-		return this.csmLandmarkIn;
-	}
-	public CsMachineQuery setCsmLandmarkIsNull(Boolean csmLandmarkIsNull){
-		this.csmLandmarkIsNull = csmLandmarkIsNull;
-		return this;
-	}
-	public Boolean getCsmLandmarkIsNull(){
-		return this.csmLandmarkIsNull;
-	}
-	public CsMachineQuery setCsmLandmarkIsNotNull(Boolean csmLandmarkIsNotNull){
-		this.csmLandmarkIsNotNull = csmLandmarkIsNotNull;
-		return this;
-	}
-	public Boolean getCsmLandmarkIsNotNull(){
-		return this.csmLandmarkIsNotNull;
-	}
-	public CsMachineQuery setCsmLandmarkStart(String csmLandmarkStart){
-		this.csmLandmarkStart = csmLandmarkStart;
-		return this;
-	}
-	public String getCsmLandmarkStart(){
-		return this.csmLandmarkStart;
-	}
-	public CsMachineQuery setCsmLandmarkEnd(String csmLandmarkEnd){
-		this.csmLandmarkEnd = csmLandmarkEnd;
-		return this;
-	}
-	public String getCsmLandmarkEnd(){
-		return this.csmLandmarkEnd;
-	}
-	public CsMachineQuery setCsmLandmarkLess(String csmLandmarkLess){
-		this.csmLandmarkLess = csmLandmarkLess;
-		return this;
-	}
-	public String getCsmLandmarkLess(){
-		return this.csmLandmarkLess;
-	}
-	public CsMachineQuery setCsmLandmarkGreater(String csmLandmarkGreater){
-		this.csmLandmarkGreater = csmLandmarkGreater;
-		return this;
-	}
-	public String getCsmLandmarkGreater(){
-		return this.csmLandmarkGreater;
-	}
 	public CsMachineQuery setCsmV2Like(String csmV2Like){
 		this.csmV2Like = csmV2Like;
 		return this;
@@ -2582,9 +2505,6 @@ public class CsMachineQuery {
 		else if(this.sidx.equals("csmSuperSim")){
 			return "csm_super_sim";
 		}
-		else if(this.sidx.equals("csmLandmark")){
-			return "csm_landmark";
-		}
 		else if(this.sidx.equals("csmV2")){
 			return "csm_v2";
 		}
@@ -2964,23 +2884,6 @@ public class CsMachineQuery {
 			c.andcsmSuperSimGreaterThan(this.getCsmSuperSimGreater());
 		}else if(this.getCsmSuperSimLess()!=null){
 			c.andcsmSuperSimLessThan(this.getCsmSuperSimLess());
-		}
-		if(this.getCsmLandmarkEquals()!=null){
-			c.andcsmLandmarkEqualTo(this.getCsmLandmarkEquals());
-		}else if(this.getCsmLandmarkIsNull()!=null && this.getCsmLandmarkIsNull()){
-			c.andcsmLandmarkIsNull();
-		}else if(this.getCsmLandmarkIsNotNull()!=null && this.getCsmLandmarkIsNotNull()){
-			c.andcsmLandmarkIsNotNull();
-		}else if(this.getCsmLandmarkLike()!=null){
-			c.andcsmLandmarkLike(this.getCsmLandmarkLike());
-		}else if(this.getCsmLandmarkIn()!=null){
-			c.andcsmLandmarkIn(java.util.Arrays.asList(this.getCsmLandmarkIn()));
-		}else if(this.getCsmLandmarkStart()!=null && this.getCsmLandmarkEnd()!=null){
-			c.andcsmLandmarkBetween(this.getCsmLandmarkStart(), this.getCsmLandmarkEnd());
-		}else if(this.getCsmLandmarkGreater()!=null){
-			c.andcsmLandmarkGreaterThan(this.getCsmLandmarkGreater());
-		}else if(this.getCsmLandmarkLess()!=null){
-			c.andcsmLandmarkLessThan(this.getCsmLandmarkLess());
 		}
 		if(this.getCsmV2Equals()!=null){
 			c.andcsmV2EqualTo(this.getCsmV2Equals());

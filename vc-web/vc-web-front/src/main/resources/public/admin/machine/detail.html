@@ -80,9 +80,9 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>可充电储能系统编码：</dt>
+					<dt>SIM卡：</dt>
 					<dd>
-					<input name="csmMobile" placeholder="请输入可充电储能系统编码" class="form-control" >
+					<input name="csmMobile" placeholder="请输入SIM卡" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
@@ -140,12 +140,6 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>地标类型：</dt>
-					<dd>
-					<input name="csmLandmark" placeholder="请输入地标类型" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
 					<dt>硬件版本：</dt>
 					<dd>
 					<input name="csmV2" placeholder="请输入硬件版本" class="form-control" >
@@ -190,7 +184,11 @@
 				<dl  >
 					<dt>终端协议：</dt>
 					<dd>
-					<input name="csmProType" placeholder="请输入终端协议" class="form-control" >
+					<select class="form-control m-b" name="csmProType"  >
+                         <option></option>
+                         <option value="1">mqtt</option>
+                         <option value="2">808</option>
+                    </select>
 					</dd>
 				</dl>
 				<dl  >
@@ -206,13 +204,13 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>备注信息：</dt>
+					<dt>修改时间：</dt>
 					<dd>
 					<input name="csmUpdateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 					</dd>
 				</dl>
 				<dl  >
-					<dt>备注信息：</dt>
+					<dt>添加时间：</dt>
 					<dd>
 					<input name="csmAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 					</dd>

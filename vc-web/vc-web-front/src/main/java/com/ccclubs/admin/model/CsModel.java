@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsModel implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1l;
+	private static final long serialVersionUID =         1L;
 	/**
 	 * [csm_id]编号
 	 */

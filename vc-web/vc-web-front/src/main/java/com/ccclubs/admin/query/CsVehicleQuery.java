@@ -89,19 +89,6 @@ public class CsVehicleQuery {
 	
 	private String csvCertificGreater;
 	
-	private Short csvColorEquals;
-	private Short[] csvColorIn;
-	private Boolean csvColorIsNull;
-	private Boolean csvColorIsNotNull;
-	
-	private Short csvColorStart;
-	
-	private Short csvColorEnd;
-	
-	private Short csvColorLess;
-	
-	private Short csvColorGreater;
-	
 	private Integer csvModelEquals;
 	private Integer[] csvModelIn;
 	private Boolean csvModelIsNull;
@@ -586,62 +573,6 @@ public class CsVehicleQuery {
 	}
 	public String getCsvCertificGreater(){
 		return this.csvCertificGreater;
-	}
-	public CsVehicleQuery setCsvColorEquals(Short csvColorEquals){
-		this.csvColorEquals = csvColorEquals;
-		return this;
-	}
-	public Short getCsvColorEquals(){
-		return this.csvColorEquals;
-	}
-	public CsVehicleQuery setCsvColorIn(Short[] csvColorIn){
-		this.csvColorIn = csvColorIn;
-		return this;
-	}
-	public Short[] getCsvColorIn(){
-		return this.csvColorIn;
-	}
-	public CsVehicleQuery setCsvColorIsNull(Boolean csvColorIsNull){
-		this.csvColorIsNull = csvColorIsNull;
-		return this;
-	}
-	public Boolean getCsvColorIsNull(){
-		return this.csvColorIsNull;
-	}
-	public CsVehicleQuery setCsvColorIsNotNull(Boolean csvColorIsNotNull){
-		this.csvColorIsNotNull = csvColorIsNotNull;
-		return this;
-	}
-	public Boolean getCsvColorIsNotNull(){
-		return this.csvColorIsNotNull;
-	}
-	public CsVehicleQuery setCsvColorStart(Short csvColorStart){
-		this.csvColorStart = csvColorStart;
-		return this;
-	}
-	public Short getCsvColorStart(){
-		return this.csvColorStart;
-	}
-	public CsVehicleQuery setCsvColorEnd(Short csvColorEnd){
-		this.csvColorEnd = csvColorEnd;
-		return this;
-	}
-	public Short getCsvColorEnd(){
-		return this.csvColorEnd;
-	}
-	public CsVehicleQuery setCsvColorLess(Short csvColorLess){
-		this.csvColorLess = csvColorLess;
-		return this;
-	}
-	public Short getCsvColorLess(){
-		return this.csvColorLess;
-	}
-	public CsVehicleQuery setCsvColorGreater(Short csvColorGreater){
-		this.csvColorGreater = csvColorGreater;
-		return this;
-	}
-	public Short getCsvColorGreater(){
-		return this.csvColorGreater;
 	}
 	public CsVehicleQuery setCsvModelEquals(Integer csvModelEquals){
 		this.csvModelEquals = csvModelEquals;
@@ -1186,9 +1117,6 @@ public class CsVehicleQuery {
 		else if(this.sidx.equals("csvCertific")){
 			return "csv_certific";
 		}
-		else if(this.sidx.equals("csvColor")){
-			return "csv_color";
-		}
 		else if(this.sidx.equals("csvModel")){
 			return "csv_model";
 		}
@@ -1326,21 +1254,6 @@ public class CsVehicleQuery {
 			c.andcsvCertificGreaterThan(this.getCsvCertificGreater());
 		}else if(this.getCsvCertificLess()!=null){
 			c.andcsvCertificLessThan(this.getCsvCertificLess());
-		}
-		if(this.getCsvColorEquals()!=null){
-			c.andcsvColorEqualTo(this.getCsvColorEquals());
-		}else if(this.getCsvColorIsNull()!=null && this.getCsvColorIsNull()){
-			c.andcsvColorIsNull();
-		}else if(this.getCsvColorIsNotNull()!=null && this.getCsvColorIsNotNull()){
-			c.andcsvColorIsNotNull();
-		}else if(this.getCsvColorIn()!=null){
-			c.andcsvColorIn(java.util.Arrays.asList(this.getCsvColorIn()));
-		}else if(this.getCsvColorStart()!=null && this.getCsvColorEnd()!=null){
-			c.andcsvColorBetween(this.getCsvColorStart(), this.getCsvColorEnd());
-		}else if(this.getCsvColorGreater()!=null){
-			c.andcsvColorGreaterThan(this.getCsvColorGreater());
-		}else if(this.getCsvColorLess()!=null){
-			c.andcsvColorLessThan(this.getCsvColorLess());
 		}
 		if(this.getCsvModelEquals()!=null){
 			c.andcsvModelEqualTo(this.getCsvModelEquals());

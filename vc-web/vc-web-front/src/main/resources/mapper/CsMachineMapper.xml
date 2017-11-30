@@ -25,7 +25,6 @@
 		<result column="csm_bluetooth_psd" jdbcType="VARCHAR" property="csmBluetoothPsd" />
 		<result column="csm_mqtt_flag" jdbcType="VARCHAR" property="csmMqttFlag" />
 		<result column="csm_super_sim" jdbcType="VARCHAR" property="csmSuperSim" />
-		<result column="csm_landmark" jdbcType="VARCHAR" property="csmLandmark" />
 		<result column="csm_v2" jdbcType="VARCHAR" property="csmV2" />
 		<result column="csm_v3" jdbcType="VARCHAR" property="csmV3" />
 		<result column="csm_v3_to" jdbcType="VARCHAR" property="csmV3To" />
