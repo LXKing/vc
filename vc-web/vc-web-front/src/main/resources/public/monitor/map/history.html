@@ -4,7 +4,7 @@
 
 <head>
   <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/index.html -->
-  <base href="//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/" />
+  <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/"/>-->
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
   <title>轨迹展示&巡航</title>
@@ -32,16 +32,18 @@
 
 <body>
 <div id="container"></div>
-<script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f'></script>
+<script type="text/javascript"
+        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f'></script>
 <!-- UI组件库 1.0 -->
 <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script src="/js/map/coordtransform.js"></script>
 <script type="text/javascript">
   //创建地图
   var map = new AMap.Map('container', {
-    zoom: 4
+    zoom: 10
   });
 
-  AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function(PathSimplifier, $) {
+  AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
 
     if (!PathSimplifier.supportCanvas) {
       alert('当前环境不支持 Canvas！');
@@ -49,22 +51,18 @@
     }
 
     //just some colors
-    var colors = [
-      "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00",
-      "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707",
-      "#651067", "#329262", "#5574a6", "#3b3eac"
-    ];
+    var colors = ["#66aa00"];
 
     var pathSimplifierIns = new PathSimplifier({
       zIndex: 100,
       //autoSetFitView:false,
       map: map, //所属的地图实例
 
-      getPath: function(pathData, pathIndex) {
+      getPath: function (pathData, pathIndex) {
 
         return pathData.path;
       },
-      getHoverTitle: function(pathData, pathIndex, pointIndex) {
+      getHoverTitle: function (pathData, pathIndex, pointIndex) {
 
         if (pointIndex >= 0) {
           //point
@@ -77,9 +75,9 @@
         pathLineStyle: {
           dirArrowStyle: true
         },
-        getPathStyle: function(pathItem, zoom) {
+        getPathStyle: function (pathItem, zoom) {
 
-          var color = colors[pathItem.pathIndex % colors.length],
+          var color = colors[0],
               lineWidth = Math.round(4 * Math.pow(1.1, zoom - 3));
 
           return {
@@ -102,104 +100,155 @@
 
     $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
 
-    $.getJSON('http://a.amap.com/amap-ui/static/data/big-routes.json', function(d) {
+    var navg, total, page_no = 1, page_size = 100, hasMore = true, isFirstLoad = true;
+    var pathObjectArray = [];
+    var pathObject = {};
+    //设置name
+    pathObject.name = '车辆行驶轨迹';
 
-      $('#loadingTip').remove();
+    loadData();
 
-      var flyRoutes = [];
+    function loadData() {
+      $.getJSON(
+          'http://192.168.3.148:12006/carhistory/states?order=asc&query_fields=latitude,longitude',
+          {
+            cs_number: 'cs_number',
+            start_time: '2017-07-01 00:00:00',
+            end_time: '2017-07-30 00:00:00',
+            page_no: page_no,
+            page_size: page_size
+          },
+          function (d) {
 
-      for (var i = 0, len = d.length; i < len; i++) {
+            $('#loadingTip').remove();
 
-        if (d[i].name.indexOf('乌鲁木齐') >= 0) {
+            if (100000 !== d.code) {
+//              alert("数据请求异常！")
+              console.log("数据请求异常！")
+              return;
+            }
 
-          d.splice(i, 0, {
-            name: '飞行 - ' + d[i].name,
-            path: PathSimplifier.getGeodesicPath(
-                d[i].path[0], d[i].path[d[i].path.length - 1], 100)
-          });
+            if (d.data.carStateList.length === 0) {
+//              alert("已经没有更多数据！")
+              console.log("已经没有更多数据！")
+              return;
+            }
 
-          i++;
-          len++;
-        }
-      }
+            // 判断是否还有更多数据
+            total = d.data.total;
+            if (page_no * page_size >= total) {
+              hasMore = false;
+            }
 
-      d.push.apply(d, flyRoutes);
+            var pathRoutes = [];
+            var item
+            for (var i = 0, len = d.data.carStateList.length; i < len; i++) {
+              item = d.data.carStateList[i];
+              if (typeof(item.longitude) !== 'undefined' && typeof(item.latitude) !== 'undefined'
+                  && item.longitude !== null && item.latitude !== null && item.longitude > 0
+                  && item.latitude > 0) {
+                pathRoutes.push(coordtransform.wgs84togcj02(item.longitude, item.latitude));
+              }
+            }
+            if (pathRoutes.length === 0) {
+//              alert("没有更多GPS数据！");
+              console.log("没有更多GPS数据！");
+              return;
+            }
 
-      pathSimplifierIns.setData(d);
+            if (isFirstLoad) {
+              //设置path数组
+              pathObject.path = pathRoutes;
+              //当前仅有1条轨迹信息
+              pathObjectArray.push(pathObject);
 
-      //initRoutesContainer(d);
+              pathSimplifierIns.setData(pathObjectArray);
 
-      function onload() {
-        pathSimplifierIns.renderLater();
-      }
+              //initRoutesContainer(d);
 
-      function onerror(e) {
-        alert('图片加载失败！');
-      }
+              //创建一个巡航器
+              navg = pathSimplifierIns.createPathNavigator(0, {
+//              loop: true,
+                speed: 1000,
+                pathNavigatorStyle: {
+                  width: 16,
+                  height: 32,
+                  content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
+                      onerror),
+                  strokeStyle: null,
+                  fillStyle: null,
+                  //经过路径的样式
+                  pathLinePassedStyle: {
+                    lineWidth: 6,
+                    strokeStyle: 'blue',
+                    dirArrowStyle: {
+                      stepSpace: 15,
+                      strokeStyle: 'red'
+                    }
+                  }
+                }
+              });
 
-      //创建一个巡航器
-      var navg0 = pathSimplifierIns.createPathNavigator(1, {
-        loop: true, //循环播放
-        speed: 500000
-      });
+              navg.start();
 
-      navg0.start();
+            } else {
+              isFirstLoad = false;
 
+              var cursor = navg.getCursor().clone(), //保存巡航器的位置
+                  status = navg.getNaviStatus();
 
-      var navg1 = pathSimplifierIns.createPathNavigator(0, {
-        loop: true,
-        speed: 1000000,
-        pathNavigatorStyle: {
-          width: 24,
-          height: 24,
-          //使用图片
-          content: PathSimplifier.Render.Canvas.getImageContent('./imgs/plane.png', onload, onerror),
-          strokeStyle: null,
-          fillStyle: null,
-          //经过路径的样式
-          pathLinePassedStyle: {
-            lineWidth: 6,
-            strokeStyle: 'black',
-            dirArrowStyle: {
-              stepSpace: 15,
-              strokeStyle: 'red'
+              pathObjectArray[0].path = pathRoutes;
+              pathSimplifierIns.setData(pathObjectArray); //延展路径
+
+              //重新建立一个巡航器
+              navg = pathSimplifierIns.createPathNavigator(0, {
+                //loop: true, //循环播放
+                speed: 1000 //巡航速度，单位千米/小时
+              });
+
+              if (status !== 'stop') {
+                navg.start();
+              }
+
+              //恢复巡航器的位置
+              if (cursor.idx >= 0) {
+                navg.moveToPoint(cursor.idx, cursor.tail);
+              }
             }
           }
+      );
+    }
+
+    function onload() {
+      pathSimplifierIns.renderLater();
+    }
+
+    function onerror(e) {
+      alert('图片加载失败！');
+    }
+
+    /**
+     * 5 秒检查一次轨迹是否完成
+     */
+    function expandPath() {
+
+      function doExpand() {
+
+        if (!hasMore) {
+          return false;
         }
-      });
 
-      navg1.start();
+        loadData();
 
-      var navg2 = pathSimplifierIns.createPathNavigator(7, {
-        loop: true,
-        speed: 500000,
-        pathNavigatorStyle: {
-          width: 16,
-          height: 32,
-          content: PathSimplifier.Render.Canvas.getImageContent('./imgs/car.png', onload, onerror),
-          strokeStyle: null,
-          fillStyle: null
-        }
-      });
+        return true;
+      }
 
-      navg2.start();
+      if (doExpand()) {
+        setTimeout(expandPath, 1000);
+      }
+    }
 
-      var navg3 = pathSimplifierIns.createPathNavigator(5, {
-        loop: true,
-        speed: 500000,
-        pathNavigatorStyle: {
-          autoRotate: false, //禁止调整方向
-          pathLinePassedStyle: null,
-          width: 24,
-          height: 24,
-          content: PathSimplifier.Render.Canvas.getImageContent('./imgs/car-front.png', onload, onerror),
-          strokeStyle: null,
-          fillStyle: null
-        }
-      });
-
-      navg3.start();
-    });
+    expandPath();
   });
 </script>
 </body>

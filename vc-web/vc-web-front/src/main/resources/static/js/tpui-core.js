@@ -593,12 +593,14 @@ function loadFormData(obj) {
                         $(this).click(function () {
                             O.showText.val($(this).text());
                             O.$value.val($(this).attr("value"));
+                            O.$value.trigger("input");
                             O.showWrapper.hide();
                         });
                     });
                     O.clearBtn.click(function () {
                         O.showText.val("");
                         O.$value.val("");
+                        O.$value.trigger("input");
                         O.showWrapper.hide();
                     });
                 }

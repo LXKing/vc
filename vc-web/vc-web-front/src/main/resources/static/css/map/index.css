@@ -66,6 +66,8 @@ border-bottom:none;
 h3.poi-title{
 margin:3px 0;
 font-size:13px;
+font-weight: 600;
+color: black;
 }
 .poibox .poi-info-left{
 padding-left:8px
