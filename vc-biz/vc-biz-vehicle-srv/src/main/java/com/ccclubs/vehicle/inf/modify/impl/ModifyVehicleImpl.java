@@ -40,6 +40,7 @@ public class ModifyVehicleImpl implements ModifyVehicleInf {
         if (null==vehicle){
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
+        //TODO：需要校验车牌号，发动机号唯一性
         BeanUtils.copyProperties(input, vehicle);
         vehicle.setCsvVin(input.getVin());
         try {

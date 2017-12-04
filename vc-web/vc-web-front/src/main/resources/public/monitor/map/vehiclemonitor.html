@@ -1,0 +1,376 @@
+<!-- MarkerList完整示例 -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/index.html -->
+  <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/" />-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>完整示例</title>
+  <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+  <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <link href="/css/animate.min.css" rel="stylesheet">
+  <link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+  <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+  <link rel="stylesheet" href="/layui/css/layui.css?t=1510164124207" media="all">
+  <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">    <!-- jqgrid-->
+  <link href="/css/cnmain.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/css/map/index.css">
+</head>
+
+<body>
+<div id="outer-box">
+  <div id="container" tabindex="0"></div>
+  <div id="panel" class="scrollbar1">
+    <input style="margin-top: 16px;" name="cssCarEquals" placeholder="请输入车架号"
+           class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/query">
+    <div id="test1" style="height: 45px;"></div>
+    <ul id="myList">
+    </ul>
+  </div>
+</div>
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/js/jquery.ResizableColumns.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/store.js"></script>
+<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/js/contabs.min.js"></script>
+<script src="/js/layer/layer.js"></script>
+<script src="/js/tpui-core.js"></script>
+<script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+<script src="/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="/layui/layui.all.js?t=1510164124207"></script>
+
+<script src="/js/map/coordtransform.js"></script>
+<script src="/js/moment.js"></script>
+<script src="/js/timeago.min.js"></script>
+<script type="text/javascript"
+        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f'></script>
+<!-- UI组件库 1.0 -->
+<script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+
+<script type="text/javascript">
+  var limitSize = 10, params = {page: 1, rows: limitSize, sidx: 'cssAddTime', sord: 'desc'};
+  var url = getServUrl("/monitor/state/list");
+  var laypage;
+
+  $(".searchinput").each(function () {
+    $(this).searchinput({});
+  });
+  //创建地图
+  var map = new AMap.Map('container', {
+    zoom: 9
+  });
+
+  var timeagoInstance = new timeago();
+
+  layui.use('laypage', function () {
+    laypage = layui.laypage;
+  });
+
+  AMapUI.loadUI(['misc/MarkerList', 'overlay/SimpleMarker', 'overlay/SimpleInfoWindow'],
+      function (MarkerList, SimpleMarker, SimpleInfoWindow) {
+
+        //即jQuery/Zepto
+        var $ = MarkerList.utils.$;
+
+        var defaultIconStyle = 'red', //默认的图标样式
+            hoverIconStyle = 'green', //鼠标hover时的样式
+            selectedIconStyle = 'purple' //选中时的图标样式
+        ;
+
+        var markerList = new MarkerList({
+          map: map,
+          //ListElement对应的父节点或者ID
+          listContainer: "myList", //document.getElementById("myList"),
+          //选中后显示
+
+          //从数据中读取位置, 返回lngLat
+          getPosition: function (item) {
+            return coordtransform.wgs84togcj02(item.cssLongitude, item.cssLatitude);
+          },
+          //数据ID，如果不提供，默认使用数组索引，即index
+          getDataId: function (item, index) {
+            return item.cssId;
+          },
+          getInfoWindow: function (data, context, recycledInfoWindow) {
+
+            if (recycledInfoWindow) {
+
+              recycledInfoWindow.setInfoTitle(data.cssNumber);
+              recycledInfoWindow.setInfoBody(data.cssCarText);
+
+              return recycledInfoWindow;
+            }
+
+            return new SimpleInfoWindow({
+              infoTitle: data.cssNumber,
+              infoBody: data.cssCarText,
+              offset: new AMap.Pixel(0, -37)
+            });
+          },
+          //构造marker用的options对象, content和title支持模板，也可以是函数，返回marker实例，或者返回options对象
+          getMarker: function (data, context, recycledMarker) {
+
+            var label = String.fromCharCode('A'.charCodeAt(0) + context.index);
+
+            if (recycledMarker) {
+              recycledMarker.setIconLabel(label);
+              return;
+            }
+
+            return new SimpleMarker({
+              containerClassNames: 'my-marker',
+              iconStyle: defaultIconStyle,
+              iconLabel: label
+            });
+          },
+          //构造列表元素，与getMarker类似，可以是函数，返回一个dom元素，或者模板 html string
+          getListElement: function (data, context, recycledListElement) {
+
+            var label = String.fromCharCode('A'.charCodeAt(0) + context.index);
+
+            var addTimeText = timeagoInstance.format(data.cssAddTime, 'zh_CN');
+            var innerHTML;
+
+            var durationMin = moment().diff(moment(data.cssAddTime), 'minutes');
+            if (durationMin <= 10) {
+              //使用模板创建
+              innerHTML = MarkerList.utils.template(
+                  '<div class="poi-info-left">' +
+                  '    <h3 class="poi-title">' +
+                  '        <%- label %>. <%- data.cssNumber %> ' +
+                  '    <font color="#66aa00" style="font-weight: bold">在线</font>' +
+                  '    </h3>' +
+                  '    <div class="poi-info">' +
+                  '        <span class="poi-price">' +
+                  '            <%= data.cssCarText %>' +
+                  '        </span>' +
+                  '        <p class="poi-addr">累计里程：<%- data.cssObdMile %> km</p>' +
+                  '        <p class="poi-addr" title="<%- data.cssAddTime %>">最后报文时间：<%- addTimeText %></p>'
+                  +
+                  '    </div>' +
+                  '</div>', {
+                    data: data,
+                    label: label,
+                    addTimeText: addTimeText,
+                  });
+            } else {
+              //使用模板创建
+              innerHTML = MarkerList.utils.template(
+                  '<div class="poi-info-left">' +
+                  '    <h3 class="poi-title">' +
+                  '        <%- label %>. <%- data.cssNumber %> ' +
+                  '    <font color="#f00" style="font-weight: bold">离线</font>' +
+                  '    </h3>' +
+                  '    <div class="poi-info">' +
+                  '        <span class="poi-price">' +
+                  '            <%= data.cssCarText %>' +
+                  '        </span>' +
+                  '        <p class="poi-addr">累计里程：<%- data.cssObdMile %> km</p>' +
+                  '        <p class="poi-addr"  title="<%- data.cssAddTime %>">最后报文时间：<%- addTimeText %></p>'
+                  +
+                  '    </div>' +
+                  '</div>', {
+                    data: data,
+                    label: label,
+                    addTimeText: addTimeText,
+                  });
+            }
+
+            if (recycledListElement) {
+              recycledListElement.innerHTML = innerHTML;
+              return recycledListElement;
+            }
+
+            return '<li class="poibox">' +
+                innerHTML +
+                '</li>';
+          },
+          //列表节点上监听的事件
+          listElementEvents: ['click', 'mouseenter', 'mouseleave'],
+          //marker上监听的事件
+          markerEvents: ['click', 'mouseover', 'mouseout'],
+          //makeSelectedEvents:false,
+          selectedClassNames: 'selected',
+          autoSetFitView: true
+        });
+
+        window.markerList = markerList;
+
+        markerList.on('selectedChanged', function (event, info) {
+
+          if (info.selected) {
+
+            console.log(info);
+
+            if (info.selected.marker) {
+              //更新为选中样式
+              info.selected.marker.setIconStyle(selectedIconStyle);
+            }
+
+            //选中并非由列表节点上的事件触发，将关联的列表节点移动到视野内
+            if (!info.sourceEventInfo.isListElementEvent) {
+
+              if (info.selected.listElement) {
+                scrollListElementIntoView($(info.selected.listElement));
+              }
+            }
+          }
+
+          if (info.unSelected && info.unSelected.marker) {
+            //更新为默认样式
+            info.unSelected.marker.setIconStyle(defaultIconStyle);
+          }
+        });
+
+        markerList.on('listElementMouseenter markerMouseover', function (event, record) {
+
+          if (record && record.marker) {
+
+            forcusMarker(record.marker);
+
+            //this.openInfoWindowOnRecord(record);
+
+            //非选中的id
+            if (!this.isSelectedDataId(record.id)) {
+              //设置为hover样式
+              record.marker.setIconStyle(hoverIconStyle);
+              //this.closeInfoWindow();
+            }
+          }
+        });
+
+        markerList.on('listElementMouseleave markerMouseout', function (event, record) {
+
+          if (record && record.marker) {
+
+            if (!this.isSelectedDataId(record.id)) {
+              //恢复默认样式
+              record.marker.setIconStyle(defaultIconStyle);
+            }
+          }
+        });
+
+        //数据输出完成
+        markerList.on('renderComplete', function (event, records) {
+//          checkBtnStats();
+        });
+
+        var $vinId = $("input[name='cssCarEquals']");
+
+        $vinId.on('input', function (e) {
+          // 这里可以写你想要的验证代码；
+//          alert($vinId.val());
+          if ($vinId.val() === '') {
+            params.page = 1;
+            params.cssCarEquals = undefined;
+            loadData(url);
+          } else {
+            params.page = 1;
+            params.cssCarEquals = $vinId.val();
+            loadData(url);
+          }
+        });
+
+        loadData(url);
+
+        //加载数据
+        function loadData(src, callback) {
+
+          $.getJSON(src, params, function (data) {
+
+            markerList._dataSrc = src;
+
+            //渲染数据
+            markerList.render(data.data);
+
+            //执行一个laypage实例
+            laypage.render({
+              elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+              , count: data.count || 0//数据总数，从服务端得到
+              , limit: limitSize
+              , layout: ['prev', 'next']
+              , jump: function (obj, first) {
+                //obj包含了当前分页的所有参数，比如：
+                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                console.log(obj.limit); //得到每页显示的条数
+
+                //首次不执行
+                if (!first) {
+                  //do something
+                  params.page = obj.curr;
+                  pageLoadData(url);
+                }
+              }
+            });
+
+            if (callback) {
+              callback(null, data);
+            }
+          });
+        }
+
+        //加载数据
+        function pageLoadData(src, callback) {
+
+          $.getJSON(src, params, function (data) {
+
+            markerList._dataSrc = src;
+
+            //渲染数据
+            markerList.render(data.data);
+
+            if (callback) {
+              callback(null, data);
+            }
+          });
+        }
+
+        function forcusMarker(marker) {
+          marker.setTop(true);
+
+          //不在地图视野内
+          if (!(map.getBounds().contains(marker.getPosition()))) {
+
+            //移动到中心
+            map.setCenter(marker.getPosition());
+          }
+        }
+
+        function isElementInViewport(el) {
+          var rect = el.getBoundingClientRect();
+
+          return (
+              rect.top >= 0 &&
+              rect.left >= 0 &&
+              rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+              && /*or $(window).height() */
+              rect.right <= (window.innerWidth
+                  || document.documentElement.clientWidth) /*or $(window).width() */
+          );
+        }
+
+        function scrollListElementIntoView($listEle) {
+
+          if (!isElementInViewport($listEle.get(0))) {
+            $('#panel').scrollTop($listEle.offset().top - $listEle.parent().offset().top);
+          }
+
+          //闪动一下
+          $listEle
+          .one('webkitAnimationEnd oanimationend msAnimationEnd animationend',
+              function (e) {
+                $(this).removeClass('flash animated');
+              }).addClass('flash animated');
+        }
+      });
+
+</script>
+</body>
+
+</html>
