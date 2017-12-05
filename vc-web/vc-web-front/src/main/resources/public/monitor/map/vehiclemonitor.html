@@ -49,7 +49,7 @@
 <script src="/js/moment.js"></script>
 <script src="/js/timeago.min.js"></script>
 <script type="text/javascript"
-        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f'></script>
+        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f&plugin=AMap.Geocoder'></script>
 <!-- UI组件库 1.0 -->
 <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 
@@ -70,6 +70,11 @@
 
   layui.use('laypage', function () {
     laypage = layui.laypage;
+  });
+
+  var geocoder = new AMap.Geocoder({
+    radius: 1000,
+    extensions: "all"
   });
 
   AMapUI.loadUI(['misc/MarkerList', 'overlay/SimpleMarker', 'overlay/SimpleInfoWindow'],
@@ -99,17 +104,108 @@
           },
           getInfoWindow: function (data, context, recycledInfoWindow) {
 
+            var address = '正在加载...';
+
+            geocoder.getAddress(coordtransform.wgs84togcj02(data.cssLongitude, data.cssLatitude),
+                function (status, result) {
+                  if (status === 'complete' && result.info === 'OK') {
+                    address = result.regeocode.formattedAddress;
+                  } else {
+                    address = '未知';
+                  }
+                  $('#address').html(address);
+                });
+
+            var addTimeText = timeagoInstance.format(data.cssAddTime, 'zh_CN');
+            var tpl = '<div style="margin: 0;padding: 8px;">' +
+                '<p style="line-height: 32px;">车机号：<%- data.cssNumber %>，车架号：<%- data.cssCarText %><p>'
+                +
+                '<div class="layui-form layui-border-box layui-table-view">' +
+
+                '<div class="layui-table-box">' +
+                '<div class="layui-table-header">' +
+                '<table cellspacing="0" cellpadding="0" border="0" class="layui-table">' +
+                '<thead><tr>' +
+                '<th>' +
+                '<div class="layui-table-cell laytable-cell-2-username"><span>累计里程</span></div>' +
+                '</th>' +
+                '<th>' +
+                '<div class="layui-table-cell laytable-cell-2-experience"><span>SOC</span></div>'
+                +
+                '</th>' +
+                '<th><div class="layui-table-cell laytable-cell-2-sign"><span>最后报文时间</span></div>'
+                +
+                '</th>' +
+                '</tr></thead>' +
+                '</table>' +
+                '</div>' +
+                '<div class="layui-table-body layui-table-main">' +
+                '<table cellspacing="0" cellpadding="0" border="0" class="layui-table"><tbody>' +
+                '<tr class="">' +
+                '<td data-field="username"><div class="layui-table-cell laytable-cell-2-username"><%- data.cssObdMile %> km</div></td>'
+                +
+                '<td data-field="experience"><div class="layui-table-cell laytable-cell-2-experience" title="<%- data.cssChargingText %>"><%- data.cssEvBattery %> %(<%- data.cssChargingText %>)</div></td>'
+                +
+                '<td data-field="sign"><div class="layui-table-cell laytable-cell-2-sign" title="<%- data.cssAddTime %>"><%- addTimeText %></div></td>'
+                +
+                '</tr>' +
+                '</tbody></table>' +
+                '</div>' +
+
+                '<div class="layui-table-box">' +
+                '<div class="layui-table-header">' +
+                '<table cellspacing="0" cellpadding="0" border="0" class="layui-table">' +
+                '<thead><tr>' +
+                '<th>' +
+                '<div class="layui-table-cell laytable-cell-2-username"><span>车速</span></div>' +
+                '</th>' +
+                '<th>' +
+                '<div class="layui-table-cell laytable-cell-2-experience"><span>转速</span></div>' +
+                '</th>' +
+                '<th><div class="layui-table-cell laytable-cell-2-sign"><span>硬件地球卫星坐标</span></div>'
+                +
+                '</th>' +
+                '</tr></thead>' +
+                '</table>' +
+                '</div>' +
+                '<div class="layui-table-body layui-table-main">' +
+                '<table cellspacing="0" cellpadding="0" border="0" class="layui-table"><tbody>' +
+                '<tr>' +
+                '<td><div class="layui-table-cell laytable-cell-2-username"><%- data.cssSpeed %> km/h</div></td>'
+                +
+                '<td><div class="layui-table-cell laytable-cell-2-experience"><%- data.cssMotor %> r/min</div></td>'
+                +
+                '<td><div class="layui-table-cell laytable-cell-2-sign" title="硬件地球卫星坐标"><%- data.cssLongitude %>,<%- data.cssLatitude %></div></td>'
+                +
+                '</tr>' +
+                '<tr>' +
+                '<td colspan="3"><div class="layui-table-cell">当前地址：<span id="address"><%- address %></span></div></td>'
+                +
+                '</tr>' +
+                '</tbody></table>' +
+                '</div>' +
+
+                '</div>' +
+                '<style>.laytable-cell-2-username{ width: 100px; }.laytable-cell-2-experience{ width: 120px; }.laytable-cell-2-sign{ width: 200px; }</style>'
+                +
+                '</div>' +
+                '</div>';
+
+            //MarkerList.utils.template支持underscore语法的模板
+            var content = MarkerList.utils.template(tpl, {
+              data: data,
+              address: address,
+              addTimeText: addTimeText,
+              dataIndex: context.index
+            });
+
             if (recycledInfoWindow) {
-
-              recycledInfoWindow.setInfoTitle(data.cssNumber);
-              recycledInfoWindow.setInfoBody(data.cssCarText);
-
+              recycledInfoWindow.setContent(content);
               return recycledInfoWindow;
             }
 
-            return new SimpleInfoWindow({
-              infoTitle: data.cssNumber,
-              infoBody: data.cssCarText,
+            return new AMap.InfoWindow({
+              content: content,
               offset: new AMap.Pixel(0, -37)
             });
           },
@@ -206,8 +302,6 @@
 
           if (info.selected) {
 
-            console.log(info);
-
             if (info.selected.marker) {
               //更新为选中样式
               info.selected.marker.setIconStyle(selectedIconStyle);
@@ -259,6 +353,7 @@
         //数据输出完成
         markerList.on('renderComplete', function (event, records) {
 //          checkBtnStats();
+          console.log(records);
         });
 
         var $vinId = $("input[name='cssCarEquals']");
@@ -296,10 +391,6 @@
               , limit: limitSize
               , layout: ['prev', 'next']
               , jump: function (obj, first) {
-                //obj包含了当前分页的所有参数，比如：
-                console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
-                console.log(obj.limit); //得到每页显示的条数
-
                 //首次不执行
                 if (!first) {
                   //do something
