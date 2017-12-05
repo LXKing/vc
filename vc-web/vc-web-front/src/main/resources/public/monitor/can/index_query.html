@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="cscId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="cscIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cscAccess" style="display:none;">
+				<dt>接入商</dt>
+				<dd  >
+					<input  name="cscAccessEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+				</dd>
+			</dl>
+<dl cond="cscNumber" >
+				<dt>车机号</dt>
+				<dd  >
+					<input  name="cscNumberEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
+				</dd>
+			</dl>
+<dl cond="cscCar" >
+				<dt>车辆</dt>
+				<dd  >
+					<input  name="cscCarEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/query">
+				</dd>
+			</dl>
+<dl cond="cscModel" style="display:none;">
+				<dt>适配车型</dt>
+				<dd  >
+					<input  name="cscModelEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cscType" style="display:none;">
+				<dt>CAN类型</dt>
+				<dd  >
+					<select class="form-control"  name="cscTypeEquals"  >
+	                    <option></option>
+                         <option value="1">11bit</option>
+                         <option value="2">29bit</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="cscOrder" style="display:none;">
+				<dt>订单号</dt>
+				<dd  >
+					<input  name="cscOrderEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cscData" style="display:none;">
+				<dt>报文数据</dt>
+				<dd  >
+					<input  name="cscDataEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cscUploadTime" style="display:none;">
+				<dt>报文时间</dt>
+				<dd class="timergroup" >
+					<input  name="cscUploadTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cscUploadTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="cscAddTime" style="display:none;">
+				<dt>接收时间</dt>
+				<dd class="timergroup" >
+					<input  name="cscAddTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cscAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="cscStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="cscStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="cscId" value="cscId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="cscAccess" value="cscAccessText"  type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
+			        <li><label><input cond="cscNumber" value="cscNumberText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="cscCar" value="cscCarText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车辆</label></li>
+			        <li><label><input cond="cscModel" value="cscModel"  type="checkbox" onclick='showHideCondition(this, this.value);' >适配车型</label></li>
+			        <li><label><input cond="cscType" value="cscTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >CAN类型</label></li>
+			        <li><label><input cond="cscOrder" value="cscOrder"  type="checkbox" onclick='showHideCondition(this, this.value);' >订单号</label></li>
+			        <li><label><input cond="cscData" value="cscData"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文数据</label></li>
+			        <li><label><input cond="cscUploadTime" value="cscUploadTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文时间</label></li>
+			        <li><label><input cond="cscAddTime" value="cscAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >接收时间</label></li>
+			        <li><label><input cond="cscStatus" value="cscStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

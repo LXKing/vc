@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsCanMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsCan">
+		<result column="csc_id" jdbcType="BIGINT" property="cscId" />
+		<result column="csc_access" jdbcType="INTEGER" property="cscAccess" />
+		<result column="csc_number" jdbcType="VARCHAR" property="cscNumber" />
+		<result column="csc_car" jdbcType="INTEGER" property="cscCar" />
+		<result column="csc_model" jdbcType="SMALLINT" property="cscModel" />
+		<result column="csc_type" jdbcType="SMALLINT" property="cscType" />
+		<result column="csc_order" jdbcType="BIGINT" property="cscOrder" />
+		<result column="csc_data" jdbcType="VARCHAR" property="cscData" />
+		<result column="csc_upload_time" jdbcType="TIMESTAMP" property="cscUploadTime" />
+		<result column="csc_add_time" jdbcType="TIMESTAMP" property="cscAddTime" />
+		<result column="csc_status" jdbcType="TINYINT" property="cscStatus" />
+	</resultMap>
+	
+	
+</mapper>

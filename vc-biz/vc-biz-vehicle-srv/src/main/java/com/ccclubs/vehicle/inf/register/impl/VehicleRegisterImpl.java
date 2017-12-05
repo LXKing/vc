@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -75,14 +76,40 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
     JSONObject outputItem;
     CsModel model;
     CsVehicle vehicle;
+    CsVehicle vehicleCarNO;
+    CsVehicle vehicleEngineNo;
     //CsMachine machine;
     SrvHost host;
     for (VehicleRegisterInput input : inputs) {
       model = queryModelService.queryModelByFlag(input.getCsvModel());
       vehicle = queryVehicleService.queryVehicleByVin(input.getCsvVin());
+      vehicleCarNO = StringUtils.isEmpty(input.getCsvCarNo()) ? null
+          : queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo());
+      vehicleEngineNo = StringUtils.isEmpty(input.getCsvEngineNo()) ? null
+          : queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo());
       //machine = terminalService.queryCsMachineByTeNo(input.getTeNo());
       host = queryAppInfoService.queryHostByAppid(appId);
       outputItem = new JSONObject();
+      if (null != vehicleCarNO) {
+        outputItem.put("vin", vehicle.getCsvVin());
+        outputItem.put("errorMsg", "csvCarNo aready exists");
+        output.getFailure().add(outputItem);
+        continue;
+      } else {
+        //重置csvCarNo为null
+        input.setCsvCarNo(null);
+      }
+
+      if (null != vehicleEngineNo) {
+        outputItem.put("vin", vehicle.getCsvVin());
+        outputItem.put("errorMsg", "csvEngineNo aready exists");
+        output.getFailure().add(outputItem);
+        continue;
+      } else {
+        //重置csvEngineNo为null
+        input.setCsvEngineNo(null);
+      }
+
       if (null == vehicle) {
         vehicle = new CsVehicle();
         // 异常数据: 车型不存在

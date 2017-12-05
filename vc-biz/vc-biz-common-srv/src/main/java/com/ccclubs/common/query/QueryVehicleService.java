@@ -39,6 +39,40 @@ public class QueryVehicleService {
     return null;
   }
 
+  /**
+   * 查询车辆，由于存在批量注册车辆，查询车辆暂时不走缓存
+   *
+   * @param carNo 车辆车牌号码
+   * @return 车辆 CsVehicle
+   */
+  public CsVehicle queryVehicleByCarNo(String carNo) {
+    CsVehicleExample example = new CsVehicleExample();
+    CsVehicleExample.Criteria criteria = example.createCriteria();
+    criteria.andCsvCarNoEqualTo(carNo);
+    List<CsVehicle> list = dao.selectByExample(example);
+    if (list.size() > 0) {
+      return list.get(0);
+    }
+    return null;
+  }
+
+  /**
+   * 查询车辆，由于存在批量注册车辆，查询车辆暂时不走缓存
+   *
+   * @param engineNo 车辆发动机号码
+   * @return 车辆 CsVehicle
+   */
+  public CsVehicle queryVehicleByEngineNo(String engineNo) {
+    CsVehicleExample example = new CsVehicleExample();
+    CsVehicleExample.Criteria criteria = example.createCriteria();
+    criteria.andCsvEngineNoEqualTo(engineNo);
+    List<CsVehicle> list = dao.selectByExample(example);
+    if (list.size() > 0) {
+      return list.get(0);
+    }
+    return null;
+  }
+
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})

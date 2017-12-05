@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: web-front
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      uri: ${spring.cloud.config.uri}
+mybatis:
+  scan:
+    basePackage: com.ccclubs.**.orm.mapper

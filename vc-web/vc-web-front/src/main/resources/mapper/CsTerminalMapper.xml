@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsTerminalMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsTerminal">
+		<result column="cst_id" jdbcType="BIGINT" property="cstId" />
+		<result column="cst_idd" jdbcType="VARCHAR" property="cstIdd" />
+		<result column="cst_model" jdbcType="VARCHAR" property="cstModel" />
+		<result column="cst_made" jdbcType="VARCHAR" property="cstMade" />
+		<result column="cst_province" jdbcType="VARCHAR" property="cstProvince" />
+		<result column="cst_city" jdbcType="VARCHAR" property="cstCity" />
+		<result column="cst_color" jdbcType="SMALLINT" property="cstColor" />
+		<result column="cst_number" jdbcType="VARCHAR" property="cstNumber" />
+		<result column="cst_mobile" jdbcType="VARCHAR" property="cstMobile" />
+		<result column="cst_update_time" jdbcType="TIMESTAMP" property="cstUpdateTime" />
+		<result column="cst_add_time" jdbcType="TIMESTAMP" property="cstAddTime" />
+		<result column="cst_status" jdbcType="TINYINT" property="cstStatus" />
+	</resultMap>
+	
+	
+</mapper>

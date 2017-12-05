@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<title>H+ 后台主题UI框架 - 主页</title>
+
+		<meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+		<meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+
+		<!--[if lt IE 8]>
+    	<meta http-equiv="refresh" content="0;ie.html" />
+    	<![endif]-->
+
+		<link rel="shortcut icon" href="favicon.ico">
+		<link href="css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<link href="css/animate.min.css" rel="stylesheet">
+		<link href="css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="css/style/index.css" rel="stylesheet">
+		<style type="text/css">
+			/*弹出iframe 设置最小宽度*/
+			.layer-anim{
+				min-width: 763px !important;
+			}
+		</style>
+	</head>
+
+	<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+		<div id="wrapper">
+			<!--左侧导航开始-->
+			<nav class="navbar-default navbar-static-side" role="navigation">
+				<div class="nav-close"><i class="fa fa-times-circle"></i>
+				</div>
+				<div class="sidebar-collapse">
+					<ul class="nav leftnav" id="side-menu">
+						<div class="img-box">
+							<img src="/img/Page1.png">
+						</div>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">基础信息</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="base/dict/index.html">字典管理</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="base/access/index.html">接入商管理</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">车辆管理</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="admin/model/index.html">车型管理</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="admin/vehicle/index.html?v=2">车辆管理</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">T-box管理</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="admin/machine/index.html">T-box管理</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">车辆控制管理</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="control/struct/index.html">车辆控制指令</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">监控管理</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="monitor/register/index.html">TBox注册信息</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="monitor/state/index.html">车辆实时状态信息</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="monitor/map/vehiclemonitor.html">车辆地图监控</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="monitor/can/index.html">车辆实时CAN信息</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="###">车辆历史数据</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="###">车辆历史CAN数据</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="monitor/map/history.html">车辆历史轨迹</a>
+								</li>
+							</ul>
+						</li>
+
+						<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">新能源车监控管理</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+								<li>
+									<a class="J_menuItem" href="###">新能源车实时数据</a>
+								</li>
+								<li>
+									<a class="J_menuItem" href="###">新能源车历史数据</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<!--左侧导航结束-->
+			<!--右侧部分开始-->
+			<div id="page-wrapper" class="gray-bg dashbard-1" style="overflow:hidden">
+				<div class="row border-bottom">
+					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+						<div class="navbar-header">
+							<div class="select"><span>选择模块</span>
+								<ul class="select-wrap hide">
+									
+								</ul>
+							</div>
+							<div class="username">长安出行账号</div>
+						</div>
+					</nav>
+				</div>
+
+				<div class="row J_mainContent" id="content-main">
+					<iframe class="J_iframe" name="iframe1" width="100%" height="100%" src="index_v1.html?v=4.0" frameborder="0" data-id="index_v1.html" seamless></iframe>
+				</div>
+			</div>
+		</div>
+
+		<script id="firstNav" type="x-tmpl-mustache">
+			{{#firstNav}}
+			<li class="one" data-id='{{spId}}'>{{spName}}</li>
+			{{/firstNav}}
+		</script>
+
+		<script id="leftNav" type="x-tmpl-mustache">
+		{{#arr}}
+			<li class="two">
+				<a href="#">
+				<i class="fa fa-cutlery"></i>
+				<span class="nav-label">{{spName}}</span>
+				{{#arrows}}
+				<span class="fa arrow"></span>
+				{{/arrows}}
+				</a>
+				<ul class="nav nav-second-level">
+					{{#thirdarr}}
+					<li>
+						<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
+					</li>
+					{{/thirdarr}}
+				</ul>
+			</li>
+		{{/arr}}
+		</script>
+
+
+
+		<script src="js/jquery.min.js?v=2.1.4"></script>
+		<script src="js/bootstrap.min.js?v=3.3.5"></script>
+		<script src="js/index.js"></script>
+		<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+		<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+		<script src="js/plugins/layer/layer.min.js"></script>
+		<script src="js/hplus.min.js?v=4.0.0"></script>
+		<script type="text/javascript" src="js/contabs.min.js"></script>
+		<script src="js/plugins/pace/pace.min.js"></script>
+		<script src="js/mustache.js"></script>
+		<script src="js/authorized.js"></script>
+		<script type="text/javascript"></script>
+
+	</body>
+
+</html>
