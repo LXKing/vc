@@ -26,7 +26,8 @@ dubbo:
   provider:
     timeout: 120000
     retries: -1
-  
+  monitor:
+    protocol: registry
 
 
 

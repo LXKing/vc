@@ -20,7 +20,7 @@ public class StatisticsJob implements Runnable {
 
     private long unitTime;
 
-    @Reference
+    @Reference(version = "1.0.0")
     private StatisticsExecutor statisticsExecutor;
 
     //防止不包含必要参数的初始化。
