@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.jwt.AuthenticationService;
+import com.ccclubs.jwt.JwtManage;
 import com.ccclubs.manage.dto.CsMachineInput;
 import com.ccclubs.manage.dto.CsManageOutput;
 import com.ccclubs.manage.dto.CsStateInput;

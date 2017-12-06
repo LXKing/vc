@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.manage.orm.model.CsState;
 import com.ccclubs.manage.orm.model.CsStatistics;
 import com.ccclubs.manage.task.executors.StatisticsExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -19,7 +20,7 @@ public class StatisticsJob implements Runnable {
 
     private long unitTime;
 
-    @Reference(version = "1.0.0")
+    @Reference
     private StatisticsExecutor statisticsExecutor;
 
     //防止不包含必要参数的初始化。

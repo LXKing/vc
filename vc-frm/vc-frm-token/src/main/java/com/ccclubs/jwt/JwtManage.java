@@ -1,4 +1,4 @@
-package com.ccclubs.manage.orm.model;
+package com.ccclubs.jwt;
 
 import com.ccclubs.jwt.JwtUser;
 
@@ -16,7 +16,6 @@ public class JwtManage extends JwtUser {
     private static final long serialVersionUID = -7252731408648475567L;
     private  String csm_name;
     private  Integer csm_id;
-
 
     public JwtManage(Long id, String username, boolean enabled, Date lastPasswordResetDate, String csm_name, Integer csm_id) {
         super(id, username, enabled, lastPasswordResetDate);

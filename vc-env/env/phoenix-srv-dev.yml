@@ -11,7 +11,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.phoenix
+    annotationPackage: com.ccclubs.phoenix,com.ccclubs.manage
   application:
     name: srv
   registry:
@@ -26,11 +26,7 @@ dubbo:
   provider:
     timeout: 120000
     retries: -1
-  consumer:
-    timeout: 120000
-    check: false
-  monitor:
-    protocol: registry
+  
 
 
 

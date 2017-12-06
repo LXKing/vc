@@ -4,7 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.jwt.AuthenticationService;
-import com.ccclubs.manage.orm.model.JwtManage;
+import com.ccclubs.jwt.JwtManage;
 import com.ccclubs.manage.dto.EvLoginInput;
 import com.ccclubs.manage.dto.EvLoginOutput;
 import com.ccclubs.manage.inf.CsManageInf;
