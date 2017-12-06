@@ -3,8 +3,8 @@ package com.ccclubs.engine.rule.inf.util;
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
+import com.ccclubs.phoenix.orm.vo.CarStateHistory;
 import com.ccclubs.pub.orm.model.CsState;
 
 import java.util.ArrayList;
@@ -35,6 +35,9 @@ public class HistoryStateUtils extends ConvertUtils {
   private String ip;
   @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
   private String port;
+
+  @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
+  private String urlRootPath;
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
@@ -114,7 +117,7 @@ public class HistoryStateUtils extends ConvertUtils {
     logger.debug("source: {} ,target: {}",sourceJson,objectJson);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState list json done:" + objectJson);
-    String url="http://"+ip+":"+port+"/carhistory/states";
+    String url="http://"+ip+":"+port+"/"+urlRootPath+"/states";
     HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post for csStateList !");
 
@@ -127,7 +130,7 @@ public class HistoryStateUtils extends ConvertUtils {
     String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState data json done:" + objectJson);
-    String url="http://"+ip+":"+port+"/carhistory/state";
+    String url="http://"+ip+":"+port+"/"+urlRootPath+"/state";
     HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post for csState !");
   }

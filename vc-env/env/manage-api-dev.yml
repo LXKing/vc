@@ -1,0 +1,43 @@
+server:
+  port: 9000
+
+spring:
+  http:
+    encoding:
+      charset: UTF-8
+      enable: true
+      force: true
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.manage.api,com.ccclubs.jwt
+  application:
+    name: api
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+    #port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+
+
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 1800
+  route:
+    authentication:
+      path: auth
+      refresh: refresh

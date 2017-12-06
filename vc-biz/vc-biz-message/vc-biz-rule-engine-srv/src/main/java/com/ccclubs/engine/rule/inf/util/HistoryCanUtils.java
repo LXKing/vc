@@ -3,8 +3,9 @@ package com.ccclubs.engine.rule.inf.util;
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.hbase.vo.model.CarCanHistory;
+
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
+import com.ccclubs.phoenix.orm.vo.CarCanHistory;
 import com.ccclubs.pub.orm.model.CsCan;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ public class HistoryCanUtils {
   private String ip;
   @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
   private String port;
+  @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
+  private String urlRootPath;
 
   public void saveHistoryData(CsCan csCan) {
 
@@ -68,7 +71,7 @@ public class HistoryCanUtils {
     String objectJson = JSON.toJSONString(carCanHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can data json is done:" + objectJson);
-    String url="http://"+ip+":"+port+"/carhistory/can";
+    String url="http://"+ip+":"+port+"/"+urlRootPath+"/can";
     HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post for can !");
   }
@@ -82,7 +85,7 @@ public class HistoryCanUtils {
     String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can list json is done:" + objectJson);
-    String url="http://"+ip+":"+port+"/carhistory/cans";
+    String url="http://"+ip+":"+port+"/"+urlRootPath+"/cans";
     HttpClientUtil.doPostJson(url, objectJson);
     logger.debug("send post for can list !");
   }

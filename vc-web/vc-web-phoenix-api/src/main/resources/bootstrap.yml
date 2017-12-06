@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: phoenix-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: phoenix-api
+      uri: ${spring.cloud.config.uri}
+      

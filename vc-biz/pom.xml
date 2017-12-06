@@ -9,6 +9,8 @@
     <artifactId>vc-biz</artifactId>
     <packaging>pom</packaging>
     <modules>
+
+
         <module>vc-biz-demo-inf</module>
         <module>vc-biz-demo-srv</module>
         <module>vc-biz-demo-orm</module>
@@ -31,8 +33,9 @@
         <module>vc-biz-quota-orm</module>
         <module>vc-biz-quota-inf</module>
         <module>vc-biz-quota-srv</module>
-        <module>vc-biz-hbase-inf</module>
-        <module>vc-biz-hbase-srv</module>
         <module>vc-biz-olap-orm</module>
+        <module>vc-biz-phoenix-orm</module>
+        <module>vc-biz-phoenix-inf</module>
+        <module>vc-biz-phoenix-srv</module>
     </modules>
 </project>

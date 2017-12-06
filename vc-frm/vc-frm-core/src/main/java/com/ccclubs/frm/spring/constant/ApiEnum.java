@@ -22,6 +22,7 @@ public enum ApiEnum {
 	DATA_ACCESS_CHECK_FAILED(100010, "data access check failed", "数据权限校验失败"),
 	UPDATE_ID_NOT_SET(100011, "update obj can not be null", "更新ID不能为空"),
 	API_RATE_LIMIT(100012, "api call too many times in 10 second", "10秒内调用API太多次"),
+	PART_OF_THE_OPERATION_SUCCESSED(100013,"Part of the operation is successful","操作成功，但是有部分数据处理失败（未处理）。"),
 	LOGIN_ERROR(1010013, "invalid account or password", "账号或者密码错误"),
 	UNAUTHORIZED_ERROR(101014, "401 unauthorized", "未授权"),
 	VEHICLE_NOT_FOUND(101001, "vehicle not found", "未查询到车辆"),
