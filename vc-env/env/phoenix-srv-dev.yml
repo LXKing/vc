@@ -11,7 +11,7 @@ spring:
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.phoenix,com.ccclubs.manage.impl
+    annotationPackage: com.ccclubs.phoenix
   application:
     name: srv
   registry:

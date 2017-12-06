@@ -63,16 +63,8 @@
             <version>${frm.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-logger</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-manage-inf</artifactId>
-            <version>1.0.0</version>
-        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
