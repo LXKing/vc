@@ -1,6 +1,9 @@
 package com.ccclubs.phoenix.orm.model;
 
-public class SocPace {
+import java.io.Serializable;
+
+public class SocPace implements Serializable{
+    private static final long serialVersionUID = -5025944997519335208L;
     private String cs_number;
 
     private int pace_start_soc;

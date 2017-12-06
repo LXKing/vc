@@ -1,11 +1,16 @@
 package com.ccclubs.phoenix.orm.model;
 
 
-/**
- * Created by taosm on 2017/9/5 0005.
- */
-public class CarCan {
+import java.io.Serializable;
 
+/**
+ *
+ * @author taosm
+ * @date 2017/9/5 0005
+ */
+public class CarCan implements Serializable{
+
+    private static final long serialVersionUID = -7959982051545616367L;
     //车机号
     private String cs_number;
 

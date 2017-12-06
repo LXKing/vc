@@ -3,6 +3,8 @@ package com.ccclubs.phoenix.input;
 import com.ccclubs.phoenix.orm.consts.Consts;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.Serializable;
+
 /**
  * ━━━━━━神兽出没━━━━━━
  * 　　　┏┓　　┏┓
@@ -27,7 +29,10 @@ import org.apache.commons.lang.StringUtils;
  * User: taosm
  * DateTime: 2017/11/27 0027
  */
-public class CarCanHistoryParam extends Page {
+public class CarCanHistoryParam extends Page  implements Serializable{
+
+
+    private static final long serialVersionUID = 3738734732712400375L;
     private String cs_number;
 
     private String start_time;

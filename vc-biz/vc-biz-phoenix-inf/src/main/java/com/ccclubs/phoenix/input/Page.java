@@ -1,5 +1,7 @@
 package com.ccclubs.phoenix.input;
 
+import java.io.Serializable;
+
 /**
  * ━━━━━━神兽出没━━━━━━
  * 　　　┏┓　　　┏┓
@@ -24,7 +26,9 @@ package com.ccclubs.phoenix.input;
  * User: taosm
  * DateTime: 2017/11/27 0027
  */
-public class Page {
+public class Page implements Serializable{
+
+    private static final long serialVersionUID = -3124471778034756526L;
     //查询页号
     private Integer page_no=-1;
     //页最大记录数量(默认20)

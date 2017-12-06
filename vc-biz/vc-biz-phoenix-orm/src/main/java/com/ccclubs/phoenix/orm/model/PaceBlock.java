@@ -1,9 +1,11 @@
 package com.ccclubs.phoenix.orm.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaceBlock {
+public class PaceBlock implements Serializable{
+    private static final long serialVersionUID = -3927521690565168254L;
     private String cs_vin;
     private String cs_number;
     //起始时间(日期格式)

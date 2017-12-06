@@ -1,10 +1,15 @@
 package com.ccclubs.phoenix.orm.model;
 
 
+import java.io.Serializable;
+
 /**
- * Created by taosm on 2017/9/5 0005.
+ *
+ * @author taosm
+ * @date 2017/9/5 0005
  */
-public class CarState {
+public class CarState implements Serializable{
+    private static final long serialVersionUID = -4920229013098094437L;
     //车机号
     private String cs_number;
     //private String cs_vin;

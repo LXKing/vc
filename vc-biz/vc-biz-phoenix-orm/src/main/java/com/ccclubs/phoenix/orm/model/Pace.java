@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pace implements Serializable {
+    private static final long serialVersionUID = -1198705421289207421L;
     private String cs_vin;
     private String cs_number;
     private Integer row_no;
