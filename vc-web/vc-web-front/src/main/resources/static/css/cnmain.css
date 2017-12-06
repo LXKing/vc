@@ -309,7 +309,7 @@ input[type="checkbox"] + label {
 /*-------------ÊäÈëËÑË÷×é¼þ------------*/
 .searchinputDiv{
 	position: absolute;
-	z-index: 9999;
+	z-index: 99999999;
 }
 .searchWrapper {
 	background: none repeat scroll 0 0 #fff;
@@ -318,7 +318,7 @@ input[type="checkbox"] + label {
 	display: none;
 	width: 100%;
 	position:absolute;
-	z-index: 1000;
+	z-index: 99999999;
 	top: 36px;
 }
 .searchWrapper ul{
