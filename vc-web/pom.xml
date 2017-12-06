@@ -9,6 +9,7 @@
 	<artifactId>vc-web</artifactId>
 	<packaging>pom</packaging>
 	<modules>
+
 		<module>vc-web-cfg</module>
 		<module>vc-web-demo-api</module>
 		<module>vc-web-demo-srv</module>
@@ -24,10 +25,10 @@
 		<module>vc-web-protocol-srv</module>
 		<module>vc-web-quota-api</module>
 		<module>vc-web-quota-srv</module>
-		<module>vc-web-hbase-srv</module>
-        <module>vc-web-hbase-api</module>
         <module>vc-web-front</module>
-    </modules>
+        <module>vc-web-phoenix-api</module>
+		<module>vc-web-phoenix-srv</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -9,6 +9,7 @@
     <artifactId>vc-frm</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>vc-frm-token</module>
         <module>vc-frm-dubbox</module>
         <module>vc-frm-redis</module>
         <module>vc-frm-mongodb</module>
@@ -20,9 +21,10 @@
         <module>vc-frm-core</module>
         <module>vc-frm-encryp</module>
         <module>vc-frm-validation</module>
-      <module>vc-frm-mqtt</module>
-      <module>vc-frm-ons</module>
+        <module>vc-frm-mqtt</module>
+        <module>vc-frm-ons</module>
         <module>vc-frm-hbase</module>
         <module>vc-frm-cache</module>
+        <module>vc-frm-phoenix</module>
     </modules>
 </project>

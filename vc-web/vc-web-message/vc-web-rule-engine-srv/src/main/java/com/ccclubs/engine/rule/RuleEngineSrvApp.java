@@ -17,6 +17,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.IOException;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
 @ImportAutoConfiguration({RedisAutoConfiguration.class,OnsProperties.class,
         MqttAliyunProperties.class, MqttOwnProperties.class, RuleEngineConfig.class,MongoConfig.class,
     BatchProperties.class})
+@EnableScheduling
 public class RuleEngineSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(RuleEngineSrvApp.class);
 
