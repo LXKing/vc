@@ -32,6 +32,8 @@ import java.util.List;
  * DateTime: 2017/11/28 0028
  */
 public class CarStateHistoryOutput implements Serializable {
+
+
     private static final long serialVersionUID = 8397279666160938246L;
     //记录总数
     private Long total;
@@ -63,4 +65,7 @@ public class CarStateHistoryOutput implements Serializable {
     public void setList(List<CarState> list) {
         this.list = list;
     }
+
+
+
 }

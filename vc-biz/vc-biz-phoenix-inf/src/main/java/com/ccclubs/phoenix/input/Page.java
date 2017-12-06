@@ -34,7 +34,7 @@ public class Page implements Serializable{
     //页最大记录数量(默认20)
     private Integer page_size=20;
     //记录总数
-    private Long total =-1l;
+    private Long total =-1L;
 
     public Integer getPage_no() {
         return page_no;
@@ -59,4 +59,7 @@ public class Page implements Serializable{
     public void setTotal(Long total) {
         this.total = total;
     }
+
+
+
 }

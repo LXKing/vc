@@ -52,4 +52,5 @@ public class CarCanHistoryOutput implements Serializable {
     public void setList(List<CarCan> list) {
         this.list = list;
     }
+
 }

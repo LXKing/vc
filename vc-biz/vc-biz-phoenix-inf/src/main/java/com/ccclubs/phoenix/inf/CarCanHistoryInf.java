@@ -14,17 +14,17 @@ import java.util.List;
  */
 public interface CarCanHistoryInf {
     //查询车辆CAN信息(非分页)
-    public List<CarCan> queryCarCanListNoPage(CarCanHistoryParam carCanHistoryParam);
+     List<CarCan> queryCarCanListNoPage(CarCanHistoryParam carCanHistoryParam);
 
     //查询车辆CAN信息(分页)
-    public List<CarCan> queryCarCanListWithPage(CarCanHistoryParam carCanHistoryParam);
+     List<CarCan> queryCarCanListWithPage(CarCanHistoryParam carCanHistoryParam);
 
     //查询车辆CAN信息记录总数
-    public Long queryCarCanListCount(CarCanHistoryParam carCanHistoryParam);
+     Long queryCarCanListCount(CarCanHistoryParam carCanHistoryParam);
 
     //查询车辆CAN信息(封装)
-    public CarCanHistoryOutput queryCarCanListByOutput(CarCanHistoryParam carCanHistoryParam);
+     CarCanHistoryOutput queryCarCanListByOutput(CarCanHistoryParam carCanHistoryParam);
 
     //写入或更新车辆CAN信息
-    public void saveOrUpdate(List<CarCan> records);
+     void saveOrUpdate(List<CarCan> records);
 }

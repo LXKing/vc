@@ -20,6 +20,8 @@ public interface CsMachineInf  {
      List<CsMachine> getCsMachineList(CsMachineInput csMachineInput);
      CsMachine getCsMachineByCsNumber(String csNumber);
 
+     CsMachine getCsMachineById(Integer id);
+
      /**
       * 删除的时候，只删除一个也当做批量删除。因为一个是批量的特殊情况。
       * 删除的时候要判断是否有权限。

@@ -43,7 +43,7 @@ public class CarHistoryApi {
     private IReplaceService replaceService;*/
 
     //车辆状态查询
-    @RequestMapping(value = "/states",method = RequestMethod.GET)
+    //@RequestMapping(value = "/states",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryCarStateList(CarStateHistoryParam param){
         logger.debug("we receive a state get request."+param.toString());
         if (!paramCheck(param.getCs_number(),
@@ -59,7 +59,7 @@ public class CarHistoryApi {
     }
 
     //车辆状态数据存储
-    @RequestMapping(value = "/states",method = RequestMethod.POST)
+    //@RequestMapping(value = "/states",method = RequestMethod.POST)
     public ApiMessage<CarStateHistoryOutput> saveCarStateList(@RequestBody List<CarState> carStateList){
         logger.debug("we receive a state date list.");
         //logger.warn(carStateList.toString());
@@ -71,7 +71,7 @@ public class CarHistoryApi {
     }
 
     //车辆CAN数据查询
-    @RequestMapping(value = "/cans",method = RequestMethod.GET)
+    //@RequestMapping(value = "/cans",method = RequestMethod.GET)
     public ApiMessage<CarCanHistoryOutput> queryCarCanList(CarCanHistoryParam param){
         logger.debug("we receive a can get request."+param.toString());
         if (!paramCheck(param.getCs_number(),
@@ -87,7 +87,7 @@ public class CarHistoryApi {
     }
 
     //车辆CAN数据存储
-    @RequestMapping(value = "/cans",method = RequestMethod.POST)
+    //@RequestMapping(value = "/cans",method = RequestMethod.POST)
     public ApiMessage<CarCanHistoryOutput> saveCarCanList(@RequestBody List<CarCan> carCanList){
 
         logger.debug("we receive a can date list.");
@@ -100,7 +100,7 @@ public class CarHistoryApi {
     }
 
     //驾驶阶段数据查询
-    @RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
+    //@RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePaces(CarStateHistoryParam param){
         if (!paramCheck(param.getCs_number(),
                 param.getStart_time(),
@@ -123,7 +123,7 @@ public class CarHistoryApi {
     }
 
     //充电阶段数据查询
-    @RequestMapping(value = "/chargingpaces",method = RequestMethod.GET)
+    //@RequestMapping(value = "/chargingpaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryChargingPaces(CarStateHistoryParam param){
         if (!paramCheck(param.getCs_number(),
                 param.getStart_time(),

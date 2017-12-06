@@ -127,6 +127,15 @@ public class CsMachineInfImpl implements CsMachineInf {
     }
 
     @Override
+    public CsMachine getCsMachineById(Integer id) {
+
+        CsMachine csMachine= csMachineMapper.selectByPrimaryKey(id);
+
+        return csMachine;
+
+    }
+
+    @Override
     public boolean deleteCsMachines(CsMachineInput csMachineInput) {
 
         if (null!=csMachineInput.getIds()&&csMachineInput.getIds().size()>0){
