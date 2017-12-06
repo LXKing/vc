@@ -33,6 +33,11 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-phoenix</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-core</artifactId>
             <version>1.0.0</version>
         </dependency>
