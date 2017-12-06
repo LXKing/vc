@@ -39,12 +39,26 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-core</artifactId>
-            <version>1.0.0</version>
+            <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-common-srv</artifactId>
-            <version>1.0.0</version>
+            <version>${biz.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>www.ccclubs</groupId>
+                    <artifactId>vc-frm-mongodb</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>www.ccclubs</groupId>
+                    <artifactId>vc-biz-mongo-inf</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>www.ccclubs</groupId>
+                    <artifactId>vc-biz-mongo-orm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
