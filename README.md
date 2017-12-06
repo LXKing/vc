@@ -70,7 +70,8 @@ vc-web-gateway-mqtt-srv     |        port:12002
 vc-web-gateway-gb-srv       |        port:12003
 vc-web-rule-engine-srv |   port:12004
 vc-web-cmd-engine-srv |  port:12005
-
+vc-web-phoenix-api     |  port:7007
+vc-web-phoenix-srv     |  port:11117
 
 ### mybatis generate自动生成插件(具体参考demo)
 - 1.增加SerializablePlugin插件，dubbox传输需要支持serializable序列化接口
