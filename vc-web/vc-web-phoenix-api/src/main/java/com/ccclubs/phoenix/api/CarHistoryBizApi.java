@@ -26,7 +26,7 @@ public class CarHistoryBizApi {
     @Autowired
     private CarHistoryApi carHistoryApi;
 
-    @Reference
+    @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
 
     @RequestMapping(value = "/states",method = RequestMethod.GET)

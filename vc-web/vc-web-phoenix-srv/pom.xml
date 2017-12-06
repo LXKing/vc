@@ -39,11 +39,6 @@
             <version>1.0.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-manage-srv</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>www.ccclubs</groupId>
