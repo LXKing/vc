@@ -1,6 +1,7 @@
 package com.ccclubs.phoenix.api;
 
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
@@ -32,10 +33,10 @@ import java.util.List;
 public class CarHistoryApi {
     private static final Logger logger= LoggerFactory.getLogger(CarHistoryApi.class);
 
-    @Autowired
+    @Reference(version = "1.0.0")
     private CarStateHistoryInf carStateHistoryInf;
 
-    @Autowired
+    @Reference(version = "1.0.0")
     private CarCanHistoryInf carCanHistoryInf;
 
    /* @Autowired

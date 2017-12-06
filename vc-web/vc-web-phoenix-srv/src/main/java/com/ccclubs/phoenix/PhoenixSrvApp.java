@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 @Import({PhoenixAutoConfiguration.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class PhoenixSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PhoenixSrvApp.class);
