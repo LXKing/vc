@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-hbase-inf</artifactId>
+            <artifactId>vc-biz-phoenix-orm</artifactId>
             <version>1.0.0</version>
         </dependency>
         <dependency>

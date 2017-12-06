@@ -3,8 +3,9 @@ package com.ccclubs.engine.rule.inf.util;
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.hbase.vo.model.CarCanHistory;
+
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
+import com.ccclubs.phoenix.orm.vo.CarCanHistory;
 import com.ccclubs.pub.orm.model.CsCan;
 import javax.annotation.Resource;
 import org.slf4j.Logger;

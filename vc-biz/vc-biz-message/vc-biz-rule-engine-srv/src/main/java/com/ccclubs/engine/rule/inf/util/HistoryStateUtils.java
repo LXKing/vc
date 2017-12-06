@@ -3,8 +3,8 @@ package com.ccclubs.engine.rule.inf.util;
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.hbase.vo.model.CarStateHistory;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
+import com.ccclubs.phoenix.orm.vo.CarStateHistory;
 import com.ccclubs.pub.orm.model.CsState;
 
 import java.util.ArrayList;
