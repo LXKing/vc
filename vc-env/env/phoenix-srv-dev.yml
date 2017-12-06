@@ -1,8 +1,9 @@
 phoenix:
   #zookeeper所在主机地址
   zk_url: hb-proxy-pub-bp11zgdd317e4af0r-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-006.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-005.hbase.rds.aliyuncs.com
+
 server:
-  port: 12007
+  port: 11117
 
 spring:
   redis:

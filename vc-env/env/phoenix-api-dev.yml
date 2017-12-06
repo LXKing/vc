@@ -1,5 +1,5 @@
 server:
-  port: 12006
+  port: 12007
 
 dubbo:
   scan:
@@ -23,8 +23,6 @@ dubbo:
     check: false
   monitor:
     protocol: registry
-
-
 
 
 spring:
