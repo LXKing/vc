@@ -23,6 +23,9 @@ dubbo:
     threads: 100
     #host: 10.0.10.96
     port: 20660
+  consumer:
+      timeout: 120000
+      check: false
   provider:
     timeout: 120000
     retries: -1
