@@ -5,6 +5,7 @@ import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.manage.inf.CsMachineInf;
 import com.ccclubs.manage.inf.CsVehicleInf;
+import com.ccclubs.manage.orm.model.CsVehicle;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import org.slf4j.Logger;
@@ -34,8 +35,12 @@ public class CarHistoryBizApi {
 
     private String getCsNumberByCsVin(String csVin){
         if (null!=csVin&&!csVin.isEmpty()){
-           Integer csMachineId=csVehicleService.getCsVehicleByCsVin(csVin).getCsvMachine();
-           return csMachineService.getCsMachineById(csMachineId).getCsmNumber();
+            CsVehicle csVehicle=csVehicleService.getCsVehicleByCsVin(csVin);
+            if (null!=csVehicle&&null!=csVehicle.getCsvMachine()){
+                Integer csMachineId=csVehicleService.getCsVehicleByCsVin(csVin).getCsvMachine();
+                return csMachineService.getCsMachineById(csMachineId).getCsmNumber();
+            }
+
         }
         logger.info("param csVin is null.");
         return null;
