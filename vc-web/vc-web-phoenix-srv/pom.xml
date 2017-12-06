@@ -26,24 +26,24 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-phoenix-srv</artifactId>
-            <version>1.0.0</version>
+            <version>${biz.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-phoenix</artifactId>
-            <version>1.0.0</version>
+            <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-logger</artifactId>
-            <version>1.0.0</version>
+            <version>${frm.version}</version>
         </dependency>
 
 
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-mybatis</artifactId>
-            <version>1.0.0</version>
+            <version>${frm.version}</version>
         </dependency>
 
 
