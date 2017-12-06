@@ -1,3 +1,4 @@
+/*
 package com.ccclubs.phoenix.api;
 
 
@@ -21,12 +22,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+*/
 /**
 
  * Module Desc:
  * User: taosm
  * DateTime: 2017/11/27 0027
- */
+ *//*
+
+@Deprecated
 @RestController
 @CrossOrigin
 @RequestMapping("/carhistory")
@@ -39,8 +43,10 @@ public class CarHistoryApi {
     @Reference(version = "1.0.0")
     private CarCanHistoryInf carCanHistoryInf;
 
-   /* @Autowired
-    private IReplaceService replaceService;*/
+   */
+/* @Autowired
+    private IReplaceService replaceService;*//*
+
 
     //车辆状态查询
     @RequestMapping(value = "/states",method = RequestMethod.GET)
@@ -147,6 +153,7 @@ public class CarHistoryApi {
     }
 
 
+*/
 /*
     @RequestMapping(value = "/processed-states",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> getProcessedCarStateList(CarStateHistoryParam param){
@@ -187,7 +194,8 @@ public class CarHistoryApi {
             //carCanHistoryOutput.setList(carCanList);
         }
         return results;
-    }*/
+    }*//*
+
 
 
     private boolean paramCheck(String csNumber,String startTime,String endTime,Integer pageNo,Integer pageSize){
@@ -205,3 +213,4 @@ public class CarHistoryApi {
     }
 
 }
+*/
