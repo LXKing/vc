@@ -9,9 +9,7 @@
     <artifactId>vc-biz</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>vc-biz-manage-orm</module>
-        <module>vc-biz-manage-inf</module>
-        <module>vc-biz-manage-srv</module>
+
 
         <module>vc-biz-demo-inf</module>
         <module>vc-biz-demo-srv</module>
