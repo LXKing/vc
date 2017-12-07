@@ -3,7 +3,7 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.common.modify.UpdateTerminalService;
+import com.ccclubs.mongo.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.utils.EnvironmentUtils;
