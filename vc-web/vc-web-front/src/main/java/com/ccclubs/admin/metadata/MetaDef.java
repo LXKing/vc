@@ -8,11 +8,13 @@ import com.ccclubs.admin.model.CsModel;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.model.SrvDict;
 import com.ccclubs.admin.model.SrvHost;
+import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.service.ICsMachineService;
 import com.ccclubs.admin.service.ICsModelService;
 import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.admin.service.ISrvDictService;
 import com.ccclubs.admin.service.ISrvHostService;
+import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.vo.IDictMetaData;
 import com.ccclubs.admin.vo.IMetaData;
 import java.util.List;
@@ -20,6 +22,24 @@ import org.apache.commons.lang3.StringUtils;
 
 
 public class MetaDef {
+
+  /**
+   * 根据接入商Id，获取接入商名称
+   */
+  public final static IMetaData getUserName = new IMetaData() {
+
+    @Override
+    public <T> T get(Object data) {
+      ISrvUserService srvUserService = SpringUtil.getBean(ISrvUserService.class);
+      if (null != srvUserService && null != data && !StringUtils.isEmpty(data.toString())) {
+        SrvUser record = srvUserService.selectByPrimaryKey(data);
+        if (null != record) {
+          return (T) record.getSuUsername();
+        }
+      }
+      return null;
+    }
+  };
 
   /**
    * 根据接入商Id，获取接入商名称

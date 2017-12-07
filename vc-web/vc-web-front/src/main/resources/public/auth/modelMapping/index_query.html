@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="id" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="idEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="userId" >
+				<dt>主机厂用户</dt>
+				<dd  >
+					<input  name="userIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/auth/user/query">
+				</dd>
+			</dl>
+<dl cond="modelId" >
+				<dt>车型</dt>
+				<dd  >
+					<input  name="modelIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+				</dd>
+			</dl>
+<dl cond="remark" style="display:none;">
+				<dt>备注</dt>
+				<dd  >
+					<input  name="remarkEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="addTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd  >
+					<input  name="addTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="updateTime" style="display:none;">
+				<dt>更新时间</dt>
+				<dd  >
+					<input  name="updateTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="userId" value="userIdText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >主机厂用户</label></li>
+			        <li><label><input cond="modelId" value="modelIdText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
+			        <li><label><input cond="remark" value="remark"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注</label></li>
+			        <li><label><input cond="addTime" value="addTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="updateTime" value="updateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>
