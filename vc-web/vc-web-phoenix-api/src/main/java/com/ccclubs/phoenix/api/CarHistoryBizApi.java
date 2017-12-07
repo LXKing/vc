@@ -1,6 +1,7 @@
 package com.ccclubs.phoenix.api;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.frm.spring.annotation.ApiSecurity;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
@@ -45,6 +46,8 @@ public class CarHistoryBizApi {
     @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
 
+
+    @ApiSecurity
     @RequestMapping(value = "/states",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryCarStateList(CarStateHistoryParam param) {
         logger.info("we get a request form states:",param);
@@ -149,6 +152,7 @@ public class CarHistoryBizApi {
     }
 
     //驾驶阶段数据查询
+    @ApiSecurity
     @RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePaces(CarStateHistoryParam param) {
         logger.info("we get a request form drivepaces:",param);
