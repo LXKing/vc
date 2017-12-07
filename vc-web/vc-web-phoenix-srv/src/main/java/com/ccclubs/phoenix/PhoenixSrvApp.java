@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 @Import({PhoenixAutoConfiguration.class,MybatisConfig.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,MongoAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class PhoenixSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PhoenixSrvApp.class);

@@ -1,4 +1,4 @@
-package com.ccclubs.common.modify;
+package com.ccclubs.mongo.modify;
 
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.CsRemote;

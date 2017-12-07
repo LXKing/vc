@@ -1,7 +1,7 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.common.modify.UpdateCanService;
+import com.ccclubs.mongo.modify.UpdateCanService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 
 import com.ccclubs.mongo.orm.model.CsHistoryCan;

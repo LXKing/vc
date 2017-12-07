@@ -39,6 +39,12 @@
 
     <dependency>
       <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-mongo-srv</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>www.ccclubs</groupId>
       <artifactId>vc-biz-pub-orm</artifactId>
       <version>${biz.version}</version>
     </dependency>
