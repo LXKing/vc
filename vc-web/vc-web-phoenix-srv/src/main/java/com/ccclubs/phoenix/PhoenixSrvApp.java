@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,7 +20,7 @@ import java.io.IOException;
 
 @SpringBootApplication
 @Import({PhoenixAutoConfiguration.class,MybatisConfig.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class PhoenixSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PhoenixSrvApp.class);
