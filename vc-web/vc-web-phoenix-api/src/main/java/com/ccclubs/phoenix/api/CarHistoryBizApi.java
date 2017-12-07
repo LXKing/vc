@@ -61,6 +61,57 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carStateHistoryOutput);
     }
 
+    //状态查询，内部
+    @RequestMapping(value = "/states/nternal",method = RequestMethod.GET)
+    public ApiMessage<CarStateHistoryOutput> queryCarStateListInternal(CarStateHistoryParam param) {
+        logger.info("we get aiInternal request form states:",param);
+
+        if (null==param.getCs_number()||param.getCs_number().isEmpty()){
+            logger.info("we find a PARAMS_VALID_FAILED at states.");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        logger.debug("we receive a state get request."+param.toString());
+        if (!paramCheck(param.getCs_number(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarStateHistoryOutput carStateHistoryOutput= carStateHistoryInf.queryCarStateListByOutput(param);
+        return new ApiMessage<>(carStateHistoryOutput);
+    }
+
+
+    //驾驶阶段数据查询(内部使用)
+    @RequestMapping(value = "/drivepaces/nternal",method = RequestMethod.GET)
+    public ApiMessage<CarStateHistoryOutput> queryDrivePacesInternal(CarStateHistoryParam param) {
+        logger.info("we get a Internal request form drivepaces:",param);
+        if (null==param.getCs_number()||param.getCs_number().isEmpty()){
+            logger.info("we find a PARAMS_VALID_FAILED at drivepaces.");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        if (!paramCheck(param.getCs_number(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarStateHistoryOutput carStateHistoryOutput=new CarStateHistoryOutput();
+        param.setOrder("asc");
+        param.setQuery_fields("PACE");
+        param.setPage_no(-1);
+        List<CarState> carStateList= carStateHistoryInf.queryCarStateListByOutput(param).getList();
+        //Collections.reverse(carStateList);
+        List<Pace> paceList = carStateHistoryInf.calDrivePaceList(carStateList);
+        carStateHistoryOutput.setPaceList(paceList);
+        //carStateHistoryOutput.setTotal(param.getPage_size()*100L);
+        return new ApiMessage<>(carStateHistoryOutput);
+    }
+
     //驾驶阶段数据查询
     @RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePaces(CarStateHistoryParam param) {
@@ -165,6 +216,7 @@ public class CarHistoryBizApi {
 
 
     private boolean paramCheck(String csNumber,String startTime,String endTime,Integer pageNo,Integer pageSize){
+        if (null==csNumber||null==endTime||null==startTime){return false;}
         if (csNumber.isEmpty()||endTime.isEmpty()||startTime.isEmpty()){return false;}
         if (pageNo<-1||pageNo==0){return false;}
         if (pageSize<=0){return false;}
