@@ -40,7 +40,7 @@ public class CarHistoryBizApi {
     private CarCanHistoryInf carCanHistoryInf;
 
     @Reference(version = "1.0.0")
-    private CarGbHistoryInf carGbHistoryInf;
+    private CarGbHistoryInf carGbHistoryService;
 
     @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
@@ -79,7 +79,7 @@ public class CarHistoryBizApi {
         {
             return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
         }
-        CarGbHistoryOutput carGbHistoryOutput= carGbHistoryInf.queryCarGbListByOutput(param);
+        CarGbHistoryOutput carGbHistoryOutput= carGbHistoryService.queryCarGbListByOutput(param);
         return new ApiMessage<>(carGbHistoryOutput);
     }
 
@@ -91,14 +91,14 @@ public class CarHistoryBizApi {
         //logger.warn(carGbList.toString());
         CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
         if(carGbList!=null&&carGbList.size()>0) {
-            carGbHistoryInf.saveOrUpdate(carGbList);
+            carGbHistoryService.saveOrUpdate(carGbList);
         }
         return new ApiMessage<>(carGbHistoryOutput);
     }
 
 
     //状态查询，内部
-    @RequestMapping(value = "/states/nternal",method = RequestMethod.GET)
+    @RequestMapping(value = "/states-internal",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryCarStateListInternal(CarStateHistoryParam param) {
         logger.info("we get aiInternal request form states:",param);
 
@@ -121,7 +121,7 @@ public class CarHistoryBizApi {
 
 
     //驾驶阶段数据查询(内部使用)
-    @RequestMapping(value = "/drivepaces/nternal",method = RequestMethod.GET)
+    @RequestMapping(value = "/drivepaces-internal",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePacesInternal(CarStateHistoryParam param) {
         logger.info("we get a Internal request form drivepaces:",param);
         if (null==param.getCs_number()||param.getCs_number().isEmpty()){

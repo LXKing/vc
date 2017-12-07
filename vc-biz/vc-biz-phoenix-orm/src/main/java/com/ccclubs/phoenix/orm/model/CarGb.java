@@ -1,7 +1,10 @@
 package com.ccclubs.phoenix.orm.model;
 
-public class CarGb {
+import java.io.Serializable;
 
+public class CarGb implements Serializable {
+
+    private static final long serialVersionUID = 1907830351968949405L;
     //车辆vin码
     private String cs_vin;
 

@@ -8,7 +8,6 @@ import java.io.Serializable;
 public class CarGbHistoryParam extends Page implements Serializable{
 
 
-
     private static final long serialVersionUID = -6596177061016048194L;
 
     private String cs_vin;
