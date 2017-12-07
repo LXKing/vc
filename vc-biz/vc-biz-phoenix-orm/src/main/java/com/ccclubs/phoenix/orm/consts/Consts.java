@@ -28,6 +28,12 @@ public class Consts {
     //车辆CAN所有字段列表
     public static final List<String> carCanAllFields= ImmutableList.of("cs_number","current_time","add_time","can_data");
 
+    //车辆GB分页查询默认字段列表
+    public static final List<String> carGbPageDefaultFields = ImmutableList.of("cs_vin","add_time","current_time","gb_data");
+    //车辆GB所有字段列表
+    public static final List<String> carGbAllFields= ImmutableList.of("cs_vin","add_time","current_time","gb_data","cs_access","cs_protocol","gb_type","cs_verify");
+
+
 
 
 }

@@ -31,8 +31,6 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
 
   @Autowired
   RedisTemplate redisTemplate;
-  @Autowired
-  UpdateStateService updateStateService;
 
   @Autowired
   HistoryStateUtils historyStateUtils;

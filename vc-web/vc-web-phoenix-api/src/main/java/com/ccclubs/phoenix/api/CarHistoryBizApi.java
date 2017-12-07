@@ -5,14 +5,18 @@ import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.phoenix.inf.CarCanHistoryInf;
+import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.inf.TransformForBizInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
+import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarCan;
+import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
+import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,8 @@ public class CarHistoryBizApi {
     @Reference(version = "1.0.0")
     private CarCanHistoryInf carCanHistoryInf;
 
+    @Reference(version = "1.0.0")
+    private CarGbHistoryInf carGbHistoryInf;
 
     @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
@@ -60,6 +66,36 @@ public class CarHistoryBizApi {
         CarStateHistoryOutput carStateHistoryOutput= carStateHistoryInf.queryCarStateListByOutput(param);
         return new ApiMessage<>(carStateHistoryOutput);
     }
+
+    //车辆GB数据查询
+    @RequestMapping(value = "/gbs",method = RequestMethod.GET)
+    public ApiMessage<CarGbHistoryOutput> queryCarGbList(CarGbHistoryParam param){
+        logger.debug("we receive a gb get request."+param.toString());
+        if (!paramCheck(param.getCs_vin(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarGbHistoryOutput carGbHistoryOutput= carGbHistoryInf.queryCarGbListByOutput(param);
+        return new ApiMessage<>(carGbHistoryOutput);
+    }
+
+    //车辆GB数据存储
+    @RequestMapping(value = "/gbs",method = RequestMethod.POST)
+    public ApiMessage<CarGbHistoryOutput> saveCarGbList(@RequestBody List<CarGb> carGbList){
+
+        logger.debug("we receive a gb date list.");
+        //logger.warn(carGbList.toString());
+        CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
+        if(carGbList!=null&&carGbList.size()>0) {
+            carGbHistoryInf.saveOrUpdate(carGbList);
+        }
+        return new ApiMessage<>(carGbHistoryOutput);
+    }
+
 
     //状态查询，内部
     @RequestMapping(value = "/states/nternal",method = RequestMethod.GET)

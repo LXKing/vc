@@ -54,7 +54,7 @@ public class BatchMessageInsertRunner implements CommandLineRunner {
           Long startTime = System.currentTimeMillis();
           //取出队列中所有等待更新的数据
           Long messageListSrcSize = redisTemplate.opsForList()
-              .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE);
+              .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE);
           if (messageListSrcSize > 0) {
             long redisListStartTime = System.currentTimeMillis();
             while (System.currentTimeMillis() - redisListStartTime < batchProperties
@@ -65,7 +65,7 @@ public class BatchMessageInsertRunner implements CommandLineRunner {
               }
               //取出队列中 等待写入的数据
               Object item = redisTemplate.opsForList()
-                  .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE);
+                  .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE);
               if (null == item) {
                 break;
               } else {

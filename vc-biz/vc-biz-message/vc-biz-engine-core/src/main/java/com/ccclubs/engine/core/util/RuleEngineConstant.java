@@ -35,5 +35,9 @@ public class RuleEngineConstant {
   public static final String REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE = "historyCan:batchInsert";
 
   /*历史国标数据等待写入队列 mongodb*/
-  public static final String REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE = "message:batchInsert";
+  public static final String REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE = "message:batchInsert";
+  /*历史国标数据等待写入队列 hbase*/
+  public static final String REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE = "message:batchInsert";
+
+
 }
