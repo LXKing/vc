@@ -5,6 +5,7 @@ package com.ccclubs.phoenix.orm.vo;
 /**
  * Created by taosm on 2017/9/12 0012.
  */
+//FIXME 这个类应该被撤下来，应该换上旁边model包的CarCan
 public class CarCanHistory {
     //起始时间
     private String begin_time;
