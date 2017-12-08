@@ -8,6 +8,8 @@ server:
 spring:
   redis:
     host: 127.0.0.1
+  aop:
+    proxy-target-class: true
 
 dubbo:
   scan:
