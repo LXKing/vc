@@ -2,8 +2,9 @@ package com.ccclubs.phoenix.orm.vo;
 
 
 /**
- * Created by taosm on 2017/9/12 0012.
+ * Created by taosm on 2017/9/12 0012.State
  */
+//FIXME 这个类应该被撤下来，应该换上旁边model包的Car
 public class CarStateHistory {
 
     //车辆vin码

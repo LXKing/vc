@@ -2,7 +2,7 @@ package com.ccclubs.engine.rule.inf.init;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.common.modify.UpdateStateService;
+import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.util.HistoryStateUtils;
@@ -31,8 +31,6 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
 
   @Autowired
   RedisTemplate redisTemplate;
-  @Autowired
-  UpdateStateService updateStateService;
 
   @Autowired
   HistoryStateUtils historyStateUtils;

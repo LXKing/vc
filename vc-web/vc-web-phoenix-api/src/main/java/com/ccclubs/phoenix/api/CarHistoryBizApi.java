@@ -1,18 +1,23 @@
 package com.ccclubs.phoenix.api;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.frm.spring.annotation.ApiSecurity;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.phoenix.inf.CarCanHistoryInf;
+import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.inf.TransformForBizInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
+import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarCan;
+import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
+import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +40,14 @@ public class CarHistoryBizApi {
     @Reference(version = "1.0.0")
     private CarCanHistoryInf carCanHistoryInf;
 
+    @Reference(version = "1.0.0")
+    private CarGbHistoryInf carGbHistoryService;
 
     @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
 
+
+    @ApiSecurity
     @RequestMapping(value = "/states",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryCarStateList(CarStateHistoryParam param) {
         logger.info("we get a request form states:",param);
@@ -61,7 +70,89 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carStateHistoryOutput);
     }
 
+    //车辆GB数据查询
+    @RequestMapping(value = "/gbs",method = RequestMethod.GET)
+    public ApiMessage<CarGbHistoryOutput> queryCarGbList(CarGbHistoryParam param){
+        logger.debug("we receive a gb get request."+param.toString());
+        if (!paramCheck(param.getCs_vin(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarGbHistoryOutput carGbHistoryOutput= carGbHistoryService.queryCarGbListByOutput(param);
+        return new ApiMessage<>(carGbHistoryOutput);
+    }
+
+    //车辆GB数据存储
+    @RequestMapping(value = "/gbs",method = RequestMethod.POST)
+    public ApiMessage<CarGbHistoryOutput> saveCarGbList(@RequestBody List<CarGb> carGbList){
+
+        logger.debug("we receive a gb date list.");
+        //logger.warn(carGbList.toString());
+        CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
+        if(carGbList!=null&&carGbList.size()>0) {
+            carGbHistoryService.saveOrUpdate(carGbList);
+        }
+        return new ApiMessage<>(carGbHistoryOutput);
+    }
+
+
+    //状态查询，内部
+    @RequestMapping(value = "/states-internal",method = RequestMethod.GET)
+    public ApiMessage<CarStateHistoryOutput> queryCarStateListInternal(CarStateHistoryParam param) {
+        logger.info("we get aiInternal request form states:",param);
+
+        if (null==param.getCs_number()||param.getCs_number().isEmpty()){
+            logger.info("we find a PARAMS_VALID_FAILED at states.");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        logger.debug("we receive a state get request."+param.toString());
+        if (!paramCheck(param.getCs_number(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarStateHistoryOutput carStateHistoryOutput= carStateHistoryInf.queryCarStateListByOutput(param);
+        return new ApiMessage<>(carStateHistoryOutput);
+    }
+
+
+    //驾驶阶段数据查询(内部使用)
+    @RequestMapping(value = "/drivepaces-internal",method = RequestMethod.GET)
+    public ApiMessage<CarStateHistoryOutput> queryDrivePacesInternal(CarStateHistoryParam param) {
+        logger.info("we get a Internal request form drivepaces:",param);
+        if (null==param.getCs_number()||param.getCs_number().isEmpty()){
+            logger.info("we find a PARAMS_VALID_FAILED at drivepaces.");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        if (!paramCheck(param.getCs_number(),
+                param.getStart_time(),
+                param.getEnd_time(),
+                param.getPage_no(),
+                param.getPage_size()))
+        {
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        CarStateHistoryOutput carStateHistoryOutput=new CarStateHistoryOutput();
+        param.setOrder("asc");
+        param.setQuery_fields("PACE");
+        param.setPage_no(-1);
+        List<CarState> carStateList= carStateHistoryInf.queryCarStateListByOutput(param).getList();
+        //Collections.reverse(carStateList);
+        List<Pace> paceList = carStateHistoryInf.calDrivePaceList(carStateList);
+        carStateHistoryOutput.setPaceList(paceList);
+        //carStateHistoryOutput.setTotal(param.getPage_size()*100L);
+        return new ApiMessage<>(carStateHistoryOutput);
+    }
+
     //驾驶阶段数据查询
+    @ApiSecurity
     @RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePaces(CarStateHistoryParam param) {
         logger.info("we get a request form drivepaces:",param);
@@ -165,6 +256,7 @@ public class CarHistoryBizApi {
 
 
     private boolean paramCheck(String csNumber,String startTime,String endTime,Integer pageNo,Integer pageSize){
+        if (null==csNumber||null==endTime||null==startTime){return false;}
         if (csNumber.isEmpty()||endTime.isEmpty()||startTime.isEmpty()){return false;}
         if (pageNo<-1||pageNo==0){return false;}
         if (pageSize<=0){return false;}

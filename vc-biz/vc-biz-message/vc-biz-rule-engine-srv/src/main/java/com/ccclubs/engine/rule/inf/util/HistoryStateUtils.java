@@ -1,14 +1,13 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.common.modify.UpdateStateService;
+import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
-import com.ccclubs.phoenix.orm.vo.CarStateHistory;
+import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.pub.orm.model.CsState;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -107,7 +106,7 @@ public class HistoryStateUtils extends ConvertUtils {
 
 
   public void saveHistoryDataToHbase(List<CsState> csStateList){
-    List<CarStateHistory> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
+    List<CarState> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
@@ -126,7 +125,7 @@ public class HistoryStateUtils extends ConvertUtils {
 
   public void saveHistoryDataToHbase(CsState csState) {
 
-    CarStateHistory csStateHistory=dealCsStateToCarStateHistory(csState);
+    CarState csStateHistory=dealCsStateToCarStateHistory(csState);
     String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState data json done:" + objectJson);
@@ -136,12 +135,12 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
-  public List<CarStateHistory> dealCsStateListToCarStateHistoryLsit(List<CsState> csStateList){
+  public List<CarState> dealCsStateListToCarStateHistoryLsit(List<CsState> csStateList){
     if(null==csStateList||csStateList.size()<1){
       logger.warn("csStateList is null!");
       return null;
     }
-    List<CarStateHistory> carStateHistoryList=new ArrayList<>();
+    List<CarState> carStateHistoryList=new ArrayList<>();
     for (int i=0;i<csStateList.size();i++){
       carStateHistoryList.add(dealCsStateToCarStateHistory(csStateList.get(i)));
     }
@@ -149,17 +148,17 @@ public class HistoryStateUtils extends ConvertUtils {
   }
 
 
-  public CarStateHistory dealCsStateToCarStateHistory(CsState csState){
+  public CarState dealCsStateToCarStateHistory(CsState csState){
     if (null == csState) {
       return null;
     }
 
-    CarStateHistory csStateHistory = new CarStateHistory();
+    CarState csStateHistory = new CarState();
 
     csStateHistory.setAdd_time(System.currentTimeMillis());
     csStateHistory.setCs_number(csState.getCssNumber());
 
-    csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
+    //csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
     csStateHistory.setCs_access(convertToInterger(csState.getCssAccess()));
     csStateHistory.setBase_ci(convertToString(csState.getCssBaseCi()));
     csStateHistory.setBase_lac(convertToString(csState.getCssBaseLac()));
@@ -192,7 +191,7 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setSaving_mode(convertToInterger(csState.getCssSaving()));
     csStateHistory.setSpeed(convertToFloat(csState.getCssSpeed()));
     csStateHistory.setUser_rfid(csState.getCssRfidDte());
-    csStateHistory.setRelate_car(convertToLong(csState.getCssCar()));
+    //csStateHistory.setRelate_car(convertToLong(csState.getCssCar()));
     csStateHistory.setPower_reserve(convertToFloat(csState.getCssPower()));
     csStateHistory.setMotor_speed(convertToFloat(csState.getCssMotor()));
     csStateHistory.setLongitude(convertToDouble(csState.getCssLongitude()));

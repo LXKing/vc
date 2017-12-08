@@ -1,11 +1,11 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.common.modify.UpdateCanService;
+import com.ccclubs.mongo.modify.UpdateCanService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
-import com.ccclubs.phoenix.orm.vo.CarCanHistory;
+import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.pub.orm.model.CsCan;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -67,7 +67,7 @@ public class HistoryCanUtils {
   }
 
   public void saveHistoryDataToHbase(CsCan csCan){
-    CarCanHistory carCanHistory=dealCsCanToCarCanHistory(csCan);
+    CarCan carCanHistory=dealCsCanToCarCanHistory(csCan);
     String objectJson = JSON.toJSONString(carCanHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can data json is done:" + objectJson);
@@ -81,7 +81,7 @@ public class HistoryCanUtils {
       logger.warn("csCanList is null!");
       return;
     }
-    List<CarCanHistory> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
+    List<CarCan> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
     String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can list json is done:" + objectJson);
@@ -90,20 +90,20 @@ public class HistoryCanUtils {
     logger.debug("send post for can list !");
   }
 
-  public List<CarCanHistory> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){
+  public List<CarCan> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){
     if (null==csCanList||csCanList.size()<1){
       return null;
     }
-    List<CarCanHistory> carCanHistoryList=new ArrayList<>();
+    List<CarCan> carCanHistoryList=new ArrayList<>();
     for (CsCan csCan:csCanList){
       carCanHistoryList.add(dealCsCanToCarCanHistory(csCan));
     }
     return carCanHistoryList;
   }
 
-  public CarCanHistory dealCsCanToCarCanHistory(CsCan csCan){
+  public CarCan dealCsCanToCarCanHistory(CsCan csCan){
     if (null==csCan){return null;}
-    CarCanHistory carCanHistory=new CarCanHistory();
+    CarCan carCanHistory=new CarCan();
     carCanHistory.setAdd_time(csCan.getCscAddTime().getTime());
     carCanHistory.setCs_number(csCan.getCscNumber());
     //carCanHistory.setCs_vin();

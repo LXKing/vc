@@ -1,6 +1,7 @@
 package com.ccclubs.admin.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,9 @@ public class CsModelMappingController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(CsModelMapping data){
+		if (null == data.getUpdateTime()){
+			data.setUpdateTime(new Date());
+		}
 		csModelMappingService.insert(data);
 		return VoResult.success();
 	}

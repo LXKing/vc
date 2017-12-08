@@ -112,7 +112,7 @@ public class SrvUserController {
 		}
 		if(!StringUtils.isEmpty(where)){
 			Integer val = Integer.valueOf(where);
-			c.andsuIdEqualTo(val);
+			c.andsuGroupEqualTo(val.longValue());
 		}
 		PageInfo<SrvUser> pageInfo = srvUserService.getPage(query, 0, 10);
 		List<SrvUser> list = pageInfo.getList();

@@ -82,7 +82,9 @@ public class ParseGbDataService implements IParseGbDataService {
      * 等待消费
      */
     ListOperations ops = redisTemplate.opsForList();
-    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, csMessage);
+    //分别写进Mongo和Hbase的队列。
+    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
+    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
   }
 
   /**

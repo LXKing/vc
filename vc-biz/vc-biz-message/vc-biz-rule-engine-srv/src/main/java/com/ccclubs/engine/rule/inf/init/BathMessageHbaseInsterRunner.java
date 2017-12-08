@@ -2,12 +2,10 @@ package com.ccclubs.engine.rule.inf.init;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.mongo.modify.UpdateCanService;
-import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.engine.rule.inf.util.HistoryCanUtils;
-import com.ccclubs.pub.orm.model.CsCan;
+import com.ccclubs.engine.rule.inf.util.HistoryMessageUtils;
+import com.ccclubs.mongo.orm.model.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,64 +14,67 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
+
 /**
- * CsCan 当前状态数据更新
+ * 国标状态数据写Hbase定时任务
  *
  * @author Alban
- * @create 2017-10-14
+ * @create 2017-12-07
  **/
 @Component
 @Order(2)
-public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
+public class BathMessageHbaseInsterRunner implements CommandLineRunner {
 
     @Autowired
     RedisTemplate redisTemplate;
+    //@Resource
+    //private CsMessageDao csMessageDao;
     @Autowired
-    UpdateCanService updateCanService;
+    private HistoryMessageUtils historyMessageUtils;
 
-    @Autowired
-    HistoryCanUtils historyCanUtils;
     @Autowired
     EnvironmentUtils environmentUtils;
     @Autowired
     BatchProperties batchProperties;
 
-    private static final Logger logger = LoggerFactory.getLogger(BatchHistoryCanHbaseRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(BatchStateUpdateRunner.class);
 
     @SuppressWarnings("unchecked")
     @Override
     public void run(String... strings) throws Exception {
         ExecutorService fixedThreadPool = Executors
-                .newFixedThreadPool(batchProperties.getHbaseInsertThreads());
+                .newFixedThreadPool(batchProperties.getUpdateThreads());
         fixedThreadPool.execute(() -> {
             while (true) {
-                logger.debug("BatchHistoryCanHbaseRunner start. {}");
-                List<CsCan> waitList = new ArrayList();
+                logger.debug("BatchMessageInsertRunner start. {}");
+                List<CsMessage> waitList = new ArrayList();
                 try {
                     Long startTime = System.currentTimeMillis();
                     //取出队列中所有等待更新的数据
-                    Long canListSrcSize = redisTemplate.opsForList()
-                            .size(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
-                    if (canListSrcSize > 0) {
+                    Long messageListSrcSize = redisTemplate.opsForList()
+                            .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
+                    if (messageListSrcSize > 0) {
                         long redisListStartTime = System.currentTimeMillis();
                         while (System.currentTimeMillis() - redisListStartTime < batchProperties
-                                .getHbaseInsertMaxDurTime()) {
+                                .getMongoInsertMaxDurTime()) {
                             int stateListWaitSize = waitList.size();
-                            if (stateListWaitSize > batchProperties.getHbaseInsertBatchSize()) {
+                            if (stateListWaitSize > batchProperties.getMongoInsertBatchSize()) {
                                 break;
                             }
                             //取出队列中 等待写入的数据
                             Object item = redisTemplate.opsForList()
-                                    .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
+                                    .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
                             if (null == item) {
                                 break;
                             } else {
-                                waitList.add((CsCan) item);
+                                waitList.add((CsMessage) item);
                             }
                         }
                     } else {
@@ -86,12 +87,8 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
-                        logger.debug("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
-                        //historyStateUtils.saveHistoryDataToHbase(waitList);
-                        historyCanUtils.saveHistoryDataToHbase(waitList);
-//            updateStateService.batchUpdate(waitList);
-                        logger.debug("size:{},time:{} BatchHistoryCanHbaseRunner batch insert  ",
-                                waitList.size(),
+                        historyMessageUtils.saveHistoryGbDataToHbase(waitList);
+                        logger.debug("size:{},time:{} BatchMessage hbase InsertRunner batch insert  ", waitList.size(),
                                 System.currentTimeMillis() - startTime);
 
                     }
@@ -99,7 +96,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                     ex.printStackTrace();
                     logger.error(ex.getMessage());
                     if (waitList.size() > 0) {
-                        logger.error("batch insert current canList error. error list content : {}",
+                        logger.error("batch insert  hbase current stateList error. error list content : {}",
                                 JSON.toJSONString(waitList));
                     }
                 } finally {

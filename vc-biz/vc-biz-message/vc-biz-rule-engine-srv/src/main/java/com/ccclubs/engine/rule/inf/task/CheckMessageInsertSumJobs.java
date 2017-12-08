@@ -38,10 +38,10 @@ public class CheckMessageInsertSumJobs implements ApplicationContextAware {
     //检查队列中所有等待更新总数
     long startTime = System.currentTimeMillis();
     Long stateListSrcSize = redisTemplate.opsForList()
-        .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE);
+        .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE);
     if (stateListSrcSize > batchProperties.getMongoInsertQueueMax()) {
       redisTemplate.opsForList()
-          .trim(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_QUEUE, 0,
+          .trim(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, 0,
               batchProperties.getUpdateQueueMax());
     }
     logger.debug("time {} , CheckMessageInsertSumJobs time consuming.",
@@ -50,6 +50,8 @@ public class CheckMessageInsertSumJobs implements ApplicationContextAware {
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.context = applicationContext;
+    context = applicationContext;
   }
+
+
 }

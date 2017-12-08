@@ -1,7 +1,7 @@
 package com.ccclubs.gateway.jt808.inf.impl;
 
-import com.ccclubs.common.modify.UpdateLoggerService;
-import com.ccclubs.common.modify.UpdateTerminalService;
+import com.ccclubs.mongo.modify.UpdateLoggerService;
+import com.ccclubs.mongo.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.gateway.jt808.inf.IAckService;
