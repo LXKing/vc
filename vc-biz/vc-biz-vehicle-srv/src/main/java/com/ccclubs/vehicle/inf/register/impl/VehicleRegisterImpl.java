@@ -83,15 +83,14 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
     for (VehicleRegisterInput input : inputs) {
       model = queryModelService.queryModelByFlag(input.getCsvModel());
       vehicle = queryVehicleService.queryVehicleByVin(input.getCsvVin());
-      vehicleCarNO = StringUtils.isEmpty(input.getCsvCarNo()) ? null
-          : queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo());
-      vehicleEngineNo = StringUtils.isEmpty(input.getCsvEngineNo()) ? null
-          : queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo());
+      vehicleCarNO = StringUtils.isNotEmpty(input.getCsvCarNo()) ? null
+          : queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo().trim());
+      vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
       //machine = terminalService.queryCsMachineByTeNo(input.getTeNo());
       host = queryAppInfoService.queryHostByAppid(appId);
       outputItem = new JSONObject();
       if (null != vehicleCarNO) {
-        outputItem.put("vin", vehicle.getCsvVin());
+        outputItem.put("vin", input.getCsvVin());
         outputItem.put("errorMsg", "csvCarNo aready exists");
         output.getFailure().add(outputItem);
         continue;
@@ -101,13 +100,13 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
       }
 
       if (null != vehicleEngineNo) {
-        outputItem.put("vin", vehicle.getCsvVin());
+        outputItem.put("vin", input.getCsvVin());
         outputItem.put("errorMsg", "csvEngineNo aready exists");
         output.getFailure().add(outputItem);
         continue;
-      } else {
-        //重置csvEngineNo为null
-        input.setCsvEngineNo(null);
+      }else {
+        //重置CsvEngineNo
+        input.setCsvEngineNo(input.getCsvEngineNo().trim());
       }
 
       if (null == vehicle) {

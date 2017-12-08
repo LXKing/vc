@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>编号：</dt>
+					<dd>
+					<input name="suId" placeholder="请输入编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>编号：</dt>
+					<dd>
+					<input name="suHost" placeholder="请输入编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>所属组：</dt>
+					<dd>
+					<input name="suGroup" placeholder="请输入所属组" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>登录账号：</dt>
+					<dd>
+					<input name="suUsername" placeholder="请输入登录账号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>登录密码：</dt>
+					<dd>
+					<input name="suPassword" placeholder="请输入登录密码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>真实姓名：</dt>
+					<dd>
+					<input name="suRealName" placeholder="请输入真实姓名" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>手机号码：</dt>
+					<dd>
+					<input name="suMobile" placeholder="请输入手机号码" class="form-control" >
+					</dd>
+				</dl>
+				<dl class="rowfull" >
+					<dt>快捷方式：</dt>
+					<dd>
+					<input name="suShortcut" placeholder="请输入快捷方式" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+					<input name="suAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>最后登录时间：</dt>
+					<dd>
+					<input name="suLastTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>最后登录IP：</dt>
+					<dd>
+					<input name="suLastIp" placeholder="请输入最后登录IP" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+					<input name="suStatus" placeholder="请输入状态" class="form-control" >
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/auth/user/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/auth/user/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

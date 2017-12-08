@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.SrvProjectMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.SrvProject">
+		<result column="sp_id" jdbcType="BIGINT" property="spId" />
+		<result column="sp_name" jdbcType="VARCHAR" property="spName" />
+		<result column="sp_parent_id" jdbcType="BIGINT" property="spParentId" />
+		<result column="sp_flag" jdbcType="VARCHAR" property="spFlag" />
+		<result column="sp_family" jdbcType="VARCHAR" property="spFamily" />
+		<result column="sp_url" jdbcType="VARCHAR" property="spUrl" />
+		<result column="sp_logo" jdbcType="VARCHAR" property="spLogo" />
+		<result column="sp_descript" jdbcType="VARCHAR" property="spDescript" />
+		<result column="sp_level" jdbcType="INTEGER" property="spLevel" />
+		<result column="sp_limit_exp" jdbcType="VARCHAR" property="spLimitExp" />
+		<result column="sp_group" jdbcType="VARCHAR" property="spGroup" />
+		<result column="sp_mind" jdbcType="VARCHAR" property="spMind" />
+		<result column="sp_status" jdbcType="SMALLINT" property="spStatus" />
+	</resultMap>
+	
+	
+</mapper>

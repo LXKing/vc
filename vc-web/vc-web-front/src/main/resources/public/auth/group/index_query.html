@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="sgId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="sgIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgName" >
+				<dt>角色组名称</dt>
+				<dd  >
+					<input  name="sgNameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgParent" >
+				<dt>上级组</dt>
+				<dd  >
+					<input  name="sgParentEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgFamily" style="display:none;">
+				<dt>序列号</dt>
+				<dd  >
+					<input  name="sgFamilyEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgUser" style="display:none;">
+				<dt>负责人</dt>
+				<dd  >
+					<input  name="sgUserEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgFlag" >
+				<dt>组标识</dt>
+				<dd  >
+					<input  name="sgFlagLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="sgStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="sgStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="sgId" value="sgId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="sgName" value="sgName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >角色组名称</label></li>
+			        <li><label><input cond="sgParent" value="sgParent" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >上级组</label></li>
+			        <li><label><input cond="sgFamily" value="sgFamily"  type="checkbox" onclick='showHideCondition(this, this.value);' >序列号</label></li>
+			        <li><label><input cond="sgUser" value="sgUser"  type="checkbox" onclick='showHideCondition(this, this.value);' >负责人</label></li>
+			        <li><label><input cond="sgFlag" value="sgFlag" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >组标识</label></li>
+			        <li><label><input cond="sgStatus" value="sgStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>
