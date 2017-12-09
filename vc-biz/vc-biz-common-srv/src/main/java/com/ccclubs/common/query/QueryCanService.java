@@ -8,6 +8,8 @@ import com.jarvis.cache.annotation.ExCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * can数据查询
  *
@@ -17,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryCanService {
 
-  @Autowired
+  @Resource
   CsCanMapper dao;
 
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsCan:cscId:'+#args[0]", autoload = true, exCache = {

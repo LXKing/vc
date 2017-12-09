@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * 状态数据查询
  *
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryStateService {
 
-  @Autowired
+  @Resource
   CsStateMapper dao;
 
   /**

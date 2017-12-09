@@ -30,6 +30,7 @@ import java.util.List;
  */
 @Service(version = "1.0.0")
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
+
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 

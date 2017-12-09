@@ -48,8 +48,8 @@ public class CarHistoryBizApi {
 
 
     @ApiSecurity
-    @RequestMapping(value = "/states",method = RequestMethod.GET)
-    public ApiMessage<CarStateHistoryOutput> queryCarStateList(CarStateHistoryParam param) {
+    @RequestMapping(value = "/states-query",method = RequestMethod.POST)
+    public ApiMessage<CarStateHistoryOutput> queryCarStateList(@RequestBody CarStateHistoryParam param) {
         logger.info("we get a request form states:",param);
 
         param.setCs_number(transformForBizService.getCsNumberByCsVin(param.getCsVin()));
@@ -153,8 +153,8 @@ public class CarHistoryBizApi {
 
     //驾驶阶段数据查询
     @ApiSecurity
-    @RequestMapping(value = "/drivepaces",method = RequestMethod.GET)
-    public ApiMessage<CarStateHistoryOutput> queryDrivePaces(CarStateHistoryParam param) {
+    @RequestMapping(value = "/drivepaces-query",method = RequestMethod.POST)
+    public ApiMessage<CarStateHistoryOutput> queryDrivePaces(@RequestBody CarStateHistoryParam param) {
         logger.info("we get a request form drivepaces:",param);
 
         param.setCs_number(transformForBizService.getCsNumberByCsVin(param.getCsVin()));

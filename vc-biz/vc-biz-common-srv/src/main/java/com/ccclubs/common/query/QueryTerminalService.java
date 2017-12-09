@@ -15,6 +15,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * 查询终端
  *
@@ -24,10 +26,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryTerminalService {
 
-  @Autowired
+  @Resource
   CsMachineMapper mdao;
 
-  @Autowired
+  @Resource
   CsTerminalMapper tdao;
 
   /**
