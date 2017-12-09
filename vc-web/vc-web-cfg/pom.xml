@@ -25,7 +25,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-undertow</artifactId>
 		</dependency>
+		<!-- 生产指标 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>www.ccclubs</groupId>
+			<artifactId>vc-frm-logger</artifactId>
+			<version>${demo.version}</version>
+
+		</dependency>
 
 		<!-- 统一配置服务端 -->
 		<dependency>
