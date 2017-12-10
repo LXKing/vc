@@ -311,14 +311,14 @@ public class TestVtsearch {
         HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/factory/vehiclePush");
         httpPost.setHeader("Content-Type", "application/json");
         VehiclePushInput input = new VehiclePushInput();
-        input.setCsvVin("LJ8E3C1M1HD310126");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        input.setCsvVin("LJ899C1M3HD313108");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
         input.setCsvBataccuCode("2101020A-W11#2705Z#20171028#00060");
 //        input.setCsvCertific("");
         input.setCsvColorCode("深空黑/红橙");
         input.setCsvInteriorColorCode("全黑内饰");
-        input.setCsvEngineNo("20171024131");
+        input.setCsvEngineNo("22171125151");
         input.setCsvInteriorColorCode("");
-        input.setCsvMachine("67F0820");
+        input.setCsvMachine("CFXT31603231424");
         input.setCsvModel("JNJ7000EVK1");
         input.setCsvModelCode("JNJ7000EVK1-JNPMSM320-30");
         input.setCsvProdDate("2017-11-01");
@@ -331,7 +331,7 @@ public class TestVtsearch {
 //        String sign = HmacUtils.hmacSha1Hex("fa@sd_n38f2f_3qb", value);
 //        httpPost.addHeader("sign", sign);
 //        httpPost.addHeader("appId", "1000005");
-        httpPost.setEntity(new StringEntity(DESUtil.encrypt(ss,"7EF81E3F2EDF6652B5F487DA"), ContentType.APPLICATION_JSON));
+        httpPost.setEntity(new StringEntity(DESUtil.encrypt(ss,"0F8987F17765D72BR713A939"), ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
         try {
