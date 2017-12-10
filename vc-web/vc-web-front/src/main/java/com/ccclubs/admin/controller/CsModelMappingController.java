@@ -63,6 +63,9 @@ public class CsModelMappingController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(CsModelMapping data){
+		if (null == data.getAddTime()){
+			data.setAddTime(new Date());
+		}
 		if (null == data.getUpdateTime()){
 			data.setUpdateTime(new Date());
 		}
