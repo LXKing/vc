@@ -26,18 +26,18 @@ public class SrvLimitedServiceImpl extends CrudService<SrvLimitedMapper, SrvLimi
   @Override
   public List<SrvLimited> getSrvLimitedList(Map params,Integer size)
   {
-    return getDao().selectByExample().getSrvLimitedList(params,size);
+    return new ArrayList<>();
   }
 
   /**
    * 获取组权限
-   * @param get_login_user
+   * @param
    * @return
    */
   @Override
   public List<SrvLimited> getGroupLimits(SrvGroup srvGroup)
   {
-    return srvLimitedDao.getLimitsByActorId(srvGroup.getSgId(), 0);
+    return new ArrayList<>();
   }
 
   /**
@@ -48,11 +48,7 @@ public class SrvLimitedServiceImpl extends CrudService<SrvLimitedMapper, SrvLimi
   @Override
   public List<SrvLimited> getUserLimits(SrvUser srvUser, boolean bUserGroupLimits)
   {
-    List<SrvLimited> list=srvLimitedDao.getLimitsByActorId(srvUser.getSuId(), 1);
-    if(list.isEmpty() && bUserGroupLimits)
-      return srvLimitedDao.getLimitsByActorId(srvUser.getSuGroupId(), 0);
-    else
-      return list;
+    return new ArrayList<>();
   }
 
   /**
@@ -60,7 +56,7 @@ public class SrvLimitedServiceImpl extends CrudService<SrvLimitedMapper, SrvLimi
    */
   @Override
   public SrvLimited getUserLimited(SrvUser srvUser, String strPath) {
-    return srvLimitedDao.getUserLimited(srvUser,strPath);
+    return new SrvLimited();
   }
 
   /**
