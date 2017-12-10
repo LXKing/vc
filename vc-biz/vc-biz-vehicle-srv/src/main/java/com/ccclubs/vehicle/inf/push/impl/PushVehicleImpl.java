@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 @Service(version = VehicleServiceVersion.V1)
 public class PushVehicleImpl implements PushVehicleInf {
 
+  private static final Logger logger = LoggerFactory.getLogger(PushVehicleImpl.class);
   private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   @Value("${vehicle.push.zhongtai}")
@@ -159,7 +161,7 @@ public class PushVehicleImpl implements PushVehicleInf {
       vehicleUpdate.setCsvModelCodeSimple(input.getCsvModel());
 
       vehicleUpdate.setCsvId(vehicle.getCsvId());
-      vdao.updateByPrimaryKeySelective(vehicle);
+      vdao.updateByPrimaryKeySelective(vehicleUpdate);
     }
 
     return null;
@@ -167,18 +169,16 @@ public class PushVehicleImpl implements PushVehicleInf {
 
   @Override
   public VehiclePushOutput vehiclePushSave(String input) {
+    VehiclePushInput pushInput;
     try {
-
       String result = DESUtil.decrypt(input, PUSH_KEY);
-
-      VehiclePushInput pushInput = new ObjectMapper().readValue(result, VehiclePushInput.class);
-
-      return this.vehiclePushSave(pushInput);
-
+      pushInput = new ObjectMapper().readValue(result, VehiclePushInput.class);
     } catch (Exception e) {
       e.printStackTrace();
       throw new ApiException(ApiEnum.FAIL.code(), "推送内容解密时出错！");
     }
+
+    return this.vehiclePushSave(pushInput);
   }
 
   /**

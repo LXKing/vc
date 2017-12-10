@@ -54,7 +54,7 @@ druid:
 #用于主机厂车追溯系统有车辆录入时主动推送，加密的key
 vehicle:
   push:
-    zongtai: 0F8987F17765D72BR713A939
+    zhongtai: 0F8987F17765D72BR713A939
 
 #配置业务参数 TODO 临时方案
 #各类型终端的最新插件版本
