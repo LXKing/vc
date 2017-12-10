@@ -36,7 +36,7 @@ public class PushVehicleImpl implements PushVehicleInf {
 
   private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
-  @Value("${vehicle.push.zongtai}")
+  @Value("${vehicle.push.zhongtai}")
   private String PUSH_KEY;
   @Autowired
   CsVehicleMapper vdao;
