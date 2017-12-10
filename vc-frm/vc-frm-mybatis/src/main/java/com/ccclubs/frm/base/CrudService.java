@@ -26,13 +26,13 @@ public abstract class CrudService<D extends BaseDAO<T, PK>, T, PK> implements Ba
     @Autowired
 	protected D dao;
 //
-//    public D getDao() {
-//        return dao;
-//    }
-//
-//    public void setDao(D dao) {
-//		this.dao = dao;
-//	}
+    public D getDao() {
+        return dao;
+    }
+
+    public void setDao(D dao) {
+		this.dao = dao;
+	}
 //
 //    /**
 //	 * 获取单条数据
