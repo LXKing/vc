@@ -62,7 +62,7 @@ public class CsVehicle implements java.io.Serializable
 	
 	private   Integer csvMachine;
 	/**
-	 * [csv_color_code]颜色
+	 * [csv_color_code]车身颜色
 	 */
 	
 	private   Short csvColorCode;
@@ -81,6 +81,26 @@ public class CsVehicle implements java.io.Serializable
 	 */
 	
 	private   String csvLandmark;
+	/**
+	 * [csv_domain]车辆领域0:未知 1:个人领域 2:公共领域
+	 */
+	
+	private   Short csvDomain;
+	/**
+	 * [csv_model_code_full]车型代码
+	 */
+	
+	private   String csvModelCodeFull;
+	/**
+	 * [csv_model_code_simple]车型备案号
+	 */
+	
+	private   String csvModelCodeSimple;
+	/**
+	 * [csv_interior_color_code]内饰颜色
+	 */
+	
+	private   String csvInteriorColorCode;
 	/**
 	 * [csv_status]状态
 	 */
@@ -133,6 +153,9 @@ public class CsVehicle implements java.io.Serializable
 	}
 	public Object getCsvLandmarkText(){
 		return resolve("csvLandmarkText");
+	}
+	public Object getCsvDomainText(){
+		return resolve("csvDomainText");
 	}
 	public Object getCsvStatusText(){
 		return resolve("csvStatusText");
@@ -264,16 +287,16 @@ public class CsVehicle implements java.io.Serializable
 	public void setCsvMachine(Integer csvMachine){
 		this.csvMachine = csvMachine;
 	}
-	/*******************************颜色**********************************/	
+	/*******************************车身颜色**********************************/	
 	/**
-	* 颜色 [可空]      
+	* 车身颜色 [可空]      
 	**/
 	public Short getCsvColorCode(){
 		return this.csvColorCode;
 	}
 	
 	/**
-	* 颜色 [可空]     
+	* 车身颜色 [可空]     
 	**/
 	public void setCsvColorCode(Short csvColorCode){
 		this.csvColorCode = csvColorCode;
@@ -319,6 +342,62 @@ public class CsVehicle implements java.io.Serializable
 	**/
 	public void setCsvLandmark(String csvLandmark){
 		this.csvLandmark = csvLandmark;
+	}
+	/*******************************车辆领域**********************************/	
+	/**
+	* 车辆领域 [可空]      
+	**/
+	public Short getCsvDomain(){
+		return this.csvDomain;
+	}
+	
+	/**
+	* 车辆领域 [可空]     
+	**/
+	public void setCsvDomain(Short csvDomain){
+		this.csvDomain = csvDomain;
+	}
+	/*******************************车型代码**********************************/	
+	/**
+	* 车型代码 [可空]      
+	**/
+	public String getCsvModelCodeFull(){
+		return this.csvModelCodeFull;
+	}
+	
+	/**
+	* 车型代码 [可空]     
+	**/
+	public void setCsvModelCodeFull(String csvModelCodeFull){
+		this.csvModelCodeFull = csvModelCodeFull;
+	}
+	/*******************************车型备案号**********************************/	
+	/**
+	* 车型备案号 [可空]      
+	**/
+	public String getCsvModelCodeSimple(){
+		return this.csvModelCodeSimple;
+	}
+	
+	/**
+	* 车型备案号 [可空]     
+	**/
+	public void setCsvModelCodeSimple(String csvModelCodeSimple){
+		this.csvModelCodeSimple = csvModelCodeSimple;
+	}
+	/*******************************内饰颜色**********************************/	
+	/**
+	* 内饰颜色 [可空]      
+	**/
+	public String getCsvInteriorColorCode(){
+		return this.csvInteriorColorCode;
+	}
+	
+	/**
+	* 内饰颜色 [可空]     
+	**/
+	public void setCsvInteriorColorCode(String csvInteriorColorCode){
+		this.csvInteriorColorCode = csvInteriorColorCode;
 	}
 	/*******************************状态**********************************/	
 	/**

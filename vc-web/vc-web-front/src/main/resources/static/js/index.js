@@ -36,25 +36,26 @@ $(function(){
 					success: function(data){
 						if(data && data.data && data.data.projects){
 							$.each(data.data.projects,function(k,v){
-								if(v.spParentId == 0){
-	                                that.menuNav.firstNav.push(v);
+								if(v.spParentId === 0){
+									that.menuNav.firstNav.push(v);
 								}
 								//筛选出二级菜单
 								$.each(that.menuNav.firstNav,function(k1,v1){
-									if (v.spParentId == v1.spId) {
-										that.menuNav.secondNav.push(v);
+									if (v.spId === v1.spParentId) {
+										that.menuNav.secondNav.push(v1);
 										return false;//跳出内层循环
 									}
 								})
 								//筛选出三级菜单
 								$.each(that.menuNav.secondNav,function(k2,v2){
-									if (v.spParentId == v2.spId) {
+									if (v.spParentId === v2.spId) {
 										that.menuNav.thirdNav.push(v);
 										return false;//跳出内层循环
 									}
 								})
-	                        });
-	                        $.each(that.menuNav.secondNav,function(k3,v3){
+							});
+
+							$.each(that.menuNav.secondNav,function(k3,v3){
 								if(v3.spParentId == that.menuNav.firstNav[0].spId){
 									v3.thirdarr = [];
 									that.menuNav.arr.push(v3);
@@ -66,7 +67,8 @@ $(function(){
 									})
 								}
 							})
-	                        var template = $('#leftNav').html();
+
+							var template = $('#leftNav').html();
 							Mustache.parse( template );
 							var skin_rendered = Mustache.render(template, that.menuNav);
 							$('#side-menu').append(skin_rendered);

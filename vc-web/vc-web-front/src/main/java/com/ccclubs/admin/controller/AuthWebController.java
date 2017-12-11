@@ -1,5 +1,7 @@
 package com.ccclubs.admin.controller;
 
+import com.ccclubs.admin.constants.Constants;
+import com.ccclubs.admin.entity.SrvProjectCrieria;
 import com.ccclubs.admin.model.SrvLimited;
 import com.ccclubs.admin.model.SrvProject;
 import com.ccclubs.admin.model.SrvUser;
@@ -10,25 +12,25 @@ import com.ccclubs.admin.service.ISrvProjectService;
 import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.vo.ResultCode;
 import com.ccclubs.admin.vo.ResultMsg;
+import com.ccclubs.protocol.util.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * *************************** 版权所有：车厘子 所有权利 创建日期: 2017/9/27 创建作者：zkm 类名称　：AuthWebController.java
  * 版　　本： 功　　能： 最后修改： 修改记录： ****************************
  */
 @RestController
-@RequestMapping("/")
 public class AuthWebController {
 
 
@@ -47,6 +49,9 @@ public class AuthWebController {
   @Autowired
   ISrvProjectService srvProjectService;
 
+  @Autowired
+  RedisTemplate redisTemplate;
+
   private static Integer exps[] =
       {64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536};
 
@@ -56,31 +61,40 @@ public class AuthWebController {
 
 
   /**
-   * 获取用户所有权限
+   * 获取用户所有菜单
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings(
+      {"rawtypes", "unchecked"})
   @PostMapping("oauth/getUserLimit")
-  public ResultMsg getUserLimit(@RequestParam("userid") Long actorid) {
+  public ResultMsg getUserLimit(@RequestParam("userid")
+      Long actorid) {
     Map resultMap;
     if (actorid == null) {
       return new ResultMsg<>(false,
           ResultCode.INVALID_TOKEN, null);
     }
     ResultMsg<Object> resultMsg;
+    SrvLimited limited = new SrvLimited();
+    limited.setSlUser(actorid);
     try {
       resultMap = new HashMap();
       SrvUser srvUser;
       List<SrvProject> _projects;// 权限设置者可见的项目
       List<SrvLimited> _limiteds;// 权限视被设置者的权限
-      srvUser = srvUserService.selectByPrimaryKey(actorid);
+
       // 获取该对象的实际权限
-      _limiteds = srvLimitedService.getUserLimits(srvUser, true);
-      _projects = getUserProject(_limiteds);
-      resultMap.put("projects", _projects);
-      resultMap.put("limiteds", _limiteds);
-      resultMsg = new ResultMsg<>(true,
-          ResultCode.OK, analyseLimit(resultMap, actorid));//analyseLimit(resultMap, actorid)
-      return resultMsg;
+      if (0 == actorid) {
+        return getSuperLimit();
+      } else {
+        srvUser = srvUserService.selectByPrimaryKey(actorid.intValue());
+        _limiteds = srvLimitedService.getUserLimits(srvUser, true);
+        _projects = getUserProject(_limiteds);
+        resultMap.put("projects", _projects);
+        resultMap.put("limiteds", _limiteds);
+        resultMsg = new ResultMsg<>(true,
+            ResultCode.OK, analyseLimit(resultMap, actorid));//analyseLimit(resultMap, actorid)
+        return resultMsg;
+      }
     } catch (Exception ex) {
       ex.printStackTrace();
       return new ResultMsg<Object>(false,
@@ -105,50 +119,59 @@ public class AuthWebController {
     if (path.indexOf("//") != -1) {//url转化
       path = path.replaceAll("//", "/");
     }
-    SrvUser user = srvUserService.selectByPrimaryKey(userId);
-    if (user == null || StringUtils.isEmpty(path)) {
-      resultMsg = new ResultMsg<Object>(false,
-          ResultCode.PERMISSION_DENIED, null);
-      return resultMsg;
-    }
-    SrvLimited srvLimited = new SrvLimited();
-    srvLimited.setSlUser(user.getSuId().longValue());
-    List<SrvLimited> srvLimites = srvLimitedService.select(srvLimited);
-    Map params = new HashMap();
-    params.put("actorId",srvLimites != null ? user.getSuId() : user.getSuGroup());
-    params.put("actorType", srvLimites != null ? 1 : 0);
-    params.put("path", "%" + path + "%");
-//    srvLimited = limitedMapper.getUserLimited(params);
-    if (srvLimited != null) {
-      Integer limitsId = srvLimited.getSlLimit();
-      resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
-      resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
-      resutlMap.put("exportData", ((limitsId & 16) == 16) ? 1 : 0);
-      resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
-      resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
-      resutlMap.put("detail", ((limitsId & 1) == 1) ? 1 : 0);
-      resutlMap.put("canView", ((limitsId & 1) == 1) ? 1 : 0);// &&
-      //处理扩展权限
-      int canExp[] = new int[exps.length];
-      for (int i = 0; i < exps.length; i++) {
-        canExp[i] = (limitsId & exps[i]) == exps[i] ? 1
-            : 0;
+    Map userlimit = (Map) redisTemplate.opsForHash()
+        .get(Constants.PL_AUTH_URL_SESSION, userId + path);
+    // 缓存为空，则重新查找权限
+    if (userlimit == null) {
+      SrvUser user = srvUserService.selectByPrimaryKey(userId);
+      if (user == null || StringUtils.empty(path)) {
+        resultMsg = new ResultMsg<Object>(false,
+            ResultCode.PERMISSION_DENIED, null);
+        return resultMsg;
       }
-      resutlMap.put("canExp", canExp);
-      resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
-          resutlMap);
-      return resultMsg;
+      SrvLimited srvLimited = new SrvLimited();
+      srvLimited.setSlUser(user.getSuId().longValue());
+      srvLimited.setSlGroup(user.getSuGroup());
+      List<SrvLimited> srvLimites = srvLimitedService.select(srvLimited);
+      Map params = new HashMap();
+      params.put("actorId",
+          srvLimites != null ? user.getSuId() : user.getSuGroup());
+      params.put("actorType", srvLimites != null ? 1 : 0);
+      params.put("path", "%" + path + "%");
+      srvLimited = limitedMapper.getUserLimited(params);
+      if (srvLimited != null) {
+        Integer limitsId = srvLimited.getSlLimit();
+        resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
+        resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
+        resutlMap.put("exportData", ((limitsId & 16) == 16) ? 1 : 0);
+        resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
+        resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
+        resutlMap.put("detail", ((limitsId & 1) == 1) ? 1 : 0);
+        resutlMap.put("canView", ((limitsId & 1) == 1) ? 1 : 0);// &&
+        //处理扩展权限
+        int canExp[] = new int[exps.length];
+        for (int i = 0; i < exps.length; i++) {
+          canExp[i] = (limitsId & exps[i]) == exps[i] ? 1
+              : 0;
+        }
+        resutlMap.put("canExp", canExp);
+        resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
+            resutlMap);
+        return resultMsg;
+      } else {
+        resutlMap.put("canView", 1);// &&
+        resutlMap.put("detail", 0);
+        resutlMap.put("add", 0);
+        resutlMap.put("update", 0);
+        resutlMap.put("del", 0);
+        resutlMap.put("batchDel", 0);
+        resutlMap.put("exportData", 0);
+        resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
+            resutlMap);
+        return resultMsg;
+      }
     } else {
-      resutlMap.put("canView", 1);// &&
-      resutlMap.put("detail", 0);
-      resutlMap.put("add", 0);
-      resutlMap.put("update", 0);
-      resutlMap.put("del", 0);
-      resutlMap.put("batchDel", 0);
-      resutlMap.put("exportData", 0);
-      resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
-          resutlMap);
-      return resultMsg;
+      return new ResultMsg<Object>(true, ResultCode.OK, userlimit);
     }
   }
 
@@ -187,15 +210,15 @@ public class AuthWebController {
   private List<SrvProject> getUserProject(List<SrvLimited> _limits) {
     List<SrvProject> _projects = null;// 权限设置者可见的项目
     List<Long> strIds = new ArrayList<Long>();
-//        for (SrvLimited o : _limits)
-//        {
-//            limitMap.put(o.getSlProjectId(), o.getSlLimit());
-//            if (!strIds.equals(""))
-//                strIds.add(o.getSlProjectId());
-//        }
-//        SrvProjectCrieria query = new SrvProjectCrieria();
-//        query.createCriteria().andspIdIn(strIds).andspRemoveStatusEqualTo((byte)1).andspStatusEqualTo((byte)1);
-//        _projects = srvProjectService.selectByExample(query);
+    for (SrvLimited o : _limits) {
+      limitMap.put(o.getSlProject(), o.getSlLimit());
+      if (!strIds.equals("")) {
+        strIds.add(o.getSlProject());
+      }
+    }
+    SrvProjectCrieria query = new SrvProjectCrieria();
+    query.createCriteria().andspIdIn(strIds).andspStatusEqualTo((short) 1);
+    _projects = srvProjectService.selectByExample(query);
     return _projects;
   }
 
@@ -224,9 +247,10 @@ public class AuthWebController {
   /**
    * 解析当前用户的权限
    */
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings(
+      {"rawtypes", "unchecked"})
   public Map analyseLimit(Map resultMap, final Long userId) {
-    Map<String, Object> result = new HashMap();
+    Map<String, Object> result;
     final List<SrvProject> projects = (List<SrvProject>) resultMap
         .get("projects");// 权限设置者可见的项目
     DealProjectThread thread = new DealProjectThread(projects, limitMap, userId);

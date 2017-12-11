@@ -68,7 +68,7 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>颜色：</dt>
+					<dt>车身颜色：</dt>
 					<dd>
 					<input name="csvColorCode" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="color_code"  dataUrl="/base/dict/query">
 					</dd>
@@ -89,6 +89,35 @@
 					<dt>地标类型：</dt>
 					<dd>
 					<input name="csvLandmark" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="landmark"  dataUrl="/base/dict/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车辆领域：</dt>
+					<dd>
+					<select class="form-control m-b" name="csvDomain"  >
+                         <option></option>
+                         <option value="2">公共领域</option>
+                         <option value="1">个人领域</option>
+                         <option value="0">未知</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型代码：</dt>
+					<dd>
+					<input name="csvModelCodeFull" placeholder="请输入车型代码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型备案号：</dt>
+					<dd>
+					<input name="csvModelCodeSimple" placeholder="请输入车型备案号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>内饰颜色：</dt>
+					<dd>
+					<input name="csvInteriorColorCode" placeholder="请输入内饰颜色" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >

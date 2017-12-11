@@ -95,8 +95,9 @@ public class CsVehicleController {
 			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.接入商.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.车型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.车机设备.getResolver());
-			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.颜色.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.车身颜色.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.地标类型.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.车辆领域.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.CsVehicleResolver.状态.getResolver());
 		}
 	}

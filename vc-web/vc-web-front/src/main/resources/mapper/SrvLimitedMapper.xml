@@ -11,6 +11,11 @@
 		<result column="sl_group" jdbcType="BIGINT" property="slGroup" />
 		<result column="sl_limit" jdbcType="INTEGER" property="slLimit" />
 	</resultMap>
-	
+
+	<select id="getUserLimited" resultMap="BaseResultMap"  parameterType="Map" >
+		select * from srv_limited
+		left join srv_project on sp_id=sl_project_id
+		where sl_user=#{actorId,jdbcType=BIGINT} and sl_group=#{actorType,jdbcType=BIGINT} and sp_url like #{path} limit 1
+	</select>
 	
 </mapper>
