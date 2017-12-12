@@ -93,7 +93,7 @@ public class LoginWebController {
 
         if (!strPassword.equals(user.getSuPassword())
             && !StringUtils.md5(strPassword).equals(
-            user.getSuPassword())) {
+            user.getSuPassword().toUpperCase())) {
           resultMsg = new ResultMsg<Object>(false,
               ResultCode.INVALID_PASSWORD, null);
           return resultMsg;
