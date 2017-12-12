@@ -10,6 +10,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 /**
  * 查询接入的应用系统信息
  *
@@ -19,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryAppInfoService {
 
-  @Autowired
+  @Resource
   SrvHostMapper dao;
 
   /**

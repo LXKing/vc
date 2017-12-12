@@ -86,4 +86,6 @@ public class Page implements java.io.Serializable {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+
+
 }
