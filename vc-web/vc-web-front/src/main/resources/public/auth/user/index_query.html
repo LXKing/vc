@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="suId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="suIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suHost" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="suHostEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suGroup" style="display:none;">
+				<dt>所属组</dt>
+				<dd  >
+					<input  name="suGroupEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suUsername" >
+				<dt>登录账号</dt>
+				<dd  >
+					<input  name="suUsernameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suPassword" style="display:none;">
+				<dt>登录密码</dt>
+				<dd  >
+					<input  name="suPasswordEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suRealName" >
+				<dt>真实姓名</dt>
+				<dd  >
+					<input  name="suRealNameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suMobile" >
+				<dt>手机号码</dt>
+				<dd  >
+					<input  name="suMobileLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suShortcut" style="display:none;">
+				<dt>快捷方式</dt>
+				<dd  >
+					<input  name="suShortcutEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suAddTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd  >
+					<input  name="suAddTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="suLastTime" style="display:none;">
+				<dt>最后登录时间</dt>
+				<dd  >
+					<input  name="suLastTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="suLastIp" style="display:none;">
+				<dt>最后登录IP</dt>
+				<dd  >
+					<input  name="suLastIpEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="suStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="suStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="suId" value="suId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="suHost" value="suHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="suGroup" value="suGroup"  type="checkbox" onclick='showHideCondition(this, this.value);' >所属组</label></li>
+			        <li><label><input cond="suUsername" value="suUsername" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >登录账号</label></li>
+			        <li><label><input cond="suPassword" value="suPassword"  type="checkbox" onclick='showHideCondition(this, this.value);' >登录密码</label></li>
+			        <li><label><input cond="suRealName" value="suRealName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >真实姓名</label></li>
+			        <li><label><input cond="suMobile" value="suMobile" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >手机号码</label></li>
+			        <li><label><input cond="suShortcut" value="suShortcut"  type="checkbox" onclick='showHideCondition(this, this.value);' >快捷方式</label></li>
+			        <li><label><input cond="suAddTime" value="suAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="suLastTime" value="suLastTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >最后登录时间</label></li>
+			        <li><label><input cond="suLastIp" value="suLastIp"  type="checkbox" onclick='showHideCondition(this, this.value);' >最后登录IP</label></li>
+			        <li><label><input cond="suStatus" value="suStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

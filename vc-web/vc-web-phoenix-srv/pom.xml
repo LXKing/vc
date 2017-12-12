@@ -35,6 +35,7 @@
             <version>${frm.version}</version>
         </dependency>
 
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-mybatis</artifactId>

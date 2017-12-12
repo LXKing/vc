@@ -169,6 +169,61 @@ public class CsVehicleQuery {
 	
 	private String csvLandmarkGreater;
 	
+	private Short csvDomainEquals;
+	private Short[] csvDomainIn;
+	private Boolean csvDomainIsNull;
+	private Boolean csvDomainIsNotNull;
+	
+	private Short csvDomainStart;
+	
+	private Short csvDomainEnd;
+	
+	private Short csvDomainLess;
+	
+	private Short csvDomainGreater;
+	private String csvModelCodeFullLike;
+	
+	private String csvModelCodeFullEquals;
+	private String[] csvModelCodeFullIn;
+	private Boolean csvModelCodeFullIsNull;
+	private Boolean csvModelCodeFullIsNotNull;
+	
+	private String csvModelCodeFullStart;
+	
+	private String csvModelCodeFullEnd;
+	
+	private String csvModelCodeFullLess;
+	
+	private String csvModelCodeFullGreater;
+	private String csvModelCodeSimpleLike;
+	
+	private String csvModelCodeSimpleEquals;
+	private String[] csvModelCodeSimpleIn;
+	private Boolean csvModelCodeSimpleIsNull;
+	private Boolean csvModelCodeSimpleIsNotNull;
+	
+	private String csvModelCodeSimpleStart;
+	
+	private String csvModelCodeSimpleEnd;
+	
+	private String csvModelCodeSimpleLess;
+	
+	private String csvModelCodeSimpleGreater;
+	private String csvInteriorColorCodeLike;
+	
+	private String csvInteriorColorCodeEquals;
+	private String[] csvInteriorColorCodeIn;
+	private Boolean csvInteriorColorCodeIsNull;
+	private Boolean csvInteriorColorCodeIsNotNull;
+	
+	private String csvInteriorColorCodeStart;
+	
+	private String csvInteriorColorCodeEnd;
+	
+	private String csvInteriorColorCodeLess;
+	
+	private String csvInteriorColorCodeGreater;
+	
 	private Short csvStatusEquals;
 	private Short[] csvStatusIn;
 	private Boolean csvStatusIsNull;
@@ -924,6 +979,251 @@ public class CsVehicleQuery {
 	public String getCsvLandmarkGreater(){
 		return this.csvLandmarkGreater;
 	}
+	public CsVehicleQuery setCsvDomainEquals(Short csvDomainEquals){
+		this.csvDomainEquals = csvDomainEquals;
+		return this;
+	}
+	public Short getCsvDomainEquals(){
+		return this.csvDomainEquals;
+	}
+	public CsVehicleQuery setCsvDomainIn(Short[] csvDomainIn){
+		this.csvDomainIn = csvDomainIn;
+		return this;
+	}
+	public Short[] getCsvDomainIn(){
+		return this.csvDomainIn;
+	}
+	public CsVehicleQuery setCsvDomainIsNull(Boolean csvDomainIsNull){
+		this.csvDomainIsNull = csvDomainIsNull;
+		return this;
+	}
+	public Boolean getCsvDomainIsNull(){
+		return this.csvDomainIsNull;
+	}
+	public CsVehicleQuery setCsvDomainIsNotNull(Boolean csvDomainIsNotNull){
+		this.csvDomainIsNotNull = csvDomainIsNotNull;
+		return this;
+	}
+	public Boolean getCsvDomainIsNotNull(){
+		return this.csvDomainIsNotNull;
+	}
+	public CsVehicleQuery setCsvDomainStart(Short csvDomainStart){
+		this.csvDomainStart = csvDomainStart;
+		return this;
+	}
+	public Short getCsvDomainStart(){
+		return this.csvDomainStart;
+	}
+	public CsVehicleQuery setCsvDomainEnd(Short csvDomainEnd){
+		this.csvDomainEnd = csvDomainEnd;
+		return this;
+	}
+	public Short getCsvDomainEnd(){
+		return this.csvDomainEnd;
+	}
+	public CsVehicleQuery setCsvDomainLess(Short csvDomainLess){
+		this.csvDomainLess = csvDomainLess;
+		return this;
+	}
+	public Short getCsvDomainLess(){
+		return this.csvDomainLess;
+	}
+	public CsVehicleQuery setCsvDomainGreater(Short csvDomainGreater){
+		this.csvDomainGreater = csvDomainGreater;
+		return this;
+	}
+	public Short getCsvDomainGreater(){
+		return this.csvDomainGreater;
+	}
+	public CsVehicleQuery setCsvModelCodeFullLike(String csvModelCodeFullLike){
+		this.csvModelCodeFullLike = csvModelCodeFullLike;
+		return this;
+	}
+	public String getCsvModelCodeFullLike(){
+		return this.csvModelCodeFullLike;
+	}
+	public CsVehicleQuery setCsvModelCodeFullEquals(String csvModelCodeFullEquals){
+		this.csvModelCodeFullEquals = csvModelCodeFullEquals;
+		return this;
+	}
+	public String getCsvModelCodeFullEquals(){
+		return this.csvModelCodeFullEquals;
+	}
+	public CsVehicleQuery setCsvModelCodeFullIn(String[] csvModelCodeFullIn){
+		this.csvModelCodeFullIn = csvModelCodeFullIn;
+		return this;
+	}
+	public String[] getCsvModelCodeFullIn(){
+		return this.csvModelCodeFullIn;
+	}
+	public CsVehicleQuery setCsvModelCodeFullIsNull(Boolean csvModelCodeFullIsNull){
+		this.csvModelCodeFullIsNull = csvModelCodeFullIsNull;
+		return this;
+	}
+	public Boolean getCsvModelCodeFullIsNull(){
+		return this.csvModelCodeFullIsNull;
+	}
+	public CsVehicleQuery setCsvModelCodeFullIsNotNull(Boolean csvModelCodeFullIsNotNull){
+		this.csvModelCodeFullIsNotNull = csvModelCodeFullIsNotNull;
+		return this;
+	}
+	public Boolean getCsvModelCodeFullIsNotNull(){
+		return this.csvModelCodeFullIsNotNull;
+	}
+	public CsVehicleQuery setCsvModelCodeFullStart(String csvModelCodeFullStart){
+		this.csvModelCodeFullStart = csvModelCodeFullStart;
+		return this;
+	}
+	public String getCsvModelCodeFullStart(){
+		return this.csvModelCodeFullStart;
+	}
+	public CsVehicleQuery setCsvModelCodeFullEnd(String csvModelCodeFullEnd){
+		this.csvModelCodeFullEnd = csvModelCodeFullEnd;
+		return this;
+	}
+	public String getCsvModelCodeFullEnd(){
+		return this.csvModelCodeFullEnd;
+	}
+	public CsVehicleQuery setCsvModelCodeFullLess(String csvModelCodeFullLess){
+		this.csvModelCodeFullLess = csvModelCodeFullLess;
+		return this;
+	}
+	public String getCsvModelCodeFullLess(){
+		return this.csvModelCodeFullLess;
+	}
+	public CsVehicleQuery setCsvModelCodeFullGreater(String csvModelCodeFullGreater){
+		this.csvModelCodeFullGreater = csvModelCodeFullGreater;
+		return this;
+	}
+	public String getCsvModelCodeFullGreater(){
+		return this.csvModelCodeFullGreater;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleLike(String csvModelCodeSimpleLike){
+		this.csvModelCodeSimpleLike = csvModelCodeSimpleLike;
+		return this;
+	}
+	public String getCsvModelCodeSimpleLike(){
+		return this.csvModelCodeSimpleLike;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleEquals(String csvModelCodeSimpleEquals){
+		this.csvModelCodeSimpleEquals = csvModelCodeSimpleEquals;
+		return this;
+	}
+	public String getCsvModelCodeSimpleEquals(){
+		return this.csvModelCodeSimpleEquals;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleIn(String[] csvModelCodeSimpleIn){
+		this.csvModelCodeSimpleIn = csvModelCodeSimpleIn;
+		return this;
+	}
+	public String[] getCsvModelCodeSimpleIn(){
+		return this.csvModelCodeSimpleIn;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleIsNull(Boolean csvModelCodeSimpleIsNull){
+		this.csvModelCodeSimpleIsNull = csvModelCodeSimpleIsNull;
+		return this;
+	}
+	public Boolean getCsvModelCodeSimpleIsNull(){
+		return this.csvModelCodeSimpleIsNull;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleIsNotNull(Boolean csvModelCodeSimpleIsNotNull){
+		this.csvModelCodeSimpleIsNotNull = csvModelCodeSimpleIsNotNull;
+		return this;
+	}
+	public Boolean getCsvModelCodeSimpleIsNotNull(){
+		return this.csvModelCodeSimpleIsNotNull;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleStart(String csvModelCodeSimpleStart){
+		this.csvModelCodeSimpleStart = csvModelCodeSimpleStart;
+		return this;
+	}
+	public String getCsvModelCodeSimpleStart(){
+		return this.csvModelCodeSimpleStart;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleEnd(String csvModelCodeSimpleEnd){
+		this.csvModelCodeSimpleEnd = csvModelCodeSimpleEnd;
+		return this;
+	}
+	public String getCsvModelCodeSimpleEnd(){
+		return this.csvModelCodeSimpleEnd;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleLess(String csvModelCodeSimpleLess){
+		this.csvModelCodeSimpleLess = csvModelCodeSimpleLess;
+		return this;
+	}
+	public String getCsvModelCodeSimpleLess(){
+		return this.csvModelCodeSimpleLess;
+	}
+	public CsVehicleQuery setCsvModelCodeSimpleGreater(String csvModelCodeSimpleGreater){
+		this.csvModelCodeSimpleGreater = csvModelCodeSimpleGreater;
+		return this;
+	}
+	public String getCsvModelCodeSimpleGreater(){
+		return this.csvModelCodeSimpleGreater;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeLike(String csvInteriorColorCodeLike){
+		this.csvInteriorColorCodeLike = csvInteriorColorCodeLike;
+		return this;
+	}
+	public String getCsvInteriorColorCodeLike(){
+		return this.csvInteriorColorCodeLike;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeEquals(String csvInteriorColorCodeEquals){
+		this.csvInteriorColorCodeEquals = csvInteriorColorCodeEquals;
+		return this;
+	}
+	public String getCsvInteriorColorCodeEquals(){
+		return this.csvInteriorColorCodeEquals;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeIn(String[] csvInteriorColorCodeIn){
+		this.csvInteriorColorCodeIn = csvInteriorColorCodeIn;
+		return this;
+	}
+	public String[] getCsvInteriorColorCodeIn(){
+		return this.csvInteriorColorCodeIn;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeIsNull(Boolean csvInteriorColorCodeIsNull){
+		this.csvInteriorColorCodeIsNull = csvInteriorColorCodeIsNull;
+		return this;
+	}
+	public Boolean getCsvInteriorColorCodeIsNull(){
+		return this.csvInteriorColorCodeIsNull;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeIsNotNull(Boolean csvInteriorColorCodeIsNotNull){
+		this.csvInteriorColorCodeIsNotNull = csvInteriorColorCodeIsNotNull;
+		return this;
+	}
+	public Boolean getCsvInteriorColorCodeIsNotNull(){
+		return this.csvInteriorColorCodeIsNotNull;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeStart(String csvInteriorColorCodeStart){
+		this.csvInteriorColorCodeStart = csvInteriorColorCodeStart;
+		return this;
+	}
+	public String getCsvInteriorColorCodeStart(){
+		return this.csvInteriorColorCodeStart;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeEnd(String csvInteriorColorCodeEnd){
+		this.csvInteriorColorCodeEnd = csvInteriorColorCodeEnd;
+		return this;
+	}
+	public String getCsvInteriorColorCodeEnd(){
+		return this.csvInteriorColorCodeEnd;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeLess(String csvInteriorColorCodeLess){
+		this.csvInteriorColorCodeLess = csvInteriorColorCodeLess;
+		return this;
+	}
+	public String getCsvInteriorColorCodeLess(){
+		return this.csvInteriorColorCodeLess;
+	}
+	public CsVehicleQuery setCsvInteriorColorCodeGreater(String csvInteriorColorCodeGreater){
+		this.csvInteriorColorCodeGreater = csvInteriorColorCodeGreater;
+		return this;
+	}
+	public String getCsvInteriorColorCodeGreater(){
+		return this.csvInteriorColorCodeGreater;
+	}
 	public CsVehicleQuery setCsvStatusEquals(Short csvStatusEquals){
 		this.csvStatusEquals = csvStatusEquals;
 		return this;
@@ -1134,6 +1434,18 @@ public class CsVehicleQuery {
 		}
 		else if(this.sidx.equals("csvLandmark")){
 			return "csv_landmark";
+		}
+		else if(this.sidx.equals("csvDomain")){
+			return "csv_domain";
+		}
+		else if(this.sidx.equals("csvModelCodeFull")){
+			return "csv_model_code_full";
+		}
+		else if(this.sidx.equals("csvModelCodeSimple")){
+			return "csv_model_code_simple";
+		}
+		else if(this.sidx.equals("csvInteriorColorCode")){
+			return "csv_interior_color_code";
 		}
 		else if(this.sidx.equals("csvStatus")){
 			return "csv_status";
@@ -1348,6 +1660,72 @@ public class CsVehicleQuery {
 			c.andcsvLandmarkGreaterThan(this.getCsvLandmarkGreater());
 		}else if(this.getCsvLandmarkLess()!=null){
 			c.andcsvLandmarkLessThan(this.getCsvLandmarkLess());
+		}
+		if(this.getCsvDomainEquals()!=null){
+			c.andcsvDomainEqualTo(this.getCsvDomainEquals());
+		}else if(this.getCsvDomainIsNull()!=null && this.getCsvDomainIsNull()){
+			c.andcsvDomainIsNull();
+		}else if(this.getCsvDomainIsNotNull()!=null && this.getCsvDomainIsNotNull()){
+			c.andcsvDomainIsNotNull();
+		}else if(this.getCsvDomainIn()!=null){
+			c.andcsvDomainIn(java.util.Arrays.asList(this.getCsvDomainIn()));
+		}else if(this.getCsvDomainStart()!=null && this.getCsvDomainEnd()!=null){
+			c.andcsvDomainBetween(this.getCsvDomainStart(), this.getCsvDomainEnd());
+		}else if(this.getCsvDomainGreater()!=null){
+			c.andcsvDomainGreaterThan(this.getCsvDomainGreater());
+		}else if(this.getCsvDomainLess()!=null){
+			c.andcsvDomainLessThan(this.getCsvDomainLess());
+		}
+		if(this.getCsvModelCodeFullEquals()!=null){
+			c.andcsvModelCodeFullEqualTo(this.getCsvModelCodeFullEquals());
+		}else if(this.getCsvModelCodeFullIsNull()!=null && this.getCsvModelCodeFullIsNull()){
+			c.andcsvModelCodeFullIsNull();
+		}else if(this.getCsvModelCodeFullIsNotNull()!=null && this.getCsvModelCodeFullIsNotNull()){
+			c.andcsvModelCodeFullIsNotNull();
+		}else if(this.getCsvModelCodeFullLike()!=null){
+			c.andcsvModelCodeFullLike(this.getCsvModelCodeFullLike());
+		}else if(this.getCsvModelCodeFullIn()!=null){
+			c.andcsvModelCodeFullIn(java.util.Arrays.asList(this.getCsvModelCodeFullIn()));
+		}else if(this.getCsvModelCodeFullStart()!=null && this.getCsvModelCodeFullEnd()!=null){
+			c.andcsvModelCodeFullBetween(this.getCsvModelCodeFullStart(), this.getCsvModelCodeFullEnd());
+		}else if(this.getCsvModelCodeFullGreater()!=null){
+			c.andcsvModelCodeFullGreaterThan(this.getCsvModelCodeFullGreater());
+		}else if(this.getCsvModelCodeFullLess()!=null){
+			c.andcsvModelCodeFullLessThan(this.getCsvModelCodeFullLess());
+		}
+		if(this.getCsvModelCodeSimpleEquals()!=null){
+			c.andcsvModelCodeSimpleEqualTo(this.getCsvModelCodeSimpleEquals());
+		}else if(this.getCsvModelCodeSimpleIsNull()!=null && this.getCsvModelCodeSimpleIsNull()){
+			c.andcsvModelCodeSimpleIsNull();
+		}else if(this.getCsvModelCodeSimpleIsNotNull()!=null && this.getCsvModelCodeSimpleIsNotNull()){
+			c.andcsvModelCodeSimpleIsNotNull();
+		}else if(this.getCsvModelCodeSimpleLike()!=null){
+			c.andcsvModelCodeSimpleLike(this.getCsvModelCodeSimpleLike());
+		}else if(this.getCsvModelCodeSimpleIn()!=null){
+			c.andcsvModelCodeSimpleIn(java.util.Arrays.asList(this.getCsvModelCodeSimpleIn()));
+		}else if(this.getCsvModelCodeSimpleStart()!=null && this.getCsvModelCodeSimpleEnd()!=null){
+			c.andcsvModelCodeSimpleBetween(this.getCsvModelCodeSimpleStart(), this.getCsvModelCodeSimpleEnd());
+		}else if(this.getCsvModelCodeSimpleGreater()!=null){
+			c.andcsvModelCodeSimpleGreaterThan(this.getCsvModelCodeSimpleGreater());
+		}else if(this.getCsvModelCodeSimpleLess()!=null){
+			c.andcsvModelCodeSimpleLessThan(this.getCsvModelCodeSimpleLess());
+		}
+		if(this.getCsvInteriorColorCodeEquals()!=null){
+			c.andcsvInteriorColorCodeEqualTo(this.getCsvInteriorColorCodeEquals());
+		}else if(this.getCsvInteriorColorCodeIsNull()!=null && this.getCsvInteriorColorCodeIsNull()){
+			c.andcsvInteriorColorCodeIsNull();
+		}else if(this.getCsvInteriorColorCodeIsNotNull()!=null && this.getCsvInteriorColorCodeIsNotNull()){
+			c.andcsvInteriorColorCodeIsNotNull();
+		}else if(this.getCsvInteriorColorCodeLike()!=null){
+			c.andcsvInteriorColorCodeLike(this.getCsvInteriorColorCodeLike());
+		}else if(this.getCsvInteriorColorCodeIn()!=null){
+			c.andcsvInteriorColorCodeIn(java.util.Arrays.asList(this.getCsvInteriorColorCodeIn()));
+		}else if(this.getCsvInteriorColorCodeStart()!=null && this.getCsvInteriorColorCodeEnd()!=null){
+			c.andcsvInteriorColorCodeBetween(this.getCsvInteriorColorCodeStart(), this.getCsvInteriorColorCodeEnd());
+		}else if(this.getCsvInteriorColorCodeGreater()!=null){
+			c.andcsvInteriorColorCodeGreaterThan(this.getCsvInteriorColorCodeGreater());
+		}else if(this.getCsvInteriorColorCodeLess()!=null){
+			c.andcsvInteriorColorCodeLessThan(this.getCsvInteriorColorCodeLess());
 		}
 		if(this.getCsvStatusEquals()!=null){
 			c.andcsvStatusEqualTo(this.getCsvStatusEquals());

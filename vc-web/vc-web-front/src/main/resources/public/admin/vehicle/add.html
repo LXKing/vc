@@ -62,7 +62,7 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>颜色</dt>
+					<dt>车身颜色</dt>
 					<dd>
 					<input name="csvColorCode" placeholder="" class="form-control searchinput" dataWhere="color_code" dataUrl="/base/dict/query">
 					
@@ -86,6 +86,39 @@
 					<dt>地标类型</dt>
 					<dd>
 					<input name="csvLandmark" placeholder="" class="form-control searchinput" dataWhere="landmark" dataUrl="/base/dict/query">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车辆领域</dt>
+					<dd>
+					<select class="form-control" name="csvDomain"  >
+                        <option></option>
+                         <option value="2">公共领域</option>
+                         <option value="1">个人领域</option>
+                         <option value="0">未知</option>
+                    </select>
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型代码</dt>
+					<dd>
+					<input name="csvModelCodeFull" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型备案号</dt>
+					<dd>
+					<input name="csvModelCodeSimple" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>内饰颜色</dt>
+					<dd>
+					<input name="csvInteriorColorCode" placeholder="" class="form-control" >
 					
 					</dd>
 				</dl>
@@ -130,23 +163,18 @@
  			 */
 			var validateRuleConfig = {
 				rules:{
-				"csvColorCode":{
+				"csvDomain":{
 					"maxlength":4,
 					"digits":true
 				},
-				"csvModel":{
-					"maxlength":11,
-					"digits":true,
-					"required":true
+				"csvInteriorColorCode":{
+					"maxlength":64
 				},
 				"csvBataccuCode":{
 					"maxlength":64
 				},
 				"csvCarNo":{
 					"maxlength":32
-				},
-				"csvProdDate":{
-					"date":true
 				},
 				"csvStatus":{
 					"maxlength":4,
@@ -157,24 +185,42 @@
 					"maxlength":32,
 					"required":true
 				},
-				"csvLandmark":{
-					"maxlength":64
-				},
 				"csvAccess":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
 				},
-				"csvEngineNo":{
-					"maxlength":32
-				},
-				"csvCertific":{
-					"maxlength":32
-				},
 				"csvId":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
+				},
+				"csvColorCode":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csvModelCodeFull":{
+					"maxlength":128
+				},
+				"csvModel":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvModelCodeSimple":{
+					"maxlength":64
+				},
+				"csvProdDate":{
+					"date":true
+				},
+				"csvLandmark":{
+					"maxlength":64
+				},
+				"csvCertific":{
+					"maxlength":32
+				},
+				"csvEngineNo":{
+					"maxlength":32
 				}
 			}
 			};

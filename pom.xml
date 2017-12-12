@@ -43,8 +43,7 @@
 		<!-- others -->
 		<zookeeper.version>3.4.6</zookeeper.version>
 		<zkclient.version>0.7</zkclient.version>
-		<javassist.version>3.12.0.GA</javassist.version>
-		<org.javassist.version>3.13.0-GA</org.javassist.version>
+		<org.javassist.version>3.22.0-GA</org.javassist.version>
 		<!--javax.validation(JSR-303) -->
 		<validation-api.version>1.1.0.Final</validation-api.version>
 		<hibernate-validator.version>5.1.0.Final</hibernate-validator.version>
@@ -280,11 +279,6 @@
 				<groupId>com.101tec</groupId>
 				<artifactId>zkclient</artifactId>
 				<version>${zkclient.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javassist</groupId>
-				<artifactId>javassist</artifactId>
-				<version>${javassist.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.logstash.logback</groupId>

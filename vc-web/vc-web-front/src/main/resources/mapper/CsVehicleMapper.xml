@@ -17,6 +17,10 @@
 		<result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode" />
 		<result column="csv_prod_date" jdbcType="DATE" property="csvProdDate" />
 		<result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark" />
+		<result column="csv_domain" jdbcType="TINYINT" property="csvDomain" />
+		<result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull" />
+		<result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple" />
+		<result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode" />
 		<result column="csv_status" jdbcType="TINYINT" property="csvStatus" />
 		<result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime" />
 		<result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime" />

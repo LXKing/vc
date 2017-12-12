@@ -88,23 +88,18 @@
  			 */
 			var validateRuleConfig = {
 				rules:{
-				"csvColorCode":{
+				"csvDomain":{
 					"maxlength":4,
 					"digits":true
 				},
-				"csvModel":{
-					"maxlength":11,
-					"digits":true,
-					"required":true
+				"csvInteriorColorCode":{
+					"maxlength":64
 				},
 				"csvBataccuCode":{
 					"maxlength":64
 				},
 				"csvCarNo":{
 					"maxlength":32
-				},
-				"csvProdDate":{
-					"date":true
 				},
 				"csvStatus":{
 					"maxlength":4,
@@ -115,24 +110,42 @@
 					"maxlength":32,
 					"required":true
 				},
-				"csvLandmark":{
-					"maxlength":64
-				},
 				"csvAccess":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
 				},
-				"csvEngineNo":{
-					"maxlength":32
-				},
-				"csvCertific":{
-					"maxlength":32
-				},
 				"csvId":{
 					"maxlength":11,
 					"digits":true,
 					"required":true
+				},
+				"csvColorCode":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csvModelCodeFull":{
+					"maxlength":128
+				},
+				"csvModel":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csvModelCodeSimple":{
+					"maxlength":64
+				},
+				"csvProdDate":{
+					"date":true
+				},
+				"csvLandmark":{
+					"maxlength":64
+				},
+				"csvCertific":{
+					"maxlength":32
+				},
+				"csvEngineNo":{
+					"maxlength":32
 				}
 			}
 			};

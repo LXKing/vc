@@ -29,7 +29,7 @@ function getServUrl(path) {
 }
 
 function toLogin() {
-    // top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
+    top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
 }
 
 /**
