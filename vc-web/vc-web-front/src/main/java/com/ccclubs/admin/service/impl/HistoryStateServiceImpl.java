@@ -52,8 +52,8 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
         result.setData(new ArrayList<>());
         result.setPage(page);
 
-        String startTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeStart());
-        String endTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeEnd());
+        String startTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeStart().getTime());
+        String endTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeEnd().getTime());
         try {
             apiMessage=this.queryCarStateListFromHbase(query.getCsNumberEquals(),
                     startTime,endTime,
