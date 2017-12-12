@@ -155,7 +155,7 @@ authUtil = {
      */
     get: function (path) {
         var token = cookieUtil.get("token");
-        if (token == "") {
+        if (typeof(token) ==="undefined" || token === "") {
             layer.confirm('登录已失效', {
                 btn: ['重新登陆']
             }, function () {

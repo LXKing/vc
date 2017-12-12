@@ -1,7 +1,6 @@
 String.prototype.Trim = function () {
     return this.replace(/^\s+/g, "").replace(/\s+$/g, "");
 }
-var authUrl = "http://localhost:8081";
 
 var storage = window.localStorage;
 var cookieUtil = {
@@ -61,9 +60,11 @@ var cookieUtil = {
 var getSrvlimit = function (path) {
     var datas = "";
     var userid = cookieUtil.get("userid");
-    if (userid == "") {
+    var token = cookieUtil.get("token");
+    if (typeof(token) ==="undefined" || token === ""||typeof(userid) ==="undefined" || userid === "") {
         layer.msg('登录已失效', function () {
-            window.location.href = authUrl + "/lockscreen.html?userid=" + userid;
+            // window.location.href = authUrl + "/lockscreen.html?userid=" + userid;
+          toLogin();
         });
     }
     $.ajax({
@@ -84,7 +85,8 @@ var getSrvlimit = function (path) {
             } else {
                 if (data.code == "20006") {
                     layer.msg('登录已失效', function () {
-                        window.location.href = authUrl + "/lockscreen.html?userid=" + userid;
+                        // window.location.href = authUrl + "/lockscreen.html?userid=" + userid;
+                      toLogin();
                     });
                 } else {
                     layer.msg('系统繁忙', function () {
@@ -111,9 +113,11 @@ var authUtil = {
     //获取当前页面的权限
     get: function (path) {
         var userid = cookieUtil.get("userid");
-        if (userid == "") {
+        var token = cookieUtil.get("token");
+        if (typeof(userid) ==="undefined" || userid == "" || typeof(token) ==="undefined" || token == "") {
             layer.msg('登录已失效', function () {
-                window.location.href = "lockscreen.html?userid=" + userid;
+                // window.location.href = "lockscreen.html?userid=" + userid;
+              toLogin();
             });
         } else {
 

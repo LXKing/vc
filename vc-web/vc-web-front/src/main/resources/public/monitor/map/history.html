@@ -97,6 +97,7 @@
 <!-- UI组件库 1.0 -->
 <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 <script src="/js/map/coordtransform.js"></script>
+<script src="/js/moment.js"></script>
 <script type="text/javascript">
   $(".searchinput").each(function () {
     $(this).searchinput({});
@@ -167,13 +168,13 @@
 
     var navg, total, hasMore = true, isFirstLoad = true;
     var params = {
-      cs_number: 'T6401899',
-      page_no: 1,
-      page_size: 300,
-      start_time: '',
-      end_time: '',
-      order: 'asc',
-      query_fields: 'latitude,longitude'
+      csNumberEquals: '',
+      page: 1,
+      rows: 300,
+      currentTimeStart: '',
+      currentTimeEnd: '',
+      isResolve:false,
+      order: 'asc'
     };
 
     var pathObjectArray = [];
@@ -191,7 +192,7 @@
     $vinId.on('input', function (e) {
       // 这里可以写你想要的验证代码；
       if ($vinId.val() !== '') {
-        params.cs_number = $vinId.val();
+        params.csNumberEquals = $vinId.val();
 //        loadData();
       }
     });
@@ -223,61 +224,59 @@
         layer.msg('请选择结束时间', {icon: 7, time: 1600});
         return false;
       }
-//
-//      if ($vinId.val() === '' || typeof($vinId.val()) === 'undefined') {
-//        layer.msg('请选择一辆车', {icon: 7, time:1600});
-//        return false;
-//      }
 
-      console.log($endTime.val());
+      if (moment($startTime.val()).diff(moment($endTime.val()), 'seconds') >= 0) {
+        layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
+        return false;
+      }
 
-      params.cs_number = "T6401899";
-      params.start_time = $startTime.val();
-      params.end_time = $endTime.val();
+      params.csNumberEquals = $vinId.val();
+      params.currentTimeStart = $startTime.val();
+      params.currentTimeEnd = $endTime.val();
 
       return true;
     }
 
     function loadData() {
       $.getJSON(
-          'http://192.168.3.148:12006/carhistory/states',
+          getServUrl('/monitor/historyState/list'),
           params,
           function (d) {
 
             $('#loadingTip').remove();
 
-            if (100000 !== d.code) {
+            if (0 !== d.code) {
 //              alert("数据请求异常！")
               console.log("数据请求异常！")
               return;
             }
 
             // 判断是否还有更多数据
-            total = d.data.total;
+            total = d.count;
 
             if (0 === total) {
 //              alert("数据请求异常！")
-              alert.log("没有找到轨迹数据！")
+              alert("没有找到轨迹数据！")
               hasMore = false;
               return;
             }
 
-            if (d.data.carStateList.length === 0) {
+            if (d.data.length === 0) {
 //              alert("已经没有更多数据！")
               console.log("已经没有更多数据！");
               hasMore = false;
               return;
             }
 
-            if (params.page_no * params.page_size >= total) {
+            if (params.page > d.page.total) {
               hasMore = false;
               return;
             }
 
             var pathRoutes = [];
             var item
-            for (var i = 0, len = d.data.carStateList.length; i < len; i++) {
-              item = d.data.carStateList[i];
+            for (var i = 0, len = d.data.length; i < len; i++) {
+              item = d.data[i];
               if (typeof(item.longitude) !== 'undefined' && typeof(item.latitude) !== 'undefined'
                   && item.longitude !== null && item.latitude !== null && item.longitude > 0
                   && item.latitude > 0) {
@@ -371,7 +370,7 @@
           return false;
         }
 
-        params.page_no++;
+        params.page++;
 
         $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
 
