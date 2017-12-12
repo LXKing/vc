@@ -22,6 +22,9 @@ public class TableResult<T> {
 		this.data = page.getList() == null ? new ArrayList<T>() : page.getList();
 	}
 
+	public TableResult() {
+	}
+
 	public int getCode() {
 		return code;
 	}

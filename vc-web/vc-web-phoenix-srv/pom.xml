@@ -28,6 +28,7 @@
             <artifactId>vc-biz-phoenix-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-phoenix</artifactId>
