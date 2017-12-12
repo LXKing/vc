@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="carStateHistoryId" style="display:none;">
+				<dt>ID</dt>
+				<dd  >
+					<input  name="carStateHistoryIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csNumber" >
+				<dt>车机号</dt>
+				<dd  >
+					<input  name="csNumberEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csAccess" style="display:none;">
+				<dt>授权系统</dt>
+				<dd  >
+					<input  name="csAccessEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="addTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd  >
+					<input  name="addTimeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="currentTime" style="display:none;">
+				<dt>下位机时间</dt>
+				<dd class="timergroup" >
+					<input  name="currentTimeStart"  placeholder="开始日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="currentTimeEnd" placeholder="结束日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+				</dd>
+			</dl>
+<dl cond="rentFlg" style="display:none;">
+				<dt>租赁状态</dt>
+				<dd  >
+					<input  name="rentFlgEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="warnCode" style="display:none;">
+				<dt>报警代码</dt>
+				<dd  >
+					<input  name="warnCodeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="rfid" style="display:none;">
+				<dt>RFID卡号</dt>
+				<dd  >
+					<input  name="rfidEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="userRfid" style="display:none;">
+				<dt>用户RFID</dt>
+				<dd  >
+					<input  name="userRfidEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="obdMiles" style="display:none;">
+				<dt>OBD里程</dt>
+				<dd  >
+					<input  name="obdMilesEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="engineTempe" style="display:none;">
+				<dt>发动机温度</dt>
+				<dd  >
+					<input  name="engineTempeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="totalMiles" style="display:none;">
+				<dt>总里程</dt>
+				<dd  >
+					<input  name="totalMilesEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="speed" style="display:none;">
+				<dt>车速</dt>
+				<dd  >
+					<input  name="speedEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="motorSpeed" style="display:none;">
+				<dt>转速</dt>
+				<dd  >
+					<input  name="motorSpeedEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="oilCost" style="display:none;">
+				<dt>燃油量</dt>
+				<dd  >
+					<input  name="oilCostEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="powerReserve" style="display:none;">
+				<dt>蓄电量</dt>
+				<dd  >
+					<input  name="powerReserveEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="evBattery" style="display:none;">
+				<dt>动力电池电量</dt>
+				<dd  >
+					<input  name="evBatteryEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="chargingStatus" style="display:none;">
+				<dt>充电状态</dt>
+				<dd  >
+					<input  name="chargingStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="fuelMiles" style="display:none;">
+				<dt>油里程</dt>
+				<dd  >
+					<input  name="fuelMilesEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="elecMiles" style="display:none;">
+				<dt>电量程</dt>
+				<dd  >
+					<input  name="elecMilesEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="endurMiles" style="display:none;">
+				<dt>续航里程</dt>
+				<dd  >
+					<input  name="endurMilesEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="tempe" style="display:none;">
+				<dt>温度</dt>
+				<dd  >
+					<input  name="tempeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="gpsNum" style="display:none;">
+				<dt>卫星数量</dt>
+				<dd  >
+					<input  name="gpsNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="gpsStrength" style="display:none;">
+				<dt>卫星信号强度</dt>
+				<dd  >
+					<input  name="gpsStrengthEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="gpsValid" style="display:none;">
+				<dt>gps有效性</dt>
+				<dd  >
+					<input  name="gpsValidEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="netStrength" style="display:none;">
+				<dt>网络信号强度</dt>
+				<dd  >
+					<input  name="netStrengthEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="longitude" style="display:none;">
+				<dt>经度</dt>
+				<dd  >
+					<input  name="longitudeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="latitude" style="display:none;">
+				<dt>纬度</dt>
+				<dd  >
+					<input  name="latitudeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="directionAngle" style="display:none;">
+				<dt>方向角度</dt>
+				<dd  >
+					<input  name="directionAngleEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="circularMode" style="display:none;">
+				<dt>循环模式</dt>
+				<dd  >
+					<input  name="circularModeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="ptcStatus" style="display:none;">
+				<dt>PTC启停</dt>
+				<dd  >
+					<input  name="ptcStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="compreStatus" style="display:none;">
+				<dt>压缩机状态</dt>
+				<dd  >
+					<input  name="compreStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="fanMode" style="display:none;">
+				<dt>档风量</dt>
+				<dd  >
+					<input  name="fanModeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="savingMode" style="display:none;">
+				<dt>省电模式</dt>
+				<dd  >
+					<input  name="savingModeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="doorStatus" style="display:none;">
+				<dt>车门状态</dt>
+				<dd  >
+					<input  name="doorStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="engineStatus" style="display:none;">
+				<dt>发动机</dt>
+				<dd  >
+					<input  name="engineStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="keyStatus" style="display:none;">
+				<dt>钥匙状态</dt>
+				<dd  >
+					<input  name="keyStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="lightStatus" style="display:none;">
+				<dt>灯状态</dt>
+				<dd  >
+					<input  name="lightStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="lockStatus" style="display:none;">
+				<dt>锁状态</dt>
+				<dd  >
+					<input  name="lockStatusEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="netType" style="display:none;">
+				<dt>网络类型</dt>
+				<dd  >
+					<input  name="netTypeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="baseLac" style="display:none;">
+				<dt>基站LAC</dt>
+				<dd  >
+					<input  name="baseLacEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="baseCi" style="display:none;">
+				<dt>基站CI</dt>
+				<dd  >
+					<input  name="baseCiEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="curOrder" style="display:none;">
+				<dt>当前订单</dt>
+				<dd  >
+					<input  name="curOrderEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="carStateHistoryId" value="carStateHistoryId"  type="checkbox" onclick='showHideCondition(this, this.value);' >ID</label></li>
+			        <li><label><input cond="csNumber" value="csNumber" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="csAccess" value="csAccess"  type="checkbox" onclick='showHideCondition(this, this.value);' >授权系统</label></li>
+			        <li><label><input cond="addTime" value="addTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="currentTime" value="currentTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >下位机时间</label></li>
+			        <li><label><input cond="rentFlg" value="rentFlg"  type="checkbox" onclick='showHideCondition(this, this.value);' >租赁状态</label></li>
+			        <li><label><input cond="warnCode" value="warnCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >报警代码</label></li>
+			        <li><label><input cond="rfid" value="rfid"  type="checkbox" onclick='showHideCondition(this, this.value);' >RFID卡号</label></li>
+			        <li><label><input cond="userRfid" value="userRfid"  type="checkbox" onclick='showHideCondition(this, this.value);' >用户RFID</label></li>
+			        <li><label><input cond="obdMiles" value="obdMiles"  type="checkbox" onclick='showHideCondition(this, this.value);' >OBD里程</label></li>
+			        <li><label><input cond="engineTempe" value="engineTempe"  type="checkbox" onclick='showHideCondition(this, this.value);' >发动机温度</label></li>
+			        <li><label><input cond="totalMiles" value="totalMiles"  type="checkbox" onclick='showHideCondition(this, this.value);' >总里程</label></li>
+			        <li><label><input cond="speed" value="speed"  type="checkbox" onclick='showHideCondition(this, this.value);' >车速</label></li>
+			        <li><label><input cond="motorSpeed" value="motorSpeed"  type="checkbox" onclick='showHideCondition(this, this.value);' >转速</label></li>
+			        <li><label><input cond="oilCost" value="oilCost"  type="checkbox" onclick='showHideCondition(this, this.value);' >燃油量</label></li>
+			        <li><label><input cond="powerReserve" value="powerReserve"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓄电量</label></li>
+			        <li><label><input cond="evBattery" value="evBattery"  type="checkbox" onclick='showHideCondition(this, this.value);' >动力电池电量</label></li>
+			        <li><label><input cond="chargingStatus" value="chargingStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >充电状态</label></li>
+			        <li><label><input cond="fuelMiles" value="fuelMiles"  type="checkbox" onclick='showHideCondition(this, this.value);' >油里程</label></li>
+			        <li><label><input cond="elecMiles" value="elecMiles"  type="checkbox" onclick='showHideCondition(this, this.value);' >电量程</label></li>
+			        <li><label><input cond="endurMiles" value="endurMiles"  type="checkbox" onclick='showHideCondition(this, this.value);' >续航里程</label></li>
+			        <li><label><input cond="tempe" value="tempe"  type="checkbox" onclick='showHideCondition(this, this.value);' >温度</label></li>
+			        <li><label><input cond="gpsNum" value="gpsNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >卫星数量</label></li>
+			        <li><label><input cond="gpsStrength" value="gpsStrength"  type="checkbox" onclick='showHideCondition(this, this.value);' >卫星信号强度</label></li>
+			        <li><label><input cond="gpsValid" value="gpsValid"  type="checkbox" onclick='showHideCondition(this, this.value);' >gps有效性</label></li>
+			        <li><label><input cond="netStrength" value="netStrength"  type="checkbox" onclick='showHideCondition(this, this.value);' >网络信号强度</label></li>
+			        <li><label><input cond="longitude" value="longitude"  type="checkbox" onclick='showHideCondition(this, this.value);' >经度</label></li>
+			        <li><label><input cond="latitude" value="latitude"  type="checkbox" onclick='showHideCondition(this, this.value);' >纬度</label></li>
+			        <li><label><input cond="directionAngle" value="directionAngle"  type="checkbox" onclick='showHideCondition(this, this.value);' >方向角度</label></li>
+			        <li><label><input cond="circularMode" value="circularMode"  type="checkbox" onclick='showHideCondition(this, this.value);' >循环模式</label></li>
+			        <li><label><input cond="ptcStatus" value="ptcStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >PTC启停</label></li>
+			        <li><label><input cond="compreStatus" value="compreStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >压缩机状态</label></li>
+			        <li><label><input cond="fanMode" value="fanMode"  type="checkbox" onclick='showHideCondition(this, this.value);' >档风量</label></li>
+			        <li><label><input cond="savingMode" value="savingMode"  type="checkbox" onclick='showHideCondition(this, this.value);' >省电模式</label></li>
+			        <li><label><input cond="doorStatus" value="doorStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >车门状态</label></li>
+			        <li><label><input cond="engineStatus" value="engineStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >发动机</label></li>
+			        <li><label><input cond="keyStatus" value="keyStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >钥匙状态</label></li>
+			        <li><label><input cond="lightStatus" value="lightStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >灯状态</label></li>
+			        <li><label><input cond="lockStatus" value="lockStatus"  type="checkbox" onclick='showHideCondition(this, this.value);' >锁状态</label></li>
+			        <li><label><input cond="netType" value="netType"  type="checkbox" onclick='showHideCondition(this, this.value);' >网络类型</label></li>
+			        <li><label><input cond="baseLac" value="baseLac"  type="checkbox" onclick='showHideCondition(this, this.value);' >基站LAC</label></li>
+			        <li><label><input cond="baseCi" value="baseCi"  type="checkbox" onclick='showHideCondition(this, this.value);' >基站CI</label></li>
+			        <li><label><input cond="curOrder" value="curOrder"  type="checkbox" onclick='showHideCondition(this, this.value);' >当前订单</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>
