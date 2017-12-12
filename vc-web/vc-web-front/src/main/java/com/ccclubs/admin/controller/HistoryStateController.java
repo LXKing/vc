@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ccclubs.admin.resolver.HistoryStateResolver;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,11 +46,13 @@ public class HistoryStateController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public TableResult<HistoryState> list(HistoryStateQuery query, @RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer rows,@RequestParam(defaultValue = "desc" )String order ) {
+			@RequestParam(defaultValue = "10") Integer rows,@RequestParam(defaultValue = "desc" )String order,@RequestParam(defaultValue = "true" )Boolean isResolve ) {
+
+		if (null==query.getCsNumberEquals()){return  new TableResult<HistoryState>();}
 		TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows,order);
 		List<HistoryState> list = pageInfo.getData();
 		for(HistoryState data : list){
-			registResolvers(data);
+			registResolvers(data,isResolve);
 		}
 		return pageInfo;
 	}
@@ -60,8 +63,8 @@ public class HistoryStateController {
 	/**
 	 * 注册属性内容解析器
 	 */
-	void registResolvers(HistoryState data){
-		if(data!=null){
+	void registResolvers(HistoryState data, Boolean isResolve){
+		if(data!=null&&isResolve){
 			data.registResolver(HistoryStateResolver.下位机时间.getResolver());
 			data.registResolver(HistoryStateResolver.添加时间.getResolver());
 			data.registResolver(HistoryStateResolver.充电状态.getResolver());
