@@ -3,6 +3,7 @@ package com.ccclubs.admin.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.ccclubs.admin.query.HistoryStateQuery;
 import com.ccclubs.admin.vo.Page;
 import com.ccclubs.admin.vo.TableResult;
@@ -64,6 +65,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                         List<CarState> carStateList=apiMessage.getData().getList();
                         page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
                         result.setData(dealCarStateToHistoryStateAll(carStateList));
+                        result.setPage(page);
                     }
                     else {
                         //没有查询到数据
@@ -176,7 +178,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                 HttpEntity entity = response.getEntity();
                 String result = IOUtils.toString(entity.getContent(), "UTF-8");
                 //System.out.println(result);
-                apiMessage=(ApiMessage<CarStateHistoryOutput>)JSONObject.parse(result);
+                apiMessage=JSON.parseObject(result, new TypeReference<ApiMessage<CarStateHistoryOutput>>() {});
                 EntityUtils.consume(entity);
             }
 
