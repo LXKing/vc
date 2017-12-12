@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ccclubs.admin.resolver.HistoryStateResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,8 +45,8 @@ public class HistoryStateController {
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public TableResult<HistoryState> list(HistoryStateQuery query, @RequestParam(defaultValue = "0") Integer page,
-			@RequestParam(defaultValue = "10") Integer rows) {
-		TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows);
+			@RequestParam(defaultValue = "10") Integer rows,@RequestParam(defaultValue = "desc" )String order ) {
+		TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows,order);
 		List<HistoryState> list = pageInfo.getData();
 		for(HistoryState data : list){
 			registResolvers(data);
@@ -61,6 +62,18 @@ public class HistoryStateController {
 	 */
 	void registResolvers(HistoryState data){
 		if(data!=null){
+			data.registResolver(HistoryStateResolver.下位机时间.getResolver());
+			data.registResolver(HistoryStateResolver.添加时间.getResolver());
+			data.registResolver(HistoryStateResolver.充电状态.getResolver());
+			data.registResolver(HistoryStateResolver.gps有效性.getResolver());
+			data.registResolver(HistoryStateResolver.循环模式.getResolver());
+			data.registResolver(HistoryStateResolver.PTC启停.getResolver());
+			data.registResolver(HistoryStateResolver.压缩机状态.getResolver());
+			data.registResolver(HistoryStateResolver.档风量.getResolver());
+			data.registResolver(HistoryStateResolver.省电模式.getResolver());
+			data.registResolver(HistoryStateResolver.发动机.getResolver());
+			data.registResolver(HistoryStateResolver.网络类型.getResolver());
+			data.registResolver(HistoryStateResolver.档位.getResolver());
 		}
 	}
 	

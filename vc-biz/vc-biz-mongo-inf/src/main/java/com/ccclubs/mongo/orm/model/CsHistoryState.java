@@ -64,6 +64,15 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
     private Integer cshsBaseCi;//
     private Long cshsOrder;//
     private String cshsMoData;//
+    private Integer cshsGear;//档位
+
+    public Integer getCshsGear() {
+        return cshsGear;
+    }
+
+    public void setCshsGear(Integer cshsGear) {
+        this.cshsGear = cshsGear;
+    }
 
     public Long getCshsId() {
         return cshsId;

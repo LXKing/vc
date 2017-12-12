@@ -52,7 +52,7 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsAccess(csState.getCssAccess().intValue());
     historyState.setCshsHost(csState.getCssHost().intValue());
     historyState.setCshsCar(csState.getCssCar());
-
+    historyState.setCshsGear(csState.getCssGear().intValue());
     historyState.setCshsNumber(csState.getCssNumber());
     historyState.setCshsWarn(csState.getCssWarn());
     historyState.setCshsPower(csState.getCssPower());
@@ -173,7 +173,7 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setDoor_status(convertToInterger(csState.getCssDoor()));
     csStateHistory.setElec_miles(convertToFloat(csState.getCssElectricMileage()));
     csStateHistory.setEndur_miles(convertToFloat(csState.getCssEndurance()));
-
+    csStateHistory.setGear(convertToInterger(csState.getCssGear()));
     csStateHistory.setEngine_status(convertToInterger(csState.getCssEngine()));
     csStateHistory.setEv_battery(convertToFloat(csState.getCssEvBattery()));
     csStateHistory.setFan_mode(convertToInterger(csState.getCssFan()));

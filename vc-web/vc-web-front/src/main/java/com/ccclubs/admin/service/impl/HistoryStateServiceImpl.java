@@ -46,7 +46,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
 
     @Override
     public TableResult<HistoryState> getPage(HistoryStateQuery query,
-                                             Integer pageNo, Integer pageSize) {
+                                             Integer pageNo, Integer pageSize,String order) {
         ApiMessage<CarStateHistoryOutput> apiMessage;
         TableResult<HistoryState> result=new TableResult<>();
         Page page=new Page(0,pageSize,0);
@@ -58,7 +58,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
         try {
             apiMessage=this.queryCarStateListFromHbase(query.getCsNumberEquals(),
                     startTime,endTime,
-                    pageNo,pageSize);
+                    pageNo,pageSize,order);
             if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
                 if (apiMessage.getData()!=null){
                     if (apiMessage.getData().getTotal()>0){
@@ -85,6 +85,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
             historyState.setBaseCi(carState.getBase_ci());
             historyState.setBaseLac(carState.getBase_lac());
             historyState.setChargingStatus(carState.getCharging_status());
+            historyState.setCurrentTime(carState.getCurrent_time());
             historyState.setCircularMode(carState.getCircular_mode());
             historyState.setCompreStatus(carState.getCompre_status());
             historyState.setCsAccess(carState.getCs_access());
@@ -122,6 +123,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
             historyState.setTotalMiles(carState.getTotal_miles());
             historyState.setUserRfid(carState.getUser_rfid());
             historyState.setWarnCode(carState.getWarn_code());
+            historyState.setgear(carState.getGear());
             return historyState;
         }
         else {
@@ -148,7 +150,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
 
     private ApiMessage<CarStateHistoryOutput> queryCarStateListFromHbase(String csNumber,String startTime,
                                                                          String endTime,Integer pageNo,
-                                                                         Integer pageSize) throws Exception {
+                                                                         Integer pageSize,String order) throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         //114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
         HttpGet httpGet=new HttpGet();
@@ -157,7 +159,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                 +"&start_time="+startTime.trim()
                 +"&end_time="+endTime.trim()
                 +"&query_fields=*"
-                +"&order=desc"
+                +"&order="+order.trim()
                 +"&page_no="+pageNo
                 +"&page_size="+pageSize;
         param=param.replaceAll(" ","%20");

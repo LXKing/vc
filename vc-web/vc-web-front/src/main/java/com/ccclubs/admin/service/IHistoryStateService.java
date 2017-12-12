@@ -14,6 +14,6 @@ import com.github.pagehelper.PageInfo;
  */
 public interface IHistoryStateService{
 
-    TableResult<HistoryState> getPage(HistoryStateQuery query, Integer page, Integer rows);
+    TableResult<HistoryState> getPage(HistoryStateQuery query, Integer page, Integer rows,String order);
 
 }

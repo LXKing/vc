@@ -236,6 +236,11 @@ public class HistoryState implements java.io.Serializable
 	 */
 	
 	private   String curOrder;
+	/**
+	 * [gear]档位0:空挡 1:1挡 2:2挡 3:3挡 4:4挡 5:5挡 6:6挡 7:7挡 8:8挡 9:9挡 10:10挡 11:11挡 12:12挡 13:倒挡 14:自动D挡 15:停车P挡
+	 */
+
+	private   Integer gear;
 	
 	//默认构造函数
 	public HistoryState(){
@@ -255,7 +260,43 @@ public class HistoryState implements java.io.Serializable
 		this.currentTime=currentTime;
 		return this;
 	}
-	
+
+	public Object getCurrentTimeText(){
+		return resolve("currentTimeText");
+	}
+	public Object getAddTimeText(){
+		return resolve("addTimeText");
+	}
+	public Object getChargingStatusText(){
+		return resolve("chargingStatusText");
+	}
+	public Object getGpsValidText(){
+		return resolve("gpsValidText");
+	}
+	public Object getCircularModeText(){
+		return resolve("circularModeText");
+	}
+	public Object getPtcStatusText(){
+		return resolve("ptcStatusText");
+	}
+	public Object getCompreStatusText(){
+		return resolve("compreStatusText");
+	}
+	public Object getFanModeText(){
+		return resolve("fanModeText");
+	}
+	public Object getSavingModeText(){
+		return resolve("savingModeText");
+	}
+	public Object getEngineStatusText(){
+		return resolve("engineStatusText");
+	}
+	public Object getNetTypeText(){
+		return resolve("netTypeText");
+	}
+	public Object getgearText(){
+		return resolve("gearText");
+	}
 	
 	@Transient
 	Map<String, Resolver<HistoryState>> resolvers = new HashMap<String, Resolver<HistoryState>>();
@@ -873,4 +914,25 @@ public class HistoryState implements java.io.Serializable
 	public void setCurOrder(String curOrder){
 		this.curOrder = curOrder;
 	}
+
+	/*******************************档位**********************************/
+	/**
+	 * 档位 [可空]
+	 **/
+	public Integer getgear(){
+		return this.gear;
+	}
+
+	/**
+	 * 档位 [可空]
+	 **/
+	public void setgear(Integer gear){
+		this.gear = gear;
+	}
+
+
+
+
+
+
 }
