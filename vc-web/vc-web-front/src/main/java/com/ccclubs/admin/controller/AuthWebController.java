@@ -1,6 +1,5 @@
 package com.ccclubs.admin.controller;
 
-import com.ccclubs.admin.constants.Constants;
 import com.ccclubs.admin.entity.SrvProjectCrieria;
 import com.ccclubs.admin.model.SrvLimited;
 import com.ccclubs.admin.model.SrvProject;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -119,59 +117,52 @@ public class AuthWebController {
     if (path.indexOf("//") != -1) {//url转化
       path = path.replaceAll("//", "/");
     }
-    Map userlimit = (Map) redisTemplate.opsForHash()
-        .get(Constants.PL_AUTH_URL_SESSION, userId + path);
     // 缓存为空，则重新查找权限
-    if (userlimit == null) {
-      SrvUser user = srvUserService.selectByPrimaryKey(userId);
-      if (user == null || StringUtils.empty(path)) {
-        resultMsg = new ResultMsg<Object>(false,
-            ResultCode.PERMISSION_DENIED, null);
-        return resultMsg;
+    SrvUser user = srvUserService.selectByPrimaryKey(userId.intValue());
+    if (user == null || StringUtils.empty(path)) {
+      resultMsg = new ResultMsg<>(false,
+          ResultCode.PERMISSION_DENIED, null);
+      return resultMsg;
+    }
+    SrvLimited srvLimited = new SrvLimited();
+    srvLimited.setSlUser(user.getSuId().longValue());
+    List<SrvLimited> srvLimites = srvLimitedService.select(srvLimited);
+    Map params = new HashMap();
+    params.put("actorId",
+        srvLimites.size() > 0 ? user.getSuId() : user.getSuGroup());
+    params.put("actorType", srvLimites.size() > 0 ? 1 : 0);
+    params.put("path", "%" + path + "%");
+    srvLimited = limitedMapper.getUserLimited(params);
+    if (srvLimited != null) {
+      Integer limitsId = srvLimited.getSlLimit();
+      resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
+      resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
+      resutlMap.put("exportData", ((limitsId & 16) == 16) ? 1 : 0);
+      resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
+      resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
+      resutlMap.put("detail", ((limitsId & 1) == 1) ? 1 : 0);
+      resutlMap.put("canView", ((limitsId & 1) == 1) ? 1 : 0);// &&
+      //处理扩展权限
+      int canExp[] = new int[exps.length];
+      for (int i = 0; i < exps.length; i++) {
+        canExp[i] = (limitsId & exps[i]) == exps[i] ? 1
+            : 0;
       }
-      SrvLimited srvLimited = new SrvLimited();
-      srvLimited.setSlUser(user.getSuId().longValue());
-      srvLimited.setSlGroup(user.getSuGroup());
-      List<SrvLimited> srvLimites = srvLimitedService.select(srvLimited);
-      Map params = new HashMap();
-      params.put("actorId",
-          srvLimites != null ? user.getSuId() : user.getSuGroup());
-      params.put("actorType", srvLimites != null ? 1 : 0);
-      params.put("path", "%" + path + "%");
-      srvLimited = limitedMapper.getUserLimited(params);
-      if (srvLimited != null) {
-        Integer limitsId = srvLimited.getSlLimit();
-        resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
-        resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
-        resutlMap.put("exportData", ((limitsId & 16) == 16) ? 1 : 0);
-        resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
-        resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
-        resutlMap.put("detail", ((limitsId & 1) == 1) ? 1 : 0);
-        resutlMap.put("canView", ((limitsId & 1) == 1) ? 1 : 0);// &&
-        //处理扩展权限
-        int canExp[] = new int[exps.length];
-        for (int i = 0; i < exps.length; i++) {
-          canExp[i] = (limitsId & exps[i]) == exps[i] ? 1
-              : 0;
-        }
-        resutlMap.put("canExp", canExp);
-        resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
-            resutlMap);
-        return resultMsg;
-      } else {
-        resutlMap.put("canView", 1);// &&
-        resutlMap.put("detail", 0);
-        resutlMap.put("add", 0);
-        resutlMap.put("update", 0);
-        resutlMap.put("del", 0);
-        resutlMap.put("batchDel", 0);
-        resutlMap.put("exportData", 0);
-        resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
-            resutlMap);
-        return resultMsg;
-      }
+      resutlMap.put("canExp", canExp);
+      resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
+          resutlMap);
+      return resultMsg;
     } else {
-      return new ResultMsg<Object>(true, ResultCode.OK, userlimit);
+      resutlMap.put("canView", 1);// &&
+      resutlMap.put("detail", 0);
+      resutlMap.put("add", 0);
+      resutlMap.put("update", 0);
+      resutlMap.put("del", 0);
+      resutlMap.put("batchDel", 0);
+      resutlMap.put("exportData", 0);
+      resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
+          resutlMap);
+      return resultMsg;
     }
   }
 

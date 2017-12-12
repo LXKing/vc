@@ -173,7 +173,7 @@
 						<div class="navbar-header">
 							<div class="select"><span>选择模块</span>
 								<ul class="select-wrap hide">
-									
+
 								</ul>
 							</div>
 							<div class="username">长安出行账号</div>
@@ -195,22 +195,20 @@
 
 		<script id="leftNav" type="x-tmpl-mustache">
 		{{#arr}}
-			<li class="two">
-				<a href="#">
-				<i class="fa fa-cutlery"></i>
-				<span class="nav-label">{{spName}}</span>
-				{{#arrows}}
-				<span class="fa arrow"></span>
-				{{/arrows}}
-				</a>
-				<ul class="nav nav-second-level">
-					{{#thirdarr}}
-					<li>
-						<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
-					</li>
-					{{/thirdarr}}
-				</ul>
-			</li>
+			<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">{{spName}}</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+							{{#thirdarr}}
+								<li>
+									<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
+								</li>
+							{{/thirdarr}}
+							</ul>
+						</li>
 		{{/arr}}
 		</script>
 

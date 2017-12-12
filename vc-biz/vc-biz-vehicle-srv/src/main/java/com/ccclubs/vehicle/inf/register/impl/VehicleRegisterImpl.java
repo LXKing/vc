@@ -83,8 +83,8 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
     for (VehicleRegisterInput input : inputs) {
       model = queryModelService.queryModelByFlag(input.getCsvModel());
       vehicle = queryVehicleService.queryVehicleByVin(input.getCsvVin());
-      vehicleCarNO = StringUtils.isNotEmpty(input.getCsvCarNo()) ? null
-          : queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo().trim());
+      vehicleCarNO = StringUtils.isNotEmpty(input.getCsvCarNo()) ? queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo().trim())
+          : null;
       vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
       //machine = terminalService.queryCsMachineByTeNo(input.getTeNo());
       host = queryAppInfoService.queryHostByAppid(appId);
