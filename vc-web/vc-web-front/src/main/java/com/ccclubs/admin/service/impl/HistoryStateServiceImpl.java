@@ -66,13 +66,22 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                     pageNo,pageSize,order);
             if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
                 if (apiMessage.getData()!=null){
-                    if (apiMessage.getData().getTotal()>0){
+                    if (apiMessage.getData().getTotal()>0&&apiMessage.getData().getList().size()>0){
                         List<CarState> carStateList=apiMessage.getData().getList();
                         page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
                         result.setData(dealCarStateToHistoryStateAll(carStateList));
                         result.setPage(page);
                     }
                     else {
+                        if (!(apiMessage.getData().getTotal() >0)){
+                            page=new Page(pageNo,pageSize,0);
+                        }
+                        else {
+                            page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
+                        }
+
+                        result.setData(new ArrayList<>());
+                        result.setPage(page);
                         //没有查询到数据
                     }
                 }
@@ -109,10 +118,10 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
             historyState.setGpsStrength(carState.getGps_strength());
             historyState.setGpsValid(carState.getGps_valid());
             historyState.setKeyStatus(carState.getKey_status());
-            historyState.setlatitude(carState.getLatitude());
+            historyState.setLatitude(carState.getLatitude());
             historyState.setLightStatus(carState.getLight_status());
             historyState.setLockStatus(carState.getLock_status());
-            historyState.setlongitude(carState.getLongitude());
+            historyState.setLongitude(carState.getLongitude());
             historyState.setMotorSpeed(carState.getMotor_speed());
             historyState.setNetStrength(carState.getNet_strength());
             historyState.setNetType(carState.getNet_type());
@@ -121,14 +130,14 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
             historyState.setPowerReserve(carState.getPower_reserve());
             historyState.setPtcStatus(carState.getPtc_status());
             historyState.setRentFlg(carState.getRent_flg());
-            historyState.setrfid(carState.getRfid());
+            historyState.setRfid(carState.getRfid());
             historyState.setSavingMode(carState.getSaving_mode());
-            historyState.setspeed(carState.getSpeed());
-            historyState.settempe(carState.getTempe());
+            historyState.setSpeed(carState.getSpeed());
+            historyState.setTempe(carState.getTempe());
             historyState.setTotalMiles(carState.getTotal_miles());
             historyState.setUserRfid(carState.getUser_rfid());
             historyState.setWarnCode(carState.getWarn_code());
-            historyState.setgear(carState.getGear());
+            historyState.setGear(carState.getGear());
             return historyState;
         }
         else {

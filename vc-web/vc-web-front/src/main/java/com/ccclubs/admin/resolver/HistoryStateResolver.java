@@ -264,11 +264,11 @@ public enum HistoryStateResolver{
 
 		@Override
 		public <T> T execute(HistoryState record) {
-			if(record.getgear()==null){
+			if(record.getGear()==null){
 				return null;
 			}
 			String result = "";
-			String[] sArr = record.getgear().toString().split(",");
+			String[] sArr = record.getGear().toString().split(",");
 			for(int i=0;i<sArr.length;i++){
 				if(sArr[i].equals("11")){
 					result+=(i==0?"":",")+ "11挡";

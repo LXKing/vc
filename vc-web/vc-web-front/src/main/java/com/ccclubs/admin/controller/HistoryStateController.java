@@ -50,9 +50,12 @@ public class HistoryStateController {
     }
     TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows, order);
     List<HistoryState> list = pageInfo.getData();
-    for (HistoryState data : list) {
-      registResolvers(data, isResolve);
+    if (null!=list&&list.size()>0){
+      for (HistoryState data : list) {
+        registResolvers(data, isResolve);
+      }
     }
+
     return pageInfo;
   }
 

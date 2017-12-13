@@ -352,7 +352,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public String getRfid() {
-		return rfid;
+		return this.rfid;
 	}
 
 	public void setRfid(String rfid) {
@@ -360,7 +360,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public Float getSpeed() {
-		return speed;
+		return this.speed;
 	}
 
 	public void setSpeed(Float speed) {
@@ -368,7 +368,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public Float getTempe() {
-		return tempe;
+		return this.tempe;
 	}
 
 	public void setTempe(Float tempe) {
@@ -376,7 +376,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public Double getLongitude() {
-		return longitude;
+		return this.longitude;
 	}
 
 	public void setLongitude(Double longitude) {
@@ -384,7 +384,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public Double getLatitude() {
-		return latitude;
+		return this.latitude;
 	}
 
 	public void setLatitude(Double latitude) {
@@ -392,7 +392,7 @@ public class HistoryState implements java.io.Serializable
 	}
 
 	public Integer getGear() {
-		return gear;
+		return this.gear;
 	}
 
 	public void setGear(Integer gear) {
@@ -465,16 +465,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* RFID卡号 [可空]      
 	**/
-	public String getrfid(){
+	/*public String getrfid(){
 		return this.rfid;
-	}
+	}*/
 	
 	/**
 	* RFID卡号 [可空]     
 	**/
-	public void setrfid(String rfid){
+	/*public void setrfid(String rfid){
 		this.rfid = rfid;
-	}
+	}*/
 	/*******************************用户RFID**********************************/	
 	/**
 	* 用户RFID [可空]      
@@ -535,16 +535,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 车速 [可空]      
 	**/
-	public Float getspeed(){
+	/*public Float getspeed(){
 		return this.speed;
-	}
+	}*/
 	
 	/**
 	* 车速 [可空]     
 	**/
-	public void setspeed(Float speed){
+	/*public void setspeed(Float speed){
 		this.speed = speed;
-	}
+	}*/
 	/*******************************转速**********************************/	
 	/**
 	* 转速 [可空]      
@@ -661,16 +661,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 温度 [可空]      
 	**/
-	public Float gettempe(){
+	/*public Float gettempe(){
 		return this.tempe;
-	}
+	}*/
 	
 	/**
 	* 温度 [可空]     
 	**/
-	public void settempe(Float tempe){
+	/*public void settempe(Float tempe){
 		this.tempe = tempe;
-	}
+	}*/
 	/*******************************卫星数量**********************************/	
 	/**
 	* 卫星数量 [可空]      
@@ -731,30 +731,30 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 经度 [可空]      
 	**/
-	public Double getlongitude(){
+	/*public Double getlongitude(){
 		return this.longitude;
-	}
+	}*/
 	
 	/**
 	* 经度 [可空]     
 	**/
-	public void setlongitude(Double longitude){
+	/*public void setlongitude(Double longitude){
 		this.longitude = longitude;
-	}
+	}*/
 	/*******************************纬度**********************************/	
 	/**
 	* 纬度 [可空]      
 	**/
-	public Double getlatitude(){
+	/*public Double getlatitude(){
 		return this.latitude;
-	}
+	}*/
 	
 	/**
 	* 纬度 [可空]     
 	**/
-	public void setlatitude(Double latitude){
+	/*public void setlatitude(Double latitude){
 		this.latitude = latitude;
-	}
+	}*/
 	/*******************************方向角度**********************************/	
 	/**
 	* 方向角度 [可空]      
@@ -970,16 +970,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	 * 档位 [可空]
 	 **/
-	public Integer getgear(){
+	/*public Integer getgear(){
 		return this.gear;
-	}
+	}*/
 
 	/**
 	 * 档位 [可空]
 	 **/
-	public void setgear(Integer gear){
+	/*public void setgear(Integer gear){
 		this.gear = gear;
-	}
+	}*/
 
 
 
