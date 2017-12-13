@@ -134,8 +134,11 @@ public class LoginWebController {
       Object oldToken = redisTemplate.opsForValue()
           .get(Constants.ADMIN_USER_PRE + user.getSuId().toString());
       if (oldToken != null && !StringUtils.empty(oldToken.toString())) {
-        redisTemplate.delete(oldToken);
+        redisTemplate.delete(Constants.ADMIN_USER_PRE + user.getSuId().toString());
+        redisTemplate.delete(Constants.ADMIN_TOKEN_PRE + oldToken.toString());
       }
+
+
       String accessToken = UUIDGenerator.getUUID();
 
       // 返回accessToken

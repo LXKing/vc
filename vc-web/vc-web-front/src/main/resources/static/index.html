@@ -50,12 +50,19 @@
 				<div class="row border-bottom">
 					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 						<div class="navbar-header">
-							<div class="select"><span>选择模块</span>
+							<div class="select"><span></span>
 								<ul class="select-wrap hide">
 
 								</ul>
 							</div>
-							<div class="username">长安出行账号</div>
+							<div class="username">
+								<span class="account">长安出行账号</span>
+								<ul class="account-msg hide">
+									<li class = "userInfo">消息</li>
+									<li class="reset-password"><a href="/resetPassword.html">修改密码</a></li>
+									<li data-toggle="modal" data-target="#myModal6">退出</li>
+								</ul>
+							</div>
 						</div>
 					</nav>
 				</div>
@@ -63,6 +70,27 @@
 				<div class="row J_mainContent" id="content-main">
 					<iframe class="J_iframe" name="iframe1" width="100%" height="100%" src="index_v1.html?v=4.0" frameborder="0" data-id="index_v1.html" seamless></iframe>
 				</div>
+
+				<!-- 退出登录弹框 -->
+				<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content" style="top: 170px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+								</button>
+								<div class="logout-rocket">
+									<img src="img/rocket.png" alt="##">
+									<p>确定要退出吗？</p>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary log-out" data-dismiss="modal">确认</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 

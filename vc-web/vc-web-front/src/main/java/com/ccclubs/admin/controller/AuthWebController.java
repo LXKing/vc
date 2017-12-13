@@ -1,5 +1,6 @@
 package com.ccclubs.admin.controller;
 
+import com.ccclubs.admin.constants.Constants;
 import com.ccclubs.admin.entity.SrvProjectCrieria;
 import com.ccclubs.admin.model.SrvLimited;
 import com.ccclubs.admin.model.SrvProject;
@@ -108,6 +109,18 @@ public class AuthWebController {
   @PostMapping("oauth/getSrvlimit")
   public ResultMsg getSrvlimit(@RequestParam("path") String path,
       @RequestParam("userid") Long userId) {
+
+    Object token = redisTemplate.opsForValue().get(Constants.ADMIN_USER_PRE + userId.toString());
+    if (null == token){
+      return new ResultMsg<>(false,
+          ResultCode.INVALID_TOKEN, null);
+    }
+    Object userID = redisTemplate.opsForValue().get(Constants.ADMIN_TOKEN_PRE + userId.toString());
+    if (null == userID){
+      return new ResultMsg<>(false,
+          ResultCode.INVALID_TOKEN, null);
+    }
+
     Map resutlMap = new HashMap();
     ResultMsg<Object> resultMsg;
     if (path.indexOf("/") == 0)//排除第一位是/的可能

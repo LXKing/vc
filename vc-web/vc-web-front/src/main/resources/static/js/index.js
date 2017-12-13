@@ -3,6 +3,13 @@ $(function () {
     var vote = {};
     $.extend(vote, {
       init: function () {
+
+        var userid = cookieUtil.get("userid");
+        var token = cookieUtil.get("token");
+        if (typeof(token) ==="undefined" || token === ""||typeof(userid) ==="undefined" || userid === "") {
+          toLogin();
+        }
+
         this.events();
         this.ajaxInfo();
         this.menuNav = {};
