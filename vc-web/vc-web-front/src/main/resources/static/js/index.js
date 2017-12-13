@@ -6,14 +6,14 @@ $(function () {
 
         var userid = cookieUtil.get("userId");
         var token = cookieUtil.get("token");
+        var userName = cookieUtil.get("userName");
         if (typeof(token) ==="undefined" || token === ""||typeof(userid) ==="undefined" || userid === "") {
-          console.log(token)
-          console.log(userid)
           toLogin();
         }
 
         this.events();
         this.ajaxInfo();
+        $(".account").html("您好 ,"+userName);
         this.menuNav = {};
         this.menuNav.firstNav = [];//这个放所有一级菜单
         this.menuNav.secondNav = [];//这个放所有的二级菜单
@@ -221,9 +221,11 @@ $(function () {
 
         var userId = getQueryString("userId");
         var token = getQueryString("access_token");
-        if (userId != "" && token != "") {
+        var userName = getQueryString("userName");
+        if (userId != "" && token != "" && userName!="") {
           cookieUtil.set("token", token, cookieUtil.setTime("10000s"));
           cookieUtil.set("userId", userId, cookieUtil.setTime("10000s"));
+          cookieUtil.set("userName", userName, cookieUtil.setTime("10000s"));
           window.location.href = "index.html";
         }
       }
