@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -35,7 +36,11 @@ import java.util.List;
 @Service
 public class HistoryGbServiceImpl implements IHistoryGbService{
 
-    private String baseUrl="http://101.37.178.63/history/gbs";
+
+    @Value("${hbaseSrv.host:101.37.178.63}")
+    private String host;
+    @Value("${hbaseSrv.urlPathGb:/history/gbs}")
+    private String urlPath;
     @Override
     public TableResult<HistoryGb> getPage(HistoryGbQuery query, Integer pageNo, Integer pageSize, String order) {
         ApiMessage<CarGbHistoryOutput> apiMessage;
@@ -116,7 +121,8 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
                 +"&page_no="+pageNo
                 +"&page_size="+pageSize;
         param=param.replaceAll(" ","%20");
-        URI uri=URI.create(baseUrl+param);
+        String url="http://"+host+urlPath;
+        URI uri=URI.create(url+param);
         httpGet.setURI(uri);
         CloseableHttpResponse response = httpclient.execute(httpGet);
         return this.checkResponse(response);

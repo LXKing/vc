@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.ccclubs.admin.model.HistoryState;
@@ -42,7 +43,11 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
 
 
 
-    private String baseUrl="http://101.37.178.63/history/states-internal";
+    
+    @Value("${hbaseSrv.host:101.37.178.63}")
+    private String host;
+    @Value("${hbaseSrv.urlPathState:/history/states-internal}")
+    private String urlPath;
 
     @Override
     public TableResult<HistoryState> getPage(HistoryStateQuery query,
@@ -163,7 +168,8 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                 +"&page_no="+pageNo
                 +"&page_size="+pageSize;
         param=param.replaceAll(" ","%20");
-        URI uri=URI.create(baseUrl+param);
+        String url="http://"+host+urlPath;
+        URI uri=URI.create(url+param);
         httpGet.setURI(uri);
         CloseableHttpResponse response = httpclient.execute(httpGet);
        return this.checkResponse(response);
