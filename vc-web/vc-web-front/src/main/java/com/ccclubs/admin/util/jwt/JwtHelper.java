@@ -110,21 +110,4 @@ public class JwtHelper
         return builder.compact();
     } 
     
-    public static void main(String[] args)
-    {   
-        long nowMillis = System.currentTimeMillis();
-        
-        Date now = new Date(nowMillis+10000);
-
-//        String token = createJWT(1000L,null);
-        System.out.println(now);
-//        Claims claims = parseJWT("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJtZW1iZXJpZCI6MTAwMH0.66LJeQgfV09fUpTeoFPNaY2a_8x5YxhmsbdgSYjL3zg","tp2bae3cd994f90718d5") ;
-//        != null)
-//        {
-            System.out.println(1);
-//            }else{
-//                System.out.println(2);
-//            }
-
-    }
 }

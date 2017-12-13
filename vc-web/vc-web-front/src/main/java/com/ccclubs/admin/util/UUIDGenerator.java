@@ -39,17 +39,4 @@ public class UUIDGenerator {
 		}
 		return ss;
 	}
-
-	public static void main(String[] args) {
-	   String s = UUID.randomUUID().toString();
-		System.out.println( s.substring(0, 8) + s.substring(9, 14) );
-		System.out.println(getUUID().length());
-		/*String[] ss = getUUID(10);
-		for (int i = 0; i < ss.length; i++) {
-			System.out.println(ss[i]);
-		}
-		System.out.println(getUUID());
-		*/
-		
-	}
 }
