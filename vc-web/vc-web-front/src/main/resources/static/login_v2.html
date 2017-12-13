@@ -66,49 +66,60 @@
 <script src="js/jquery.min.js?v=2.1.4"></script>
 <script src="js/bootstrap.min.js?v=3.3.5"></script>
 <script src="js/content.min.js?v=1.0.0"></script>
-<script src="js/tpui-core.js"></script>
+<script src="js/tpui-core.js?v=1510164124211"></script>
 <script src="layui/layui.all.js?t=1510164124207"></script>
 
 <script>
-  $("#login").click(function () {
-    var username = $("#username").val();
-    var password = $("#password").val();
-    if (username === "") {
-      layer.msg('请输入账号', {icon: 7, time: 3000});
-      return;
+  //为keyListener方法注册按键事件
+  document.onkeydown=keyListener;
+  function keyListener(e){
+    // 当按下回车键，执行我们的代码
+    if(e.keyCode == 13){
+      doLogin()
     }
-    if (password === "") {
-      layer.msg('请输入密码', {icon: 7, time: 3000});
-      return;
-    }
-    var referer = getQueryString("referer");
-    $.ajax({
-      type: "POST",
-      url: getServUrl("user/login"),
-      data: {
-        username: username,
-        password: password
-      },
-      dataType: "json",
-      success: function (data) {
-        if (data.success) {
-          var datas = data.data;
-          if (referer === "") {
-            window.location.href = authUrl + "/index.html?access_token=" + datas.access_token
-                + "&userId=" + datas.user_id;
+  }
+
+  $("#login").click(doLogin);
+
+  function doLogin() {
+      var username = $("#username").val();
+      var password = $("#password").val();
+      if (username === "") {
+        layer.msg('请输入账号', {icon: 7, time: 3000});
+        return;
+      }
+      if (password === "") {
+        layer.msg('请输入密码', {icon: 7, time: 3000});
+        return;
+      }
+      var referer = getQueryString("referer");
+      $.ajax({
+        type: "POST",
+        url: getServUrl("user/login"),
+        data: {
+          username: username,
+          password: password
+        },
+        dataType: "json",
+        success: function (data) {
+          if (data.success) {
+            var datas = data.data;
+            if (referer === "") {
+              window.location.href = authUrl + "/index.html?access_token=" + datas.access_token
+                  + "&userId=" + datas.user_id+ "&userName="+username;
+            } else {
+              window.location.href = referer + "?access_token=" + datas.access_token + "&userId="
+                  + datas.user_id + "&userName="+username;
+            }
           } else {
-            window.location.href = referer + "?access_token=" + datas.access_token + "&userId="
-                + datas.user_id;
+            layer.msg(data.message, {icon: 7, time: 3000});
           }
-        } else {
-          layer.msg(data.message, {icon: 7, time: 3000});
-        }
-      },
-      error: function (jqXHR) {
-        layer.msg("请求失败：" + jqXHR.status, {icon: 7, time: 3000});
-      },
-    });
-  });
+        },
+        error: function (jqXHR) {
+          layer.msg("请求失败：" + jqXHR.status, {icon: 7, time: 3000});
+        },
+      });
+  }
 
   function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
