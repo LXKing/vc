@@ -43,7 +43,7 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
 
 
 
-    
+
     @Value("${hbaseSrv.host:101.37.178.63}")
     private String host;
     @Value("${hbaseSrv.urlPathState:/history/states-internal}")

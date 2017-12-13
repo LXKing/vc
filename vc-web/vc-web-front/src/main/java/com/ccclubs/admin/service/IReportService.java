@@ -1,6 +1,7 @@
 package com.ccclubs.admin.service;
 
 import com.ccclubs.admin.model.CsMachine;
+import com.ccclubs.admin.model.CsStatistics;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.model.HistoryState;
 import com.ccclubs.admin.vo.TableResult;
@@ -37,7 +38,11 @@ public interface IReportService {
      * */
     ByteArrayOutputStream reportHistoryStates(List<HistoryState> historyStateList);
 
-    //FIXME 请勿忘记添加简报的导出。
-    //ByteArrayOutputStream reportStatistics();
+    /**
+     * 统计数据导出核心服务
+     * @param csStatisticsList 依据条件查询得到的结果（一般为当前页）。
+     * @return 已经生成为文件的二进制流。
+     * */
+    ByteArrayOutputStream reportStatistics(List<CsStatistics> csStatisticsList);
 
 }
