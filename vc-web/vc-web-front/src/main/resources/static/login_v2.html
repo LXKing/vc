@@ -84,7 +84,7 @@
     var referer = getQueryString("referer");
     $.ajax({
       type: "POST",
-      url: "user/login",
+      url: getServUrl("user/login"),
       data: {
         username: username,
         password: password
@@ -94,7 +94,7 @@
         if (data.success) {
           var datas = data.data;
           if (referer === "") {
-            window.location.href = servUrl + "/index.html?access_token=" + datas.access_token
+            window.location.href = authUrl + "/index.html?access_token=" + datas.access_token
                 + "&userId=" + datas.user_id;
           } else {
             window.location.href = referer + "?access_token=" + datas.access_token + "&userId="

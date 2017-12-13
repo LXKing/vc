@@ -74,6 +74,18 @@ public class AuthWebController {
       return new ResultMsg<>(false,
           ResultCode.INVALID_TOKEN, null);
     }
+
+    Object token = redisTemplate.opsForValue().get(Constants.ADMIN_USER_PRE + actorid.toString());
+    if (null == token){
+      return new ResultMsg<>(false,
+          ResultCode.INVALID_TOKEN, null);
+    }
+    Object userID = redisTemplate.opsForValue().get(Constants.ADMIN_TOKEN_PRE + token.toString());
+    if (null == userID){
+      return new ResultMsg<>(false,
+          ResultCode.INVALID_TOKEN, null);
+    }
+
     ResultMsg<Object> resultMsg;
     SrvLimited limited = new SrvLimited();
     limited.setSlUser(actorid);

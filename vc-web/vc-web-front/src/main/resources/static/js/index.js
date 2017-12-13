@@ -36,7 +36,7 @@ $(function () {
         var that = this;
         $.ajax({
           type: 'post',
-          url: authUrl + '/oauth/getUserLimit',
+          url: getServUrl('/oauth/getUserLimit'),
           async: true,
           data: {userid: cookieUtil.get("userId")},
           beforeSend: function (xhr) {
@@ -44,6 +44,11 @@ $(function () {
             xhr.setRequestHeader("Authorization", token);
           },
           success: function (data) {
+            if (data.code == "20006") {
+              layer.msg('登录已失效', function () {
+                toLogin();
+              });
+            }
             if (data && data.data && data.data.projects) {
               $.each(data.data.projects, function (k, v) {
                 if (v.spParentId == 0) {
@@ -64,19 +69,6 @@ $(function () {
                   }
                 })
               });
-
-              // $.each(that.menuNav.secondNav,function(k3,v3){
-              //   if(v3.spParentId == that.menuNav.firstNav[0].spId){
-              //     v3.thirdarr = [];
-              //     that.menuNav.arr.push(v3);
-              //     $.each(that.menuNav.thirdNav,function(k4,v4){
-              //       if(v3.spParentId == v4.spId){
-              //         v3.thirdarr.push(v4);
-              //         return false;//跳出内层循环
-              //       }
-              //     })
-              //   }
-              // })
 
               $.each(that.menuNav.firstNav, function (k0, v0) {
                 v0.thirdarr = [];
@@ -198,7 +190,7 @@ $(function () {
               }
               $.ajax({
                 type: 'post',
-                url: authUrl + '/oauth/user/editPassword',
+                url: getServUrl('/oauth/user/editPassword'),
                 async: true,
                 dataType: 'json',
                 contentType: 'application/json',
@@ -210,7 +202,7 @@ $(function () {
                 success: function (data) {
                   alert(data.message)
                   if (data.success == true) {
-                    window.location.href = servUrl
+                    window.location.href = authUrl;
                   }
                 }
               });

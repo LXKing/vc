@@ -102,7 +102,7 @@ var getSrvlimit = function (path) {
     }
     $.ajax({
         type: "POST",
-        url: authUrl + "/oauth/getSrvlimit",
+        url: getServUrl("/oauth/getSrvlimit"),
         dataType: "json",
         async: false,
         cache: false,
@@ -117,11 +117,9 @@ var getSrvlimit = function (path) {
                 return datas;
             } else {
                 if (data.code == "20006") {
-                    layer.confirm('登录已失效', {
-                        btn: ['重新登陆']
-                    }, function () {
-                        toLogin();
-                    });
+                  layer.msg('登录已失效', function () {
+                    toLogin();
+                  });
                 } else if (data.code == "20008") {
                     layer.msg('您没有操作该功能的权限');
 
@@ -387,11 +385,9 @@ function ajaxRequest(url, type, data, callback, async) {
                 callback(json);
             } else {
                 if (json.code == "20006") {
-                    layer.confirm('登录已失效', {
-                        btn: ['重新登陆']
-                    }, function () {
-                        toLogin();
-                    });
+                  layer.msg('登录已失效', function () {
+                    toLogin();
+                  });
                 } else if (json.code == "20008") {
                     layer.msg('您没有操作该功能的权限');
 

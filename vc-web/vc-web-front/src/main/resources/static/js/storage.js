@@ -69,7 +69,7 @@ var getSrvlimit = function (path) {
     }
     $.ajax({
         type: "POST",
-        url: authUrl + "/oauth/getSrvlimit",
+        url: getServUrl("/oauth/getSrvlimit"),
         dataType: "json",
         async: false,
         cache: false,
@@ -85,7 +85,6 @@ var getSrvlimit = function (path) {
             } else {
                 if (data.code == "20006") {
                     layer.msg('登录已失效', function () {
-                        // window.location.href = authUrl + "/lockscreen.html?userid=" + userid;
                       toLogin();
                     });
                 } else {
@@ -211,7 +210,7 @@ function getAllAuth(userid, token) {
     var limit = "";
     $.ajax({
         type: "POST",
-        url: authUrl + "/oauth/getUserLimit",
+        url: getServUrl("/oauth/getUserLimit"),
         data: {
             userid: userid
         },
@@ -225,7 +224,7 @@ function getAllAuth(userid, token) {
                     for (var i in data.data) {
                         LocalStorage.set(userid + i, JSON.stringify(data.data[i]));
                     }
-                    window.location.href = "index.html";//重新指向首頁
+                    window.location.href = authUrl;//重新指向首頁
                     // console.log("加入缓存");
             } else {//登陆失效
                 layer.confirm('初始化加载失败', {
