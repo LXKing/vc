@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsMachine implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
+
 	/**
 	 * [csm_id]编号
 	 */
@@ -186,7 +186,9 @@ public class CsMachine implements java.io.Serializable
 	 */
 	
 	private   Short csmStatus;
-	
+
+
+	private static final long serialVersionUID =         1L;
 	//默认构造函数
 	public CsMachine(){
 	

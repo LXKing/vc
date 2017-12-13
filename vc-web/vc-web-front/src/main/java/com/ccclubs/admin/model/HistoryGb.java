@@ -66,6 +66,8 @@ public class HistoryGb implements java.io.Serializable
 	 */
 	
 	private   Integer csVerify;
+
+
 	
 	//默认构造函数
 	public HistoryGb(){

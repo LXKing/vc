@@ -86,6 +86,7 @@
   var $csNumber = $("input[name='csNumberEquals']");
   var $startTime = $("input[name='currentTimeStart']");
   var $endTime = $("input[name='currentTimeEnd']");
+  var currPage=1;
 
   function checkParams() {
     if ($csNumber.val() === '' || typeof($csNumber.val()) === 'undefined') {
@@ -126,6 +127,17 @@
         return;
       }
 			grid.reloadData({where:getFormData(this.getQueryForm())});
+		},
+
+    exportData:function(){
+		  console.log("exportData")
+      if (!checkParams()) {
+        return;
+      }
+      console.log(option.url)
+      console.log(JSON.stringify(option))
+//      $.get(getServUrl("/monitor/historyState/report"), $.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage}) );
+      window.open(getServUrl("/monitor/historyState/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
 		},
 
 		batchDel:function(){
@@ -228,7 +240,10 @@
 			  height:getTableHeight(),
 			  url:getServUrl("/monitor/historyState/list"),
 			  cols:  [clms],
-			  done: function(res, curr, count){},
+			  done: function(res, curr, count){
+			    		console.log(curr);
+          		currPage = curr;
+						},
       	  	  response: {
 	      		  statusName: "code",
 	  		      statusCode: 0,
@@ -239,7 +254,7 @@
 	      	  request:{limitName: "rows"},
 	      	  where:{
 	      			sidx:"currentTime",
-					sord:"desc"
+							sord:"desc"
 	      	  }
 	};
 
@@ -270,6 +285,7 @@
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
 		$(".layui-table-view").remove();
+    option.where = getFormData(operate.getQueryForm());
 		grid.render(option);
 	});
 

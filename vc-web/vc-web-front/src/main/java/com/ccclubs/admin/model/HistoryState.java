@@ -20,12 +20,6 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class HistoryState implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
-	/**
-	 * [car_state_history_id]ID
-	 */
-	
-	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long carStateHistoryId;
 	/**
 	 * [cs_number]车机号
 	 */
@@ -246,7 +240,16 @@ public class HistoryState implements java.io.Serializable
 	public HistoryState(){
 	
 	}
-	
+
+
+	private static final long serialVersionUID =         1L;
+	/**
+	 * [car_state_history_id]ID
+	 */
+
+	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long carStateHistoryId;
+
+
 	//主键构造函数
 	public HistoryState(Long id){
 		this.carStateHistoryId = id;
@@ -347,7 +350,55 @@ public class HistoryState implements java.io.Serializable
 	public Integer getCsAccess(){
 		return this.csAccess;
 	}
-	
+
+	public String getRfid() {
+		return this.rfid;
+	}
+
+	public void setRfid(String rfid) {
+		this.rfid = rfid;
+	}
+
+	public Float getSpeed() {
+		return this.speed;
+	}
+
+	public void setSpeed(Float speed) {
+		this.speed = speed;
+	}
+
+	public Float getTempe() {
+		return this.tempe;
+	}
+
+	public void setTempe(Float tempe) {
+		this.tempe = tempe;
+	}
+
+	public Double getLongitude() {
+		return this.longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return this.latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Integer getGear() {
+		return this.gear;
+	}
+
+	public void setGear(Integer gear) {
+		this.gear = gear;
+	}
+
 	/**
 	* 授权系统 [非空]     
 	**/
@@ -414,16 +465,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* RFID卡号 [可空]      
 	**/
-	public String getrfid(){
+	/*public String getrfid(){
 		return this.rfid;
-	}
+	}*/
 	
 	/**
 	* RFID卡号 [可空]     
 	**/
-	public void setrfid(String rfid){
+	/*public void setrfid(String rfid){
 		this.rfid = rfid;
-	}
+	}*/
 	/*******************************用户RFID**********************************/	
 	/**
 	* 用户RFID [可空]      
@@ -484,16 +535,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 车速 [可空]      
 	**/
-	public Float getspeed(){
+	/*public Float getspeed(){
 		return this.speed;
-	}
+	}*/
 	
 	/**
 	* 车速 [可空]     
 	**/
-	public void setspeed(Float speed){
+	/*public void setspeed(Float speed){
 		this.speed = speed;
-	}
+	}*/
 	/*******************************转速**********************************/	
 	/**
 	* 转速 [可空]      
@@ -610,16 +661,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 温度 [可空]      
 	**/
-	public Float gettempe(){
+	/*public Float gettempe(){
 		return this.tempe;
-	}
+	}*/
 	
 	/**
 	* 温度 [可空]     
 	**/
-	public void settempe(Float tempe){
+	/*public void settempe(Float tempe){
 		this.tempe = tempe;
-	}
+	}*/
 	/*******************************卫星数量**********************************/	
 	/**
 	* 卫星数量 [可空]      
@@ -680,30 +731,30 @@ public class HistoryState implements java.io.Serializable
 	/**
 	* 经度 [可空]      
 	**/
-	public Double getlongitude(){
+	/*public Double getlongitude(){
 		return this.longitude;
-	}
+	}*/
 	
 	/**
 	* 经度 [可空]     
 	**/
-	public void setlongitude(Double longitude){
+	/*public void setlongitude(Double longitude){
 		this.longitude = longitude;
-	}
+	}*/
 	/*******************************纬度**********************************/	
 	/**
 	* 纬度 [可空]      
 	**/
-	public Double getlatitude(){
+	/*public Double getlatitude(){
 		return this.latitude;
-	}
+	}*/
 	
 	/**
 	* 纬度 [可空]     
 	**/
-	public void setlatitude(Double latitude){
+	/*public void setlatitude(Double latitude){
 		this.latitude = latitude;
-	}
+	}*/
 	/*******************************方向角度**********************************/	
 	/**
 	* 方向角度 [可空]      
@@ -919,16 +970,16 @@ public class HistoryState implements java.io.Serializable
 	/**
 	 * 档位 [可空]
 	 **/
-	public Integer getgear(){
+	/*public Integer getgear(){
 		return this.gear;
-	}
+	}*/
 
 	/**
 	 * 档位 [可空]
 	 **/
-	public void setgear(Integer gear){
+	/*public void setgear(Integer gear){
 		this.gear = gear;
-	}
+	}*/
 
 
 

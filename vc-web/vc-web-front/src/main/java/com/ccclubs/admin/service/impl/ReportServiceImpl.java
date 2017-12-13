@@ -27,6 +27,7 @@ public class ReportServiceImpl implements IReportService {
      */
     @Override
     public ByteArrayOutputStream reportVehicles(List<CsVehicle> csVehicleList) {
+
         //表头与字段顺序对应
         String[] headersExit ={
                 "编号","接入商","车牌号",
@@ -49,6 +50,7 @@ public class ReportServiceImpl implements IReportService {
      */
     @Override
     public ByteArrayOutputStream reportMachines(List<CsMachine> csMachineList) {
+
         //表头与字段顺序对应
         String[] headersExit ={"编号","接入商","子域"
                 ,"车机号","序列号","终端类型"
@@ -63,6 +65,7 @@ public class ReportServiceImpl implements IReportService {
                 ,"修改时间","添加时间","状态"};
         String sheetName="Machines";
         return baseReportService(headersExit,sheetName,csMachineList);
+
     }
 
     /**
@@ -76,7 +79,7 @@ public class ReportServiceImpl implements IReportService {
 
         //表头与字段顺序对应
         String[] headersExit ={
-                "编号","车机号","授权系统",
+                "车机号","授权系统",
                 "添加时间","下位机时间","租赁状态",
                 "报警代码","RFID卡号","用户RFID",
                 "累计里程","发动机温度","总里程",
@@ -93,6 +96,7 @@ public class ReportServiceImpl implements IReportService {
                 "订单号","档位"};
         String sheetName="HistoryStates";
         return baseReportService(headersExit,sheetName,historyStateList);
+
     }
 
     /**
@@ -113,6 +117,7 @@ public class ReportServiceImpl implements IReportService {
                 "增量里程","授权系统","车型"};
         String sheetName="Statistics";
         return baseReportService(headersExit,sheetName,csStatisticsList);
+
     }
 
 

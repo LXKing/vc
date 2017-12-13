@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsStatistics implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
+
 	/**
 	 * [css_id]ID
 	 */
@@ -96,7 +96,10 @@ public class CsStatistics implements java.io.Serializable
 	 */
 	
 	private   Integer cssCarModel;
-	
+
+	private static final long serialVersionUID =         1L;
+
+
 	//默认构造函数
 	public CsStatistics(){
 	

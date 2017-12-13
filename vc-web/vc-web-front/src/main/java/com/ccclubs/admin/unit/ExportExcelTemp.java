@@ -1,5 +1,6 @@
 package com.ccclubs.admin.unit;
 
+import com.ccclubs.admin.vo.Resolver;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -150,11 +152,18 @@ public class ExportExcelTemp<T> implements Serializable{
             // 利用反射，根据javabean属性的先后顺序，动态调用getXxx()方法得到属性值
             Field[] srcfield= t.getClass().getDeclaredFields();
             Field[] fields=new Field[srcfield.length-1];
-            if(srcfield[0].getName()=="cs_number"){
-                System.arraycopy(srcfield,1,fields,0,srcfield.length-1);
-            }else {
-                fields=srcfield;
+            fields=srcfield;
+            HashMap<String,Resolver<T>> resolvers=null;
+            for(int i = (fields.length-1); i >=0; i--){
+                Field field = fields[i];
+                String fieldName = field.getName();
+                if (fieldName.equals("resolvers")){
+                    field.setAccessible(true);
+                    resolvers=(HashMap<String,Resolver<T>> )field.get(t);
+                    break;
+                }
             }
+
             for (short i = 0; i < fields.length; i++) {
                 Field field = fields[i];
                 String fieldName = field.getName();
@@ -168,12 +177,17 @@ public class ExportExcelTemp<T> implements Serializable{
                         + fieldName.substring(0, 1).toUpperCase()
                         + fieldName.substring(1);
                 try {
-                    Class tCls = t.getClass();
 
-                    Method getMethod = tCls.getMethod(getMethodName,
-                            new Class[] {});
-                    Object value = getMethod.invoke(t, new Object[] {});
-
+                    Object value ;
+                    if (resolvers.containsKey(fieldName.trim()+"Text")){
+                        value=resolvers.get(fieldName.trim()+"Text").execute(t);
+                    }else {
+                        Class tCls = t.getClass();
+                        Method getMethod = tCls.getMethod(getMethodName,
+                                new Class[] {});
+                        value = getMethod.invoke(t, new Object[] {});
+                    }
+                    //TODO 在这里得到resovler 中的key进行比较，如果有，则使用resovler中的值。
                     // 判断值的类型后进行强制类型转换
                     String textValue = null;
 
@@ -195,9 +209,19 @@ public class ExportExcelTemp<T> implements Serializable{
 //                                bsValue, HSSFWorkbook.PICTURE_TYPE_JPEG));
                     } else if(value instanceof Float){
                         BigDecimal b = new BigDecimal((Float)value);
-                        textValue=  b.setScale(3, BigDecimal.ROUND_HALF_UP).toString();
+                        textValue=  b.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 
-                    }  else{
+                    }
+                    else if(value instanceof Double){
+                        BigDecimal b = new BigDecimal((Double)value);
+                        textValue=  b.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
+
+                    }else if(value instanceof Integer){
+                        BigDecimal b = new BigDecimal((Integer) value);
+                        textValue=  b.setScale(0, BigDecimal.ROUND_HALF_UP).toString();
+
+                    }
+                    else{
                         // 其它数据类型都当作字符串简单处理
                         if(value!=null){
                             textValue = value.toString();

@@ -46,6 +46,8 @@ public class HistoryCan implements java.io.Serializable
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date currentTime;
+
+
 	
 	//默认构造函数
 	public HistoryCan(){
