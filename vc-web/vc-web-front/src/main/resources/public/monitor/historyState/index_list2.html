@@ -128,6 +128,15 @@
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
 
+    exportData:function(){
+		  console.log("exportData")
+      if (!checkParams()) {
+        return;
+      }
+			grid.reloadData({where:getFormData(this.getQueryForm())});
+      ajaxRequest(getServUrl("/monitor/historyState/report"), "GET",getFormData(this.getQueryForm()));
+		},
+
 		batchDel:function(){
 			var o = this;
 			var ids = grid.getSelectIds();
