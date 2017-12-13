@@ -364,6 +364,32 @@ function getIds(ids, split) {
 }
 
 /**
+ * 将json对象 或 某一具体参数转化为URL  get 参数形式
+ * //调用：
+ var obj={name:'tom','class':{className:'class1'},classMates:[{name:'lily'}]};
+ parseParam(obj);
+ 结果："name=tom&class.className=class1&classMates[0].name=lily"
+ parseParam(obj,'stu');
+ 结果："stu.name=tom&stu.class.className=class1&stu.classMates[0].name=lily"
+ * @param param
+ * @param key
+ * @returns {string}
+ */
+function jsonToUri(param, key){
+  var paramStr="";
+  if(param instanceof String||param instanceof Number||param instanceof Boolean){
+    paramStr+="&"+key+"="+encodeURIComponent(param);
+  }else{
+    $.each(param,function(i){
+      var k=key==null?i:key+(param instanceof Array?"["+i+"]":"."+i);
+      paramStr+='&'+jsonToUri(this, k);
+    });
+  }
+  return paramStr.substr(1);
+};
+
+
+/**
  * 发起Ajax请求
  * @param url    请求地址
  * @param type    方法：GET/POST/DELETE...
