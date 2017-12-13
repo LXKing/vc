@@ -117,7 +117,7 @@ public class AuthWebController {
       return new ResultMsg<>(false,
           ResultCode.INVALID_TOKEN, null);
     }
-    Object userID = redisTemplate.opsForValue().get(Constants.ADMIN_TOKEN_PRE + userId.toString());
+    Object userID = redisTemplate.opsForValue().get(Constants.ADMIN_TOKEN_PRE + token.toString());
     if (null == userID){
       return new ResultMsg<>(false,
           ResultCode.INVALID_TOKEN, null);

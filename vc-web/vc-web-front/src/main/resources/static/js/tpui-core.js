@@ -96,11 +96,9 @@ var getSrvlimit = function (path) {
     var datas = "";
     var userId = cookieUtil.get("userId");
     if (userId == "") {
-        layer.confirm('登录已失效', {
-            btn: ['重新登陆']
-        }, function () {
-            toLogin();
-        });
+      layer.msg('登录已失效', function () {
+        toLogin();
+      });
     }
     $.ajax({
         type: "POST",
@@ -156,11 +154,9 @@ authUtil = {
     get: function (path) {
         var token = cookieUtil.get("token");
         if (typeof(token) ==="undefined" || token === "") {
-            layer.confirm('登录已失效', {
-                btn: ['重新登陆']
-            }, function () {
-                toLogin();
-            });
+          layer.msg('登录已失效', function () {
+            toLogin();
+          });
         } else {
             this.limits = getSrvlimit(path);
             return this.limits;
