@@ -10,6 +10,7 @@ import com.ccclubs.admin.service.ISrvGroupService;
 import com.ccclubs.admin.service.ISrvLimitedService;
 import com.ccclubs.admin.service.ISrvProjectService;
 import com.ccclubs.admin.service.ISrvUserService;
+import com.ccclubs.admin.vo.Param;
 import com.ccclubs.admin.vo.ResultCode;
 import com.ccclubs.admin.vo.ResultMsg;
 import com.ccclubs.protocol.util.StringUtils;
@@ -21,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -176,6 +178,39 @@ public class AuthWebController {
       resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
           resutlMap);
       return resultMsg;
+    }
+  }
+
+
+  /**
+   * 修改密码
+   * @param params
+   * @return
+   */
+  @PostMapping("oauth/editPassword")
+  public ResultMsg editPassword(@RequestBody Param<String, Object> params)
+  {
+    try{
+      Integer userId = params.get("userId", Integer.class);
+      String oldPass = params.get("oldPass", String.class);
+
+      String newPass = params.get("newPass", String.class);
+
+      SrvUser srvUser=srvUserService.selectByPrimaryKey(userId);
+
+      if(!StringUtils.md5(oldPass).equals(srvUser.getSuPassword().toUpperCase()))
+      {
+        return new ResultMsg(false, ResultCode.INVALID_OLD_PASSWORD, null);
+      }
+      if(!newPass.matches("((?=.*\\d)(?=.*\\D)|(?=.*[a-zA-Z])(?=.*[^a-zA-Z]))^.{8,16}$")){
+        return new ResultMsg(false, ResultCode.PASSWORD_VALID_INFO, null);
+      }
+      srvUser.setSuPassword(StringUtils.md5(newPass).substring(0, 32));
+      srvUserService.updateByPrimaryKeySelective(srvUser);
+      return new ResultMsg(true, ResultCode.PASSWORD_UPDATE_SECCESS, null);
+    }catch(Exception ex){
+      ex.printStackTrace();
+      return new ResultMsg(false, ResultCode.SYSTEM_ERR, null);
     }
   }
 

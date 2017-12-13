@@ -4,9 +4,11 @@ $(function () {
     $.extend(vote, {
       init: function () {
 
-        var userid = cookieUtil.get("userid");
+        var userid = cookieUtil.get("userId");
         var token = cookieUtil.get("token");
         if (typeof(token) ==="undefined" || token === ""||typeof(userid) ==="undefined" || userid === "") {
+          console.log(token)
+          console.log(userid)
           toLogin();
         }
 
@@ -208,7 +210,7 @@ $(function () {
                 success: function (data) {
                   alert(data.message)
                   if (data.success == true) {
-                    window.location.href = 'http://118.178.230.105:8088/login_v2.html?referer=http://localhost:5000/index.html'
+                    window.location.href = servUrl
                   }
                 }
               });

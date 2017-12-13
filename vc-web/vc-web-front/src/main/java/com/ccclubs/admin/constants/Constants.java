@@ -15,7 +15,7 @@ package com.ccclubs.admin.constants;
 public class Constants
 {
 
-    public final static String ADMIN_TOKEN_PRE = "Admin:user:id:";
+    public final static String ADMIN_TOKEN_PRE = "Admin:user:token:";
     public final static String ADMIN_USER_PRE = "Admin:user:id:";
 
     /** 权限Token **/

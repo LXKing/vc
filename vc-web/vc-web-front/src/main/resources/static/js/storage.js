@@ -59,7 +59,7 @@ var cookieUtil = {
 
 var getSrvlimit = function (path) {
     var datas = "";
-    var userid = cookieUtil.get("userid");
+    var userid = cookieUtil.get("userId");
     var token = cookieUtil.get("token");
     if (typeof(token) ==="undefined" || token === ""||typeof(userid) ==="undefined" || userid === "") {
         layer.msg('登录已失效', function () {
@@ -112,7 +112,7 @@ var getSrvlimit = function (path) {
 var authUtil = {
     //获取当前页面的权限
     get: function (path) {
-        var userid = cookieUtil.get("userid");
+        var userid = cookieUtil.get("userId");
         var token = cookieUtil.get("token");
         if (typeof(userid) ==="undefined" || userid == "" || typeof(token) ==="undefined" || token == "") {
             layer.msg('登录已失效', function () {
