@@ -103,11 +103,9 @@ $.extend($.jgrid.defaults, {
     beforeRequest: function () {
         var token = cookieUtil.get("token");
         if (token == "") {
-            layer.confirm('登录已失效', {
-                btn: ['重新登陆']
-            }, function () {
-                toLogin();
-            });
+          layer.msg('登录已失效', function () {
+            toLogin();
+          });
         }
     },
     loadBeforeSend: function (xhr){
@@ -116,11 +114,9 @@ $.extend($.jgrid.defaults, {
     ajaxGridOptions: {Authorization: cookieUtil.get("token")},
     loadComplete: function (xhr) {
         if (xhr.code == 20006) {
-            layer.confirm('登录已失效', {
-                btn: ['重新登陆']
-            }, function () {
-                toLogin();
-            });
+          layer.msg('登录已失效', function () {
+            toLogin();
+          });
         }
         else if (xhr.code > 100000) {
             layer.msg("服务异常！", {icon: 7, time: 1600});

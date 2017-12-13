@@ -235,7 +235,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "YEAR," +
                 "MONTH," +
                 "DAY," +
-                "NET_STRENGTH" +
+                "NET_STRENGTH," +
+                "GEAR" +
                 " " +
                 ") " +
                 "values " +
@@ -284,7 +285,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "?, " + //YEAR
                 "?, " + //MONTH
                 "?, " + //DAY
-                "? " + //NET_STRENGTH
+                "?, " + //NET_STRENGTH
+                "? " + //GEAR
                 ")";
         phoenixJdbcTemplate.batchUpdate(insert_sql, new BatchPreparedStatementSetter() {
             @Override
@@ -335,6 +337,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 String base_ci = carState.getBase_ci();
                 String cur_order = carState.getCur_order();
                 Integer net_strength = carState.getNet_strength();
+                Integer gear = carState.getGear();
 
                 carStatePs.setString(1, cs_number);
                 carStatePs.setLong(2, current_time);
@@ -514,6 +517,12 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }else {
                     carStatePs.setInt(45,net_strength);
                 }
+                if (gear == null){
+                    carStatePs.setNull(46,Types.INTEGER);
+                }else {
+                    carStatePs.setInt(46,gear);
+                }
+
             }
 
             @Override

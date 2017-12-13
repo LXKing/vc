@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ccclubs.admin.dao.CsStateMapper">
+<mapper namespace="com.ccclubs.admin.orm.mapper.CsStateMapper">
 	<!-- 开启基于redis的二级缓存，仅适用单表
     <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
     

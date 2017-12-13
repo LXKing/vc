@@ -55,7 +55,7 @@
 				</dd>
 			</dl>
 <dl cond="csvColorCode" style="display:none;">
-				<dt>颜色</dt>
+				<dt>车身颜色</dt>
 				<dd  >
 					<input  name="csvColorCodeEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="color_code"  dataUrl="/base/dict/query">
 				</dd>
@@ -78,6 +78,35 @@
 				<dt>地标类型</dt>
 				<dd  >
 					<input  name="csvLandmarkEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="landmark"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="csvDomain" style="display:none;">
+				<dt>车辆领域</dt>
+				<dd  >
+					<select class="form-control"  name="csvDomainEquals"  >
+	                    <option></option>
+                         <option value="2">公共领域</option>
+                         <option value="1">个人领域</option>
+                         <option value="0">未知</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="csvModelCodeFull" style="display:none;">
+				<dt>车型代码</dt>
+				<dd  >
+					<input  name="csvModelCodeFullEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvModelCodeSimple" style="display:none;">
+				<dt>车型备案号</dt>
+				<dd  >
+					<input  name="csvModelCodeSimpleEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csvInteriorColorCode" style="display:none;">
+				<dt>内饰颜色</dt>
+				<dd  >
+					<input  name="csvInteriorColorCodeEquals" placeholder="" class="form-control" >
 				</dd>
 			</dl>
 <dl cond="csvStatus" style="display:none;">
@@ -119,10 +148,14 @@
 			        <li><label><input cond="csvCertific" value="csvCertific"  type="checkbox" onclick='showHideCondition(this, this.value);' >合格证号</label></li>
 			        <li><label><input cond="csvModel" value="csvModelText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
 			        <li><label><input cond="csvMachine" value="csvMachineText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机设备</label></li>
-			        <li><label><input cond="csvColorCode" value="csvColorCodeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >颜色</label></li>
+			        <li><label><input cond="csvColorCode" value="csvColorCodeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车身颜色</label></li>
 			        <li><label><input cond="csvBataccuCode" value="csvBataccuCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >可充电储能系统编码</label></li>
 			        <li><label><input cond="csvProdDate" value="csvProdDate" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >出厂日期</label></li>
 			        <li><label><input cond="csvLandmark" value="csvLandmarkText"  type="checkbox" onclick='showHideCondition(this, this.value);' >地标类型</label></li>
+			        <li><label><input cond="csvDomain" value="csvDomainText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆领域</label></li>
+			        <li><label><input cond="csvModelCodeFull" value="csvModelCodeFull"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型代码</label></li>
+			        <li><label><input cond="csvModelCodeSimple" value="csvModelCodeSimple"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型备案号</label></li>
+			        <li><label><input cond="csvInteriorColorCode" value="csvInteriorColorCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >内饰颜色</label></li>
 			        <li><label><input cond="csvStatus" value="csvStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
 			        <li><label><input cond="csvAddTime" value="csvAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
 			        <li><label><input cond="csvUpdateTime" value="csvUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >修改时间</label></li>

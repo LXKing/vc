@@ -908,6 +908,273 @@ public class CsVehicleCrieria{
 	            addCriterion("csv_landmark not between", value1, value2, "csvLandmark");
 	            return (Criteria) this;
 	        }
+	        public Criteria andcsvDomainIsNull() {
+	            addCriterion("csv_domain is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainIsNotNull() {
+	            addCriterion("csv_domain is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        
+	        public Criteria andcsvDomainEqualTo(Short value) {
+	            addCriterion("csv_domain =", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainNotEqualTo(Short value) {
+	            addCriterion("csv_domain <>", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainGreaterThan(Short value) {
+	            addCriterion("csv_domain >", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainGreaterThanOrEqualTo(Short value) {
+	            addCriterion("csv_domain >=", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainLessThan(Short value) {
+	            addCriterion("csv_domain <", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainLessThanOrEqualTo(Short value) {
+	            addCriterion("csv_domain <=", value, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainIn(List<Short> values) {
+	            addCriterion("csv_domain in", values, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainNotIn(List<Short> values) {
+	            addCriterion("csv_domain not in", values, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainBetween(Short value1, Short value2) {
+	            addCriterion("csv_domain between", value1, value2, "csvDomain");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvDomainNotBetween(Short value1, Short value2) {
+	            addCriterion("csv_domain not between", value1, value2, "csvDomain");
+	            return (Criteria) this;
+	        }
+	        public Criteria andcsvModelCodeFullIsNull() {
+	            addCriterion("csv_model_code_full is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullIsNotNull() {
+	            addCriterion("csv_model_code_full is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvModelCodeFullLike(String value) {
+	            addCriterion("csv_model_code_full like", "%"+value+"%", "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullNotLike(String value) {
+	            addCriterion("csv_model_code_full not like", "%"+value+"%", "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvModelCodeFullEqualTo(String value) {
+	            addCriterion("csv_model_code_full =", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullNotEqualTo(String value) {
+	            addCriterion("csv_model_code_full <>", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullGreaterThan(String value) {
+	            addCriterion("csv_model_code_full >", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullGreaterThanOrEqualTo(String value) {
+	            addCriterion("csv_model_code_full >=", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullLessThan(String value) {
+	            addCriterion("csv_model_code_full <", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullLessThanOrEqualTo(String value) {
+	            addCriterion("csv_model_code_full <=", value, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullIn(List<String> values) {
+	            addCriterion("csv_model_code_full in", values, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullNotIn(List<String> values) {
+	            addCriterion("csv_model_code_full not in", values, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullBetween(String value1, String value2) {
+	            addCriterion("csv_model_code_full between", value1, value2, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeFullNotBetween(String value1, String value2) {
+	            addCriterion("csv_model_code_full not between", value1, value2, "csvModelCodeFull");
+	            return (Criteria) this;
+	        }
+	        public Criteria andcsvModelCodeSimpleIsNull() {
+	            addCriterion("csv_model_code_simple is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleIsNotNull() {
+	            addCriterion("csv_model_code_simple is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvModelCodeSimpleLike(String value) {
+	            addCriterion("csv_model_code_simple like", "%"+value+"%", "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleNotLike(String value) {
+	            addCriterion("csv_model_code_simple not like", "%"+value+"%", "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvModelCodeSimpleEqualTo(String value) {
+	            addCriterion("csv_model_code_simple =", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleNotEqualTo(String value) {
+	            addCriterion("csv_model_code_simple <>", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleGreaterThan(String value) {
+	            addCriterion("csv_model_code_simple >", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleGreaterThanOrEqualTo(String value) {
+	            addCriterion("csv_model_code_simple >=", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleLessThan(String value) {
+	            addCriterion("csv_model_code_simple <", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleLessThanOrEqualTo(String value) {
+	            addCriterion("csv_model_code_simple <=", value, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleIn(List<String> values) {
+	            addCriterion("csv_model_code_simple in", values, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleNotIn(List<String> values) {
+	            addCriterion("csv_model_code_simple not in", values, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleBetween(String value1, String value2) {
+	            addCriterion("csv_model_code_simple between", value1, value2, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvModelCodeSimpleNotBetween(String value1, String value2) {
+	            addCriterion("csv_model_code_simple not between", value1, value2, "csvModelCodeSimple");
+	            return (Criteria) this;
+	        }
+	        public Criteria andcsvInteriorColorCodeIsNull() {
+	            addCriterion("csv_interior_color_code is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeIsNotNull() {
+	            addCriterion("csv_interior_color_code is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvInteriorColorCodeLike(String value) {
+	            addCriterion("csv_interior_color_code like", "%"+value+"%", "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeNotLike(String value) {
+	            addCriterion("csv_interior_color_code not like", "%"+value+"%", "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andcsvInteriorColorCodeEqualTo(String value) {
+	            addCriterion("csv_interior_color_code =", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeNotEqualTo(String value) {
+	            addCriterion("csv_interior_color_code <>", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeGreaterThan(String value) {
+	            addCriterion("csv_interior_color_code >", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeGreaterThanOrEqualTo(String value) {
+	            addCriterion("csv_interior_color_code >=", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeLessThan(String value) {
+	            addCriterion("csv_interior_color_code <", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeLessThanOrEqualTo(String value) {
+	            addCriterion("csv_interior_color_code <=", value, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeIn(List<String> values) {
+	            addCriterion("csv_interior_color_code in", values, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeNotIn(List<String> values) {
+	            addCriterion("csv_interior_color_code not in", values, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeBetween(String value1, String value2) {
+	            addCriterion("csv_interior_color_code between", value1, value2, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andcsvInteriorColorCodeNotBetween(String value1, String value2) {
+	            addCriterion("csv_interior_color_code not between", value1, value2, "csvInteriorColorCode");
+	            return (Criteria) this;
+	        }
 	        public Criteria andcsvStatusIsNull() {
 	            addCriterion("csv_status is null");
 	            return (Criteria) this;

@@ -100,6 +100,8 @@ public class CarState implements Serializable{
     private String base_ci;
     //当前订单
     private String cur_order;
+    //档位
+    private Integer gear;
 
     public Long getAdd_time() {
         return add_time;
@@ -454,6 +456,14 @@ public class CarState implements Serializable{
         this.current_datetime = current_datetime;
     }
 
+    public Integer getGear() {
+        return gear;
+    }
+
+    public void setGear(Integer gear) {
+        this.gear = gear;
+    }
+
     @Override
     public String toString() {
         return "CarState{" +
@@ -501,6 +511,7 @@ public class CarState implements Serializable{
                 ", base_lac='" + base_lac + '\'' +
                 ", base_ci='" + base_ci + '\'' +
                 ", cur_order='" + cur_order + '\'' +
+                ", gear=" + gear +
                 '}';
     }
 }

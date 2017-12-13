@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>ID：</dt>
+					<dd>
+					<input name="cssId" placeholder="请输入ID" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>统计时间：</dt>
+					<dd>
+					<input name="cssTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>间隔时间：</dt>
+					<dd>
+					<input name="cssUnitTime" placeholder="请输入间隔时间" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>总注册数：</dt>
+					<dd>
+					<input name="cssRegisteredNum" placeholder="请输入总注册数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>在线数：</dt>
+					<dd>
+					<input name="cssOnlineNum" placeholder="请输入在线数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>离线数：</dt>
+					<dd>
+					<input name="cssOfflineNum" placeholder="请输入离线数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>运行数：</dt>
+					<dd>
+					<input name="cssRunNum" placeholder="请输入运行数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>充电数：</dt>
+					<dd>
+					<input name="cssChargingNum" placeholder="请输入充电数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>运行总里程：</dt>
+					<dd>
+					<input name="cssTotalMileage" placeholder="请输入运行总里程" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>总充电量：</dt>
+					<dd>
+					<input name="cssTotalCharge" placeholder="请输入总充电量" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>电池增量：</dt>
+					<dd>
+					<input name="cssTotalPowerConsumption" placeholder="请输入电池增量" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>总运行时间：</dt>
+					<dd>
+					<input name="cssTotalRunTime" placeholder="请输入总运行时间" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>增量里程：</dt>
+					<dd>
+					<input name="cssIncrementMileage" placeholder="请输入增量里程" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>授权系统：</dt>
+					<dd>
+					<input name="cssAccess" placeholder="请输入授权系统" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型：</dt>
+					<dd>
+					<input name="cssCarModel" placeholder="请输入车型" class="form-control" >
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/monitor/statistics/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/monitor/statistics/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

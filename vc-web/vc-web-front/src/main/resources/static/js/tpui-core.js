@@ -29,7 +29,7 @@ function getServUrl(path) {
 }
 
 function toLogin() {
-    // top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
+    top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
 }
 
 /**
@@ -96,15 +96,13 @@ var getSrvlimit = function (path) {
     var datas = "";
     var userId = cookieUtil.get("userId");
     if (userId == "") {
-        layer.confirm('登录已失效', {
-            btn: ['重新登陆']
-        }, function () {
-            toLogin();
-        });
+      layer.msg('登录已失效', function () {
+        toLogin();
+      });
     }
     $.ajax({
         type: "POST",
-        url: authUrl + "/oauth/getSrvlimit",
+        url: getServUrl("/oauth/getSrvlimit"),
         dataType: "json",
         async: false,
         cache: false,
@@ -119,11 +117,9 @@ var getSrvlimit = function (path) {
                 return datas;
             } else {
                 if (data.code == "20006") {
-                    layer.confirm('登录已失效', {
-                        btn: ['重新登陆']
-                    }, function () {
-                        toLogin();
-                    });
+                  layer.msg('登录已失效', function () {
+                    toLogin();
+                  });
                 } else if (data.code == "20008") {
                     layer.msg('您没有操作该功能的权限');
 
@@ -155,12 +151,10 @@ authUtil = {
      */
     get: function (path) {
         var token = cookieUtil.get("token");
-        if (token == "") {
-            layer.confirm('登录已失效', {
-                btn: ['重新登陆']
-            }, function () {
-                toLogin();
-            });
+        if (typeof(token) ==="undefined" || token === "") {
+          layer.msg('登录已失效', function () {
+            toLogin();
+          });
         } else {
             this.limits = getSrvlimit(path);
             return this.limits;
@@ -391,11 +385,9 @@ function ajaxRequest(url, type, data, callback, async) {
                 callback(json);
             } else {
                 if (json.code == "20006") {
-                    layer.confirm('登录已失效', {
-                        btn: ['重新登陆']
-                    }, function () {
-                        toLogin();
-                    });
+                  layer.msg('登录已失效', function () {
+                    toLogin();
+                  });
                 } else if (json.code == "20008") {
                     layer.msg('您没有操作该功能的权限');
 

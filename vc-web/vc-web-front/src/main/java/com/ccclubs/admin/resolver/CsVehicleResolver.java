@@ -7,7 +7,7 @@ import com.ccclubs.admin.model.CsVehicle;
 public enum CsVehicleResolver{
 	
 		接入商(new Resolver<CsVehicle>("csvAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
-		private static final long serialVersionUID = 2038851498L;
+		private static final long serialVersionUID = 2038857404L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -21,7 +21,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		车型(new Resolver<CsVehicle>("csvModelText", com.ccclubs.admin.metadata.MetaDef.getVehicleModelName) {
-		private static final long serialVersionUID = 2038890723L;
+		private static final long serialVersionUID = 2038866019L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -35,7 +35,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		车机设备(new Resolver<CsVehicle>("csvMachineText", com.ccclubs.admin.metadata.MetaDef.getMachineTeNo) {
-		private static final long serialVersionUID = 2038881012L;
+		private static final long serialVersionUID = 2038821117L;
 
 		@Override
 		public <T> T execute(CsVehicle record) {
@@ -48,8 +48,8 @@ public enum CsVehicleResolver{
 				}
 		})
 	,
-		颜色(new Resolver<CsVehicle>("csvColorCodeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038897457L;
+		车身颜色(new Resolver<CsVehicle>("csvColorCodeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
+		private static final long serialVersionUID = 2038881460L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {
@@ -63,7 +63,7 @@ public enum CsVehicleResolver{
 		})
 	,
 		地标类型(new Resolver<CsVehicle>("csvLandmarkText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038855108L;
+		private static final long serialVersionUID = 2038826407L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {
@@ -76,8 +76,34 @@ public enum CsVehicleResolver{
 					}
 		})
 	,
+		车辆领域(new Resolver<CsVehicle>("csvDomainText") {
+		private static final long serialVersionUID = 2038838086L;
+
+		@Override
+		public <T> T execute(CsVehicle record) {
+				if(record.getCsvDomain()==null){
+				return null;
+				}
+				String result = "";
+				String[] sArr = record.getCsvDomain().toString().split(",");
+			for(int i=0;i<sArr.length;i++){
+				if(sArr[i].equals("2")){
+					result+=(i==0?"":",")+ "公共领域";
+				}
+				if(sArr[i].equals("1")){
+					result+=(i==0?"":",")+ "个人领域";
+				}
+				if(sArr[i].equals("0")){
+					result+=(i==0?"":",")+ "未知";
+				}
+			}
+
+				return (T)result;
+				}
+		})
+	,
 		状态(new Resolver<CsVehicle>("csvStatusText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
-		private static final long serialVersionUID = 2038834414L;
+		private static final long serialVersionUID = 2038879718L;
 
 			@Override
 			public <T> T execute(CsVehicle record) {

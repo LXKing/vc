@@ -40,128 +40,7 @@
 						<div class="img-box">
 							<img src="/img/Page1.png">
 						</div>
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">权限配置</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="auth/user/index.html">用户信息</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="auth/group/index.html">角色组信息</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="auth/modelMapping/index.html">主机厂用户车型关联</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">基础信息</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="base/dict/index.html">字典管理</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="base/access/index.html">接入商管理</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">车辆管理</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="admin/model/index.html">车型管理</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="admin/vehicle/index.html?v=2">车辆管理</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">T-box管理</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="admin/machine/index.html">T-box管理</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">车辆控制管理</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="control/struct/index.html">车辆控制指令</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">监控管理</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="monitor/register/index.html">TBox注册信息</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="monitor/state/index.html">车辆实时状态信息</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="monitor/map/vehiclemonitor.html">车辆地图监控</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="monitor/can/index.html">车辆实时CAN信息</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="###">车辆历史数据</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="###">车辆历史CAN数据</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="monitor/map/history.html">车辆历史轨迹</a>
-								</li>
-							</ul>
-						</li>
-
-						<li>
-							<a href="#">
-								<i class="fa fa-home"></i>
-								<span class="nav-label">新能源车监控管理</span>
-								<span class="fa arrow"></span>
-							</a>
-							<ul class="nav nav-second-level">
-								<li>
-									<a class="J_menuItem" href="###">新能源车实时数据</a>
-								</li>
-								<li>
-									<a class="J_menuItem" href="###">新能源车历史数据</a>
-								</li>
-							</ul>
-						</li>
+						<!-- 加载菜单 -->
 					</ul>
 				</div>
 			</nav>
@@ -171,12 +50,19 @@
 				<div class="row border-bottom">
 					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
 						<div class="navbar-header">
-							<div class="select"><span>选择模块</span>
+							<div class="select"><span></span>
 								<ul class="select-wrap hide">
-									
+
 								</ul>
 							</div>
-							<div class="username">长安出行账号</div>
+							<div class="username">
+								<span class="account">长安出行账号</span>
+								<ul class="account-msg hide">
+									<li class = "userInfo">消息</li>
+									<li class="reset-password"><a href="/resetPassword.html">修改密码</a></li>
+									<li data-toggle="modal" data-target="#myModal6">退出</li>
+								</ul>
+							</div>
 						</div>
 					</nav>
 				</div>
@@ -184,6 +70,27 @@
 				<div class="row J_mainContent" id="content-main">
 					<iframe class="J_iframe" name="iframe1" width="100%" height="100%" src="index_v1.html?v=4.0" frameborder="0" data-id="index_v1.html" seamless></iframe>
 				</div>
+
+				<!-- 退出登录弹框 -->
+				<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content" style="top: 170px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+								</button>
+								<div class="logout-rocket">
+									<img src="img/rocket.png" alt="##">
+									<p>确定要退出吗？</p>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary log-out" data-dismiss="modal">确认</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 
@@ -195,22 +102,20 @@
 
 		<script id="leftNav" type="x-tmpl-mustache">
 		{{#arr}}
-			<li class="two">
-				<a href="#">
-				<i class="fa fa-cutlery"></i>
-				<span class="nav-label">{{spName}}</span>
-				{{#arrows}}
-				<span class="fa arrow"></span>
-				{{/arrows}}
-				</a>
-				<ul class="nav nav-second-level">
-					{{#thirdarr}}
-					<li>
-						<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
-					</li>
-					{{/thirdarr}}
-				</ul>
-			</li>
+			<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">{{spName}}</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+							{{#thirdarr}}
+								<li>
+									<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
+								</li>
+							{{/thirdarr}}
+							</ul>
+						</li>
 		{{/arr}}
 		</script>
 
