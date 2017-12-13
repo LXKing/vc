@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+<form class="form-horizontal queryform">
+	<div class="form-group">
+		<dl cond="csVin" >
+			<dt>车架号</dt>
+			<dd  >
+				<input  name="csVinEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/search">
+			</dd>
+		</dl>
+		<dl cond="addTime" >
+			<dt>添加时间</dt>
+			<dd class="timergroup" >
+				<input  name="addTimeStart"  placeholder="开始日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD hh:mm:ss'})">
+				<label class="timegrouplabel">-</label>
+				<input  name="addTimeEnd" placeholder="结束日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD hh:mm:ss'})">
+			</dd>
+		</dl>
+
+		<div class="querybtns">
+			<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+			<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+		</div>
+	</div>
+</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

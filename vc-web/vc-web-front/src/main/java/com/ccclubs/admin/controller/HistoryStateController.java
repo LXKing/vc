@@ -79,47 +79,6 @@ public class HistoryStateController {
 			data.registResolver(HistoryStateResolver.档位.getResolver());
 		}
 	}
-	
-	/**
-	 * 获取单条车辆状态历史数据信息
-	 */
-	/*@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
-	public VoResult<Map<String, HistoryState>> detail(@PathVariable(required = true) Long id){
-		HistoryState data = historyStateService.selectByPrimaryKey( id.intValue());
-		Map<String, HistoryState> map = new HashMap<String, HistoryState>();
-		registResolvers(data);
-		map.put("tbody", data);
-		return VoResult.success().setValue(map);
-	}
-	*/
-	
-	/**
-	 * 根据文本检索车辆状态历史数据信息
-	 */
-	/*@RequestMapping(value="/query", method = RequestMethod.GET)
-	public VoResult<Map<String, List<Map<String, Object>>>> query(String text , String where , HistoryState queryRecord){
-		HistoryStateCrieria query = new HistoryStateCrieria();
-		HistoryStateCrieria.Criteria c = query.createCriteria();
-		if(!StringUtils.isEmpty(text)){
-			Long val = Long.valueOf(text);
-			c.andcarStateHistoryIdEqualTo(val);
-		}
-		if(!StringUtils.isEmpty(where)){
-			Long val = Long.valueOf(where);
-			c.andcarStateHistoryIdEqualTo(val);
-		}
-		PageInfo<HistoryState> pageInfo = historyStateService.getPage(query, 0, 10);
-		List<HistoryState> list = pageInfo.getList();
 
-		List<Map<String, Object>> mapList = new ArrayList<Map<String,Object>>(list.size());
-		Map<String, Object> map ;
-		for (HistoryState data : list) {
-			map = new HashMap<String, Object>();
-			map.put("value", data.getCarStateHistoryId());
-			map.put("text", data.getCarStateHistoryId());
-			mapList.add(map);
-		}
-		return VoResult.success().setValue(mapList);
-	}*/
 	
 }

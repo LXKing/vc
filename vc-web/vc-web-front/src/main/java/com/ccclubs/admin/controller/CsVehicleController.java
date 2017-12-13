@@ -154,5 +154,34 @@ public class CsVehicleController {
 	}
 
 
+	/**
+	 * 根据文本检索车辆信息管理信息
+	 */
+	@RequestMapping(value="/search", method = RequestMethod.GET)
+	public VoResult<Map<String, List<Map<String, Object>>>> search(String text , String where , CsVehicle queryRecord){
+		CsVehicleCrieria query = new CsVehicleCrieria();
+		CsVehicleCrieria.Criteria c = query.createCriteria();
+		if(!StringUtils.isEmpty(text)){
+			String val = String.valueOf(text);
+			c.andcsvVinLike(val);
+		}
+		if(!StringUtils.isEmpty(where)){
+			Integer val = Integer.valueOf(where);
+			c.andcsvIdEqualTo(val);
+		}
+		PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
+		List<CsVehicle> list = pageInfo.getList();
+
+		List<Map<String, Object>> mapList = new ArrayList<Map<String,Object>>(list.size());
+		Map<String, Object> map ;
+		for (CsVehicle data : list) {
+			map = new HashMap<String, Object>();
+			map.put("value", data.getCsvVin());
+			map.put("text", data.getCsvVin()+"("+data.getCsvCarNo()+")");
+			mapList.add(map);
+		}
+		return VoResult.success().setValue(mapList);
+	}
+
 
 }
