@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsVehicle implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
+
 	/**
 	 * [csv_id]编号
 	 */
@@ -116,7 +116,10 @@ public class CsVehicle implements java.io.Serializable
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date csvUpdateTime;
-	
+
+
+
+	private static final long serialVersionUID =         1L;
 	//默认构造函数
 	public CsVehicle(){
 	

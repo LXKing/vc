@@ -20,12 +20,6 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class HistoryState implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
-	/**
-	 * [car_state_history_id]ID
-	 */
-	
-	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long carStateHistoryId;
 	/**
 	 * [cs_number]车机号
 	 */
@@ -246,7 +240,16 @@ public class HistoryState implements java.io.Serializable
 	public HistoryState(){
 	
 	}
-	
+
+
+	private static final long serialVersionUID =         1L;
+	/**
+	 * [car_state_history_id]ID
+	 */
+
+	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long carStateHistoryId;
+
+
 	//主键构造函数
 	public HistoryState(Long id){
 		this.carStateHistoryId = id;
@@ -347,7 +350,55 @@ public class HistoryState implements java.io.Serializable
 	public Integer getCsAccess(){
 		return this.csAccess;
 	}
-	
+
+	public String getRfid() {
+		return rfid;
+	}
+
+	public void setRfid(String rfid) {
+		this.rfid = rfid;
+	}
+
+	public Float getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(Float speed) {
+		this.speed = speed;
+	}
+
+	public Float getTempe() {
+		return tempe;
+	}
+
+	public void setTempe(Float tempe) {
+		this.tempe = tempe;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Integer getGear() {
+		return gear;
+	}
+
+	public void setGear(Integer gear) {
+		this.gear = gear;
+	}
+
 	/**
 	* 授权系统 [非空]     
 	**/
