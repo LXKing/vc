@@ -123,9 +123,8 @@ public class VtOperateApi {
   @PostMapping("vehicleRegister")
   public ApiMessage<RegisterOutput> vehicleRegister(@RequestHeader("appId") String appId,
       VehicleInputList list) {
-    VehicleRegisterInput[] array = list.getInputs()
-        .toArray(new VehicleRegisterInput[list.getInputs().size()]);
-    RegisterOutput output = null;
+    VehicleRegisterInput[] array = list.getInputs().toArray(new VehicleRegisterInput[list.getInputs().size()]);
+    RegisterOutput output = vehicleRegisterInf.vehicleRegister(appId, array);
     return new ApiMessage<>(output);
   }
 
