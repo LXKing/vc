@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsIndexReportMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsIndexReport">
+		<result column="id" jdbcType="BIGINT" property="id" />
+		<result column="cs_vin" jdbcType="VARCHAR" property="csVin" />
+		<result column="cs_number" jdbcType="VARCHAR" property="csNumber" />
+		<result column="monthly_avg_mile" jdbcType="DOUBLE" property="monthlyAvgMile" />
+		<result column="avg_drive_time_per_day" jdbcType="DOUBLE" property="avgDriveTimePerDay" />
+		<result column="power_consume_per_hundred" jdbcType="DOUBLE" property="powerConsumePerHundred" />
+		<result column="electric_range" jdbcType="DOUBLE" property="electricRange" />
+		<result column="max_charge_power" jdbcType="DOUBLE" property="maxChargePower" />
+		<result column="min_charge_time" jdbcType="DOUBLE" property="minChargeTime" />
+		<result column="cumulative_mileage" jdbcType="DOUBLE" property="cumulativeMileage" />
+		<result column="cumulative_charge" jdbcType="DOUBLE" property="cumulativeCharge" />
+		<result column="data_type" jdbcType="TINYINT" property="dataType" />
+		<result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="modifyDate" jdbcType="TIMESTAMP" property="modifyDate" />
+		<result column="fac_time" jdbcType="TIMESTAMP" property="facTime" />
+	</resultMap>
+	
+	
+</mapper>

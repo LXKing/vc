@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="id" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="idEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csVin" >
+				<dt>车辆VIN码</dt>
+				<dd  >
+					<input  name="csVinEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/query">
+				</dd>
+			</dl>
+<dl cond="csNumber" >
+				<dt>车机号</dt>
+				<dd  >
+					<input  name="csNumberEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
+				</dd>
+			</dl>
+<dl cond="monthlyAvgMile" style="display:none;">
+				<dt>月均行驶里程(KM)</dt>
+				<dd  >
+					<input  name="monthlyAvgMileEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="avgDriveTimePerDay" style="display:none;">
+				<dt>平均单日运行时间</dt>
+				<dd  >
+					<input  name="avgDriveTimePerDayEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="powerConsumePerHundred" style="display:none;">
+				<dt>百公里耗电量</dt>
+				<dd  >
+					<input  name="powerConsumePerHundredEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="electricRange" style="display:none;">
+				<dt>车辆纯电续驶里程</dt>
+				<dd  >
+					<input  name="electricRangeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="maxChargePower" style="display:none;">
+				<dt>最大充电功率</dt>
+				<dd  >
+					<input  name="maxChargePowerEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="minChargeTime" style="display:none;">
+				<dt>车辆一次充满电所用最少时间</dt>
+				<dd  >
+					<input  name="minChargeTimeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cumulativeMileage" style="display:none;">
+				<dt>累计行驶里程</dt>
+				<dd  >
+					<input  name="cumulativeMileageEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cumulativeCharge" style="display:none;">
+				<dt>累计充电量</dt>
+				<dd  >
+					<input  name="cumulativeChargeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="dataType" style="display:none;">
+				<dt>数据类型</dt>
+				<dd  >
+					<select class="form-control"  name="dataTypeEquals"  >
+	                    <option></option>
+                         <option value="0">正常</option>
+                         <option value="1">未纳入</option>
+                         <option value="2">超标</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="createTime" style="display:none;">
+				<dt>此行创建时间</dt>
+				<dd  >
+					<input  name="createTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="modifyDate" style="display:none;">
+				<dt>此行更新时间</dt>
+				<dd  >
+					<input  name="modifyDateEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="facTime" style="display:none;">
+				<dt>车辆出厂日期</dt>
+				<dd  >
+					<input  name="facTimeEquals" class="form-control layer-date laydate-icon" placeholder="" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="csVin" value="csVinText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车辆VIN码</label></li>
+			        <li><label><input cond="csNumber" value="csNumberText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="monthlyAvgMile" value="monthlyAvgMile"  type="checkbox" onclick='showHideCondition(this, this.value);' >月均行驶里程(KM)</label></li>
+			        <li><label><input cond="avgDriveTimePerDay" value="avgDriveTimePerDay"  type="checkbox" onclick='showHideCondition(this, this.value);' >平均单日运行时间</label></li>
+			        <li><label><input cond="powerConsumePerHundred" value="powerConsumePerHundred"  type="checkbox" onclick='showHideCondition(this, this.value);' >百公里耗电量</label></li>
+			        <li><label><input cond="electricRange" value="electricRange"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆纯电续驶里程</label></li>
+			        <li><label><input cond="maxChargePower" value="maxChargePower"  type="checkbox" onclick='showHideCondition(this, this.value);' >最大充电功率</label></li>
+			        <li><label><input cond="minChargeTime" value="minChargeTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆一次充满电所用最少时间</label></li>
+			        <li><label><input cond="cumulativeMileage" value="cumulativeMileage"  type="checkbox" onclick='showHideCondition(this, this.value);' >累计行驶里程</label></li>
+			        <li><label><input cond="cumulativeCharge" value="cumulativeCharge"  type="checkbox" onclick='showHideCondition(this, this.value);' >累计充电量</label></li>
+			        <li><label><input cond="dataType" value="dataTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >数据类型</label></li>
+			        <li><label><input cond="createTime" value="createTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >此行创建时间</label></li>
+			        <li><label><input cond="modifyDate" value="modifyDate"  type="checkbox" onclick='showHideCondition(this, this.value);' >此行更新时间</label></li>
+			        <li><label><input cond="facTime" value="facTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆出厂日期</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>
