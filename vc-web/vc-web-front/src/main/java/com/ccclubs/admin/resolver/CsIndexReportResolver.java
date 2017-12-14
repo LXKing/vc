@@ -20,7 +20,7 @@ public enum CsIndexReportResolver{
 				}
 		})
 	,
-		车机号(new Resolver<CsIndexReport>("csNumberText", null) {
+		车机号(new Resolver<CsIndexReport>("csNumberText") {
 		private static final long serialVersionUID = 2038871255L;
 
 		@Override
@@ -33,7 +33,7 @@ public enum CsIndexReportResolver{
 				}
 		})
 	,
-		数据类型(new Resolver<CsIndexReport>("dataTypeText", null) {
+		数据类型(new Resolver<CsIndexReport>("dataTypeText") {
 		private static final long serialVersionUID = 2038810766L;
 
 		@Override

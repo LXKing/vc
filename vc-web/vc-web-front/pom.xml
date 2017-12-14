@@ -25,7 +25,15 @@
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-quota-inf</artifactId>
             <version>${biz.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>www.ccclubs</groupId>
+                    <artifactId>vc-biz-mongo-inf</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-protocol-inf</artifactId>
@@ -84,13 +92,23 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        <!--从这里开始是为了编译通过而加的-->
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-quota-orm</artifactId>
+            <artifactId>vc-biz-mongo-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-spring</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-mongo-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <!--到这里结束是为了编译通过而加的-->
     </dependencies>
     <build>
         <plugins>
