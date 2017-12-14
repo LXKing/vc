@@ -168,9 +168,9 @@ public class CsIndexReportController {
 	/**
 	 * 根据文本检索指标统计信息
 	 */
-	@RequestMapping(value="/query", method = RequestMethod.GET)
+	/*@RequestMapping(value="/query", method = RequestMethod.GET)
 	public VoResult<Map<String, List<Map<String, Object>>>> query(String text , String where , CsIndexReport queryRecord){
-		/*CsIndexReportCrieria query = new CsIndexReportCrieria();
+		CsIndexReportCrieria query = new CsIndexReportCrieria();
 		CsIndexReportCrieria.Criteria c = query.createCriteria();
 		if(!StringUtils.isEmpty(text)){
 			Long val = Long.valueOf(text);
@@ -179,7 +179,7 @@ public class CsIndexReportController {
 		if(!StringUtils.isEmpty(where)){
 			Long val = Long.valueOf(where);
 			c.andidEqualTo(val);
-		}*/
+		}
 		PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query, 0, 10);
 		List<CsIndexReport> list = pageInfo.getList();
 
@@ -192,6 +192,6 @@ public class CsIndexReportController {
 			mapList.add(map);
 		}
 		return VoResult.success().setValue(mapList);
-	}
+	}*/
 	
 }
