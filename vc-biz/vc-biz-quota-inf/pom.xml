@@ -17,7 +17,7 @@
 			<groupId>www.ccclubs</groupId>
 			<artifactId>vc-biz-quota-orm</artifactId>
 			<version>${biz.version}</version>
-			
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
