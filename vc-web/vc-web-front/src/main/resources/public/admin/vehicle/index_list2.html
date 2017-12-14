@@ -66,9 +66,9 @@
         <div class="optionMenu state-ui">
 			<ul class="MenuCon"></ul>
 		</div>
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+		<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
 	</div>
 
 <script src="/layui/layui.all.js?t=1510164124207"></script>
@@ -210,7 +210,7 @@
 	  		,{field: "csvStatusText", title: "状态", width: 110, sort:true}
 	  		,{field: "csvAddTime", title: "添加时间", width: 110, sort:true}
 	  		,{field: "csvUpdateTime", title: "修改时间", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 156, fixed:'right', toolbar: '#gridToolBar'}
+      		,{field: 'operate', title: '操作',width:100, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {
