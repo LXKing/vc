@@ -73,6 +73,7 @@
 
 <script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
+    var currPage=1;
 
 	var operate = {
 		getGrid:function(){
@@ -87,6 +88,11 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
+        exportData:function(){
+            console.log("exportData")
+
+            window.open(getServUrl("/admin/vehicle/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
+        },
 		bind:function(e){
 			var o = this;
 			showTopWin({
@@ -222,7 +228,9 @@
 			  height:getTableHeight(),
 			  url:getServUrl("/admin/vehicle/list"),
 			  cols:  [clms],
-			  done: function(res, curr, count){},
+			  done: function(res, curr, count){
+                  currPage = curr;
+			  },
       	  	  response: {
 	      		  statusName: "code",
 	  		      statusCode: 0,
@@ -265,6 +273,7 @@
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
 		$(".layui-table-view").remove();
+        option.where = getFormData(operate.getQueryForm());
 		grid.render(option);
 	});
 

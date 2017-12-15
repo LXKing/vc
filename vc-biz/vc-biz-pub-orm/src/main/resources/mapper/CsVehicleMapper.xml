@@ -442,9 +442,9 @@
       <if test="csvModel != null">
         csv_model = #{csvModel,jdbcType=INTEGER},
       </if>
-      <if test="csvMachine != null">
-        csv_machine = #{csvMachine,jdbcType=INTEGER},
-      </if>
+
+      csv_machine = #{csvMachine,jdbcType=INTEGER},
+
       <if test="csvMachines != null">
         csv_machines = #{csvMachines,jdbcType=VARCHAR},
       </if>

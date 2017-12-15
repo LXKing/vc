@@ -23,8 +23,23 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-quota-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-quota-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-protocol-inf</artifactId>
             <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-dubbox</artifactId>
+            <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
@@ -59,6 +74,12 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>3.9</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>poi</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -67,16 +88,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.9</version>
         </dependency>
     </dependencies>
     <build>

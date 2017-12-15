@@ -1,7 +1,9 @@
 package com.ccclubs.admin;
 
 import com.ccclubs.admin.config.MvcConfigurer;
-import com.ccclubs.frm.mybatis.MybatisConfig;
+import com.ccclubs.admin.config.MybatisMapperConfig;
+import com.ccclubs.frm.druid.DruidJdbcConfig;
+import com.ccclubs.frm.mybatis.MybatisFactoryConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +18,8 @@ import org.springframework.context.annotation.Import;
  * @create 2017-09-15
  **/
 @SpringBootApplication
-@Import({MybatisConfig.class,MvcConfigurer.class, RedisAutoConfiguration.class})
+@Import({DruidJdbcConfig.class, MybatisFactoryConfig.class, MybatisMapperConfig.class,
+    MvcConfigurer.class, RedisAutoConfiguration.class})
 public class AdminFrontApp extends SpringBootServletInitializer {
 
   /**
