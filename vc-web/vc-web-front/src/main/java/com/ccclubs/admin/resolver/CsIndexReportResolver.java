@@ -11,12 +11,13 @@ public enum CsIndexReportResolver{
 
 		@Override
 		public <T> T execute(CsIndexReport record) {
-				if(record.getCsVin()==null){
+				/*if(record.getCsVin()==null){
 				return null;
 				}
 				String result = "";
 				result = this.getMetadata().get(record.getCsVin());
-				return (T)result;
+				return (T)result;*/
+				return (T) record.getCsVin();
 				}
 		})
 	,
@@ -25,12 +26,14 @@ public enum CsIndexReportResolver{
 
 		@Override
 		public <T> T execute(CsIndexReport record) {
-				if(record.getCsNumber()==null){
+				/*if(record.getCsNumber()==null){
 				return null;
 				}
 				String result = "";
-				return (T)result;
+				return (T)result;*/
+				return (T) record.getCsNumber();
 				}
+
 		})
 	,
 		数据类型(new Resolver<CsIndexReport>("dataTypeText") {

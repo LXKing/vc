@@ -130,10 +130,12 @@ public class CsIndexReportController {
 			csIndexReportCopy.setCumulativeMileage(csIndexReport.getCumulativeMileage().doubleValue());
 			csIndexReportCopy.setDataType(csIndexReport.getDataType());
 			csIndexReportCopy.setElectricRange(csIndexReport.getElectricRange().doubleValue());
-			csIndexReportCopy.setFacTime(new Date(DateTimeUtil.date2UnixFormat(csIndexReport.getFacTime(),DateTimeUtil.format1)));
+			System.out.println("时间是"+DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
+			csIndexReportCopy.setFacTime(DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
 			csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
 			csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
-			csIndexReportCopy.setmodifyDate(new Date(DateTimeUtil.date2UnixFormat(csIndexReport.getModifyDate(),DateTimeUtil.format1)));
+
+			csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByFormat(csIndexReport.getModifyDate(),DateTimeUtil.FORMAT5));
 			csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());
 			csIndexReportCopy.setPowerConsumePerHundred(csIndexReport.getPowerConsumePerHundred().doubleValue());
 		}
