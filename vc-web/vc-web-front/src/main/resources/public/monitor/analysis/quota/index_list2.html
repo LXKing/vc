@@ -23,7 +23,9 @@
 				 		<span class="caret"></span>
 				 	</button>
 					<ul class="dropdown-menu tableMenu showHideMenu" role="menu">
-				        <li><label><input value="id" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >编号</label></li>
+<!--
+				        <li><label><input value="id" checked="unchecked" type="checkbox" onclick='showHideColumn(this, this.value);' >编号</label></li>
+-->
 				        <li><label><input value="csVinText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆VIN码</label></li>
 				        <li><label><input value="csNumberText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车机号</label></li>
 				        <li><label><input value="monthlyAvgMile" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >月均行驶里程(KM)</label></li>
@@ -35,7 +37,9 @@
 				        <li><label><input value="cumulativeMileage" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >累计行驶里程</label></li>
 				        <li><label><input value="cumulativeCharge" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >累计充电量</label></li>
 				        <li><label><input value="dataTypeText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >数据类型</label></li>
-				        <li><label><input value="createTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >此行创建时间</label></li>
+<!--
+				        <li><label><input value="createTime" checked="unchecked" type="checkbox" onclick='showHideColumn(this, this.value);' >此行创建时间</label></li>
+-->
 				        <li><label><input value="modifyDate" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >此行更新时间</label></li>
 				        <li><label><input value="facTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆出厂日期</label></li>
 					</ul>
@@ -106,7 +110,7 @@
 
 	var tableId = "TCsIndexReport";
 	var clms = [{checkbox: true}
-	  		,{field: "id", title: "编号", width: 110, sort:true}
+	  		/*,{field: "id", title: "编号", width: 110, sort:true}*/
 	  		,{field: "csVinText", title: "车辆VIN码", width: 110, sort:true}
 	  		,{field: "csNumberText", title: "车机号", width: 110, sort:true}
 	  		,{field: "monthlyAvgMile", title: "月均行驶里程(KM)", width: 110, sort:true}
@@ -118,7 +122,7 @@
 	  		,{field: "cumulativeMileage", title: "累计行驶里程", width: 110, sort:true}
 	  		,{field: "cumulativeCharge", title: "累计充电量", width: 110, sort:true}
 	  		,{field: "dataTypeText", title: "数据类型", width: 110, sort:true}
-	  		,{field: "createTime", title: "此行创建时间", width: 110, sort:true}
+	  		/*,{field: "createTime", title: "此行创建时间", width: 110, sort:true}*/
 	  		,{field: "modifyDate", title: "此行更新时间", width: 110, sort:true}
 	  		,{field: "facTime", title: "车辆出厂日期", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
