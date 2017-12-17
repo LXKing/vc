@@ -85,6 +85,10 @@ public class QueryVehicleService {
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#retVal.csvId", condition = "!#empty(#retVal) && !#empty(#retVal.csvId)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#retVal.csvVin", condition = "!#empty(#retVal) && !#empty(#retVal.csvVin)")})
+  public CsVehicle queryVehicleByMachineFromCache(Integer machine) {
+    return queryVehicleByMachine(machine);
+  }
+
   public CsVehicle queryVehicleByMachine(Integer machine) {
     CsVehicleExample example = new CsVehicleExample();
     CsVehicleExample.Criteria criteria = example.createCriteria();
@@ -99,7 +103,7 @@ public class QueryVehicleService {
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#retVal.csvVin", condition = "!#empty(#retVal) && !#empty(#retVal.csvVin)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
-  public CsVehicle queryVehicleById(Integer id) {
+  public CsVehicle queryVehicleByIdFromCache(Integer id) {
     return dao.selectByPrimaryKey(id);
   }
 }

@@ -15,6 +15,7 @@ import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
+import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class GpsDataService implements IGpsDataService {
    * 将jt808协议数据转发到消息中间件MQ，topic：ser，tag：jt808
    */
   private void transferToMQ(T808Message message, String messageTag) {
-    if (null == message || null == message.getHeader())
+    if (null == message || null == message.getHeader()|| !StringUtils.empty(message.getErrorMessage()))
     {
       return;
     }

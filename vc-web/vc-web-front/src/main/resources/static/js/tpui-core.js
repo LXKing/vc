@@ -377,8 +377,14 @@ function getIds(ids, split) {
  */
 function jsonToUri(param, key){
   var paramStr="";
-  if(param instanceof String||param instanceof Number||param instanceof Boolean){
-    paramStr+="&"+key+"="+encodeURIComponent(param);
+  if(param instanceof String||param instanceof Number||param instanceof Boolean||typeof(param) === 'undefined'){
+      if(typeof(param) === 'undefined'){
+          paramStr+="&"+key+"=";
+      }
+      else {
+          paramStr+="&"+key+"="+encodeURIComponent(param);
+      }
+
   }else{
     $.each(param,function(i){
       var k=key==null?i:key+(param instanceof Array?"["+i+"]":"."+i);

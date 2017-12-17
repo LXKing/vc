@@ -42,6 +42,10 @@ public class QueryTerminalService {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmNumber:'+#retVal.csmNumber", condition = "!#empty(#retVal) && !#empty(#retVal.csmNumber)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmMobile:'+#retVal.csmMobile", condition = "!#empty(#retVal) && !#empty(#retVal.csmMobile)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmId:'+#retVal.csmId", condition = "!#empty(#retVal)")})
+  public CsMachine queryCsMachineByTeNoFromCache(String teNo) {
+    return queryCsMachineByTeNo(teNo);
+  }
+
   public CsMachine queryCsMachineByTeNo(String teNo) {
     CsMachineExample example = new CsMachineExample();
     CsMachineExample.Criteria criteria = example.createCriteria();
@@ -106,6 +110,10 @@ public class QueryTerminalService {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmNumber:'+#retVal.csmNumber", condition = "!#empty(#retVal) && !#empty(#retVal.csmNumber)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmMobile:'+#retVal.csmMobile", condition = "!#empty(#retVal) && !#empty(#retVal.csmMobile)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsMachine:csmTeNo:'+#retVal.csmTeNo", condition = "!#empty(#retVal) && !#empty(#retVal.csmTeNo)")})
+  public CsMachine queryCsMachineByIdFromCache(Integer id) {
+    return queryCsMachineById(id);
+  }
+
   public CsMachine queryCsMachineById(Integer id) {
     CsMachine machine = mdao.selectByPrimaryKey(id);
     return machine;
@@ -139,8 +147,6 @@ public class QueryTerminalService {
    *
    * @param cstIdd 终端序列号
    */
-  @Cache(expire = CacheConstants.NEVER_EXPIRE, key = "'CsTerminal:cstIdd:'+#args[0]", autoload = true, exCache = {
-      @ExCache(expire = CacheConstants.NEVER_EXPIRE, key = "'CsTerminal:cstId:'+#retVal.cstId", condition = "!#empty(#retVal)")})
   public CsTerminal queryCsTerminalByCstIdd(String cstIdd) {
 
     CsTerminalExample terminalExample = new CsTerminalExample();
