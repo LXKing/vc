@@ -2,7 +2,7 @@ package com.ccclubs.engine.cmd.inf.impl;
 
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.mongo.modify.UpdateTerminalService;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.engine.cmd.srv.CmdEngineSrvApp;
 import com.ccclubs.engine.core.util.RedisHelper;
