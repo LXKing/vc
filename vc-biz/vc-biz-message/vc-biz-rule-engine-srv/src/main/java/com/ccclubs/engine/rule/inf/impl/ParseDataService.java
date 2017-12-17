@@ -12,7 +12,7 @@ import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
-import com.ccclubs.mongo.modify.UpdateTerminalService;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.CsLogger;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;

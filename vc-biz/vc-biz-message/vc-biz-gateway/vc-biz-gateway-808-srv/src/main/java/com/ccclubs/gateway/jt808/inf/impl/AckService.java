@@ -7,7 +7,7 @@ import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IMessageSender;
-import com.ccclubs.mongo.modify.UpdateTerminalService;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.protocol.dto.jt808.JT_0001;
 import com.ccclubs.protocol.dto.jt808.JT_0100;
 import com.ccclubs.protocol.dto.jt808.JT_0102;

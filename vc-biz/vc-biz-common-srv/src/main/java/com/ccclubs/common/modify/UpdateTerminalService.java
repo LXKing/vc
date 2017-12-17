@@ -1,4 +1,4 @@
-package com.ccclubs.mongo.modify;
+package com.ccclubs.common.modify;
 
 import com.ccclubs.frm.cache.CacheConstants;
 import com.ccclubs.frm.spring.constant.ApiEnum;

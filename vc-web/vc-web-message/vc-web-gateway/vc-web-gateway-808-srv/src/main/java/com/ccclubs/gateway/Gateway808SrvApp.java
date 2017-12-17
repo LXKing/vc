@@ -3,7 +3,6 @@ package com.ccclubs.gateway;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
-import com.ccclubs.frm.mongodb.config.MongoConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
