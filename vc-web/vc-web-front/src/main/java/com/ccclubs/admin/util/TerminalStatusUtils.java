@@ -8,14 +8,6 @@ public class TerminalStatusUtils {
 
   private static final String SEPARATOR = ",";
 
-  public static void main(String[] args) {
-
-    System.out.println(getDoorString((short) 0x2606));
-
-    System.out.println(getLightString(0x00FE0060));
-
-  }
-
   /**
    * 获取车门详细信息
    */
