@@ -1,13 +1,13 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.ccclubs.common.aop.Timer;
-import com.ccclubs.mongo.modify.UpdateCanService;
-import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.mongo.modify.UpdateCanService;
+import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
@@ -74,7 +74,7 @@ public class LogicHelperJt808 {
     try {
       CsMachine csMachine = new CsMachine();
       csMachine.setCsmAccess(mapping.getAccess().intValue());
-      csMachine.setCsmHost(mapping.getHost().intValue());
+      csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
       csMachine.setCsmNumber(mapping.getNumber());
 
       CsVehicle csVehicle = new CsVehicle();
@@ -105,7 +105,7 @@ public class LogicHelperJt808 {
         ListOperations opsForList = redisTemplate.opsForList();
         opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
         // 合并为完整的状态数据，并写入历史数据
-        CsState csStateCurrent = queryStateService.queryStateById(csState.getCssId());
+        CsState csStateCurrent = queryStateService.queryStateByIdFor808(csState.getCssId());
         csStateCurrent.setCssCsq(csState.getCssCsq());
         csStateCurrent.setCssCurrentTime(csState.getCssCurrentTime());
         csStateCurrent.setCssAddTime(csState.getCssAddTime());

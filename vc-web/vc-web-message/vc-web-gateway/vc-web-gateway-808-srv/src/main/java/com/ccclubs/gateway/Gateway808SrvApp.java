@@ -47,8 +47,7 @@ import org.springframework.context.annotation.Primary;
  **/
 @SpringBootApplication
 @Import({MybatisConfig.class})
-@ImportAutoConfiguration({OnsProperties.class,
-    MqttAliyunProperties.class, MongoConfig.class})
+@ImportAutoConfiguration({OnsProperties.class,MqttAliyunProperties.class})
 public class Gateway808SrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(Gateway808SrvApp.class);

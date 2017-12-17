@@ -3,7 +3,6 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.mongo.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.utils.EnvironmentUtils;
@@ -13,6 +12,7 @@ import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.mongo.modify.UpdateTerminalService;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.CsLogger;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
@@ -36,6 +36,7 @@ import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
+import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
 import java.util.Date;
 import javax.annotation.Resource;
@@ -122,27 +123,26 @@ public class ParseDataService implements IParseDataService {
 
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
       if (null == mapping || null == csMachine) {
-        loggerBusiness.info(JSON.toJSONString(new TerminalNotRegister(message.getCarNumber(),"MQTT","MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
+        loggerBusiness.info(JSON.toJSONString(
+            new TerminalNotRegister(message.getCarNumber(), "MQTT",
+                "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
         return;
       }
-      SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+
+      SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());
       if (srvHost == null) {
         return;
       }
+
       // 目前汽油车，电动车共用 MQTT_66
       MQTT_66 mqtt_66 = new MQTT_66();
       mqtt_66.ReadFromBytes(message.getMsgBody());
-      // 众行EVPOP特殊处理
-      if (mapping.getAccess() == 3L ) {
-        transferToMq(mapping, MqTagProperty.MQ_TERMINAL_STATUS, message, false);
-      } else {
-        // 如果未绑定车辆，则不转发到业务平台
-        if (null != mapping.getVin()) {
-          transferToMq(srvHost,
-              TransformUtils
-                  .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_66, message),
-              message);
-        }
+      // 如果未绑定车辆，则不转发到业务平台
+      if (null != mapping.getVin()) {
+        transferToMq(srvHost,
+            TransformUtils
+                .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_66, message),
+            message);
       }
       logicHelperMqtt.saveStatusData(mapping, message, mqtt_66);
     } catch (Exception e) {
@@ -233,25 +233,19 @@ public class ParseDataService implements IParseDataService {
             transferTriggerStatus(message, terminalInfo, mapping);
           }
 
-          //FIXME 长安出行需要做变更
-          // 0x6802 将在0x6803新版本状态数据后弃用
-          if (mapping.getAccess() == 3L ) {
-            CsState csState = terminalUtils.setUpdateMapTriggerInfo(terminalInfo);
-            csState.setCssAddTime(new Date());
-            csState.setCssId(mapping.getState().intValue());
-            logicHelperMqtt.updateStatus(csState);
-          } else {
-            CsState csStateNew = terminalUtils.setUpdateMapTriggerInfoNew(terminalInfo);
-            csStateNew.setCssAddTime(new Date());
-            csStateNew.setCssId(mapping.getState().intValue());
-            logicHelperMqtt.updateStatus(csStateNew);
-          }
+          // 0x6802 将在 0x6803 新版本状态数据后弃用
+          CsState csStateNew = terminalUtils.setUpdateMapTriggerInfoNew(terminalInfo);
+          csStateNew.setCssAddTime(new Date());
+          csStateNew.setCssId(mapping.getState().intValue());
+          logicHelperMqtt.updateStatus(csStateNew);
           break;
         case 0x03:
           // 新版本状态数据
           if (mapping == null || StringUtils.empty(mapping.getNumber())
               || mapping.getMachine() == null || mapping.getAccess() == null) {
-            loggerBusiness.info(JSON.toJSONString(new TerminalNotRegister(message.getCarNumber(),"MQTT","MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
+            loggerBusiness.info(JSON.toJSONString(
+                new TerminalNotRegister(message.getCarNumber(), "MQTT",
+                    "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
             return;
           }
 
@@ -260,7 +254,7 @@ public class ParseDataService implements IParseDataService {
             return;
           }
 
-          SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+          SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());
           if (srvHost == null) {
             return;
           }
@@ -268,12 +262,9 @@ public class ParseDataService implements IParseDataService {
           MQTT_68_03 mqtt_68_03 = new MQTT_68_03();
           mqtt_68_03.ReadFromBytes(message.getMsgBody());
           // 如果未配置转发topic，就不转发状态数据
-          // TODO：需要以未解析方式转发给长安出行
-//          if (!StringUtils.empty(srvHost.getShTopic()) && !StringUtils.empty(mapping.getVin())) {
-            transferToMq(srvHost, TransformUtils
-                    .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
-                message);
-//          }
+          transferToMq(srvHost, TransformUtils
+                  .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_68_03, message),
+              message);
           logicHelperMqtt.saveStatusData(mapping, message, mqtt_68_03);
           break;
         default:
@@ -312,7 +303,7 @@ public class ParseDataService implements IParseDataService {
     terminalTriggerStatus.setCssGear(
         terminalInfo.getTriggerGearStatus() == null ? 0 : terminalInfo.getTriggerGearStatus());
 
-    SrvHost srvHost = queryHostInfoService.queryHostById(mapping.getAccess().intValue());
+    SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(mapping.getAccess().intValue());
 
     Message mqMessage = messageFactory
         .getMessage(srvHost.getShTopic().trim(),
@@ -510,18 +501,30 @@ public class ParseDataService implements IParseDataService {
       boolean isCanState) {
     try {
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
-      if (csMachine == null) {
+      CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
+      if (csMachine == null || csVehicle == null) {
         return;
       }
       if (isCanState) {
-        // 只有标记为地标类型的终端才转发。
-        if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
-            .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
+        // FIXME: [地标类型] 只有标记为地标类型的终端才转发。
+        if (csMachine.getCsmId() <= 0 || StringUtils.empty(csMachine.getCsmLandmark()) || "#0#"
+            .equals(csMachine.getCsmLandmark().trim())) {
           return;
         }
+
+//        if (StringUtils.empty(csVehicle.getCsvLandmark())) {
+//          return;
+//        }
+//        Message mqMessage = messageFactory
+//            .getMessage(csVehicle.getCsvLandmark(), topic, tag, message.getHexString());
+//        if (environmentUtils.isProdEnvironment()) {
+//          client.sendOneway(mqMessage);
+//        } else {
+//          logger.debug(message.getHexString());
+//        }
       }
 
-      SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+      SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());
 
       Message mqMessage = messageFactory
           .getMessage(srvHost, topic, tag, message);

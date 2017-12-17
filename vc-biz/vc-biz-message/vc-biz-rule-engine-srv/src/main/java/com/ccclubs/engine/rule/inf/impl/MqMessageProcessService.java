@@ -30,6 +30,7 @@ import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
+import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
 import java.util.List;
 import javax.annotation.Resource;
@@ -84,7 +85,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       tag = MqTagUtils.PROTOCOL_MQTT;
     }
 
-    MachineMapping mapping = null;
+    MachineMapping mapping;
     // 808协议
     if (tag.startsWith(MqTagUtils.PROTOCOL_JT808)) {
       T808Message msgFromTerminal = new T808Message();
@@ -112,7 +113,9 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         if (jvi == null) {
           return;
         }
+
         CsState csState = logicHelperJt808.saveStatusData(mapping, msgFromTerminal, jvi);
+
         transferToMq(mapping, csState);
       } else if (headerType == 0x0704) {
         // 定位补报，需要将补报的定位信息批量入库
@@ -184,16 +187,22 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   }
 
   /**
-   * 转发到MQ，topic：terminal，tag
+   * 808协议 CAN 数据转发，主要用于各个地方平台补贴申报
    */
   private void transferToMq(MachineMapping mapping, T808Message message, String tag) {
     try {
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
-      // 只有标记为地标类型的终端才转发。
-      if (csMachine == null || csMachine.getCsmId() <= 0 || StringUtils
+      CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
+      // FIXME: [地标类型] 只有标记为地标类型的终端才转发。
+      if (csMachine == null ||csVehicle == null || csMachine.getCsmId() <= 0 || StringUtils
           .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
         return;
       }
+//      if (csMachine == null ||csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
+//        return;
+//      }
+//      Message mqMessage = messageFactory
+//          .getMessage(csVehicle.getCsvLandmark(),topic, tag, message.getPacketDescr());
 
       Message mqMessage = messageFactory
           .getMessage(csMachine, topic, tag, message);
@@ -230,7 +239,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         return;
       }
 
-      SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
+      SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());
       if (srvHost == null) {
         return;
       }
