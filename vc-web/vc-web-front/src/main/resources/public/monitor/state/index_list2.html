@@ -78,12 +78,9 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	
-		
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -139,13 +136,13 @@
 	var tableId = "TCsState";
 	var clms = [{checkbox: true}
 	  		,{field: "cssId", title: "编号", width: 110, sort:true}
-	  		,{field: "cssAccessText", title: "接入商", width: 110, sort:true}
-	  		,{field: "cssNumberText", title: "车机号", width: 110, sort:true}
-	  		,{field: "cssCarText", title: "车辆", width: 110, sort:true}
-	  		,{field: "cssAddTime", title: "接收时间", width: 110, sort:true}
-	  		,{field: "cssCurrentTime", title: "报文时间", width: 110, sort:true}
+	  		,{field: "cssAccessText", title: "接入商", width: 140, sort:true}
+	  		,{field: "cssNumberText", title: "车机号", width: 140, sort:true}
+	  		,{field: "cssCarText", title: "车辆", width: 180, sort:true}
+	  		,{field: "cssAddTime", title: "接收时间", width: 160, sort:true}
+	  		,{field: "cssCurrentTime", title: "报文时间", width: 160, sort:true}
 	  		,{field: "cssWarn", title: "报警码", width: 110, sort:true}
-	  		,{field: "cssObdMile", title: "累计里程", width: 110, sort:true}
+	  		,{field: "cssObdMile", title: "累计里程", width: 140, sort:true}
 	  		,{field: "cssEngineT", title: "发动机温度", width: 110, sort:true}
 	  		,{field: "cssSpeed", title: "车速", width: 110, sort:true}
 	  		,{field: "cssMotor", title: "转速", width: 110, sort:true}

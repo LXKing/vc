@@ -33,12 +33,9 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	
-		
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
     var currPage=1;
 	var operate = {
@@ -98,20 +95,20 @@
 	var tableId = "TCsStatistics";
 	var clms = [{checkbox: true}
 	  		,{field: "cssId", title: "ID", width: 110, sort:true}
-	  		,{field: "cssTime", title: "统计时间", width: 110, sort:true}
-	  		,{field: "cssUnitTime", title: "间隔时间", width: 110, sort:true}
-	  		,{field: "cssRegisteredNum", title: "总注册数", width: 110, sort:true}
-	  		,{field: "cssOnlineNum", title: "在线数", width: 110, sort:true}
-	  		,{field: "cssOfflineNum", title: "离线数", width: 110, sort:true}
-	  		,{field: "cssRunNum", title: "运行数", width: 110, sort:true}
-	  		,{field: "cssChargingNum", title: "充电数", width: 110, sort:true}
-	  		,{field: "cssTotalMileage", title: "运行总里程", width: 110, sort:true}
-	  		,{field: "cssTotalCharge", title: "总充电量", width: 110, sort:true}
-	  		,{field: "cssTotalPowerConsumption", title: "电池增量", width: 110, sort:true}
-	  		,{field: "cssTotalRunTime", title: "总运行时间", width: 110, sort:true}
-	  		,{field: "cssIncrementMileage", title: "增量里程", width: 110, sort:true}
-	  		,{field: "cssAccess", title: "授权系统", width: 110, sort:true}
-	  		,{field: "cssCarModel", title: "车型", width: 110, sort:true}
+	  		,{field: "cssTime", title: "统计时间", width: 160, sort:true}
+	  		,{field: "cssUnitTime", title: "间隔时间", width: 160, sort:true}
+	  		,{field: "cssRegisteredNum", title: "总注册数", width: 160, sort:true}
+	  		,{field: "cssOnlineNum", title: "在线数", width: 140, sort:true}
+	  		,{field: "cssOfflineNum", title: "离线数", width: 140, sort:true}
+	  		,{field: "cssRunNum", title: "运行数", width: 140, sort:true}
+	  		,{field: "cssChargingNum", title: "充电数", width: 140, sort:true}
+	  		,{field: "cssTotalMileage", title: "运行总里程", width: 140, sort:true}
+	  		,{field: "cssTotalCharge", title: "总充电量", width: 1140, sort:true}
+	  		,{field: "cssTotalPowerConsumption", title: "电池增量", width: 140, sort:true}
+	  		,{field: "cssTotalRunTime", title: "总运行时间", width: 180, sort:true}
+	  		,{field: "cssIncrementMileage", title: "增量里程", width: 140, sort:true}
+	  		,{field: "cssAccess", title: "授权系统", width: 140, sort:true}
+	  		,{field: "cssCarModel", title: "车型", width: 140, sort:true}
       		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

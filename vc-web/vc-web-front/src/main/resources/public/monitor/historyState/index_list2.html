@@ -75,12 +75,9 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	
-		
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script src="/js/moment.js"></script>
 <script type="text/javascript">
   var $csNumber = $("input[name='csNumberEquals']");
@@ -177,10 +174,10 @@
 	var tableId = "THistoryState";
 	var clms = [{checkbox: true}
 
-	  		,{field: "csAccess", title: "接入商", width: 110}
-        	,{field: "csNumber", title: "车机号", width: 110}
-	  		,{field: "addTimeText", title: "接收时间", width: 110}
-	  		,{field: "currentTimeText", title: "报文时间", width: 110}
+	  		,{field: "csAccess", title: "接入商", width: 140}
+        	,{field: "csNumber", title: "车机号", width: 140}
+	  		,{field: "addTimeText", title: "接收时间", width: 160}
+	  		,{field: "currentTimeText", title: "报文时间", width: 160}
         ,{field: "rentFlg", title: "租赁状态", width: 110}
         	,{field: "warnCode", title: "报警码", width: 110}
         ,{field: "rfid", title: "RFID卡号", width: 110}
@@ -199,8 +196,8 @@
         	,{field: "endurMiles", title: "续航里程", width: 110}
         	,{field: "tempe", title: "温度", width: 110}
         ,{field: "netStrength", title: "CSQ", width: 110}
-        ,{field: "longitude", title: "经度", width: 110}
-        ,{field: "latitude", title: "纬度", width: 110}
+        ,{field: "longitude", title: "经度", width: 160}
+        ,{field: "latitude", title: "纬度", width: 160}
         ,{field: "gpsValidText", title: "gps有效性", width: 110}
         ,{field: "gpsStrength", title: "卫星信号强度", width: 110}
         ,{field: "gpsNum", title: "卫星数量", width: 110}

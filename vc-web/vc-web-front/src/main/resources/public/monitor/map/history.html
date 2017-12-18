@@ -7,7 +7,7 @@
   <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/"/>-->
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-  <title>轨迹展示&巡航</title>
+  <title>车辆轨迹</title>
   <style>
     html,
     body,
@@ -57,7 +57,7 @@
         <!--dataWhere=""-->
         <!--dataUrl="/admin/vehicle/query"></dd>-->
         <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput"
-               dataWhere="" dataUrl="/admin/machine/search"></dd>
+               dataWhere="" dataUrl="/admin/vehicle/find"></dd>
     </dl>
     <dl>
       <dt>轨迹时间</dt>
@@ -84,7 +84,6 @@
 <script src="/js/jquery.ResizableColumns.js"></script>
 <script src="/js/plugins/layer/laydate/laydate.js"></script>
 <script src="/js/store.js"></script>
-<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="/js/contabs.min.js"></script>
 <script src="/js/layer/layer.js"></script>
 <script src="/js/tpui-core.js"></script>
@@ -107,8 +106,8 @@
     zoom: 10
   });
   //中国地图范围
-  var posn1 = new AMap.LngLat(115.60, 28.25);
-  var posn2 = new AMap.LngLat(122.65, 33.14);
+  var posn1 = new AMap.LngLat(72.60, 17.25);
+  var posn2 = new AMap.LngLat(136.65, 53.8);
   var boundsChina = new AMap.Bounds(posn1, posn2);
 
   AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
@@ -166,7 +165,7 @@
 
     window.pathSimplifierIns = pathSimplifierIns;
 
-    var navg, total, hasMore = true, isFirstLoad = true;
+    var navg, total, hasMore = true, isFirstLoad = true,totalPoint =0;
     var params = {
       csNumberEquals: '',
       page: 1,
@@ -205,10 +204,13 @@
       $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
 
       params.page = 1;
+      hasMore = true;
+      isFirstLoad = true;
+      totalPoint = 0;
 
       loadData();
 
-      expandPath();
+      setTimeout(expandPath,5000);
     });
 
     function checkParams() {
@@ -249,7 +251,8 @@
 
             if (0 !== d.code) {
 //              alert("数据请求异常！")
-              console.log("数据请求异常！")
+              layer.msg('数据请求异常！', {icon: 7, time: 1500});
+              hasMore = false;
               return;
             }
 
@@ -258,7 +261,9 @@
 
             if (0 === total) {
 //              alert("数据请求异常！")
-              alert("没有找到轨迹数据！")
+              if(totalPoint === 0) {
+                layer.msg('没有找到轨迹数据！', {icon: 7, time: 1500});
+              }
               hasMore = false;
               return;
             }
@@ -266,6 +271,9 @@
             if (d.data.length === 0) {
 //              alert("已经没有更多数据！")
               console.log("已经没有更多数据！");
+              if(totalPoint === 0) {
+                layer.msg('已经没有更多数据！', {icon: 7, time: 1500});
+              }
               hasMore = false;
               return;
             }
@@ -288,6 +296,9 @@
                 }
               }
             }
+
+            totalPoint+=pathRoutes.length;
+
             if (pathRoutes.length === 0) {
 //              alert("没有更多GPS数据！");
               console.log("没有更多GPS数据！");
@@ -382,7 +393,7 @@
       }
 
       if (doExpand()) {
-        setTimeout(expandPath, 10 * 1000);
+        setTimeout(expandPath, 7 * 1000);
       }
     }
   });

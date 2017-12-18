@@ -442,9 +442,9 @@
       <if test="csvModel != null">
         csv_model = #{csvModel,jdbcType=INTEGER},
       </if>
-
-      csv_machine = #{csvMachine,jdbcType=INTEGER},
-
+      <if test="csvMachine != null">
+        csv_machine = #{csvMachine,jdbcType=INTEGER},
+      </if>
       <if test="csvMachines != null">
         csv_machines = #{csvMachines,jdbcType=VARCHAR},
       </if>
@@ -507,6 +507,17 @@
       csv_status = #{csvStatus,jdbcType=TINYINT},
       csv_add_time = #{csvAddTime,jdbcType=TIMESTAMP},
       csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP}
+    where csv_id = #{csvId,jdbcType=INTEGER}
+  </update>
+
+  <update id="unbindTbox" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+    update cs_vehicle
+    <set>
+      csv_machine = NULL,
+      <if test="csvUpdateTime != null">
+        csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
     where csv_id = #{csvId,jdbcType=INTEGER}
   </update>
 </mapper>

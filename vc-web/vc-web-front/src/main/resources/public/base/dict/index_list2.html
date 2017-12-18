@@ -50,12 +50,11 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+	<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -160,14 +159,14 @@
 	var clms = [{checkbox: true}
 	  		,{field: "id", title: "编号", width: 110, sort:true}
 	  		,{field: "value", title: "数据值", width: 110, sort:true}
-	  		,{field: "label", title: "标签名", width: 110, sort:true}
-	  		,{field: "type", title: "类型", width: 110, sort:true}
-	  		,{field: "description", title: "描述", width: 110, sort:true}
+	  		,{field: "label", title: "标签名", width: 140, sort:true}
+	  		,{field: "type", title: "类型", width: 160, sort:true}
+	  		,{field: "description", title: "描述", width: 160, sort:true}
 	  		,{field: "sort", title: "排序", width: 110, sort:true}
 	  		,{field: "createBy", title: "创建者", width: 110, sort:true}
-	  		,{field: "createDate", title: "创建时间", width: 110, sort:true}
+	  		,{field: "createDate", title: "创建时间", width: 160, sort:true}
 	  		,{field: "updateBy", title: "更新者", width: 110, sort:true}
-	  		,{field: "updateDate", title: "更新时间", width: 110, sort:true}
+	  		,{field: "updateDate", title: "更新时间", width: 160, sort:true}
 	  		,{field: "remarks", title: "备注信息", width: 110, sort:true}
 	  		,{field: "delFlagText", title: "删除标记", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}

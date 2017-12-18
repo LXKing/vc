@@ -41,7 +41,14 @@ public class CsVehicleCrieria{
 	 public void or(Criteria criteria) {
         oredCriteria.add(criteria);
      }
-	 
+
+     public Criteria getFirstCriteriaFromoredCriteria(){
+	 	if (oredCriteria.size()>0){
+	 		return oredCriteria.get(0);
+		}
+		return null;
+	 }
+
 	 public Criteria or() {
         Criteria criteria = createCriteriaInternal();
         oredCriteria.add(criteria);

@@ -49,12 +49,11 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+	<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -158,16 +157,16 @@
 	var tableId = "TSrvHost";
 	var clms = [{checkbox: true}
 	  		,{field: "shId", title: "编号", width: 110, sort:true}
-	  		,{field: "shName", title: "接入商", width: 110, sort:true}
-	  		,{field: "shKey", title: "接入KEY", width: 110, sort:true}
-	  		,{field: "shTopic", title: "转发Topic", width: 110, sort:true}
-	  		,{field: "shTransformRemoteText", title: "转发指令结果", width: 110, sort:true}
-	  		,{field: "shTransformStatusText", title: "转发状态", width: 110, sort:true}
-	  		,{field: "shTransformCanText", title: "转发CAN", width: 110, sort:true}
-	  		,{field: "shAddTime", title: "添加时间", width: 110, sort:true}
-	  		,{field: "shUptTime", title: "更新时间", width: 110, sort:true}
-	  		,{field: "shStatusText", title: "状态", width: 110, sort:true}
-	  		,{field: "shAppid", title: "接入ID", width: 110, sort:true}
+	  		,{field: "shName", title: "接入商", width: 160, sort:true}
+	  		,{field: "shKey", title: "接入KEY", width: 160, sort:true}
+	  		,{field: "shTopic", title: "转发Topic", width: 140, sort:true}
+	  		,{field: "shTransformRemoteText", title: "转发指令结果", width: 160, sort:true}
+	  		,{field: "shTransformStatusText", title: "转发状态", width: 160, sort:true}
+	  		,{field: "shTransformCanText", title: "转发CAN", width: 160, sort:true}
+	  		,{field: "shAddTime", title: "添加时间", width: 160, sort:true}
+	  		,{field: "shUptTime", title: "更新时间", width: 160, sort:true}
+	  		,{field: "shStatusText", title: "状态", width: 80, sort:true}
+	  		,{field: "shAppid", title: "接入ID", width: 160, sort:true}
       		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

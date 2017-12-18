@@ -18,12 +18,6 @@
 					<input  name="csmAccessEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
 				</dd>
 			</dl>
-<dl cond="csmHost" style="display:none;">
-				<dt>子域</dt>
-				<dd  >
-					<input  name="csmHostEquals" placeholder="请输入数字" class="form-control" >
-				</dd>
-			</dl>
 <dl cond="csmNumber" >
 				<dt>车机号</dt>
 				<dd  >
@@ -223,7 +217,6 @@
 					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
 			        <li><label><input cond="csmId" value="csmId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
 			        <li><label><input cond="csmAccess" value="csmAccessText"  type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
-			        <li><label><input cond="csmHost" value="csmHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >子域</label></li>
 			        <li><label><input cond="csmNumber" value="csmNumber" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
 			        <li><label><input cond="csmTeNo" value="csmTeNo" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >序列号</label></li>
 			        <li><label><input cond="csmTeType" value="csmTeTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端类型</label></li>
