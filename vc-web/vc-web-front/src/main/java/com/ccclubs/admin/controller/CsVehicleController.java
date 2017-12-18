@@ -181,16 +181,42 @@ public class CsVehicleController {
     return VoResult.success();
   }
 
+
+  /**
+   *
+   * @param c 此方法仅在 createCriteria()后执行！
+   * */
+  private void addCriteriaByUser(SrvUser user,CsVehicleCrieria.Criteria c){
+    SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+    if (srvGroup.getSgFlag().equals("factory_user")){//如果是车厂用户则只关心车型
+      CsModelMapping csModelMapping=new CsModelMapping();
+      csModelMapping.setUserId(user.getSuId());
+      List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
+      if (null!=csModelMappingList&&csModelMappingList.size()>0){
+        List<Integer> csModelIds=new ArrayList<>();
+        for (CsModelMapping aCsModelMappingList : csModelMappingList) {
+          csModelIds.add(aCsModelMappingList.getModelId());
+        }
+        c.andcsvModelIn(csModelIds);
+      }
+    }
+  }
+
+
   /**
    * 根据文本检索车辆信息管理信息
    */
   @RequestMapping(value = "/query", method = RequestMethod.GET)
-  public VoResult<Map<String, List<Map<String, Object>>>> query(String text, String where,
+  public VoResult<Map<String, List<Map<String, Object>>>> query(@CookieValue("token") String token,String text, String where,
       CsVehicle queryRecord) {
+
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+
 
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
 
+   this.addCriteriaByUser(user,c);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
@@ -214,6 +240,40 @@ public class CsVehicleController {
     return VoResult.success().setValue(mapList);
   }
 
+  /**
+   * 根据文本检索车辆信息管理信息
+   */
+  @RequestMapping(value = "/find", method = RequestMethod.GET)
+  public VoResult<Map<String, List<Map<String, Object>>>> find(@CookieValue("token") String token,String text, String where,
+                                                                CsVehicle queryRecord) {
+
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+    CsVehicleCrieria query = new CsVehicleCrieria();
+    CsVehicleCrieria.Criteria c = query.createCriteria();
+
+    this.addCriteriaByUser(user,c);
+
+    if (!StringUtils.isEmpty(text)) {
+      String val = String.valueOf(text);
+      c.andcsvVinLike(val);
+    }
+    if (!StringUtils.isEmpty(where)) {
+      Integer val = Integer.valueOf(where);
+      c.andcsvIdEqualTo(val);
+    }
+    PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
+    List<CsVehicle> list = pageInfo.getList();
+
+    List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>(list.size());
+    Map<String, Object> map;
+    for (CsVehicle data : list) {
+      map = new HashMap<String, Object>();
+      map.put("value", data.getCsvMachine());//得到的是车机号。
+      map.put("text", data.getCsvVin());
+      mapList.add(map);
+    }
+    return VoResult.success().setValue(mapList);
+  }
 
   /**
    * 根据文本检索车辆信息管理信息
@@ -223,23 +283,12 @@ public class CsVehicleController {
       CsVehicle queryRecord) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
-    SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+
 
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
 
-    if (srvGroup.getSgFlag().equals("factory_user")){//如果是车厂用户则只关心车型
-      CsModelMapping csModelMapping=new CsModelMapping();
-      csModelMapping.setUserId(user.getSuId());
-      List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
-      if (null!=csModelMappingList&&csModelMappingList.size()>0){
-        List<Integer> csModelIds=new ArrayList<>();
-        for (CsModelMapping aCsModelMappingList : csModelMappingList) {
-          csModelIds.add(aCsModelMappingList.getModelId());
-        }
-        c.andcsvModelIn(csModelIds);
-      }
-    }
+    this.addCriteriaByUser(user,c);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);

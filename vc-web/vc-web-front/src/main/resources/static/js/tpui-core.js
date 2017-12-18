@@ -386,7 +386,8 @@ function jsonToUri(param){
 function paramToUri(param, key){
   var paramS="";
   if(typeof(param) === 'undefined'){
-    paramS+="&"+key+"=";
+    //paramS+="&"+key+"=";
+
   }
   else {
     paramS+="&"+key+"="+encodeURIComponent(param);
