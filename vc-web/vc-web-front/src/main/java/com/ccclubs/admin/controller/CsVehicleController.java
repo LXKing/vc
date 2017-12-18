@@ -1,15 +1,9 @@
 package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsVehicleCrieria;
-import com.ccclubs.admin.model.CsModelMapping;
-import com.ccclubs.admin.model.CsVehicle;
-import com.ccclubs.admin.model.SrvGroup;
-import com.ccclubs.admin.model.SrvUser;
+import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.query.CsVehicleQuery;
-import com.ccclubs.admin.service.ICsModelMappingService;
-import com.ccclubs.admin.service.ICsVehicleService;
-import com.ccclubs.admin.service.IReportService;
-import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.service.*;
 import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.ResultCode;
 import com.ccclubs.admin.vo.ResultMsg;
@@ -54,6 +48,8 @@ public class CsVehicleController {
   ISrvGroupService srvGroupService;
   @Autowired
   ICsModelMappingService csModelMappingService;
+  @Autowired
+  ICsMachineService csMachineService;
 
 
   @Autowired
@@ -268,9 +264,13 @@ public class CsVehicleController {
     Map<String, Object> map;
     for (CsVehicle data : list) {
       map = new HashMap<String, Object>();
-      map.put("value", data.getCsvMachine());//得到的是车机号。
-      map.put("text", data.getCsvVin());
-      mapList.add(map);
+      CsMachine csMachine=csMachineService.selectByPrimaryKey(data.getCsvMachine());
+      if (csMachine!=null){
+        map.put("value",csMachine.getCsmNumber());//得到的是车机号。
+        map.put("text", data.getCsvVin());
+        mapList.add(map);
+      }
+
     }
     return VoResult.success().setValue(mapList);
   }
