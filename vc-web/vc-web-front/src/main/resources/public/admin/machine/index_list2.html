@@ -71,12 +71,11 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+	<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
     var currPage=1;
 
@@ -187,13 +186,12 @@
 	var clms = [{checkbox: true}
 	  		,{field: "csmId", title: "编号", width: 110, sort:true}
 	  		,{field: "csmAccessText", title: "接入商", width: 110, sort:true}
-	  		,{field: "csmHost", title: "子域", width: 110, sort:true}
 	  		,{field: "csmNumber", title: "车机号", width: 110, sort:true}
-	  		,{field: "csmTeNo", title: "序列号", width: 110, sort:true}
+	  		,{field: "csmTeNo", title: "序列号", width: 160, sort:true}
 	  		,{field: "csmTeTypeText", title: "终端类型", width: 110, sort:true}
 	  		,{field: "csmTeModel", title: "终端型号", width: 110, sort:true}
-	  		,{field: "csmMobile", title: "SIM卡", width: 110, sort:true}
-	  		,{field: "csmIccid", title: "ICCID", width: 110, sort:true}
+	  		,{field: "csmMobile", title: "SIM卡", width: 140, sort:true}
+	  		,{field: "csmIccid", title: "ICCID", width: 200, sort:true}
 	  		,{field: "csmProtocolText", title: "协议类型", width: 110, sort:true}
 	  		,{field: "csmBluetoothVersion", title: "蓝牙版本", width: 110, sort:true}
 	  		,{field: "csmBluetoothMac", title: "蓝牙地址", width: 110, sort:true}
@@ -204,9 +202,9 @@
 	  		,{field: "csmTlV2", title: "分时租赁版本", width: 110, sort:true}
 	  		,{field: "csmProTypeText", title: "终端协议", width: 110, sort:true}
 	  		,{field: "csmBaudRate", title: "CAN1波特率", width: 110, sort:true}
-	  		,{field: "csmUpdateTime", title: "修改时间", width: 110, sort:true}
-	  		,{field: "csmAddTime", title: "添加时间", width: 110, sort:true}
-	  		,{field: "csmStatusText", title: "状态", width: 110, sort:true}
+	  		,{field: "csmUpdateTime", title: "修改时间", width: 160, sort:true}
+	  		,{field: "csmAddTime", title: "添加时间", width: 160, sort:true}
+	  		,{field: "csmStatusText", title: "状态", width: 80, sort:true}
       		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

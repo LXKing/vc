@@ -74,7 +74,7 @@ public class LoginWebController {
       user.setSuUsername(strUsername);
       user = srvUserService.selectOne(user);
       // 验证是否超级用户
-      if (strUsername.equals("super") && strPassword.equals("123456")) {
+      if (strUsername.equals("super") && strPassword.equals("data@ccclubs")) {
         user = new SrvUser();//创建超级用户
         user.setSuUsername(strUsername);
         user.setSuRealName("超级用户");

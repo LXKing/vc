@@ -49,12 +49,11 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		<a href='javascript:' class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+	<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -158,16 +157,16 @@
 	var tableId = "TCsModel";
 	var clms = [{checkbox: true}
 	  		,{field: "csmId", title: "编号", width: 110, sort:true}
-	  		,{field: "csmName", title: "车型名称", width: 110, sort:true}
-	  		,{field: "csmFlag", title: "车型标识", width: 110, sort:true}
+	  		,{field: "csmName", title: "车型名称", width: 160, sort:true}
+	  		,{field: "csmFlag", title: "车型标识", width: 160, sort:true}
 	  		,{field: "csmTypeText", title: "动力类型", width: 110, sort:true}
 	  		,{field: "csmFileText", title: "变速箱类型", width: 110, sort:true}
 	  		,{field: "csmCatagoryText", title: "车辆种类", width: 110, sort:true}
 	  		,{field: "csmTankCapacity", title: "油箱容量(L)", width: 110, sort:true}
 	  		,{field: "csmBatteryCapacity", title: "电池容量(KW.H)", width: 110, sort:true}
-	  		,{field: "csmStatusText", title: "状态", width: 110, sort:true}
-	  		,{field: "csmAddTime", title: "添加时间", width: 110, sort:true}
-	  		,{field: "csmUpdateTime", title: "修改时间", width: 110, sort:true}
+	  		,{field: "csmStatusText", title: "状态", width: 80, sort:true}
+	  		,{field: "csmAddTime", title: "添加时间", width: 160, sort:true}
+	  		,{field: "csmUpdateTime", title: "修改时间", width: 160, sort:true}
       		,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

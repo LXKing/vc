@@ -33,12 +33,10 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	<a href='javascript:' class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
-		
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -126,16 +124,15 @@
 	var tableId = "TSrvUser";
 	var clms = [{checkbox: true}
 	  		,{field: "suId", title: "编号", width: 110, sort:true}
-	  		,{field: "suHost", title: "编号", width: 110, sort:true}
+	  		,{field: "suHost", title: "接入商", width: 110, sort:true}
 	  		,{field: "suGroup", title: "所属组", width: 110, sort:true}
-	  		,{field: "suUsername", title: "登录账号", width: 110, sort:true}
-	  		,{field: "suPassword", title: "登录密码", width: 110, sort:true}
-	  		,{field: "suRealName", title: "真实姓名", width: 110, sort:true}
-	  		,{field: "suMobile", title: "手机号码", width: 110, sort:true}
+	  		,{field: "suUsername", title: "登录账号", width: 160, sort:true}
+	  		,{field: "suRealName", title: "真实姓名", width: 160, sort:true}
+	  		,{field: "suMobile", title: "手机号码", width: 130, sort:true}
 	  		,{field: "suShortcut", title: "快捷方式", width: 110, sort:true}
-	  		,{field: "suAddTime", title: "添加时间", width: 110, sort:true}
-	  		,{field: "suLastTime", title: "最后登录时间", width: 110, sort:true}
-	  		,{field: "suLastIp", title: "最后登录IP", width: 110, sort:true}
+	  		,{field: "suAddTime", title: "添加时间", width: 160, sort:true}
+	  		,{field: "suLastTime", title: "最后登录时间", width: 160, sort:true}
+	  		,{field: "suLastIp", title: "最后登录IP", width: 160, sort:true}
 	  		,{field: "suStatus", title: "状态", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
     ];

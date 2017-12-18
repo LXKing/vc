@@ -42,12 +42,9 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-	
-		
-	</div>
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+</div>
 
-<script src="/layui/layui.all.js?t=1510164124207"></script>
 <script type="text/javascript">
 
 	var operate = {
@@ -103,15 +100,15 @@
 	var tableId = "TCsCan";
 	var clms = [{checkbox: true}
 	  		,{field: "cscId", title: "编号", width: 110, sort:true}
-	  		,{field: "cscAccessText", title: "接入商", width: 110, sort:true}
-	  		,{field: "cscNumberText", title: "车机号", width: 110, sort:true}
-	  		,{field: "cscCarText", title: "车辆", width: 110, sort:true}
-	  		,{field: "cscModel", title: "适配车型", width: 110, sort:true}
+	  		,{field: "cscAccessText", title: "接入商", width: 140, sort:true}
+	  		,{field: "cscNumberText", title: "车机号", width: 140, sort:true}
+	  		,{field: "cscCarText", title: "车辆", width: 180, sort:true}
+	  		,{field: "cscModel", title: "适配车型", width: 160, sort:true}
 	  		,{field: "cscTypeText", title: "CAN类型", width: 110, sort:true}
 	  		,{field: "cscOrder", title: "订单号", width: 110, sort:true}
-	  		,{field: "cscData", title: "报文数据", width: 110, sort:true}
-	  		,{field: "cscUploadTime", title: "报文时间", width: 110, sort:true}
-	  		,{field: "cscAddTime", title: "接收时间", width: 110, sort:true}
+	  		,{field: "cscData", title: "报文数据", width: 200, sort:true}
+	  		,{field: "cscUploadTime", title: "报文时间", width: 160, sort:true}
+	  		,{field: "cscAddTime", title: "接收时间", width: 160, sort:true}
 	  		,{field: "cscStatusText", title: "状态", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
