@@ -1,11 +1,15 @@
 package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsVehicleCrieria;
+import com.ccclubs.admin.model.CsModelMapping;
 import com.ccclubs.admin.model.CsVehicle;
+import com.ccclubs.admin.model.SrvGroup;
 import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.query.CsVehicleQuery;
+import com.ccclubs.admin.service.ICsModelMappingService;
 import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.service.ISrvGroupService;
 import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.ResultCode;
 import com.ccclubs.admin.vo.ResultMsg;
@@ -46,6 +50,11 @@ public class CsVehicleController {
 
   @Autowired
   IReportService reportService;
+  @Autowired
+  ISrvGroupService srvGroupService;
+  @Autowired
+  ICsModelMappingService csModelMappingService;
+
 
   @Autowired
   UserAccessUtils userAccessUtils;
@@ -54,10 +63,13 @@ public class CsVehicleController {
    * 获取分页列表数据
    */
   @RequestMapping(value = "/list", method = RequestMethod.GET)
-  public TableResult<CsVehicle> list(@CookieValue("token") String token, CsVehicleQuery query,
+  public TableResult<CsVehicle> list(
+      @CookieValue("token") String token, CsVehicleQuery query,
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
     SrvUser user = userAccessUtils.getCurrentUser(token);
+    this.addQueryConditionsByUser(user,query);
+//想法是首先得到对应的用户组来进行处理，对query加上新的条件来限制查询到的结果。
 //    if (null == user) {
 //      return new ResultMsg<>(false,
 //          ResultCode.INVALID_TOKEN, null);
@@ -72,6 +84,39 @@ public class CsVehicleController {
     TableResult<CsVehicle> r = new TableResult<>(pageInfo);
     return r;
   }
+
+  /**
+   * 根据用户添加查询条件。
+   *
+   */
+  private void addQueryConditionsByUser(SrvUser user,CsVehicleQuery query){
+    //首先判断用户所在的组。
+    SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+    if (srvGroup.getSgFlag().equals("sys_user")){
+      //系统用户，此种用户可以随意查询（为所欲为）
+
+    }else if (srvGroup.getSgFlag().equals("factory_user")){
+      //车厂 （按照车型进行查询）
+      CsModelMapping csModelMapping=new CsModelMapping();
+      csModelMapping.setUserId(user.getSuId());
+      List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
+      if (null!=csModelMappingList&&csModelMappingList.size()>0){
+        Integer[] csModelIds=new Integer[csModelMappingList.size()];
+        for (int i=0;i<csModelMappingList.size();i++){
+          csModelIds[i]=csModelMappingList.get(i).getModelId();
+        }
+        query.setCsvModelIn(csModelIds);
+      }
+    }else if (srvGroup.getSgFlag().equals("platform_user")){
+      //小散户（通过mapping进行对应）
+
+
+    }
+
+
+  }
+
+
 
   /**
    * 创建保存车辆信息管理
@@ -142,8 +187,11 @@ public class CsVehicleController {
   @RequestMapping(value = "/query", method = RequestMethod.GET)
   public VoResult<Map<String, List<Map<String, Object>>>> query(String text, String where,
       CsVehicle queryRecord) {
+
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
+
+
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsvVinLike(val);
@@ -171,10 +219,28 @@ public class CsVehicleController {
    * 根据文本检索车辆信息管理信息
    */
   @RequestMapping(value = "/search", method = RequestMethod.GET)
-  public VoResult<Map<String, List<Map<String, Object>>>> search(String text, String where,
+  public VoResult<Map<String, List<Map<String, Object>>>> search(@CookieValue("token") String token,String text, String where,
       CsVehicle queryRecord) {
+
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+    SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
+
+    if (srvGroup.getSgFlag().equals("factory_user")){//如果是车厂用户则只关心车型
+      CsModelMapping csModelMapping=new CsModelMapping();
+      csModelMapping.setUserId(user.getSuId());
+      List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
+      if (null!=csModelMappingList&&csModelMappingList.size()>0){
+        List<Integer> csModelIds=new ArrayList<>();
+        for (CsModelMapping aCsModelMappingList : csModelMappingList) {
+          csModelIds.add(aCsModelMappingList.getModelId());
+        }
+        c.andcsvModelIn(csModelIds);
+      }
+    }
+
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsvVinLike(val);
@@ -203,8 +269,12 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/report", method = RequestMethod.GET)
   public void getReport(HttpServletResponse res, CsVehicleQuery query,
+                        @CookieValue("token") String token,
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
+
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+    this.addQueryConditionsByUser(user,query);
 
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query.getCrieria(), page, rows);
     List<CsVehicle> list = pageInfo.getList();

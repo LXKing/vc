@@ -1,4 +1,4 @@
-package com.ccclubs.admin.unit;
+package com.ccclubs.admin.util;
 
 import com.ccclubs.admin.vo.Resolver;
 import org.apache.poi.hssf.usermodel.*;
@@ -187,7 +187,7 @@ public class ExportExcelTemp<T> implements Serializable{
                                 new Class[] {});
                         value = getMethod.invoke(t, new Object[] {});
                     }
-                    //TODO 在这里得到resovler 中的key进行比较，如果有，则使用resovler中的值。
+                    // 在这里得到resovler 中的key进行比较，如果有，则使用resovler中的值。
                     // 判断值的类型后进行强制类型转换
                     String textValue = null;
 

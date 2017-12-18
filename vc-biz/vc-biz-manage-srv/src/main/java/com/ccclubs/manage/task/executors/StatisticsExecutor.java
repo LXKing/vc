@@ -213,6 +213,7 @@ public class StatisticsExecutor {
     public long calculateIncrementMileage(List<CsState> csStateList) {
         int count=0;
         if (null!=csStateList&&csStateList.size()>0){
+
             //TODO 这里要取CsStatists相减。
         }
         return count;
