@@ -40,4 +40,18 @@ public class UpdateVehicleService {
 
     return null;
   }
+
+  /**
+   * 解绑Tbox
+   * @param vehicle
+   * @return
+   */
+  public int unbindTbox(CsVehicle vehicle) {
+
+    if (vehicle.getCsvId() == null) {
+      throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
+    }
+
+    return dao.unbindTbox(vehicle);
+  }
 }

@@ -53,7 +53,7 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
             //开始解绑
             vehicle.setCsvMachine(null);
             vehicle.setCsvUpdateTime(new Date());
-            updateVehicleService.update(vehicle);
+            updateVehicleService.unbindTbox(vehicle);
         } else {
             throw new ApiException(ApiEnum.NO_BINDING_EXISTS, input.getVin(), input.getTeNo());
         }

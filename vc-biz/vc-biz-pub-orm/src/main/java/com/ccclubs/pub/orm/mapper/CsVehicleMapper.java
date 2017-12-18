@@ -9,6 +9,14 @@ import org.apache.ibatis.annotations.Param;
 public interface CsVehicleMapper {
 
     /**
+     * 解绑Tbox
+     *
+     * @mbg.generated
+     * @param record
+     */
+    int unbindTbox(CsVehicle record);
+
+    /**
      * 批量插入
      *
      * @mbg.generated
