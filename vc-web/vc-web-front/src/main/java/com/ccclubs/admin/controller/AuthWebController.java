@@ -162,13 +162,14 @@ public class AuthWebController {
     srvLimited = limitedMapper.getUserLimited(params);
     if (srvLimited != null) {
       Integer limitsId = srvLimited.getSlLimit();
-      resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
-      resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
-      resutlMap.put("exportData", ((limitsId & 16) == 16) ? 1 : 0);
-      resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
-      resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
       resutlMap.put("detail", ((limitsId & 1) == 1) ? 1 : 0);
       resutlMap.put("canView", ((limitsId & 1) == 1) ? 1 : 0);// &&
+      resutlMap.put("add", ((limitsId & 2) == 2) ? 1 : 0);
+      resutlMap.put("update", ((limitsId & 4) == 4) ? 1 : 0);
+      resutlMap.put("del", ((limitsId & 8) == 8) ? 1 : 0);
+      resutlMap.put("batchDel", ((limitsId & 8) == 8) ? 1 : 0);
+      resutlMap.put("importData", ((limitsId & 16) == 16) ? 1 : 0);
+      resutlMap.put("exportData", ((limitsId & 32) == 32) ? 1 : 0);
       //处理扩展权限
       int canExp[] = new int[exps.length];
       for (int i = 0; i < exps.length; i++) {
@@ -186,6 +187,7 @@ public class AuthWebController {
       resutlMap.put("update", 0);
       resutlMap.put("del", 0);
       resutlMap.put("batchDel", 0);
+      resutlMap.put("importData", 0);
       resutlMap.put("exportData", 0);
       resultMsg = new ResultMsg<Object>(true, ResultCode.OK,
           resutlMap);
