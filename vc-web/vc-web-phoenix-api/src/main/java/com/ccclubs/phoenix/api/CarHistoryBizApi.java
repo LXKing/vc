@@ -192,7 +192,7 @@ public class CarHistoryBizApi {
     @RequestMapping(value = "/states",method = RequestMethod.POST)
     public ApiMessage<CarStateHistoryOutput> saveCarStateList(@RequestBody List<CarState> carStateList){
         logger.debug("we receive a state date list.");
-        //logger.warn(carStateList.toString());
+        logger.info("****** gear is  :  "+carStateList.get(0).getGear().toString());
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
         if(carStateList!=null&&carStateList.size()>0) {
             carStateHistoryInf.saveOrUpdate(carStateList);

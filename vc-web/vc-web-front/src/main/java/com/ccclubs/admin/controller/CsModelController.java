@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ccclubs.admin.model.CsModelMapping;
+import com.ccclubs.admin.model.SrvGroup;
+import com.ccclubs.admin.model.SrvUser;
+import com.ccclubs.admin.service.ICsModelMappingService;
+import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.util.UserAccessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ccclubs.admin.vo.TableResult;
@@ -35,6 +37,14 @@ public class CsModelController {
 
 	@Autowired
 	ICsModelService csModelService;
+	@Autowired
+	ISrvGroupService srvGroupService;
+	@Autowired
+	ICsModelMappingService csModelMappingService;
+
+
+	@Autowired
+	UserAccessUtils userAccessUtils;
 
 	/**
 	 * 获取分页列表数据
@@ -116,9 +126,28 @@ public class CsModelController {
 	 * 根据文本检索接入车型管理信息
 	 */
 	@RequestMapping(value="/query", method = RequestMethod.GET)
-	public VoResult<Map<String, List<Map<String, Object>>>> query(String text , String where , CsModel queryRecord){
+	public VoResult<Map<String, List<Map<String, Object>>>> query(@CookieValue("token") String token, String text , String where , CsModel queryRecord){
+
+		//查询车型
+		SrvUser user = userAccessUtils.getCurrentUser(token);
+		SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+
+
 		CsModelCrieria query = new CsModelCrieria();
 		CsModelCrieria.Criteria c = query.createCriteria();
+
+		if (srvGroup.getSgFlag().equals("factory_user")){//如果是车厂用户则只关心车型
+			CsModelMapping csModelMapping=new CsModelMapping();
+			csModelMapping.setUserId(user.getSuId());
+			List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
+			if (null!=csModelMappingList&&csModelMappingList.size()>0){
+				List<Integer> csModelIds=new ArrayList<>();
+				for (CsModelMapping aCsModelMappingList : csModelMappingList) {
+					csModelIds.add(aCsModelMappingList.getModelId());
+				}
+				c.andcsmIdIn(csModelIds);
+			}
+		}
 		if(!StringUtils.isEmpty(text)){
 			String val = String.valueOf(text);
 			c.andcsmNameLike(val);

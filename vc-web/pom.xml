@@ -9,7 +9,8 @@
 	<artifactId>vc-web</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-
+		<module>vc-web-manage-api</module>
+		<module>vc-web-manage-srv</module>
 		<module>vc-web-cfg</module>
 		<module>vc-web-demo-api</module>
 		<module>vc-web-demo-srv</module>

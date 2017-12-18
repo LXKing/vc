@@ -5,15 +5,13 @@ import com.ccclubs.admin.model.CsStatistics;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.model.HistoryState;
 import com.ccclubs.admin.service.IReportService;
-import com.ccclubs.admin.unit.ExportExcelTemp;
-import com.ccclubs.admin.vo.TableResult;
+import com.ccclubs.admin.util.ExportExcelTemp;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ReportServiceImpl implements IReportService {

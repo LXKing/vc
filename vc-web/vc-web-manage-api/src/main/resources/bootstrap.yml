@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: manage-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: manage-api
+      uri: ${spring.cloud.config.uri}
