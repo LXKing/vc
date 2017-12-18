@@ -29,6 +29,6 @@ public class UserAccessUtils {
       return null;
     }
 
-    return srvUserService.selectByPrimaryKey(userID);
+    return srvUserService.selectByPrimaryKey(Integer.parseInt(userID.toString()));
   }
 }
