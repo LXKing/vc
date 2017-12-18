@@ -41,10 +41,10 @@ public class TestVtsearch {
     public void vehicleRegister() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/vehicleRegister");//114.55.109.165:7001
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/vehicleRegister");//114.55.109.165:7001
         httpPost.setHeader("Content-Type", "application/json");
 //        String ss = "{\"inputs\":[{\"csvColorCode\":\"1\",\"csvModel\":\"A800\",\"teNo\":\"CFXT31603230126\",\"csvBataccuCode\":\"222\",\"csvCarNo\":\"浙A31233\",\"csvProdDate\":\"2017-12-1\",\"csvVin\":\"212334\",\"csvEngineNo\":\"222\"}]}";
-        String ss = "{\"inputs\":[{\"csvColorCode\":0,\"csvModel\":\"S_EADO17J_\",\"csvProdDate\":\"2017-12-03\",\"csvVin\":\"LS5A2AJX1HA000527\",\"csvCertific\":\"WDV045017206034\",\"csvEngineNo\":\"HD1J000665\"}]}";
+        String ss = "{\"inputs\":[{\"csvColorCode\":0,\"csvModel\":\"S_EADO17H_\",\"csvProdDate\":\"2017-12-03\",\"csvVin\":\"LS5A2AJX1HJ700001\",\"csvCertific\":\"WDV036017154771\",\"csvEngineNo\":\"HD1J000657\"}]}";
         String value = DigestUtils.md5Hex(ss);
         String sign = HmacUtils.hmacSha1Hex("fa@sd_n38f2f_3qb", value);
         httpPost.addHeader("sign", sign);
@@ -244,7 +244,7 @@ public class TestVtsearch {
         HttpPost httpPost = new HttpPost("http://101.37.178.63/search/getTerminalInfo");
         httpPost.setHeader("Content-Type", "application/json");
         TerminalQryInput input = new TerminalQryInput();
-        input.setVin("LS5A2AJX0GA001229");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        input.setVin("LS5A2AJX0FA000774");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
@@ -309,21 +309,21 @@ public class TestVtsearch {
     public void factoryVehiclePush() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://116.62.29.30:7003/operate/factory/vehiclePush");
+        HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/factory/vehiclePush");
         httpPost.setHeader("Content-Type", "application/json");
         VehiclePushInput input = new VehiclePushInput();
-        input.setCsvVin("LJ8E3C1M1HD312829");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
-        input.setCsvBataccuCode("2101020A-W11#2705Z#20171125#00063");
+        input.setCsvVin("LJ8E3C1M3HD313884");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        input.setCsvBataccuCode("2101020A-W11#2705Z#20171202#00093");
 //        input.setCsvCertific("");
-        input.setCsvColorCode("深空黑/红橙");
+        input.setCsvColorCode("红套黑");
         input.setCsvInteriorColorCode("全黑内饰");
-        input.setCsvEngineNo("30171126017");
+        input.setCsvEngineNo("20171204150");
         input.setCsvInteriorColorCode("");
-        input.setCsvMachine("67F1492");
+        input.setCsvMachine("67F5945");
         input.setCsvModel("JNJ7000EVK1");
         input.setCsvModelCode("JNJ7000EVK1-JNPMSM320-30");
-        input.setCsvProdDate("2017-11-01");
-        input.setCsvType("豪华型");
+        input.setCsvProdDate("2017-12-12");
+        input.setCsvType("飞鱼座");
 
         String ss = JSON.toJSONString(input);
 

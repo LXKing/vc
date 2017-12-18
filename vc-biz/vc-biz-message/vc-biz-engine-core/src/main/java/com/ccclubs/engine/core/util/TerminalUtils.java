@@ -60,7 +60,7 @@ public class TerminalUtils {
     if (null == mapping || null == mapping.getMachine()) {
       return null;
     }
-    return queryTerminalService.queryCsMachineById(mapping.getMachine().intValue());
+    return queryTerminalService.queryCsMachineByIdFromCache(mapping.getMachine().intValue());
   }
 
   /**
@@ -70,7 +70,7 @@ public class TerminalUtils {
    * @return CsMachine
    */
   public CsVehicle getCsVehicle(final Long csmId) {
-    return queryVehicleService.queryVehicleByMachine(csmId.intValue());
+    return queryVehicleService.queryVehicleByMachineFromCache(csmId.intValue());
   }
 
   /**

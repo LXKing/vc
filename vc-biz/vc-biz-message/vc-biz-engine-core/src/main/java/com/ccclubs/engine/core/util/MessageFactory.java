@@ -95,6 +95,19 @@ public class MessageFactory {
   }
 
   /**
+   * 主要用于 [地标对接]
+   * @param tagsLast 消息 TAG 后缀
+   * @param topic 消息 topic 消息发送topic
+   * @param tagsPre 消息 topic 前缀
+   * @param hexContent 转发message
+   * @return
+   */
+  public Message getMessage(String tagsLast, String topic, String tagsPre,
+      String hexContent) {
+    return new Message(topic,tagsPre + tagsLast,Tools.HexString2Bytes(hexContent));
+  }
+
+  /**
    * 获取MQ消息 Message
    *
    * @param tagsPre 消息类型tag

@@ -2,7 +2,7 @@ package com.ccclubs.vehicle.inf.binding.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.aop.DataAuth;
-import com.ccclubs.mongo.modify.UpdateVehicleService;
+import com.ccclubs.common.modify.UpdateVehicleService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.spring.constant.ApiEnum;

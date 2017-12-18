@@ -32,6 +32,10 @@ public class QueryAppInfoService {
    */
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shAppid:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shId:'+#retVal.shId", condition = "!#empty(#retVal) && !#empty(#retVal.shId)")})
+  public SrvHost queryHostByAppidFromCache(String appId) {
+    return queryHostByAppid(appId);
+  }
+
   public SrvHost queryHostByAppid(String appId) {
     SrvHostExample example = new SrvHostExample();
     SrvHostExample.Criteria criteria = example.createCriteria();
@@ -45,6 +49,10 @@ public class QueryAppInfoService {
 
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shId:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'SrvHost:shAppid:'+#retVal.shAppid", condition = "!#empty(#retVal) && !#empty(#retVal.shAppid)")})
+  public SrvHost queryHostByIdFromCache(Integer id) {
+    return queryHostById(id);
+  }
+
   public SrvHost queryHostById(Integer id) {
     return dao.selectByPrimaryKey(id);
   }
