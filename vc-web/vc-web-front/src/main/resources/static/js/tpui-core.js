@@ -375,23 +375,24 @@ function getIds(ids, split) {
  * @param key
  * @returns {string}
  */
-function jsonToUri(param, key){
+function jsonToUri(param){
   var paramStr="";
-  if(param instanceof String||param instanceof Number||param instanceof Boolean||typeof(param) === 'undefined'){
-      if(typeof(param) === 'undefined'){
-          paramStr+="&"+key+"=";
-      }
-      else {
-          paramStr+="&"+key+"="+encodeURIComponent(param);
-      }
-
-  }else{
-    $.each(param,function(i){
-      var k=key==null?i:key+(param instanceof Array?"["+i+"]":"."+i);
-      paramStr+='&'+jsonToUri(this, k);
+    $.each(param,function(i,val){
+      paramStr+=paramToUri(val, i);
     });
-  }
   return paramStr.substr(1);
+};
+
+function paramToUri(param, key){
+  var paramS="";
+  if(typeof(param) === 'undefined'){
+    paramS+="&"+key+"=";
+  }
+  else {
+    paramS+="&"+key+"="+encodeURIComponent(param);
+  }
+
+  return paramS;
 };
 
 
