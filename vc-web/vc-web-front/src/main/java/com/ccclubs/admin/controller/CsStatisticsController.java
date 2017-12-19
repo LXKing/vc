@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ccclubs.admin.resolver.CsStatisticsResolver;
 import com.ccclubs.admin.service.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,7 +74,7 @@ public class CsStatisticsController {
 	 */
 	void registResolvers(CsStatistics data){
 		if(data!=null){
-
+			data.registResolver(CsStatisticsResolver.车型.getResolver());
 		}
 	}
 	

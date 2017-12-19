@@ -1,7 +1,9 @@
 package com.ccclubs.admin.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -19,6 +21,22 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
 //    registry.addViewController("/error").setViewName("404.html");
 //    registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 //  }
+
+  @Autowired
+  TokenInterceptor tokenInterceptor;
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    // 多个拦截器组成一个拦截器链
+    // addPathPatterns 用于添加拦截规则
+    // excludePathPatterns 用户排除拦截
+    //此处添加所有的请求路径都要拦截但是登录等的请求除外。
+    registry.addInterceptor(tokenInterceptor)
+            .addPathPatterns("/**")
+            .excludePathPatterns("/oauth/**")
+            .excludePathPatterns("/user/**");
+
+    super.addInterceptors(registry);
+  }
 
   @Override
   public void configurePathMatch(PathMatchConfigurer configurer) {

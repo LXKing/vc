@@ -54,6 +54,7 @@
 </div>
 
 <script type="text/javascript">
+    var currPage=1;
 
 	var operate = {
 		getGrid:function(){
@@ -68,8 +69,13 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
-		
-		
+
+        exportData:function(){
+            console.log("exportData")
+            //console.log(option.url)
+            //console.log(JSON.stringify(option))
+            window.open(getServUrl("/monitor/analysis/quota/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
+        },
 		
 		batchDel:function(){
 			var o = this;
@@ -134,7 +140,9 @@
 			  height:getTableHeight(),
 			  url:getServUrl("/monitor/analysis/quota/list"),
 			  cols:  [clms],
-			  done: function(res, curr, count){},
+			  done: function(res, curr, count){
+			      currPage=curr;
+			  },
       	  	  response: {
 	      		  statusName: "code",
 	  		      statusCode: 0,

@@ -20,12 +20,8 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsIndexReport implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
-	/**
-	 * [id]编号
-	 */
-	
-	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long id;
+
+
 	/**
 	 * [cs_vin]车辆VIN码
 	 */
@@ -96,7 +92,17 @@ public class CsIndexReport implements java.io.Serializable
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date facTime;
-	
+
+
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * [id]编号
+	 */
+
+	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long id;
+
+
 	//默认构造函数
 	public CsIndexReport(){
 	

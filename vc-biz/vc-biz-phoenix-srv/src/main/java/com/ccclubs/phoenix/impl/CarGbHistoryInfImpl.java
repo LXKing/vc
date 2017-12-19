@@ -222,7 +222,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 carGbPs.setInt(3,year);
                 carGbPs.setInt(4,month);
                 carGbPs.setInt(5,day);
-                if (add_time == null) {
+                if (current_time == null) {
                     carGbPs.setNull(6, Types.BIGINT);
                 } else {
                     carGbPs.setLong(6, current_time);
