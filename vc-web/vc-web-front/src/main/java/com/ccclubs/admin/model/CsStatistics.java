@@ -115,7 +115,10 @@ public class CsStatistics implements java.io.Serializable
 		this.cssTime=cssTime;
 		return this;
 	}
-	
+
+	public Object getCssCarModelText(){
+		return resolve("cssCarModelText");
+	}
 	
 	@Transient
 	Map<String, Resolver<CsStatistics>> resolvers = new HashMap<String, Resolver<CsStatistics>>();

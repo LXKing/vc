@@ -24,7 +24,7 @@
 				        <li><label><input value="cssTotalRunTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >总运行时间</label></li>
 				        <li><label><input value="cssIncrementMileage" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >增量里程</label></li>
 				        <li><label><input value="cssAccess" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >授权系统</label></li>
-				        <li><label><input value="cssCarModel" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车型</label></li>
+				        <li><label><input value="cssCarModelText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车型</label></li>
 					</ul>
 				</div>
 			</div>
@@ -103,12 +103,12 @@
 	  		,{field: "cssRunNum", title: "运行数", width: 140, sort:true}
 	  		,{field: "cssChargingNum", title: "充电数", width: 140, sort:true}
 	  		,{field: "cssTotalMileage", title: "运行总里程", width: 140, sort:true}
-	  		,{field: "cssTotalCharge", title: "总充电量", width: 1140, sort:true}
+	  		,{field: "cssTotalCharge", title: "总充电量", width: 140, sort:true}
 	  		,{field: "cssTotalPowerConsumption", title: "电池增量", width: 140, sort:true}
 	  		,{field: "cssTotalRunTime", title: "总运行时间", width: 180, sort:true}
 	  		,{field: "cssIncrementMileage", title: "增量里程", width: 140, sort:true}
 	  		,{field: "cssAccess", title: "授权系统", width: 140, sort:true}
-	  		,{field: "cssCarModel", title: "车型", width: 140, sort:true}
+	  		,{field: "cssCarModelText", title: "车型", width: 140, sort:true}
       		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
