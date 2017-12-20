@@ -1,5 +1,6 @@
 package com.ccclubs.admin.util;
 
+
 /**
  * @author qsxiaogang
  * @create 2017-12-17
@@ -75,9 +76,9 @@ public class TerminalStatusUtils {
 
     if (stringBuilder.length() > 0) {
       return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
+    }else {
+      return "全关";
     }
-
-    return "";
   }
 
   /**
@@ -162,8 +163,9 @@ public class TerminalStatusUtils {
 
     if (stringBuilder.length() > 0) {
       return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
+    }else {
+      return "全关";
     }
 
-    return "";
   }
 }

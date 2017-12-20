@@ -242,6 +242,7 @@ public class LogicHelperMqtt {
     }
     csState.setCssSaving((byte) mqtt_68_03.getVehicleWorkingStatus());
     csState.setCssDoor(String.valueOf(mqtt_68_03.getDoorStatusWithMask()));
+    csState.setCssLight(mqtt_68_03.getLightStatusWithMask());
     csState.setCssMoData(message.getHexString());
     csState.setCssDir(String.valueOf(mqtt_68_03.getHeading()));
 
