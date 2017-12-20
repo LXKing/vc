@@ -1,23 +1,19 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.mongo.modify.UpdateCanService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
-
 import com.ccclubs.mongo.orm.model.CsHistoryCan;
 import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.pub.orm.model.CsCan;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author qsxiaogang
@@ -29,8 +25,6 @@ public class HistoryCanUtils {
   private static Logger logger = LoggerFactory.getLogger(HistoryCanUtils.class);
   @Resource
   private RedisTemplate redisTemplate;
-  @Autowired
-  UpdateCanService updateCanService;
 
   @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
   private String ip;
@@ -61,7 +55,8 @@ public class HistoryCanUtils {
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
 //    opsForList
 //        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
-    updateCanService.insertHis(canHistoryData);
+// add at 2017-12-20 历史数据不写 mongodb
+//    updateCanService.insertHis(canHistoryData);
     ListOperations opsForList = redisTemplate.opsForList();
     opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
   }
