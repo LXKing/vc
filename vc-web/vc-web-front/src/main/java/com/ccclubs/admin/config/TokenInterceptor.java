@@ -1,6 +1,8 @@
 package com.ccclubs.admin.config;
 
 import com.ccclubs.admin.util.UserAccessUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class TokenInterceptor  implements HandlerInterceptor {
 
+    Logger logger= LoggerFactory.getLogger(TokenInterceptor.class);
+
     @Autowired
     UserAccessUtils userAccessUtils;//FIXME 无法注入，为null
     /**
@@ -23,6 +27,7 @@ public class TokenInterceptor  implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         Cookie[] cookies=httpServletRequest.getCookies();
         if (cookies.length<=0){
+            logger.info("a request not have any cookies.");
             return false;
         }
         String token;
@@ -34,6 +39,7 @@ public class TokenInterceptor  implements HandlerInterceptor {
                 }
             }
         }
+        logger.info("a request do not have right token string.");
         return false;
     }
 

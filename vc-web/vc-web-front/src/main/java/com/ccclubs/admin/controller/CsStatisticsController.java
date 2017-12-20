@@ -11,6 +11,8 @@ import java.util.Map;
 
 import com.ccclubs.admin.resolver.CsStatisticsResolver;
 import com.ccclubs.admin.service.IReportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/monitor/statistics")
 public class CsStatisticsController {
 
+	Logger logger= LoggerFactory.getLogger(CsStatisticsController.class);
+
 	@Autowired
 	ICsStatisticsService csStatisticsService;
 	@Autowired
@@ -56,6 +60,7 @@ public class CsStatisticsController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public TableResult<CsStatistics> list(CsStatisticsQuery query, @RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer rows) {
+		query.setCssUnitTimeGreater(60*60*1000L);//查询的数据要是长间隔的计算数据。
 		PageInfo<CsStatistics> pageInfo = csStatisticsService.getPage(query.getCrieria(), page, rows);
 		List<CsStatistics> list = pageInfo.getList();
 		for(CsStatistics data : list){
@@ -152,6 +157,7 @@ public class CsStatisticsController {
 			os.write(bytes.toByteArray());
 			os.flush();
 			os.close();
+			logger.info("report a file:" + fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

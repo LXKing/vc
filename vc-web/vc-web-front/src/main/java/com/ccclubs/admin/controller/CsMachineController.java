@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ccclubs.admin.service.IReportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin/machine")
 public class CsMachineController {
+
+	Logger logger= LoggerFactory.getLogger(CsMachineController.class);
 
 	@Autowired
 	ICsMachineService csMachineService;
@@ -211,6 +215,7 @@ public class CsMachineController {
 			os.write(bytes.toByteArray());
 			os.flush();
 			os.close();
+			logger.info("report a file:"+fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

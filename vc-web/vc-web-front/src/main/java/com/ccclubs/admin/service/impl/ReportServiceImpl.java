@@ -4,6 +4,8 @@ import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.service.IReportService;
 import com.ccclubs.admin.util.ExportExcelTemp;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -13,7 +15,7 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements IReportService {
 
-
+    Logger logger= LoggerFactory.getLogger(ReportServiceImpl.class);
     /**
      * 车辆信息导出核心服务
      *
