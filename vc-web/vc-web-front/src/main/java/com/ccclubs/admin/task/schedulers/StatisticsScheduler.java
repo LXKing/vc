@@ -4,10 +4,8 @@ package com.ccclubs.admin.task.schedulers;
 import com.ccclubs.admin.task.jobs.StatisticsJob;
 import com.ccclubs.admin.util.EvManageContext;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +26,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
     protected static ApplicationContext context;
 
 
-    @Autowired
-    RedisTemplate redisTemplate;
+
 
 
 

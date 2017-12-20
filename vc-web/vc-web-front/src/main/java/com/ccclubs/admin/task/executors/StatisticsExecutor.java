@@ -1,6 +1,7 @@
 package com.ccclubs.admin.task.executors;
 
 
+import com.ccclubs.admin.constants.Constants;
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.entity.CsStateCrieria;
 import com.ccclubs.admin.entity.CsVehicleCrieria;
@@ -12,7 +13,12 @@ import com.ccclubs.admin.service.ICsMachineService;
 import com.ccclubs.admin.service.ICsStateService;
 import com.ccclubs.admin.service.ICsStatisticsService;
 import com.ccclubs.admin.service.ICsVehicleService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -28,6 +34,8 @@ import java.util.*;
 @Service
 public class StatisticsExecutor {
 
+    private static final Logger logger= LoggerFactory.getLogger(StatisticsExecutor.class);
+
     @Autowired
     private ICsVehicleService csVehicleService;
 
@@ -39,6 +47,8 @@ public class StatisticsExecutor {
 
     @Autowired
     private ICsStatisticsService csStatisticsService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
     /**
@@ -119,13 +129,13 @@ public class StatisticsExecutor {
 
     /**
      * 计算当前在线车辆数
-     * 方法：依据十分钟之内发过数据的车辆。//TODO 这里要区分当前在线和当天在线。
+     * 方法：依据十分钟之内发过数据的车辆。
      * */
-    public int calculateOnlineNum(List<CsState> csStateList) {
+    public int calculateOnlineNum(List<CsState> csStateList,Long unitTime) {
         int count=0;
         if (null!=csStateList&&csStateList.size()>0){
             for (CsState csState:csStateList){
-                if (System.currentTimeMillis()-csState.getCssCurrentTime().getTime()<10*60*1000){
+                if (System.currentTimeMillis()-csState.getCssCurrentTime().getTime()<unitTime){
                     count++;
                 }
             }
@@ -136,13 +146,13 @@ public class StatisticsExecutor {
 
     /**
      * 计算离线车辆数
-     * 方法：距离现在已经10分钟没发数据上来。//todo 同在线
+     * 方法：距离现在已经10分钟没发数据上来。
      * */
-    public int calculateOfflineNum(List<CsState> csStateList) {
+    public int calculateOfflineNum(List<CsState> csStateList,Long unitTime) {
         int count=0;
         if (null!=csStateList&&csStateList.size()>0){
             for (CsState csState:csStateList){
-                if (!(System.currentTimeMillis()-csState.getCssCurrentTime().getTime()<10*60*1000)){
+                if (!(System.currentTimeMillis()-csState.getCssCurrentTime().getTime()<unitTime)){
                     count++;
                 }
             }
@@ -153,17 +163,29 @@ public class StatisticsExecutor {
 
     /**
      * 计算当前充电数
-     * 方法：依据当前的充电状态
+     * 方法：依据当前的充电状态//TODO 需要做一个set集合进redis 注意redis要遍历清除set
      * */
     public int calculateChargingNum(List<CsState> csStateList) {
         int count=0;
         if (null!=csStateList&&csStateList.size()>0){
             for (CsState csState:csStateList){
                 if (0!=csState.getCssCharging()){
+                    redisTemplate.opsForSet().add(Constants.REDIS_KEY_CHARGEING_CAR_SET,csState.getCssCar());
                     count++;
                 }
             }
         }
+        return count;
+    }
+
+    /**
+     * 计算一天整天的（长间隔）的充电车辆总数，
+     * 方法：从redis取出由短间隔计算的充电车辆数的集合做count。
+     * */
+    public int calculateLongTimeChargingNum(){
+        int count=0;
+        //FIXME 这里需要删除大量key操作
+        count= redisTemplate.opsForSet().size(Constants.REDIS_KEY_CHARGEING_CAR_SET).intValue();
         return count;
     }
 
@@ -179,10 +201,30 @@ public class StatisticsExecutor {
                         ||1==csState.getCssEngine()
                         ||csState.getCssMotor()>0
                         ||csState.getCssSpeed()>0){
+                    redisTemplate.opsForSet().add(Constants.REDIS_KEY_RUNNING_CAR_SET,csState.getCssCar());
                     count++;
                 }
             }
         }
+        return count;
+    }
+
+    /**
+     * 计算一天整天的（长间隔）的运行车辆总数，
+     * 方法：从redis取出由短间隔计算的运行车辆数的集合做count。
+     * */
+    public int calculateLongTimeRunNum(){
+        int count=0;
+        count= redisTemplate.opsForSet().size(Constants.REDIS_KEY_RUNNING_CAR_SET).intValue();
+        //FIXME 这里需要删除S大量key操作
+        //一次删除500个。
+        /*canOptions scanOptions= ScanOptions.scanOptions().count(500).build();
+
+        Cursor cursor= redisTemplate.opsForSet().scan(Constants.REDIS_KEY_RUNNING_CAR_SET,scanOptions);
+
+        while (cursor.hasNext()){
+
+        }*/
         return count;
     }
 
@@ -215,16 +257,39 @@ public class StatisticsExecutor {
     /**
      * 计算增量里程
      * 初步想法是拿到昨天的总里程值与今天的相减
+     * //注意此方法要在calculateTotalMileage()之后调用。
      * */
-    public long calculateIncrementMileage(List<CsState> csStateList) {
-        int count=0;
-        if (null!=csStateList&&csStateList.size()>0){
-
-            //TODO 这里要取CsStatists相减。
+    public long calculateIncrementMileage(float nowTotalMileage,Long unitTime) {
+        Float count=0F;
+        //这里又两个逻辑，第一个是要取离现在最近的时间的
+        //第二个是要取时间间隔相同的，如果没有则视为0.
+        //注意这里会不会超过long的大小。
+        float pastTotalMileage=0;
+        CsStatistics csStatistics=new CsStatistics();
+        csStatistics.setCssUnitTime(unitTime);
+        List<CsStatistics> csStatisticsList= csStatisticsService.select(csStatistics);
+        if (null!=csStatisticsList&&csStatisticsList.size()>0){
+            if (csStatisticsList.size()==1){
+                pastTotalMileage=csStatisticsList.get(0).getCssTotalMileage();
+            }
+            else {
+                for (CsStatistics c:csStatisticsList) {
+                    if (c.getCssTotalMileage()>pastTotalMileage){
+                        pastTotalMileage=c.getCssTotalMileage();
+                    }
+                }
+            }
         }
-        return count;
+        count=nowTotalMileage-pastTotalMileage;
+        if (count<0){
+            logger.warn("计算出了一个增量里程为负的数据："
+                    +"nowTotalMileage:"+nowTotalMileage
+                    +"unitTime:"+unitTime
+                    +"pastTotalMileage:"+pastTotalMileage);
+            count=0F;
+        }
+        return count.longValue();
     }
-
 
     //TODO 根据Hbase来计算下面三个函数所需的值。
     //TODO 随时注意以下三个方法的时间消耗！
@@ -241,8 +306,6 @@ public class StatisticsExecutor {
      *此方法可以参考calculateTotalCharge的思想，找出所有的驾驶阶段并把时间相加。
      * */
     public long calculateTotalRunTime(){return 0;}
-
-
 
     public void saveResult(CsStatistics csStatistics){
         csStatisticsService.insert(csStatistics);
