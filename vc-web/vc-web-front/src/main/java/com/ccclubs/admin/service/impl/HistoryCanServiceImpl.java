@@ -20,6 +20,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ import java.util.List;
 @Service
 public class HistoryCanServiceImpl  implements IHistoryCanService{
 
+    Logger logger= LoggerFactory.getLogger(HistoryCanServiceImpl.class);
     @Value("${hbaseSrv.host:101.37.178.63}")
     private String host;
     @Value("${hbaseSrv.urlPathCan:/history/cans}")

@@ -1,35 +1,31 @@
 package com.ccclubs.admin.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.admin.model.CsIndexReport;
+import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
+import com.ccclubs.admin.service.ICsIndexReportService;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.vo.CsIndexReportInput;
+import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.commons.lang3.StringUtils;
-
-import com.ccclubs.admin.vo.TableResult;
-
-import com.ccclubs.admin.entity.CsIndexReportCrieria;
-import com.ccclubs.admin.model.CsIndexReport;
-import com.ccclubs.admin.service.ICsIndexReportService;
-import com.ccclubs.admin.query.CsIndexReportQuery;
-import com.ccclubs.admin.vo.VoResult;
-import com.github.pagehelper.PageInfo;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 指标统计Controller
@@ -41,6 +37,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/monitor/analysis/quota")
 public class CsIndexReportController {
+
+	Logger logger= LoggerFactory.getLogger(CsIndexReportController.class);
 
 	@Autowired
 	ICsIndexReportService csIndexReportService;
@@ -214,6 +212,7 @@ public class CsIndexReportController {
 			os.write(bytes.toByteArray());
 			os.flush();
 			os.close();
+			logger.info("report a file:"+fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
