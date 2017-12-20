@@ -60,6 +60,7 @@ public class CsStatisticsController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public TableResult<CsStatistics> list(CsStatisticsQuery query, @RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer rows) {
+		query.setCssUnitTimeGreater(60*60*1000L);//查询的数据要是长间隔的计算数据。
 		PageInfo<CsStatistics> pageInfo = csStatisticsService.getPage(query.getCrieria(), page, rows);
 		List<CsStatistics> list = pageInfo.getList();
 		for(CsStatistics data : list){

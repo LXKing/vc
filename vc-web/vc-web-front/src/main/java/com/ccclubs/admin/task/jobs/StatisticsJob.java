@@ -36,6 +36,20 @@ public class StatisticsJob implements Runnable {
 
     @Override
     public void run() {
+        if (this.unitTime>8*60*60*1000L){
+            //长间隔统计
+            longTimeJob();
+        }else {
+            shortTimeJob();
+        }
+
+    }
+
+    private void longTimeJob(){
+
+    }
+
+    private void  shortTimeJob(){
         CsStatistics csStatistics=new CsStatistics();
         csStatistics.setCssCarModel(5);
         csStatistics.setCssUnitTime(this.unitTime);
@@ -56,7 +70,6 @@ public class StatisticsJob implements Runnable {
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
 
         statisticsExecutor.saveResult(csStatistics);
-
     }
 
 

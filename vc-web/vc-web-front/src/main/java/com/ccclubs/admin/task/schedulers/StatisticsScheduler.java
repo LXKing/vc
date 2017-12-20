@@ -36,23 +36,14 @@ public class StatisticsScheduler implements ApplicationContextAware {
     /**
      * 每隔一定的时间计算一次状态数据并且存入数据库。
      * */
-    //TODO 这里应该为可以配置的时间大小。
+    //TODO 测试完成后记得调整时间间隔。
     @Scheduled(cron="0/8 * * * * ?")
     public void shortTimeJob(){
-        System.out.println("执行了一次  8秒钟间隔的计算。");
+        System.out.println("执行了一次  30分钟间隔的计算。");
         long unitTime=30*60*1000;
         EvManageContext.getThreadPool().execute(new StatisticsJob(unitTime));
-        /*EvManageContext.getThreadPool().execute(new Runnable() {
-            int i=0;
-            @Override
-            public void run() {
-                System.out.println(i++);
 
-            }
-        });*/
     }
-
-    //TODO 请在后期开启定时任务。或迁移到其他模块。
 
     @Scheduled(cron="0 0 0 * * ?")
     public void everyDayJob(){
