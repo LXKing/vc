@@ -178,9 +178,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "(" +
                 "CS_VIN," +
                 "ADD_TIME," +
-                "YEAR," +
-                "MONTH," +
-                "DAY," +
+
                 "CURRENT_TIME," +
                 "GB_DATA," +
                 "CS_ACCESS," +
@@ -193,9 +191,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "(" +
                 "?, " + //CS_VIN
                 "?, " + //ADD_TIME
-                "?, " + //YEAR
-                "?, " + //MONTH
-                "?, " + //DAY
                 "?, " + //CURRENT_TIME
                 "?, " + //GB_DATA
                 "?, " + //CS_ACCESS
@@ -208,9 +203,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 CarGb carGb = records.get(i);
                 String cs_vin = carGb.getCs_vin();
                 Long add_time = carGb.getAdd_time();
-                Integer year = DateTimeUtil.getYear(add_time);
-                Integer month = DateTimeUtil.getMonth(add_time);
-                Integer day = DateTimeUtil.getDay(add_time);
+
                 Long current_time = carGb.getCurrent_time();
                 String gb_data = carGb.getGb_data();
                 Integer cs_access = carGb.getCs_access();
@@ -219,34 +212,31 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 Integer cs_verify = carGb.getCs_verify();
                 carGbPs.setString(1,cs_vin);
                 carGbPs.setLong(2,add_time);
-                carGbPs.setInt(3,year);
-                carGbPs.setInt(4,month);
-                carGbPs.setInt(5,day);
                 if (current_time == null) {
-                    carGbPs.setNull(6, Types.BIGINT);
+                    carGbPs.setNull(3, Types.BIGINT);
                 } else {
-                    carGbPs.setLong(6, current_time);
+                    carGbPs.setLong(3, current_time);
                 }
-                carGbPs.setString(7,gb_data);
+                carGbPs.setString(4,gb_data);
                 if (cs_access == null){
-                    carGbPs.setNull(8,Types.INTEGER);
+                    carGbPs.setNull(5,Types.INTEGER);
                 }else {
-                    carGbPs.setInt(8, cs_access);
+                    carGbPs.setInt(5, cs_access);
                 }
                 if (cs_protocol == null){
-                    carGbPs.setNull(9,Types.INTEGER);
+                    carGbPs.setNull(6,Types.INTEGER);
                 }else {
-                    carGbPs.setInt(9, cs_protocol);
+                    carGbPs.setInt(6, cs_protocol);
                 }
                 if (gb_type == null){
-                    carGbPs.setNull(10,Types.INTEGER);
+                    carGbPs.setNull(7,Types.INTEGER);
                 }else {
-                    carGbPs.setInt(10, gb_type);
+                    carGbPs.setInt(7, gb_type);
                 }
                 if (cs_verify == null){
-                    carGbPs.setNull(11,Types.INTEGER);
+                    carGbPs.setNull(8,Types.INTEGER);
                 }else {
-                    carGbPs.setInt(11, cs_verify);
+                    carGbPs.setInt(8, cs_verify);
                 }
             }
 
