@@ -3,6 +3,7 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.utils.EnvironmentUtils;
@@ -12,7 +13,6 @@ import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
-import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.CsLogger;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
@@ -501,6 +501,9 @@ public class ParseDataService implements IParseDataService {
       boolean isCanState) {
     try {
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
+      if (mapping.getCar() == null) {
+        return;
+      }
       CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
       if (csMachine == null || csVehicle == null) {
         return;
