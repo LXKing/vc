@@ -31,6 +31,10 @@ public class AdminFrontApp extends SpringBootServletInitializer {
   }
 
   public static void main(String[] args) {
-    SpringApplication.run(AdminFrontApp.class, args);
+
+    SpringApplication springApplication= new SpringApplication(AdminFrontApp.class);
+    springApplication.addListeners(new AppContext());
+    springApplication.run(args);
+
   }
 }

@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -51,6 +52,8 @@ public class StatisticsExecutor {
     @Autowired
     RedisTemplate redisTemplate;
 
+    public StatisticsExecutor(){}
+
 
     /**
      * 依据时间和车机号列表查询状态数据
@@ -66,7 +69,7 @@ public class StatisticsExecutor {
                 Date lowerLimitTime=new Date(System.currentTimeMillis()-intervalTime);
                 criteria.andcssCurrentTimeGreaterThan(lowerLimitTime);
             }
-            csStateList=csStateService.selectByExample(criteria);
+            csStateList=csStateService.selectByExample(csStateCrieria);
         }
 
         return csStateList;
@@ -81,7 +84,7 @@ public class StatisticsExecutor {
             CsStateCrieria csStateCrieria=new CsStateCrieria();
             CsStateCrieria.Criteria criteria=csStateCrieria.createCriteria();
             criteria.andcssNumberIn(csNumbers);
-            csStateList=csStateService.selectByExample(criteria);
+            csStateList=csStateService.selectByExample(csStateCrieria);
         }
         return csStateList;
 
@@ -99,7 +102,7 @@ public class StatisticsExecutor {
         CsVehicleCrieria.Criteria criteriaVehicle=csVehicleCrieria.createCriteria();
         criteriaVehicle.andcsvModelEqualTo(modelId);
         if (null!=modelId){
-            csVehicleList=csVehicleService.selectByExample(criteriaVehicle);
+            csVehicleList=csVehicleService.selectByExample(csVehicleCrieria);
         }
         if (null!=csVehicleList&&csVehicleList.size()>0){
             for (CsVehicle csVehicle:csVehicleList){
@@ -114,7 +117,7 @@ public class StatisticsExecutor {
             CsMachineCrieria csMachineCrieria=new CsMachineCrieria();
             CsMachineCrieria.Criteria criteriaMachine=csMachineCrieria.createCriteria();
             criteriaMachine.andcsmIdIn(csMachineIds);
-            List<CsMachine> csMachineList=csMachineService.selectByExample(criteriaMachine);
+            List<CsMachine> csMachineList=csMachineService.selectByExample(csMachineCrieria);
 
             if (null!=csMachineList&&csMachineList.size()>0){
                 stringList=new ArrayList<>();

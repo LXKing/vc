@@ -1,11 +1,11 @@
 package com.ccclubs.admin.task.jobs;
 
-import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.admin.AppContext;
 import com.ccclubs.admin.model.CsState;
 import com.ccclubs.admin.model.CsStatistics;
 import com.ccclubs.admin.task.executors.StatisticsExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
@@ -17,8 +17,13 @@ import java.util.List;
  * Time: 10:52
  * Email:fengjun@ccclubs.com
  */
-@Component
+@Service("StatisticsJob")
 public class StatisticsJob implements Runnable {
+
+
+    public void setUnitTime(long unitTime) {
+        this.unitTime = unitTime;
+    }
 
     private long unitTime;
 
@@ -91,7 +96,9 @@ public class StatisticsJob implements Runnable {
         statisticsExecutor.saveResult(csStatistics);
     }
 
-
+    public static StatisticsJob getFromApplication(){
+        return AppContext.CTX.getBean(StatisticsJob.class);
+    }
 
 
 }

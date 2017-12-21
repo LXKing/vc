@@ -34,11 +34,13 @@ public class StatisticsScheduler implements ApplicationContextAware {
      * 每隔一定的时间计算一次状态数据并且存入数据库。
      * */
     //TODO 测试完成后记得调整时间间隔。
-    @Scheduled(cron="0/8 * * * * ?")
+    @Scheduled(cron="0 0/30 * * * ?")
     public void shortTimeJob(){
         System.out.println("执行了一次  30分钟间隔的计算。");
         long unitTime=30*60*1000;
-        EvManageContext.getThreadPool().execute(new StatisticsJob(unitTime));
+        StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
+        statisticsJob.setUnitTime(unitTime);
+        EvManageContext.getThreadPool().execute(statisticsJob);
 
     }
 
@@ -46,7 +48,9 @@ public class StatisticsScheduler implements ApplicationContextAware {
     public void everyDayJob(){
         System.out.println("执行了一次  12点定时的计算。");
         long unitTime=24*60*60*1000;
-        EvManageContext.getThreadPool().execute(new StatisticsJob(unitTime));
+        StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
+        statisticsJob.setUnitTime(unitTime);
+        EvManageContext.getThreadPool().execute(statisticsJob);
     }
 
 
