@@ -1,12 +1,11 @@
 package com.ccclubs.engine.rule.inf.util;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.mongo.orm.model.CsHistoryState;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.pub.orm.model.CsState;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -100,7 +99,8 @@ public class HistoryStateUtils extends ConvertUtils {
     // 需要更新的当前状态加入等待队列
     ListOperations opsForList = redisTemplate.opsForList();
 //    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
-    updateStateService.insertHis(historyState);
+    // add at 2017-12-20 历史数据不写mongodb
+//    updateStateService.insertHis(historyState);
     opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
   }
 

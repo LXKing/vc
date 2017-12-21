@@ -1,12 +1,11 @@
 package com.ccclubs.admin.service.impl;
 
-import com.ccclubs.admin.model.CsMachine;
-import com.ccclubs.admin.model.CsStatistics;
-import com.ccclubs.admin.model.CsVehicle;
-import com.ccclubs.admin.model.HistoryState;
+import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.service.IReportService;
 import com.ccclubs.admin.util.ExportExcelTemp;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -16,7 +15,7 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements IReportService {
 
-
+    Logger logger= LoggerFactory.getLogger(ReportServiceImpl.class);
     /**
      * 车辆信息导出核心服务
      *
@@ -116,6 +115,26 @@ public class ReportServiceImpl implements IReportService {
         String sheetName="Statistics";
         return baseReportService(headersExit,sheetName,csStatisticsList);
 
+    }
+
+    /**
+     * 指标数据导出核心服务
+     *
+     * @param csIndexReportList 依据条件查询得到的结果（一般为当前页）。
+     * @return 已经生成为文件的二进制流。
+     */
+    @Override
+    public ByteArrayOutputStream reportIndexReport(List<CsIndexReport> csIndexReportList) {
+        //表头与字段顺序对应
+        String[] headersExit ={
+                "车辆VIN码","车机号",
+                "月均行驶里程(KM)","平均单日运行时间","百公里耗电量",
+                "车辆纯电续驶里程","最大充电功率","车辆一次充满电所用最少时间",
+                "累计行驶里程","累计充电量","数据类型",
+                "此行创建时间","此行更新时间","车辆出厂日期"
+                };
+        String sheetName="IndexReport";
+        return baseReportService(headersExit,sheetName,csIndexReportList);
     }
 
 

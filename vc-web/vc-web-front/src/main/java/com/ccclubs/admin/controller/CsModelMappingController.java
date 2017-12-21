@@ -80,6 +80,9 @@ public class CsModelMappingController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(CsModelMapping data){
+		if (null == data.getUpdateTime()){
+			data.setUpdateTime(new Date());
+		}
 		csModelMappingService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}

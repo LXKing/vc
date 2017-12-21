@@ -1,6 +1,7 @@
 package com.ccclubs.admin.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,12 @@ public class SrvHostController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(SrvHost data){
+		if (null == data.getShAddTime()){
+			data.setShAddTime(new Date());
+		}
+		if (null == data.getShUptTime()){
+			data.setShUptTime(new Date());
+		}
 		srvHostService.insert(data);
 		return VoResult.success();
 	}
@@ -73,6 +80,9 @@ public class SrvHostController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(SrvHost data){
+		if (null == data.getShUptTime()){
+			data.setShUptTime(new Date());
+		}
 		srvHostService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}
@@ -82,7 +92,7 @@ public class SrvHostController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		srvHostService.batchDelete(ids);
 		return VoResult.success();
 	}

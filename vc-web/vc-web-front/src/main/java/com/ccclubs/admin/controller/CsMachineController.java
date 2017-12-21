@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.ccclubs.admin.service.IReportService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +42,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/admin/machine")
 public class CsMachineController {
+
+	Logger logger= LoggerFactory.getLogger(CsMachineController.class);
 
 	@Autowired
 	ICsMachineService csMachineService;
@@ -72,6 +77,39 @@ public class CsMachineController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(CsMachine data){
+		if (null == data.getCsmAddTime()){
+			data.setCsmAddTime(new Date());
+		}
+		if (null == data.getCsmUpdateTime()){
+			data.setCsmUpdateTime(new Date());
+		}
+		if (null == data.getCsmHost()){
+			data.setCsmHost(0);
+		}
+		CsMachine existMachine;
+
+		CsMachine conditionNumberMachine = new CsMachine();
+		conditionNumberMachine.setCsmNumber(data.getCsmNumber());
+		existMachine= csMachineService.selectOne(conditionNumberMachine);
+		if (null != existMachine){
+			return VoResult.error("30001",String.format("车机号 %s 已存在",data.getCsmNumber()));
+		}
+
+
+		CsMachine conditionMobileMachine = new CsMachine();
+		conditionMobileMachine.setCsmMobile(data.getCsmMobile());
+		existMachine = csMachineService.selectOne(conditionMobileMachine);
+		if (null != existMachine){
+			return VoResult.error("30002",String.format("手机号 %s 已存在",data.getCsmMobile()));
+		}
+
+		CsMachine conditionTeNoMachine = new CsMachine();
+		conditionTeNoMachine.setCsmTeNo(data.getCsmTeNo());
+		existMachine = csMachineService.selectOne(conditionTeNoMachine);
+		if (null != existMachine){
+			return VoResult.error("30003",String.format("终端序列号 %s 已存在",data.getCsmTeNo()));
+		}
+
 		csMachineService.insert(data);
 		return VoResult.success();
 	}
@@ -83,6 +121,34 @@ public class CsMachineController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(CsMachine data){
+		if (null == data.getCsmUpdateTime()){
+			data.setCsmUpdateTime(new Date());
+		}
+
+		CsMachine existMachine;
+
+		CsMachine conditionNumberMachine = new CsMachine();
+		conditionNumberMachine.setCsmNumber(data.getCsmNumber());
+		existMachine= csMachineService.selectOne(conditionNumberMachine);
+		if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())){
+			return VoResult.error("30001",String.format("车机号 %s 已存在",data.getCsmNumber()));
+		}
+
+
+		CsMachine conditionMobileMachine = new CsMachine();
+		conditionMobileMachine.setCsmMobile(data.getCsmMobile());
+		existMachine = csMachineService.selectOne(conditionMobileMachine);
+		if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())){
+			return VoResult.error("30002",String.format("手机号 %s 已存在",data.getCsmMobile()));
+		}
+
+		CsMachine conditionTeNoMachine = new CsMachine();
+		conditionTeNoMachine.setCsmTeNo(data.getCsmTeNo());
+		existMachine = csMachineService.selectOne(conditionTeNoMachine);
+		if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())){
+			return VoResult.error("30003",String.format("终端序列号 %s 已存在",data.getCsmTeNo()));
+		}
+
 		csMachineService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}
@@ -92,7 +158,7 @@ public class CsMachineController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		csMachineService.batchDelete(ids);
 		return VoResult.success();
 	}
@@ -211,6 +277,7 @@ public class CsMachineController {
 			os.write(bytes.toByteArray());
 			os.flush();
 			os.close();
+			logger.info("report a file:"+fileName);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

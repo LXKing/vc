@@ -78,34 +78,34 @@
 
 <script src="/js/moment.js"></script>
 <script type="text/javascript">
-  var $csNumber = $("input[name='csNumberEquals']");
-  var $startTime = $("input[name='currentTimeStart']");
-  var $endTime = $("input[name='currentTimeEnd']");
-  var currPage=1;
+    /*var $csNumber = $("input[name='csNumberEquals']");
+    var $startTime = $("input[name='currentTimeStart']");
+    var $endTime = $("input[name='currentTimeEnd']");*/
+    var currPage=1;
 
-  function checkParams() {
-    if ($csNumber.val() === '' || typeof($csNumber.val()) === 'undefined') {
-      layer.msg('请选择一个车', {icon: 7, time: 1600});
-      return false;
+    function checkParams() {
+        if ($("input[name='csNumberEquals']").val() === '' || typeof($("input[name='csNumberEquals']").val()) === 'undefined') {
+            layer.msg('请选择一个车机号', {icon: 7, time: 1600});
+            return false;
+        }
+
+        if ($("input[name='currentTimeStart']").val() === '' || typeof($("input[name='currentTimeStart']").val()) === 'undefined') {
+            layer.msg('请选择开始时间', {icon: 7, time: 1600});
+            return false;
+        }
+
+        if ($("input[name='currentTimeEnd']").val() === '' || typeof($("input[name='currentTimeEnd']").val()) === 'undefined') {
+            layer.msg('请选择结束时间', {icon: 7, time: 1600});
+            return false;
+        }
+
+        if (moment($("input[name='currentTimeStart']").val()).diff(moment($("input[name='currentTimeEnd']").val()), 'seconds') >= 0) {
+            layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
+            return false;
+        }
+
+        return true;
     }
-
-    if ($startTime.val() === '' || typeof($startTime.val()) === 'undefined') {
-      layer.msg('请选择开始时间', {icon: 7, time: 1600});
-      return false;
-    }
-
-    if ($endTime.val() === '' || typeof($endTime.val()) === 'undefined') {
-      layer.msg('请选择结束时间', {icon: 7, time: 1600});
-      return false;
-    }
-
-      if (moment($startTime.val()).diff(moment($endTime.val()), 'seconds') >= 0) {
-        layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
-        return false;
-      }
-
-    return true;
-  }
 
 	var operate = {
 		getGrid:function(){

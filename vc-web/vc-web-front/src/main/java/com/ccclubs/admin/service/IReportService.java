@@ -1,9 +1,6 @@
 package com.ccclubs.admin.service;
 
-import com.ccclubs.admin.model.CsMachine;
-import com.ccclubs.admin.model.CsStatistics;
-import com.ccclubs.admin.model.CsVehicle;
-import com.ccclubs.admin.model.HistoryState;
+import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.frm.base.BaseService;
 
@@ -44,5 +41,12 @@ public interface IReportService {
      * @return 已经生成为文件的二进制流。
      * */
     ByteArrayOutputStream reportStatistics(List<CsStatistics> csStatisticsList);
+
+    /**
+     * 指标数据导出核心服务
+     * @param csIndexReportList 依据条件查询得到的结果（一般为当前页）。
+     * @return 已经生成为文件的二进制流。
+     * */
+    ByteArrayOutputStream reportIndexReport(List<CsIndexReport> csIndexReportList);
 
 }

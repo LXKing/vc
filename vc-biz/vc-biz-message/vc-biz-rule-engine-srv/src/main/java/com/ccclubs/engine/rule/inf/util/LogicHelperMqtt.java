@@ -2,12 +2,12 @@ package com.ccclubs.engine.rule.inf.util;
 
 
 import com.ccclubs.common.aop.Timer;
-import com.ccclubs.mongo.modify.UpdateCanService;
-import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.mongo.modify.UpdateCanService;
+import com.ccclubs.mongo.modify.UpdateStateService;
 import com.ccclubs.mongo.orm.dao.CsAlarmDao;
 import com.ccclubs.mongo.orm.model.CsAlarm;
 import com.ccclubs.protocol.dto.mqtt.MQTT_43;
@@ -84,8 +84,8 @@ public class LogicHelperMqtt {
   public void saveStatusData(final MachineMapping mapping, final MqMessage message,
       final MQTT_66 mqtt_66) {
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess().intValue());
-    csMachine.setCsmHost(mapping.getHost().intValue());
+    csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+    csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
     CsVehicle csVehicle = new CsVehicle();
@@ -189,8 +189,8 @@ public class LogicHelperMqtt {
       return;
     }
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess().intValue());
-    csMachine.setCsmHost(mapping.getHost().intValue());
+    csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+    csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
     CsVehicle csVehicle = new CsVehicle();
@@ -242,6 +242,7 @@ public class LogicHelperMqtt {
     }
     csState.setCssSaving((byte) mqtt_68_03.getVehicleWorkingStatus());
     csState.setCssDoor(String.valueOf(mqtt_68_03.getDoorStatusWithMask()));
+    csState.setCssLight(mqtt_68_03.getLightStatusWithMask());
     csState.setCssMoData(message.getHexString());
     csState.setCssDir(String.valueOf(mqtt_68_03.getHeading()));
 
@@ -290,8 +291,8 @@ public class LogicHelperMqtt {
   public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
       CanStatusZotye canZotye) {
     CsMachine csMachine = new CsMachine();
-    csMachine.setCsmAccess(mapping.getAccess().intValue());
-    csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
+    csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+    csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
     csMachine.setCsmNumber(mapping.getNumber());
 
     CsVehicle csVehicle = new CsVehicle();

@@ -73,7 +73,7 @@ public class LogicHelperJt808 {
       final JT_0200 jvi) {
     try {
       CsMachine csMachine = new CsMachine();
-      csMachine.setCsmAccess(mapping.getAccess().intValue());
+      csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
       csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
       csMachine.setCsmNumber(mapping.getNumber());
 
@@ -85,7 +85,9 @@ public class LogicHelperJt808 {
       }
 
       if (mapping.getState() != null) {
-        CsState csState = new CsState();
+        CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
+        // 设置 CAR
+        csState.setCssCar(mapping.getCar() == null ? 0 : mapping.getCar().intValue());
         csState.setCssCsq(jvi.getCsq());
         csState.setCssCurrentTime(StringUtils.date(jvi.getTime(), ConstantUtils.TIME_FORMAT));
         csState.setCssAddTime(new Date());
@@ -191,8 +193,8 @@ public class LogicHelperJt808 {
       final JT_0900_can canData) {
     try {
       CsMachine csMachine = new CsMachine();
-      csMachine.setCsmAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
-      csMachine.setCsmHost(mapping.getHost() == null ? null : mapping.getHost().intValue());
+      csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+      csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
       csMachine.setCsmNumber(mapping.getNumber());
 
       CsVehicle csVehicle = new CsVehicle();

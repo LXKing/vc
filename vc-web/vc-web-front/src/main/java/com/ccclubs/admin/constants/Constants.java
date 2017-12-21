@@ -65,4 +65,8 @@ public class Constants
     
     /** 存放需要校验权限 **/
     public static final String USER_LIMIT = "userLimit";
+    /** 当前充电车辆缓存**/
+    public static final String REDIS_KEY_CHARGEING_CAR_SET="CAR:CHARGEING:SET:";
+    /** 当前运行车辆缓存**/
+    public static final String REDIS_KEY_RUNNING_CAR_SET="CAR:RUNNING:SET:";
 }

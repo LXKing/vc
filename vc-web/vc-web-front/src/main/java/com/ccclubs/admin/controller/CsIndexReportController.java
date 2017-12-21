@@ -1,28 +1,31 @@
 package com.ccclubs.admin.controller;
 
-import java.util.*;
-
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.admin.model.CsIndexReport;
+import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
+import com.ccclubs.admin.service.ICsIndexReportService;
+import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.vo.CsIndexReportInput;
+import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.apache.commons.lang3.StringUtils;
 
-import com.ccclubs.admin.vo.TableResult;
-
-import com.ccclubs.admin.entity.CsIndexReportCrieria;
-import com.ccclubs.admin.model.CsIndexReport;
-import com.ccclubs.admin.service.ICsIndexReportService;
-import com.ccclubs.admin.query.CsIndexReportQuery;
-import com.ccclubs.admin.vo.VoResult;
-import com.github.pagehelper.PageInfo;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 指标统计Controller
@@ -35,11 +38,15 @@ import com.github.pagehelper.PageInfo;
 @RequestMapping("/monitor/analysis/quota")
 public class CsIndexReportController {
 
+	Logger logger= LoggerFactory.getLogger(CsIndexReportController.class);
+
 	@Autowired
 	ICsIndexReportService csIndexReportService;
 
 	@Reference(version="1.0.0")
 	private CsIndexQuotaInf csIndexQuotaInf;
+	@Autowired
+	IReportService reportService;
 
 
 	/**
@@ -130,7 +137,7 @@ public class CsIndexReportController {
 			csIndexReportCopy.setCumulativeMileage(csIndexReport.getCumulativeMileage().doubleValue());
 			csIndexReportCopy.setDataType(csIndexReport.getDataType());
 			csIndexReportCopy.setElectricRange(csIndexReport.getElectricRange().doubleValue());
-			System.out.println("时间是"+DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
+			//System.out.println("时间是"+DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
 			csIndexReportCopy.setFacTime(DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
 			csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
 			csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
@@ -153,47 +160,70 @@ public class CsIndexReportController {
 			data.registResolver(CsIndexReportResolver.数据类型.getResolver());
 		}
 	}
-	
-	/**
-	 * 获取单条指标统计信息
-	 */
-	/*@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
-	public VoResult<Map<String, CsIndexReport>> detail(@PathVariable(required = true) Long id){
-		CsIndexReport data = csIndexReportService.selectByPrimaryKey( id.intValue());
-		Map<String, CsIndexReport> map = new HashMap<String, CsIndexReport>();
-		registResolvers(data);
-		map.put("tbody", data);
-		return VoResult.success().setValue(map);
-	}*/
-	
-	
-	/**
-	 * 根据文本检索指标统计信息
-	 */
-	/*@RequestMapping(value="/query", method = RequestMethod.GET)
-	public VoResult<Map<String, List<Map<String, Object>>>> query(String text , String where , CsIndexReport queryRecord){
-		CsIndexReportCrieria query = new CsIndexReportCrieria();
-		CsIndexReportCrieria.Criteria c = query.createCriteria();
-		if(!StringUtils.isEmpty(text)){
-			Long val = Long.valueOf(text);
-			c.andidEqualTo(val);
-		}
-		if(!StringUtils.isEmpty(where)){
-			Long val = Long.valueOf(where);
-			c.andidEqualTo(val);
-		}
-		PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query, 0, 10);
-		List<CsIndexReport> list = pageInfo.getList();
 
-		List<Map<String, Object>> mapList = new ArrayList<Map<String,Object>>(list.size());
-		Map<String, Object> map ;
-		for (CsIndexReport data : list) {
-			map = new HashMap<String, Object>();
-			map.put("value", data.getid());
-			map.put("text", data.getid());
-			mapList.add(map);
+
+
+
+	@RequestMapping(value = "/report", method = RequestMethod.GET)
+	public void getReport(HttpServletResponse res,
+						  CsIndexReportQuery query,
+						  @RequestParam(defaultValue = "0") Integer page,
+						  @RequestParam(defaultValue = "10") Integer rows) {
+		//PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query.getCrieria(), page, rows);
+		CsIndexReportInput csIndexReportInput=new CsIndexReportInput();
+		csIndexReportInput.setCsNumber(query.getCsNumberEquals());
+		csIndexReportInput.setCsVin(query.getCsVinEquals());
+		csIndexReportInput.setPageNum(page);
+		csIndexReportInput.setPageSize(rows);
+		PageInfo<com.ccclubs.quota.orm.model.CsIndexReport> pageInfoFromQuota=csIndexQuotaInf.bizQuota(csIndexReportInput);
+		List<com.ccclubs.quota.orm.model.CsIndexReport> csIndexReportFromQuotaList=pageInfoFromQuota.getList();
+		PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
+		copyPageInfo(pageInfo,pageInfoFromQuota);
+
+		List<CsIndexReport> list = new ArrayList<>();//pageInfo.getList();
+		if (null!=csIndexReportFromQuotaList&&csIndexReportFromQuotaList.size()>0){
+			for (int i=0;i<csIndexReportFromQuotaList.size();i++) {
+				CsIndexReport csIndexReport=new CsIndexReport();
+				dealCsIndexReportFromQuotaToThis(csIndexReport,csIndexReportFromQuotaList.get(i));
+				list.add(csIndexReport);
+			}
 		}
-		return VoResult.success().setValue(mapList);
-	}*/
-	
+		pageInfo.setList(list);
+		for(CsIndexReport data : list){
+			registResolvers(data);
+		}
+
+		OutputStream os = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String dateNowStr = sdf.format(System.currentTimeMillis());
+		/**
+		 * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
+		 * */
+		String fileName = "IndexReport_" + page + "_" + rows + "_" + dateNowStr + ".xls";
+		try {
+			res.setHeader("content-type", "application/vnd.ms-excel");
+			res.setContentType("application/vnd.ms-excel");
+			res.setHeader("Content-Disposition",
+					"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+			os = res.getOutputStream();
+			//文件路径
+			ByteArrayOutputStream bytes = null;
+			bytes = reportService.reportIndexReport(list);
+			os.write(bytes.toByteArray());
+			os.flush();
+			os.close();
+			logger.info("report a file:"+fileName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (os != null) {
+					os.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 }
