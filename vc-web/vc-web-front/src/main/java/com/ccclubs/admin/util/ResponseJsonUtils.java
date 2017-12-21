@@ -58,7 +58,7 @@ public class ResponseJsonUtils {
      */
     public static void json(HttpServletResponse response, Object data, String encoding){
         //设置编码格式
-        response.setContentType("text/plain;charset=" + encoding);
+        response.setContentType("application/json;charset=" + encoding);
         response.setCharacterEncoding(encoding);
 
         PrintWriter out = null;
