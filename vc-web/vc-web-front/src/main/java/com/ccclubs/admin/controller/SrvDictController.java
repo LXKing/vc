@@ -101,7 +101,7 @@ public class SrvDictController {
 				||null==data.getsort()
 				||null==data.gettype()
 			//||null==data.getCreateBy()
-				||null==data.getCreateDate()
+				//||null==data.getCreateDate()
 			//||null==data.getUpdateBy()
 			//||null==data.getUpdateDate()
 				){
