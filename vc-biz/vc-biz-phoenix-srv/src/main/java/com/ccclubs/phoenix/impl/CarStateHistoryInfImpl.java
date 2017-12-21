@@ -232,9 +232,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "BASE_LAC," +
                 "BASE_CI," +
                 "CUR_ORDER, " +
-                "YEAR," +
-                "MONTH," +
-                "DAY," +
                 "NET_STRENGTH," +
                 "GEAR" +
                 " " +
@@ -282,9 +279,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "?, " + //BASE_LAC
                 "?, " + //BASE_CI
                 "?, " + //CUR_ORDER
-                "?, " + //YEAR
-                "?, " + //MONTH
-                "?, " + //DAY
                 "?, " + //NET_STRENGTH
                 "? " + //GEAR
                 ")";
@@ -294,9 +288,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 CarState carState = records.get(i);
                 String cs_number = carState.getCs_number();
                 Long current_time = carState.getCurrent_time();
-                Integer year = DateTimeUtil.getYear(current_time);
-                Integer month = DateTimeUtil.getMonth(current_time);
-                Integer day = DateTimeUtil.getDay(current_time);
                 Integer cs_access = carState.getCs_access();
                 Long add_time = carState.getAdd_time();
                 Integer rent_flg = carState.getRent_flg();
@@ -509,18 +500,15 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 carStatePs.setString(39, base_lac);
                 carStatePs.setString(40, base_ci);
                 carStatePs.setString(41, cur_order);
-                carStatePs.setInt(42,year);
-                carStatePs.setInt(43,month);
-                carStatePs.setInt(44,day);
                 if (net_strength == null){
-                    carStatePs.setNull(45,Types.INTEGER);
+                    carStatePs.setNull(42,Types.INTEGER);
                 }else {
-                    carStatePs.setInt(45,net_strength);
+                    carStatePs.setInt(42,net_strength);
                 }
                 if (gear == null){
-                    carStatePs.setNull(46,Types.INTEGER);
+                    carStatePs.setNull(43,Types.INTEGER);
                 }else {
-                    carStatePs.setInt(46,gear);
+                    carStatePs.setInt(43,gear);
                 }
 
             }

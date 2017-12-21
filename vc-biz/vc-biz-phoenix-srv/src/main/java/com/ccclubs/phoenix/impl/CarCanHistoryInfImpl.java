@@ -192,10 +192,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 "CS_NUMBER," +
                 "CURRENT_TIME," +
                 "CAN_DATA," +
-                "ADD_TIME," +
-                "YEAR," +
-                "MONTH," +
-                "DAY" +
+                "ADD_TIME" +
                 " " +
                 ") " +
                 "values " +
@@ -203,10 +200,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 "?, " + //CS_NUMBER
                 "?, " + //CURRENT_TIME
                 "?, " + //CAN_DATA
-                "?, " + //ADD_TIME
-                "?, " + //YEAR
-                "?, " + //MONTH
-                "? " + //DAY
+                "? " + //ADD_TIME
                 ")";
         phoenixJdbcTemplate.batchUpdate(insert_sql, new BatchPreparedStatementSetter() {
             @Override
@@ -214,18 +208,13 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 CarCan carCan = records.get(i);
                 String cs_number = carCan.getCs_number();
                 Long current_time = carCan.getCurrent_time();
-                Integer year = DateTimeUtil.getYear(current_time);
-                Integer month = DateTimeUtil.getMonth(current_time);
-                Integer day = DateTimeUtil.getDay(current_time);
                 String can_data = carCan.getCan_data();
                 Long add_time = carCan.getAdd_time();
                 carCanPs.setString(1,cs_number);
                 carCanPs.setLong(2,current_time);
                 carCanPs.setString(3,can_data);
                 carCanPs.setLong(4,add_time);
-                carCanPs.setInt(5,year);
-                carCanPs.setInt(6,month);
-                carCanPs.setInt(7,day);
+
             }
             @Override
             public int getBatchSize() {
