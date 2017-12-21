@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +133,37 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/add", method = RequestMethod.POST)
   public VoResult<?> add(CsVehicle data) {
+
+    if (null == data.getCsvAddTime()){
+      data.setCsvAddTime(new Date());
+    }
+    if (null == data.getCsvUpdateTime()){
+      data.setCsvUpdateTime(new Date());
+    }
+    CsVehicle existVehicle;
+
+    CsVehicle conditionVinVehicle = new CsVehicle();
+    conditionVinVehicle.setCsvVin(data.getCsvVin());
+    existVehicle= csVehicleService.selectOne(conditionVinVehicle);
+    if (null != existVehicle){
+      return VoResult.error("30001",String.format("车架号 %s 已存在",data.getCsvVin()));
+    }
+
+
+    CsVehicle conditionNoVehicle = new CsVehicle();
+    conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
+    existVehicle = csVehicleService.selectOne(conditionNoVehicle);
+    if (null != existVehicle){
+      return VoResult.error("30002",String.format("车牌号 %s 已存在",data.getCsvCarNo()));
+    }
+
+    CsVehicle conditionEngine = new CsVehicle();
+    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
+    existVehicle = csVehicleService.selectOne(conditionEngine);
+    if (null != existVehicle){
+      return VoResult.error("30003",String.format("发动机(电机)编号 %s 已存在",data.getCsvEngineNo()));
+    }
+
     csVehicleService.insert(data);
     return VoResult.success();
   }
@@ -141,6 +173,32 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/update", method = RequestMethod.POST)
   public VoResult<?> update(CsVehicle data) {
+    if (null == data.getCsvUpdateTime()){
+      data.setCsvUpdateTime(new Date());
+    }
+    CsVehicle existVehicle;
+
+    CsVehicle conditionVinVehicle = new CsVehicle();
+    conditionVinVehicle.setCsvVin(data.getCsvVin());
+    existVehicle= csVehicleService.selectOne(conditionVinVehicle);
+    if (null != existVehicle&&!existVehicle.getCsvId().equals(data.getCsvId())){
+      return VoResult.error("30001",String.format("车架号 %s 已存在",data.getCsvVin()));
+    }
+
+
+    CsVehicle conditionNoVehicle = new CsVehicle();
+    conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
+    existVehicle = csVehicleService.selectOne(conditionNoVehicle);
+    if (null != existVehicle&&!existVehicle.getCsvId().equals(data.getCsvId())){
+      return VoResult.error("30002",String.format("车牌号 %s 已存在",data.getCsvCarNo()));
+    }
+
+    CsVehicle conditionEngine = new CsVehicle();
+    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
+    existVehicle = csVehicleService.selectOne(conditionEngine);
+    if (null != existVehicle&&!existVehicle.getCsvId().equals(data.getCsvId())){
+      return VoResult.error("30003",String.format("发动机(电机)编号 %s 已存在",data.getCsvEngineNo()));
+    }
     csVehicleService.updateByPrimaryKeySelective(data);
     return VoResult.success();
   }
@@ -149,7 +207,7 @@ public class CsVehicleController {
    * 删除车辆信息管理
    */
   @RequestMapping(value = "delete", method = RequestMethod.DELETE)
-  public VoResult<?> delete(@RequestParam(required = true) final Long[] ids) {
+  public VoResult<?> delete(@RequestParam(required = true) final Integer[] ids) {
     csVehicleService.batchDelete(ids);
     return VoResult.success();
   }
@@ -173,8 +231,8 @@ public class CsVehicleController {
    * 获取单条车辆信息管理信息
    */
   @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
-  public VoResult<Map<String, CsVehicle>> detail(@PathVariable(required = true) Long id) {
-    CsVehicle data = csVehicleService.selectByPrimaryKey(id.intValue());
+  public VoResult<Map<String, CsVehicle>> detail(@PathVariable(required = true) Integer id) {
+    CsVehicle data = csVehicleService.selectByPrimaryKey(id);
     Map<String, CsVehicle> map = new HashMap<String, CsVehicle>();
     registResolvers(data);
     map.put("tbody", data);
