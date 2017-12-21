@@ -112,9 +112,8 @@ public class CsMachineController {
 		if (null != existMachine){
 			return VoResult.error("30003",String.format("终端序列号 %s 已存在",data.getCsmTeNo()));
 		}
-		if (null==data.getCsmBluetoothVersion()){
-			data.setCsmBluetoothVersion(0);
-		}
+
+		data.setCsmBluetoothVersion(0);
 		if (null==data.getCsmSuperSim()){
 			data.setCsmSuperSim("");
 		}

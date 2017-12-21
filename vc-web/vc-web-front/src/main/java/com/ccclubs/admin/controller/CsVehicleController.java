@@ -2,12 +2,20 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMappingCrieria;
 import com.ccclubs.admin.entity.CsVehicleCrieria;
-import com.ccclubs.admin.model.*;
+import com.ccclubs.admin.model.CsMachine;
+import com.ccclubs.admin.model.CsMapping;
+import com.ccclubs.admin.model.CsModelMapping;
+import com.ccclubs.admin.model.CsVehicle;
+import com.ccclubs.admin.model.SrvGroup;
+import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.query.CsVehicleQuery;
-import com.ccclubs.admin.service.*;
+import com.ccclubs.admin.service.ICsMachineService;
+import com.ccclubs.admin.service.ICsMappingService;
+import com.ccclubs.admin.service.ICsModelMappingService;
+import com.ccclubs.admin.service.ICsVehicleService;
+import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.service.ISrvGroupService;
 import com.ccclubs.admin.util.UserAccessUtils;
-import com.ccclubs.admin.vo.ResultCode;
-import com.ccclubs.admin.vo.ResultMsg;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
@@ -68,7 +76,7 @@ public class CsVehicleController {
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
     SrvUser user = userAccessUtils.getCurrentUser(token);
-    this.addQueryConditionsByUser(user,query);
+    this.addQueryConditionsByUser(user, query);
 //想法是首先得到对应的用户组来进行处理，对query加上新的条件来限制查询到的结果。
 //    if (null == user) {
 //      return new ResultMsg<>(false,
@@ -87,36 +95,35 @@ public class CsVehicleController {
 
   /**
    * 根据用户添加查询条件。
-   *
    */
-  private void addQueryConditionsByUser(SrvUser user,CsVehicleQuery query){
+  private void addQueryConditionsByUser(SrvUser user, CsVehicleQuery query) {
     //首先判断用户所在的组。
-    SrvGroup srvGroup=srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
-    if (srvGroup.getSgFlag().equals("sys_user")){
+    SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+    if (srvGroup.getSgFlag().equals("sys_user")) {
       //系统用户，此种用户可以随意查询（为所欲为）
 
-    }else if (srvGroup.getSgFlag().equals("factory_user")){
+    } else if (srvGroup.getSgFlag().equals("factory_user")) {
       //车厂 （按照车型进行查询）
-      CsModelMapping csModelMapping=new CsModelMapping();
+      CsModelMapping csModelMapping = new CsModelMapping();
       csModelMapping.setUserId(user.getSuId());
-      List<CsModelMapping> csModelMappingList= csModelMappingService.select(csModelMapping);
-      if (null!=csModelMappingList&&csModelMappingList.size()>0){
-        Integer[] csModelIds=new Integer[csModelMappingList.size()];
-        for (int i=0;i<csModelMappingList.size();i++){
-          csModelIds[i]=csModelMappingList.get(i).getModelId();
+      List<CsModelMapping> csModelMappingList = csModelMappingService.select(csModelMapping);
+      if (null != csModelMappingList && csModelMappingList.size() > 0) {
+        Integer[] csModelIds = new Integer[csModelMappingList.size()];
+        for (int i = 0; i < csModelMappingList.size(); i++) {
+          csModelIds[i] = csModelMappingList.get(i).getModelId();
         }
         query.setCsvModelIn(csModelIds);
       }
-    }else if (srvGroup.getSgFlag().equals("platform_user")){
+    } else if (srvGroup.getSgFlag().equals("platform_user")) {
       //小散户（通过mapping进行对应）
-      CsMappingCrieria csMappingCrieria=new CsMappingCrieria();
-      CsMappingCrieria.Criteria criteriaMapping=csMappingCrieria.createCriteria();
+      CsMappingCrieria csMappingCrieria = new CsMappingCrieria();
+      CsMappingCrieria.Criteria criteriaMapping = csMappingCrieria.createCriteria();
       criteriaMapping.andcsmManageEqualTo(user.getSuId());
-      List<CsMapping> csMappingList=csMappingService.selectByExample(criteriaMapping);
-      if (null!=csMappingList&&csMappingList.size()>0){
-        Integer[] carIds=new Integer[csMappingList.size()];
-        for (int i=0;i<csMappingList.size();i++){
-          carIds[i]=csMappingList.get(i).getCsmCar();
+      List<CsMapping> csMappingList = csMappingService.selectByExample(criteriaMapping);
+      if (null != csMappingList && csMappingList.size() > 0) {
+        Integer[] carIds = new Integer[csMappingList.size()];
+        for (int i = 0; i < csMappingList.size(); i++) {
+          carIds[i] = csMappingList.get(i).getCsmCar();
         }
         query.setCsvIdIn(carIds);
       }
@@ -127,37 +134,35 @@ public class CsVehicleController {
   }
 
 
-
   /**
    * 创建保存车辆信息管理
    */
   @RequestMapping(value = "/add", method = RequestMethod.POST)
   public VoResult<?> add(CsVehicle data) {
 
-    if (null == data.getCsvAddTime()){
+    if (null == data.getCsvAddTime()) {
       data.setCsvAddTime(new Date());
     }
-    if (null == data.getCsvUpdateTime()){
+    if (null == data.getCsvUpdateTime()) {
       data.setCsvUpdateTime(new Date());
     }
     CsVehicle existVehicle;
 
     CsVehicle conditionVinVehicle = new CsVehicle();
     conditionVinVehicle.setCsvVin(data.getCsvVin());
-    existVehicle= csVehicleService.selectOne(conditionVinVehicle);
-    if (null != existVehicle){
-      return VoResult.error("30001",String.format("车架号 %s 已存在",data.getCsvVin()));
+    existVehicle = csVehicleService.selectOne(conditionVinVehicle);
+    if (null != existVehicle) {
+      return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
-
 
     CsVehicle conditionNoVehicle = new CsVehicle();
     conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
     existVehicle = csVehicleService.selectOne(conditionNoVehicle);
-    if (null != existVehicle){
-      return VoResult.error("30002",String.format("车牌号 %s 已存在",data.getCsvCarNo()));
+    if (null != existVehicle) {
+      return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
     }
 
-    if (null !=data.getCsvEngineNo()) {
+    if (null != data.getCsvEngineNo()) {
       CsVehicle conditionEngine = new CsVehicle();
       conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
       existVehicle = csVehicleService.selectOne(conditionEngine);
@@ -175,33 +180,30 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/update", method = RequestMethod.POST)
   public VoResult<?> update(CsVehicle data) {
-    if (null == data.getCsvUpdateTime()){
+    if (null == data.getCsvUpdateTime()) {
       data.setCsvUpdateTime(new Date());
     }
     CsVehicle existVehicle;
 
     CsVehicle conditionVinVehicle = new CsVehicle();
     conditionVinVehicle.setCsvVin(data.getCsvVin());
-    existVehicle= csVehicleService.selectOne(conditionVinVehicle);
-    if (null != existVehicle&&!existVehicle.getCsvId().equals(data.getCsvId())){
-      return VoResult.error("30001",String.format("车架号 %s 已存在",data.getCsvVin()));
+    existVehicle = csVehicleService.selectOne(conditionVinVehicle);
+    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
+      return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
-
 
     CsVehicle conditionNoVehicle = new CsVehicle();
     conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
     existVehicle = csVehicleService.selectOne(conditionNoVehicle);
-    if (null != existVehicle&&!existVehicle.getCsvId().equals(data.getCsvId())){
-      return VoResult.error("30002",String.format("车牌号 %s 已存在",data.getCsvCarNo()));
+    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
+      return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
     }
 
-    if(null != data.getCsvEngineNo()) {
-      CsVehicle conditionEngine = new CsVehicle();
-      conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
-      existVehicle = csVehicleService.selectOne(conditionEngine);
-      if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
-        return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
-      }
+    CsVehicle conditionEngine = new CsVehicle();
+    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
+    existVehicle = csVehicleService.selectOne(conditionEngine);
+    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
+      return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
     }
     csVehicleService.updateByPrimaryKeySelective(data);
     return VoResult.success();
@@ -248,16 +250,39 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/bind", method = RequestMethod.POST)
   public VoResult<?> bind(CsVehicle data) {
-    csVehicleService.updateByPrimaryKeySelective(data);
-    return VoResult.success();
+    CsVehicle oldVehicle = csVehicleService.selectByPrimaryKey(data.getCsvId());
+    if (null == data.getCsvMachine()) {
+      if (null == oldVehicle.getCsvMachine()) {
+        return VoResult.success();
+      } else
+      // 开始解除绑定TBOX
+      {
+        data.setCsvUpdateTime(new Date());
+        csVehicleService.unbindTbox(data);
+        return VoResult.success();
+      }
+    } else {
+      CsVehicle conditionVehicle = new CsVehicle();
+      conditionVehicle.setCsvMachine(data.getCsvMachine());
+      CsVehicle existVehicle = csVehicleService.selectOne(conditionVehicle);
+      if (null == existVehicle) {
+        conditionVehicle.setCsvId(data.getCsvId());
+        conditionVehicle.setCsvUpdateTime(new Date());
+        csVehicleService.updateByPrimaryKeySelective(data);
+        return VoResult.success();
+      } else if (existVehicle.getCsvId().equals(data.getCsvId())) {
+        return VoResult.success();
+      } else {
+        return VoResult.error("30003", "该终端已被其他车辆绑定!");
+      }
+    }
   }
 
 
   /**
-   *
    * @param c 此方法仅在 createCriteria()后执行！
-   * */
-  private void addCriteriaByUser(SrvUser user,CsVehicleCrieria.Criteria c) {
+   */
+  private void addCriteriaByUser(SrvUser user, CsVehicleCrieria.Criteria c) {
     SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
     if (srvGroup.getSgFlag().equals("factory_user")) {//如果是车厂用户则只关心车型
       CsModelMapping csModelMapping = new CsModelMapping();
@@ -291,16 +316,16 @@ public class CsVehicleController {
    * 根据文本检索车辆信息管理信息
    */
   @RequestMapping(value = "/query", method = RequestMethod.GET)
-  public VoResult<Map<String, List<Map<String, Object>>>> query(@CookieValue("token") String token,String text, String where,
+  public VoResult<Map<String, List<Map<String, Object>>>> query(@CookieValue("token") String token,
+      String text, String where,
       CsVehicle queryRecord) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
 
-
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
 
-   this.addCriteriaByUser(user,c);
+    this.addCriteriaByUser(user, c);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
@@ -328,14 +353,15 @@ public class CsVehicleController {
    * 根据文本检索车辆信息管理信息
    */
   @RequestMapping(value = "/find", method = RequestMethod.GET)
-  public VoResult<Map<String, List<Map<String, Object>>>> find(@CookieValue("token") String token,String text, String where,
-                                                                CsVehicle queryRecord) {
+  public VoResult<Map<String, List<Map<String, Object>>>> find(@CookieValue("token") String token,
+      String text, String where,
+      CsVehicle queryRecord) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
 
-    this.addCriteriaByUser(user,c);
+    this.addCriteriaByUser(user, c);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
@@ -352,9 +378,9 @@ public class CsVehicleController {
     Map<String, Object> map;
     for (CsVehicle data : list) {
       map = new HashMap<String, Object>();
-      CsMachine csMachine=csMachineService.selectByPrimaryKey(data.getCsvMachine());
-      if (csMachine!=null){
-        map.put("value",csMachine.getCsmNumber());//得到的是车机号。
+      CsMachine csMachine = csMachineService.selectByPrimaryKey(data.getCsvMachine());
+      if (csMachine != null) {
+        map.put("value", csMachine.getCsmNumber());//得到的是车机号。
         map.put("text", data.getCsvVin());
         mapList.add(map);
       }
@@ -367,16 +393,16 @@ public class CsVehicleController {
    * 根据文本检索车辆信息管理信息
    */
   @RequestMapping(value = "/search", method = RequestMethod.GET)
-  public VoResult<Map<String, List<Map<String, Object>>>> search(@CookieValue("token") String token,String text, String where,
+  public VoResult<Map<String, List<Map<String, Object>>>> search(@CookieValue("token") String token,
+      String text, String where,
       CsVehicle queryRecord) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
 
-
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
 
-    this.addCriteriaByUser(user,c);
+    this.addCriteriaByUser(user, c);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
@@ -406,12 +432,12 @@ public class CsVehicleController {
    */
   @RequestMapping(value = "/report", method = RequestMethod.GET)
   public void getReport(HttpServletResponse res, CsVehicleQuery query,
-                        @CookieValue("token") String token,
+      @CookieValue("token") String token,
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
-    this.addQueryConditionsByUser(user,query);
+    this.addQueryConditionsByUser(user, query);
 
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query.getCrieria(), page, rows);
     List<CsVehicle> list = pageInfo.getList();

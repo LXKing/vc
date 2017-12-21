@@ -8,5 +8,5 @@ import com.ccclubs.admin.model.CsVehicle;
  * @author Joel
  */
 public interface ICsVehicleService extends BaseService<CsVehicle, Integer>{
-	
+  int unbindTbox(CsVehicle record);
 }

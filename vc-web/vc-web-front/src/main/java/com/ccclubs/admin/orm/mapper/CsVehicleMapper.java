@@ -8,5 +8,11 @@ import com.ccclubs.admin.model.CsVehicle;
  * @author Joel
  */
 public interface CsVehicleMapper extends BaseDAO<CsVehicle,Integer>{
-	
+  /**
+   * 解绑Tbox
+   *
+   * @mbg.generated
+   * @param record
+   */
+  int unbindTbox(CsVehicle record);
 }
