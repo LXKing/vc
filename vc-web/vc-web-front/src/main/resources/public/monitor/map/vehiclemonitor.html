@@ -77,8 +77,8 @@
     extensions: "all"
   });
 
-  AMapUI.loadUI(['misc/MarkerList', 'overlay/SimpleMarker', 'overlay/SimpleInfoWindow'],
-      function (MarkerList, SimpleMarker, SimpleInfoWindow) {
+  AMapUI.loadUI(['misc/MarkerList', 'overlay/AwesomeMarker', 'overlay/SimpleInfoWindow'],
+      function (MarkerList, AwesomeMarker, SimpleInfoWindow) {
 
         //即jQuery/Zepto
         var $ = MarkerList.utils.$;
@@ -219,10 +219,11 @@
               return;
             }
 
-            return new SimpleMarker({
+            return new AwesomeMarker({
+              awesomeIcon: 'car',
               containerClassNames: 'my-marker',
-              iconStyle: defaultIconStyle,
-              iconLabel: label
+              iconStyle: defaultIconStyle
+//              iconLabel: label
             });
           },
           //构造列表元素，与getMarker类似，可以是函数，返回一个dom元素，或者模板 html string

@@ -1,6 +1,9 @@
 package com.ccclubs.admin.config;
 
+import com.ccclubs.admin.util.ResponseJsonUtils;
 import com.ccclubs.admin.util.UserAccessUtils;
+import com.ccclubs.admin.vo.ResultCode;
+import com.ccclubs.admin.vo.ResultMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +31,9 @@ public class TokenInterceptor  implements HandlerInterceptor {
         Cookie[] cookies=httpServletRequest.getCookies();
         if (cookies.length<=0){
             logger.info("a request not have any cookies.");
+            ResultMsg resultMsg=new ResultMsg<>(false,
+                    ResultCode.INVALID_TOKEN, null);
+            ResponseJsonUtils.json(httpServletResponse,resultMsg);
             return false;
         }
         String token;
@@ -40,6 +46,9 @@ public class TokenInterceptor  implements HandlerInterceptor {
             }
         }
         logger.info("a request do not have right token string.");
+        ResultMsg resultMsg=new ResultMsg<>(false,
+                ResultCode.INVALID_TOKEN, null);
+        ResponseJsonUtils.json(httpServletResponse,resultMsg);
         return false;
     }
 

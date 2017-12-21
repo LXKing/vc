@@ -37,7 +37,7 @@ public class Constants
     public final static String JWT_USERID = "user_id";
     
     /**admin时效半小时**/
-    public final static long ADMIN_TIME = 1800000;
+    public final static long ADMIN_TIME = 2*60*60*1000;
     
     /**admin-base64Security**/
     public final static String ADMIN_BASE64SECURITY = "08afb98e33f26ab1ae7dc7ca27fbd956";

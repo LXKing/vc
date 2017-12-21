@@ -62,6 +62,21 @@ public class SrvUserController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(SrvUser data){
+		if (null==data.getSuGroup()
+				||null==data.getSuPassword()
+				||null==data.getSuUsername()
+				||null==data.getSuRealName()
+				||null==data.getSuStatus()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+
+		SrvUser existSrvUser;
+		SrvUser conditionUserNameSrvUser=new SrvUser();
+		conditionUserNameSrvUser.setSuUsername(data.getSuUsername());
+		existSrvUser=srvUserService.selectOne(conditionUserNameSrvUser);
+		if (null!=existSrvUser){
+			return VoResult.error("20010",String.format("用户名%s已经存在。",existSrvUser.getSuUsername()));
+		}
 		srvUserService.insert(data);
 		return VoResult.success();
 	}
@@ -73,6 +88,22 @@ public class SrvUserController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(SrvUser data){
+		if (null==data.getSuGroup()
+				||null==data.getSuPassword()
+				||null==data.getSuUsername()
+				||null==data.getSuRealName()
+				||null==data.getSuStatus()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+
+		SrvUser existSrvUser;
+		SrvUser conditionUserNameSrvUser=new SrvUser();
+		conditionUserNameSrvUser.setSuUsername(data.getSuUsername());
+		existSrvUser=srvUserService.selectOne(conditionUserNameSrvUser);
+		if (null!=existSrvUser&&!existSrvUser.getSuId().equals(data.getSuId())){
+			return VoResult.error("20010",String.format("用户名%s已经存在。",existSrvUser.getSuUsername()));
+		}
+
 		srvUserService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}

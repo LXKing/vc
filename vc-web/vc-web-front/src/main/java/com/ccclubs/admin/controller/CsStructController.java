@@ -62,6 +62,7 @@ public class CsStructController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(CsStruct data){
+
 		csStructService.insert(data);
 		return VoResult.success();
 	}

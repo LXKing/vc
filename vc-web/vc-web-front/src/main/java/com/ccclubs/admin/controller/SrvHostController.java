@@ -63,6 +63,22 @@ public class SrvHostController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(SrvHost data){
+		if (null==data.getShName()||
+				null==data.getShStatus()||
+				null==data.getShTransformCan()||
+				null==data.getShTransformRemote()||
+				null==data.getShTransformStatus()||
+				null==data.getShKey()||
+				null==data.getShTopic()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+		SrvHost existSrvHost;
+		SrvHost conditionKeySrvHost=new SrvHost();
+		conditionKeySrvHost.setShKey(data.getShKey());
+		existSrvHost=srvHostService.selectOne(conditionKeySrvHost);
+		if (null!=existSrvHost){
+			return VoResult.error("20010",String.format("key : %s已经存在。",existSrvHost.getShKey()));
+		}
 		if (null == data.getShAddTime()){
 			data.setShAddTime(new Date());
 		}
@@ -80,6 +96,22 @@ public class SrvHostController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(SrvHost data){
+		if (null==data.getShName()||
+				null==data.getShStatus()||
+				null==data.getShTransformCan()||
+				null==data.getShTransformRemote()||
+				null==data.getShTransformStatus()||
+				null==data.getShKey()||
+				null==data.getShTopic()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+		SrvHost existSrvHost;
+		SrvHost conditionKeySrvHost=new SrvHost();
+		conditionKeySrvHost.setShKey(data.getShKey());
+		existSrvHost=srvHostService.selectOne(conditionKeySrvHost);
+		if (null!=existSrvHost&&!existSrvHost.getShKey().equals(data.getShKey())){
+			return VoResult.error("20010",String.format("key : %s已经存在。",existSrvHost.getShKey()));
+		}
 		if (null == data.getShUptTime()){
 			data.setShUptTime(new Date());
 		}

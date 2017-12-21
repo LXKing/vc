@@ -1,16 +1,11 @@
 package com.ccclubs.admin.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.ccclubs.admin.model.SrvUser;
+import com.ccclubs.admin.util.UserAccessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ccclubs.admin.vo.TableResult;
@@ -35,6 +30,9 @@ public class SrvDictController {
 
 	@Autowired
 	ISrvDictService srvDictService;
+
+	@Autowired
+	UserAccessUtils userAccessUtils;
 
 	/**
 	 * 获取分页列表数据
@@ -61,7 +59,29 @@ public class SrvDictController {
 	 * @return
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
-	public VoResult<?> add(SrvDict data){
+	public VoResult<?> add(@CookieValue("token") String token,SrvDict data){
+		SrvUser user = userAccessUtils.getCurrentUser(token);
+		if (null==data.getDelFlag()
+				||null==data.getlabel()
+				||null==data.getvalue()
+				||null==data.getdescription()
+				||null==data.getsort()
+				||null==data.gettype()
+				//||null==data.getCreateBy()
+				//||null==data.getCreateDate()
+				//||null==data.getUpdateBy()
+				//||null==data.getUpdateDate()
+				){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+		if (null==data.getCreateDate()){
+			data.setCreateDate(new Date());
+		}
+		data.setCreateBy(user.getSuId().toString());
+		data.setUpdateBy(user.getSuId().toString());
+		if (null==data.getUpdateDate()){
+			data.setUpdateDate(new Date());
+		}
 		srvDictService.insert(data);
 		return VoResult.success();
 	}
@@ -72,7 +92,25 @@ public class SrvDictController {
 	 * @return
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
-	public VoResult<?> update(SrvDict data){
+	public VoResult<?> update(@CookieValue("token") String token, SrvDict data){
+		SrvUser user = userAccessUtils.getCurrentUser(token);
+		if (null==data.getDelFlag()
+				||null==data.getlabel()
+				||null==data.getvalue()
+				||null==data.getdescription()
+				||null==data.getsort()
+				||null==data.gettype()
+			//||null==data.getCreateBy()
+				//||null==data.getCreateDate()
+			//||null==data.getUpdateBy()
+			//||null==data.getUpdateDate()
+				){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+		data.setUpdateBy(user.getSuId().toString());
+		if (null==data.getUpdateDate()){
+			data.setUpdateDate(new Date());
+		}
 		srvDictService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}
@@ -82,7 +120,7 @@ public class SrvDictController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		srvDictService.batchDelete(ids);
 		return VoResult.success();
 	}

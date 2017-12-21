@@ -25,6 +25,16 @@
 		<result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime" />
 		<result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime" />
 	</resultMap>
-	
+
+	<update id="unbindTbox" parameterType="com.ccclubs.admin.model.CsVehicle">
+		update cs_vehicle
+		<set>
+			csv_machine = NULL,
+			<if test="csvUpdateTime != null">
+				csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where csv_id = #{csvId,jdbcType=INTEGER}
+	</update>
 	
 </mapper>

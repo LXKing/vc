@@ -62,6 +62,19 @@ public class SrvGroupController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(SrvGroup data){
+		if(null==data.getSgName()||
+				null==data.getSgStatus()||
+				null==data.getSgParent()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+
+		SrvGroup existSrvGroup;
+		SrvGroup conditionUserSrvGroup=new SrvGroup();
+		conditionUserSrvGroup.setSgUser(data.getSgUser());
+		existSrvGroup=srvGroupService.selectOne(conditionUserSrvGroup);
+		if (null!=existSrvGroup){
+			return VoResult.error("20010",String.format("User: %s已经存在。",existSrvGroup.getSgUser()));
+		}
 		srvGroupService.insert(data);
 		return VoResult.success();
 	}
@@ -73,6 +86,21 @@ public class SrvGroupController {
 	 */
 	@RequestMapping(value="/update", method = RequestMethod.POST)
 	public VoResult<?> update(SrvGroup data){
+		if(null==data.getSgName()||
+				null==data.getSgStatus()||
+				null==data.getSgParent()){
+			return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
+
+		SrvGroup existSrvGroup;
+		SrvGroup conditionUserSrvGroup=new SrvGroup();
+		conditionUserSrvGroup.setSgUser(data.getSgUser());
+		existSrvGroup=srvGroupService.selectOne(conditionUserSrvGroup);
+		if (null!=existSrvGroup&&!existSrvGroup.getSgUser().equals(data.getSgUser())){
+			return VoResult.error("20010",String.format("User: %s已经存在。",existSrvGroup.getSgUser()));
+		}
+
+
 		srvGroupService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
 	}
@@ -82,7 +110,7 @@ public class SrvGroupController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		srvGroupService.batchDelete(ids);
 		return VoResult.success();
 	}

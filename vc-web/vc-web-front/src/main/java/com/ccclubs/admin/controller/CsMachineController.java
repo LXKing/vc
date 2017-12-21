@@ -77,6 +77,9 @@ public class CsMachineController {
 	 */
 	@RequestMapping(value="/add", method = RequestMethod.POST)
 	public VoResult<?> add(CsMachine data){
+		if (null==data.getCsmStatus()){
+				return VoResult.error("20010",String.format("存在不能为空的参数为空值。"));
+		}
 		if (null == data.getCsmAddTime()){
 			data.setCsmAddTime(new Date());
 		}
@@ -110,6 +113,10 @@ public class CsMachineController {
 			return VoResult.error("30003",String.format("终端序列号 %s 已存在",data.getCsmTeNo()));
 		}
 
+		data.setCsmBluetoothVersion(0);
+		if (null==data.getCsmSuperSim()){
+			data.setCsmSuperSim("");
+		}
 		csMachineService.insert(data);
 		return VoResult.success();
 	}
@@ -148,6 +155,9 @@ public class CsMachineController {
 		if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())){
 			return VoResult.error("30003",String.format("终端序列号 %s 已存在",data.getCsmTeNo()));
 		}
+		/*if (null==data.getCsmBluetoothVersion()){
+			data.setCsmBluetoothVersion(0);
+		}*/
 
 		csMachineService.updateByPrimaryKeySelective(data);
 		return VoResult.success();
