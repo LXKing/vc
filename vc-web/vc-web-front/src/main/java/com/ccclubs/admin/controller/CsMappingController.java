@@ -82,7 +82,7 @@ public class CsMappingController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		csMappingService.batchDelete(ids);
 		return VoResult.success();
 	}

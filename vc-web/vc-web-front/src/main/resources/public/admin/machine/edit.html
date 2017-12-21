@@ -38,21 +38,35 @@
 					<dt>车机号</dt>
 					<dd>
 					<input name="csmNumber"  placeholder="" class="form-control" >
-				
+						<label id="csmNumber-error" class="error" for="csmNumber"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
 					<dt>序列号</dt>
 					<dd>
 					<input name="csmTeNo"  placeholder="" class="form-control" >
-				
+						<label id="csmTeNo-error" class="error" for="csmTeNo"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
 					<dt>终端类型</dt>
 					<dd>
 					<input name="csmTeType" placeholder="" class="form-control searchinput" dataWhere="csm_te_type"  dataUrl="/base/dict/query">
-				
+						<label id="csmTeType-error" class="error" for="csmTeType"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>SIM卡</dt>
+					<dd>
+						<input name="csmMobile"  placeholder="" class="form-control" >
+						<label id="csmMobile-error" class="error" for="csmMobile"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>ICCID</dt>
+					<dd>
+						<input name="csmIccid"  placeholder="" class="form-control" >
+
 					</dd>
 				</dl>
 				<dl  >
@@ -84,20 +98,6 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>SIM卡</dt>
-					<dd>
-					<input name="csmMobile"  placeholder="" class="form-control" >
-				
-					</dd>
-				</dl>
-				<dl  >
-					<dt>ICCID</dt>
-					<dd>
-					<input name="csmIccid"  placeholder="" class="form-control" >
-				
-					</dd>
-				</dl>
-				<dl  >
 					<dt>服务密码</dt>
 					<dd>
 					<input name="csmPassword"  placeholder="" class="form-control" >
@@ -108,7 +108,7 @@
 					<dt>协议类型</dt>
 					<dd>
 					<input name="csmProtocol" placeholder="" class="form-control searchinput" dataWhere="csm_protocol"  dataUrl="/base/dict/query">
-				
+						<label id="csmProtocol-error" class="error" for="csmProtocol"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
@@ -122,7 +122,6 @@
 					<dt>蓝牙版本</dt>
 					<dd>
 					<input name="csmBluetoothVersion"  placeholder="" class="form-control" >
-				<label id="csmBluetoothVersion-error" class="error" for="csmBluetoothVersion"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
@@ -150,7 +149,6 @@
 					<dt>超级手机号</dt>
 					<dd>
 					<input name="csmSuperSim"  placeholder="" class="form-control" >
-				<label id="csmSuperSim-error" class="error" for="csmSuperSim"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
@@ -282,7 +280,7 @@
 				},
 				"csmNetType":{
 					"maxlength":4,
-					"digits":true
+					"digits":true,"required":true
 				},
 				"csmBluetoothPsd":{
 					"maxlength":32
@@ -292,18 +290,17 @@
 				},
 				"csmBluetoothVersion":{
 					"maxlength":11,
-					"digits":true,
-					"required":true
+					"digits":true
 				},
 				"csmHost":{
 					"maxlength":11,
 					"digits":true
 				},
 				"csmTeNo":{
-					"maxlength":32
+					"maxlength":32,"required":true
 				},
 				"csmNumber":{
-					"maxlength":8
+					"maxlength":8,"required":true
 				},
 				"csmV2":{
 					"maxlength":32
@@ -322,7 +319,7 @@
 				},
 				"csmProtocol":{
 					"maxlength":20,
-					"digits":true
+					"digits":true,"required":true
 				},
 				"csmTlV2":{
 					"maxlength":11,
@@ -343,7 +340,7 @@
 					"maxlength":8
 				},
 				"csmMobile":{
-					"maxlength":11
+					"maxlength":11,"required":true
 				},
 				"csmMqttFlag":{
 					"maxlength":32
@@ -356,8 +353,7 @@
 					"maxlength":32
 				},
 				"csmSuperSim":{
-					"maxlength":11,
-					"required":true
+					"maxlength":11
 				},
 				"csmV3To":{
 					"maxlength":32
@@ -375,7 +371,7 @@
 				},
 				"csmTeType":{
 					"maxlength":4,
-					"digits":true
+					"digits":true,"required":true
 				}
 			}
 			};

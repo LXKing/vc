@@ -425,14 +425,17 @@ function ajaxRequest(url, type, data, callback, async) {
                 } else if (json.code == "20008") {
                     layer.msg('您没有操作该功能的权限');
 
-                } else {
-                    layer.msg('系统繁忙');
+                }else if (json.message != null && json.message != "") {
+                    layer.msg(json.message);
+                }else {
+                  layer.msg('系统繁忙');
                 }
             }
 
         },
         error: function (xhr, textStatus) {
             console.log(JSON.stringify(xhr) + "--" + textStatus);
+            layer.msg('系统繁忙');
             return false;
         }
     });
