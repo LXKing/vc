@@ -1,6 +1,6 @@
 package com.ccclubs.admin.metadata;
 
-import com.ccclubs.admin.config.SpringUtil;
+import com.ccclubs.admin.AppContext;
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.entity.SrvDictCrieria;
 import com.ccclubs.admin.model.CsMachine;
@@ -30,7 +30,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ISrvUserService srvUserService = SpringUtil.getBean(ISrvUserService.class);
+      ISrvUserService srvUserService = AppContext.CTX.getBean(ISrvUserService.class);
       if (null != srvUserService && null != data && !StringUtils.isEmpty(data.toString())) {
         SrvUser record = srvUserService.selectByPrimaryKey(data);
         if (null != record) {
@@ -48,7 +48,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ISrvHostService srvHostService = SpringUtil.getBean(ISrvHostService.class);
+      ISrvHostService srvHostService = AppContext.CTX.getBean(ISrvHostService.class);
       if (null != srvHostService && null != data && !StringUtils.isEmpty(data.toString())) {
         SrvHost record = srvHostService.selectByPrimaryKey(data);
         if (null != record) {
@@ -66,7 +66,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(String type, Object data) {
-      ISrvDictService srvDictService = SpringUtil.getBean(ISrvDictService.class);
+      ISrvDictService srvDictService = AppContext.CTX.getBean(ISrvDictService.class);
       if (srvDictService != null && data != null && !StringUtils.isEmpty(type)) {
         SrvDictCrieria query = new SrvDictCrieria();
         SrvDictCrieria.Criteria c = query.createCriteria();
@@ -89,7 +89,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ICsModelService csModelService = SpringUtil.getBean(ICsModelService.class);
+      ICsModelService csModelService = AppContext.CTX.getBean(ICsModelService.class);
       if (null != csModelService && null != data && !StringUtils.isEmpty(data.toString())) {
         CsModel record = csModelService.selectByPrimaryKey(data);
         if (null != record) {
@@ -107,7 +107,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ICsMachineService csMachineService = SpringUtil.getBean(ICsMachineService.class);
+      ICsMachineService csMachineService = AppContext.CTX.getBean(ICsMachineService.class);
       if (null != csMachineService && null != data && !StringUtils.isEmpty(data.toString())) {
         CsMachine record = csMachineService.selectByPrimaryKey(data);
         if (null != record) {
@@ -125,7 +125,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ICsMachineService csMachineService = SpringUtil.getBean(ICsMachineService.class);
+      ICsMachineService csMachineService = AppContext.CTX.getBean(ICsMachineService.class);
       if (null != csMachineService && null != data && !StringUtils.isEmpty(data.toString())) {
         CsMachineCrieria query = new CsMachineCrieria();
         CsMachineCrieria.Criteria c = query.createCriteria();
@@ -147,7 +147,7 @@ public class MetaDef {
 
     @Override
     public <T> T get(Object data) {
-      ICsVehicleService csVehicleService = SpringUtil.getBean(ICsVehicleService.class);
+      ICsVehicleService csVehicleService = AppContext.CTX.getBean(ICsVehicleService.class);
       if (null != csVehicleService && null != data && !StringUtils.isEmpty(data.toString())) {
         CsVehicle record = csVehicleService.selectByPrimaryKey(data);
         if (null != record) {
