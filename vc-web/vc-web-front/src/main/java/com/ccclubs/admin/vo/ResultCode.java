@@ -13,11 +13,14 @@ public enum ResultCode {
 	USER_IS_UNAVAILABLE(20007,"对不起,用户不可用"),
 	SYSTEM_ERR(9999, "系统错误"),
 	PERMISSION_DENIED(20008, "用户未授权"),
+
 	INVALID_CLIENTID(30003, "Invalid clientid"),
 	INVALID_CAPTCHA(30005, "Invalid captcha or captcha overdue"),
 	INVALID_OLD_PASSWORD(20009, "旧密码输入错误"),
+	PARAMETER_VERIFICATION_ERROR(20010,"参数校验错误。"),
 	PASSWORD_VALID_INFO(30000,"密码格式错误，必须是8到16位字符，不能为纯数字或纯字母"),
     PASSWORD_UPDATE_SECCESS(30001,"密码修改成功");
+
 
 	private int errorCode;
 	private String errorMsg;

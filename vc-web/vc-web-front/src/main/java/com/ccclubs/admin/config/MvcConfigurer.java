@@ -32,7 +32,7 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
     //此处添加所有的请求路径都要拦截但是登录等的请求除外。
     registry.addInterceptor(tokenInterceptor)
             .addPathPatterns("/**")
-            .excludePathPatterns("/oauth/**")
+            //.excludePathPatterns("/oauth/**")
             .excludePathPatterns("/user/**");
 
     super.addInterceptors(registry);
