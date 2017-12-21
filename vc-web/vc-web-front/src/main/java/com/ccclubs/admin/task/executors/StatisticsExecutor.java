@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -184,8 +185,18 @@ public class StatisticsExecutor {
      * */
     public int calculateLongTimeChargingNum(){
         int count=0;
+        SetOperations setOperations=redisTemplate.opsForSet();
+
         //FIXME 这里需要删除大量key操作
-        count= redisTemplate.opsForSet().size(Constants.REDIS_KEY_CHARGEING_CAR_SET).intValue();
+        count= setOperations.size(Constants.REDIS_KEY_CHARGEING_CAR_SET).intValue();
+        Cursor cursor= setOperations.scan(Constants.REDIS_KEY_CHARGEING_CAR_SET,ScanOptions.NONE);
+
+        if (cursor!=null){
+            while (cursor.hasNext()){
+                setOperations.remove(Constants.REDIS_KEY_CHARGEING_CAR_SET,cursor.next());
+                logger.error("删除了一个充电set。");
+            }
+        }
         return count;
     }
 
@@ -215,16 +226,20 @@ public class StatisticsExecutor {
      * */
     public int calculateLongTimeRunNum(){
         int count=0;
-        count= redisTemplate.opsForSet().size(Constants.REDIS_KEY_RUNNING_CAR_SET).intValue();
-        //FIXME 这里需要删除S大量key操作
+        SetOperations setOperations=redisTemplate.opsForSet();
+        count= setOperations.size(Constants.REDIS_KEY_RUNNING_CAR_SET).intValue();
+
         //一次删除500个。
-        /*canOptions scanOptions= ScanOptions.scanOptions().count(500).build();
+        //ScanOptions scanOptions= ScanOptions.scanOptions().count(500).build();
 
-        Cursor cursor= redisTemplate.opsForSet().scan(Constants.REDIS_KEY_RUNNING_CAR_SET,scanOptions);
+        Cursor cursor= setOperations.scan(Constants.REDIS_KEY_RUNNING_CAR_SET,ScanOptions.NONE);
 
-        while (cursor.hasNext()){
-
-        }*/
+        if (cursor!=null){
+            while (cursor.hasNext()){
+                setOperations.remove(Constants.REDIS_KEY_RUNNING_CAR_SET,cursor.next());
+                logger.error("删除了一个运行set。");
+            }
+        }
         return count;
     }
 
