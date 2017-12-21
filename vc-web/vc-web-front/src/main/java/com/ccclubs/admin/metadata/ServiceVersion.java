@@ -8,7 +8,7 @@ public class ServiceVersion {
 	//基础服务
 	public static final String BASICSDATASERVICE_VERSION = "1.0.0";
 	
-	//TODO 
+
 	//会员服务
 	public static final String IUSERSERVICES_VERSION = "1.0.0";
 	

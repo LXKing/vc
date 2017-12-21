@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
  * @author qsxiaogang
  * @create 2017-11-29
  **/
-@Component
+@Deprecated
+//@Component
 public class SpringUtil implements ApplicationContextAware {
 
   private static ApplicationContext applicationContext = null;

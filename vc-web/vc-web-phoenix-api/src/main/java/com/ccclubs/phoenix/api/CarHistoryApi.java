@@ -189,7 +189,7 @@ public class CarHistoryApi {
         }
         ApiMessage<CarCanHistoryOutput> results=this.queryCarCanList(param);
         if(results.getData().getList()!=null&&results.getData().getList().size()>0){
-            //TODO 关联车辆信息与历史数据。
+            //关联车辆信息与历史数据。
             //carCanList=vehicleMachineRelService.dealListDateWithVehicleMachineRel(carCanList);
             //carCanHistoryOutput.setList(carCanList);
         }

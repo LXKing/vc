@@ -18,7 +18,7 @@ public class TokenInterceptor  implements HandlerInterceptor {
     Logger logger= LoggerFactory.getLogger(TokenInterceptor.class);
 
     @Autowired
-    UserAccessUtils userAccessUtils;//FIXME 无法注入，为null
+    UserAccessUtils userAccessUtils;
     /**
     * 在请求处理之前进行调用（Controller方法调用之前）
     * 返回true才会继续执行

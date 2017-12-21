@@ -33,7 +33,6 @@ public class StatisticsScheduler implements ApplicationContextAware {
     /**
      * 每隔一定的时间计算一次状态数据并且存入数据库。
      * */
-    //TODO 测试完成后记得调整时间间隔。
     @Scheduled(cron="0 0/30 * * * ?")
     public void shortTimeJob(){
         System.out.println("执行了一次  30分钟间隔的计算。");
