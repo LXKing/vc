@@ -1,5 +1,6 @@
 package com.ccclubs.admin.config;
 
+import com.ccclubs.admin.AppContext;
 import com.ccclubs.admin.util.UserAccessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,19 +13,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Component
 public class TokenInterceptor  implements HandlerInterceptor {
 
     Logger logger= LoggerFactory.getLogger(TokenInterceptor.class);
 
-    @Autowired
-    UserAccessUtils userAccessUtils;//FIXME 无法注入，为null
     /**
     * 在请求处理之前进行调用（Controller方法调用之前）
     * 返回true才会继续执行
     **/
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+        UserAccessUtils userAccessUtils= AppContext.CTX.getBean(UserAccessUtils.class);
         Cookie[] cookies=httpServletRequest.getCookies();
         if (cookies.length<=0){
             logger.info("a request not have any cookies.");

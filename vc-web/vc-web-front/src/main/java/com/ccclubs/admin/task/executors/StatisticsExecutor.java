@@ -167,7 +167,7 @@ public class StatisticsExecutor {
 
     /**
      * 计算当前充电数
-     * 方法：依据当前的充电状态//TODO 需要做一个set集合进redis 注意redis要遍历清除set
+     * 方法：依据当前的充电状态
      * */
     public int calculateChargingNum(List<CsState> csStateList) {
         int count=0;
@@ -190,7 +190,6 @@ public class StatisticsExecutor {
         int count=0;
         SetOperations setOperations=redisTemplate.opsForSet();
 
-        //FIXME 这里需要删除大量key操作
         count= setOperations.size(Constants.REDIS_KEY_CHARGEING_CAR_SET).intValue();
         Cursor cursor= setOperations.scan(Constants.REDIS_KEY_CHARGEING_CAR_SET,ScanOptions.NONE);
 
@@ -205,7 +204,7 @@ public class StatisticsExecutor {
 
     /**
      * 计算当前的运行车辆数。
-     * 方法：速度或转速或引擎条件符合//TODO 需要做一个set集合进redis 注意redis要遍历清除set
+     * 方法：速度或转速或引擎条件符合
      * */
     public int calculateRunNum(List<CsState> csStateList) {
         int count=0;
@@ -275,7 +274,7 @@ public class StatisticsExecutor {
     /**
      * 计算增量里程
      * 初步想法是拿到昨天的总里程值与今天的相减
-     * //注意此方法要在calculateTotalMileage()之后调用。
+     * 注意此方法要在calculateTotalMileage()之后调用。
      * */
     public long calculateIncrementMileage(float nowTotalMileage,Long unitTime) {
         Float count=0F;
@@ -309,8 +308,8 @@ public class StatisticsExecutor {
         return count.longValue();
     }
 
-    //TODO 根据Hbase来计算下面三个函数所需的值。
-    //TODO 随时注意以下三个方法的时间消耗！
+    //TODO 根据Hbase来计算下面三个函数所需的值。 随时注意以下三个方法的时间消耗！
+    //
     /**
      * 初步想法是，查询当前一天的所有在线车机的充电状态
      * 然后首尾相减最后所有车机的充电量相加
