@@ -192,6 +192,9 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   private void transferToMq(MachineMapping mapping, T808Message message, String tag) {
     try {
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
+      if (mapping.getCar() == null) {
+        return;
+      }
       CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
       // FIXME: [地标类型] 只有标记为地标类型的终端才转发。
       if (csMachine == null ||csVehicle == null || csMachine.getCsmId() <= 0 || StringUtils
