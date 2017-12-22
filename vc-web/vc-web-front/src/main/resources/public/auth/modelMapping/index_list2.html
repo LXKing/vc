@@ -262,7 +262,7 @@
                   }})
                 }else if( params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
                 {
-                  params=$.extend(params.where,{
+                  params.where=$.extend(params.where,{
                     sidx:"id",
                     sord:"desc"
                   })
