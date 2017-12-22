@@ -77,7 +77,7 @@
 </div>
 
 <script type="text/javascript">
-    var currPage=1;
+    var currPage=1,currSize=15;
 
 	var operate = {
 		getGrid:function(){
@@ -94,8 +94,9 @@
 		},
         exportData:function(){
             console.log("exportData")
-
-            window.open(getServUrl("/admin/machine/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
+						var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
+            params = transferParamsWithSortExport(params,"csmId");
+            window.open(getServUrl("/admin/machine/report")+"?"+jsonToUri(params));
         },
 		add:function(){
 			var o = this;
@@ -219,6 +220,7 @@
 			  cols:  [clms],
 			  done: function(res, curr, count){
                   currPage = curr;
+          				currSize = res.page.size;
 			  },
       	  	  response: {
 	      		  statusName: "code",
@@ -262,7 +264,6 @@
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
 		$(".layui-table-view").remove();
-        option.where = getFormData(operate.getQueryForm());
 		grid.render(option);
 	});
 
@@ -306,22 +307,20 @@
 
 					  grid = {
 							render:function(option){
-								table.render(option);
+                if(typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                  option.where = getFormData(operate.getQueryForm());
+                }else {
+                  option.where = $.extend(option.where,getFormData(operate.getQueryForm()));
+								}
+								table.render(transferParamsWithSort(option,"csmId"));
 							},
 							reloadData:function(params){
-							  if(typeof(params) === 'undefined' || typeof(params.where) === 'undefined'){
-                  params = $.extend(params,{where:{
-                    sidx:"csmId",
-                    sord:"desc"
-                  }})
-								}else if( params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
-								{
-                   params.where=$.extend(params.where,{
-                      					sidx:"csmId",
-                     					 sord:"desc"
-                    					})
-								}
-								table.reload(tableId, params);
+                if(typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                  option.where = getFormData(operate.getQueryForm());
+                }else {
+                  option.where = $.extend(option.where,getFormData(operate.getQueryForm()));
+                }
+								table.reload(tableId, transferParamsWithSort(params,"csmId"));
 							},
 							getSelectIds:function(){
 								var ids = [];

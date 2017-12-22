@@ -396,6 +396,47 @@ function paramToUri(param, key){
   return paramS;
 };
 
+/**
+ * 将现有条件附加上排序
+ * @param params
+ * @param key
+ * @param sort
+ * @returns {*}
+ */
+function transferParamsWithSort (params,key,sort) {
+  sort = sort||"desc";
+  if(typeof(params) === 'undefined' || typeof(params.where) === 'undefined'){
+    params = $.extend(params,{where:{
+      sidx:key,
+      sord:sort
+    }})
+  }else if( params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
+  {
+    params.where=$.extend(params.where,{
+      sidx:key,
+      sord:sort
+    })
+  }
+  return params;
+}
+
+function transferParamsWithSortExport (params,key,sort) {
+  sort = sort||"desc";
+  if(typeof(params) === 'undefined'){
+    params = $.extend(params,{
+      sidx:key,
+      sord:sort
+    })
+  }else if( params.sidx === null || typeof(params.sidx) === 'undefined' ||params.sord === null || typeof(params.sord) === 'undefined')
+  {
+    params=$.extend(params,{
+      sidx:key,
+      sord:sort
+    })
+  }
+  return params;
+}
+
 
 /**
  * 发起Ajax请求
