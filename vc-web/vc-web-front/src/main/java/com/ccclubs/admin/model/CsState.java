@@ -20,7 +20,7 @@ import com.ccclubs.admin.vo.Resolver;
  */
 public class CsState implements java.io.Serializable
 {
-	private static final long serialVersionUID =         1L;
+
 	/**
 	 * [css_id]编号
 	 */
@@ -256,6 +256,9 @@ public class CsState implements java.io.Serializable
 	 */
 	
 	private   String cssMoData;
+
+
+	private static final long serialVersionUID =         1L;
 	
 	//默认构造函数
 	public CsState(){

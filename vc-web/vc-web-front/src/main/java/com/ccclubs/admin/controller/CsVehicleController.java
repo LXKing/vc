@@ -456,7 +456,7 @@ public class CsVehicleController {
       res.setHeader("content-type", "application/vnd.ms-excel");
       res.setContentType("application/vnd.ms-excel");
       res.setHeader("Content-Disposition",
-          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+              "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
       os = res.getOutputStream();
       //文件路径
       ByteArrayOutputStream bytes = null;

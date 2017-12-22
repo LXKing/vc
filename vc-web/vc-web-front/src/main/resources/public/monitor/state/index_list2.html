@@ -82,7 +82,7 @@
 </div>
 
 <script type="text/javascript">
-
+    var currPage=1;
 	var operate = {
 		getGrid:function(){
 			return grid;
@@ -96,8 +96,12 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
-		
-		
+
+        exportData:function(){
+            console.log("exportData")
+
+            window.open(getServUrl("/monitor/state/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
+        },
 		
 		batchDel:function(){
 			var o = this;
@@ -183,7 +187,9 @@
 			  height:getTableHeight(),
 			  url:getServUrl("/monitor/state/list"),
 			  cols:  [clms],
-			  done: function(res, curr, count){},
+			  done: function(res, curr, count){
+                  currPage = curr;
+			  },
       	  	  response: {
 	      		  statusName: "code",
 	  		      statusCode: 0,
