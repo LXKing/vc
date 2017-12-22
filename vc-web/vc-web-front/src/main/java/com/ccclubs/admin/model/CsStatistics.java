@@ -344,4 +344,26 @@ public class CsStatistics implements java.io.Serializable
 	public void setCssCarModel(Integer cssCarModel){
 		this.cssCarModel = cssCarModel;
 	}
+
+
+	@Override
+	public String toString() {
+		return "CsStatistics{" +
+				"cssId=" + cssId +
+				", cssTime=" + cssTime +
+				", cssUnitTime=" + cssUnitTime +
+				", cssRegisteredNum=" + cssRegisteredNum +
+				", cssOnlineNum=" + cssOnlineNum +
+				", cssOfflineNum=" + cssOfflineNum +
+				", cssRunNum=" + cssRunNum +
+				", cssChargingNum=" + cssChargingNum +
+				", cssTotalMileage=" + cssTotalMileage +
+				", cssTotalCharge=" + cssTotalCharge +
+				", cssTotalPowerConsumption=" + cssTotalPowerConsumption +
+				", cssTotalRunTime=" + cssTotalRunTime +
+				", cssIncrementMileage=" + cssIncrementMileage +
+				", cssAccess=" + cssAccess +
+				", cssCarModel=" + cssCarModel +
+				'}';
+	}
 }

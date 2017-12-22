@@ -229,8 +229,8 @@
 	      	  },
 	      	  request:{limitName: "rows"},
 	      	  where:{
-	      			sidx:"csmUpdateTime",
-					sord:"desc"
+	      			sidx:"csmId",
+							sord:"desc"
 	      	  }
 	};
 
@@ -309,6 +309,13 @@
 								table.render(option);
 							},
 							reloadData:function(params){
+								if(params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
+								{
+										$.extend(params.where,{
+                      					sidx:"csmId",
+                     					 sord:"desc"
+                    					})
+								}
 								table.reload(tableId, params);
 							},
 							getSelectIds:function(){
