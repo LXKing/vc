@@ -3,6 +3,8 @@ package com.ccclubs.admin.task.schedulers;
 
 import com.ccclubs.admin.task.jobs.StatisticsJob;
 import com.ccclubs.admin.util.EvManageContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -23,7 +25,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatisticsScheduler implements ApplicationContextAware {
 
-    protected static ApplicationContext context;
+    private static final Logger logger= LoggerFactory.getLogger(StatisticsScheduler.class);
+
+    private static ApplicationContext context;
 
 
 
@@ -35,7 +39,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
      * */
     @Scheduled(cron="0 0/30 * * * ?")
     public void shortTimeJob(){
-        System.out.println("执行了一次  30分钟间隔的计算。");
+        logger.info("执行了一次  30分钟间隔的计算。");
         long unitTime=30*60*1000;
         StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
         statisticsJob.setUnitTime(unitTime);
@@ -45,7 +49,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
 
     @Scheduled(cron="0 0 0 * * ?")
     public void everyDayJob(){
-        System.out.println("执行了一次  12点定时的计算。");
+        logger.info("执行了一次  12点定时的计算。");
         long unitTime=24*60*60*1000;
         StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
         statisticsJob.setUnitTime(unitTime);

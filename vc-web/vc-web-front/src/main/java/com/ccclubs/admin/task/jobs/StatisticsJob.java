@@ -4,6 +4,8 @@ import com.ccclubs.admin.AppContext;
 import com.ccclubs.admin.model.CsState;
 import com.ccclubs.admin.model.CsStatistics;
 import com.ccclubs.admin.task.executors.StatisticsExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import java.util.List;
 @Service("StatisticsJob")
 public class StatisticsJob implements Runnable {
 
+
+    private static final Logger logger= LoggerFactory.getLogger(StatisticsJob.class);
 
     public void setUnitTime(long unitTime) {
         this.unitTime = unitTime;
@@ -69,7 +73,7 @@ public class StatisticsJob implements Runnable {
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-
+        logger.info("Job calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 
@@ -92,7 +96,7 @@ public class StatisticsJob implements Runnable {
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-
+        logger.info("Job calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 

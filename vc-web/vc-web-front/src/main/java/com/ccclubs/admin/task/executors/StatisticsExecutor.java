@@ -196,7 +196,7 @@ public class StatisticsExecutor {
         if (cursor!=null){
             while (cursor.hasNext()){
                 setOperations.remove(Constants.REDIS_KEY_CHARGEING_CAR_SET,cursor.next());
-                logger.error("删除了一个充电set。");
+                logger.info("删除了一个充电set。");
             }
         }
         return count;
@@ -239,7 +239,7 @@ public class StatisticsExecutor {
         if (cursor!=null){
             while (cursor.hasNext()){
                 setOperations.remove(Constants.REDIS_KEY_RUNNING_CAR_SET,cursor.next());
-                logger.error("删除了一个运行set。");
+                logger.info("删除了一个运行set。");
             }
         }
         return count;
@@ -299,7 +299,7 @@ public class StatisticsExecutor {
         }
         count=nowTotalMileage-pastTotalMileage;
         if (count<0){
-            logger.warn("计算出了一个增量里程为负的数据："
+            logger.info("计算出了一个增量里程为负的数据："
                     +"nowTotalMileage:"+nowTotalMileage
                     +"unitTime:"+unitTime
                     +"pastTotalMileage:"+pastTotalMileage);

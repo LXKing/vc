@@ -29,7 +29,7 @@ public class TokenInterceptor  implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         Cookie[] cookies=httpServletRequest.getCookies();
-        if (cookies.length<=0){
+        if (null==cookies||cookies.length<=0){
             logger.info("a request not have any cookies.");
             ResultMsg resultMsg=new ResultMsg<>(false,
                     ResultCode.INVALID_TOKEN, null);
