@@ -195,14 +195,23 @@ public class CsMachineController {
       CsMachine queryRecord) {
     CsMachineCrieria query = new CsMachineCrieria();
     CsMachineCrieria.Criteria c = query.createCriteria();
+    CsMachineCrieria.Criteria n = query.createCriteria();
+    CsMachineCrieria.Criteria m = query.createCriteria();
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsmTeNoLike(val);
+      n.andcsmNumberLike(val);
+      m.andcsmMobileLike(val);
     }
     if (!StringUtils.isEmpty(where)) {
       Integer val = Integer.valueOf(where);
       c.andcsmIdEqualTo(val);
+      n.andcsmIdEqualTo(val);
+      m.andcsmIdEqualTo(val);
     }
+    query.or(n);
+    query.or(m);
+
     PageInfo<CsMachine> pageInfo = csMachineService.getPage(query, 0, 10);
     List<CsMachine> list = pageInfo.getList();
 
@@ -225,10 +234,16 @@ public class CsMachineController {
       CsMachine queryRecord) {
     CsMachineCrieria query = new CsMachineCrieria();
     CsMachineCrieria.Criteria c = query.createCriteria();
+    CsMachineCrieria.Criteria n = query.createCriteria();
+    CsMachineCrieria.Criteria m = query.createCriteria();
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsmTeNoLike(val);
+      n.andcsmNumberLike(val);
+      m.andcsmMobileLike(val);
     }
+    query.or(n);
+    query.or(m);
     PageInfo<CsMachine> pageInfo = csMachineService.getPage(query, 0, 10);
     List<CsMachine> list = pageInfo.getList();
 
