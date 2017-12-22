@@ -168,7 +168,7 @@ public class ExportExcelTemp<T> implements Serializable{
                 Field field = fields[i];
                 String fieldName = field.getName();
                 //
-                if("serialVersionUID".equals(fieldName)||"dataType".equals(fieldName)){
+                if("serialVersionUID".equals(fieldName)||"dataType".equals(fieldName)||"resolvers".equals(fieldName)){
                     continue;
                 }
 

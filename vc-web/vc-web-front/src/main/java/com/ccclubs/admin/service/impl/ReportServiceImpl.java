@@ -138,6 +138,37 @@ public class ReportServiceImpl implements IReportService {
     }
 
 
+    /**
+     * 实时数据导出核心服务
+     *
+     * @param csStateList 依据条件查询得到的结果（一般为当前页）。
+     * @return 已经生成为文件的二进制流。
+     */
+    @Override
+    public ByteArrayOutputStream reportCsState(List<CsState> csStateList) {
+        //表头与字段顺序对应
+        String[] headersExit ={
+                "编号","接入商","子域",
+                "车机号","车辆","接收时间",
+                "报文时间","租赁状态","报警码",
+                "RFID卡号","用户RFID","累计里程",
+                "发动机温度","订单总里程","车速",
+                "转速","燃油量","小电瓶电量",
+                "SOC","充电状态","订单油里程",
+                "订单电里程","续航里程","温度",
+                "CSQ","经度","纬度",
+                "GPS有效性","GPS强度","GPS卫星数",
+                "方向角","循环模式","PTC启停",
+                "压缩机","档风量","功耗模式",
+                "车门状态","发动机状态","钥匙状态",
+                "档位","车灯状态","车锁状态",
+                "网络类型","LAC","CI",
+                "订单号","报文数据"
+        };
+        String sheetName="CsState";
+        return baseReportService(headersExit,sheetName,csStateList);
+    }
+
     private static ByteArrayOutputStream baseReportService(
             String[] headersExit,String sheetName,Collection list){
         ExportExcelTemp eeu = new ExportExcelTemp();

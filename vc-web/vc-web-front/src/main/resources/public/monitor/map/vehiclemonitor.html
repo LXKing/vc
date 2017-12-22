@@ -54,7 +54,7 @@
 <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
 
 <script type="text/javascript">
-  var limitSize = 10, params = {page: 1, rows: limitSize, sidx: 'cssAddTime', sord: 'desc'};
+  var limitSize = 20, params = {page: 1, rows: limitSize, sidx: 'cssAddTime', sord: 'desc'};
   var url = getServUrl("/monitor/state/list");
   var laypage;
 
@@ -212,10 +212,8 @@
           //构造marker用的options对象, content和title支持模板，也可以是函数，返回marker实例，或者返回options对象
           getMarker: function (data, context, recycledMarker) {
 
-            var label = String.fromCharCode('A'.charCodeAt(0) + context.index);
-
             if (recycledMarker) {
-              recycledMarker.setIconLabel(label);
+              recycledMarker.setAwesomeIcon('car');
               return;
             }
 

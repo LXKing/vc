@@ -83,7 +83,7 @@
   /*var $csNumber = $("input[name='csNumberEquals']");
   var $startTime = $("input[name='currentTimeStart']");
   var $endTime = $("input[name='currentTimeEnd']");*/
-  var currPage=1;
+  var currPage=1,currSize=15;
 
   function checkParams() {
     if ($("input[name='csNumberEquals']").val() === '' || typeof($("input[name='csNumberEquals']").val()) === 'undefined') {
@@ -131,11 +131,13 @@
       if (!checkParams()) {
         return;
       }
-      console.log(option.url)
-      console.log(JSON.stringify(option))
+      //console.log(option.url)
+      //console.log(JSON.stringify(option))
 //      $.get(getServUrl("/monitor/historyState/report"), $.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage}) );
-      window.open(getServUrl("/monitor/historyState/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
-		},
+        var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
+        params = transferParamsWithSortExport(params,"currentTime");
+        window.open(getServUrl("/monitor/historyState/report")+"?"+jsonToUri(params));
+    },
 
 		batchDel:function(){
 			var o = this;
@@ -240,6 +242,7 @@
 			  done: function(res, curr, count){
 			    		console.log(curr);
           		currPage = curr;
+                  currSize=res.page.size;
 						},
       	  	  response: {
 	      		  statusName: "code",
@@ -282,7 +285,6 @@
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
 		$(".layui-table-view").remove();
-    option.where = getFormData(operate.getQueryForm());
 		grid.render(option);
 	});
 
@@ -324,13 +326,23 @@
 					    	}
 					  });
 
-					  grid = {
-							render:function(option){
-								table.render(option);
-							},
-							reloadData:function(params){
-								table.reload(tableId, params);
-							},
+					  grid =  {
+                          render: function (option) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.render(transferParamsWithSort(option, "currentTime"));
+                          },
+                          reloadData: function (params) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.reload(tableId, transferParamsWithSort(params, "currentTime"));
+                          },
 							getSelectIds:function(){
 								var ids = [];
 								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;

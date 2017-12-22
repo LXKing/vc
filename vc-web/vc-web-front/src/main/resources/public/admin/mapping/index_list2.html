@@ -244,21 +244,23 @@
 					    	}
 					  });
 
-					  grid = {
-							render:function(option){
-								table.render(option);
-							},
-							reloadData:function(params){
-
-                                if(params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
-                                {
-                                    $.extend(params.where,{
-                                        sidx:"csmId",
-                                        sord:"desc"
-                                    })
-                                }
-								table.reload(tableId, params);
-							},
+					  grid =  {
+                          render: function (option) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.render(transferParamsWithSort(option, "csmId"));
+                          },
+                          reloadData: function (params) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.reload(tableId, transferParamsWithSort(params, "csmId"));
+                          },
 							getSelectIds:function(){
 								var ids = [];
 								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;

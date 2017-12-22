@@ -54,7 +54,7 @@
 <!--</div>-->
 
 <script type="text/javascript">
-    var currPage=1;
+    var currPage=1,currSize=15;
 
 	var operate = {
 		getGrid:function(){
@@ -71,10 +71,9 @@
 		},
 
         exportData:function(){
-            console.log("exportData")
-            //console.log(option.url)
-            //console.log(JSON.stringify(option))
-            window.open(getServUrl("/monitor/analysis/quota/report")+"?"+jsonToUri($.extend(getFormData(this.getQueryForm()),{rows:option.limit,page:currPage})));
+            var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
+            params = transferParamsWithSortExport(params,"createTime");
+            window.open(getServUrl("/monitor/analysis/quota/report")+"?"+jsonToUri(params));
         },
 		
 		batchDel:function(){
@@ -114,7 +113,7 @@
 	var tableId = "TCsIndexReport";
 	var clms = [{checkbox: true}
 	  		/*,{field: "id", title: "编号", width: 110, sort:true}*/
-	  		,{field: "csVinText", title: "车辆VIN码", width: 160, sort:true}
+	  		,{field: "csVinText", title: "车辆VIN码", width: 180, sort:true}
 	  		,{field: "csNumberText", title: "车机号", width: 110, sort:true}
 	  		,{field: "monthlyAvgMile", title: "月均行驶里程(KM)", width: 110, sort:true}
 	  		,{field: "avgDriveTimePerDay", title: "平均单日运行时间", width: 110, sort:true}
@@ -142,6 +141,7 @@
 			  cols:  [clms],
 			  done: function(res, curr, count){
 			      currPage=curr;
+                  currSize=res.page.size;
 			  },
       	  	  response: {
 	      		  statusName: "code",
@@ -185,7 +185,6 @@
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
 		$(".layui-table-view").remove();
-        option.where = getFormData(operate.getQueryForm());
 		grid.render(option);
 	});
 
@@ -228,12 +227,22 @@
 					  });
 
 					  grid = {
-							render:function(option){
-								table.render(option);
-							},
-							reloadData:function(params){
-								table.reload(tableId, params);
-							},
+                          render: function (option) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.render(transferParamsWithSort(option, "createTime"));
+                          },
+                          reloadData: function (params) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.reload(tableId, transferParamsWithSort(params, "createTime"));
+                          },
 							getSelectIds:function(){
 								var ids = [];
 								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;

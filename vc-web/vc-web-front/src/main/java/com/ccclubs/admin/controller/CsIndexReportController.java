@@ -129,22 +129,41 @@ public class CsIndexReportController {
 	private static void dealCsIndexReportFromQuotaToThis(CsIndexReport csIndexReportCopy,com.ccclubs.quota.orm.model.CsIndexReport csIndexReport){
 		if (null!=csIndexReportCopy&&null!=csIndexReport){
 			//csIndexReportCopy.setid();
-			csIndexReportCopy.setAvgDriveTimePerDay(csIndexReport.getAvgDriveTimePerDay().doubleValue());
+			if (null!=csIndexReport.getAvgDriveTimePerDay()){
+				csIndexReportCopy.setAvgDriveTimePerDay(csIndexReport.getAvgDriveTimePerDay().doubleValue());
+			}
 			//csIndexReportCopy.setcreateTime();
 			csIndexReportCopy.setCsNumber(csIndexReport.getCsNumber());
 			csIndexReportCopy.setCsVin(csIndexReport.getCsVin());
-			csIndexReportCopy.setCumulativeCharge(csIndexReport.getCumulativeCharge().doubleValue());
-			csIndexReportCopy.setCumulativeMileage(csIndexReport.getCumulativeMileage().doubleValue());
+			if (null!=csIndexReport.getCumulativeCharge()) {
+				csIndexReportCopy.setCumulativeCharge(csIndexReport.getCumulativeCharge().doubleValue());
+			}
+			if (null!=csIndexReport.getCumulativeMileage()) {
+				csIndexReportCopy.setCumulativeMileage(csIndexReport.getCumulativeMileage().doubleValue());
+			}
 			csIndexReportCopy.setDataType(csIndexReport.getDataType());
-			csIndexReportCopy.setElectricRange(csIndexReport.getElectricRange().doubleValue());
+			if (null!=csIndexReport.getElectricRange()) {
+				csIndexReportCopy.setElectricRange(csIndexReport.getElectricRange().doubleValue());
+			}
 			//System.out.println("时间是"+DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
-			csIndexReportCopy.setFacTime(DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
-			csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
-			csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
-
-			csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByFormat(csIndexReport.getModifyDate(),DateTimeUtil.FORMAT5));
-			csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());
-			csIndexReportCopy.setPowerConsumePerHundred(csIndexReport.getPowerConsumePerHundred().doubleValue());
+			if(null!=csIndexReport.getFacTime()) {
+				csIndexReportCopy.setFacTime(DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(), DateTimeUtil.FORMAT5));
+			}
+			if (null!=csIndexReport.getMaxChargePower()) {
+				csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
+			}
+			if (null!=csIndexReport.getMinChargeTime()) {
+				csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
+			}
+			if (null!=csIndexReport.getModifyDate()) {
+				csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByFormat(csIndexReport.getModifyDate(), DateTimeUtil.FORMAT5));
+			}
+			if (null!=csIndexReport.getMonthlyAvgMile()) {
+				csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());
+			}
+			if (null!=csIndexReport.getPowerConsumePerHundred()) {
+				csIndexReportCopy.setPowerConsumePerHundred(csIndexReport.getPowerConsumePerHundred().doubleValue());
+			}
 		}
 	}
 	
