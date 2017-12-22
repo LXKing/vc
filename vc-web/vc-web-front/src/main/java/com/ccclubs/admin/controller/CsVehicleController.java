@@ -324,17 +324,23 @@ public class CsVehicleController {
 
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
+    CsVehicleCrieria.Criteria n = query.createCriteria();
 
     this.addCriteriaByUser(user, c);
+    this.addCriteriaByUser(user, n);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsvVinLike(val);
+      n.andcsvCarNoLike(val);
     }
     if (!StringUtils.isEmpty(where)) {
       Integer val = Integer.valueOf(where);
       c.andcsvIdEqualTo(val);
+      n.andcsvIdEqualTo(val);
     }
+    query.or(n);
+
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
     List<CsVehicle> list = pageInfo.getList();
 
@@ -360,17 +366,23 @@ public class CsVehicleController {
     SrvUser user = userAccessUtils.getCurrentUser(token);
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
+    CsVehicleCrieria.Criteria n = query.createCriteria();
 
     this.addCriteriaByUser(user, c);
+    this.addCriteriaByUser(user, n);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsvVinLike(val);
+      n.andcsvCarNoLike(val);
     }
     if (!StringUtils.isEmpty(where)) {
       Integer val = Integer.valueOf(where);
       c.andcsvIdEqualTo(val);
+      n.andcsvIdEqualTo(val);
     }
+    query.or(n);
+
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
     List<CsVehicle> list = pageInfo.getList();
 
@@ -401,17 +413,24 @@ public class CsVehicleController {
 
     CsVehicleCrieria query = new CsVehicleCrieria();
     CsVehicleCrieria.Criteria c = query.createCriteria();
+    CsVehicleCrieria.Criteria n = query.createCriteria();
 
     this.addCriteriaByUser(user, c);
+    this.addCriteriaByUser(user, n);
 
     if (!StringUtils.isEmpty(text)) {
       String val = String.valueOf(text);
       c.andcsvVinLike(val);
+      n.andcsvCarNoLike(val);
     }
     if (!StringUtils.isEmpty(where)) {
       Integer val = Integer.valueOf(where);
       c.andcsvIdEqualTo(val);
+      n.andcsvIdEqualTo(val);
     }
+
+    query.or(n);
+
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query, 0, 10);
     List<CsVehicle> list = pageInfo.getList();
 

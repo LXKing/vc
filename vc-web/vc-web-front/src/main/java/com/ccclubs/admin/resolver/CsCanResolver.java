@@ -28,8 +28,7 @@ public enum CsCanResolver{
 				if(record.getCscNumber()==null){
 				return null;
 				}
-				String result = "";
-				return (T)result;
+				return (T)record.getCscNumber();
 				}
 		})
 	,
