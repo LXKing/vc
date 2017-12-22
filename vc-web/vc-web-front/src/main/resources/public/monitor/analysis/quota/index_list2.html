@@ -49,9 +49,9 @@
 	</div>
 
 <table id="table"></table>
-<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-</div>
+<!--<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">-->
+	<!--<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>-->
+<!--</div>-->
 
 <script type="text/javascript">
     var currPage=1;
@@ -114,7 +114,7 @@
 	var tableId = "TCsIndexReport";
 	var clms = [{checkbox: true}
 	  		/*,{field: "id", title: "编号", width: 110, sort:true}*/
-	  		,{field: "csVinText", title: "车辆VIN码", width: 110, sort:true}
+	  		,{field: "csVinText", title: "车辆VIN码", width: 160, sort:true}
 	  		,{field: "csNumberText", title: "车机号", width: 110, sort:true}
 	  		,{field: "monthlyAvgMile", title: "月均行驶里程(KM)", width: 110, sort:true}
 	  		,{field: "avgDriveTimePerDay", title: "平均单日运行时间", width: 110, sort:true}
@@ -126,9 +126,9 @@
 	  		,{field: "cumulativeCharge", title: "累计充电量", width: 110, sort:true}
 	  		,{field: "dataTypeText", title: "数据类型", width: 110, sort:true}
 	  		/*,{field: "createTime", title: "此行创建时间", width: 110, sort:true}*/
-	  		,{field: "modifyDate", title: "此行更新时间", width: 110, sort:true}
+	  		,{field: "modifyDate", title: "此行更新时间", width: 160, sort:true}
 	  		,{field: "facTime", title: "车辆出厂日期", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
+      		/*,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}*/
     ];
 
 	var option = {

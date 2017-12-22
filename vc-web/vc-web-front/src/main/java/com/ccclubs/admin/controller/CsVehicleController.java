@@ -343,7 +343,7 @@ public class CsVehicleController {
     for (CsVehicle data : list) {
       map = new HashMap<String, Object>();
       map.put("value", data.getCsvId());
-      map.put("text", data.getCsvVin());
+      map.put("text", data.getCsvVin()+"("+data.getCsvCarNo()+")");
       mapList.add(map);
     }
     return VoResult.success().setValue(mapList);
@@ -381,7 +381,7 @@ public class CsVehicleController {
       CsMachine csMachine = csMachineService.selectByPrimaryKey(data.getCsvMachine());
       if (csMachine != null) {
         map.put("value", csMachine.getCsmNumber());//得到的是车机号。
-        map.put("text", data.getCsvVin());
+        map.put("text", data.getCsvVin() + "(" + data.getCsvCarNo() + ")");
         mapList.add(map);
       }
 
