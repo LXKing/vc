@@ -309,9 +309,14 @@
 								table.render(option);
 							},
 							reloadData:function(params){
-								if(params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
+							  if(typeof(params) === 'undefined' || typeof(params.where) === 'undefined'){
+                  params = $.extend(params,{where:{
+                    sidx:"csmId",
+                    sord:"desc"
+                  }})
+								}else if( params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
 								{
-										$.extend(params.where,{
+                   params=$.extend(params.where,{
                       					sidx:"csmId",
                      					 sord:"desc"
                     					})
