@@ -92,7 +92,7 @@
         exportData:function(){
             var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
             params = transferParamsWithSortExport(params,"csmId");
-            window.open(getServUrl("/admin/machineLimited/report")+"?"+jsonToUri(params));
+            window.open(getServUrl("/admin/machine/report")+"?"+jsonToUri(params));
             },
 		add:function(){
 			var o = this;
