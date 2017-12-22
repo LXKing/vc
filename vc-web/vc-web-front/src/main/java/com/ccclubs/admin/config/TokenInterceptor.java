@@ -40,6 +40,7 @@ public class TokenInterceptor  implements HandlerInterceptor {
         for (Cookie cookie:cookies){
             if (cookie.getName().equals("token")){
                 token=cookie.getValue();
+
                 if (null!=userAccessUtils.getCurrentUser(token)){
                     return true;
                 }

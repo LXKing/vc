@@ -49,4 +49,12 @@ public interface IReportService {
      * */
     ByteArrayOutputStream reportIndexReport(List<CsIndexReport> csIndexReportList);
 
+    /**
+     * 实时数据导出核心服务
+     * @param csStateList 依据条件查询得到的结果（一般为当前页）。
+     * @return 已经生成为文件的二进制流。
+     * */
+    ByteArrayOutputStream reportCsState(List<CsState> csStateList);
+
+
 }
