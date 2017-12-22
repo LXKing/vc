@@ -237,25 +237,23 @@
 					    	}
 					  });
 
-					  grid = {
-							render:function(option){
-								table.render(option);
-							},
-							reloadData:function(params){
-                if(typeof(params) === 'undefined' || typeof(params.where) === 'undefined'){
-                  params = $.extend(params,{where:{
-                    sidx:"sgId",
-                    sord:"desc"
-                  }})
-                }else if( params.where.sidx === null || typeof(params.where.sidx) === 'undefined' ||params.where.sord === null || typeof(params.where.sord) === 'undefined')
-                {
-                  params.where=$.extend(params.where,{
-                    sidx:"sgId",
-                    sord:"desc"
-                  })
-                }
-								table.reload(tableId, params);
-							},
+					  grid =  {
+                          render: function (option) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.render(transferParamsWithSort(option, "sgId"));
+                          },
+                          reloadData: function (params) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.reload(tableId, transferParamsWithSort(params, "sgId"));
+                          },
 							getSelectIds:function(){
 								var ids = [];
 								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;
