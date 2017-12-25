@@ -87,7 +87,9 @@ public class HistoryMessageUtils extends ConvertUtils {
         carGb.setCs_protocol(convertToInterger(csMessage.getCsmProtocol()));
         carGb.setCs_verify(convertToInterger(csMessage.getCsmVerify()));
         carGb.setCs_vin(csMessage.getCsmVin());
-        carGb.setCurrent_time(csMessage.getCsmMsgTime());
+        if (null!=csMessage.getCsmMsgTime()) {
+            carGb.setCurrent_time(csMessage.getCsmMsgTime());
+        }
         carGb.setGb_data(csMessage.getCsmData());
         carGb.setGb_type(convertToInterger(csMessage.getCsmType()));
         return carGb;
