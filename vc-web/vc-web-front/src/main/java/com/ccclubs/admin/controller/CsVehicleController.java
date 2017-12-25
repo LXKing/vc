@@ -146,30 +146,24 @@ public class CsVehicleController {
     if (null == data.getCsvUpdateTime()) {
       data.setCsvUpdateTime(new Date());
     }
-    CsVehicle existVehicle;
 
     CsVehicle conditionVinVehicle = new CsVehicle();
     conditionVinVehicle.setCsvVin(data.getCsvVin());
-    existVehicle = csVehicleService.selectOne(conditionVinVehicle);
-    if (null != existVehicle) {
+    if (csVehicleService.selectCount(conditionVinVehicle) > 0) {
       return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
 
     CsVehicle conditionNoVehicle = new CsVehicle();
     conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
-    existVehicle = csVehicleService.selectOne(conditionNoVehicle);
-    if (null != existVehicle) {
+    if (csVehicleService.selectCount(conditionNoVehicle) > 0) {
       return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
     }
 
-    if (null != data.getCsvEngineNo()) {
-      CsVehicle conditionEngine = new CsVehicle();
-      conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
-      existVehicle = csVehicleService.selectOne(conditionEngine);
-      if (null != existVehicle) {
-        return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
-      }
-    }
+//    CsVehicle conditionEngine = new CsVehicle();
+//    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
+//    if (csVehicleService.selectCount(conditionEngine) > 0) {
+//      return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
+//    }
 
     csVehicleService.insert(data);
     return VoResult.success();
@@ -183,28 +177,30 @@ public class CsVehicleController {
     if (null == data.getCsvUpdateTime()) {
       data.setCsvUpdateTime(new Date());
     }
-    CsVehicle existVehicle;
-
+    List<CsVehicle> existVehicleList;
     CsVehicle conditionVinVehicle = new CsVehicle();
     conditionVinVehicle.setCsvVin(data.getCsvVin());
-    existVehicle = csVehicleService.selectOne(conditionVinVehicle);
-    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
+    existVehicleList = csVehicleService.select(conditionVinVehicle);
+    if (existVehicleList.size() > 0 && !existVehicleList.get(0).getCsvId()
+        .equals(data.getCsvId())) {
       return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
 
-    CsVehicle conditionNoVehicle = new CsVehicle();
-    conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
-    existVehicle = csVehicleService.selectOne(conditionNoVehicle);
-    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
-      return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
+    if (null != data.getCsvCarNo()) {
+      CsVehicle conditionNoVehicle = new CsVehicle();
+      conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
+      existVehicleList = csVehicleService.select(conditionNoVehicle);
+      if (existVehicleList.size() > 0 && !existVehicleList.get(0).getCsvId().equals(data.getCsvId())) {
+        return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
+      }
     }
 
-    CsVehicle conditionEngine = new CsVehicle();
-    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
-    existVehicle = csVehicleService.selectOne(conditionEngine);
-    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
-      return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
-    }
+//    CsVehicle conditionEngine = new CsVehicle();
+//    conditionEngine.setCsvEngineNo(data.getCsvEngineNo());
+//    existVehicle = csVehicleService.selectOne(conditionEngine);
+//    if (null != existVehicle && !existVehicle.getCsvId().equals(data.getCsvId())) {
+//      return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
+//    }
     csVehicleService.updateByPrimaryKeySelective(data);
     return VoResult.success();
   }
@@ -349,7 +345,7 @@ public class CsVehicleController {
     for (CsVehicle data : list) {
       map = new HashMap<String, Object>();
       map.put("value", data.getCsvId());
-      map.put("text", data.getCsvVin()+"("+data.getCsvCarNo()+")");
+      map.put("text", data.getCsvVin() + "(" + data.getCsvCarNo() + ")");
       mapList.add(map);
     }
     return VoResult.success().setValue(mapList);
@@ -475,7 +471,7 @@ public class CsVehicleController {
       res.setHeader("content-type", "application/vnd.ms-excel");
       res.setContentType("application/vnd.ms-excel");
       res.setHeader("Content-Disposition",
-              "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
       os = res.getOutputStream();
       //文件路径
       ByteArrayOutputStream bytes = null;
