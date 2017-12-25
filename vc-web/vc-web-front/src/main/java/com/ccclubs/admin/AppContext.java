@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -26,7 +27,9 @@ public class AppContext implements ApplicationListener<ApplicationReadyEvent> {
 
     public static boolean initSpring()
     {
-        return false;
+        ApplicationContext cx =
+                new ClassPathXmlApplicationContext(new String[] { "bootstrap.yml" });
+        return true;
     }
 
     public static void createPool()
