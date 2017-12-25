@@ -52,8 +52,8 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
         result.setData(new ArrayList<>());
         result.setPage(page);
 
-        String startTime= DateTimeUtil.getDateTimeByFormat1(query.getAddTimeStart().getTime());
-        String endTime= DateTimeUtil.getDateTimeByFormat1(query.getAddTimeEnd().getTime());
+        String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
+        String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
         try {
             apiMessage=this.queryCarGbListFromHbase(query.getCsVinEquals(),
                     startTime,endTime,

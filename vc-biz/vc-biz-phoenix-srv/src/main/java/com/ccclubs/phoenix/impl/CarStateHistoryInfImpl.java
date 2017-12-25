@@ -56,8 +56,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                     @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_number = carStateHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1, cs_number);
                         ps.setLong(2, start_time);
                         ps.setLong(3, end_time);
@@ -104,8 +104,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_number = carStateHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1, cs_number);
                         ps.setLong(2, start_time);
                         ps.setLong(3, end_time);
@@ -143,8 +143,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         total = phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
                 String cs_number = carStateHistoryParam.getCs_number();
-                long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.format1);
-                long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.format1);
+                long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+                long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
                 ps.setString(1, cs_number);
                 ps.setLong(2, start_time);
                 ps.setLong(3, end_time);
@@ -161,7 +161,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam) {
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
-        long total = -1l;
+        long total = -1L;
         //首先判断是否是分页查询
         if (carStateHistoryParam.getPage_no() > 0) {
 //            //判断是否已获取过记录总数

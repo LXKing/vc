@@ -51,8 +51,8 @@ public class HistoryCanServiceImpl  implements IHistoryCanService{
         result.setData(new ArrayList<>());
         result.setPage(page);
 
-        String startTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeStart().getTime());
-        String endTime= DateTimeUtil.getDateTimeByFormat1(query.getCurrentTimeEnd().getTime());
+        String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getCurrentTimeStart().getTime());
+        String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getCurrentTimeEnd().getTime());
         try {
             apiMessage=this.queryCarCanListFromHbase(query.getCsNumberEquals(),
                     startTime,endTime,

@@ -204,8 +204,8 @@ public class CarHistoryApi {
         if (pageSize<=0){return false;}
         if (pageSize>5000){return false;}
         try {
-            DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.format1);
-            DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.format1);
+            DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.UNIX_FORMAT);
+            DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.UNIX_FORMAT);
         }catch (Exception e){
             return false;
         }

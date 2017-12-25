@@ -44,8 +44,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 new PreparedStatementSetter() {
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_vin = carGbHistoryParam.getCs_vin();
-                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1,cs_vin);
                         ps.setLong(2,start_time);
                         ps.setLong(3,end_time);
@@ -90,8 +90,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 new PreparedStatementSetter() {
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_vin = carGbHistoryParam.getCs_vin();
-                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1,cs_vin);
                         ps.setLong(2,start_time);
                         ps.setLong(3,end_time);
@@ -129,8 +129,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         total=phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
                 String cs_vin = carGbHistoryParam.getCs_vin();
-                long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.format1);
-                long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                 ps.setString(1,cs_vin);
                 ps.setLong(2,start_time);
                 ps.setLong(3,end_time);

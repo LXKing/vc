@@ -51,8 +51,8 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                     @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_number = carCanHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1,cs_number);
                         ps.setLong(2,start_time);
                         ps.setLong(3,end_time);
@@ -99,8 +99,8 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                     @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_number = carCanHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.format1);
-                        long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                        long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                        long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                         ps.setString(1,cs_number);
                         ps.setLong(2,start_time);
                         ps.setLong(3,end_time);
@@ -140,8 +140,8 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
                 String cs_number = carCanHistoryParam.getCs_number();
-                long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.format1);
-                long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.format1);
+                long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+                long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
                 ps.setString(1,cs_number);
                 ps.setLong(2,start_time);
                 ps.setLong(3,end_time);

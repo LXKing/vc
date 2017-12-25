@@ -21,7 +21,6 @@ import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -265,8 +264,8 @@ public class CarHistoryBizApi {
         if (pageSize<=0){return false;}
         if (pageSize>5000){return false;}
         try {
-            DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.format1);
-            DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.format1);
+            DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.UNIX_FORMAT);
+            DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.UNIX_FORMAT);
         }catch (Exception e){
             return false;
         }

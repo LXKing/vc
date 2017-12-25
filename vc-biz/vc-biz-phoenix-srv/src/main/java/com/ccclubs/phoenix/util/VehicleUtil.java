@@ -127,13 +127,13 @@ public class VehicleUtil {
             paceBlock = new PaceBlock();
             paceBlock.setBlock_start_timemills(start_cal.getTimeInMillis());
             paceBlock.setBlock_end_timemills(start_cal.getTimeInMillis()+cal_interval *60*1000);
-            paceBlockMap.put(DateTimeUtil.getDateTimeByFormat1(start_cal.getTimeInMillis()),paceBlock);
+            paceBlockMap.put(DateTimeUtil.getDateTimeByUnixFormat(start_cal.getTimeInMillis()),paceBlock);
             start_cal.add(Calendar.MINUTE,cal_interval);
         }
         //进行相关数据插入
         for(CarState carState:carStateList){
             long key_timemills = DateTimeUtil.getTimeMillsFixByInterval(carState.getCurrent_time(),cal_interval);
-            String key_datetime = DateTimeUtil.getDateTimeByFormat1(key_timemills);
+            String key_datetime = DateTimeUtil.getDateTimeByUnixFormat(key_timemills);
             if(paceBlockMap.containsKey(key_datetime)){
                 paceBlock=paceBlockMap.get(key_datetime);
                 //paceBlock.setCs_vin(carState.getCs_vin());
@@ -176,8 +176,8 @@ public class VehicleUtil {
                             //设置数据块内相关属性
                             paceBlock.setBlock_start_timemills(startCarState.getCurrent_time());
                             paceBlock.setBlock_end_timemills(endCarState.getCurrent_time());
-                            paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByFormat1(startCarState.getCurrent_time()));
-                            paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByFormat1(endCarState.getCurrent_time()));
+                            paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByUnixFormat(startCarState.getCurrent_time()));
+                            paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByUnixFormat(endCarState.getCurrent_time()));
                             Float block_changed_miles = endCarState.getObd_miles()-startCarState.getObd_miles();
                             paceBlock.setBlock_changed_miles(block_changed_miles);
                             paceBlock.setBlock_start_obd_miles(startCarState.getObd_miles());
@@ -222,8 +222,8 @@ public class VehicleUtil {
                             //设置数据块内相关属性
                             paceBlock.setBlock_start_timemills(startCarState.getCurrent_time());
                             paceBlock.setBlock_end_timemills(endCarState.getCurrent_time());
-                            paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByFormat1(startCarState.getCurrent_time()));
-                            paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByFormat1(endCarState.getCurrent_time()));
+                            paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByUnixFormat(startCarState.getCurrent_time()));
+                            paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByUnixFormat(endCarState.getCurrent_time()));
                             Float block_changed_miles = endCarState.getObd_miles()-startCarState.getObd_miles();
                             paceBlock.setBlock_changed_miles(block_changed_miles);
                             paceBlock.setBlock_start_obd_miles(startCarState.getObd_miles());
@@ -300,8 +300,8 @@ public class VehicleUtil {
                         //设置数据块内相关属性
                         paceBlock.setBlock_start_timemills(startCarState.getCurrent_time());
                         paceBlock.setBlock_end_timemills(endCarState.getCurrent_time());
-                        paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByFormat1(startCarState.getCurrent_time()));
-                        paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByFormat1(endCarState.getCurrent_time()));
+                        paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByUnixFormat(startCarState.getCurrent_time()));
+                        paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByUnixFormat(endCarState.getCurrent_time()));
                         Float block_changed_miles = endCarState.getObd_miles()-startCarState.getObd_miles();
                         paceBlock.setBlock_changed_miles(block_changed_miles);
                         paceBlock.setBlock_start_obd_miles(startCarState.getObd_miles());
@@ -352,8 +352,8 @@ public class VehicleUtil {
                         //设置数据块内相关属性
                         paceBlock.setBlock_start_timemills(startCarState.getCurrent_time());
                         paceBlock.setBlock_end_timemills(endCarState.getCurrent_time());
-                        paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByFormat1(startCarState.getCurrent_time()));
-                        paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByFormat1(endCarState.getCurrent_time()));
+                        paceBlock.setBlock_start_datetime(DateTimeUtil.getDateTimeByUnixFormat(startCarState.getCurrent_time()));
+                        paceBlock.setBlock_end_datetime(DateTimeUtil.getDateTimeByUnixFormat(endCarState.getCurrent_time()));
                         Float block_changed_miles = endCarState.getObd_miles()-startCarState.getObd_miles();
                         paceBlock.setBlock_changed_miles(block_changed_miles);
                         paceBlock.setBlock_start_obd_miles(startCarState.getObd_miles());
@@ -410,9 +410,9 @@ public class VehicleUtil {
                 //阶段经历时间
                 long pace_timemills = pace_end_timemills - pace_start_timemills;
                 //阶段开始时间
-                String pace_start_time = DateTimeUtil.getDateTimeByFormat1(headPaceBlock.getBlock_start_timemills());
+                String pace_start_time = DateTimeUtil.getDateTimeByUnixFormat(headPaceBlock.getBlock_start_timemills());
                 //阶段结束时间
-                String pace_end_time = DateTimeUtil.getDateTimeByFormat1(tailPaceBlock.getBlock_end_timemills());
+                String pace_end_time = DateTimeUtil.getDateTimeByUnixFormat(tailPaceBlock.getBlock_end_timemills());
                 //阶段起始里程数
                 float pace_start_obd_miles = headPaceBlock.getBlock_start_obd_miles();
                 //阶段结束里程数
