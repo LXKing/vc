@@ -7,6 +7,7 @@ import com.ccclubs.admin.task.executors.StatisticsExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.List;
  * Email:fengjun@ccclubs.com
  */
 @Service("StatisticsJob")
+@Scope("prototype")//非单例调用
 public class StatisticsJob implements Runnable {
 
 
@@ -64,16 +66,16 @@ public class StatisticsJob implements Runnable {
                 statisticsExecutor.getCsNumbersByModel(csStatistics.getCssCarModel()),
                 this.unitTime);
         csStatistics.setCssChargingNum(statisticsExecutor.calculateLongTimeChargingNum());
-        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStateList,this.unitTime));
+        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStatistics.getCssCarModel()));
         csStatistics.setCssOnlineNum(statisticsExecutor.calculateOnlineNum(csStateList,this.unitTime));
-        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStateList));
+        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStatistics.getCssRegisteredNum(),csStatistics.getCssOnlineNum()));
         csStatistics.setCssRunNum(statisticsExecutor.calculateLongTimeRunNum());
         csStatistics.setCssTotalMileage(statisticsExecutor.calculateTotalMileage(csStateList));
         csStatistics.setCssIncrementMileage(statisticsExecutor.calculateIncrementMileage(csStatistics.getCssTotalMileage(),this.unitTime));
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-        logger.info("Job calculate done ,now saving."+csStatistics.toString());
+        logger.info("Job longlongtime calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 
@@ -87,21 +89,23 @@ public class StatisticsJob implements Runnable {
                 statisticsExecutor.getCsNumbersByModel(csStatistics.getCssCarModel()),
                 this.unitTime);
         csStatistics.setCssChargingNum(statisticsExecutor.calculateChargingNum(csStateList));
-        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStateList,this.unitTime));
+        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStatistics.getCssCarModel()));
         csStatistics.setCssOnlineNum(statisticsExecutor.calculateOnlineNum(csStateList,this.unitTime));
-        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStateList));
+        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStatistics.getCssRegisteredNum(),csStatistics.getCssOnlineNum()));
         csStatistics.setCssRunNum(statisticsExecutor.calculateRunNum(csStateList));
         csStatistics.setCssTotalMileage(statisticsExecutor.calculateTotalMileage(csStateList));
         csStatistics.setCssIncrementMileage(statisticsExecutor.calculateIncrementMileage(csStatistics.getCssTotalMileage(),this.unitTime));
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-        logger.info("Job calculate done ,now saving."+csStatistics.toString());
+        logger.info("Job sharttime calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 
     public static StatisticsJob getFromApplication(){
+
         return AppContext.CTX.getBean(StatisticsJob.class);
+
     }
 
 

@@ -13,7 +13,7 @@ public enum HistoryStateResolver{
 					return null;
 				}
 				String result = "";
-				result= DateTimeUtil.getDateTimeByFormat1(record.getCurrentTime());
+				result= DateTimeUtil.getDateTimeByUnixFormat(record.getCurrentTime());
 				return (T) result;
 			}
 		})
@@ -24,7 +24,7 @@ public enum HistoryStateResolver{
 				return null;
 			}
 			String result = "";
-			result= DateTimeUtil.getDateTimeByFormat1(record.getAddTime());
+			result= DateTimeUtil.getDateTimeByUnixFormat(record.getAddTime());
 			return (T) result;
 		}
 	})
