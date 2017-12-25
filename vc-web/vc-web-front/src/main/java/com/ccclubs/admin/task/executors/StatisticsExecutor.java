@@ -149,17 +149,23 @@ public class StatisticsExecutor {
 
 
     /**
-     * 计算离线车辆数
+     * 计算离线车辆数【此方法一定要在计算在线车辆数之后执行】
      * 方法：距离现在已经10分钟没发数据上来。
      * */
-    public int calculateOfflineNum(List<CsState> csStateList,Long unitTime) {
+    public int calculateOfflineNum(int registeredNum,int onlineNum) {
         int count=0;
-        if (null!=csStateList&&csStateList.size()>0){
+        /*if (null!=csStateList&&csStateList.size()>0){
             for (CsState csState:csStateList){
                 if (!(System.currentTimeMillis()-csState.getCssCurrentTime().getTime()<unitTime)){
                     count++;
                 }
             }
+        }*/
+        count=registeredNum-onlineNum;
+        if (count<0){
+            logger.info("注意！计算出了一个在线车辆数大于入网车辆数的值："
+            +"入网车辆数："+registeredNum
+            +"在线车辆数："+onlineNum);
         }
         return count;
     }
@@ -248,14 +254,18 @@ public class StatisticsExecutor {
     }
 
     /**
-     * 计算注册车辆数
+     * 计算注册车辆数【从车辆表得到这个值】
      * 方法：得到所有车辆
      * */
-    public int calculateRegisteredNum(List<CsState> csStateList) {
+    public int calculateRegisteredNum(int model) {
         int count=0;
-        if (null!=csStateList&&csStateList.size()>0){
+        /*if (null!=csStateList&&csStateList.size()>0){
             count=csStateList.size();
-        }
+        }*/
+        CsVehicle csVehicle=new CsVehicle();
+        csVehicle.setCsvModel(model);
+        count=csVehicleService.selectCount(csVehicle);
+
         return count;
     }
 

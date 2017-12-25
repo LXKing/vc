@@ -66,9 +66,9 @@ public class StatisticsJob implements Runnable {
                 statisticsExecutor.getCsNumbersByModel(csStatistics.getCssCarModel()),
                 this.unitTime);
         csStatistics.setCssChargingNum(statisticsExecutor.calculateLongTimeChargingNum());
-        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStateList,this.unitTime));
+        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStatistics.getCssCarModel()));
         csStatistics.setCssOnlineNum(statisticsExecutor.calculateOnlineNum(csStateList,this.unitTime));
-        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStateList));
+        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStatistics.getCssRegisteredNum(),csStatistics.getCssOnlineNum()));
         csStatistics.setCssRunNum(statisticsExecutor.calculateLongTimeRunNum());
         csStatistics.setCssTotalMileage(statisticsExecutor.calculateTotalMileage(csStateList));
         csStatistics.setCssIncrementMileage(statisticsExecutor.calculateIncrementMileage(csStatistics.getCssTotalMileage(),this.unitTime));
@@ -89,9 +89,9 @@ public class StatisticsJob implements Runnable {
                 statisticsExecutor.getCsNumbersByModel(csStatistics.getCssCarModel()),
                 this.unitTime);
         csStatistics.setCssChargingNum(statisticsExecutor.calculateChargingNum(csStateList));
-        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStateList,this.unitTime));
+        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStatistics.getCssCarModel()));
         csStatistics.setCssOnlineNum(statisticsExecutor.calculateOnlineNum(csStateList,this.unitTime));
-        csStatistics.setCssRegisteredNum(statisticsExecutor.calculateRegisteredNum(csStateList));
+        csStatistics.setCssOfflineNum(statisticsExecutor.calculateOfflineNum(csStatistics.getCssRegisteredNum(),csStatistics.getCssOnlineNum()));
         csStatistics.setCssRunNum(statisticsExecutor.calculateRunNum(csStateList));
         csStatistics.setCssTotalMileage(statisticsExecutor.calculateTotalMileage(csStateList));
         csStatistics.setCssIncrementMileage(statisticsExecutor.calculateIncrementMileage(csStatistics.getCssTotalMileage(),this.unitTime));
