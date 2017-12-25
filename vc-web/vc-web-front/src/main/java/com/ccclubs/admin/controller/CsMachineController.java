@@ -90,11 +90,13 @@ public class CsMachineController {
       return VoResult.error("30001", String.format("车机号 %s 已存在", data.getCsmNumber()));
     }
 
-    CsMachine conditionMobileMachine = new CsMachine();
-    conditionMobileMachine.setCsmMobile(data.getCsmMobile());
-    existMachine = csMachineService.selectOne(conditionMobileMachine);
-    if (null != existMachine) {
-      return VoResult.error("30002", String.format("手机号 %s 已存在", data.getCsmMobile()));
+    if (null != data.getCsmMobile()) {
+      CsMachine conditionMobileMachine = new CsMachine();
+      conditionMobileMachine.setCsmMobile(data.getCsmMobile());
+      existMachine = csMachineService.selectOne(conditionMobileMachine);
+      if (null != existMachine) {
+        return VoResult.error("30002", String.format("手机号 %s 已存在", data.getCsmMobile()));
+      }
     }
 
     CsMachine conditionTeNoMachine = new CsMachine();
@@ -130,11 +132,13 @@ public class CsMachineController {
       return VoResult.error("30001", String.format("车机号 %s 已存在", data.getCsmNumber()));
     }
 
-    CsMachine conditionMobileMachine = new CsMachine();
-    conditionMobileMachine.setCsmMobile(data.getCsmMobile());
-    existMachine = csMachineService.selectOne(conditionMobileMachine);
-    if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())) {
-      return VoResult.error("30002", String.format("手机号 %s 已存在", data.getCsmMobile()));
+    if (null != data.getCsmMobile()) {
+      CsMachine conditionMobileMachine = new CsMachine();
+      conditionMobileMachine.setCsmMobile(data.getCsmMobile());
+      existMachine = csMachineService.selectOne(conditionMobileMachine);
+      if (null != existMachine && !existMachine.getCsmId().equals(data.getCsmId())) {
+        return VoResult.error("30002", String.format("手机号 %s 已存在", data.getCsmMobile()));
+      }
     }
 
     CsMachine conditionTeNoMachine = new CsMachine();
