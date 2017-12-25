@@ -145,9 +145,9 @@ public class CsIndexReportController {
 			if (null!=csIndexReport.getElectricRange()) {
 				csIndexReportCopy.setElectricRange(csIndexReport.getElectricRange().doubleValue());
 			}
-			//System.out.println("时间是"+DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
+			//System.out.println("时间是"+DateTimeUtil.getDateByTimestemp(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
 			if(null!=csIndexReport.getFacTime()) {
-				csIndexReportCopy.setFacTime(DateTimeUtil.getDateByFormat(csIndexReport.getFacTime(), DateTimeUtil.FORMAT5));
+				csIndexReportCopy.setFacTime(DateTimeUtil.getDateByTimestemp(csIndexReport.getFacTime()));
 			}
 			if (null!=csIndexReport.getMaxChargePower()) {
 				csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
@@ -156,7 +156,7 @@ public class CsIndexReportController {
 				csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
 			}
 			if (null!=csIndexReport.getModifyDate()) {
-				csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByFormat(csIndexReport.getModifyDate(), DateTimeUtil.FORMAT5));
+				csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByTimestemp(csIndexReport.getModifyDate()));
 			}
 			if (null!=csIndexReport.getMonthlyAvgMile()) {
 				csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());

@@ -13,18 +13,18 @@ import java.util.TimeZone;
  */
 public class DateTimeUtil {
     public static final String UNIX_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String format2 = "yyyy-MM-dd";
+    /*public static final String format2 = "yyyy-MM-dd";
     public static final String format3 = "yyyy-MM";
-    public static final String format4 = "yyyy-MM-dd HH:mm";
-    public static final String FORMAT5 = "yyyy-MM-dd HH:mm:ss.f";
-    private static final SimpleDateFormat SDF_FORMAT1 = new SimpleDateFormat(UNIX_FORMAT);
+    public static final String format4 = "yyyy-MM-dd HH:mm";*/
+    public static final String TIMETEMP_FORMAT = "yyyy-MM-dd HH:mm:ss.f";
+    private static final SimpleDateFormat SDF_UNIX_FORMAT = new SimpleDateFormat(UNIX_FORMAT);
 
     static {
-        SDF_FORMAT1.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+        SDF_UNIX_FORMAT.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
     }
 
 
-    public static Date getDateByFormat(String timeStr, String format) {
+    public static Date getDateByTimestemp(String timeStr) {
         // 日期时间格式
         //DateFormat datetimeDf = new SimpleDateFormat(format);
 
@@ -53,8 +53,6 @@ public class DateTimeUtil {
                 timeMills = result.getTime();
             }
         }
-
-
         return timeMills;
     }
 
@@ -70,11 +68,11 @@ public class DateTimeUtil {
     public static String getDateTimeByUnixFormat(long timeMills) {
         String retDateTime = "";
         Date date = new Date(timeMills);
-        retDateTime = SDF_FORMAT1.format(date);
+        retDateTime = SDF_UNIX_FORMAT.format(date);
         return retDateTime;
     }
 
-    public static String getDateTimeByFormat(long timeMills, String format) {
+    public static String getDateTimeStringByFormat(long timeMills, String format) {
         String retDateTime = "";
 
         SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -86,7 +84,7 @@ public class DateTimeUtil {
     }
 
     //增加指定时间后的日期
-    public static String getDateTimeByAddMills(String dateTime, long addMills) {
+    public static String getDateTimeStringByAddMills(String dateTime, long addMills) {
         long timeMills = DateTimeUtil.date2UnixFormat(dateTime, DateTimeUtil.UNIX_FORMAT);
         return DateTimeUtil.getDateTimeByUnixFormat(timeMills + addMills);
     }
