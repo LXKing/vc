@@ -196,8 +196,9 @@ public class StatisticsExecutor {
         if (cursor!=null){
             while (cursor.hasNext()){
                 setOperations.remove(Constants.REDIS_KEY_CHARGEING_CAR_SET,cursor.next());
-                logger.info("删除了一个充电set。");
+
             }
+            logger.info("统计执行器从redis删除了一组充电set。");
         }
         return count;
     }
@@ -239,8 +240,9 @@ public class StatisticsExecutor {
         if (cursor!=null){
             while (cursor.hasNext()){
                 setOperations.remove(Constants.REDIS_KEY_RUNNING_CAR_SET,cursor.next());
-                logger.info("删除了一个运行set。");
+
             }
+            logger.info("统计执行器从redis删除了一组运行set。");
         }
         return count;
     }
@@ -290,6 +292,7 @@ public class StatisticsExecutor {
                 pastTotalMileage=csStatisticsList.get(0).getCssTotalMileage();
             }
             else {
+                //从过去的里程中取最大
                 for (CsStatistics c:csStatisticsList) {
                     if (c.getCssTotalMileage()>pastTotalMileage){
                         pastTotalMileage=c.getCssTotalMileage();
