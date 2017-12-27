@@ -30,6 +30,10 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.ccclubs</groupId>
+			<artifactId>prometheus-spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>www.ccclubs</groupId>
 			<artifactId>vc-frm-logger</artifactId>
 			<version>${frm.version}</version>
