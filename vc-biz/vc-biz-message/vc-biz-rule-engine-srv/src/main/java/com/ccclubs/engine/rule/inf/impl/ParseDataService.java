@@ -511,6 +511,7 @@ public class ParseDataService implements IParseDataService {
         } else {
           logger.debug(message.getHexString());
         }
+        return;
       }
 
       SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());

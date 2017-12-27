@@ -330,25 +330,4 @@ public class LogicHelperMqtt {
     }
   }
 
-  /**
-   * 保存报警数据
-   */
-  public void saveAlarmData(final MachineMapping mapping, MqMessage mqMessage, MQTT_43 mqtt_43) {
-    final CsMachine csMachine = terminalUtils
-        .getMappingMachine(mapping);
-    if (csMachine == null || StringUtils.empty(csMachine.getCsmNumber())) {
-      // TODO:记录系统中不存在的车机
-      return;
-    }
-    final CsVehicle csVehicle = terminalUtils.getCsVehicle(csMachine.getCsmId().longValue());
-
-    CsAlarm alarm = terminalUtils.setCsAlarm(csVehicle, csMachine);
-
-    alarm.setCsaAddTime(new Date());
-    alarm.setCsaNumber(mqMessage.getCarNumber().toUpperCase());
-    alarm.setCsaInfo(String.valueOf(mqtt_43.getAlarmType()));
-    alarm.setCsaOrder("0");
-    csAlarmDao.save(alarm);
-  }
-
 }
