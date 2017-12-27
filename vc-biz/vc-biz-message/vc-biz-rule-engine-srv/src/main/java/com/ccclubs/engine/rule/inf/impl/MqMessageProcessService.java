@@ -161,6 +161,14 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         return;
       }
 
+      mapping = terminalUtils.getMapping(gbMessage.getVin());
+      if (mapping == null || mapping.getMachine() == null || StringUtils
+          .empty(mapping.getNumber())) {
+        loggerBusiness.info(
+            JSON.toJSONString(new TerminalNotRegister(gbMessage.getVin(),"GB","国标协议终端，当前在线，但系统中不存在，请排查原因 ", gbMessage.getPacketDescr())));
+        return;
+      }
+
       getParseGbDataService().processMessage(gbMessage, srcByteArray);
       return;
     }
@@ -169,6 +177,15 @@ public class MqMessageProcessService implements IMqMessageProcessService {
     if (tag.startsWith(MqTagUtils.PROTOCOL_MQTT)) {
       MqMessage mqMessage = new MqMessage();
       mqMessage.ReadFromBytes(srcByteArray);
+
+      mapping = terminalUtils.getMapping(mqMessage.getCarNumber());
+      if (mapping == null || mapping.getMachine() == null || StringUtils
+          .empty(mapping.getNumber())) {
+        loggerBusiness.info(JSON.toJSONString(
+            new TerminalNotRegister(mqMessage.getCarNumber(), "MQTT",
+                "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", mqMessage.getHexString())));
+        return;
+      }
 
       if (!StringUtils.empty(mqMessage.getCarNumber())) {
         mqMessage.setUpTopic(upTopic);

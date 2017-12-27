@@ -53,9 +53,6 @@ public class ParseGbDataService implements IParseGbDataService {
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(message.getVin());
 
     if (null == csVehicle) {
-      loggerBusiness.info(
-          JSON.toJSONString(new TerminalNotRegister(message.getVin(),"GB","国标协议终端，当前在线，但系统中不存在，请排查原因 ", message.getPacketDescr())));
-
       return;
     }
 
