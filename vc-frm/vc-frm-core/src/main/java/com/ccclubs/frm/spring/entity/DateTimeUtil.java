@@ -12,11 +12,12 @@ import java.util.TimeZone;
  * Created by taosm on 2017/5/31 0031.
  */
 public class DateTimeUtil {
-    public static final String UNIX_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    /*public static final String format2 = "yyyy-MM-dd";
-    public static final String format3 = "yyyy-MM";
-    public static final String format4 = "yyyy-MM-dd HH:mm";*/
+    public static final String UNIX_FORMAT = "yyyy-MM-dd HH:mm:ss";//对应Phoenix中的format1
+    public static final String DATE_FORMAT = "yyyy-MM-dd";//对应Phoenix中的format2
+    //public static final String format3 = "yyyy-MM";
+    //public static final String format4 = "yyyy-MM-dd HH:mm";
     public static final String TIMETEMP_FORMAT = "yyyy-MM-dd HH:mm:ss.f";
+    public static final String SHORT_FORMAT="yyyyMMdd";//对应Phoenix中的format5
     private static final SimpleDateFormat SDF_UNIX_FORMAT = new SimpleDateFormat(UNIX_FORMAT);
 
     static {
@@ -57,6 +58,12 @@ public class DateTimeUtil {
     }
 
 
+    /**
+     * 此方法用于替代之前的方法来获取时间或是日期中的单个值
+     * @param timeMills 此参数为需要提前值的时间戳。
+     * @param CalenderField 此参数要求从Calendar中得到对应的预定义int值。
+     * @return 返回解析到的对应单个时间或日期值。如现在是几点。
+     * */
     public static int getSingleDate(long timeMills, int CalenderField) {
         int result = 0;
         Calendar calendar = Calendar.getInstance();

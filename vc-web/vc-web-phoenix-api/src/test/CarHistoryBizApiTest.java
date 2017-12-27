@@ -51,19 +51,23 @@ public class CarHistoryBizApiTest {
         HttpPost httpPost = new HttpPost("http://101.37.178.63/history/states-query");
         httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         CarStateHistoryParam param = new CarStateHistoryParam();
-        param.setStart_time("2017-11-03 00:00:00");
-        param.setCsVin("LJ8E3C1M6HD301230");
-        //param.setCs_number(null);
+        param.setStart_time("2017-12-25 10:22:29");
+        param.setCsVin("LS5A2AJX4GA003002");
         param.setPage_no(1);
-        param.setEnd_time("2017-11-09 00:00:00");
+        param.setEnd_time("2017-12-25 14:04:55");
+        param.setOrder("asc");
+        param.setQuery_fields("speed,current_time,latitude,add_time,longitude");
         String s = JSON.toJSONString(param);
         String value = DigestUtils.md5Hex(s);
         String sign = HmacUtils.hmacSha1Hex("appkey", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000005");
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+        long stime=System.currentTimeMillis();
         CloseableHttpResponse response = httpclient.execute(httpPost);
         this.checkResponse(response);
+        long etime=System.currentTimeMillis();
+        System.out.println("use time:"+(etime-stime));
 
     }
 

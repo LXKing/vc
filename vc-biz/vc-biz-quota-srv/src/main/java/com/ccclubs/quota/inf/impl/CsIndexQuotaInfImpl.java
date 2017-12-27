@@ -583,6 +583,47 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		return pinfo;
 	}
 
+	@Override
+	public List<CsIndexReport> bizQuotaAll(CsIndexReportInput input) {
+		CsIndexReportExample example = new CsIndexReportExample();
+		CsIndexReportExample.Criteria ecri = example.createCriteria();
+		if (StringUtils.isNotBlank(input.getCsVin())) {
+			ecri.andCsVinEqualTo(input.getCsVin());
+		}
+		if (StringUtils.isNotBlank(input.getCsNumber())) {
+			ecri.andCsNumberEqualTo(input.getCsNumber());
+		}
+
+		String sortFiled = input.getSortField();
+		if (StringUtils.isNoneBlank(sortFiled)) {
+			String sort = null == input.getSortOrder() ? "desc" : input.getSortOrder();
+			if (sort.startsWith("asc")) {
+				sort = "asc";
+			} else if (sort.startsWith("desc")) {
+				sort = "desc";
+			}
+			if ("monthlyAvgMile".equals(sortFiled)) {
+				example.setOrderByClause("monthly_avg_mile " + sort);
+			} else if ("avgDriveTimePerDay".equals(sortFiled)) {
+				example.setOrderByClause("avg_drive_time_per_day " + sort);
+			} else if ("powerConsumePerHundred".equals(sortFiled)) {
+				example.setOrderByClause("power_consume_per_hundred " + sort);
+			} else if ("electricRange".equals(sortFiled)) {
+				example.setOrderByClause("electric_range " + sort);
+			} else if ("maxChargePower".equals(sortFiled)) {
+				example.setOrderByClause("max_charge_power " + sort);
+			} else if ("minChargeTime".equals(sortFiled)) {
+				example.setOrderByClause("min_charge_time " + sort);
+			} else if("cumulativeMileage".equals(sortFiled)){
+				example.setOrderByClause("cumulative_mileage " + sort);
+			} else if("cumulativeCharge".equals(sortFiled)){
+				example.setOrderByClause("cumulativeCharge " + sort);
+			}
+		}
+		List<CsIndexReport> list = csIndexReportMapper.selectByExample(example);
+		return list;
+	}
+
 	/**
 	 * 获取车辆指标存在vin/不存在vin的数据
 	 * @param readExcelList

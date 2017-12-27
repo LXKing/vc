@@ -156,7 +156,7 @@ public class CsIndexReportController {
 				csIndexReportCopy.setMinChargeTime(csIndexReport.getMinChargeTime().doubleValue());
 			}
 			if (null!=csIndexReport.getModifyDate()) {
-				csIndexReportCopy.setmodifyDate(DateTimeUtil.getDateByTimestemp(csIndexReport.getModifyDate()));
+				csIndexReportCopy.setModifyDate(DateTimeUtil.getDateByTimestemp(csIndexReport.getModifyDate()));
 			}
 			if (null!=csIndexReport.getMonthlyAvgMile()) {
 				csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());
@@ -187,17 +187,26 @@ public class CsIndexReportController {
 	public void getReport(HttpServletResponse res,
 						  CsIndexReportQuery query,
 						  @RequestParam(defaultValue = "0") Integer page,
-						  @RequestParam(defaultValue = "10") Integer rows) {
+						  @RequestParam(defaultValue = "10") Integer rows,
+						  @RequestParam(defaultValue = "false")Boolean isAllReport) {
 		//PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query.getCrieria(), page, rows);
 		CsIndexReportInput csIndexReportInput=new CsIndexReportInput();
 		csIndexReportInput.setCsNumber(query.getCsNumberEquals());
 		csIndexReportInput.setCsVin(query.getCsVinEquals());
 		csIndexReportInput.setPageNum(page);
 		csIndexReportInput.setPageSize(rows);
-		PageInfo<com.ccclubs.quota.orm.model.CsIndexReport> pageInfoFromQuota=csIndexQuotaInf.bizQuota(csIndexReportInput);
-		List<com.ccclubs.quota.orm.model.CsIndexReport> csIndexReportFromQuotaList=pageInfoFromQuota.getList();
-		PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
-		copyPageInfo(pageInfo,pageInfoFromQuota);
+		PageInfo<com.ccclubs.quota.orm.model.CsIndexReport> pageInfoFromQuota=null;
+		List<com.ccclubs.quota.orm.model.CsIndexReport> csIndexReportFromQuotaList=null;
+		if (!isAllReport){
+			 pageInfoFromQuota=csIndexQuotaInf.bizQuota(csIndexReportInput);
+			csIndexReportFromQuotaList=pageInfoFromQuota.getList();
+		}
+		else {
+			csIndexReportFromQuotaList=csIndexQuotaInf.bizQuotaAll(csIndexReportInput);
+		}
+
+		//PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
+		//copyPageInfo(pageInfo,pageInfoFromQuota);
 
 		List<CsIndexReport> list = new ArrayList<>();//pageInfo.getList();
 		if (null!=csIndexReportFromQuotaList&&csIndexReportFromQuotaList.size()>0){
@@ -207,7 +216,7 @@ public class CsIndexReportController {
 				list.add(csIndexReport);
 			}
 		}
-		pageInfo.setList(list);
+		//pageInfo.setList(list);
 		for(CsIndexReport data : list){
 			registResolvers(data);
 		}
@@ -218,7 +227,13 @@ public class CsIndexReportController {
 		/**
 		 * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
 		 * */
-		String fileName = "IndexReport_" + page + "_" + rows + "_" + dateNowStr + ".xls";
+		String fileName=null;
+		if (isAllReport){
+			fileName="IndexReport_All_Data" + dateNowStr + ".xls";
+		}else {
+			fileName= "IndexReport_" + page + "_" + rows + "_" + dateNowStr + ".xls";
+		}
+
 		try {
 			res.setHeader("content-type", "application/vnd.ms-excel");
 			res.setContentType("application/vnd.ms-excel");
@@ -226,7 +241,7 @@ public class CsIndexReportController {
 					"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
 			os = res.getOutputStream();
 			//文件路径
-			ByteArrayOutputStream bytes = null;
+			ByteArrayOutputStream bytes;
 			bytes = reportService.reportIndexReport(list);
 			os.write(bytes.toByteArray());
 			os.flush();

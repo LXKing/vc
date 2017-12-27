@@ -45,6 +45,15 @@ public class CarStateHistoryParam extends Page implements Serializable{
 
     private String order="desc";
 
+    private String tableName;
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
 
     public String getCsVin() {
         return csVin;
@@ -113,6 +122,7 @@ public class CarStateHistoryParam extends Page implements Serializable{
                 ", end_time='" + end_time + '\'' +
                 ", query_fields='" + query_fields + '\'' +
                 ", order='" + order + '\'' +
+                ", tableName='" + tableName + '\'' +
                 '}';
     }
 }
