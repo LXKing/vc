@@ -34,6 +34,13 @@ public class Consts {
     public static final List<String> carGbAllFields= ImmutableList.of("cs_vin","add_time","current_time","gb_data","cs_access","cs_protocol","gb_type","cs_verify");
 
 
+    /**
+     * 以下三个方法是TableStore表名
+     * */
+    public static final String TBL_NAME_CAR_STATE_HISTORY="TBS_CAR_STATE_HISTORY";
+    public static final String TBL_NAME_CAR_CAN_HISTORY="TBS_CAR_CAN_HISTORY";
+    public static final String TBL_NAME_CAR_GB_HISTORY="TBS_CAR_GB_HISTORY";
+
 
 
 }

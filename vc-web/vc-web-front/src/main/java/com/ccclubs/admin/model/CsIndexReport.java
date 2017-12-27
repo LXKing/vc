@@ -147,14 +147,14 @@ public class CsIndexReport implements java.io.Serializable
 	/**
 	* 编号 [可空]      
 	**/
-	public Long getid(){
+	public Long getId(){
 		return this.id;
 	}
 	
 	/**
 	* 编号 [可空]     
 	**/
-	public void setid(Long id){
+	public void setId(Long id){
 		this.id = id;
 	}
 	/*******************************车辆VIN码**********************************/	
@@ -315,28 +315,28 @@ public class CsIndexReport implements java.io.Serializable
 	/**
 	* 此行创建时间 [非空]      
 	**/
-	public Date getcreateTime(){
+	public Date getCreateTime(){
 		return this.createTime;
 	}
 	
 	/**
 	* 此行创建时间 [非空]     
 	**/
-	public void setcreateTime(Date createTime){
+	public void setCreateTime(Date createTime){
 		this.createTime = createTime;
 	}
 	/*******************************此行更新时间**********************************/	
 	/**
 	* 此行更新时间 [可空]      
 	**/
-	public Date getmodifyDate(){
+	public Date getModifyDate(){
 		return this.modifyDate;
 	}
 	
 	/**
 	* 此行更新时间 [可空]     
 	**/
-	public void setmodifyDate(Date modifyDate){
+	public void setModifyDate(Date modifyDate){
 		this.modifyDate = modifyDate;
 	}
 	/*******************************车辆出厂日期**********************************/	

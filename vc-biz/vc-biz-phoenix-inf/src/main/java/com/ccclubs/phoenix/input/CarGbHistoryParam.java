@@ -20,6 +20,8 @@ public class CarGbHistoryParam extends Page implements Serializable{
 
     private String order="desc";
 
+    private String tableName;
+
     public String getCs_vin() {
         return cs_vin;
     }
@@ -67,6 +69,14 @@ public class CarGbHistoryParam extends Page implements Serializable{
         this.order = order;
     }
 
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
     @Override
     public String toString() {
         return "CarGbHistoryParam{" +
@@ -75,6 +85,7 @@ public class CarGbHistoryParam extends Page implements Serializable{
                 ", end_time='" + end_time + '\'' +
                 ", query_fields='" + query_fields + '\'' +
                 ", order='" + order + '\'' +
+                ", tableName='" + tableName + '\'' +
                 '}';
     }
 }
