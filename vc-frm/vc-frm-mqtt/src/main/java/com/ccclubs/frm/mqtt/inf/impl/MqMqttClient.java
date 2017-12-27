@@ -30,6 +30,7 @@ public class MqMqttClient implements IMqClient {
   private String pwd;
   private boolean logUpDown;
   private MqttConnectOptions conOpt = null;
+  private int maxInflight = 30000;
 
   private IMessageProcessService mqMessageProcessService;
   /**
@@ -76,13 +77,14 @@ public class MqMqttClient implements IMqClient {
 
   @Override
   public boolean send(String topic, byte[] srcByteArray) {
-    return send(topic, srcByteArray, MqttConstants.QOS_0);
+    return send(topic, srcByteArray, MqttConstants.QOS_1);
   }
 
   @Override
   public boolean start() {
     try {
       conOpt = new MqttConnectOptions();
+      conOpt.setMaxInflight(maxInflight);
       conOpt.setUserName(getUserName());
       // conOpt.setAutomaticReconnect(true);
       conOpt.setPassword(getPwd().toCharArray());

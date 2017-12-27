@@ -278,11 +278,11 @@ public class LogicHelperJt808 {
       if (mapping.getAccess() != null && mapping.getAccess() != 3 && mapping.getAccess() != 4
           && mapping.getAccess() != 5) {
         csMachine = terminalUtils.getMappingMachine(mapping);
-        // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles
+        // 不含分时租赁插件的808终端 通过 can 更新 soc，obdmiles，speed
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
-          if (mapping.getState() != null && (soc != 0 || obdMiles != 0)) {
+          if (mapping.getState() != null) {
             CsState csState = queryStateService.queryStateByIdFor808(mapping.getState().intValue());
-            if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile()) {
+            if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile() || speed != csState.getCssSpeed()) {
               CsState csStateNew = new CsState();
               csStateNew.setCssId(mapping.getState().intValue());
               if (obdMiles != 0) {

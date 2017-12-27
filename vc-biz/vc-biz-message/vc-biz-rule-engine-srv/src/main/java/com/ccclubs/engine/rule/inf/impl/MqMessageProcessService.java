@@ -196,19 +196,13 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         return;
       }
       CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
-      // FIXME: [地标类型] 只有标记为地标类型的终端才转发。
-      if (csMachine == null ||csVehicle == null || csMachine.getCsmId() <= 0 || StringUtils
-          .empty(csMachine.getCsmLandmark()) || "#0#".equals(csMachine.getCsmLandmark().trim())) {
+
+      if (csMachine == null ||csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
         return;
       }
-//      if (csMachine == null ||csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
-//        return;
-//      }
-//      Message mqMessage = messageFactory
-//          .getMessage(csVehicle.getCsvLandmark(),topic, tag, message.getPacketDescr());
 
       Message mqMessage = messageFactory
-          .getMessage(csMachine, topic, tag, message);
+          .getMessage(csVehicle.getCsvLandmark(),topic, tag, message.getPacketDescr());
 
       if (mqMessage != null) {
         if (environmentUtils.isProdEnvironment()) {
