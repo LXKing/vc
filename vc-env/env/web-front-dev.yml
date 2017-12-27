@@ -2,7 +2,10 @@ server:
   port: 9009
 hbaseSrv:
   host: 101.37.178.63
-
+oss:
+  accessKeyId: LTAIYzY8yT3GTuj1
+  accessKeySecret: Gdj4x2l5rOzC2r586Ur75EpdtARLt7
+  endpoint: oss-cn-hangzhou.aliyuncs.com
 
 spring:
   redis:
