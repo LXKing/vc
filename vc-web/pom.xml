@@ -9,19 +9,13 @@
 	<artifactId>vc-web</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>vc-web-manage-api</module>
-		<module>vc-web-manage-srv</module>
 		<module>vc-web-cfg</module>
-		<module>vc-web-demo-api</module>
-		<module>vc-web-demo-srv</module>
-		<module>vc-web-demo-sec</module>
 		<module>vc-web-vtsearch-api</module>
 		<module>vc-web-vtsearch-srv</module>
 		<module>vc-web-command-api</module>
 		<module>vc-web-command-srv</module>
 		<module>vc-web-usr-srv</module>
 		<module>vc-web-usr-api</module>
-		<module>vc-web-usr-app</module>
         <module>vc-web-message</module>
 		<module>vc-web-protocol-srv</module>
 		<module>vc-web-quota-api</module>
