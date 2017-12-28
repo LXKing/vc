@@ -21,9 +21,24 @@ public class OssAutoConfiguration {
     @Autowired
     private OssProperties ossProperties;
 
+    //private static volatile OSSClient ossClient=null;
+    //private OssAutoConfiguration(){}
+
     @Bean(name = "ossClient")
     public OSSClient ossClient() {
-        return new OSSClient("https://" + ossProperties.getEndpoint(), ossProperties.getAccessKeyId(), ossProperties.getAccessKeySecret());
+        /*if (ossClient==null){
+            synchronized (OSSClient.class){
+                if (ossClient==null){
+                    ossClient=new OSSClient(ossProperties.getEndpoint(),
+                            ossProperties.getAccessKeyId(),
+                            ossProperties.getAccessKeySecret());
+                }
+            }
+        }
+        return ossClient;*/
+        return new OSSClient(ossProperties.getEndpoint(),
+                ossProperties.getAccessKeyId(),
+                ossProperties.getAccessKeySecret());
     }
 
 }

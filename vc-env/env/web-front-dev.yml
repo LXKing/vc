@@ -5,7 +5,7 @@ hbaseSrv:
 oss:
   accessKeyId: LTAIYzY8yT3GTuj1
   accessKeySecret: Gdj4x2l5rOzC2r586Ur75EpdtARLt7
-  endpoint: oss-cn-hangzhou.aliyuncs.com
+  endpoint: https://oss-cn-hangzhou.aliyuncs.com
 
 spring:
   redis:
