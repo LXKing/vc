@@ -1,11 +1,11 @@
-package com.ccclubs.common.utils;
+package com.ccclubs.frm.spring.util;
 
+import com.alibaba.dubbo.common.utils.StringUtils;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

@@ -49,9 +49,12 @@
     </encoder>
   </appender>
   <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.main.log</FileNamePattern>
-      <MaxHistory>30</MaxHistory>
+    <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.main.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.main.log</FileNamePattern>
+      <maxFileSize>300MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
     </rollingPolicy>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
@@ -60,9 +63,12 @@
   </appender>
 
   <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.error.log</FileNamePattern>
-      <MaxHistory>30</MaxHistory>
+    <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.error.log</FileNamePattern>
+      <maxFileSize>300MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
     </rollingPolicy>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
@@ -77,10 +83,13 @@
   </appender>
 
   <appender name="BUSINESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <FileNamePattern>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.business.log
+    <file>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.business.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.business.log
       </FileNamePattern>
-      <MaxHistory>30</MaxHistory>
+      <maxFileSize>300MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
     </rollingPolicy>
     <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
       <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->

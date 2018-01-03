@@ -141,14 +141,14 @@ public class TestVtsearch {
         HttpPost httpPost = new HttpPost("http://101.37.178.63/search/isLatestVersion");
         httpPost.setHeader("Content-Type", "application/json");
         VersionQryInput input = new VersionQryInput();
-        input.setVin("LJ8E3C1M9GB003295");
+        input.setVin("LJ8E3C1M3GB006029");
 
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("pfadf2pfavyybd", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000001");
         httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -172,17 +172,17 @@ public class TestVtsearch {
     @Test
     public void unbindVehicle() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//127.0.0.1:8081
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/unbindVehicle");
+        HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/unbindVehicle");
         httpPost.setHeader("Content-Type", "application/json");
         UnBindVehicleInput input = new UnBindVehicleInput();
-        input.setVin("LJ8E3C1M4GB003303");//LJ8E3C1M4GB003303
-        input.setTeNo("CFXT31603230127");//CFXT31603230127
+        input.setVin("LJ8E3C1M0HD314619");//LJ8E3C1M4GB003303
+        input.setTeNo("67Y4438");//CFXT31603230127
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("pfadf2pfavyybd", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000001");
         httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -210,14 +210,14 @@ public class TestVtsearch {
         HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/bindVehicle");
         httpPost.setHeader("Content-Type", "application/json");
         UnBindVehicleInput input = new UnBindVehicleInput();
-        input.setVin("LS5A2AJX2GA001281");
-        input.setTeNo("67D1943");
+        input.setVin("LJ8E3C1M0HD314619");
+        input.setTeNo("67Y4438");
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
-        String sign = HmacUtils.hmacSha1Hex("fa@sd_n38f2f_3qb", value);
+        String sign = HmacUtils.hmacSha1Hex("pfadf2pfavyybd", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000005");
+        httpPost.addHeader("appId", "1000001");
         httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -312,18 +312,18 @@ public class TestVtsearch {
         HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/factory/vehiclePush");
         httpPost.setHeader("Content-Type", "application/json");
         VehiclePushInput input = new VehiclePushInput();
-        input.setCsvVin("LJ8E3C1M3HD313884");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
-        input.setCsvBataccuCode("2101020A-W11#2705Z#20171202#00093");
-//        input.setCsvCertific("");
-        input.setCsvColorCode("红套黑");
-        input.setCsvInteriorColorCode("全黑内饰");
-        input.setCsvEngineNo("20171204150");
-        input.setCsvInteriorColorCode("");
-        input.setCsvMachine("67F5945");
-        input.setCsvModel("JNJ7000EVK1");
+        input.setCsvVin("LJ8E3C1M2HD315142");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
         input.setCsvModelCode("JNJ7000EVK1-JNPMSM320-30");
-        input.setCsvProdDate("2017-12-12");
+        input.setCsvProdDate("2017-12-19");
         input.setCsvType("飞鱼座");
+        input.setCsvColorCode("蓝白套");
+//        input.setCsvCertific("");
+        input.setCsvInteriorColorCode("全黑内饰");
+        input.setCsvEngineNo("20171126112");
+        input.setCsvMachine("67Y5064");
+        input.setCsvBataccuCode("M171215-1-0088");
+        input.setCsvModel("JNJ7000EVK1");
+
 
         String ss = JSON.toJSONString(input);
 

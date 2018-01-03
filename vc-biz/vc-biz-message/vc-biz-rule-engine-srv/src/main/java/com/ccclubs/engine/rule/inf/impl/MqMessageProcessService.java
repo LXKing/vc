@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryAppInfoService;
-import com.ccclubs.common.utils.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.IMqAckService;
@@ -12,8 +11,11 @@ import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.engine.rule.inf.util.LogicHelperJt808;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.mongo.modify.UpdateLoggerService;
 import com.ccclubs.protocol.dto.gb.GBMessage;
+import com.ccclubs.protocol.dto.jt808.JT_01F0;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0201;
 import com.ccclubs.protocol.dto.jt808.JT_0704;
@@ -69,6 +71,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   @Autowired
   EnvironmentUtils environmentUtils;
 
+  @Autowired
+  UpdateLoggerService updateLoggerService;
 
   /**
    * 通过 TAG 区分是哪种协议
@@ -97,7 +101,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       if (mapping == null || mapping.getMachine() == null || StringUtils
           .empty(mapping.getNumber())) {
         loggerBusiness.info(
-            JSON.toJSONString(new TerminalNotRegister(msgFromTerminal.getSimNo(),"808","808协议，当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getPacketDescr())));
+            JSON.toJSONString(new TerminalNotRegister(msgFromTerminal.getSimNo(), "808",
+                "808协议，当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getPacketDescr())));
         return;
       }
       // 0x0200,0x0201,0x0704,0x0900
@@ -147,6 +152,18 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 .saveCanData(mapping, msgFromTerminal, canData, ConstantUtils.NOTIFY_FD);
           }
         }
+      } else if (headerType == 0x01F0) {
+        JT_01F0 updateData = (JT_01F0) msgFromTerminal.getMessageContents();
+        if (updateData != null) {
+          updateLoggerService.save(msgFromTerminal.getSimNo(),
+              "FTP升级指令-" + updateData.getResultString(),
+              msgFromTerminal.getPacketDescr(), 0L);
+        }
+        return;
+      } else if (headerType == 0x7F04) {
+        // 写日志
+        updateLoggerService.save(msgFromTerminal.getSimNo(), "终端CAN过滤表",
+            msgFromTerminal.getPacketDescr(), 0L);
       }
       return;
     }
@@ -165,7 +182,9 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       if (mapping == null || mapping.getMachine() == null || StringUtils
           .empty(mapping.getNumber())) {
         loggerBusiness.info(
-            JSON.toJSONString(new TerminalNotRegister(gbMessage.getVin(),"GB","国标协议终端，当前在线，但系统中不存在，请排查原因 ", gbMessage.getPacketDescr())));
+            JSON.toJSONString(
+                new TerminalNotRegister(gbMessage.getVin(), "GB", "国标协议终端，当前在线，但系统中不存在，请排查原因 ",
+                    gbMessage.getPacketDescr())));
         return;
       }
 
@@ -214,12 +233,12 @@ public class MqMessageProcessService implements IMqMessageProcessService {
       }
       CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
 
-      if (csMachine == null ||csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
+      if (csMachine == null || csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
         return;
       }
 
       Message mqMessage = messageFactory
-          .getMessage(csVehicle.getCsvLandmark(),topic, tag, message.getPacketDescr());
+          .getMessage(csVehicle.getCsvLandmark(), topic, tag, message.getPacketDescr());
 
       if (mqMessage != null) {
         if (environmentUtils.isProdEnvironment()) {

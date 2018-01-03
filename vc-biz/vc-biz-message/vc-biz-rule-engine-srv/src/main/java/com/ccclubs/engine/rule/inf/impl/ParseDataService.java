@@ -6,7 +6,7 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.common.utils.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;

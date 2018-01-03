@@ -80,7 +80,7 @@ public class ResultHelper {
                                 commonResult.getMessage());
                     }
                 }
-                Thread.sleep(100L);
+                Thread.sleep(300L);
             }
             logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());

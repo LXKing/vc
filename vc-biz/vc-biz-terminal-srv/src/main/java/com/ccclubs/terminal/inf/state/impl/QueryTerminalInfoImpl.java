@@ -183,7 +183,8 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
       output.setFilename(latest_filename);
       output.setCurrentV("");
     } else {
-      if (latest_version.equals(csMachine.getCsmTlV2().toString())) {
+      // TBOX当前插件版本比设定的目标版本大，则认为已是最新版本，不用升级
+      if (csMachine.getCsmTlV2() >= Integer.parseInt(latest_version)) {
         output.setLatest(true);
         output.setTerminalType(csMachine.getCsmTeType());
         output.setLatestV(latest_version);

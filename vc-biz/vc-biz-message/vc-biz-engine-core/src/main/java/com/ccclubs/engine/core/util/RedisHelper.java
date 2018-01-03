@@ -34,15 +34,6 @@ public class RedisHelper {
   }
 
   /**
-   * 缓存指令执行结果，兼容1.0系统
-   */
-  public void setRemoteOld(String keyPart, Object value) {
-    ValueOperations valueOperations = myRedisTemplate.opsForValue();
-    valueOperations.set(AssembleHelper.cmdKey(keyPart), value, RuleEngineConstant.RENOTE_EXPIRE,
-        TimeUnit.SECONDS);
-  }
-
-  /**
    * 老系统中，获取 MachineMapping
    */
   public MachineMapping getMappingOld(String keyPart) {
@@ -50,20 +41,4 @@ public class RedisHelper {
         .get("OBJ.MachineMapping." + keyPart);
   }
 
-
-  /**
-   * 老系统中，获取 MachineMapping
-   */
-  public Can2State getCan2State(String simNo) {
-    return (Can2State) redisTemplate.opsForValue()
-        .get("Can2State:" + simNo);
-  }
-
-  /**
-   * 老系统中，获取 MachineMapping
-   */
-  public void setCan2State(String simNo) {
-    redisTemplate.opsForValue()
-        .set("Can2State:" + simNo, 3 * 60 * 60);
-  }
 }

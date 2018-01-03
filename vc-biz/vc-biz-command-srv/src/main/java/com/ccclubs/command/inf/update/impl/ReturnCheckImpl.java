@@ -10,6 +10,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.util.CommandConstants;
 import com.ccclubs.command.util.ResultHelper;
+import com.ccclubs.command.util.TerminalOnlineHelper;
 import com.ccclubs.command.util.ValidateHelper;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
@@ -57,6 +58,9 @@ public class ReturnCheckImpl implements ReturnCheckInf{
     @Resource
     private CsRemoteService remoteService;
 
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
+
     @Override
     @DataAuth
     public ReturnCheckOutput setReturn(ReturnCheckInput input) {
@@ -71,6 +75,9 @@ public class ReturnCheckImpl implements ReturnCheckInf{
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));

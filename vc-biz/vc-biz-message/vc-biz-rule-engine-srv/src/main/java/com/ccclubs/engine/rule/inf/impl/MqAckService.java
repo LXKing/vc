@@ -1,7 +1,7 @@
 package com.ccclubs.engine.rule.inf.impl;
 
 
-import com.ccclubs.common.utils.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.rule.inf.IMqAckService;
 import com.ccclubs.engine.rule.inf.IMqMessageSender;
 import com.ccclubs.protocol.dto.mqtt.FurtherCarReply;

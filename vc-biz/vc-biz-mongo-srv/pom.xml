@@ -32,6 +32,11 @@
             <artifactId>vc-biz-mongo-orm</artifactId>
             <version>${biz.version}</version>
         </dependency>
+      <dependency>
+        <groupId>www.ccclubs</groupId>
+        <artifactId>vc-frm-logger</artifactId>
+        <version>1.0.0</version>
+      </dependency>
     </dependencies>
     <artifactId>vc-biz-mongo-srv</artifactId>
 

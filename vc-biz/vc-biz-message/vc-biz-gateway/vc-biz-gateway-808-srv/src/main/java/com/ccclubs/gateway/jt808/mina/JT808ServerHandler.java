@@ -1,14 +1,18 @@
 package com.ccclubs.gateway.jt808.mina;
 
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.gateway.jt808.dto.GpsConnection;
 import com.ccclubs.gateway.jt808.inf.I808MessageProcessService;
 import com.ccclubs.protocol.dto.jt808.T808Message;
+import com.ccclubs.protocol.dto.online.OnlineConnection;
+import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.StringUtils;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
@@ -17,6 +21,7 @@ import org.apache.mina.core.session.IoSessionConfig;
 import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 
 /**
  * JT808业务处理器
@@ -27,11 +32,16 @@ public class JT808ServerHandler extends IoHandlerAdapter {
 
   @Resource(name = "jt808MessageProcessService")
   private I808MessageProcessService messageProcessService;
+  @Resource
+  RedisTemplate redisTemplate;
+  @Resource
+  EnvironmentUtils environmentUtils;
+
   // 终端连接集合
-  private static ConcurrentMap<String, GpsConnection> connctionMap = new ConcurrentHashMap<String, GpsConnection>();
+  private static ConcurrentMap<String, GpsConnection> connectionMap = new ConcurrentHashMap<>();
 
   public Collection<GpsConnection> getConnections() {
-    return connctionMap.values();
+    return connectionMap.values();
   }
 
   private String getSimNo(IoSession session) {
@@ -42,8 +52,7 @@ public class JT808ServerHandler extends IoHandlerAdapter {
     if (simNo.length() > 11) {
       simNo = simNo.substring(1);
     }
-    GpsConnection conn = connctionMap.get(simNo);
-    return conn;
+    return connectionMap.get(simNo);
   }
 
   private GpsConnection getConnection(long sessionId, T808Message msg) {
@@ -51,10 +60,10 @@ public class JT808ServerHandler extends IoHandlerAdapter {
       logger.debug("错误的空消息:");
       return null;
     }
-    GpsConnection conn = connctionMap.get(msg.getSimNo());
+    GpsConnection conn = connectionMap.get(msg.getSimNo());
     if (conn == null) {
       conn = new GpsConnection(msg.getSimNo(), sessionId);
-      connctionMap.put(msg.getSimNo(), conn);
+      connectionMap.put(msg.getSimNo(), conn);
     } else if (conn.getSessionId() != sessionId) {
       // 新的连接
       // logger.error(msg.getSimNo() + "接入新的连接");
@@ -94,6 +103,11 @@ public class JT808ServerHandler extends IoHandlerAdapter {
       if (tm.getHeader() != null && tm.getHeader().getMessageType() == 0x0200) {
         conn.setPositionPackageNum(conn.getPositionPackageNum() + 1);
       }
+      // 记录终端在线情况
+      redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + tm.getSimNo(),
+          new OnlineConnection(tm.getSimNo(), clientIP, environmentUtils.getCurrentIp(),
+              System.currentTimeMillis()),
+          ConstantUtils.ONLINE_IDE_TIME, TimeUnit.MILLISECONDS);
       // 上行数据
       logger.info("UP >> {}{}", tm.getPacketDescr(), clientIP);
     }
@@ -107,9 +121,8 @@ public class JT808ServerHandler extends IoHandlerAdapter {
   public void sessionClosed(IoSession session) throws Exception {
     String simNo = "" + session.getAttribute("simNo");
     if (!StringUtils.empty(simNo)) {
-      GpsConnection conn = connctionMap.get(simNo);
+      GpsConnection conn = connectionMap.get(simNo);
       if (conn != null) {
-        // connctionMap.remove(simNo);
         conn.setConnected(false);
         conn.setDisconnectTimes(conn.getDisconnectTimes() + 1);
       }
@@ -117,7 +130,7 @@ public class JT808ServerHandler extends IoHandlerAdapter {
     if (session != null) {
       session.closeOnFlush();
     }
-    this.logger.debug("与本地服务器断开连接, SimNo:" + simNo);
+    logger.debug("与本地服务器断开连接, SimNo:" + simNo);
   }
 
   public void exceptionCaught(IoSession session, Throwable e) throws Exception {
@@ -126,12 +139,12 @@ public class JT808ServerHandler extends IoHandlerAdapter {
     if (session != null) {
       session.closeOnFlush();
     }
-    this.logger.debug(getSimNo(session) + "通讯时发生异常：" + e.getMessage());
+    logger.debug(getSimNo(session) + "通讯时发生异常：" + e.getMessage());
   }
 
   public void sessionIdle(IoSession session, IdleStatus idle) throws Exception {
     String simNo = getSimNo(session);
-    this.logger.debug(simNo + "空闲时间过长，系统将关闭连接");
+    logger.debug(simNo + "空闲时间过长，系统将关闭连接");
     session.closeOnFlush();
   }
 

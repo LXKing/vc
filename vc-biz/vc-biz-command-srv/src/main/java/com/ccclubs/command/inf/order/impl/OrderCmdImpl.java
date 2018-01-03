@@ -9,6 +9,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.util.CommandConstants;
 import com.ccclubs.command.util.ResultHelper;
+import com.ccclubs.command.util.TerminalOnlineHelper;
 import com.ccclubs.command.util.ValidateHelper;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
@@ -53,7 +54,8 @@ public class OrderCmdImpl implements OrderCmdInf {
     private CsRemoteService remoteService;
     @Resource
     private ResultHelper resultHelper;
-
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
     /**
      * 订单数据下发指令（只判断成功与否，不返回data）
      *
@@ -72,6 +74,10 @@ public class OrderCmdImpl implements OrderCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
+
         // add at 2017-11-17 ，兼容长安出行订单下发
         String rfidCode = StringUtils.empty(input.getRfid()) ? "00000000" : input.getRfid();
         int code = null == input.getAuthCode() ? 111111 : input.getAuthCode();
