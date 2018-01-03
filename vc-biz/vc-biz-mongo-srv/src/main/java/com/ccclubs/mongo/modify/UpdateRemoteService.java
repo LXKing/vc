@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpdateRemoteService {
 
-  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
-
   @Autowired
   CsRemoteDao dao;
 
@@ -76,9 +74,5 @@ public class UpdateRemoteService {
     update.set("csrUpdateTime", new Date().getTime());
 
     dao.update(query, update);
-
-    // 记录单条操作记录耗时，单位毫秒 ms
-    CsRemote csRemoteOld = dao.findOne(query);
-    loggerBusiness.info(JSONObject.toJSONString(csRemoteOld));
   }
 }
