@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-oss</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-quota-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>

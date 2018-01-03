@@ -144,7 +144,7 @@ public class LoginWebController {
       // 返回accessToken
       AccessToken accessTokenEntity = new AccessToken();
       accessTokenEntity.setAccess_token(accessToken);
-      accessTokenEntity.setExpires_in(30);
+      accessTokenEntity.setExpires_in(120);
       accessTokenEntity.setToken_type("bearer");
       accessTokenEntity.setUser_id(user.getSuId().longValue());
       redisTemplate.opsForValue()
