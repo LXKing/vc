@@ -25,5 +25,6 @@
         <module>vc-frm-ons</module>
         <module>vc-frm-cache</module>
         <module>vc-frm-phoenix</module>
+        <module>vc-frm-oss</module>
     </modules>
 </project>

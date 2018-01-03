@@ -32,9 +32,9 @@
       <version>${biz.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-redis</artifactId>
-      <version>1.8.0.RELEASE</version>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-redis</artifactId>
+      <version>${frm.version}</version>
     </dependency>
   </dependencies>
 

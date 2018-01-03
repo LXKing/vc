@@ -1,11 +1,15 @@
 package com.ccclubs.protocol.dto.online;
 
+import java.io.Serializable;
+
 /**
  * 终端在线描述
  * @author qsxiaogang
  * @create 2018-01-02
  **/
-public class OnlineConnection {
+public class OnlineConnection  implements Serializable {
+
+  private static final long serialVersionUID = -6519276463068646693L;
 
   /**
    * 唯一标识，可以是车机号，手机号，VIN

@@ -1,12 +1,17 @@
 package com.ccclubs.admin.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
 import com.ccclubs.admin.model.CsIndexReport;
 import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
 import com.ccclubs.admin.service.ICsIndexReportService;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.task.threads.CsIndexReportThread;
+import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.vo.TableResult;
+import com.ccclubs.admin.vo.VoResult;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.vo.CsIndexReportInput;
@@ -22,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 指标统计Controller
@@ -38,7 +43,9 @@ import java.util.List;
 @RequestMapping("/monitor/analysis/quota")
 public class CsIndexReportController {
 
-	Logger logger= LoggerFactory.getLogger(CsIndexReportController.class);
+	//Fixme 后期请将此对象存储在redis中。以便加强程序健壮性。
+	public static final Map<String,String> ossFileMap=new HashMap<>();
+	private  static final Logger logger= LoggerFactory.getLogger(CsIndexReportController.class);
 
 	@Autowired
 	ICsIndexReportService csIndexReportService;
@@ -47,6 +54,9 @@ public class CsIndexReportController {
 	private CsIndexQuotaInf csIndexQuotaInf;
 	@Autowired
 	IReportService reportService;
+
+	@Autowired
+	private OSSClient ossClient;
 
 
 	/**
@@ -93,7 +103,7 @@ public class CsIndexReportController {
 	 * @param pageInfoCpoy  接受拷贝值的PageInfo对象。
 	 *     注意：本方法不会拷贝list！ 注意空值检查！
 	 * */
-	private static void copyPageInfo(PageInfo pageInfoCpoy,PageInfo pageInfo){
+	public static void copyPageInfo(PageInfo pageInfoCpoy,PageInfo pageInfo){
 		if(null!=pageInfo&&null!=pageInfoCpoy){
 			pageInfoCpoy.setTotal(pageInfo.getTotal());
 			pageInfoCpoy.setPageNum(pageInfo.getPageNum());
@@ -126,7 +136,7 @@ public class CsIndexReportController {
 	 *                          他是最后接受转换值的对象。
 	 *       注意：区分两个形参的类型，注意空值检查！
 	 * */
-	private static void dealCsIndexReportFromQuotaToThis(CsIndexReport csIndexReportCopy,com.ccclubs.quota.orm.model.CsIndexReport csIndexReport){
+	public static void dealCsIndexReportFromQuotaToThis(CsIndexReport csIndexReportCopy,com.ccclubs.quota.orm.model.CsIndexReport csIndexReport){
 		if (null!=csIndexReportCopy&&null!=csIndexReport){
 			//csIndexReportCopy.setid();
 			if (null!=csIndexReport.getAvgDriveTimePerDay()){
@@ -172,7 +182,7 @@ public class CsIndexReportController {
 	/**
 	 * 注册属性内容解析器
 	 */
-	void registResolvers(CsIndexReport data){
+	public static void registResolvers(CsIndexReport data){
 		if(data!=null){
 			data.registResolver(CsIndexReportResolver.车辆VIN码.getResolver());
 			data.registResolver(CsIndexReportResolver.车机号.getResolver());
@@ -182,9 +192,48 @@ public class CsIndexReportController {
 
 
 
+	@RequestMapping(value = "/eee", method = RequestMethod.GET)
+	public void getfile(HttpServletResponse res,String fileId){
+		if (ossFileMap.containsKey(fileId)){
+			String fileName=ossFileMap.get(fileId);
+			OutputStream os = null;
+			try {
+				//fileName="IndexReport_All_Data2017-12-28.xls";
+				res.setHeader("content-type", "application/vnd.ms-excel");
+				res.setContentType("application/vnd.ms-excel");
+				res.setHeader("Content-Disposition",
+						"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
+				os = res.getOutputStream();
+				//文件路径
+				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+				OSSObject ossObject= ossClient.getObject("oss-vc",fileName);
+				int ch;
+				InputStream inputStream =ossObject.getObjectContent();
+				while ((ch = inputStream.read()) != -1) {
+					bytes.write(ch);
+				}
+				os.write(bytes.toByteArray());
+				os.flush();
+				os.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (os != null) {
+						os.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
 
 	@RequestMapping(value = "/report", method = RequestMethod.GET)
-	public void getReport(HttpServletResponse res,
+	public VoResult<String> getReport(
 						  CsIndexReportQuery query,
 						  @RequestParam(defaultValue = "0") Integer page,
 						  @RequestParam(defaultValue = "10") Integer rows,
@@ -195,69 +244,21 @@ public class CsIndexReportController {
 		csIndexReportInput.setCsVin(query.getCsVinEquals());
 		csIndexReportInput.setPageNum(page);
 		csIndexReportInput.setPageSize(rows);
-		PageInfo<com.ccclubs.quota.orm.model.CsIndexReport> pageInfoFromQuota=null;
-		List<com.ccclubs.quota.orm.model.CsIndexReport> csIndexReportFromQuotaList=null;
-		if (!isAllReport){
-			 pageInfoFromQuota=csIndexQuotaInf.bizQuota(csIndexReportInput);
-			csIndexReportFromQuotaList=pageInfoFromQuota.getList();
-		}
-		else {
-			csIndexReportFromQuotaList=csIndexQuotaInf.bizQuotaAll(csIndexReportInput);
-		}
 
-		//PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
-		//copyPageInfo(pageInfo,pageInfoFromQuota);
+		String uuid= UUID.randomUUID().toString();
+		CsIndexReportThread csIndexReportThread=CsIndexReportThread.getFromApplication();
+		csIndexReportThread.setAllReport(isAllReport);
+		csIndexReportThread.setCsIndexReportInput(csIndexReportInput);
+		csIndexReportThread.setUserUuid(uuid);
+		logger.info("start running report CsIndexReport thread.");
+		EvManageContext.getThreadPool().execute(csIndexReportThread);
 
-		List<CsIndexReport> list = new ArrayList<>();//pageInfo.getList();
-		if (null!=csIndexReportFromQuotaList&&csIndexReportFromQuotaList.size()>0){
-			for (int i=0;i<csIndexReportFromQuotaList.size();i++) {
-				CsIndexReport csIndexReport=new CsIndexReport();
-				dealCsIndexReportFromQuotaToThis(csIndexReport,csIndexReportFromQuotaList.get(i));
-				list.add(csIndexReport);
-			}
-		}
-		//pageInfo.setList(list);
-		for(CsIndexReport data : list){
-			registResolvers(data);
-		}
-
-		OutputStream os = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String dateNowStr = sdf.format(System.currentTimeMillis());
-		/**
-		 * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
-		 * */
-		String fileName=null;
-		if (isAllReport){
-			fileName="IndexReport_All_Data" + dateNowStr + ".xls";
-		}else {
-			fileName= "IndexReport_" + page + "_" + rows + "_" + dateNowStr + ".xls";
-		}
-
-		try {
-			res.setHeader("content-type", "application/vnd.ms-excel");
-			res.setContentType("application/vnd.ms-excel");
-			res.setHeader("Content-Disposition",
-					"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
-			os = res.getOutputStream();
-			//文件路径
-			ByteArrayOutputStream bytes;
-			bytes = reportService.reportIndexReport(list);
-			os.write(bytes.toByteArray());
-			os.flush();
-			os.close();
-			logger.info("report a file:"+fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		VoResult<String> r=new VoResult<>();
+		r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+		r.setValue(uuid);
+		return r;
 
 	}
+
+
 }

@@ -209,12 +209,12 @@ public class ExportExcelTemp<T> implements Serializable{
 //                                bsValue, HSSFWorkbook.PICTURE_TYPE_JPEG));
                     } else if(value instanceof Float){
                         BigDecimal b = new BigDecimal((Float)value);
-                        textValue=  b.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                        textValue=  b.setScale(6, BigDecimal.ROUND_HALF_UP).stripTrailingZeros().toPlainString();
 
                     }
                     else if(value instanceof Double){
                         BigDecimal b = new BigDecimal((Double)value);
-                        textValue=  b.setScale(6, BigDecimal.ROUND_HALF_UP).toString();
+                        textValue=  b.setScale(6, BigDecimal.ROUND_HALF_UP).stripTrailingZeros().toPlainString();
 
                     }else if(value instanceof Integer){
                         BigDecimal b = new BigDecimal((Integer) value);
