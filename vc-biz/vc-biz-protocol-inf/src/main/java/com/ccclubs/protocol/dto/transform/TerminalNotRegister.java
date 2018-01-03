@@ -1,6 +1,7 @@
 package com.ccclubs.protocol.dto.transform;
 
 import com.ccclubs.protocol.util.StringUtils;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,9 @@ import java.util.Date;
  * @author qsxiaogang
  * @create 2017-11-24
  **/
-public class TerminalNotRegister {
+public class TerminalNotRegister  implements Serializable {
+
+  private static final long serialVersionUID = -6519276463058646693L;
 
   private String key;
   private String protocol;

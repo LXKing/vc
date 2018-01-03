@@ -7,6 +7,7 @@ import com.ccclubs.frm.mqtt.MqttOwnProperties;
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
 import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
+import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.mqtt.MqttMessageProcessService;
 import com.ccclubs.frm.ons.OnsProperties;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import org.springframework.context.annotation.Primary;
  * @create 2017-07-20
  **/
 @SpringBootApplication
-@ImportAutoConfiguration({MqttOwnProperties.class, OnsProperties.class})
+@ImportAutoConfiguration({MqttOwnProperties.class, OnsProperties.class, RedisAutoConfiguration.class})
 public class GatewayMQTTSrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(GatewayMQTTSrvApp.class);
