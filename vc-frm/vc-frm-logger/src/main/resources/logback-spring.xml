@@ -51,7 +51,7 @@
   <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.main.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.main.log</FileNamePattern>
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.main.log</FileNamePattern>
       <maxFileSize>512MB</maxFileSize>
       <maxHistory>30</maxHistory>
       <totalSizeCap>30GB</totalSizeCap>
@@ -65,7 +65,7 @@
   <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.error.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.error.log</FileNamePattern>
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.error.log</FileNamePattern>
       <maxFileSize>512MB</maxFileSize>
       <maxHistory>30</maxHistory>
       <totalSizeCap>30GB</totalSizeCap>
@@ -85,7 +85,7 @@
   <appender name="BUSINESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.business.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-      <FileNamePattern>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}.%i.business.log
+      <FileNamePattern>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.business.log
       </FileNamePattern>
       <maxFileSize>512MB</maxFileSize>
       <maxHistory>30</maxHistory>
