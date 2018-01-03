@@ -1,12 +1,9 @@
 package com.ccclubs.mongo.modify;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.CsRemote;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
