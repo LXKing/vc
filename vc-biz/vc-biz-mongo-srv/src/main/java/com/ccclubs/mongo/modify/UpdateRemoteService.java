@@ -1,12 +1,9 @@
 package com.ccclubs.mongo.modify;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.CsRemote;
 import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -21,8 +18,6 @@ import org.springframework.stereotype.Component;
  **/
 @Component
 public class UpdateRemoteService {
-
-  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   @Autowired
   CsRemoteDao dao;
@@ -76,9 +71,5 @@ public class UpdateRemoteService {
     update.set("csrUpdateTime", new Date().getTime());
 
     dao.update(query, update);
-
-    // 记录单条操作记录耗时，单位毫秒 ms
-    CsRemote csRemoteOld = dao.findOne(query);
-    loggerBusiness.info(JSONObject.toJSONString(csRemoteOld));
   }
 }
