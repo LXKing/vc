@@ -1,21 +1,30 @@
 package com.ccclubs.admin.service.impl;
 
+import com.ccclubs.admin.constants.Constants;
 import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.service.IReportService;
 import com.ccclubs.admin.util.ExportExcelTemp;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ReportServiceImpl implements IReportService {
 
-    Logger logger= LoggerFactory.getLogger(ReportServiceImpl.class);
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    private static Logger logger= LoggerFactory.getLogger(ReportServiceImpl.class);
     /**
      * 车辆信息导出核心服务
      *
@@ -23,6 +32,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportVehicles(List<CsVehicle> csVehicleList) {
 
         //表头与字段顺序对应
@@ -46,6 +56,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportMachines(List<CsMachine> csMachineList) {
 
         //表头与字段顺序对应
@@ -72,6 +83,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportHistoryStates(List<HistoryState> historyStateList) {
 
         //表头与字段顺序对应
@@ -103,6 +115,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportStatistics(List<CsStatistics> csStatisticsList) {
 
         //表头与字段顺序对应
@@ -124,6 +137,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportIndexReport(List<CsIndexReport> csIndexReportList) {
         //表头与字段顺序对应
         String[] headersExit ={
@@ -145,6 +159,7 @@ public class ReportServiceImpl implements IReportService {
      * @return 已经生成为文件的二进制流。
      */
     @Override
+    @Deprecated
     public ByteArrayOutputStream reportCsState(List<CsState> csStateList) {
         //表头与字段顺序对应
         String[] headersExit ={
@@ -169,6 +184,45 @@ public class ReportServiceImpl implements IReportService {
         return baseReportService(headersExit,sheetName,csStateList);
     }
 
+    /**
+     * 导出核心服务
+     *
+     * @param list        依据条件查询得到的结果（一般为当前页）。
+     * @param headNameMap  需要导出的字段名和对应的中文
+     * @return 已经生成为文件的二进制流。
+     */
+    @Override
+    public  ByteArrayOutputStream reportOutputStream(Collection list, Map<String, String> headNameMap) {
+        String[] headersExit=new String[headNameMap.keySet().size()];
+        int i=0;
+        for (String headString:headNameMap.keySet()) {
+            headersExit[i++]=headString;
+        }
+        String sheetName="Data";
+        logger.info("start reportBaseService :"+headNameMap.toString());
+        return reportBaseService(headersExit,sheetName,list,headNameMap);
+    }
+
+
+    @Override
+    public String getFileUrlByUUID(String uuid) {
+        String filePath=(String) redisTemplate.opsForHash().get(Constants.REDIS_KEY_REPORT_FILE_MAP,uuid);
+        return filePath;
+    }
+
+    @Override
+    public void putFileUrlMap(String uuid, String filePath) {
+        redisTemplate.expire(Constants.REDIS_KEY_REPORT_FILE_MAP,8, TimeUnit.HOURS);
+        redisTemplate.opsForHash().put(Constants.REDIS_KEY_REPORT_FILE_MAP,uuid,filePath);
+    }
+
+    @Override
+    public Boolean existKey(String key) {
+        return redisTemplate.opsForHash().hasKey(Constants.REDIS_KEY_REPORT_FILE_MAP,key);
+    }
+
+
+    @Deprecated
     private static ByteArrayOutputStream baseReportService(
             String[] headersExit,String sheetName,Collection list){
         ExportExcelTemp eeu = new ExportExcelTemp();
@@ -179,7 +233,8 @@ public class ReportServiceImpl implements IReportService {
         try{
             String headers[]=headersExit;
             int exist= workbook.getSheetIndex(sheetName);
-            if(exist==0){//存在则删除
+            if(exist==0){
+                //存在则删除
                 workbook.removeSheetAt(workbook.getSheetIndex(sheetName));
                 sheetNumber--;
             }
@@ -196,8 +251,36 @@ public class ReportServiceImpl implements IReportService {
         }
         return   outPutByte;
 
-
     }
 
+    private static ByteArrayOutputStream reportBaseService(
+            String[] headersExit,String sheetName,Collection list,Map<String,String> fieldMap){
+        ExportExcelTemp eeu = new ExportExcelTemp();
+        HSSFWorkbook workbook=eeu.getWorkbook();
+        int sheetNumber=eeu.getSheetNumber();
+        //输出流
+        ByteArrayOutputStream outPutByte = new ByteArrayOutputStream();
+        try{
+            String headers[]=headersExit;
+            int exist= workbook.getSheetIndex(sheetName);
+            if(exist==0){
+                //存在则删除
+                workbook.removeSheetAt(workbook.getSheetIndex(sheetName));
+                sheetNumber--;
+            }
+            eeu.exportToExcel(workbook, sheetNumber++, sheetName, headers, list,fieldMap);
+            workbook.write(outPutByte);
+            eeu.close();
+        }catch (Exception e){
+            e.printStackTrace();
+            try{
+                eeu.close();
+            }catch (Exception e1){
+                e1.printStackTrace();
+            }
+        }
+        return   outPutByte;
+
+    }
 
 }

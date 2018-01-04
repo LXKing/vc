@@ -21,6 +21,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Scope("prototype")//非单例调用
@@ -42,6 +43,15 @@ public class CsIndexReportThread implements Runnable {
 
     private String userUuid=null;
 
+    public Map<String, String> getHeadMap() {
+        return headMap;
+    }
+
+    public void setHeadMap(Map<String, String> headMap) {
+        this.headMap = headMap;
+    }
+
+    private Map<String,String> headMap=null;
 
     @Reference(version = "1.0.0")
     private CsIndexQuotaInf csIndexQuotaInf;
@@ -93,15 +103,19 @@ public class CsIndexReportThread implements Runnable {
         }
         //文件路径
         ByteArrayOutputStream bytes;
-        bytes = reportService.reportIndexReport(list);
+        bytes = reportService.reportOutputStream(list,headMap);
         long midTime=System.currentTimeMillis();
         logger.info("处理但不存储耗时ms：" + (midTime - startTime));
         ossClient.putObject("oss-vc", fileName, new ByteArrayInputStream(bytes.toByteArray()));
-        CsIndexReportController.ossFileMap.put(userUuid,fileName);
+        //OSS的Object地址由域名、bucketName、object组成，具体格式为：bucketName.endpoint/object。
+        String url="oss-vc."+"oss-cn-hangzhou.aliyuncs.com"+"/"+fileName;
 
+        reportService.putFileUrlMap(userUuid,url);
+        logger.info("文件路径："+url);
         long endTime = System.currentTimeMillis();
         logger.info("导出完整耗时ms：" + (endTime - startTime));
         logger.info("report a file to oss done:" + fileName);
+
         //TODO 提醒前端，计算完成。
     }
 

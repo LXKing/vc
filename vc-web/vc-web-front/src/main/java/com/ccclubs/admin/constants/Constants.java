@@ -69,4 +69,6 @@ public class Constants
     public static final String REDIS_KEY_CHARGEING_CAR_SET="CAR:CHARGEING:SET:";
     /** 当前运行车辆缓存**/
     public static final String REDIS_KEY_RUNNING_CAR_SET="CAR:RUNNING:SET:";
+    /**当前导出服务文件URL地址缓存**/
+    public static final String REDIS_KEY_REPORT_FILE_MAP="FILE:PATH:MAP:";
 }

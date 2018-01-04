@@ -1,7 +1,7 @@
 phoenix:
   #zookeeper所在主机地址
-  zk_url: hb-proxy-pub-bp11zgdd317e4af0r-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-006.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-005.hbase.rds.aliyuncs.com
-
+  #zk_url: hb-proxy-pub-bp11zgdd317e4af0r-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-006.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-005.hbase.rds.aliyuncs.com
+  zk_url: hb-proxy-pub-bp1xa9wgerhn7o1pu-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-002.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-003.hbase.rds.aliyuncs.com
 server:
   port: 11117
 

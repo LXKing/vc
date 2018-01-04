@@ -376,13 +376,23 @@ function getIds(ids, split) {
  * @returns {string}
  */
 function jsonToUri(param){
-  var paramStr="";
+    var paramStr="";
     $.each(param,function(i,val){
-      paramStr+=paramToUri(val, i);
+        paramStr+=paramToUri(val, i);
     });
-  return paramStr.substr(1);
+    return paramStr.substr(1);
 };
 
+function jsonArrayToUri(param,key){
+    param.pop(0);
+    return "&"+key+"="+JSON.stringify(param,replacer);
+};
+function replacer(key,value)
+{
+    if (key=="checkbox") return undefined;
+    // else if (key=="")return undefined;
+    else return value;
+}
 function paramToUri(param, key){
   var paramS="";
   if(typeof(param) === 'undefined'){

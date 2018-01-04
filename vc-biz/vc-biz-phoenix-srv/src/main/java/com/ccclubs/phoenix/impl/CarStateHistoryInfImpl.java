@@ -3,6 +3,7 @@ package com.ccclubs.phoenix.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.hbase.phoenix.config.PhoenixHelper;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
@@ -21,10 +22,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +36,10 @@ import java.util.List;
 public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
+
+    @Autowired
+    private PhoenixHelper phoenixHelper;
+
     @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
         final String queryFields = carStateHistoryParam.getQuery_fields();
@@ -101,7 +103,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         List<CarState> carStateList = new ArrayList<CarState>();
         List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
                 new PreparedStatementSetter() {
-            @Override
+                    @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_number = carStateHistoryParam.getCs_number();
                         long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
@@ -141,6 +143,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "and current_time>=? " +
                 "and current_time<=? ";
         total = phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
+            @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
                 String cs_number = carStateHistoryParam.getCs_number();
                 long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
@@ -161,7 +164,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam) {
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
-        long total = -1L;
+        long total = -1l;
         //首先判断是否是分页查询
         if (carStateHistoryParam.getPage_no() > 0) {
 //            //判断是否已获取过记录总数
@@ -282,10 +285,15 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "?, " + //NET_STRENGTH
                 "? " + //GEAR
                 ")";
-        phoenixJdbcTemplate.batchUpdate(insert_sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement carStatePs, int i) throws SQLException {
-                CarState carState = records.get(i);
+        Connection connection = null;
+        PreparedStatement carStatePs = null;
+        try {
+            connection = phoenixHelper.getConnection();
+            //System.out.println("当前有效连接数量："+phoenixHelper.getConnectionCount());
+            carStatePs = connection.prepareStatement(insert_sql);
+            Long count =0L;
+            for(CarState carState:records){
+                count++;
                 String cs_number = carState.getCs_number();
                 Long current_time = carState.getCurrent_time();
                 Integer cs_access = carState.getCs_access();
@@ -510,14 +518,37 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }else {
                     carStatePs.setInt(43,gear);
                 }
+                carStatePs.addBatch();
+                if(count%500==0){
+                    long start_timemills = System.currentTimeMillis();
+                    //System.out.println("我提交了"+count+"条!");
+                    carStatePs.executeBatch();
+                    connection.commit();
 
+                }
             }
-
-            @Override
-            public int getBatchSize() {
-                return records.size();
+            carStatePs.executeBatch();
+            connection.commit();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(carStatePs!=null){
+                try {
+                    carStatePs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
@@ -534,14 +565,14 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             if(paceBlock==null){
                 paceBlock=new PaceBlock();
                 long block_start_timemills = fix_current_time;
-                long block_end_timemills = fix_current_time+ VehicleConsts.DRIVE_MINUTES_INTERVAL*60*1000;
+                long block_end_timemills = fix_current_time+VehicleConsts.DRIVE_MINUTES_INTERVAL*60*1000;
                 paceBlock.setCs_number(carState.getCs_number());
                 paceBlock.setBlock_start_timemills(block_start_timemills);
                 paceBlock.setBlock_end_timemills(block_end_timemills);
                 List<CarState> recordList = paceBlock.getRecordList();
                 recordList.add(carState);
             }
-            else if(paceBlock!=null){
+            else{
                 long block_start_timemills = paceBlock.getBlock_start_timemills();
                 long block_end_timemills = paceBlock.getBlock_end_timemills();
                 if(current_time>=block_start_timemills&&current_time<block_end_timemills){
@@ -625,7 +656,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         paceList= paceService.getPaceList();
         return paceList;
     }
-
 
 
 

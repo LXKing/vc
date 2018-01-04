@@ -71,9 +71,14 @@
 		},
 
         exportData:function(){
-            var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
+            var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage,clms:clms});
             params = transferParamsWithSortExport(params,"createTime");
-            window.open(getServUrl("/monitor/analysis/quota/report")+"?"+jsonToUri(params));
+            ajaxRequest(getServUrl("/monitor/analysis/quota/report"),"POST",params,function(r){
+                if(r.success){
+                    layer.msg(r.message+r.value);
+				}
+			},function(){});
+            //window.open(getServUrl("/monitor/analysis/quota/report")+"?"+jsonToUri(params));
         },
 		
 		batchDel:function(){
@@ -111,7 +116,8 @@
 	};
 
 	var tableId = "TCsIndexReport";
-	var clms = [{checkbox: true}
+	var clms = [
+	    	{checkbox: true}
 	  		/*,{field: "id", title: "编号", width: 110, sort:true}*/
 	  		,{field: "csVinText", title: "车辆VIN码", width: 180, sort:true}
 	  		,{field: "csNumberText", title: "车机号", width: 110, sort:true}

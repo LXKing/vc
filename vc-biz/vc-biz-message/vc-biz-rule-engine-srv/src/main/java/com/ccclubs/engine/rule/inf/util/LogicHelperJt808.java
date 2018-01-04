@@ -45,10 +45,7 @@ public class LogicHelperJt808 {
   private TerminalUtils terminalUtils;
 
   @Resource
-  UpdateStateService updateStateService;
-
-  @Resource
-  HistoryStateUtils historyStateUtils;
+  private UpdateStateService updateStateService;
 
   @Resource
   UpdateCanService updateCanService;
@@ -59,8 +56,6 @@ public class LogicHelperJt808 {
   @Resource
   QueryStateService queryStateService;
 
-  @Resource
-  HistoryCanUtils historyCanUtils;
 
   /**
    * 保存状态数据
@@ -118,7 +113,7 @@ public class LogicHelperJt808 {
           csStateCurrent.setCssLatitude(csState.getCssLatitude());
         }
         // 处理历史状态
-        historyStateUtils.saveHistoryData(csStateCurrent);
+        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateCurrent);
 
         // 含分时租赁插件的 808 终端，不转发 0x0200 定位数据
         // 终端具备分时租赁功能，则不更新SOC，obd里程，目前按照插件版本>0来判断终端具备分时租赁功能
@@ -172,7 +167,9 @@ public class LogicHelperJt808 {
 
         updateStateService.insert(csStateInsert);
         // 处理历史状态
-        historyStateUtils.saveHistoryData(csStateInsert);
+        ListOperations opsForList = redisTemplate.opsForList();
+        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateInsert);
+        //historyStateUtils.saveHistoryData(csStateInsert);
         return csStateInsert;
       }
     } catch (Exception e) {
@@ -272,7 +269,9 @@ public class LogicHelperJt808 {
       } else {
         updateCanService.insert(csCan);
       }
-      historyCanUtils.saveHistoryData(csCan);
+      ListOperations opsForList = redisTemplate.opsForList();
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
+
 
       // 众泰E200车型不包含分时租赁插件的终端需要更新obd里程跟SOC
       if (mapping.getAccess() != null && mapping.getAccess() != 3 && mapping.getAccess() != 4
@@ -370,7 +369,8 @@ public class LogicHelperJt808 {
         startTime = System.nanoTime();
         csCanNew.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
         csCanNew.setCscData(hexString);
-        historyCanUtils.saveHistoryData(csCanNew);
+        ListOperations opsForList = redisTemplate.opsForList();
+        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCanNew);
         logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
             System.nanoTime() - startTime);
       }
