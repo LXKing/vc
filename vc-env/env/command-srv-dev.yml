@@ -130,3 +130,10 @@ command:
   supportVersionMap[2]: 0
   #通领
   supportVersionMap[3]: 1072
+
+# 中导Http升级URL配置
+zd:
+  update:
+    url: http://120.26.116.155:12121/update?cmdType=getCmd&version=1031
+  validate:
+    url: http://120.26.116.155:12121/update?cmdType=getStts&version=1031

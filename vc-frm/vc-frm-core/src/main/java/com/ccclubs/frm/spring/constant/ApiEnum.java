@@ -9,7 +9,7 @@ package com.ccclubs.frm.spring.constant;
  *
  */
 public enum ApiEnum {
-	SUCCESS(100000, "SUCCESS", "成功"), 
+	SUCCESS(100000, "SUCCESS", "成功"),
 	FAIL(100001, "FAIL", "失败"),
 	SIGN_CHECK_FAILED(100002, "sign check failed", "签名校验失败"),
 	REQUEST_PARAMS_VALID_FAILED(100003, "request params valid failed", "请求参数校验失败"),
@@ -22,7 +22,7 @@ public enum ApiEnum {
 	DATA_ACCESS_CHECK_FAILED(100010, "data access check failed", "数据权限校验失败"),
 	UPDATE_ID_NOT_SET(100011, "update obj can not be null", "更新ID不能为空"),
 	API_RATE_LIMIT(100012, "api call too many times in 10 second", "10秒内调用API太多次"),
-	PART_OF_THE_OPERATION_SUCCESSED(100013,"Part of the operation is successful","操作成功，但是有部分数据处理失败（未处理）。"),
+	PART_OF_THE_OPERATION_SUCCESSED(100013,"Part of the operation is successful","操作成功，但是有部分数据处理失败（未处理）"),
 	LOGIN_ERROR(1010013, "invalid account or password", "账号或者密码错误"),
 	UNAUTHORIZED_ERROR(101014, "401 unauthorized", "未授权"),
 	VEHICLE_NOT_FOUND(101001, "vehicle not found", "未查询到车辆"),
@@ -48,7 +48,8 @@ public enum ApiEnum {
 	ALL_VEHICLE_VALIDATE_FAILED(101021, "all validate failed", "车辆及终端校验失败"),
 	COMMAND_EXECUTE_FAILED(101022, "command execute failed", "指令执行失败"),
 	OLD_VERSION_DETECTED(101023, "Old terminal version detected, please update your terminal to {} or higher", "终端版本过低，请升级到{}以上"),
-	;
+	TERMINAL_NOT_ONLINE(101024, "Terminal is not online at current time", "终端当前不在线");
+
 	private int code;
 	private String msg;
 	private String memo;

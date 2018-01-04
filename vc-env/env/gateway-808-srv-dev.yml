@@ -4,14 +4,6 @@ server:
 spring:
   redis:
     host: 127.0.0.1
-  data:
-    mongodb:
-      host: 114.55.24.97
-      port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
-      authenticationDatabase: history
 
 dubbo:
   scan:

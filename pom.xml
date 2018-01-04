@@ -73,6 +73,8 @@
 		<!-- autoload-cache -->
 		<autoload-cache.version>6.6</autoload-cache.version>
 		<hessian.version>4.0.38</hessian.version>
+		<!-- Prometheus -->
+		<prometheus.springboot.version>1.0.0</prometheus.springboot.version>
 	</properties>
 	<build>
 		<plugins>
@@ -373,6 +375,12 @@
 				<groupId>io.jsonwebtoken</groupId>
 				<artifactId>jjwt</artifactId>
 				<version>${jjwt.version}</version>
+			</dependency>
+			<!-- Prometheus -->
+			<dependency>
+				<groupId>com.ccclubs</groupId>
+				<artifactId>prometheus-spring-boot-starter</artifactId>
+				<version>${prometheus.springboot.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -63,6 +63,9 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     @Resource
     private CsRemoteService remoteService;
 
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
+
     @Override
     @DataAuth
     public SimpleCmdOutput sendSimpleCmd(SimpleCmdInput input) {
@@ -79,6 +82,9 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         /*****************************************************/
         /******************** 适配（低）终端版本 *****************/
@@ -185,7 +191,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                         throw new ApiException(ApiEnum.COMMAND_EXECUTE_FAILED.code(), commonResult.getMessage());
                     }
                 }
-                Thread.sleep(100L);
+                Thread.sleep(300L);
             }
             logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());

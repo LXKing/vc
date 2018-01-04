@@ -7,10 +7,8 @@ import com.ccclubs.pub.orm.model.CsVehicleExample;
 import com.jarvis.cache.annotation.Cache;
 import com.jarvis.cache.annotation.ExCache;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 
 /**
  * 车辆查询
@@ -100,10 +98,15 @@ public class QueryVehicleService {
     return null;
   }
 
+
+  public CsVehicle queryVehicleById(Integer vehicle) {
+    return dao.selectByPrimaryKey(vehicle);
+  }
+
   @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvId:'+#args[0]", autoload = true, exCache = {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvVin:'+#retVal.csvVin", condition = "!#empty(#retVal) && !#empty(#retVal.csvVin)"),
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
   public CsVehicle queryVehicleByIdFromCache(Integer id) {
-    return dao.selectByPrimaryKey(id);
+    return queryVehicleById(id);
   }
 }

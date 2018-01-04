@@ -64,13 +64,12 @@ public class TerminalUtils {
   }
 
   /**
-   * 通过CsMachineId获取关联车辆
+   * 通过csvehicle id 车辆信息
    *
-   * @param csmId csMachineId 车机id
-   * @return CsMachine
+   * @param carId csVehicle 车辆
    */
-  public CsVehicle getCsVehicle(final Long csmId) {
-    return queryVehicleService.queryVehicleByMachineFromCache(csmId.intValue());
+  public CsVehicle getCsVehicle(final Long carId) {
+    return queryVehicleService.queryVehicleByIdFromCache(carId.intValue());
   }
 
   /**

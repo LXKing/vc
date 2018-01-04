@@ -1,9 +1,7 @@
 package com.ccclubs.engine.rule.inf.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
@@ -11,12 +9,10 @@ import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.mongo.orm.model.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
-import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsVehicle;
-import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +42,8 @@ public class ParseGbDataService implements IParseGbDataService {
   @Autowired
   QueryVehicleService queryVehicleService;
   private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
+  // TODO:目前仅国标对接测试车辆才转发给天津数据中心
+  private int TRANSFER_ACCESS = 10;
 
   @Override
   public void processMessage(GBMessage message, byte[] srcByteArray) {
@@ -53,13 +51,10 @@ public class ParseGbDataService implements IParseGbDataService {
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(message.getVin());
 
     if (null == csVehicle) {
-      loggerBusiness.info(
-          JSON.toJSONString(new TerminalNotRegister(message.getVin(),"GB","国标协议终端，当前在线，但系统中不存在，请排查原因 ", message.getPacketDescr())));
-
       return;
     }
 
-    transferToMq(message);
+    transferToMq(message, csVehicle);
 
     CsMessage csMessage = new CsMessage();
     csMessage.setCsmAccess(csVehicle.getCsvAccess());
@@ -71,7 +66,8 @@ public class ParseGbDataService implements IParseGbDataService {
     if (message.getMessageContents() != null) {
       csMessage
           .setCsmMsgTime(
-              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss").getTime());
+              StringUtils.date(message.getMessageContents().getTime(), "yyyy-MM-dd HH:mm:ss")
+                  .getTime());
     }
     csMessage.setCsmAddTime(System.currentTimeMillis());
     csMessage.setCsmData(message.getPacketDescr());
@@ -90,8 +86,12 @@ public class ParseGbDataService implements IParseGbDataService {
   /**
    * 转发到MQ，topic：terminal，tag：terminal_gb_
    */
-  private void transferToMq(GBMessage message) {
+  private void transferToMq(GBMessage message, CsVehicle csVehicle) {
     try {
+      if (TRANSFER_ACCESS != csVehicle.getCsvAccess()) {
+        return;
+      }
+
       Message mqMessage = messageFactory
           .getMessage(topic, MqTagProperty.MQ_TERMINAL_GB, message);
       if (mqMessage != null) {

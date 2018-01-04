@@ -2,7 +2,7 @@ package com.ccclubs.engine.rule.inf.init;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.common.utils.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.util.HistoryMessageUtils;
 import com.ccclubs.mongo.orm.model.CsMessage;
@@ -14,7 +14,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;

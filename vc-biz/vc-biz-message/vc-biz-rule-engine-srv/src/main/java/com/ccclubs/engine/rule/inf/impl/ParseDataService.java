@@ -6,7 +6,7 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.common.utils.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
@@ -26,7 +26,6 @@ import com.ccclubs.protocol.dto.mqtt.MQTT_6B;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
-import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
 import com.ccclubs.protocol.dto.transform.TerminalTriggerStatus;
 import com.ccclubs.protocol.inf.IParseDataService;
@@ -123,9 +122,6 @@ public class ParseDataService implements IParseDataService {
 
       CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
       if (null == mapping || null == csMachine) {
-        loggerBusiness.info(JSON.toJSONString(
-            new TerminalNotRegister(message.getCarNumber(), "MQTT",
-                "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
         return;
       }
 
@@ -170,6 +166,9 @@ public class ParseDataService implements IParseDataService {
   public void processCanStatus(MqMessage message) {
     try {
       final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+      if (null == mapping) {
+        return;
+      }
       transferToMq(mapping, MqTagProperty.MQ_TERMINAL_CAN, message, true);
 
       byte[] byteMsg = message.WriteToBytes();
@@ -198,6 +197,7 @@ public class ParseDataService implements IParseDataService {
       byte subCode = message.getMsgBody()[0];
       // mqtt 终端，按照车机号唯一性来确认
       final MachineMapping mapping = terminalUtils.getMapping(message.getCarNumber());
+
       switch (subCode) {
         case 0x01:
           terminalUtils
@@ -241,14 +241,6 @@ public class ParseDataService implements IParseDataService {
           break;
         case 0x03:
           // 新版本状态数据
-          if (mapping == null || StringUtils.empty(mapping.getNumber())
-              || mapping.getMachine() == null || mapping.getAccess() == null) {
-            loggerBusiness.info(JSON.toJSONString(
-                new TerminalNotRegister(message.getCarNumber(), "MQTT",
-                    "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", message.getHexString())));
-            return;
-          }
-
           CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
           if (csMachine == null) {
             return;
@@ -430,7 +422,6 @@ public class ParseDataService implements IParseDataService {
         // mqtt 终端，按照车机号唯一性来确认
         CsMachine csMachine = queryTerminalService
             .queryCsMachineByCarNumber(message.getCarNumber());
-
         CsMachine machineUpdate = new CsMachine();
         //设置超级手机号
         if (!StringUtils.empty(mqtt_6B.getSuperSimNo()) && !mqtt_6B.getSuperSimNo()
@@ -520,6 +511,7 @@ public class ParseDataService implements IParseDataService {
         } else {
           logger.debug(message.getHexString());
         }
+        return;
       }
 
       SrvHost srvHost = queryHostInfoService.queryHostByIdFromCache(csMachine.getCsmAccess());

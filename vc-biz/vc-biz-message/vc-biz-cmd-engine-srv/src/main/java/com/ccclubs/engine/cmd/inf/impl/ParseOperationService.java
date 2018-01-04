@@ -3,14 +3,14 @@ package com.ccclubs.engine.cmd.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
-import com.ccclubs.mongo.modify.UpdateRemoteService;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.common.utils.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
+import com.ccclubs.mongo.modify.UpdateRemoteService;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
@@ -133,9 +133,6 @@ public class ParseOperationService implements IParseDataService {
               redisHelper
                   .setRemote(String.valueOf(commonWriter.mId),
                       resultJson);
-              redisHelper
-                  .setRemoteOld(String.valueOf(commonWriter.mId),
-                      resultJson);
 
               transferRemoteStatus(tm, resultJson);
 
@@ -158,9 +155,6 @@ public class ParseOperationService implements IParseDataService {
               redisHelper
                   .setRemote(String.valueOf(commonWriter.mId),
                       resultJson);
-
-              redisHelper.setRemoteOld(String.valueOf(commonWriter.mId),
-                  resultJson);
 
               transferRemoteStatus(tm, resultJson);
 
@@ -191,9 +185,6 @@ public class ParseOperationService implements IParseDataService {
               redisHelper
                   .setRemote(String.valueOf(commonWriter.mId),
                       resultJsonClose);
-              redisHelper
-                  .setRemoteOld(String.valueOf(commonWriter.mId),
-                      resultJsonClose);
 
               transferRemoteStatus(tm, resultJsonClose);
 
@@ -216,9 +207,6 @@ public class ParseOperationService implements IParseDataService {
               redisHelper
                   .setRemote(String.valueOf(commonWriter.mId),
                       resultJsonClose);
-              redisHelper
-                  .setRemoteOld(String.valueOf(commonWriter.mId),
-                      resultJsonClose);
 
               transferRemoteStatus(tm, resultJsonClose);
 
@@ -236,9 +224,6 @@ public class ParseOperationService implements IParseDataService {
 
           redisHelper
               .setRemote(String.valueOf(commonWriter.mId),
-                  resultJsonW);
-          redisHelper
-              .setRemoteOld(String.valueOf(commonWriter.mId),
                   resultJsonW);
 
           transferRemoteStatus(tm, resultJsonW);
@@ -262,9 +247,6 @@ public class ParseOperationService implements IParseDataService {
 
           redisHelper
               .setRemote(String.valueOf(commonWriter.mId),
-                  resultJsonCommon);
-          redisHelper
-              .setRemoteOld(String.valueOf(commonWriter.mId),
                   resultJsonCommon);
 
           transferRemoteStatus(tm, resultJsonCommon);
@@ -299,7 +281,6 @@ public class ParseOperationService implements IParseDataService {
           String resultJsonState = JSON.toJSONString(commonResult);
 
           redisHelper.setRemote(String.valueOf(commonWriter.mId), resultJsonState);
-          redisHelper.setRemoteOld(String.valueOf(commonWriter.mId), resultJsonState);
 
           transferRemoteStatus(tm, resultJsonState);
 
@@ -387,9 +368,6 @@ public class ParseOperationService implements IParseDataService {
           redisHelper
               .setRemote(String.valueOf(commonWriter.id),
                   csRemote.getCsrResult());
-          redisHelper
-              .setRemoteOld(String.valueOf(commonWriter.id),
-                  csRemote.getCsrResult());
           transferRemoteStatus(message, csRemote.getCsrResult());
           updateRemoteService.update(csRemote);
         }
@@ -400,9 +378,6 @@ public class ParseOperationService implements IParseDataService {
           CsRemote csRemote = remoteHelper.getRemote(remoteOption, message.getHexString());
           redisHelper
               .setRemote(String.valueOf(remoteOption.id),
-                  csRemote.getCsrResult());
-          redisHelper
-              .setRemoteOld(String.valueOf(remoteOption.id),
                   csRemote.getCsrResult());
           transferRemoteStatus(message, csRemote.getCsrResult());
           updateRemoteService.update(csRemote);
@@ -417,9 +392,6 @@ public class ParseOperationService implements IParseDataService {
           redisHelper
               .setRemote(String.valueOf(commonWriter.mId),
                   csRemote.getCsrResult());
-          redisHelper
-              .setRemoteOld(String.valueOf(commonWriter.mId),
-                  csRemote.getCsrResult());
 
           transferRemoteStatus(message, csRemote.getCsrResult());
           updateRemoteService.update(csRemote);
@@ -431,9 +403,6 @@ public class ParseOperationService implements IParseDataService {
               true);
           redisHelper
               .setRemote(String.valueOf(remoteCurtness.id),
-                  csRemote.getCsrResult());
-          redisHelper
-              .setRemoteOld(String.valueOf(remoteCurtness.id),
                   csRemote.getCsrResult());
 
           transferRemoteStatus(message, csRemote.getCsrResult());
@@ -537,9 +506,6 @@ public class ParseOperationService implements IParseDataService {
       redisHelper
           .setRemote(String.valueOf(orderUpStream.mId),
               jsonString);
-      redisHelper
-          .setRemoteOld(String.valueOf(orderUpStream.mId),
-              jsonString);
 
       transferRemoteStatus(message, jsonString);
 
@@ -639,25 +605,19 @@ public class ParseOperationService implements IParseDataService {
       }
 
       SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
-      if (srvHost == null) {
+      // 当指令转发设置为不转发时，则不转发
+      if (srvHost == null || StringUtils.empty(srvHost.getShTransformRemote()) || "0"
+          .equals(srvHost.getShTransformRemote())) {
         return;
       }
-      if (topic.equals(srvHost.getShTopic())) {
-        // 转发远程控制结果指令
-        Message mqMessage = messageFactory
-            .getMessage(srvHost, topic, MqTagProperty.MQ_TERMINAL_REMOTE,
-                message);
-        if (mqMessage != null && environmentUtils.isProdEnvironment()) {
-          client.send(mqMessage);
-        }
-      } else {
-        // 转发远程控制结果JSON结构
-        Message mqMessage = messageFactory.getMessage(srvHost.getShTopic().trim(),
-            MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
-            JSON.toJSONBytes(jsonString));
-        if (mqMessage != null && environmentUtils.isProdEnvironment()) {
-          client.sendOneway(mqMessage);
-        }
+      String transTopic = StringUtils.empty(srvHost.getShTransformRemote()) ? topic
+          : srvHost.getShTransformRemote().trim();
+      // 转发远程控制结果JSON结构
+      Message mqMessage = messageFactory.getMessage(transTopic,
+          MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
+          JSON.toJSONBytes(jsonString));
+      if (mqMessage != null && environmentUtils.isProdEnvironment()) {
+        client.sendOneway(mqMessage);
       }
     } catch (Exception e) {
       e.printStackTrace();

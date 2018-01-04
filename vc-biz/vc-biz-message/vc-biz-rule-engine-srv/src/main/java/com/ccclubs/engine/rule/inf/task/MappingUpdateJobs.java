@@ -1,24 +1,13 @@
 package com.ccclubs.engine.rule.inf.task;
 
-import com.ccclubs.common.utils.EnvironmentUtils;
-import com.ccclubs.engine.core.util.RedisHelper;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.frm.redis.old.MyStringRedisTemplate;
-import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.pub.orm.model.CsState;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
