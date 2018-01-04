@@ -1,8 +1,10 @@
-package com.ccclubs.engine.rule.inf.util;
+package com.ccclubs.phoenix.tesks.processor;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.mongo.orm.model.CsMessage;
+import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarGb;
+import com.ccclubs.phoenix.tesks.model.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,13 +20,15 @@ public class HistoryMessageUtils extends ConvertUtils {
     private static Logger logger = LoggerFactory.getLogger(HistoryMessageUtils.class);
     @Resource
     private RedisTemplate redisTemplate;
+    @Reference(version = "1.0.0")
+    private CarGbHistoryInf carGbHistoryService;
 
-    @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
+    /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
     private String ip;
     @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
     private String port;
     @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
-    private String urlRootPath;
+    private String urlRootPath;*/
 
 
     public void saveHistoryGbDataToHbase(List<CsMessage> csMessageLists){
@@ -33,14 +37,15 @@ public class HistoryMessageUtils extends ConvertUtils {
             logger.warn("carGbList is null! nothing history gb date saved");
             return ;
         }
-        String sourceJson = JSON.toJSONString(csMessageLists);
+        carGbHistoryService.saveOrUpdate(carGbList);
+        /*String sourceJson = JSON.toJSONString(csMessageLists);
         String objectJson = JSON.toJSONString(carGbList);
         logger.debug("source: {} ,target: {}",sourceJson,objectJson);
         //concurrentLinkedQueue.add(objectJson);
         logger.debug("deal carGb list json done:" + objectJson);
         String url="http://"+ip+":"+port+"/"+urlRootPath+"/gbs";
         HttpClientUtil.doPostJson(url, objectJson);
-        logger.debug("send post for csMessageList !");
+        logger.debug("send post for csMessageList !");*/
 
 
     }
@@ -50,12 +55,12 @@ public class HistoryMessageUtils extends ConvertUtils {
 
 
         CarGb carGb=dealCsMessageToCarGbHistory(csMessage);
-        String objectJson = JSON.toJSONString(carGb);
+        /*String objectJson = JSON.toJSONString(carGb);
         //concurrentLinkedQueue.add(objectJson);
         logger.debug("deal carGb data json done:" + objectJson);
         String url="http://"+ip+":"+port+"/"+urlRootPath+"/gb";
         HttpClientUtil.doPostJson(url, objectJson);
-        logger.debug("send post for carGb !");
+        logger.debug("send post for carGb !");*/
 
     }
 

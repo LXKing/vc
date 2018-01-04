@@ -2,35 +2,30 @@ package com.ccclubs.engine.rule.inf.util;
 
 
 import com.ccclubs.common.aop.Timer;
-import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.modify.UpdateCanService;
 import com.ccclubs.mongo.modify.UpdateStateService;
-import com.ccclubs.mongo.orm.dao.CsAlarmDao;
-import com.ccclubs.mongo.orm.model.CsAlarm;
-import com.ccclubs.protocol.dto.mqtt.MQTT_43;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.ProtocolTools;
-import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
-import java.math.BigDecimal;
-import java.util.Date;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by qsxiaogang on 2017/7/2.
@@ -49,20 +44,10 @@ public class LogicHelperMqtt {
   @Resource
   UpdateStateService updateStateService;
 
-  @Resource
-  HistoryStateUtils historyStateUtils;
-
-  @Resource
-  HistoryCanUtils historyCanUtils;
-
-  @Resource
-  QueryStateService queryStateService;
 
   @Resource
   UpdateCanService updateCanService;
 
-  @Autowired
-  CsAlarmDao csAlarmDao;
 
   /**
    * 仅更新当前状态，并不写入历史数据
@@ -162,7 +147,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
-      historyStateUtils.saveHistoryData(csState);
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
@@ -174,7 +159,8 @@ public class LogicHelperMqtt {
       // 写入当前状态
       updateStateService.insert(csState);
       // 处理历史状态
-      historyStateUtils.saveHistoryData(csState);
+      ListOperations opsForList = redisTemplate.opsForList();
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     }
   }
 
@@ -269,7 +255,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 处理历史状态
-      historyStateUtils.saveHistoryData(csState);
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
@@ -280,7 +266,8 @@ public class LogicHelperMqtt {
       // 写入当前状态
       updateStateService.insert(csState);
       // 处理历史状态
-      historyStateUtils.saveHistoryData(csState);
+      ListOperations opsForList = redisTemplate.opsForList();
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     }
   }
 
@@ -322,11 +309,13 @@ public class LogicHelperMqtt {
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
 
       // 处理历史状态
-      historyCanUtils.saveHistoryData(canData);
+
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     } else {
       updateCanService.insert(canData);
       // 处理历史状态
-      historyCanUtils.saveHistoryData(canData);
+      ListOperations opsForList = redisTemplate.opsForList();
+      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     }
   }
 

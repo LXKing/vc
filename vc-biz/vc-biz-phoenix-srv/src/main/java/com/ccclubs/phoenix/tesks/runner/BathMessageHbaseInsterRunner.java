@@ -1,11 +1,10 @@
-package com.ccclubs.engine.rule.inf.init;
+package com.ccclubs.phoenix.tesks.runner;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.engine.rule.inf.util.HistoryMessageUtils;
-import com.ccclubs.mongo.orm.model.CsMessage;
+import com.ccclubs.phoenix.tesks.model.CsMessage;
+import com.ccclubs.phoenix.tesks.processor.HistoryMessageUtils;
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-
 /**
  * 国标状态数据写Hbase定时任务
  *
@@ -33,17 +31,14 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
 
     @Autowired
     RedisTemplate redisTemplate;
-    //@Resource
-    //private CsMessageDao csMessageDao;
+
     @Autowired
     private HistoryMessageUtils historyMessageUtils;
 
     @Autowired
-    EnvironmentUtils environmentUtils;
-    @Autowired
     BatchProperties batchProperties;
 
-    private static final Logger logger = LoggerFactory.getLogger(BatchStateUpdateRunner.class);
+    private static final Logger logger = LoggerFactory.getLogger(BathMessageHbaseInsterRunner.class);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -58,7 +53,7 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
                     Long startTime = System.currentTimeMillis();
                     //取出队列中所有等待更新的数据
                     Long messageListSrcSize = redisTemplate.opsForList()
-                            .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
+                            .size(RedisConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
                     if (messageListSrcSize > 0) {
                         long redisListStartTime = System.currentTimeMillis();
                         while (System.currentTimeMillis() - redisListStartTime < batchProperties
@@ -69,7 +64,7 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
                             }
                             //取出队列中 等待写入的数据
                             Object item = redisTemplate.opsForList()
-                                    .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
+                                    .rightPop(RedisConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
                             if (null == item) {
                                 break;
                             } else {
@@ -98,8 +93,6 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
                         logger.error("batch insert  hbase current stateList error. error list content : {}",
                                 JSON.toJSONString(waitList));
                     }
-                } finally {
-                    waitList = null;
                 }
             }
         });

@@ -3,6 +3,7 @@ package com.ccclubs.phoenix.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.hbase.phoenix.config.PhoenixHelper;
 import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
 import com.ccclubs.phoenix.orm.mapper.CarCanMapper;
@@ -12,11 +13,11 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,9 +31,11 @@ import java.util.List;
  */
 @Service(version = "1.0.0")
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
-
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
+
+    @Autowired
+    private PhoenixHelper phoenixHelper;
 
     @Override
     public List<CarCan> queryCarCanListNoPage(final CarCanHistoryParam carCanHistoryParam) {
@@ -192,7 +195,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 "CS_NUMBER," +
                 "CURRENT_TIME," +
                 "CAN_DATA," +
-                "ADD_TIME" +
+                "ADD_TIME " +
                 " " +
                 ") " +
                 "values " +
@@ -202,10 +205,13 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 "?, " + //CAN_DATA
                 "? " + //ADD_TIME
                 ")";
-        phoenixJdbcTemplate.batchUpdate(insert_sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement carCanPs, int i) throws SQLException {
-                CarCan carCan = records.get(i);
+        Connection connection = null;
+        PreparedStatement carCanPs = null;
+        try {
+            connection = phoenixHelper.getConnection();
+            carCanPs = connection.prepareStatement(insert_sql);
+            Long count =0L;
+            for(CarCan carCan:records){
                 String cs_number = carCan.getCs_number();
                 Long current_time = carCan.getCurrent_time();
                 String can_data = carCan.getCan_data();
@@ -214,12 +220,38 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 carCanPs.setLong(2,current_time);
                 carCanPs.setString(3,can_data);
                 carCanPs.setLong(4,add_time);
-
+                carCanPs.addBatch();
+                if(count%500==0){
+                    long start_timemills = System.currentTimeMillis();
+                    //System.out.println("我提交了"+count+"条!");
+                    carCanPs.executeBatch();
+                    connection.commit();
+//                    long end_timemills = System.currentTimeMillis();
+//                    long cost_timemills = end_timemills-start_timemills;
+//                    System.out.println("插入耗时:"+cost_timemills+"毫秒");
+                }
             }
-            @Override
-            public int getBatchSize() {
-                return records.size();
+            carCanPs.executeBatch();
+            connection.commit();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(carCanPs!=null){
+                try {
+                    carCanPs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

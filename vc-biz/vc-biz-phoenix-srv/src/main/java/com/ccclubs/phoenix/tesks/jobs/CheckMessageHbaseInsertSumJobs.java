@@ -1,8 +1,8 @@
-package com.ccclubs.engine.rule.inf.task;
+package com.ccclubs.phoenix.tesks.jobs;
 
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.mongo.orm.model.CsMessage;
+
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author Alban
- * {@link CsMessage} 状态数据定时任务<br/> 检查队列大小，防止溢出
+ *  状态数据定时任务<br/> 检查队列大小，防止溢出
  * @date 2017年12月7日
  **/
 @Component
@@ -39,10 +39,10 @@ public class CheckMessageHbaseInsertSumJobs implements ApplicationContextAware {
         //检查队列中所有等待更新总数
         long startTime = System.currentTimeMillis();
         Long stateListSrcSize = redisTemplate.opsForList()
-                .size(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
+                .size(RedisConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE);
         if (stateListSrcSize > batchProperties.getHbaseInsertQueueMax()) {
             redisTemplate.opsForList()
-                    .trim(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, 0,
+                    .trim(RedisConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, 0,
                             batchProperties.getUpdateQueueMax());
         }
         logger.debug("time {} , CheckMessageHbaseInsertSumJobs time consuming.",

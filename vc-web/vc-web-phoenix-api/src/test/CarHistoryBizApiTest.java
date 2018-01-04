@@ -154,14 +154,14 @@ public class CarHistoryBizApiTest {
                     carState.setWarn_code("0");
                     carStateList.add(carState);
                 }
-                /*String s = JSON.toJSONString(carStateList);
+                String s = JSON.toJSONString(carStateList);
                 httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
                 try {
                     httpclient.execute(httpPost);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }*/
-                carStateHistoryInf.saveOrUpdate(carStateList);
+                }
+                //carStateHistoryInf.saveOrUpdate(carStateList);
 
             }
         }
