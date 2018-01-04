@@ -4,6 +4,8 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
 import com.ccclubs.admin.model.CsIndexReport;
+import com.ccclubs.admin.model.ReportModel;
+import com.ccclubs.admin.model.ReportParamList;
 import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
 import com.ccclubs.admin.service.ICsIndexReportService;
@@ -19,10 +21,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -44,7 +43,7 @@ import java.util.*;
 public class CsIndexReportController {
 
 	//Fixme 后期请将此对象存储在redis中。以便加强程序健壮性。
-	public static final Map<String,String> ossFileMap=new HashMap<>();
+	//public static final Map<String,String> ossFileMap=new HashMap<>();
 	private  static final Logger logger= LoggerFactory.getLogger(CsIndexReportController.class);
 
 	@Autowired
@@ -192,53 +191,35 @@ public class CsIndexReportController {
 
 
 
-	@RequestMapping(value = "/eee", method = RequestMethod.GET)
-	public void getfile(HttpServletResponse res,String fileId){
-		if (ossFileMap.containsKey(fileId)){
-			String fileName=ossFileMap.get(fileId);
-			OutputStream os = null;
-			try {
-				//fileName="IndexReport_All_Data2017-12-28.xls";
-				res.setHeader("content-type", "application/vnd.ms-excel");
-				res.setContentType("application/vnd.ms-excel");
-				res.setHeader("Content-Disposition",
-						"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
-				os = res.getOutputStream();
-				//文件路径
-				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-
-				OSSObject ossObject= ossClient.getObject("oss-vc",fileName);
-				int ch;
-				InputStream inputStream =ossObject.getObjectContent();
-				while ((ch = inputStream.read()) != -1) {
-					bytes.write(ch);
-				}
-				os.write(bytes.toByteArray());
-				os.flush();
-				os.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (os != null) {
-						os.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+	@RequestMapping(value = "/fileUrl", method = RequestMethod.GET)
+	public VoResult<String> getFile(String fileUuid){
+		if (reportService.existKey(fileUuid)){
+			String fileName=reportService.getFileUrlByUUID(fileUuid);
+			VoResult<String> r=new VoResult<>();
+			r.setSuccess(true).setMessage("获取文件地址成功");
+			logger.info("report a file success:"+fileName);
+			r.setValue(fileName);
+			return r;
+		}
+		else {
+			VoResult<String> r=new VoResult<>();
+			r.setSuccess(true).setMessage("不存在对应的文件，请重新导出。");
+			r.setValue(null);
+			return r;
 		}
 	}
 
 
 
-	@RequestMapping(value = "/report", method = RequestMethod.GET)
+	@RequestMapping(value = "/report", method = RequestMethod.POST)
 	public VoResult<String> getReport(
-						  CsIndexReportQuery query,
-						  @RequestParam(defaultValue = "0") Integer page,
-						  @RequestParam(defaultValue = "10") Integer rows,
-						  @RequestParam(defaultValue = "false")Boolean isAllReport) {
+			CsIndexReportQuery query,
+			@RequestParam(defaultValue = "0") Integer page,
+			@RequestParam(defaultValue = "10") Integer rows,
+			@RequestParam(defaultValue = "false")Boolean isAllReport,
+			@RequestBody ReportParamList clms) {
 		//PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query.getCrieria(), page, rows);
+		//clms.toString();
 		CsIndexReportInput csIndexReportInput=new CsIndexReportInput();
 		csIndexReportInput.setCsNumber(query.getCsNumberEquals());
 		csIndexReportInput.setCsVin(query.getCsVinEquals());
@@ -250,6 +231,12 @@ public class CsIndexReportController {
 		csIndexReportThread.setAllReport(isAllReport);
 		csIndexReportThread.setCsIndexReportInput(csIndexReportInput);
 		csIndexReportThread.setUserUuid(uuid);
+		HashMap<String,String> headMap=new HashMap<>();
+		for (ReportModel reportModel:clms.getClms()
+			 ) {
+			headMap.put(reportModel.getField(),reportModel.getTitle());
+		}
+		csIndexReportThread.setHeadMap(headMap);
 		logger.info("start running report CsIndexReport thread.");
 		EvManageContext.getThreadPool().execute(csIndexReportThread);
 

@@ -1,8 +1,11 @@
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.orm.model.CarState;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +39,9 @@ import java.util.Set;
  */
 public class CarHistoryBizApiTest {
 
+    @Reference(version = "1.0.0")
+    private CarStateHistoryInf carStateHistoryInf;
+
     @Before
     public void before() throws Exception {
     }
@@ -44,7 +50,7 @@ public class CarHistoryBizApiTest {
     public void after() throws Exception {
     }
 
-    @Test
+    //@Test
     public void testQueryCarStateList() throws Exception {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
@@ -69,6 +75,96 @@ public class CarHistoryBizApiTest {
         long etime=System.currentTimeMillis();
         System.out.println("use time:"+(etime-stime));
 
+    }
+
+
+
+
+
+    @Test
+    public void testPutCsStateList()throws Exception {
+
+        for (int i=0;i<20;i++){
+           Thread thread = new TestThread(i);
+           thread.start();
+           thread.join();
+        }
+
+    }
+
+    private class TestThread extends Thread{
+        private int threadNum;
+
+        public TestThread(int threadNum) {
+            this.threadNum = threadNum;
+        }
+
+        @Override
+        public void run() {
+            for (int i=0;i<100;i++){
+                CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
+                HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/states");
+                httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
+                List<CarState> carStateList=new ArrayList<>();
+                for (int j=0;j<100;j++){
+                    CarState carState=new CarState();
+                    long addTime=System.currentTimeMillis()+j;
+                    carState.setAdd_time(addTime);
+                    carState.setCurrent_time(addTime-2000);
+                    carState.setCs_number("FJT03698"+10+(threadNum));
+                    carState.setGear(1);
+                    carState.setBase_ci("");
+                    carState.setBase_lac("");
+                    carState.setCharging_status(1);
+                    carState.setCs_access(1);
+                    carState.setCompre_status(1);
+                    carState.setCircular_mode(1);
+                    carState.setCur_order("");
+                    carState.setDirection_angle(10F);
+                    carState.setDoor_status(1);
+                    carState.setElec_miles(200F);
+                    carState.setEndur_miles(100F);
+                    carState.setEngine_status(1);
+                    carState.setEngine_tempe(20F);
+                    carState.setEv_battery(0F);
+                    carState.setFan_mode(4);
+                    carState.setFuel_miles(1000F);
+                    carState.setGps_num(4);
+                    carState.setGps_strength(0);
+                    carState.setGps_valid(1);
+                    carState.setKey_status(1);
+                    carState.setLatitude(43.185427);
+                    carState.setLight_status(0);
+                    carState.setLock_status(0);
+                    carState.setLongitude(31.415926);
+                    carState.setMotor_speed(100F+j);
+                    carState.setNet_strength(4);
+                    carState.setNet_type("");
+                    carState.setObd_miles(10000F+j);
+                    carState.setOil_cost(0F+j);
+                    carState.setPower_reserve(0F);
+                    carState.setPtc_status(1);
+                    carState.setRent_flg(0);
+                    carState.setRfid("");
+                    carState.setSaving_mode(0);
+                    carState.setSpeed(0F+100*i+j+10000*threadNum);
+                    carState.setTempe(20F);
+                    carState.setTotal_miles(500F+j);
+                    carState.setUser_rfid(null);
+                    carState.setWarn_code("0");
+                    carStateList.add(carState);
+                }
+                /*String s = JSON.toJSONString(carStateList);
+                httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+                try {
+                    httpclient.execute(httpPost);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+                carStateHistoryInf.saveOrUpdate(carStateList);
+
+            }
+        }
     }
 
 
@@ -97,7 +193,7 @@ public class CarHistoryBizApiTest {
 
 
 
-    @Test
+    //@Test
     public void testQueryDrivePaces() throws Exception {
 
 

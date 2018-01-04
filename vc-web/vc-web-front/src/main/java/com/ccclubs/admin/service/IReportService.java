@@ -5,7 +5,9 @@ import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.frm.base.BaseService;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alban
@@ -20,12 +22,14 @@ public interface IReportService {
      * @param csVehicleList 依据条件查询得到的结果（一般为当前页的）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportVehicles(List<CsVehicle> csVehicleList);
     /**
      * 车机信息导出核心服务
      * @param  csMachineList 依据条件查询得到的结果（一般为当前页）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportMachines(List<CsMachine> csMachineList);
 
     /**
@@ -33,6 +37,7 @@ public interface IReportService {
      * @param historyStateList 依据条件查询得到的结果（一般为当前页）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportHistoryStates(List<HistoryState> historyStateList);
 
     /**
@@ -40,6 +45,7 @@ public interface IReportService {
      * @param csStatisticsList 依据条件查询得到的结果（一般为当前页）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportStatistics(List<CsStatistics> csStatisticsList);
 
     /**
@@ -47,6 +53,7 @@ public interface IReportService {
      * @param csIndexReportList 依据条件查询得到的结果（一般为当前页）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportIndexReport(List<CsIndexReport> csIndexReportList);
 
     /**
@@ -54,7 +61,22 @@ public interface IReportService {
      * @param csStateList 依据条件查询得到的结果（一般为当前页）。
      * @return 已经生成为文件的二进制流。
      * */
+    @Deprecated
     ByteArrayOutputStream reportCsState(List<CsState> csStateList);
 
+    /**
+     * 导出核心服务
+     * @param list 依据条件查询得到的结果（一般为当前页）。
+     * @param headNameMap 需要导出的字段名和对应的中文
+     * @return 已经生成为文件的二进制流。
+     * */
+     ByteArrayOutputStream  reportOutputStream(Collection list, Map<String,String> headNameMap);
+
+    /**
+     *
+     * */
+    String getFileUrlByUUID(String uuid);
+    void putFileUrlMap(String uuid,String filePath);
+    Boolean existKey(String key);
 
 }

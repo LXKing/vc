@@ -2,6 +2,7 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.model.CsMachine;
+import com.ccclubs.admin.model.ReportParamList;
 import com.ccclubs.admin.query.CsMachineQuery;
 import com.ccclubs.admin.service.ICsMachineService;
 import com.ccclubs.admin.service.IReportService;
@@ -230,9 +231,7 @@ public class CsMachineController {
     return VoResult.success().setValue(mapList);
   }
 
-  /**
-   * 根据分页数据导出到excel。
-   */
+
   @RequestMapping(value = "/search", method = RequestMethod.GET)
   public VoResult<Map<String, List<Map<String, Object>>>> search(String text,
       CsMachine queryRecord) {
@@ -267,9 +266,14 @@ public class CsMachineController {
    */
   @RequestMapping(value = "/report", method = RequestMethod.GET)
   public void getReport(HttpServletResponse res, CsMachineQuery query,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "10") Integer rows) {
+                        @RequestParam(defaultValue = "0") Integer page,
+                        @RequestParam(defaultValue = "10") Integer rows,
+                        //@RequestParam ReportParams[] clms
+                        //@RequestParam String clms
+                        @RequestParam String clms
+                        ) {
 
+    logger.error(clms.toString());
     PageInfo<CsMachine> pageInfo = csMachineService.getPage(query.getCrieria(), page, rows);
     List<CsMachine> list = pageInfo.getList();
     for (CsMachine data : list) {
