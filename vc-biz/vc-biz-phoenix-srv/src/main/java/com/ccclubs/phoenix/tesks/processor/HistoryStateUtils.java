@@ -1,14 +1,12 @@
-package com.ccclubs.engine.rule.inf.util;
+package com.ccclubs.phoenix.tesks.processor;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.mongo.modify.UpdateStateService;
-import com.ccclubs.mongo.orm.model.CsHistoryState;
+import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarState;
+import com.ccclubs.phoenix.tesks.model.CsHistoryState;
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsState;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author qsxiaogang
@@ -26,16 +28,17 @@ public class HistoryStateUtils extends ConvertUtils {
 
   @Resource
   private RedisTemplate redisTemplate;
-  @Autowired
-  UpdateStateService updateStateService;
 
+  @Reference(version = "1.0.0")
+  private CarStateHistoryInf carStateHistoryInf;
+  /*
   @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
   private String ip;
   @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
   private String port;
 
   @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
-  private String urlRootPath;
+  private String urlRootPath;*/
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
   //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
@@ -98,27 +101,31 @@ public class HistoryStateUtils extends ConvertUtils {
 
     // 需要更新的当前状态加入等待队列
     ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
+//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
     // add at 2017-12-20 历史数据不写mongodb
 //    updateStateService.insertHis(historyState);
-    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
+    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
   }
 
 
   public void saveHistoryDataToHbase(List<CsState> csStateList){
+    logger.info("即将转换一批历史数据到csState");
     List<CarState> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
     }
-    String sourceJson = JSON.toJSONString(csStateList);
+    logger.info("现在正在准备写入一批CsState");
+    carStateHistoryInf.saveOrUpdate(carStateHistoryList);
+    logger.info("现在已经写入一批CsState");
+    /*String sourceJson = JSON.toJSONString(csStateList);
     String objectJson = JSON.toJSONString(carStateHistoryList);
     logger.debug("source: {} ,target: {}",sourceJson,objectJson);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState list json done:" + objectJson);
     String url="http://"+ip+":"+port+"/"+urlRootPath+"/states";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for csStateList !");
+    logger.debug("send post for csStateList !");*/
 
   }
 
@@ -126,12 +133,12 @@ public class HistoryStateUtils extends ConvertUtils {
   public void saveHistoryDataToHbase(CsState csState) {
 
     CarState csStateHistory=dealCsStateToCarStateHistory(csState);
-    String objectJson = JSON.toJSONString(csStateHistory);
+    /*String objectJson = JSON.toJSONString(csStateHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal csState data json done:" + objectJson);
     String url="http://"+ip+":"+port+"/"+urlRootPath+"/state";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for csState !");
+    logger.debug("send post for csState !");*/
   }
 
 

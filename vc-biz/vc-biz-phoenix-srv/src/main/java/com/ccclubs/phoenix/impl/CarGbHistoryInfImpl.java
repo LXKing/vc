@@ -3,6 +3,7 @@ package com.ccclubs.phoenix.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.hbase.phoenix.config.PhoenixHelper;
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.orm.mapper.CarGbMapper;
@@ -17,10 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +27,10 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
+    @Autowired
+    private PhoenixHelper phoenixHelper;
+
+    @Override
     public List<CarGb> queryCarGbListNoPage(final CarGbHistoryParam carGbHistoryParam) {
         final String queryFields = carGbHistoryParam.getQuery_fields();
         String query_sql = "select " +
@@ -42,6 +44,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         List<CarGb> carGbList = new ArrayList<CarGb>();
         List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
                 new PreparedStatementSetter() {
+                    @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_vin = carGbHistoryParam.getCs_vin();
                         long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
@@ -70,6 +73,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return carGbList;
     }
 
+    @Override
     public List<CarGb> queryCarGbListWithPage(final CarGbHistoryParam carGbHistoryParam) {
         Integer page_size = carGbHistoryParam.getPage_size();
         Integer page_no = carGbHistoryParam.getPage_no();
@@ -88,6 +92,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         List<CarGb> carGbList = new ArrayList<CarGb>();
         List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
                 new PreparedStatementSetter() {
+                    @Override
                     public void setValues(PreparedStatement ps) throws SQLException {
                         String cs_vin = carGbHistoryParam.getCs_vin();
                         long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
@@ -118,6 +123,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return carGbList;
     }
 
+    @Override
     public Long queryCarGbListCount(final CarGbHistoryParam carGbHistoryParam) {
         long total=0;
         String count_sql = "select " +
@@ -127,6 +133,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "and add_time>=? " +
                 "and add_time<=? ";
         total=phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
+            @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
                 String cs_vin = carGbHistoryParam.getCs_vin();
                 long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
@@ -145,6 +152,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return total;
     }
 
+    @Override
     public CarGbHistoryOutput queryCarGbListByOutput(final CarGbHistoryParam carGbHistoryParam) {
         CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
         long total=-1L;
@@ -172,13 +180,16 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return carGbHistoryOutput;
     }
 
+    @Override
     public void saveOrUpdate(final List<CarGb> records) {
         String insert_sql="upsert into " +
                 "PHOENIX_CAR_GB_HISTORY " +
                 "(" +
                 "CS_VIN," +
                 "ADD_TIME," +
-
+                "YEAR," +
+                "MONTH," +
+                "DAY," +
                 "CURRENT_TIME," +
                 "GB_DATA," +
                 "CS_ACCESS," +
@@ -191,6 +202,9 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "(" +
                 "?, " + //CS_VIN
                 "?, " + //ADD_TIME
+                "?, " + //YEAR
+                "?, " + //MONTH
+                "?, " + //DAY
                 "?, " + //CURRENT_TIME
                 "?, " + //GB_DATA
                 "?, " + //CS_ACCESS
@@ -198,12 +212,16 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "?, " + //GB_TYPE
                 "? " + //CS_VERIFY
                 ")";
-        phoenixJdbcTemplate.batchUpdate(insert_sql, new BatchPreparedStatementSetter() {
-            public void setValues(PreparedStatement carGbPs, int i) throws SQLException {
-                CarGb carGb = records.get(i);
+        Connection connection = null;
+        PreparedStatement carGbPs = null;
+
+        try {
+            connection = phoenixHelper.getConnection();
+            carGbPs = connection.prepareStatement(insert_sql);
+            Long count =0L;
+            for(CarGb carGb:records){
                 String cs_vin = carGb.getCs_vin();
                 Long add_time = carGb.getAdd_time();
-
                 Long current_time = carGb.getCurrent_time();
                 String gb_data = carGb.getGb_data();
                 Integer cs_access = carGb.getCs_access();
@@ -238,11 +256,38 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }else {
                     carGbPs.setInt(8, cs_verify);
                 }
+                carGbPs.addBatch();
+                if(count%500==0){
+                    long start_timemills = System.currentTimeMillis();
+                    //System.out.println("我提交了"+count+"条!");
+                    carGbPs.executeBatch();
+                    connection.commit();
+//                    long end_timemills = System.currentTimeMillis();
+//                    long cost_timemills = end_timemills-start_timemills;
+//                    System.out.println("插入耗时:"+cost_timemills+"毫秒");
+                }
             }
-
-            public int getBatchSize() {
-                return records.size();
+            carGbPs.executeBatch();
+            connection.commit();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(carGbPs!=null){
+                try {
+                    carGbPs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
-        });
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

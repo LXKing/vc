@@ -35,7 +35,7 @@ public class PaceService implements PaceInf {
                 paceList.add(pace);
             }
             tempList.clear();
-            if(paceBlock!=null) {
+            /*if(paceBlock!=null) {
                 tempList.add(paceBlock);
                 pace = VehicleUtil.createNewPace(tempList);
                 //添加一些过滤条件
@@ -48,7 +48,7 @@ public class PaceService implements PaceInf {
                         && pace.getPace_end_obd_miles() > 0) {
                     paceList.add(pace);
                 }
-            }
+            }*/
         }
         //如果间隔时间小于30分钟
         else if(VehicleUtil.calIntervalTimeMills(paceBlock,tempList)<=1800000){

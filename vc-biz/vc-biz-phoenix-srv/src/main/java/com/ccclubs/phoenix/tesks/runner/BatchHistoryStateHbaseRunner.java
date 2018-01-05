@@ -1,15 +1,10 @@
-package com.ccclubs.engine.rule.inf.init;
+package com.ccclubs.phoenix.tesks.runner;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.engine.rule.inf.util.HistoryStateUtils;
+import com.ccclubs.phoenix.tesks.processor.HistoryStateUtils;
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsState;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +12,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * CsState 当前状态数据更新
@@ -33,8 +33,6 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
 
   @Autowired
   HistoryStateUtils historyStateUtils;
-  @Autowired
-  EnvironmentUtils environmentUtils;
   @Autowired
   BatchProperties batchProperties;
 
@@ -53,7 +51,7 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
           Long startTime = System.currentTimeMillis();
           //取出队列中所有等待更新的数据
           Long stateListSrcSize = redisTemplate.opsForList()
-              .size(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE);
+              .size(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE);
           if (stateListSrcSize > 0) {
             long redisListStartTime = System.currentTimeMillis();
             while (System.currentTimeMillis() - redisListStartTime < batchProperties
@@ -64,7 +62,7 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
               }
               //取出队列中 等待写入的数据
               Object item = redisTemplate.opsForList()
-                  .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE);
+                  .rightPop(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE);
               if (null == item) {
                 break;
               } else {
@@ -81,6 +79,7 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
               System.currentTimeMillis() - startTime);
 
           if (waitList.size() > 0) {
+            logger.info("取出csState数据，开始准备存储");
             historyStateUtils.saveHistoryDataToHbase(waitList);
 
 //            updateStateService.batchUpdate(waitList);
@@ -96,8 +95,6 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
             logger.error("batch insert current stateList error. error list content : {}",
                 JSON.toJSONString(waitList));
           }
-        } finally {
-          waitList = null;
         }
       }
     });

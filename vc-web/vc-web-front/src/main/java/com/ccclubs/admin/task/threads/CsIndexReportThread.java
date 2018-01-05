@@ -111,7 +111,7 @@ public class CsIndexReportThread implements Runnable {
         String url="oss-vc."+"oss-cn-hangzhou.aliyuncs.com"+"/"+fileName;
 
         reportService.putFileUrlMap(userUuid,url);
-
+        logger.info("文件路径："+url);
         long endTime = System.currentTimeMillis();
         logger.info("导出完整耗时ms：" + (endTime - startTime));
         logger.info("report a file to oss done:" + fileName);

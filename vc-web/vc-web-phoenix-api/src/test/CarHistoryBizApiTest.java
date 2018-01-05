@@ -1,9 +1,4 @@
-
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.phoenix.inf.CarStateHistoryInf;
-import com.ccclubs.phoenix.input.CarCanHistoryParam;
-import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarState;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -11,20 +6,18 @@ import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.Test;
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +32,7 @@ import java.util.Set;
  */
 public class CarHistoryBizApiTest {
 
-    @Reference(version = "1.0.0")
-    private CarStateHistoryInf carStateHistoryInf;
+
 
     @Before
     public void before() throws Exception {
@@ -81,32 +73,34 @@ public class CarHistoryBizApiTest {
 
 
 
-    @Test
+    //@Test
     public void testPutCsStateList()throws Exception {
 
         for (int i=0;i<20;i++){
-           Thread thread = new TestThread(i);
+           Thread thread = new TestStateThread(i);
            thread.start();
            thread.join();
         }
 
     }
 
-    private class TestThread extends Thread{
+
+
+    private class TestStateThread extends Thread{
         private int threadNum;
 
-        public TestThread(int threadNum) {
+        public TestStateThread(int threadNum) {
             this.threadNum = threadNum;
         }
 
         @Override
         public void run() {
-            for (int i=0;i<100;i++){
+            for (int i=0;i<10;i++){
                 CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
                 HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/states");
                 httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
                 List<CarState> carStateList=new ArrayList<>();
-                for (int j=0;j<100;j++){
+                for (int j=0;j<1000;j++){
                     CarState carState=new CarState();
                     long addTime=System.currentTimeMillis()+j;
                     carState.setAdd_time(addTime);
@@ -154,14 +148,14 @@ public class CarHistoryBizApiTest {
                     carState.setWarn_code("0");
                     carStateList.add(carState);
                 }
-                /*String s = JSON.toJSONString(carStateList);
+                String s = JSON.toJSONString(carStateList);
                 httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
                 try {
                     httpclient.execute(httpPost);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }*/
-                carStateHistoryInf.saveOrUpdate(carStateList);
+                }
+                //carStateHistoryInf.saveOrUpdate(carStateList);
 
             }
         }

@@ -1,11 +1,9 @@
-package com.ccclubs.engine.rule.inf.init;
+package com.ccclubs.phoenix.tesks.runner;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.mongo.modify.UpdateCanService;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.engine.rule.inf.util.HistoryCanUtils;
+import com.ccclubs.phoenix.tesks.processor.HistoryCanUtils;
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +30,10 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
 
     @Autowired
     RedisTemplate redisTemplate;
-    @Autowired
-    UpdateCanService updateCanService;
 
     @Autowired
     HistoryCanUtils historyCanUtils;
-    @Autowired
-    EnvironmentUtils environmentUtils;
+
     @Autowired
     BatchProperties batchProperties;
 
@@ -57,7 +52,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                     Long startTime = System.currentTimeMillis();
                     //取出队列中所有等待更新的数据
                     Long canListSrcSize = redisTemplate.opsForList()
-                            .size(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
+                            .size(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
                     if (canListSrcSize > 0) {
                         long redisListStartTime = System.currentTimeMillis();
                         while (System.currentTimeMillis() - redisListStartTime < batchProperties
@@ -68,7 +63,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             }
                             //取出队列中 等待写入的数据
                             Object item = redisTemplate.opsForList()
-                                    .rightPop(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
+                                    .rightPop(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE);
                             if (null == item) {
                                 break;
                             } else {
@@ -85,10 +80,9 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
+                        logger.info("取出Can数据，开始准备存储");
                         logger.debug("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
-                        //historyStateUtils.saveHistoryDataToHbase(waitList);
                         historyCanUtils.saveHistoryDataToHbase(waitList);
-//            updateStateService.batchUpdate(waitList);
                         logger.debug("size:{},time:{} BatchHistoryCanHbaseRunner batch insert  ",
                                 waitList.size(),
                                 System.currentTimeMillis() - startTime);
@@ -101,8 +95,6 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                         logger.error("batch insert current canList error. error list content : {}",
                                 JSON.toJSONString(waitList));
                     }
-                } finally {
-                    waitList = null;
                 }
             }
         });

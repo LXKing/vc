@@ -1,19 +1,22 @@
-package com.ccclubs.engine.rule.inf.util;
+package com.ccclubs.phoenix.tesks.processor;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
-import com.ccclubs.mongo.orm.model.CsHistoryCan;
+import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarCan;
+import com.ccclubs.phoenix.tesks.model.CsHistoryCan;
+import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author qsxiaogang
@@ -26,12 +29,14 @@ public class HistoryCanUtils {
   @Resource
   private RedisTemplate redisTemplate;
 
-  @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
+  @Reference(version = "1.0.0")
+  private CarCanHistoryInf carCanHistoryInf;
+  /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
   private String ip;
   @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
   private String port;
   @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
-  private String urlRootPath;
+  private String urlRootPath;*/
 
   public void saveHistoryData(CsCan csCan) {
 
@@ -52,37 +57,41 @@ public class HistoryCanUtils {
 
     // 需要更新的当前状态加入等待队列
 //    ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
+//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
 //    opsForList
-//        .leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
+//        .leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
 // add at 2017-12-20 历史数据不写 mongodb
 //    updateCanService.insertHis(canHistoryData);
     ListOperations opsForList = redisTemplate.opsForList();
-    opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
+    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
   }
 
   public void saveHistoryDataToHbase(CsCan csCan){
     CarCan carCanHistory=dealCsCanToCarCanHistory(csCan);
-    String objectJson = JSON.toJSONString(carCanHistory);
+    /*String objectJson = JSON.toJSONString(carCanHistory);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can data json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/"+urlRootPath+"/can";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can !");
+    logger.debug("send post for can !");*/
   }
 
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
+    logger.info("准备转换can数据");
     if (null==csCanList||csCanList.size()<1){
       logger.warn("csCanList is null!");
       return;
     }
     List<CarCan> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
-    String objectJson = JSON.toJSONString(carCanHistoryList);
+    logger.info("即将存储can数据");
+    carCanHistoryInf.saveOrUpdate(carCanHistoryList);
+    logger.info("存储can数据完成");
+    /*String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can list json is done:" + objectJson);
     String url="http://"+ip+":"+port+"/"+urlRootPath+"/cans";
     HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can list !");
+    logger.debug("send post for can list !");*/
   }
 
   public List<CarCan> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){
