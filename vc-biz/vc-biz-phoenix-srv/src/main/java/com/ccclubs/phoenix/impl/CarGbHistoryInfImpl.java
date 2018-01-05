@@ -184,9 +184,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "(" +
                 "CS_VIN," +
                 "ADD_TIME," +
-                "YEAR," +
-                "MONTH," +
-                "DAY," +
                 "CURRENT_TIME," +
                 "GB_DATA," +
                 "CS_ACCESS," +
@@ -199,9 +196,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "(" +
                 "?, " + //CS_VIN
                 "?, " + //ADD_TIME
-                "?, " + //YEAR
-                "?, " + //MONTH
-                "?, " + //DAY
                 "?, " + //CURRENT_TIME
                 "?, " + //GB_DATA
                 "?, " + //CS_ACCESS
