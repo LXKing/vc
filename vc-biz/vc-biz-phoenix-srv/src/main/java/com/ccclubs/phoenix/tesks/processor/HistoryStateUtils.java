@@ -29,7 +29,8 @@ public class HistoryStateUtils extends ConvertUtils {
   @Resource
   private RedisTemplate redisTemplate;
 
-  @Reference(version = "1.0.0")
+//  @Reference(version = "1.0.0")
+  @Autowired
   private CarStateHistoryInf carStateHistoryInf;
   /*
   @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")

@@ -9,6 +9,7 @@ import com.ccclubs.phoenix.tesks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,7 +30,8 @@ public class HistoryCanUtils {
   @Resource
   private RedisTemplate redisTemplate;
 
-  @Reference(version = "1.0.0")
+//  @Reference(version = "1.0.0")
+  @Autowired
   private CarCanHistoryInf carCanHistoryInf;
   /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
   private String ip;
