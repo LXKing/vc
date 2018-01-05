@@ -33,7 +33,8 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
     registry.addInterceptor(tokenInterceptor)
             .addPathPatterns("/**")
             //.excludePathPatterns("/oauth/**")
-            .excludePathPatterns("/user/**");
+            .excludePathPatterns("/user/**")
+            .excludePathPatterns("/report/**");
 
     super.addInterceptors(registry);
   }
