@@ -27,9 +27,12 @@ public class PhoenixAutoConfiguration {
         basicDataSource.setUrl(phoenix_url);
         basicDataSource.setUsername("");
         basicDataSource.setPassword("");
-        basicDataSource.setInitialSize(10);
-        basicDataSource.setMaxActive(20);
-        basicDataSource.setDefaultAutoCommit(true);
+        basicDataSource.setInitialSize(20);
+        basicDataSource.setMaxActive(30);
+        basicDataSource.setMinIdle(10);
+        basicDataSource.setValidationQuery("select now() ");
+        basicDataSource.setTestOnBorrow(true);
+        basicDataSource.setDefaultAutoCommit(false);
         return basicDataSource;
     }
 
@@ -45,6 +48,8 @@ public class PhoenixAutoConfiguration {
         basicDataSource.setInitialSize(10);
         basicDataSource.setMinIdle(5);
         basicDataSource.setMaxActive(15);
+        basicDataSource.setValidationQuery("select now() ");
+        basicDataSource.setTestOnBorrow(true);
         basicDataSource.setDefaultAutoCommit(false);
         return basicDataSource;
     }
