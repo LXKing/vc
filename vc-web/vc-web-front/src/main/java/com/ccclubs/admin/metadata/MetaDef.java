@@ -132,13 +132,12 @@ public class MetaDef {
         c.andcsmNumberEqualTo(data.toString());
         List<CsMachine> recordList = csMachineService.selectByExample(query);
         if (recordList != null && recordList.size() > 0) {
-          return (T) (recordList.get(0).getCsmTeNo()+"("+recordList.get(0).getCsmMobile()+")");
+          return (T) (recordList.get(0).getCsmTeNo());
         }
       }
       return null;
     }
   };
-
 
   /**
    * 依据 carId 获取VIN码信息
