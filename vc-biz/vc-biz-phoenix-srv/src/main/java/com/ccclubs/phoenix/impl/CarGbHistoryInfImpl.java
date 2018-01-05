@@ -11,6 +11,8 @@ import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -24,6 +26,8 @@ import java.util.List;
 @org.springframework.stereotype.Service
 @Service(version="1.0.0")
 public class CarGbHistoryInfImpl implements CarGbHistoryInf {
+
+    static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
@@ -251,7 +255,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }
                 carGbPs.addBatch();
                 if(count%500==0){
-
+                    logger.info("执行了一次国标存储（executeBatch）。count size："+count);
                     carGbPs.executeBatch();
                     connection.commit();
 
@@ -259,6 +263,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             }
             carGbPs.executeBatch();
             connection.commit();
+            logger.info("执行了一次国标存储（executeBatch）。");
         }
         catch (Exception e) {
             e.printStackTrace();
