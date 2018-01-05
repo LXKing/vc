@@ -29,6 +29,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
+@org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     @Autowired

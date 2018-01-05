@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 
-
+@org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class TransformForBizInfImpl implements TransformForBizInf {
 

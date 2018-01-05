@@ -21,7 +21,7 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@org.springframework.stereotype.Service
 @Service(version="1.0.0")
 public class CarGbHistoryInfImpl implements CarGbHistoryInf {
     @Autowired

@@ -29,7 +29,8 @@ public class HistoryStateUtils extends ConvertUtils {
   @Resource
   private RedisTemplate redisTemplate;
 
-  @Reference(version = "1.0.0")
+//  @Reference(version = "1.0.0")
+  @Autowired
   private CarStateHistoryInf carStateHistoryInf;
   /*
   @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
@@ -109,12 +110,15 @@ public class HistoryStateUtils extends ConvertUtils {
 
 
   public void saveHistoryDataToHbase(List<CsState> csStateList){
+    logger.info("即将转换一批历史数据到csState");
     List<CarState> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
     }
+    logger.info("现在正在准备写入一批CsState");
     carStateHistoryInf.saveOrUpdate(carStateHistoryList);
+    logger.info("现在已经写入一批CsState");
     /*String sourceJson = JSON.toJSONString(csStateList);
     String objectJson = JSON.toJSONString(carStateHistoryList);
     logger.debug("source: {} ,target: {}",sourceJson,objectJson);

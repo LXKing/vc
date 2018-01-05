@@ -455,8 +455,9 @@ function transferParamsWithSortExport (params,key,sort) {
  * @param data  传递数据JSON格式
  * @param callback    回调函数
  * @param async 是否异步，默认异步
+ * @param contentType 表单类型
  */
-function ajaxRequest(url, type, data, callback, async) {
+function ajaxRequest(url, type, data, callback, async, contentType) {
     var token = cookieUtil.get("token");
     $.ajax({
         url: url,
@@ -464,6 +465,7 @@ function ajaxRequest(url, type, data, callback, async) {
         data: data,
         async: async || false,
         dataType: "json",
+        contentType:contentType|| "application/x-www-form-urlencoded",
         headers: {'Authorization': token},
         success: function (json) {
             if (json.success) {

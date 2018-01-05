@@ -7,6 +7,7 @@ import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.tesks.model.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,8 @@ public class HistoryMessageUtils extends ConvertUtils {
     private static Logger logger = LoggerFactory.getLogger(HistoryMessageUtils.class);
     @Resource
     private RedisTemplate redisTemplate;
-    @Reference(version = "1.0.0")
+//    @Reference(version = "1.0.0")
+    @Autowired
     private CarGbHistoryInf carGbHistoryService;
 
     /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
@@ -32,12 +34,15 @@ public class HistoryMessageUtils extends ConvertUtils {
 
 
     public void saveHistoryGbDataToHbase(List<CsMessage> csMessageLists){
+        logger.info("即将转换国标数据");
         List<CarGb> carGbList=dealCsMessageListToCarGbHistoryLsit(csMessageLists);
         if(null==carGbList||carGbList.size()<1){
             logger.warn("carGbList is null! nothing history gb date saved");
             return ;
         }
+        logger.info("即将存储国标数据");
         carGbHistoryService.saveOrUpdate(carGbList);
+        logger.info("国标数据存储完成");
         /*String sourceJson = JSON.toJSONString(csMessageLists);
         String objectJson = JSON.toJSONString(carGbList);
         logger.debug("source: {} ,target: {}",sourceJson,objectJson);
