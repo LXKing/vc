@@ -178,6 +178,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     @Override
     public void saveOrUpdate(final List<CarGb> records) {
+        logger.info("执行了国标saveOrUpdate.");
         String insert_sql="upsert into " +
                 "PHOENIX_CAR_GB_HISTORY " +
                 "(" +
@@ -215,6 +216,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             connection = phoenixHelper.getConnection();
             carGbPs = connection.prepareStatement(insert_sql);
             Long count =0L;
+            logger.info("国标赋值for循环外部。");
             for(CarGb carGb:records){
                 count++;
                 String cs_vin = carGb.getCs_vin();
@@ -227,6 +229,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 Integer cs_verify = carGb.getCs_verify();
                 carGbPs.setString(1,cs_vin);
                 carGbPs.setLong(2,add_time);
+                logger.info("国标赋值前判断。");
                 if (current_time == null) {
                     carGbPs.setNull(3, Types.BIGINT);
                 } else {
@@ -253,6 +256,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }else {
                     carGbPs.setInt(8, cs_verify);
                 }
+                logger.info("国标赋值完。");
                 carGbPs.addBatch();
                 if(count%500==0){
                     logger.info("执行了一次国标存储（executeBatch）。count size："+count);
@@ -266,6 +270,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             logger.info("执行了一次国标存储（executeBatch）。");
         }
         catch (Exception e) {
+            logger.info("国标赋值出现了异常。");
             e.printStackTrace();
         }
         finally {
