@@ -267,7 +267,7 @@ public class ExportExcelTemp<T> implements Serializable {
             row = sheet.createRow(index);
             T t = it.next();
             boolean haveResolvers=false;
-            if (null==srcfield){
+            if (true){
                 srcfield=new Field[headers.length];
                 try {
                     for (int i=0;i<headers.length;i++){
@@ -287,7 +287,7 @@ public class ExportExcelTemp<T> implements Serializable {
             }
 //            Field[] srcfield = t.getClass().getDeclaredFields();
             HashMap<String, Resolver<T>> resolvers = null;
-            if (haveResolvers&&resolvers==null){
+            if (haveResolvers){
                 try {
                     Field field =t.getClass().getDeclaredField("resolvers");
                     field.setAccessible(true);

@@ -4,7 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.aliyun.oss.OSSClient;
 import com.ccclubs.admin.model.CsIndexReport;
 import com.ccclubs.admin.model.ReportModel;
-import com.ccclubs.admin.model.ReportParamList;
+import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
 import com.ccclubs.admin.service.ICsIndexReportService;
@@ -188,45 +188,24 @@ public class CsIndexReportController {
     }
   }
 
-
-  @RequestMapping(value = "/fileUrl", method = RequestMethod.GET)
-  public VoResult<String> getFile(String fileUuid) {
-    if (reportService.existKey(fileUuid)) {
-      String fileName = reportService.getFileUrlByUUID(fileUuid);
-      VoResult<String> r = new VoResult<>();
-      r.setSuccess(true).setMessage("获取文件地址成功");
-      logger.info("report a file success:" + fileName);
-      r.setValue("https://" + fileName);
-      return r;
-    } else {
-      VoResult<String> r = new VoResult<>();
-      r.setSuccess(false).setMessage("不存在对应的文件，请重新导出。");
-      r.setValue(null);
-      return r;
-    }
-  }
-
-
   @RequestMapping(value = "/report", method = RequestMethod.POST)
-  public VoResult<String> getReport(
-      CsIndexReportQuery query,
-      @RequestBody ReportParamList clms) {
-    //PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query.getCrieria(), page, rows);
-    //clms.toString();
+  public VoResult<String> report(@RequestBody ReportParam<CsIndexReportQuery> reportParam) {
+
     CsIndexReportInput csIndexReportInput = new CsIndexReportInput();
-    csIndexReportInput.setCsNumber(query.getCsNumberEquals());
-    csIndexReportInput.setCsVin(query.getCsVinEquals());
-    csIndexReportInput.setPageNum(clms.getPage());
-    csIndexReportInput.setPageSize(clms.getRows());
+    if (null != reportParam.getQuery()) {
+      csIndexReportInput.setCsNumber(reportParam.getQuery().getCsNumberEquals());
+      csIndexReportInput.setCsVin(reportParam.getQuery().getCsVinEquals());
+    }
+    csIndexReportInput.setPageNum(reportParam.getPage());
+    csIndexReportInput.setPageSize(reportParam.getRows());
 
     String uuid = UUID.randomUUID().toString();
     CsIndexReportThread csIndexReportThread = CsIndexReportThread.getFromApplication();
-    csIndexReportThread.setAllReport(clms.getAllReport()==1);
+    csIndexReportThread.setAllReport(reportParam.getAllReport() == 1);
     csIndexReportThread.setCsIndexReportInput(csIndexReportInput);
     csIndexReportThread.setUserUuid(uuid);
     HashMap<String, String> headMap = new HashMap<>();
-    for (ReportModel reportModel : clms.getClms()
-        ) {
+    for (ReportModel reportModel : reportParam.getClms()) {
       headMap.put(reportModel.getField(), reportModel.getTitle());
     }
     csIndexReportThread.setHeadMap(headMap);
