@@ -80,6 +80,7 @@ public class BatchHistoryCanHbaseRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
+                        logger.info("取出Can数据，开始准备存储");
                         logger.debug("BatchHistoryCanHbaseRunner is runned:"+waitList.toString());
                         historyCanUtils.saveHistoryDataToHbase(waitList);
                         logger.debug("size:{},time:{} BatchHistoryCanHbaseRunner batch insert  ",

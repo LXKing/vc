@@ -81,6 +81,7 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
                             System.currentTimeMillis() - startTime);
 
                     if (waitList.size() > 0) {
+                        logger.info("取出Gb数据，开始准备存储");
                         historyMessageUtils.saveHistoryGbDataToHbase(waitList);
                         logger.debug("size:{},time:{} BatchMessage hbase InsertRunner batch insert  ", waitList.size(),
                                 System.currentTimeMillis() - startTime);
