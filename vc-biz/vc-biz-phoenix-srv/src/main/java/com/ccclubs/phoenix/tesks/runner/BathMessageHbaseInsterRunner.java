@@ -2,9 +2,9 @@ package com.ccclubs.phoenix.tesks.runner;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.phoenix.tesks.model.CsMessage;
 import com.ccclubs.phoenix.tesks.processor.HistoryMessageUtils;
 import com.ccclubs.phoenix.tesks.util.RedisConstant;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

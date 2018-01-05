@@ -7,7 +7,7 @@ import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
-import com.ccclubs.mongo.orm.model.CsMessage;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
