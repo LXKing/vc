@@ -59,7 +59,7 @@ public class ValidateService {
             if (null != vehicle) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
-                if (host.getShId() != vehicle.getCsvAccess()) {
+                if (host.getShId().intValue() != vehicle.getCsvAccess()) {
                     logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
                 }
