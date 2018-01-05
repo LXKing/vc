@@ -11,6 +11,8 @@ import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -21,9 +23,11 @@ import org.springframework.jdbc.core.PreparedStatementSetter;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@org.springframework.stereotype.Service
 @Service(version="1.0.0")
 public class CarGbHistoryInfImpl implements CarGbHistoryInf {
+
+    static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
@@ -56,7 +60,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 },
                 new CarGbMapper());
         CarGb carGb = null;
-        System.out.println("");
         for(JSONObject jsonObject:jsonObjList){
             carGb = new CarGb();
             String[] fields = queryFields.split(",");
@@ -158,19 +161,12 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         long total=-1L;
         //首先判断是否是分页查询
         if(carGbHistoryParam.getPage_no()>0){
-//            //判断是否已获取过记录总数
-//            total=carGbHistoryParam.getTotal();
-//            //已经获取过记录总数
-//            if(total>-1){
-//                total = carGbHistoryParam.getTotal();
-//            }
-//            else{
-//                total = queryCarGbListCount(carGbHistoryParam);
-//            }
+
             total = queryCarGbListCount(carGbHistoryParam);
             List<CarGb> carGbList = queryCarGbListWithPage(carGbHistoryParam);
             carGbHistoryOutput.setTotal(total);
             carGbHistoryOutput.setList(carGbList);
+
         }
         //非分页查询
         else{
@@ -182,6 +178,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     @Override
     public void saveOrUpdate(final List<CarGb> records) {
+        logger.info("执行了国标saveOrUpdate.");
         String insert_sql="upsert into " +
                 "PHOENIX_CAR_GB_HISTORY " +
                 "(" +
@@ -219,7 +216,9 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             connection = phoenixHelper.getConnection();
             carGbPs = connection.prepareStatement(insert_sql);
             Long count =0L;
+            logger.info("国标赋值for循环外部。");
             for(CarGb carGb:records){
+                count++;
                 String cs_vin = carGb.getCs_vin();
                 Long add_time = carGb.getAdd_time();
                 Long current_time = carGb.getCurrent_time();
@@ -230,6 +229,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 Integer cs_verify = carGb.getCs_verify();
                 carGbPs.setString(1,cs_vin);
                 carGbPs.setLong(2,add_time);
+                logger.info("国标赋值前判断。");
                 if (current_time == null) {
                     carGbPs.setNull(3, Types.BIGINT);
                 } else {
@@ -256,21 +256,21 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }else {
                     carGbPs.setInt(8, cs_verify);
                 }
+                logger.info("国标赋值完。");
                 carGbPs.addBatch();
                 if(count%500==0){
-                    long start_timemills = System.currentTimeMillis();
-                    //System.out.println("我提交了"+count+"条!");
+                    logger.info("执行了一次国标存储（executeBatch）。count size："+count);
                     carGbPs.executeBatch();
                     connection.commit();
-//                    long end_timemills = System.currentTimeMillis();
-//                    long cost_timemills = end_timemills-start_timemills;
-//                    System.out.println("插入耗时:"+cost_timemills+"毫秒");
+
                 }
             }
             carGbPs.executeBatch();
             connection.commit();
+            logger.info("执行了一次国标存储（executeBatch）。");
         }
         catch (Exception e) {
+            logger.info("国标赋值出现了异常。");
             e.printStackTrace();
         }
         finally {

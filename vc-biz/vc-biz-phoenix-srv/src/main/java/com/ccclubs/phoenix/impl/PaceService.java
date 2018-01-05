@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by taosm on 2017/10/18 0018.
  */
+@org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class PaceService implements PaceInf {
     private List<PaceBlock> tempList = new ArrayList<>();

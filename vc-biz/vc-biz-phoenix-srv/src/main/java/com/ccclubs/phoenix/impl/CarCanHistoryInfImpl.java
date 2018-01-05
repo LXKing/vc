@@ -29,6 +29,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
+@org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     @Autowired
@@ -109,7 +110,6 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                         ps.setLong(3,end_time);
                         ps.setInt(4,limit);
                         ps.setInt(5,offset);
-                        System.out.println();
                     }
                 },
                 new CarCanMapper());
@@ -212,6 +212,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             carCanPs = connection.prepareStatement(insert_sql);
             Long count =0L;
             for(CarCan carCan:records){
+                count++;
                 String cs_number = carCan.getCs_number();
                 Long current_time = carCan.getCurrent_time();
                 String can_data = carCan.getCan_data();
@@ -222,13 +223,10 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 carCanPs.setLong(4,add_time);
                 carCanPs.addBatch();
                 if(count%500==0){
-                    long start_timemills = System.currentTimeMillis();
-                    //System.out.println("我提交了"+count+"条!");
+
                     carCanPs.executeBatch();
                     connection.commit();
-//                    long end_timemills = System.currentTimeMillis();
-//                    long cost_timemills = end_timemills-start_timemills;
-//                    System.out.println("插入耗时:"+cost_timemills+"毫秒");
+
                 }
             }
             carCanPs.executeBatch();

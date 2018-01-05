@@ -32,6 +32,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
+@org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Autowired
@@ -520,7 +521,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }
                 carStatePs.addBatch();
                 if(count%500==0){
-                    long start_timemills = System.currentTimeMillis();
+//                    long start_timemills = System.currentTimeMillis();
                     //System.out.println("我提交了"+count+"条!");
                     carStatePs.executeBatch();
                     connection.commit();

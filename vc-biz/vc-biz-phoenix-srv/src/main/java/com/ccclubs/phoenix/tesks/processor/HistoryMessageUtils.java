@@ -1,13 +1,11 @@
 package com.ccclubs.phoenix.tesks.processor;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarGb;
-import com.ccclubs.phoenix.tesks.model.CsMessage;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +18,8 @@ public class HistoryMessageUtils extends ConvertUtils {
     private static Logger logger = LoggerFactory.getLogger(HistoryMessageUtils.class);
     @Resource
     private RedisTemplate redisTemplate;
-    @Reference(version = "1.0.0")
+//    @Reference(version = "1.0.0")
+    @Autowired
     private CarGbHistoryInf carGbHistoryService;
 
     /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
@@ -90,7 +89,7 @@ public class HistoryMessageUtils extends ConvertUtils {
     public CarGb dealCsMessageToCarGbHistory(CsMessage csMessage){
         if (null==csMessage){return null;}
         CarGb carGb=new CarGb();
-        carGb.setAdd_time(System.currentTimeMillis());
+        carGb.setAdd_time(null==csMessage.getCsmAddTime()?System.currentTimeMillis():csMessage.getCsmAddTime());
         carGb.setCs_access(csMessage.getCsmAccess());
         carGb.setCs_protocol(convertToInterger(csMessage.getCsmProtocol()));
         carGb.setCs_verify(convertToInterger(csMessage.getCsmVerify()));

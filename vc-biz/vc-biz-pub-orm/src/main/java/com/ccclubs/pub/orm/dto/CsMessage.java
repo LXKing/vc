@@ -1,10 +1,6 @@
-package com.ccclubs.mongo.orm.model;
-
-import com.ccclubs.frm.spring.annotation.AutomaticSequence;
+package com.ccclubs.pub.orm.dto;
 
 import java.io.Serializable;
-import java.util.Date;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * 报文
@@ -12,10 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author jianghaiyang
  * @create 2017-08-09
  **/
-@Document(collection = "CsMessage")
-public class CsMessage extends AbstractDocumentOld implements Serializable {
+public class CsMessage implements Serializable {
     //编号
-    @AutomaticSequence
     private Long csmId;
     //授权系统
     private Integer csmAccess;

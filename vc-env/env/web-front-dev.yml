@@ -22,7 +22,7 @@ dubbo:
   scan:
     annotationPackage: com.ccclubs
   application:
-    name: command-srv
+    name: web-front
   registry:
     address: zookeeper://127.0.0.1:2181
     protocol: zookeeper

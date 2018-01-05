@@ -1,7 +1,5 @@
 package com.ccclubs.phoenix.tesks.processor;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.tesks.model.CsHistoryState;
@@ -10,7 +8,6 @@ import com.ccclubs.pub.orm.model.CsState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -29,7 +26,8 @@ public class HistoryStateUtils extends ConvertUtils {
   @Resource
   private RedisTemplate redisTemplate;
 
-  @Reference(version = "1.0.0")
+//  @Reference(version = "1.0.0")
+  @Autowired
   private CarStateHistoryInf carStateHistoryInf;
   /*
   @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
@@ -162,7 +160,11 @@ public class HistoryStateUtils extends ConvertUtils {
 
     CarState csStateHistory = new CarState();
 
-    csStateHistory.setAdd_time(System.currentTimeMillis());
+    if (null==csState.getCssAddTime()){
+      csStateHistory.setAdd_time(System.currentTimeMillis());
+    }else {
+      csStateHistory.setAdd_time(csState.getCssAddTime().getTime());
+    }
     csStateHistory.setCs_number(csState.getCssNumber());
 
     //csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
