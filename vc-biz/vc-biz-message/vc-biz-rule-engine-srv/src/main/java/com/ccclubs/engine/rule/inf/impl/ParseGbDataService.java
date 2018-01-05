@@ -9,7 +9,7 @@ import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
-import com.ccclubs.mongo.orm.model.CsMessage;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.gb.GBMessageType;
 import com.ccclubs.protocol.dto.gb.GB_02;
