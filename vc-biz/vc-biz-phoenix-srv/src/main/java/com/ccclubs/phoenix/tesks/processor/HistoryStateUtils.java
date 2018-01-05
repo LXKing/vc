@@ -163,7 +163,7 @@ public class HistoryStateUtils extends ConvertUtils {
 
     CarState csStateHistory = new CarState();
 
-    csStateHistory.setAdd_time(System.currentTimeMillis());
+    csStateHistory.setAdd_time(csState.getCssAddTime().getTime());
     csStateHistory.setCs_number(csState.getCssNumber());
 
     //csStateHistory.setCs_host(convertToLong(csState.getCssHost()));
