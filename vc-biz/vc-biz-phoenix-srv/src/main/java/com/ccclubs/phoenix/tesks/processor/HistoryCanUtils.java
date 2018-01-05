@@ -77,12 +77,15 @@ public class HistoryCanUtils {
   }
 
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
+    logger.info("准备转换can数据");
     if (null==csCanList||csCanList.size()<1){
       logger.warn("csCanList is null!");
       return;
     }
     List<CarCan> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
+    logger.info("即将存储can数据");
     carCanHistoryInf.saveOrUpdate(carCanHistoryList);
+    logger.info("存储can数据完成");
     /*String objectJson = JSON.toJSONString(carCanHistoryList);
     //concurrentLinkedQueue.add(objectJson);
     logger.debug("deal can list json is done:" + objectJson);

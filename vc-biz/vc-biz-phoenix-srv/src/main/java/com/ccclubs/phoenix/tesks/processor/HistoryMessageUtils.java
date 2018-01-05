@@ -32,12 +32,15 @@ public class HistoryMessageUtils extends ConvertUtils {
 
 
     public void saveHistoryGbDataToHbase(List<CsMessage> csMessageLists){
+        logger.info("即将转换国标数据");
         List<CarGb> carGbList=dealCsMessageListToCarGbHistoryLsit(csMessageLists);
         if(null==carGbList||carGbList.size()<1){
             logger.warn("carGbList is null! nothing history gb date saved");
             return ;
         }
+        logger.info("即将存储国标数据");
         carGbHistoryService.saveOrUpdate(carGbList);
+        logger.info("国标数据存储完成");
         /*String sourceJson = JSON.toJSONString(csMessageLists);
         String objectJson = JSON.toJSONString(carGbList);
         logger.debug("source: {} ,target: {}",sourceJson,objectJson);
