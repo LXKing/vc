@@ -66,10 +66,13 @@ public class CsIndexReportThread implements Runnable {
     PageInfo<CsIndexReport> pageInfoFromQuota = null;
     List<CsIndexReport> csIndexReportFromQuotaList = null;
     if (!isAllReport) {
+      logger.info("准备查询数据库所有部分指标信息。");
       pageInfoFromQuota = csIndexQuotaInf.bizQuota(csIndexReportInput);
       csIndexReportFromQuotaList = pageInfoFromQuota.getList();
     } else {
+      logger.info("准备查询数据库所有指标信息。");
       csIndexReportFromQuotaList = csIndexQuotaInf.bizQuotaAll(csIndexReportInput);
+      logger.info("查询所有指标完成"+csIndexReportFromQuotaList.size());
     }
 
     //PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
@@ -83,11 +86,12 @@ public class CsIndexReportThread implements Runnable {
             .dealCsIndexReportFromQuotaToThis(csIndexReport, csIndexReportFromQuotaList.get(i));
         list.add(csIndexReport);
       }
+      logger.info("转换dealCsIndexReportFromQuotaToThis完成"+csIndexReportFromQuotaList.size());
     }
     //pageInfo.setList(list);
-    for (com.ccclubs.admin.model.CsIndexReport data : list) {
+    /*for (com.ccclubs.admin.model.CsIndexReport data : list) {
       CsIndexReportController.registResolvers(data);
-    }
+    }*/
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
     String dateNowStr = sdf.format(System.currentTimeMillis());
@@ -104,6 +108,7 @@ public class CsIndexReportThread implements Runnable {
     }
     //文件路径
     ByteArrayOutputStream bytes;
+    logger.info("准备开始导出指标数据");
     bytes = reportService.reportOutputStream(list, headMap);
     long midTime = System.currentTimeMillis();
     logger.info("处理但不存储耗时ms：" + (midTime - startTime));
