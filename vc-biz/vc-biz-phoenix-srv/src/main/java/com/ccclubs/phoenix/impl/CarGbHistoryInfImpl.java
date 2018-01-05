@@ -56,7 +56,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 },
                 new CarGbMapper());
         CarGb carGb = null;
-        System.out.println("");
         for(JSONObject jsonObject:jsonObjList){
             carGb = new CarGb();
             String[] fields = queryFields.split(",");
@@ -158,19 +157,12 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         long total=-1L;
         //首先判断是否是分页查询
         if(carGbHistoryParam.getPage_no()>0){
-//            //判断是否已获取过记录总数
-//            total=carGbHistoryParam.getTotal();
-//            //已经获取过记录总数
-//            if(total>-1){
-//                total = carGbHistoryParam.getTotal();
-//            }
-//            else{
-//                total = queryCarGbListCount(carGbHistoryParam);
-//            }
+
             total = queryCarGbListCount(carGbHistoryParam);
             List<CarGb> carGbList = queryCarGbListWithPage(carGbHistoryParam);
             carGbHistoryOutput.setTotal(total);
             carGbHistoryOutput.setList(carGbList);
+
         }
         //非分页查询
         else{
@@ -220,6 +212,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             carGbPs = connection.prepareStatement(insert_sql);
             Long count =0L;
             for(CarGb carGb:records){
+                count++;
                 String cs_vin = carGb.getCs_vin();
                 Long add_time = carGb.getAdd_time();
                 Long current_time = carGb.getCurrent_time();
@@ -258,13 +251,10 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }
                 carGbPs.addBatch();
                 if(count%500==0){
-                    long start_timemills = System.currentTimeMillis();
-                    //System.out.println("我提交了"+count+"条!");
+
                     carGbPs.executeBatch();
                     connection.commit();
-//                    long end_timemills = System.currentTimeMillis();
-//                    long cost_timemills = end_timemills-start_timemills;
-//                    System.out.println("插入耗时:"+cost_timemills+"毫秒");
+
                 }
             }
             carGbPs.executeBatch();
