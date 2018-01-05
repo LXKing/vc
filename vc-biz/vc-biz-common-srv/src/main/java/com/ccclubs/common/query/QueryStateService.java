@@ -91,7 +91,7 @@ public class QueryStateService {
    * @param id
    * @return
    */
-  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsState:jt808:cssId:'+#args[0]", autoload = true)
+//  @Cache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsState:jt808:cssId:'+#args[0]", autoload = true)
   public CsState queryStateByIdFor808(Integer id) {
     return dao.selectByPrimaryKey(id);
   }
