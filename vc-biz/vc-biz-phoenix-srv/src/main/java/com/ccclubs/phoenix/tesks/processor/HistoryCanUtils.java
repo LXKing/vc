@@ -110,7 +110,8 @@ public class HistoryCanUtils {
   public CarCan dealCsCanToCarCanHistory(CsCan csCan){
     if (null==csCan){return null;}
     CarCan carCanHistory=new CarCan();
-    carCanHistory.setAdd_time(csCan.getCscAddTime().getTime());
+
+    carCanHistory.setAdd_time(csCan.getCscAddTime()==null?System.currentTimeMillis():csCan.getCscAddTime().getTime());
     carCanHistory.setCs_number(csCan.getCscNumber());
     //carCanHistory.setCs_vin();
     carCanHistory.setCan_data(csCan.getCscData());
