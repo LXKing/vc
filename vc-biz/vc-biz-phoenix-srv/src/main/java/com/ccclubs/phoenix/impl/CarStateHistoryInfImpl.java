@@ -15,6 +15,8 @@ import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import com.ccclubs.phoenix.util.VehicleUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -35,6 +37,115 @@ import java.util.List;
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class CarStateHistoryInfImpl implements CarStateHistoryInf {
+
+    static  final Logger logger= LoggerFactory.getLogger(CarStateHistoryInfImpl.class);
+
+    static final String insert_sql = "upsert into " +
+            "PHOENIX_CAR_STATE_HISTORY " +
+            "(" +
+            "CS_NUMBER," +
+            "CURRENT_TIME," +
+            "CS_ACCESS," +
+            "ADD_TIME," +
+            "RENT_FLG," +
+            "WARN_CODE," +
+            "RFID," +
+            "USER_RFID," +
+            "OBD_MILES," +
+            "ENGINE_TEMPE," +
+            "TOTAL_MILES," +
+            "SPEED," +
+            "MOTOR_SPEED," +
+            "OIL_COST," +
+            "POWER_RESERVE," +
+            "EV_BATTERY," +
+            "CHARGING_STATUS," +
+            "FUEL_MILES," +
+            "ELEC_MILES," +
+            "ENDUR_MILES," +
+            "TEMPE," +
+            "GPS_NUM," +
+            "GPS_STRENGTH," +
+            "GPS_VALID," +
+            "LONGITUDE," +
+            "LATITUDE," +
+            "DIRECTION_ANGLE," +
+            "CIRCULAR_MODE," +
+            "PTC_STATUS," +
+            "COMPRE_STATUS," +
+            "FAN_MODE," +
+            "SAVING_MODE," +
+            "DOOR_STATUS," +
+            "ENGINE_STATUS," +
+            "KEY_STATUS," +
+            "LIGHT_STATUS," +
+            "LOCK_STATUS," +
+            "NET_TYPE," +
+            "BASE_LAC," +
+            "BASE_CI," +
+            "CUR_ORDER, " +
+            "NET_STRENGTH," +
+            "GEAR" +
+            " " +
+            ") " +
+            "values " +
+            "(" +
+            "?, " + //CS_NUMBER
+            "?, " + //CURRENT_TIME
+            "?, " + //CS_ACCESS
+            "?, " + //ADD_TIME
+            "?, " + //RENT_FLG
+            "?, " + //WARN_CODE
+            "?, " + //RFID
+            "?, " + //USER_RFID
+            "?, " + //OBD_MILES
+            "?, " + //ENGINE_TEMPE
+            "?, " + //TOTAL_MILES
+            "?, " + //SPEED
+            "?, " + //MOTOR_SPEED
+            "?, " + //OIL_COST
+            "?, " + //POWER_RESERVE
+            "?, " + //EV_BATTERY
+            "?, " + //CHARGING_STATUS
+            "?, " + //FUEL_MILES
+            "?, " + //ELEC_MILES
+            "?, " + //ENDUR_MILES
+            "?, " + //TEMPE
+            "?, " + //GPS_NUM
+            "?, " + //GPS_STRENGTH
+            "?, " + //GPS_VALID
+            "?, " + //LONGITUDE
+            "?, " + //LATITUDE
+            "?, " + //DIRECTION_ANGLE
+            "?, " + //CIRCULAR_MODE
+            "?, " + //PTC_STATUS
+            "?, " + //COMPRE_STATUS
+            "?, " + //FAN_MODE
+            "?, " + //SAVING_MODE
+            "?, " + //DOOR_STATUS
+            "?, " + //ENGINE_STATUS
+            "?, " + //KEY_STATUS
+            "?, " + //LIGHT_STATUS
+            "?, " + //LOCK_STATUS
+            "?, " + //NET_TYPE
+            "?, " + //BASE_LAC
+            "?, " + //BASE_CI
+            "?, " + //CUR_ORDER
+            "?, " + //NET_STRENGTH
+            "? " + //GEAR
+            ")";
+
+
+    static final String count_sql = "select " +
+            "count(cs_number) as total " +
+            "from phoenix_car_state_history " +
+            "where cs_number=? " +
+            "and current_time>=? " +
+            "and current_time<=? ";
+
+
+
+
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
@@ -136,13 +247,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
-        long total = 0;
-        String count_sql = "select " +
-                "count(cs_number) as total " +
-                "from phoenix_car_state_history " +
-                "where cs_number=? " +
-                "and current_time>=? " +
-                "and current_time<=? ";
+        long total = 0L;
+
         total = phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
             @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
@@ -165,7 +271,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam) {
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
-        long total = -1l;
+        long total = -1L;
         //首先判断是否是分页查询
         if (carStateHistoryParam.getPage_no() > 0) {
 //            //判断是否已获取过记录总数
@@ -192,105 +298,11 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     //批量更新车辆状态数据
     public void saveOrUpdate(final List<CarState> records) {
-        String insert_sql = "upsert into " +
-                "PHOENIX_CAR_STATE_HISTORY " +
-                "(" +
-                "CS_NUMBER," +
-                "CURRENT_TIME," +
-                "CS_ACCESS," +
-                "ADD_TIME," +
-                "RENT_FLG," +
-                "WARN_CODE," +
-                "RFID," +
-                "USER_RFID," +
-                "OBD_MILES," +
-                "ENGINE_TEMPE," +
-                "TOTAL_MILES," +
-                "SPEED," +
-                "MOTOR_SPEED," +
-                "OIL_COST," +
-                "POWER_RESERVE," +
-                "EV_BATTERY," +
-                "CHARGING_STATUS," +
-                "FUEL_MILES," +
-                "ELEC_MILES," +
-                "ENDUR_MILES," +
-                "TEMPE," +
-                "GPS_NUM," +
-                "GPS_STRENGTH," +
-                "GPS_VALID," +
-                "LONGITUDE," +
-                "LATITUDE," +
-                "DIRECTION_ANGLE," +
-                "CIRCULAR_MODE," +
-                "PTC_STATUS," +
-                "COMPRE_STATUS," +
-                "FAN_MODE," +
-                "SAVING_MODE," +
-                "DOOR_STATUS," +
-                "ENGINE_STATUS," +
-                "KEY_STATUS," +
-                "LIGHT_STATUS," +
-                "LOCK_STATUS," +
-                "NET_TYPE," +
-                "BASE_LAC," +
-                "BASE_CI," +
-                "CUR_ORDER, " +
-                "NET_STRENGTH," +
-                "GEAR" +
-                " " +
-                ") " +
-                "values " +
-                "(" +
-                "?, " + //CS_NUMBER
-                "?, " + //CURRENT_TIME
-                "?, " + //CS_ACCESS
-                "?, " + //ADD_TIME
-                "?, " + //RENT_FLG
-                "?, " + //WARN_CODE
-                "?, " + //RFID
-                "?, " + //USER_RFID
-                "?, " + //OBD_MILES
-                "?, " + //ENGINE_TEMPE
-                "?, " + //TOTAL_MILES
-                "?, " + //SPEED
-                "?, " + //MOTOR_SPEED
-                "?, " + //OIL_COST
-                "?, " + //POWER_RESERVE
-                "?, " + //EV_BATTERY
-                "?, " + //CHARGING_STATUS
-                "?, " + //FUEL_MILES
-                "?, " + //ELEC_MILES
-                "?, " + //ENDUR_MILES
-                "?, " + //TEMPE
-                "?, " + //GPS_NUM
-                "?, " + //GPS_STRENGTH
-                "?, " + //GPS_VALID
-                "?, " + //LONGITUDE
-                "?, " + //LATITUDE
-                "?, " + //DIRECTION_ANGLE
-                "?, " + //CIRCULAR_MODE
-                "?, " + //PTC_STATUS
-                "?, " + //COMPRE_STATUS
-                "?, " + //FAN_MODE
-                "?, " + //SAVING_MODE
-                "?, " + //DOOR_STATUS
-                "?, " + //ENGINE_STATUS
-                "?, " + //KEY_STATUS
-                "?, " + //LIGHT_STATUS
-                "?, " + //LOCK_STATUS
-                "?, " + //NET_TYPE
-                "?, " + //BASE_LAC
-                "?, " + //BASE_CI
-                "?, " + //CUR_ORDER
-                "?, " + //NET_STRENGTH
-                "? " + //GEAR
-                ")";
+
         Connection connection = null;
         PreparedStatement carStatePs = null;
         try {
             connection = phoenixHelper.getConnection();
-            //System.out.println("当前有效连接数量："+phoenixHelper.getConnectionCount());
             carStatePs = connection.prepareStatement(insert_sql);
             Long count =0L;
             for(CarState carState:records){
@@ -351,7 +363,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 } else {
                     carStatePs.setLong(4, add_time);
                 }
-                //carStatePs.setString(5, fit_current_time);
                 if (rent_flg == null) {
                     carStatePs.setNull(5, Types.INTEGER);
                 } else {
@@ -521,8 +532,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }
                 carStatePs.addBatch();
                 if(count%500==0){
-//                    long start_timemills = System.currentTimeMillis();
-                    //System.out.println("我提交了"+count+"条!");
                     carStatePs.executeBatch();
                     connection.commit();
 
@@ -532,6 +541,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             connection.commit();
         }
         catch (Exception e) {
+            logger.info("car state phoenix throw a error"+e.getMessage());
             e.printStackTrace();
         }
         finally {

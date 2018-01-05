@@ -28,6 +28,40 @@ import java.util.List;
 public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
+
+    static final String insert_sql="upsert into " +
+            "PHOENIX_CAR_GB_HISTORY " +
+            "(" +
+            "CS_VIN," +
+            "ADD_TIME," +
+            "CURRENT_TIME," +
+            "GB_DATA," +
+            "CS_ACCESS," +
+            "CS_PROTOCOL," +
+            "GB_TYPE," +
+            "CS_VERIFY" +
+            " " +
+            ") " +
+            "values " +
+            "(" +
+            "?, " + //CS_VIN
+            "?, " + //ADD_TIME
+            "?, " + //CURRENT_TIME
+            "?, " + //GB_DATA
+            "?, " + //CS_ACCESS
+            "?, " + //CS_PROTOCOL
+            "?, " + //GB_TYPE
+            "? " + //CS_VERIFY
+            ")";
+
+    static final String count_sql = "select " +
+            "count(cs_vin) as total " +
+            "from phoenix_car_gb_history " +
+            "where cs_vin=? " +
+            "and add_time>=? " +
+            "and add_time<=? ";
+
+
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
@@ -128,13 +162,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     @Override
     public Long queryCarGbListCount(final CarGbHistoryParam carGbHistoryParam) {
-        long total=0;
-        String count_sql = "select " +
-                "count(cs_vin) as total " +
-                "from phoenix_car_gb_history " +
-                "where cs_vin=? " +
-                "and add_time>=? " +
-                "and add_time<=? ";
+        long total=0L;
+
         total=phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
             @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
@@ -178,31 +207,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     @Override
     public void saveOrUpdate(final List<CarGb> records) {
-        logger.info("执行了国标saveOrUpdate.");
-        String insert_sql="upsert into " +
-                "PHOENIX_CAR_GB_HISTORY " +
-                "(" +
-                "CS_VIN," +
-                "ADD_TIME," +
-                "CURRENT_TIME," +
-                "GB_DATA," +
-                "CS_ACCESS," +
-                "CS_PROTOCOL," +
-                "GB_TYPE," +
-                "CS_VERIFY" +
-                " " +
-                ") " +
-                "values " +
-                "(" +
-                "?, " + //CS_VIN
-                "?, " + //ADD_TIME
-                "?, " + //CURRENT_TIME
-                "?, " + //GB_DATA
-                "?, " + //CS_ACCESS
-                "?, " + //CS_PROTOCOL
-                "?, " + //GB_TYPE
-                "? " + //CS_VERIFY
-                ")";
+        //logger.info("执行了国标saveOrUpdate.");
+
         Connection connection = null;
         PreparedStatement carGbPs = null;
 
@@ -210,7 +216,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             connection = phoenixHelper.getConnection();
             carGbPs = connection.prepareStatement(insert_sql);
             Long count =0L;
-            logger.info("国标赋值for循环外部。");
+            //logger.info("国标赋值for循环外部。");
             for(CarGb carGb:records){
                 count++;
                 String cs_vin = carGb.getCs_vin();
@@ -223,7 +229,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 Integer cs_verify = carGb.getCs_verify();
                 carGbPs.setString(1,cs_vin);
                 carGbPs.setLong(2,add_time);
-                logger.info("国标赋值前判断。");
+                //logger.info("国标赋值前判断。");
                 if (current_time == null) {
                     carGbPs.setNull(3, Types.BIGINT);
                 } else {
@@ -250,7 +256,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 }else {
                     carGbPs.setInt(8, cs_verify);
                 }
-                logger.info("国标赋值完。");
+                //logger.info("国标赋值完。");
                 carGbPs.addBatch();
                 if(count%500==0){
                     logger.info("执行了一次国标存储（executeBatch）。count size："+count);
@@ -261,7 +267,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             }
             carGbPs.executeBatch();
             connection.commit();
-            logger.info("执行了一次国标存储（executeBatch）。");
+            //logger.info("执行了一次国标存储（executeBatch）。");
         }
         catch (Exception e) {
             logger.info("国标赋值出现了异常。");
