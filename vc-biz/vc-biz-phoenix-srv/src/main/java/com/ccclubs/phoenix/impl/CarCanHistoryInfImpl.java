@@ -11,6 +11,8 @@ import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,6 +34,31 @@ import java.util.List;
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
+
+    static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
+    static final String insert_sql="upsert into " +
+            "PHOENIX_CAR_CAN_HISTORY " +
+            "(" +
+            "CS_NUMBER," +
+            "CURRENT_TIME," +
+            "CAN_DATA," +
+            "ADD_TIME " +
+            " " +
+            ") " +
+            "values " +
+            "(" +
+            "?, " + //CS_NUMBER
+            "?, " + //CURRENT_TIME
+            "?, " + //CAN_DATA
+            "? " + //ADD_TIME
+            ")";
+
+    static  final String count_sql = "select " +
+            "count(cs_number) as total " +
+            "from phoenix_car_can_history " +
+            "where cs_number=? " +
+            "and current_time>=? " +
+            "and current_time<=? ";
     @Autowired
     private JdbcTemplate phoenixJdbcTemplate;
 
@@ -64,7 +91,6 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
                 },
                 new CarCanMapper());
         CarCan carCan = null;
-        System.out.println("");
         for(JSONObject jsonObject:jsonObjList){
             carCan = new CarCan();
             String[] fields = queryFields.split(",");
@@ -133,12 +159,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     @Override
     public Long queryCarCanListCount(final CarCanHistoryParam carCanHistoryParam) {
         long total=0;
-        String count_sql = "select " +
-                "count(cs_number) as total " +
-                "from phoenix_car_can_history " +
-                "where cs_number=? " +
-                "and current_time>=? " +
-                "and current_time<=? ";
+
         total=phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
             @Override
             public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
@@ -165,15 +186,6 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
         long total=-1L;
         //首先判断是否是分页查询
         if(carCanHistoryParam.getPage_no()>0){
-//            //判断是否已获取过记录总数
-//            total=carCanHistoryParam.getTotal();
-//            //已经获取过记录总数
-//            if(total>-1){
-//                total = carCanHistoryParam.getTotal();
-//            }
-//            else{
-//                total = queryCarCanListCount(carCanHistoryParam);
-//            }
             total = queryCarCanListCount(carCanHistoryParam);
             List<CarCan> carCanList = queryCarCanListWithPage(carCanHistoryParam);
             carCanHistoryOutput.setTotal(total);
@@ -189,22 +201,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
     @Override
     public void saveOrUpdate(final List<CarCan> records) {
-        String insert_sql="upsert into " +
-                "PHOENIX_CAR_CAN_HISTORY " +
-                "(" +
-                "CS_NUMBER," +
-                "CURRENT_TIME," +
-                "CAN_DATA," +
-                "ADD_TIME " +
-                " " +
-                ") " +
-                "values " +
-                "(" +
-                "?, " + //CS_NUMBER
-                "?, " + //CURRENT_TIME
-                "?, " + //CAN_DATA
-                "? " + //ADD_TIME
-                ")";
+
         Connection connection = null;
         PreparedStatement carCanPs = null;
         try {
@@ -233,6 +230,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             connection.commit();
         }
         catch (Exception e) {
+            logger.info("car can phoenix throw a error"+e.getMessage());
             e.printStackTrace();
         }
         finally {
