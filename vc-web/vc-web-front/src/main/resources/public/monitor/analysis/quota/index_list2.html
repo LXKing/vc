@@ -88,7 +88,7 @@
 
     exportData: function () {
       var params = $.extend(getFormData(this.getQueryForm()),
-          {rows: currSize, page: currPage, isAllReport: true});
+          {rows: currSize, page: currPage, isAllReport: 1});
       params = transferParamsWithSortExport(params, "createTime");
       var clmsCopy = $.extend(true, [], clms);
       params.clms = clmsCopy.splice(1, clms.length);

@@ -196,7 +196,7 @@ public class CsIndexReportController {
       VoResult<String> r = new VoResult<>();
       r.setSuccess(true).setMessage("获取文件地址成功");
       logger.info("report a file success:" + fileName);
-      r.setValue("http://" + fileName);
+      r.setValue("https://" + fileName);
       return r;
     } else {
       VoResult<String> r = new VoResult<>();
@@ -210,21 +210,18 @@ public class CsIndexReportController {
   @RequestMapping(value = "/report", method = RequestMethod.POST)
   public VoResult<String> getReport(
       CsIndexReportQuery query,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "10") Integer rows,
-      @RequestParam(defaultValue = "false") Boolean isAllReport,
       @RequestBody ReportParamList clms) {
     //PageInfo<CsIndexReport> pageInfo = csIndexReportService.getPage(query.getCrieria(), page, rows);
     //clms.toString();
     CsIndexReportInput csIndexReportInput = new CsIndexReportInput();
     csIndexReportInput.setCsNumber(query.getCsNumberEquals());
     csIndexReportInput.setCsVin(query.getCsVinEquals());
-    csIndexReportInput.setPageNum(page);
-    csIndexReportInput.setPageSize(rows);
+    csIndexReportInput.setPageNum(clms.getPage());
+    csIndexReportInput.setPageSize(clms.getRows());
 
     String uuid = UUID.randomUUID().toString();
     CsIndexReportThread csIndexReportThread = CsIndexReportThread.getFromApplication();
-    csIndexReportThread.setAllReport(isAllReport);
+    csIndexReportThread.setAllReport(clms.getAllReport()==1);
     csIndexReportThread.setCsIndexReportInput(csIndexReportInput);
     csIndexReportThread.setUserUuid(uuid);
     HashMap<String, String> headMap = new HashMap<>();
