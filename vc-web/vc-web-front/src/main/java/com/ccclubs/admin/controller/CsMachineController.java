@@ -2,7 +2,6 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.model.CsMachine;
-import com.ccclubs.admin.model.ReportParamList;
 import com.ccclubs.admin.query.CsMachineQuery;
 import com.ccclubs.admin.service.ICsMachineService;
 import com.ccclubs.admin.service.IReportService;

@@ -4,13 +4,14 @@ package com.ccclubs.admin.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class ReportParamList implements Serializable {
+public class ReportParam<T> implements Serializable {
     private static final long serialVersionUID = 7024708906444842724L;
 
+    private T query;
     private List<ReportModel> clms;
     private Integer page=0;
     private Integer rows=10;
-    private Integer isAllReport=0;
+    private Integer allReport =0;
 
     public Integer getPage() {
         return page;
@@ -29,11 +30,11 @@ public class ReportParamList implements Serializable {
     }
 
     public Integer getAllReport() {
-        return isAllReport;
+        return allReport;
     }
 
     public void setAllReport(Integer allReport) {
-        isAllReport = allReport;
+        this.allReport = allReport;
     }
 
     public List<ReportModel> getClms() {
@@ -42,5 +43,13 @@ public class ReportParamList implements Serializable {
 
     public void setClms(List<ReportModel> clms) {
         this.clms = clms;
+    }
+
+    public T getQuery() {
+        return query;
+    }
+
+    public void setQuery(T query) {
+        this.query = query;
     }
 }
