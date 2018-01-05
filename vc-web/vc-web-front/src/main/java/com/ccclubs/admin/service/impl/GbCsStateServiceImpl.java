@@ -6,7 +6,6 @@ import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.util.Tools;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class GbCsStateServiceImpl implements IGbCsStateService {
     public PageInfo<GBMessage> getPage(Object t, int page, int rows) {
         int offset = page == 1 ? 0 : (page - 1) * rows;
         List<GBMessage> list = new ArrayList<>();
-        Set<String> set = redisTemplate.opsForZSet().reverseRangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Integer.MAX_VALUE, offset, rows);
+        Set<String> set = redisTemplate.opsForZSet().reverseRangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE, offset, rows);
         for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
             GBMessage gbMessage = new GBMessage();
             String vin = iterator.next();
