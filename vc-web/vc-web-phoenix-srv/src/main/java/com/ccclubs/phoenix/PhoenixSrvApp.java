@@ -20,8 +20,8 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import java.io.IOException;
 
 @SpringBootApplication
-@Import({PhoenixAutoConfiguration.class,MybatisConfig.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,BatchProperties.class,RedisAutoConfiguration.class})
+@Import({PhoenixAutoConfiguration.class,MybatisConfig.class,BatchProperties.class,RedisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class PhoenixSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PhoenixSrvApp.class);
