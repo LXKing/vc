@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author qsxiaogang
@@ -23,23 +25,24 @@ import java.util.List;
 @Component
 public class HistoryStateUtils extends ConvertUtils {
 
+  //TODO 排除问题的代码请记得及时清理。
+  private static Set<String> csNumberSet=new HashSet(){{
+    add("T6792320");
+    add("T6710126");
+    add("T67D1205");
+    add("T67E2300");
+    add("T67D1110");
+    add("GB005403");
+    add("T6402162");
+  }};
   @Resource
   private RedisTemplate redisTemplate;
 
-//  @Reference(version = "1.0.0")
   @Autowired
   private CarStateHistoryInf carStateHistoryInf;
-  /*
-  @Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
-  private String ip;
-  @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
-  private String port;
 
-  @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
-  private String urlRootPath;*/
 
   private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
-  //private static ConcurrentLinkedQueue concurrentLinkedQueue=new ConcurrentLinkedQueue();
 
   public void saveHistoryData(CsState csState) {
     // TODO:需要判断是否使用Hbase进行存储
@@ -213,6 +216,9 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
+    if (csNumberSet.contains(csStateHistory.getCs_number())){
+      logger.info("嫌疑车机数据："+csStateHistory.toString());
+    }
     return  csStateHistory;
   }
 
