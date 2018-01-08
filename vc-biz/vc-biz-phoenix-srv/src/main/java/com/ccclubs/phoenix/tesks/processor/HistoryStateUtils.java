@@ -1,5 +1,7 @@
 package com.ccclubs.phoenix.tesks.processor;
 
+import com.alibaba.fastjson.JSON;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.tesks.model.CsHistoryState;
@@ -42,7 +44,9 @@ public class HistoryStateUtils extends ConvertUtils {
   private CarStateHistoryInf carStateHistoryInf;
 
 
-  private static Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
+  private static final Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
+
+  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
   public void saveHistoryData(CsState csState) {
     // TODO:需要判断是否使用Hbase进行存储
@@ -217,7 +221,7 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
     if (csNumberSet.contains(csStateHistory.getCs_number())){
-      logger.info("嫌疑车机数据："+csStateHistory.toString());
+      loggerBusiness.info(JSON.toJSONString(csStateHistory));
     }
     return  csStateHistory;
   }

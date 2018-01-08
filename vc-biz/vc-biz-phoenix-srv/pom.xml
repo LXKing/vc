@@ -46,6 +46,11 @@
             <artifactId>vc-biz-common-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-logger</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
     </dependencies>
 
 
