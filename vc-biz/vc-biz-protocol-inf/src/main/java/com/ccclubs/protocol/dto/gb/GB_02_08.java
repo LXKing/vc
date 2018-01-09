@@ -5,6 +5,9 @@ import com.ccclubs.protocol.util.MyBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 可充电储能装置电压数据
+ */
 public class GB_02_08 implements IRealTimeAdditionalItem {
 
   /**

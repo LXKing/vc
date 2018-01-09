@@ -34,6 +34,8 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
             .addPathPatterns("/**")
             //.excludePathPatterns("/oauth/**")
             .excludePathPatterns("/user/**")
+            .excludePathPatterns("/protocol/**")
+            .excludePathPatterns("/monitor/gbState/detail/**")
             .excludePathPatterns("/report/**");
 
     super.addInterceptors(registry);

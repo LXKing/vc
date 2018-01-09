@@ -147,7 +147,7 @@ public class GB_02_01 implements IRealTimeAdditionalItem {
   }
 
   public int getGear() {
-    return gear & 0xFF;
+    return gear & 0xF;
   }
 
   public void setGear(int gear) {

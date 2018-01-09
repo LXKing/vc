@@ -4,10 +4,13 @@ import com.ccclubs.protocol.inf.IGbMessage;
 import com.ccclubs.protocol.util.MyBuffer;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
+import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GBMessage {
+public class GBMessage implements Serializable{
+
+  private static final long serialVersionUID =         1L;
 
   private static final Logger logger = LoggerFactory.getLogger(GBMessage.class);
 
