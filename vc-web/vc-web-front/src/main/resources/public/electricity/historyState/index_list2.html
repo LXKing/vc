@@ -83,15 +83,16 @@
 				});
 			}, function(){});
 		},
-		detail:function(id){
-			showTopWin({
-				  type: 2,
-				  shade: 0.4,
-				  maxmin: true,
-				  area: ['770px', '580px'],
-				  content: "/electricity/historyState/detail.html?id="+id,
-				  zIndex: layer.zIndex //重点1
-			});
+		detail:function(data){
+//			showTopWin({
+//				  type: 2,
+//				  shade: 0.4,
+//				  maxmin: true,
+//				  area: ['770px', '580px'],
+//				  content: "/electricity/historyState/detail.html?id="+id,
+//				  zIndex: layer.zIndex //重点1
+//			});
+      window.open("/electricity/state/monitor.html?hexString=" + data);
 		}
 	};
 
@@ -190,7 +191,7 @@
 							,layEvent = obj.event; 	//获得 lay-event 对应的值
 							var id = data["carGbHistoryId"];
 						  	if(layEvent === 'detail'){
-					      		operate.detail(id)
+					      		operate.detail(data["gbData"])
 					   	  	} else if(layEvent === 'del'){
 					      		operate.del(id)
 					    	} else if(layEvent === 'edit'){
