@@ -153,10 +153,15 @@ public class CsVehicleController {
       return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
 
-    CsVehicle conditionNoVehicle = new CsVehicle();
-    conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
-    if (csVehicleService.selectCount(conditionNoVehicle) > 0) {
-      return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
+    if (!com.ccclubs.protocol.util.StringUtils.empty(data.getCsvCarNo())) {
+      CsVehicle conditionNoVehicle = new CsVehicle();
+      conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
+      if (csVehicleService.selectCount(conditionNoVehicle) > 0) {
+        return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
+      }
+    }
+    {
+      data.setCsvCarNo(null);
     }
 
 //    CsVehicle conditionEngine = new CsVehicle();
@@ -186,11 +191,12 @@ public class CsVehicleController {
       return VoResult.error("30001", String.format("车架号 %s 已存在", data.getCsvVin()));
     }
 
-    if (null != data.getCsvCarNo()) {
+    if (!com.ccclubs.protocol.util.StringUtils.empty(data.getCsvCarNo())) {
       CsVehicle conditionNoVehicle = new CsVehicle();
       conditionNoVehicle.setCsvCarNo(data.getCsvCarNo());
       existVehicleList = csVehicleService.select(conditionNoVehicle);
-      if (existVehicleList.size() > 0 && !existVehicleList.get(0).getCsvId().equals(data.getCsvId())) {
+      if (existVehicleList.size() > 0 && !existVehicleList.get(0).getCsvId()
+          .equals(data.getCsvId())) {
         return VoResult.error("30002", String.format("车牌号 %s 已存在", data.getCsvCarNo()));
       }
     }
