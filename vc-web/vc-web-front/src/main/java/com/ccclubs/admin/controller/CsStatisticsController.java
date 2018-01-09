@@ -4,21 +4,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.resolver.CsStatisticsResolver;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.task.threads.ReportThread;
+import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ccclubs.admin.vo.TableResult;
@@ -48,7 +44,7 @@ public class CsStatisticsController {
 	@Autowired
 	ICsStatisticsService csStatisticsService;
 	@Autowired
-	IReportService reportService;
+	ReportThread reportThread;
 
 	/**
 	 * 获取分页列表数据
@@ -128,48 +124,35 @@ public class CsStatisticsController {
 	/**
 	 * 根据文本检索统计信息并导出。
 	 */
-	@RequestMapping(value="/report", method = RequestMethod.GET)
-	public void getReport(HttpServletResponse res, CsStatisticsQuery query, @RequestParam(defaultValue = "0") Integer page,
-						  @RequestParam(defaultValue = "10") Integer rows){
+	@RequestMapping(value="/report", method = RequestMethod.POST)
+	public VoResult<String> getReport(@RequestBody ReportParam<CsStatisticsQuery> reportParam){
+		List<CsStatistics> list;
+		if (reportParam.getAllReport()==0){
+			PageInfo<CsStatistics> pageInfo = csStatisticsService.getPage(
+					reportParam.getQuery().getCrieria(),
+					reportParam.getPage(),
+					reportParam.getRows());
+			list= pageInfo.getList();
+		}
+		else {
+			list=csStatisticsService.getAllByParam(reportParam.getQuery().getCrieria());
+		}
 
-		PageInfo<CsStatistics> pageInfo = csStatisticsService.getPage(query.getCrieria(), page, rows);
-		List<CsStatistics> list = pageInfo.getList();
 		for(CsStatistics data : list){
 			registResolvers(data);
 		}
+		String uuid = UUID.randomUUID().toString();
+		reportThread.setBaseName("Statistics");
+		reportThread.setList(list);
+		reportThread.setUserUuid(uuid);
+		reportThread.setReportParam(reportParam);
+		logger.info("start running report Statistics thread.");
+		EvManageContext.getThreadPool().execute(reportThread);
 
-
-		OutputStream os = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String dateNowStr = sdf.format(System.currentTimeMillis());
-		/**
-		 * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
-		 * */
-		String fileName="statistics_"+page+"_"+rows+"_"+dateNowStr+".xls";
-		try {
-			res.setHeader("content-type", "application/vnd.ms-excel");
-			res.setContentType("application/vnd.ms-excel");
-			res.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes("UTF-8"),"ISO8859-1"));
-			os = res.getOutputStream();
-			//文件路径
-			ByteArrayOutputStream bytes=null;
-			bytes =reportService.reportStatistics(list);
-			os.write(bytes.toByteArray());
-			os.flush();
-			os.close();
-			logger.info("report a file:" + fileName);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(os!=null){
-					os.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
+		VoResult<String> r = new VoResult<>();
+		r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+		r.setValue(uuid);
+		return r;
 
 
 	}
