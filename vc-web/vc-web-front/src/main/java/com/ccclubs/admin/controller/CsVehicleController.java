@@ -2,12 +2,7 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMappingCrieria;
 import com.ccclubs.admin.entity.CsVehicleCrieria;
-import com.ccclubs.admin.model.CsMachine;
-import com.ccclubs.admin.model.CsMapping;
-import com.ccclubs.admin.model.CsModelMapping;
-import com.ccclubs.admin.model.CsVehicle;
-import com.ccclubs.admin.model.SrvGroup;
-import com.ccclubs.admin.model.SrvUser;
+import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.query.CsVehicleQuery;
 import com.ccclubs.admin.service.ICsMachineService;
 import com.ccclubs.admin.service.ICsMappingService;
@@ -15,6 +10,8 @@ import com.ccclubs.admin.service.ICsModelMappingService;
 import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.admin.service.IReportService;
 import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.task.threads.ReportThread;
+import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
@@ -23,20 +20,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 车辆信息管理Controller
@@ -48,12 +38,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/vehicle")
 public class CsVehicleController {
+  private static Logger logger= LoggerFactory.getLogger(CsVehicleController.class);
 
   @Autowired
   ICsVehicleService csVehicleService;
-
   @Autowired
-  IReportService reportService;
+  ReportThread reportThread;
   @Autowired
   ISrvGroupService srvGroupService;
   @Autowired
@@ -451,51 +441,41 @@ public class CsVehicleController {
   /**
    * 根据文本检索车辆信息并导出。
    */
-  @RequestMapping(value = "/report", method = RequestMethod.GET)
-  public void getReport(HttpServletResponse res, CsVehicleQuery query,
-      @CookieValue("token") String token,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "10") Integer rows) {
+  @RequestMapping(value = "/report", method = RequestMethod.POST)
+  public VoResult<String> getReport(
+          @CookieValue("token") String token, @RequestBody ReportParam<CsVehicleQuery> reportParam) {
 
     SrvUser user = userAccessUtils.getCurrentUser(token);
-    this.addQueryConditionsByUser(user, query);
+    this.addQueryConditionsByUser(user, reportParam.getQuery());
 
-    PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query.getCrieria(), page, rows);
-    List<CsVehicle> list = pageInfo.getList();
+    List<CsVehicle> list;
+    if (reportParam.getAllReport()==0){
+      PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(
+              reportParam.getQuery().getCrieria(),
+              reportParam.getPage(),
+              reportParam.getRows());
+      list= pageInfo.getList();
+    }else {
+      list=csVehicleService.getAllByParam(reportParam.getQuery().getCrieria());
+    }
+
     for (CsVehicle data : list) {
       registResolvers(data);
     }
+    String uuid = UUID.randomUUID().toString();
+    reportThread.setBaseName("Vehicle");
+    reportThread.setList(list);
+    reportThread.setUserUuid(uuid);
+    reportThread.setReportParam(reportParam);
+    logger.info("start running report Vehicle thread.");
+    EvManageContext.getThreadPool().execute(reportThread);
 
-    OutputStream os = null;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String dateNowStr = sdf.format(System.currentTimeMillis());
-    /**
-     * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
-     * */
-    String fileName = "vehicle_" + page + "_" + rows + "_" + dateNowStr + ".xls";
-    try {
-      res.setHeader("content-type", "application/vnd.ms-excel");
-      res.setContentType("application/vnd.ms-excel");
-      res.setHeader("Content-Disposition",
-          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
-      os = res.getOutputStream();
-      //文件路径
-      ByteArrayOutputStream bytes = null;
-      bytes = reportService.reportVehicles(list);
-      os.write(bytes.toByteArray());
-      os.flush();
-      os.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (os != null) {
-          os.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    VoResult<String> r = new VoResult<>();
+    r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+    r.setValue(uuid);
+    return r;
+
+
 
   }
 

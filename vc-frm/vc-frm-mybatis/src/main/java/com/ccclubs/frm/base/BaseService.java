@@ -3,6 +3,8 @@ package com.ccclubs.frm.base;
 
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * service基类
  * @author Joel
@@ -46,6 +48,9 @@ public interface BaseService<T, PK> extends BaseDAO<T, PK>{
 //     */
 //    int deleteById(PK id);
 //
-//    List<T> getAll();
+    List<T> getAll();
+
+
+    List<T> getAllByParam(Object t);
 
 }
