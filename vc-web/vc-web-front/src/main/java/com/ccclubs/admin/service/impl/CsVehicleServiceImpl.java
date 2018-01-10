@@ -7,6 +7,8 @@ import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.frm.base.CrudService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 车辆信息管理的Service实现
  *
@@ -16,7 +18,13 @@ import org.springframework.stereotype.Service;
 public class CsVehicleServiceImpl extends
     CrudService<CsVehicleMapper, CsVehicle, Integer> implements ICsVehicleService {
 
+  @Override
   public int unbindTbox(CsVehicle record) {
     return getDao().unbindTbox(record);
+  }
+
+  @Override
+  public void insertBatchSelective(List<CsVehicle> list) {
+        getDao().insertBatchSelective(list);
   }
 }

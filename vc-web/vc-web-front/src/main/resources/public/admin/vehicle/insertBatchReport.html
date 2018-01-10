@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">
+
 		<title></title>
 		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
 		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
@@ -17,31 +22,34 @@
 	</head>
 <body >
 	<div class="form_content">
-		<a  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/excelTemplate.xls">条件模板下载</a>
-
-		<form  id="uploadForm" enctype="multipart/form-data" action="/uploads">
+		<a  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/excelTemplate.xls">条件模板下载(内)</a>
+		<br/>
+		<br/>
+		<form  class="form-horizontal" id="addform" style="margin:15px;" enctype="multipart/form-data" >
 			<div class="form-group" id="conditionId" style="height:80%;">
 
-				<input id="file_upload"  name="filePic" onchange="fileChange('${base }')"/>　　<!-- 定义change事件,选择文件后触发 -->
+				<input  name="model" value="1" hidden /><!-- model  1=对内 ， 2=对外-->
+
+				<input placeholder="" style="width:30%;"  maxlength="30" size="30" type="file" class="form-control searchinput" id="file_upload"  name="file" /><!-- 定义change事件,选择文件后触发 -->
 				<input type="hidden" name="modelName" value="famoxuke" />     <!-- 项目需求字段,非必须 -->
-				<br/><span style="color: red" id="fileTypeError"></span>　　　　<!-- 文件类型错误回显,此处通过前后端两次验证文件类型 -->
+				<br/><span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
 
 			</div>
 
-		<!--<div class="form-group windowButtonBar">-->
-			<!--<div class="hr-line-dashed"></div>-->
-			<!--<div class="col-sm-10 col-sm-offset-1">-->
-				<!--<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>-->
-				<!--<button class="btn btn-white col-sm-2 col-sm-offset-2" type="reset">清空</button>-->
-				<!--<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">取消</button>-->
-			<!--</div>-->
-		<!--</div>-->
 
+			<div class="form-group windowButtonBar">
+				<div class="hr-line-dashed"></div>
+				<div class="col-sm-10 col-sm-offset-1">
+					<button class="btn btn-primary col-sm-2" type="button" onclick="fileChange()">保存</button>
+					<button class="btn btn-white col-sm-2 col-sm-offset-2" type="reset">清空</button>
+					<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">关闭</button>
+				</div>
+			</div>
 		</form>
 	</div>
-	
+
 	<div class="form_footer"></div>
-	
+
 	<script src="/js/jquery.min.js?v=2.1.4"></script>
 	<script src="/js/tpui-core.js"></script>
 	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
@@ -52,35 +60,36 @@
 	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
     <script src="/js/plugins/validate/messages_zh.min.js"></script>
     <script src="/js/layer/layer.js"></script>
-	
+
 	<script type="text/javascript">
 
-        function fileChange(base){
+
+        function fileChange(){
             $("#fileTypeError").html('');
             var fileName = $('#file_upload').val();　　　　　　　　　　　　　　　　　　//获得文件名称
             var fileType = fileName.substr(fileName.length-4,fileName.length);　　//截取文件类型,如(.xls)
-            if(fileType=='.xls' || fileType=='.doc' || fileType=='.pdf'){　　　　　//验证文件类型,此处验证也可使用正则
+            if(fileType=='xls' || fileType=='xlsx' ){　　　　　//验证文件类型,此处验证也可使用正则
                 $.ajax({
-                    url: getServUrl("/dsf"),　　　　　　　　　　//上传地址
+                    url: "/admin/vehicle/insertBatch",　　　　　　　　　　//上传地址
                     type: 'POST',
-                    data: {
-                        excelFile:  new FormData($('#uploadForm')[0])
-                    },　　　　　　　　　　　　　//表单数据
-
+                    data:   new FormData($('#addform')[0]),
+                    async: false,
+                    cache: false,
+                   contentType: false,
                     processData: false,
                     success:function(data){
                         if(data=='fileTypeError'){
-                            $("#fileTypeError").html('*上传文件类型错误,支持类型: .xsl .doc .pdf');　　//根据后端返回值,回显错误信息
+                            $("#fileTypeError").html('*上传文件类型错误,支持类型: .xls .xlsx');　　//根据后端返回值,回显错误信息
                         }
                         $("input[name='enclosureCode']").attr('value',data);
-                    },
-					error:function (err) {
 
-                    }
+                    },
                 });
+                closeTopWin(true);
             }else{
-                $("#fileTypeError").html('*上传文件类型错误,支持类型: .xls .doc .pdf');
+                $("#fileTypeError").html('*上传文件类型错误,支持类型:.xls .xlsx');
             }
+
         }
 	</script>
 </body>

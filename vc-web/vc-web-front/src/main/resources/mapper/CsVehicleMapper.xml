@@ -24,6 +24,11 @@
 		<result column="csv_status" jdbcType="TINYINT" property="csvStatus" />
 		<result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime" />
 		<result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime" />
+
+		<result column="csv_host" jdbcType="INTEGER" property="csvHost" />
+		<result column="csv_color" jdbcType="INTEGER" property="csvColor" />
+		<result column="csv_machines" jdbcType="VARCHAR" property="csvMachines" />
+
 	</resultMap>
 
 	<update id="unbindTbox" parameterType="com.ccclubs.admin.model.CsVehicle">
@@ -37,4 +42,32 @@
 		where csv_id = #{csvId,jdbcType=INTEGER}
 	</update>
 	
+
+
+
+	<insert id="insertBatchSelective" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into cs_vehicle(
+		csv_access, csv_host, csv_car_no,csv_vin, csv_engine_no,
+		csv_certific, csv_color, csv_model,csv_machine, csv_machines,csv_color_code,csv_bataccu_code,
+		csv_prod_date,csv_landmark,csv_domain,csv_model_code_full,csv_model_code_simple,csv_interior_color_code,csv_status,csv_add_time,
+		csv_update_time
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(
+			#{item.csvAccess,jdbcType=INTEGER}, #{item.csvHost,jdbcType=INTEGER}, #{item.csvCarNo,jdbcType=VARCHAR}, #{item.csvVin,jdbcType=VARCHAR},
+			#{item.csvEngineNo,jdbcType=VARCHAR}, #{item.csvCertific,jdbcType=VARCHAR},#{item.csvColor,jdbcType=TINYINT},
+			#{item.csvModel,jdbcType=INTEGER}, #{item.csvMachine,jdbcType=INTEGER},
+			#{item.csvMachines,jdbcType=INTEGER},#{item.csvColorCode,jdbcType=TINYINT},
+			#{item.csvBataccuCode,jdbcType=VARCHAR}, #{item.csvProdDate,jdbcType=TIMESTAMP},
+			#{item.csvLandmark,jdbcType=VARCHAR},#{item.csvDomain,jdbcType=TINYINT},
+			#{item.csvModelCodeFull,jdbcType=VARCHAR},#{item.csvModelCodeSimple,jdbcType=VARCHAR},
+			#{item.csvInteriorColorCode,jdbcType=VARCHAR},#{item.csvStatus,jdbcType=TINYINT},
+			#{item.csvAddTime,jdbcType=TIMESTAMP},#{item.csvUpdateTime,jdbcType=TIMESTAMP}
+
+			)
+		</foreach>
+	</insert>
+
+
 </mapper>

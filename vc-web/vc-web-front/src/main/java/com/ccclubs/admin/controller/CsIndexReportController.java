@@ -151,7 +151,7 @@ public class CsIndexReportController {
       }
       //System.out.println("时间是"+DateTimeUtil.getDateByTimestemp(csIndexReport.getFacTime(),DateTimeUtil.FORMAT5));
       if (null != csIndexReport.getFacTime()) {
-        csIndexReportCopy.setFacTime(DateTimeUtil.getDateByTimestemp(csIndexReport.getFacTime()));
+        csIndexReportCopy.setFacTime(csIndexReport.getFacTime());
       }
       if (null != csIndexReport.getMaxChargePower()) {
         csIndexReportCopy.setMaxChargePower(csIndexReport.getMaxChargePower().doubleValue());
@@ -161,7 +161,7 @@ public class CsIndexReportController {
       }
       if (null != csIndexReport.getModifyDate()) {
         csIndexReportCopy
-            .setModifyDate(DateTimeUtil.getDateByTimestemp(csIndexReport.getModifyDate()));
+            .setModifyDate(csIndexReport.getModifyDate());
       }
       if (null != csIndexReport.getMonthlyAvgMile()) {
         csIndexReportCopy.setMonthlyAvgMile(csIndexReport.getMonthlyAvgMile().doubleValue());

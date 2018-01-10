@@ -3,6 +3,11 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">
+
 		<title></title>
 		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
 		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
@@ -17,13 +22,14 @@
 	</head>
 <body >
 	<div class="form_content">
-		<a  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/excelTemplate.xls">条件模板下载</a>
+		<a  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/excelTemplate.xls">条件模板下载（外）</a>
 		<br/>
 		<br/>
 		<form  class="form-horizontal" id="addform" style="margin:15px;" enctype="multipart/form-data" >
 			<div class="form-group" id="conditionId" style="height:80%;">
 
-				<input placeholder="" style="width:30%;"  maxlength="10" size="10" type="file" class="form-control searchinput" id="file_upload"  name="file"  />　　<!-- 定义change事件,选择文件后触发 -->
+				<input  name="model" value="2" hidden /><!-- model  1=对内 ， 2=对外 -->
+				<input placeholder="" style="width:30%;"  maxlength="30" size="30" type="file" class="form-control searchinput" id="file_upload"  name="file" /><!-- 定义change事件,选择文件后触发 -->
 				<input type="hidden" name="modelName" value="famoxuke" />     <!-- 项目需求字段,非必须 -->
 				<br/><span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
 
@@ -75,13 +81,12 @@
                         }
                         $("input[name='enclosureCode']").attr('value',data);
                     },
-					error:function (err) {
-
-                    }
                 });
+                closeTopWin(true);
             }else{
                 $("#fileTypeError").html('*上传文件类型错误,支持类型:.xls .xlsx');
             }
+
         }
 	</script>
 </body>
