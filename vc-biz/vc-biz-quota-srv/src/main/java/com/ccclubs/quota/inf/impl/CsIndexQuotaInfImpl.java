@@ -1,19 +1,16 @@
 package com.ccclubs.quota.inf.impl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.annotation.Resource;
 
+import com.ccclubs.quota.orm.mapper.*;
+import com.ccclubs.quota.orm.model.*;
 import com.ccclubs.quota.util.DBHelperZt;
 import com.ccclubs.quota.util.DateTimeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -24,30 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
-import com.ccclubs.quota.orm.mapper.CsIndexExceptBizMapper;
-import com.ccclubs.quota.orm.mapper.CsIndexExceptListMapper;
-import com.ccclubs.quota.orm.mapper.CsIndexMetaMapper;
-import com.ccclubs.quota.orm.mapper.CsIndexOutrangeListMapper;
-import com.ccclubs.quota.orm.mapper.CsIndexReportMapper;
-import com.ccclubs.quota.orm.mapper.CsVehicleMachineRelMapper;
-import com.ccclubs.quota.orm.mapper.DriveMilesBizQuotaMapper;
-import com.ccclubs.quota.orm.mapper.SocMilesBizQuotaMapper;
-import com.ccclubs.quota.orm.model.CsIndexExceptBiz;
-import com.ccclubs.quota.orm.model.CsIndexExceptBizExample;
-import com.ccclubs.quota.orm.model.CsIndexExceptList;
-import com.ccclubs.quota.orm.model.CsIndexExceptListExample;
-import com.ccclubs.quota.orm.model.CsIndexMeta;
-import com.ccclubs.quota.orm.model.CsIndexMetaExample;
-import com.ccclubs.quota.orm.model.CsIndexOutrangeList;
-import com.ccclubs.quota.orm.model.CsIndexOutrangeListExample;
-import com.ccclubs.quota.orm.model.CsIndexReport;
-import com.ccclubs.quota.orm.model.CsIndexReportExample;
-import com.ccclubs.quota.orm.model.CsVehicleMachineRel;
-import com.ccclubs.quota.orm.model.CsVehicleMachineRelExample;
-import com.ccclubs.quota.orm.model.DriveMilesBizQuota;
-import com.ccclubs.quota.orm.model.DriveMilesBizQuotaExample;
-import com.ccclubs.quota.orm.model.SocMilesBizQuota;
-import com.ccclubs.quota.orm.model.SocMilesBizQuotaExample;
 import com.ccclubs.quota.vo.CsIndexReportInput;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -72,6 +45,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	private CsIndexReportMapper csIndexReportMapper;
 	@Resource
 	private CsVehicleMachineRelMapper csVehicleMachineRelMapper;
+
+	@Resource
+	private CsMiddleReportMapper csMiddleReportMapper;
 
 	@Autowired
 	private  DBHelperZt  dbHelperZt;
@@ -369,7 +345,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 						rdMap.put(csVin, record);
 					}else{
 						record = rdMap.get(csVin);
-					} 
+					}
 				}
 			}
 		}
@@ -505,7 +481,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 				record.setCumulativeCharge(soc.getCumulativeCharge());
 			}
 		}
-		
+
 		Iterator<Entry<String, CsIndexReport>> it = csMap.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<String, CsIndexReport> entry = it.next();
@@ -515,7 +491,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		}
 		//
 	}
-	
+
 	private List<Float> random(int len, int lower ,int upper) {
 		RandomDataGenerator rd = new RandomDataGenerator();
 		rd.reSeedSecure(447865003005179574L);
@@ -524,7 +500,7 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		while(len > jg){
 			jg = jg * 10;
 			bs = bs * 10;
-		} 
+		}
 		lower = lower * bs;
 		upper = upper * bs;
 		List<Float> list = new ArrayList<Float>();
@@ -625,87 +601,6 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	}
 
 	/**
-	 * 获取车辆指标存在vin/不存在vin的数据
-	 * @param readExcelList
-	 * @return
-	 */
-
-	public Map<String,CsIndexReport>  ztReportExportTempTemp(List<CsIndexReport> readExcelList) {
-		//1.先获取到前端传进来的条件
-		readExcelList.remove(0);
-		//从excel获取到所有条件的vin码
-		List<String>vinList=new ArrayList<>();
-		for (CsIndexReport csIndexReport:readExcelList){
-			vinList.add(csIndexReport.getCsVin());
-		}
-		//
-		CsIndexReportExample example = new CsIndexReportExample();
-		CsIndexReportExample.Criteria criteria=example.createCriteria();
-		criteria.andCsVinIn(vinList);
-		List<CsIndexReport> exlist=new ArrayList<>();
-		if(vinList!=null&&vinList.size()>0){
-			//根据条件查询的数据
-			exlist = csIndexReportMapper.selectByExample(example);
-		}
-		//---上线改掉
-		for (CsIndexReport csIndexReport:exlist){
-			BigDecimal  cumulativeMileage=csIndexReport.getCumulativeMileage();
-			if(cumulativeMileage.intValue()<10){
-				csIndexReport.setCumulativeCharge(null);
-				csIndexReport.setMonthlyAvgMile(null);
-				csIndexReport.setElectricRange(null);
-				csIndexReport.setPowerConsumePerHundred(null);
-				csIndexReport.setMinChargeTime(null);
-				csIndexReport.setMaxChargePower(null);
-				csIndexReport.setAvgDriveTimePerDay(null);
-				csIndexReport.setCumulativeMileage(null);
-			}else {
-				BigDecimal powerHred=csIndexReport.getPowerConsumePerHundred();
-				//累计充电量
-				float ff= cumulativeMileage.floatValue()/(float) 100*powerHred.floatValue();
-				BigDecimal   b   =   new   BigDecimal(ff);
-				BigDecimal   f1   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP);
-				csIndexReport.setCumulativeCharge(f1);
-				//月均行驶里程、
-				float avgf= cumulativeMileage.floatValue()/(float)10;
-				BigDecimal   bb   =   new   BigDecimal(avgf);
-				BigDecimal   fLL   =   b.setScale(2,   BigDecimal.ROUND_HALF_UP);
-				csIndexReport.setMonthlyAvgMile(fLL);
-			}
-		}
-		//------
-		Map<String,CsIndexReport> dateMap=new HashMap<>();
-		//
-		//修正数据部分
-		//先找出剩余三千的车辆cs_number
-		List<String>shengYuVinList=new ArrayList<>();
-		for(String str:vinList){
-			boolean flag=false;
-			for( CsIndexReport csIndexReport:  exlist){
-				if(str.equals(csIndexReport.getCsVin())){
-					flag=true;
-					break;
-				}
-			}
-			if(!flag){
-				shengYuVinList.add(str);
-			}
-		}
-		//
-		dbHelperZt.getDBConnect();
-		List<CsIndexReport> list=dbHelperZt.getZtExceptionData(shengYuVinList);
-		dbHelperZt.dbClose();
-		//
-		exlist.addAll(list);
-		for(CsIndexReport csIndexReport: exlist){
-			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
-		}
-		return dateMap;
-	}
-
-
-
-	/**
 	 * ***
 	 * ***************通过当前里程模拟各项指标数据***************
 	 * @return
@@ -731,9 +626,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		//此条数据修改时间
 		long modifyDate;
 		if(exlist!=null&&exlist.size()>0){
-			modifyDate=DateTimeUtil.date2UnixFormat(exlist.get(0).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
+			modifyDate=exlist.get(0).getModifyDate().getTime();
 			for(int i=1 ;i<exlist.size();i++){
-				long tempTime=DateTimeUtil.date2UnixFormat(exlist.get(i).getModifyDate(),"yyyy-MM-dd HH:mm:ss");
+				long tempTime=exlist.get(i).getModifyDate().getTime();
 				if(modifyDate>tempTime){
 					modifyDate=tempTime;
 				}
@@ -745,6 +640,9 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		int dayInterval= DateTimeUtil.daysBetween(modifyDate,System.currentTimeMillis());
 		//取最新的obd里程，并统计各项指标
 		if(dayInterval>dbHelperZt.getUpdateInterval()){
+			CsMiddleReportExample middleExample=new CsMiddleReportExample();
+			CsMiddleReportExample.Criteria middleCriteria=middleExample.createCriteria();
+
 			dbHelperZt.getDBConnect();
 			//返回最新的指标数据并入库
 			dbHelperZt.getZtCurrentOBDTemp(exlist);
@@ -758,7 +656,6 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 		}
 		return dateMap;
 	}
-
 
 	/**
 	 * 多线程处理：更新table
