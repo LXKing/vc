@@ -12,12 +12,21 @@ spring:
     host: 127.0.0.1
   data:
     mongodb:
-      host: 114.55.24.97
-      port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
-      authenticationDatabase: history
+      history:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: history
+      remote:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: history
+
 dubbo:
   scan:
     annotationPackage: com.ccclubs

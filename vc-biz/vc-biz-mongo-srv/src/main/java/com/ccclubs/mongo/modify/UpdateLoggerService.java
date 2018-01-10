@@ -1,7 +1,7 @@
 package com.ccclubs.mongo.modify;
 
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
-import com.ccclubs.mongo.orm.model.CsLogger;
+import com.ccclubs.mongo.orm.model.history.CsLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -6,7 +6,7 @@
 		<artifactId>vc-frm</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<artifactId>vc-frm-mongodb</artifactId>
+	<artifactId>vc-frm-mongo</artifactId>
 	<dependencies>
 		<!-- 增加mongodb支持 -->
 		<dependency>

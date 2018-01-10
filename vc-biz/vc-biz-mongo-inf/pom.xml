@@ -18,12 +18,7 @@
             <version>${frm.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-pub-orm</artifactId>
-            <version>${biz.version}</version>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>

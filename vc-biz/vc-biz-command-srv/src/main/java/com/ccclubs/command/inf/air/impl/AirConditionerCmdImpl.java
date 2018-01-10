@@ -17,7 +17,7 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -25,7 +25,6 @@ import com.ccclubs.pub.orm.model.CsStructWithBLOBs;
 import com.ccclubs.pub.orm.model.CsVehicle;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -33,7 +32,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**

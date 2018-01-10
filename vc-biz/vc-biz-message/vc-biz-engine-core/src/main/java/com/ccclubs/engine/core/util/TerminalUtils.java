@@ -5,10 +5,7 @@ import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
-import com.ccclubs.mongo.orm.model.CsAlarm;
-import com.ccclubs.mongo.orm.model.CsHistoryCan;
-import com.ccclubs.mongo.orm.model.CsHistoryState;
-import com.ccclubs.mongo.orm.model.CsLogger;
+import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
@@ -73,23 +70,6 @@ public class TerminalUtils {
   }
 
   /**
-   * 设置当前状态 CsaAccess ，CsaHost，CsaCar
-   */
-  public CsAlarm setCsAlarm(CsVehicle csVehicle, CsMachine csMachine) {
-    CsAlarm csAlarm = new CsAlarm();
-    if (csVehicle == null) {
-      csAlarm.setCsaAccess(csMachine.getCsmAccess() == null ? 0 : csMachine.getCsmAccess());
-      csAlarm.setCsaHost(csMachine.getCsmHost() == null ? 0 : csMachine.getCsmHost());
-      csAlarm.setCsaCar(0);
-    } else {
-      csAlarm.setCsaAccess(csMachine.getCsmAccess());
-      csAlarm.setCsaHost(csMachine.getCsmHost());
-      csAlarm.setCsaCar(csVehicle.getCsvId());
-    }
-    return csAlarm;
-  }
-
-  /**
    * 设置当前状态 CssAccess ，CssHost，CssCar
    */
   public CsState setCsStatus(CsVehicle csVehicle, CsMachine csMachine) {
@@ -109,23 +89,6 @@ public class TerminalUtils {
   }
 
   /**
-   * 设置历史状态 CshsAccess ，CshsHost，CshsCar
-   */
-  public CsHistoryState setCsHistoryStatus(CsVehicle csVehicle, CsMachine csMachine) {
-    CsHistoryState historyState = new CsHistoryState();
-    if (csVehicle == null) {
-      historyState.setCshsAccess(csMachine.getCsmAccess() == null ? 0 : csMachine.getCsmAccess());
-      historyState.setCshsHost(csMachine.getCsmHost() == null ? 0 : csMachine.getCsmHost());
-      historyState.setCshsCar(0);
-    } else {
-      historyState.setCshsAccess(csMachine.getCsmAccess());
-      historyState.setCshsHost(csMachine.getCsmHost());
-      historyState.setCshsCar(csVehicle.getCsvId());
-    }
-    return historyState;
-  }
-
-  /**
    * 设置CAN状态 CscAccess ，CscHost，CscCar
    */
   public CsCan setCsCan(CsVehicle csVehicle, CsMachine csMachine) {
@@ -141,26 +104,6 @@ public class TerminalUtils {
       csCan.setCscCar(csVehicle.getCsvId());
       // TODO:后期需要关联 车型
       csCan.setCscModel((short) 0);
-    }
-    return csCan;
-  }
-
-  /**
-   * 设置历史CAN状态 CshcAccess ，CshcHost，CshcCar
-   */
-  public CsHistoryCan setCsHistoryCan(CsVehicle csVehicle, CsMachine csMachine) {
-    CsHistoryCan csCan = new CsHistoryCan();
-    if (csVehicle == null) {
-      csCan.setCshcAccess(csMachine.getCsmAccess() == null ? 0 : csMachine.getCsmAccess());
-      csCan.setCshcHost(csMachine.getCsmHost() == null ? 0 : csMachine.getCsmHost());
-      csCan.setCshcCar(0);
-      csCan.setCshcModel((short) 0);
-    } else {
-      csCan.setCshcAccess(csMachine.getCsmAccess());
-      csCan.setCshcHost(csMachine.getCsmHost());
-      csCan.setCshcCar(csVehicle.getCsvId());
-      // TODO:后期需要关联 车型
-      csCan.setCshcModel((short) 0);
     }
     return csCan;
   }

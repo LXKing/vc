@@ -1,104 +1,161 @@
 package com.ccclubs.mongo.orm.dao.impl;
 
+import com.ccclubs.frm.mongo.constants.MongoConstants;
 import com.ccclubs.mongo.orm.dao.BaseDao;
+
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import javax.annotation.Resource;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+/**
+ * baseDao
+ *
+ * @author jianghaiyang
+ * @create 2017-08-08
+ **/
 @Component
 public class BaseDaoImpl<T> implements BaseDao<T> {
 
-  private Class<T> clazz;
+    private Class<T> clazz;
 
-  private Class<T> getClazz() {
-    if (this.clazz == null) {
-      ParameterizedType type = (ParameterizedType) getClass()
-          .getGenericSuperclass();
-      this.clazz = ((Class) type.getActualTypeArguments()[0]);
+    private Class<T> getClazz() {
+        if (this.clazz == null) {
+            ParameterizedType type = (ParameterizedType) getClass()
+                    .getGenericSuperclass();
+            this.clazz = ((Class) type.getActualTypeArguments()[0]);
+        }
+        return this.clazz;
     }
-    return this.clazz;
-  }
 
-  @Autowired
-  private MongoTemplate mongoTemplate;
+    @Autowired
+    @Qualifier("historyMongoTemplate")
+    private MongoTemplate historyMongoTemplate;
 
-  public List<T> list(Query query) {
-    return this.mongoTemplate.find(query, this.getClazz());
-  }
+    @Autowired
+    @Qualifier("remoteMongoTemplate")
+    private MongoTemplate remoteMongoTemplate;
 
-  public T findOne(Query query) {
-    return this.mongoTemplate.findOne(query, this.getClazz());
-  }
-
-  public void update(Query query, Update update) {
-    if (null != update) {
-      update.set("lastModifiedDate", DateTime.now());
+    @Override
+    public List<T> list(Query query) {
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                return this.historyMongoTemplate.find(query, this.getClazz());
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                return this.remoteMongoTemplate.find(query, this.getClazz());
+            default:
+                return this.historyMongoTemplate.find(query, this.getClazz());
+        }
     }
-    mongoTemplate.findAndModify(query, update, this.getClazz());
-  }
 
-
-  public T save(T entity) {
-    try {
-      mongoTemplate.insert(entity);
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage());
+    @Override
+    public T findOne(Query query) {
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                return this.historyMongoTemplate.findOne(query, this.getClazz());
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                return this.remoteMongoTemplate.findOne(query, this.getClazz());
+            default:
+                return this.historyMongoTemplate.findOne(query, this.getClazz());
+        }
     }
-    return entity;
-  }
 
-  /**
-   * 通过id来加载数据对象
-   */
-  public T findById(Object id) {
-    return mongoTemplate.findById(id, this.getClazz());
-  }
+    @Override
+    public void update(Query query, Update update) {
+        if (null != update) {
+            update.set("lastModifiedDate", DateTime.now());
+        }
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                this.historyMongoTemplate.findAndModify(query, update, this.getClazz());
+                break;
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                this.remoteMongoTemplate.findAndModify(query, update, this.getClazz());
+                break;
+            default:
+                this.historyMongoTemplate.findAndModify(query, update, this.getClazz());
+                break;
+        }
+    }
 
-  /**
-   * 更新我们的实体类
-   */
-//  public void update(T entry) {
-//    try {
-//      Object id = BeanUtils.getProperty(entry, "id");
-//
-//      final Update update = new Update();
-//      Field[] fields = this.getClazz().getDeclaredFields();
-//      for (Field field : fields) {
-//        String fieldName = field.getName();
-//        if (!field.isAnnotationPresent(AutomaticSequence.class) && !field.isAnnotationPresent(
-//            Id.class)&&!field.isAnnotationPresent(Version.class)&&!"serialVersionUID".equals(fieldName)) {
-//          update.set(fieldName, BeanUtils.getProperty(entry, fieldName));
-//        }
-//      }
-//
-//      this.mongoTemplate.updateFirst(
-//          new Query(Criteria.where("_id").is(id)), update,
-//          this.getClazz());
-//    } catch (Exception e) {
-//      throw new RuntimeException(e.getMessage());
-//    }
-//  }
-  public List<T> list() {
-    return this.mongoTemplate.findAll(getClazz());
-  }
+    @Override
+    public T save(T entity) {
+        String packageName = this.clazz.getPackage().getName();
+        try {
+            switch (packageName) {
+                case MongoConstants.HISTORY_PACKAGE_SCAN:
+                    this.historyMongoTemplate.insert(entity);
+                    break;
+                case MongoConstants.REMOTE_PACKAGE_SCAN:
+                    this.remoteMongoTemplate.insert(entity);
+                    break;
+                default:
+                    this.historyMongoTemplate.insert(entity);
+                    break;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return entity;
+    }
 
-  public void deleteById(Object id) {
-    mongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
-        this.getClazz());
-  }
+    /**
+     * 通过id来加载数据对象
+     */
+    @Override
+    public T findById(Object id) {
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                return this.historyMongoTemplate.findById(id, this.getClazz());
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                return this.remoteMongoTemplate.findById(id, this.getClazz());
+            default:
+                return this.historyMongoTemplate.findById(id, this.getClazz());
+        }
+    }
 
-  public MongoTemplate getMongoTemplate() {
-    return mongoTemplate;
-  }
+    @Override
+    public List<T> list() {
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                return this.historyMongoTemplate.findAll(getClazz());
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                return this.remoteMongoTemplate.findAll(getClazz());
+            default:
+                return this.historyMongoTemplate.findAll(getClazz());
+        }
 
-  public void setMongoTemplate(MongoTemplate mongoTemplate) {
-    this.mongoTemplate = mongoTemplate;
-  }
+    }
+
+    @Override
+    public void deleteById(Object id) {
+        String packageName = this.clazz.getPackage().getName();
+        switch (packageName) {
+            case MongoConstants.HISTORY_PACKAGE_SCAN:
+                this.historyMongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
+                        this.getClazz());
+                break;
+            case MongoConstants.REMOTE_PACKAGE_SCAN:
+                this.remoteMongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
+                        this.getClazz());
+                break;
+            default:
+                this.historyMongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
+                        this.getClazz());
+                break;
+        }
+    }
 }

@@ -2,7 +2,6 @@ package com.ccclubs.command.inf.update.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONArray;
-import com.ccclubs.command.dto.PowerModeOutput;
 import com.ccclubs.command.dto.ReturnCheckInput;
 import com.ccclubs.command.dto.ReturnCheckOutput;
 import com.ccclubs.command.inf.update.ReturnCheckInf;
@@ -16,7 +15,7 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
 import com.ccclubs.pub.orm.model.CsMachine;

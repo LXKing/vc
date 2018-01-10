@@ -12,7 +12,7 @@ import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
 import com.ccclubs.mongo.modify.UpdateRemoteService;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_03;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
