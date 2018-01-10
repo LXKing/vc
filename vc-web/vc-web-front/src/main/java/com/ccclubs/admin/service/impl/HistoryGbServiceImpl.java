@@ -86,9 +86,9 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
             historyGb.setCsProtocol(carGb.getCs_protocol());
             historyGb.setCsVerify(carGb.getCs_verify());
             historyGb.setCsVin(carGb.getCs_vin());
-            if (null!=carGb.getCurrent_time()) {
+           /* if (null!=carGb.getCurrent_time()) {
                 historyGb.setCurrentTime(new Date(carGb.getCurrent_time()));
-            }
+            }*/
             historyGb.setGbData(carGb.getGb_data());
             historyGb.setGbType(carGb.getGb_type());
 

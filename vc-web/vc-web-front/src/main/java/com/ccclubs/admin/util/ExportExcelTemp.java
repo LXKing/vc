@@ -262,11 +262,11 @@ public class ExportExcelTemp<T> implements Serializable {
         Iterator<T> it = dataset.iterator();
         int index = 0;
         Field[] srcfield=null;
+        boolean haveResolvers=false;
         while (it.hasNext()) {
             index++;
             row = sheet.createRow(index);
             T t = it.next();
-            boolean haveResolvers=false;
             if (null==srcfield){
                 srcfield=new Field[headers.length];
                 try {

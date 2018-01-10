@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/report")
 public class ReportController {
 
-  //Fixme 后期请将此对象存储在redis中。以便加强程序健壮性。
-  //public static final Map<String,String> ossFileMap=new HashMap<>();
   private static final Logger logger = LoggerFactory.getLogger(ReportController.class);
   @Autowired
   IReportService reportService;

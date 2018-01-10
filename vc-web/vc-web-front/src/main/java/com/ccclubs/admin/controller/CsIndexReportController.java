@@ -1,34 +1,29 @@
 package com.ccclubs.admin.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.aliyun.oss.OSSClient;
 import com.ccclubs.admin.model.CsIndexReport;
-import com.ccclubs.admin.model.ReportModel;
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.CsIndexReportQuery;
 import com.ccclubs.admin.resolver.CsIndexReportResolver;
 import com.ccclubs.admin.service.ICsIndexReportService;
 import com.ccclubs.admin.service.IReportService;
-import com.ccclubs.admin.task.threads.CsIndexReportThread;
+import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
+import com.ccclubs.admin.util.ReportUtil;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.quota.inf.CsIndexQuotaInf;
 import com.ccclubs.quota.vo.CsIndexReportInput;
 import com.github.pagehelper.PageInfo;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * 指标统计Controller
@@ -50,11 +45,13 @@ public class CsIndexReportController {
 
   @Reference(version = "1.0.0")
   private CsIndexQuotaInf csIndexQuotaInf;
+
   @Autowired
   IReportService reportService;
 
   @Autowired
-  private OSSClient ossClient;
+  ReportThread reportThread;
+
 
 
   /**
@@ -198,19 +195,44 @@ public class CsIndexReportController {
     }
     csIndexReportInput.setPageNum(reportParam.getPage());
     csIndexReportInput.setPageSize(reportParam.getRows());
+    PageInfo<com.ccclubs.quota.orm.model.CsIndexReport> pageInfoFromQuota = null;
+    List<com.ccclubs.quota.orm.model.CsIndexReport> csIndexReportFromQuotaList = null;
+    if (reportParam.getAllReport()==0) {
+      //logger.info("准备查询数据库所有部分指标信息。");
+      pageInfoFromQuota = csIndexQuotaInf.bizQuota(csIndexReportInput);
+      csIndexReportFromQuotaList = pageInfoFromQuota.getList();
+    } else {
+      //logger.info("准备查询数据库所有指标信息。");
+      csIndexReportFromQuotaList = csIndexQuotaInf.bizQuotaAll(csIndexReportInput);
+      //logger.info("查询所有指标完成"+csIndexReportFromQuotaList.size());
+    }
+
+    //PageInfo<CsIndexReport> pageInfo =new PageInfo<>();
+    //copyPageInfo(pageInfo,pageInfoFromQuota);
+
+    List<com.ccclubs.admin.model.CsIndexReport> list = new ArrayList<>();//pageInfo.getList();
+    if (null != csIndexReportFromQuotaList && csIndexReportFromQuotaList.size() > 0) {
+      for (int i = 0; i < csIndexReportFromQuotaList.size(); i++) {
+        com.ccclubs.admin.model.CsIndexReport csIndexReport = new com.ccclubs.admin.model.CsIndexReport();
+        CsIndexReportController
+                .dealCsIndexReportFromQuotaToThis(csIndexReport, csIndexReportFromQuotaList.get(i));
+        list.add(csIndexReport);
+      }
+      logger.info("run dealCsIndexReportFromQuotaToThis done. deal data count:"+csIndexReportFromQuotaList.size());
+    }
+
+    for (CsIndexReport data : list) {
+      registResolvers(data);
+    }
+
 
     String uuid = UUID.randomUUID().toString();
-    CsIndexReportThread csIndexReportThread = CsIndexReportThread.getFromApplication();
-    csIndexReportThread.setAllReport(reportParam.getAllReport() == 1);
-    csIndexReportThread.setCsIndexReportInput(csIndexReportInput);
-    csIndexReportThread.setUserUuid(uuid);
-    HashMap<String, String> headMap = new HashMap<>();
-    for (ReportModel reportModel : reportParam.getClms()) {
-      headMap.put(reportModel.getField(), reportModel.getTitle());
-    }
-    csIndexReportThread.setHeadMap(headMap);
+    reportThread.setBaseName("IndexReport");
+    reportThread.setList(list);
+    reportThread.setUserUuid(uuid);
+    reportThread.setReportParam(reportParam);
     logger.info("start running report CsIndexReport thread.");
-    EvManageContext.getThreadPool().execute(csIndexReportThread);
+    EvManageContext.getThreadPool().execute(reportThread);
 
     VoResult<String> r = new VoResult<>();
     r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
