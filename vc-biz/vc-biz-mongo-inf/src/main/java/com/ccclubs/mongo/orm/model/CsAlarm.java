@@ -4,6 +4,7 @@ import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * 警报
@@ -11,6 +12,7 @@ import java.util.Date;
  * @author jianghaiyang
  * @create 2017-08-08
  **/
+@Document(collection = "CsAlarm")
 public class CsAlarm extends AbstractDocumentOld implements Serializable {
     @AutomaticSequence
     private Long csaId;

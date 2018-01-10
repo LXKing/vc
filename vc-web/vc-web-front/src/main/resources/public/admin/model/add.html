@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>车型名称</dt>
+					<dd>
+					<input name="csmName" placeholder="" class="form-control" >
+					<label id="csmName-error" class="error" for="csmName"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型标识</dt>
+					<dd>
+					<input name="csmFlag" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>动力类型</dt>
+					<dd>
+					<input name="csmType" placeholder="" class="form-control searchinput" dataWhere="csm_type" dataUrl="/base/dict/query">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>变速箱类型</dt>
+					<dd>
+					<input name="csmFile" placeholder="" class="form-control searchinput" dataWhere="csm_file" dataUrl="/base/dict/query">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车辆种类</dt>
+					<dd>
+					<input name="csmCatagory" placeholder="" class="form-control searchinput" dataWhere="csm_catagory" dataUrl="/base/dict/query">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>油箱容量(L)</dt>
+					<dd>
+					<input name="csmTankCapacity" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>电池容量(KW.H)</dt>
+					<dd>
+					<input name="csmBatteryCapacity" placeholder="" class="form-control" >
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态</dt>
+					<dd>
+					<input name="csmStatus" placeholder="" class="form-control searchinput" dataWhere="status" dataUrl="/base/dict/query">
+					<label id="csmStatus-error" class="error" for="csmStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+		</div>
+		
+		<div class="form-group windowButtonBar">
+			<div class="hr-line-dashed"></div>
+			<div class="col-sm-10 col-sm-offset-1">
+				<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>
+				<button class="btn btn-white col-sm-2 col-sm-offset-2" type="reset">清空</button>
+				<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">关闭</button>
+			</div>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+				rules:{
+				"csmName":{
+					"maxlength":32,
+					"required":true
+				},
+				"csmStatus":{
+					"maxlength":4,
+					"digits":true,
+					"required":true
+				},
+				"csmId":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csmFlag":{
+					"maxlength":32
+				},
+				"csmBatteryCapacity":{
+					"number":true
+				},
+				"csmType":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csmCatagory":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csmTankCapacity":{
+					"number":true
+				},
+				"csmFile":{
+					"maxlength":4,
+					"digits":true
+				}
+			}
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/admin/model/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				},
+				submit:function(){
+					var queryJson = getFormData(this.form);
+			     	console.log("validate success! ===>"+queryJson);
+					ajaxRequest(this.url, "POST", queryJson, function(json) {
+						console.log(json);
+						closeTopWin(true);
+					});
+				}
+			};
+			
+			define.init();
+		});
+	</script>
+</body>

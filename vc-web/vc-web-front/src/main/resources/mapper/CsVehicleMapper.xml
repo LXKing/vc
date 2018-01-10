@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.CsVehicleMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsVehicle">
+		<result column="csv_id" jdbcType="INTEGER" property="csvId" />
+		<result column="csv_access" jdbcType="INTEGER" property="csvAccess" />
+		<result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo" />
+		<result column="csv_vin" jdbcType="VARCHAR" property="csvVin" />
+		<result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo" />
+		<result column="csv_certific" jdbcType="VARCHAR" property="csvCertific" />
+		<result column="csv_model" jdbcType="INTEGER" property="csvModel" />
+		<result column="csv_machine" jdbcType="INTEGER" property="csvMachine" />
+		<result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode" />
+		<result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode" />
+		<result column="csv_prod_date" jdbcType="DATE" property="csvProdDate" />
+		<result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark" />
+		<result column="csv_domain" jdbcType="TINYINT" property="csvDomain" />
+		<result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull" />
+		<result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple" />
+		<result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode" />
+		<result column="csv_status" jdbcType="TINYINT" property="csvStatus" />
+		<result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime" />
+		<result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime" />
+	</resultMap>
+
+	<update id="unbindTbox" parameterType="com.ccclubs.admin.model.CsVehicle">
+		update cs_vehicle
+		<set>
+			csv_machine = NULL,
+			<if test="csvUpdateTime != null">
+				csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where csv_id = #{csvId,jdbcType=INTEGER}
+	</update>
+	
+</mapper>

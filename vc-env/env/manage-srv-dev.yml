@@ -1,0 +1,71 @@
+server:
+  port: 11119
+
+druid:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  initialSize: 2
+  maxActive: 4
+  maxIdle: 2
+  minIdle: 1
+  maxWait: 60000
+  timeBetweenEvictionRunsMillis: 3000
+  minEvictableIdleTimeMillis: 300000
+  maxPoolPreparedStatementPerConnectionSize: 20
+
+mybatis:
+  scan:
+    basePackage: com.ccclubs.**.mapper
+
+jasypt:
+    encryptor:
+        bean: encryptorBean
+        password: 123456
+spring:
+  redis:
+    host: 127.0.0.1
+  data:
+    mongodb:
+      host: 114.55.24.97
+      port: 3717
+      username: zkj_user
+      password: zkj2017
+      database: history
+      authenticationDatabase: history
+
+
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.manage
+  application:
+    name: srv
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+    port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+  consumer:
+    timeout: 120000
+    check: false
+  monitor:
+    protocol: registry
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  expiration: 1800
+  route:
+    authentication:
+      path: auth
+      refresh: refresh

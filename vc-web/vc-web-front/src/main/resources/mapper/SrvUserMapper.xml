@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.SrvUserMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.SrvUser">
+		<result column="su_id" jdbcType="INTEGER" property="suId" />
+		<result column="su_host" jdbcType="VARCHAR" property="suHost" />
+		<result column="su_group" jdbcType="BIGINT" property="suGroup" />
+		<result column="su_username" jdbcType="VARCHAR" property="suUsername" />
+		<result column="su_password" jdbcType="VARCHAR" property="suPassword" />
+		<result column="su_real_name" jdbcType="VARCHAR" property="suRealName" />
+		<result column="su_mobile" jdbcType="VARCHAR" property="suMobile" />
+		<result column="su_shortcut" jdbcType="VARCHAR" property="suShortcut" />
+		<result column="su_add_time" jdbcType="TIMESTAMP" property="suAddTime" />
+		<result column="su_last_time" jdbcType="TIMESTAMP" property="suLastTime" />
+		<result column="su_last_ip" jdbcType="VARCHAR" property="suLastIp" />
+		<result column="su_status" jdbcType="SMALLINT" property="suStatus" />
+	</resultMap>
+	
+	
+</mapper>

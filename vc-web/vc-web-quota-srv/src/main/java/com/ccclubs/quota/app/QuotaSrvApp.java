@@ -2,6 +2,7 @@ package com.ccclubs.quota.app;
 
 import java.io.IOException;
 
+import com.ccclubs.frm.mongodb.config.MongoConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,11 +15,12 @@ import org.springframework.core.io.support.ResourcePropertySource;
 
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
- 
+
 @SpringBootApplication
-@Import({RedisAutoConfiguration.class, MybatisConfig.class})
+@Import({RedisAutoConfiguration.class, MybatisConfig.class, MongoConfig.class})
 public class QuotaSrvApp extends SpringBootServletInitializer {
 	private static final Logger logger = LoggerFactory.getLogger(QuotaSrvApp.class);
+
     /** war打包用，相当于web.xml配置 */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -35,5 +37,6 @@ public class QuotaSrvApp extends SpringBootServletInitializer {
 		
 		//Thread.sleep(100000000000000000L);
     }
+
 
 }

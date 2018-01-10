@@ -3,6 +3,7 @@ package com.ccclubs.protocol.dto.mqtt;
 import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
+
 /**
  * Created by qsxiaogang on 2017/4/17.
  * 车机屏当前APP版本，终端信息
@@ -26,7 +27,7 @@ public class MachineAdditional_MediaCurrentVersion implements IMachineAdditional
 
 
   public int getMediaCurrentVersion() {
-    return mediaCurrentVersion & 0xFFFF;
+    return mediaCurrentVersion;
   }
 
   public void setMediaCurrentVersion(int mediaCurrentVersion) {

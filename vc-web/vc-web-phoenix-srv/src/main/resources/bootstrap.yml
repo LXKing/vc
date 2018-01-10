@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: phoenix-srv
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      uri: ${spring.cloud.config.uri}

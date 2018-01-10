@@ -26,8 +26,10 @@ public interface CsIndexQuotaInf {
 	
 	PageInfo<CsIndexReport> bizQuota(CsIndexReportInput input);
 
+	List<CsIndexReport> bizQuotaAll(CsIndexReportInput input);
+
 	//报表导出
-	Map<String,List<CsIndexReport>> ztReportExport(List<CsIndexReport> readExcelList);
+	Map<String,CsIndexReport> ztReportExport(List<CsIndexReport> readExcelList);
 
 
 }

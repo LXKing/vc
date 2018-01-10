@@ -11,6 +11,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.util.ResultHelper;
 import com.ccclubs.command.util.CommandConstants;
+import com.ccclubs.command.util.TerminalOnlineHelper;
 import com.ccclubs.command.util.ValidateHelper;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
@@ -61,6 +62,9 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     @Resource
     private CsRemoteService remoteService;
 
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
+
     @Override
     @DataAuth
     public AirMonoOutput airConditionerMonoCtrl(AirMonoInput input) {
@@ -77,12 +81,15 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         if (input.getItem() == 4 && Arrays.binarySearch(CommandConstants.FAN, input.getValue()) < 0) {
             throw new ApiException(ApiEnum.AIR_CTRL_FAN_ERROR);
         }
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));//todo
@@ -97,7 +104,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
 
         process.dealRemoteCommand(csRemote, array);
 
@@ -113,12 +120,15 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     public AirAllOutput airConditionerAllCtrl(AirAllInput input) {
         Integer structId = CommandConstants.CMD_AIR;
 
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
@@ -133,7 +143,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
         AirAllOutput output = new AirAllOutput();

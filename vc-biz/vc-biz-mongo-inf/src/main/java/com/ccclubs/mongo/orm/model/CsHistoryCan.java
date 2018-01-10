@@ -4,6 +4,7 @@ import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 
 import java.io.Serializable;
 import java.util.Date;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * can历史
@@ -11,6 +12,7 @@ import java.util.Date;
  * @author jianghaiyang
  * @create 2017-08-08
  **/
+@Document(collection = "CsHistoryCan")
 public class CsHistoryCan extends AbstractDocumentOld implements Serializable {
     @AutomaticSequence
     private Long cshcId;
@@ -23,8 +25,8 @@ public class CsHistoryCan extends AbstractDocumentOld implements Serializable {
     private Long cshcOrder;
     private String cshcData;
     private String cshcFault;
-    private Date cshcUploadTime;
-    private Date cshcAddTime;
+    private Long cshcUploadTime;
+    private Long cshcAddTime;
     private String cshcLarum;
     private String cshcPrompt;
 
@@ -108,19 +110,19 @@ public class CsHistoryCan extends AbstractDocumentOld implements Serializable {
         this.cshcFault = cshcFault;
     }
 
-    public Date getCshcUploadTime() {
+    public Long getCshcUploadTime() {
         return cshcUploadTime;
     }
 
-    public void setCshcUploadTime(Date cshcUploadTime) {
+    public void setCshcUploadTime(Long cshcUploadTime) {
         this.cshcUploadTime = cshcUploadTime;
     }
 
-    public Date getCshcAddTime() {
+    public Long getCshcAddTime() {
         return cshcAddTime;
     }
 
-    public void setCshcAddTime(Date cshcAddTime) {
+    public void setCshcAddTime(Long cshcAddTime) {
         this.cshcAddTime = cshcAddTime;
     }
 

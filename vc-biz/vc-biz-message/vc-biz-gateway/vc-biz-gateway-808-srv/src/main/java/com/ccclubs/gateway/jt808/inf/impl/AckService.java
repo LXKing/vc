@@ -1,24 +1,28 @@
 package com.ccclubs.gateway.jt808.inf.impl;
 
-import com.ccclubs.common.modify.UpdateLoggerService;
-import com.ccclubs.common.modify.UpdateTerminalService;
+import com.aliyun.openservices.ons.api.Message;
+import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IMessageSender;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.protocol.dto.jt808.JT_0001;
 import com.ccclubs.protocol.dto.jt808.JT_0100;
 import com.ccclubs.protocol.dto.jt808.JT_0102;
-import com.ccclubs.protocol.dto.jt808.JT_01F0;
 import com.ccclubs.protocol.dto.jt808.JT_0201;
 import com.ccclubs.protocol.dto.jt808.JT_0500;
 import com.ccclubs.protocol.dto.jt808.JT_8001;
-import com.ccclubs.protocol.dto.jt808.JT_8100;
 import com.ccclubs.protocol.dto.jt808.JT_80F4;
+import com.ccclubs.protocol.dto.jt808.JT_8100;
 import com.ccclubs.protocol.dto.jt808.JT_81F4;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.jt808.T808MessageHeader;
+import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsTerminal;
 import com.ccclubs.pub.orm.model.CsVehicle;
@@ -27,8 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.annotation.Resource;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -60,6 +66,8 @@ public class AckService implements IAckService {
 
   private int threadPool;
 
+  @Value("${" + ConstantUtils.MQ_TOPIC + "}")
+  String topic;
 
   @Autowired
   QueryTerminalService queryTerminalService;
@@ -70,20 +78,15 @@ public class AckService implements IAckService {
   @Autowired
   QueryVehicleService queryVehicleService;
 
-
-  @Autowired
-  UpdateLoggerService updateLoggerService;
+  @Resource(name = "onsPublishClient")
+  private Producer client;
 
   public AckService() {
   }
 
   @Override
   public void start() {
-    processRealDataThread = new Thread(new Runnable() {
-      public void run() {
-        ProcessRealDataThreadFunc();
-      }
-    });
+    processRealDataThread = new Thread(() -> ProcessRealDataThreadFunc());
     processRealDataThread.start();
   }
 
@@ -91,25 +94,22 @@ public class AckService implements IAckService {
     ExecutorService fixedThreadPool = Executors.newFixedThreadPool(getThreadPool());
 
     for (int i = 0; i < getThreadPool(); i++) {
-      fixedThreadPool.execute(new Runnable() {
-        @Override
-        public void run() {
-          while (true) {
-            try {
-              final T808Message tm = dataQueue.poll();
-              if (tm != null) {
-                sendGeneralAck(tm);
-              }
-
-              try {
-                Thread.sleep(5L);
-              } catch (InterruptedException e1) {
-                logger.error(e1.getMessage(), e1);
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
-              logger.info(e.getMessage(), e);
+      fixedThreadPool.execute(() -> {
+        while (true) {
+          try {
+            final T808Message tm = dataQueue.poll();
+            if (tm != null) {
+              sendGeneralAck(tm);
             }
+
+            try {
+              Thread.sleep(2L);
+            } catch (InterruptedException e1) {
+              logger.error(e1.getMessage(), e1);
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage(), e);
           }
         }
       });
@@ -129,15 +129,13 @@ public class AckService implements IAckService {
       if (registerMap.containsKey(simNo)) {
         // 如果以前注册成功过，需要清除注册状态
         String registerData = "" + registerMap.get(simNo);
-        if (registerData != null) {
-          String[] temp = registerData.split(",");
-          String plateNo = temp[0];
-          String terminalId = temp[1];
+        String[] temp = registerData.split(",");
+        String plateNo = temp[0];
+        String terminalId = temp[1];
 
-          vehicleRegisterMap.remove(plateNo);
-          terminalRegisterMap.remove(terminalId);
-          registerMap.remove(simNo);
-        }
+        vehicleRegisterMap.remove(plateNo);
+        terminalRegisterMap.remove(terminalId);
+        registerMap.remove(simNo);
       }
       return;
     }
@@ -163,15 +161,13 @@ public class AckService implements IAckService {
       if (registerMap.contains(simNo)) {
         // 如果以前注册成功过，需要清除注册状态
         String registerData = "" + registerMap.get(simNo);
-        if (registerData != null) {
-          String[] temp = registerData.split(",");
-          String plateNo = temp[0];
-          String terminalId = temp[1];
+        String[] temp = registerData.split(",");
+        String plateNo = temp[0];
+        String terminalId = temp[1];
 
-          vehicleRegisterMap.remove(plateNo);
-          terminalRegisterMap.remove(terminalId);
-          registerMap.remove(simNo);
-        }
+        vehicleRegisterMap.remove(plateNo);
+        terminalRegisterMap.remove(terminalId);
+        registerMap.remove(simNo);
       }
       return;
     }
@@ -196,7 +192,8 @@ public class AckService implements IAckService {
         // result = 1;// 车辆已被注册
         // } else {
 
-        CsMachine csMachine =queryTerminalService.queryTerminalByTeNo(registerData.getTerminalId());
+        CsMachine csMachine = queryTerminalService
+            .queryCsMachineByTeNo(registerData.getTerminalId());
         //
         CsTerminal csTerminal = queryTerminalService
             .queryCsTerminalByCstIdd(registerData.getTerminalId());
@@ -238,7 +235,6 @@ public class AckService implements IAckService {
             updateMachine.setCsmUpdateTime(new Date());
             updateMachine.setCsmCeFirst(new Date());
             updateTerminalService.update(updateMachine);
-
           }
         }
 
@@ -265,25 +261,22 @@ public class AckService implements IAckService {
     } else if (msgType == 0x0001) {
       // 如果是终端通用应答，就更新数据库的指令状态为已应答
       JT_0001 answerData = (JT_0001) msgFromTerminal.getMessageContents();
-      short platformSn = answerData.getResponseMessageSerialNo();
+      // 转发 0001 非 0x8900 的通用应答，0x8900为分时租赁透传ID
+      if ((answerData.getResponseMessageId() & 0xFFFF) == 0x8900) {
+        transferToMQ(msgFromTerminal, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, msgType));
+      }
     } else if (msgType == 0x01F0) {
       if (StringUtils.empty(msgFromTerminal.getSimNo())) {
         return;
       }
       // 如果是终端通升级应答，就更新数据库的升级指令状态为已应答
-      JT_01F0 updateData = (JT_01F0) msgFromTerminal.getMessageContents();
-      // 由于协议里未定义平台流水号，只能更新最近（5分钟）一条的升级指令状态
-      if (updateData != null) {
-//        // 写日志
-        updateLoggerService.save(msgFromTerminal.getSimNo(),
-            "FTP升级指令-" + updateData.getResultString(),
-            msgFromTerminal.getPacketDescr(), 0L);
-      }
+//      JT_01F0 updateData = (JT_01F0) msgFromTerminal.getMessageContents();
+      transferToMQ(msgFromTerminal, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, msgType));
     } else if (msgType == 0x00F4) {
       // 终端发起同步VIN码请求，需要应答0x80F4
       JT_80F4 echoData = new JT_80F4();
       echoData.setMessageSerialNo(msgFromTerminal.getHeader().getMessageSerialNo());
-      CsMachine csMachine =queryTerminalService.queryCsMachineBySimNo(msgFromTerminal.getSimNo());
+      CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(msgFromTerminal.getSimNo());
       CsVehicle csVehicle = null;
       if (csMachine != null) {
         csVehicle = queryVehicleService.queryVehicleByMachine(csMachine.getCsmId());
@@ -317,7 +310,7 @@ public class AckService implements IAckService {
       // 终端发起同步VIN码请求，需要应答0x81F4
       JT_81F4 echoData = new JT_81F4();
       echoData.setMessageSerialNo(msgFromTerminal.getHeader().getMessageSerialNo());
-      CsMachine csMachine =queryTerminalService.queryCsMachineBySimNo(msgFromTerminal.getSimNo());
+      CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(msgFromTerminal.getSimNo());
       CsVehicle csVehicle = null;
       if (csMachine != null) {
         csVehicle = queryVehicleService.queryVehicleByMachine(csMachine.getCsmId());
@@ -340,9 +333,8 @@ public class AckService implements IAckService {
 
       return;
     } else if (msgType == 0x7F04) {
-      // 写日志
-      updateLoggerService.save(msgFromTerminal.getSimNo(), "终端CAN过滤表",
-          msgFromTerminal.getPacketDescr(), 0L);
+      // 终端CAN过滤表
+      transferToMQ(msgFromTerminal, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, msgType));
     } else if (msgType == 0x0201) {
       // 终端对位置查询（点名）的应答
       JT_0201 answerData = (JT_0201) msgFromTerminal.getMessageContents();
@@ -396,6 +388,26 @@ public class AckService implements IAckService {
       getMessageSender().send808Message(ts);
     }
   }
+
+  /**
+   * 将jt808协议数据转发到消息中间件MQ，topic：ser，tag：jt808
+   */
+  private void transferToMQ(T808Message message, String messageTag) {
+    if (null == message || null == message.getHeader() || !StringUtils
+        .empty(message.getErrorMessage())) {
+      return;
+    }
+    // 转发数据，数据流转topic：ser
+    Message mqMessage = OnsMessageFactory
+        .getProtocolMessage(topic, messageTag,
+            Tools.HexString2Bytes(message.getPacketDescr()));
+    if (mqMessage != null) {
+      client.sendOneway(mqMessage);
+    } else {
+      logger.error(ConstantUtils.MQ_TOPIC + " 或  " + ConstantUtils.MQ_TOPIC + " 未配置");
+    }
+  }
+
 
   public void setMessageSender(IMessageSender messageSender) {
     this.messageSender = messageSender;

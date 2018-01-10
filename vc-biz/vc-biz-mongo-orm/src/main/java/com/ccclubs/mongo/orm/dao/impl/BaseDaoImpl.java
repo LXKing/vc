@@ -3,12 +3,16 @@ package com.ccclubs.mongo.orm.dao.impl;
 import com.ccclubs.mongo.orm.dao.BaseDao;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import javax.annotation.Resource;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BaseDaoImpl<T> implements BaseDao<T> {
 
   private Class<T> clazz;
@@ -34,6 +38,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
   }
 
   public void update(Query query, Update update) {
+    if (null != update) {
+      update.set("lastModifiedDate", DateTime.now());
+    }
     mongoTemplate.findAndModify(query, update, this.getClazz());
   }
 
@@ -85,5 +92,13 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
   public void deleteById(Object id) {
     mongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
         this.getClazz());
+  }
+
+  public MongoTemplate getMongoTemplate() {
+    return mongoTemplate;
+  }
+
+  public void setMongoTemplate(MongoTemplate mongoTemplate) {
+    this.mongoTemplate = mongoTemplate;
   }
 }

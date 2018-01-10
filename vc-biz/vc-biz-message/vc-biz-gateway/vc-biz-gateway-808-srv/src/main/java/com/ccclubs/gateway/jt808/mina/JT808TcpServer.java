@@ -62,7 +62,7 @@ public class JT808TcpServer implements IJT808Server {
       IoSession session = getSession(conn.getSessionId());
       if (session == null) {
         logger.debug(simNo + "找不到对应的链接的session,判断离线");
-      } else if (session.isConnected() == false) {
+      } else if (!session.isConnected()) {
         logger.debug(simNo + "session关闭,判断离线");
       } else
       // logger.error(simNo+"上线");

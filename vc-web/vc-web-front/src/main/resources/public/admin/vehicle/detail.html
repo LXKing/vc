@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>编号：</dt>
+					<dd>
+					<input name="csvId" placeholder="请输入编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>接入商：</dt>
+					<dd>
+					<input name="csvAccess" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车牌号：</dt>
+					<dd>
+					<input name="csvCarNo" placeholder="请输入车牌号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车架号：</dt>
+					<dd>
+					<input name="csvVin" placeholder="请输入车架号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>发动机(电机)编号：</dt>
+					<dd>
+					<input name="csvEngineNo" placeholder="请输入发动机(电机)编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>合格证号：</dt>
+					<dd>
+					<input name="csvCertific" placeholder="请输入合格证号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型：</dt>
+					<dd>
+					<input name="csvModel" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机设备：</dt>
+					<dd>
+					<input name="csvMachine" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车身颜色：</dt>
+					<dd>
+					<input name="csvColorCode" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="color_code"  dataUrl="/base/dict/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>可充电储能系统编码：</dt>
+					<dd>
+					<input name="csvBataccuCode" placeholder="请输入可充电储能系统编码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>出厂日期：</dt>
+					<dd>
+					<input name="csvProdDate" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({format: 'YYYY-MM-DD'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>地标类型：</dt>
+					<dd>
+					<input name="csvLandmark" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="landmark"  dataUrl="/base/dict/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车辆领域：</dt>
+					<dd>
+					<select class="form-control m-b" name="csvDomain"  >
+                         <option></option>
+                         <option value="2">公共领域</option>
+                         <option value="1">个人领域</option>
+                         <option value="0">未知</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型代码：</dt>
+					<dd>
+					<input name="csvModelCodeFull" placeholder="请输入车型代码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型备案号：</dt>
+					<dd>
+					<input name="csvModelCodeSimple" placeholder="请输入车型备案号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>内饰颜色：</dt>
+					<dd>
+					<input name="csvInteriorColorCode" placeholder="请输入内饰颜色" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+					<input name="csvStatus" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+					<input name="csvAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>修改时间：</dt>
+					<dd>
+					<input name="csvUpdateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/admin/vehicle/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/admin/vehicle/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

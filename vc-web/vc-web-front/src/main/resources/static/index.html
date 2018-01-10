@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<title>车辆监控后台 - 主页</title>
+
+		<meta name="keywords" content="车辆监控后台">
+		<meta name="description" content="车辆监控后台">
+
+		<!--[if lt IE 8]>
+    	<meta http-equiv="refresh" content="0;ie.html" />
+    	<![endif]-->
+
+		<link rel="shortcut icon" href="favicon.ico">
+		<link href="css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<link href="css/animate.min.css" rel="stylesheet">
+		<link href="css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="css/style/index.css" rel="stylesheet">
+		<style type="text/css">
+			/*弹出iframe 设置最小宽度*/
+			.layer-anim{
+				min-width: 763px !important;
+			}
+		</style>
+	</head>
+
+	<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+		<div id="wrapper">
+			<!--左侧导航开始-->
+			<nav class="navbar-default navbar-static-side" role="navigation">
+				<div class="nav-close"><i class="fa fa-times-circle"></i>
+				</div>
+				<div class="sidebar-collapse">
+					<ul class="nav leftnav" id="side-menu">
+						<!-- 加载菜单 -->
+					</ul>
+				</div>
+			</nav>
+			<!--左侧导航结束-->
+			<!--右侧部分开始-->
+			<div id="page-wrapper" class="gray-bg dashbard-1" style="overflow:hidden">
+				<div class="row border-bottom">
+					<nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+						<div class="navbar-header">
+							<div class="select"><span></span>
+								<ul class="select-wrap hide">
+
+								</ul>
+							</div>
+							<div class="username">
+								<span class="account">您好 ,</span>
+								<ul class="account-msg hide">
+									<li class="reset-password"><a href="/resetPassword.html">修改密码</a></li>
+									<li data-toggle="modal" data-target="#myModal6">退出</li>
+								</ul>
+							</div>
+						</div>
+					</nav>
+				</div>
+
+				<div class="row J_mainContent" id="content-main">
+					<iframe class="J_iframe" name="iframe1" width="100%" height="100%" src="" frameborder="0" seamless></iframe>
+				</div>
+
+				<!-- 退出登录弹框 -->
+				<div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="modal-dialog modal-sm">
+						<div class="modal-content" style="top: 170px;">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+								</button>
+								<div class="logout-rocket">
+									<img src="img/rocket.png" alt="##">
+									<p>确定要退出吗？</p>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary log-out" data-dismiss="modal">确认</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script id="firstNav" type="x-tmpl-mustache">
+			{{#firstNav}}
+			<li class="one" data-id='{{spId}}'>{{spName}}</li>
+			{{/firstNav}}
+		</script>
+
+		<script id="leftNav" type="x-tmpl-mustache">
+		{{#arr}}
+			<li>
+							<a href="#">
+								<i class="fa fa-home"></i>
+								<span class="nav-label">{{spName}}</span>
+								<span class="fa arrow"></span>
+							</a>
+							<ul class="nav nav-second-level">
+							{{#thirdarr}}
+								<li>
+									<a class="J_menuItem" data-index="{{index}}" target="iframe{{index}}" href="{{spUrl}}">{{spName}}</a>
+								</li>
+							{{/thirdarr}}
+							</ul>
+						</li>
+		{{/arr}}
+		</script>
+
+
+
+		<script src="js/jquery.min.js?v=2.1.4"></script>
+		<script src="js/bootstrap.min.js?v=3.3.5"></script>
+		<script src="js/index.js?v=1510164124233"></script>
+		<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+		<script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+		<script src="js/plugins/layer/layer.min.js"></script>
+		<script src="js/hplus.min.js?v=4.0.0"></script>
+		<script type="text/javascript" src="js/contabs.min.js"></script>
+		<script src="js/plugins/pace/pace.min.js"></script>
+		<script src="js/mustache.js"></script>
+		<script src="js/authorized.js"></script>
+
+	</body>
+
+</html>

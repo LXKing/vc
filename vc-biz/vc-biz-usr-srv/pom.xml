@@ -43,5 +43,9 @@
             <artifactId>vc-biz-mongo-orm</artifactId>
             <version>${biz.version}</version>
         </dependency>
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+		</dependency>
     </dependencies>
 </project>

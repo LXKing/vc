@@ -4,8 +4,7 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * 车机屏当前APP版本，终端信息
+ * Created by qsxiaogang on 2017/4/17. 车机屏当前APP版本，终端信息
  */
 public class MachineAdditional_MediaNewVersion implements IMachineAdditionalItem {
 
@@ -25,7 +24,7 @@ public class MachineAdditional_MediaNewVersion implements IMachineAdditionalItem
   }
 
   public int getMediaNewVersion() {
-    return mediaNewVersion & 0xFFFF;
+    return mediaNewVersion;
   }
 
   public void setMediaNewVersion(int mediaNewVersion) {

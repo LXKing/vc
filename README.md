@@ -64,14 +64,14 @@ vc-web-command-api       |           prot:7004
 vc-web-command-srv       |           prot:11114
 vc-web-quota-api         |           port:7005
 vc-web-quota-srv         |           port:11115
+vc-web-usr-srv         |           port:11116
 vc-web-gateway-808-srv     |         port:12001
 vc-web-gateway-mqtt-srv     |        port:12002
 vc-web-gateway-gb-srv       |        port:12003
 vc-web-rule-engine-srv |   port:12004
 vc-web-cmd-engine-srv |  port:12005
-phoenix-srv |  port:11117
-phoenix-api |  port:7007
-
+vc-web-phoenix-api     |  port:7007
+vc-web-phoenix-srv     |  port:11117
 
 ### mybatis generate自动生成插件(具体参考demo)
 - 1.增加SerializablePlugin插件，dubbox传输需要支持serializable序列化接口

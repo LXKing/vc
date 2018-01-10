@@ -11,6 +11,7 @@ import com.ccclubs.vehicle.dto.VehicleBaseOutput;
 import com.ccclubs.vehicle.inf.base.QueryVehicleBaseInf;
 import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -93,6 +94,16 @@ public class VtSearchApi {
     public ApiMessage<TerminalQryOutput> getTerminalInfo(@RequestHeader("appId") String appId, TerminalQryInput input) {
         input.setAppId(appId);
         TerminalQryOutput output = queryTerminalInfoInf.getTerminalInfo(input);
+        return new ApiMessage<>(output);
+    }
+
+
+    @ApiSecurity
+    @ApiOperation(value="终端信息获取", notes="通过序列号获取终端信息，需要不小于4位长度")
+    @PostMapping("searchTerminalInfo")
+    public ApiMessage<List<TerminalQryOutput>> searchTerminalInfo(@RequestHeader("appId") String appId, TerminalListQryInput input) {
+        input.setAppId(appId);
+        List<TerminalQryOutput> output = queryTerminalInfoInf.searchTerminalInfo(input);
         return new ApiMessage<>(output);
     }
 

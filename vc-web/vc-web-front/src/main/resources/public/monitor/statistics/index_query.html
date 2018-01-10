@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="cssId" style="display:none;">
+				<dt>ID</dt>
+				<dd  >
+					<input  name="cssIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssTime" style="display:none;">
+				<dt>统计时间</dt>
+				<dd class="timergroup" >
+					<input  name="cssTimeStart"  placeholder="开始日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="cssTimeEnd" placeholder="结束日期" class="form-control timegroupinput" onclick="laydate({format: 'YYYY-MM-DD'})">
+				</dd>
+			</dl>
+<dl cond="cssUnitTime" style="display:none;">
+				<dt>间隔时间</dt>
+				<dd  >
+					<input  name="cssUnitTimeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssRegisteredNum" style="display:none;">
+				<dt>总注册数</dt>
+				<dd  >
+					<input  name="cssRegisteredNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssOnlineNum" style="display:none;">
+				<dt>在线数</dt>
+				<dd  >
+					<input  name="cssOnlineNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssOfflineNum" style="display:none;">
+				<dt>离线数</dt>
+				<dd  >
+					<input  name="cssOfflineNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssRunNum" style="display:none;">
+				<dt>运行数</dt>
+				<dd  >
+					<input  name="cssRunNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssChargingNum" style="display:none;">
+				<dt>充电数</dt>
+				<dd  >
+					<input  name="cssChargingNumEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssTotalMileage" style="display:none;">
+				<dt>运行总里程</dt>
+				<dd  >
+					<input  name="cssTotalMileageEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssTotalCharge" style="display:none;">
+				<dt>总充电量</dt>
+				<dd  >
+					<input  name="cssTotalChargeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssTotalPowerConsumption" style="display:none;">
+				<dt>电池增量</dt>
+				<dd  >
+					<input  name="cssTotalPowerConsumptionEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssTotalRunTime" style="display:none;">
+				<dt>总运行时间</dt>
+				<dd  >
+					<input  name="cssTotalRunTimeEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssIncrementMileage" style="display:none;">
+				<dt>增量里程</dt>
+				<dd  >
+					<input  name="cssIncrementMileageEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssAccess" style="display:none;">
+				<dt>授权系统</dt>
+				<dd  >
+					<input  name="cssAccessEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssCarModel" >
+				<dt>车型</dt>
+				<dd  >
+					<input  name="cssCarModelEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="cssId" value="cssId"  type="checkbox" onclick='showHideCondition(this, this.value);' >ID</label></li>
+			        <li><label><input cond="cssTime" value="cssTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >统计时间</label></li>
+			        <li><label><input cond="cssUnitTime" value="cssUnitTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >间隔时间</label></li>
+			        <li><label><input cond="cssRegisteredNum" value="cssRegisteredNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >总注册数</label></li>
+			        <li><label><input cond="cssOnlineNum" value="cssOnlineNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >在线数</label></li>
+			        <li><label><input cond="cssOfflineNum" value="cssOfflineNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >离线数</label></li>
+			        <li><label><input cond="cssRunNum" value="cssRunNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >运行数</label></li>
+			        <li><label><input cond="cssChargingNum" value="cssChargingNum"  type="checkbox" onclick='showHideCondition(this, this.value);' >充电数</label></li>
+			        <li><label><input cond="cssTotalMileage" value="cssTotalMileage"  type="checkbox" onclick='showHideCondition(this, this.value);' >运行总里程</label></li>
+			        <li><label><input cond="cssTotalCharge" value="cssTotalCharge"  type="checkbox" onclick='showHideCondition(this, this.value);' >总充电量</label></li>
+			        <li><label><input cond="cssTotalPowerConsumption" value="cssTotalPowerConsumption"  type="checkbox" onclick='showHideCondition(this, this.value);' >电池增量</label></li>
+			        <li><label><input cond="cssTotalRunTime" value="cssTotalRunTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >总运行时间</label></li>
+			        <li><label><input cond="cssIncrementMileage" value="cssIncrementMileage"  type="checkbox" onclick='showHideCondition(this, this.value);' >增量里程</label></li>
+			        <li><label><input cond="cssAccess" value="cssAccess"  type="checkbox" onclick='showHideCondition(this, this.value);' >授权系统</label></li>
+			        <li><label><input cond="cssCarModel" value="cssCarModel" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

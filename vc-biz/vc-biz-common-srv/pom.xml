@@ -18,8 +18,8 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-mongo-orm</artifactId>
-            <version>${biz.version}</version>
+            <artifactId>vc-frm-cache</artifactId>
+            <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
@@ -36,11 +36,7 @@
             <artifactId>vc-frm-mybatis</artifactId>
             <version>${frm.version}</version>
         </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-mongodb</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-spring</artifactId>
@@ -50,6 +46,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

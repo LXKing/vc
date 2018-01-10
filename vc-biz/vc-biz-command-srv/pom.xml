@@ -66,6 +66,10 @@
             <artifactId>vc-biz-common-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+      </dependency>
     </dependencies>
 
 </project>

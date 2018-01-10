@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.CsStateMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsState">
+		<result column="css_id" jdbcType="INTEGER" property="cssId" />
+		<result column="css_access" jdbcType="TINYINT" property="cssAccess" />
+		<result column="css_host" jdbcType="SMALLINT" property="cssHost" />
+		<result column="css_number" jdbcType="VARCHAR" property="cssNumber" />
+		<result column="css_car" jdbcType="INTEGER" property="cssCar" />
+		<result column="css_add_time" jdbcType="TIMESTAMP" property="cssAddTime" />
+		<result column="css_current_time" jdbcType="TIMESTAMP" property="cssCurrentTime" />
+		<result column="css_rented" jdbcType="VARCHAR" property="cssRented" />
+		<result column="css_warn" jdbcType="INTEGER" property="cssWarn" />
+		<result column="css_rfid" jdbcType="VARCHAR" property="cssRfid" />
+		<result column="css_rfid_dte" jdbcType="VARCHAR" property="cssRfidDte" />
+		<result column="css_obd_mile" jdbcType="INTEGER" property="cssObdMile" />
+		<result column="css_engine_t" jdbcType="INTEGER" property="cssEngineT" />
+		<result column="css_mileage" jdbcType="INTEGER" property="cssMileage" />
+		<result column="css_speed" jdbcType="SMALLINT" property="cssSpeed" />
+		<result column="css_motor" jdbcType="INTEGER" property="cssMotor" />
+		<result column="css_oil" jdbcType="VARCHAR" property="cssOil" />
+		<result column="css_power" jdbcType="INTEGER" property="cssPower" />
+		<result column="css_ev_battery" jdbcType="TINYINT" property="cssEvBattery" />
+		<result column="css_charging" jdbcType="TINYINT" property="cssCharging" />
+		<result column="css_fuel_mileage" jdbcType="VARCHAR" property="cssFuelMileage" />
+		<result column="css_electric_mileage" jdbcType="VARCHAR" property="cssElectricMileage" />
+		<result column="css_endurance" jdbcType="VARCHAR" property="cssEndurance" />
+		<result column="css_temperature" jdbcType="SMALLINT" property="cssTemperature" />
+		<result column="css_csq" jdbcType="SMALLINT" property="cssCsq" />
+		<result column="css_longitude" jdbcType="DECIMAL" property="cssLongitude" />
+		<result column="css_latitude" jdbcType="DECIMAL" property="cssLatitude" />
+		<result column="css_gps_valid" jdbcType="TINYINT" property="cssGpsValid" />
+		<result column="css_gps_cn" jdbcType="SMALLINT" property="cssGpsCn" />
+		<result column="css_gps_count" jdbcType="SMALLINT" property="cssGpsCount" />
+		<result column="css_dir" jdbcType="VARCHAR" property="cssDir" />
+		<result column="css_circular" jdbcType="TINYINT" property="cssCircular" />
+		<result column="css_ptc" jdbcType="TINYINT" property="cssPtc" />
+		<result column="css_compres" jdbcType="TINYINT" property="cssCompres" />
+		<result column="css_fan" jdbcType="TINYINT" property="cssFan" />
+		<result column="css_saving" jdbcType="TINYINT" property="cssSaving" />
+		<result column="css_door" jdbcType="VARCHAR" property="cssDoor" />
+		<result column="css_engine" jdbcType="TINYINT" property="cssEngine" />
+		<result column="css_key" jdbcType="TINYINT" property="cssKey" />
+		<result column="css_gear" jdbcType="TINYINT" property="cssGear" />
+		<result column="css_light" jdbcType="INTEGER" property="cssLight" />
+		<result column="css_lock" jdbcType="INTEGER" property="cssLock" />
+		<result column="css_net_type" jdbcType="TINYINT" property="cssNetType" />
+		<result column="css_base_lac" jdbcType="INTEGER" property="cssBaseLac" />
+		<result column="css_base_ci" jdbcType="INTEGER" property="cssBaseCi" />
+		<result column="css_order" jdbcType="INTEGER" property="cssOrder" />
+		<result column="css_mo_data" jdbcType="VARCHAR" property="cssMoData" />
+	</resultMap>
+	
+	
+</mapper>

@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @create 2017-07-27
  **/
 public class TerminalQryOutput implements Serializable {
+    private String csmNumber;//车机号，主要用于蓝牙名字
     private String csmTeNo;//终端编号
     private Byte csmTeType;//终端类型:0:车厘子,1:中导,2:慧翰,3:通领
     private String csmTeModel;//终端型号
@@ -28,6 +29,14 @@ public class TerminalQryOutput implements Serializable {
     private String softVersion;//软件版本
     private String hardVersion;//硬件版本
     private String pluginVersion;//插件版本
+
+    public String getCsmNumber() {
+        return csmNumber;
+    }
+
+    public void setCsmNumber(String csmNumber) {
+        this.csmNumber = csmNumber;
+    }
 
     public String getCsmTeNo() {
         return csmTeNo;

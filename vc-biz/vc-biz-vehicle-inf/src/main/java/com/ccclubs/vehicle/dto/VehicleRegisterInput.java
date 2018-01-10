@@ -18,7 +18,6 @@ public class VehicleRegisterInput  implements Serializable {
     /**
      *   真实车牌
      */
-    @NotNull(message = "车牌号必填")
     private String csvCarNo;
 
     /**

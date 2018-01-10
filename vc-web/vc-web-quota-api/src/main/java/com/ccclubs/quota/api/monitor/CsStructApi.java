@@ -27,13 +27,13 @@ public class CsStructApi {
 
 	@Reference(version = "1.0.0")
 	private CsStructInf csStructInf;
-	@ApiOperation(value = "车载终端注册信息管理新增", notes = "车载终端注册信息管理新增")
+	@ApiOperation(value = "远程命令结构管理新增", notes = "远程命令结构管理新增")
 	@RequestMapping(path = "/monitor/csStruct/add/v1", method = { RequestMethod.POST, RequestMethod.GET })
 	ApiMessage<String> add(CsStructAddInput input) {
 		csStructInf.add(input);
 		return new ApiMessage<String>("");
 	}
-	@ApiOperation(value = "车载终端注册信息管理删除", notes = "车载终端注册信息管理删除")
+	@ApiOperation(value = "远程命令结构管理删除", notes = "远程命令结构管理删除")
 	@RequestMapping(path = "/monitor/csStruct/del/v1", method = { RequestMethod.POST, RequestMethod.GET })
 	ApiMessage<String> del(@RequestParam("ids[]") List<Long> ids) {
 		BaseDeleteKeysInput input = new BaseDeleteKeysInput();
@@ -41,19 +41,19 @@ public class CsStructApi {
 		csStructInf.del(input);
 		return new ApiMessage<String>("");
 	}
-	@ApiOperation(value = "车载终端注册信息管理修改", notes = "车载终端注册信息管理修改")
+	@ApiOperation(value = "远程命令结构管理修改", notes = "远程命令结构管理修改")
 	@RequestMapping(path = "/monitor/csStruct/mod/v1", method = { RequestMethod.POST, RequestMethod.GET })
 	ApiMessage<String> mod(CsStructAddInput input) {
 		csStructInf.mod(input);
 		return new ApiMessage<String>("");
 	}
-	@ApiOperation(value = "车载终端注册信息管理修改", notes = "车载终端注册信息管理修改")
+	@ApiOperation(value = "远程命令结构管理修改", notes = "远程命令结构管理修改")
 	@RequestMapping(path = "/monitor/csStruct/mod/record/v1", method = { RequestMethod.POST, RequestMethod.GET })
 	ApiMessage<CsStructWithBLOBs> modInfo(@NotNull@RequestParam("cssId")Long cssId) {
 		CsStructWithBLOBs cm = csStructInf.mod(cssId);
 		return new ApiMessage<CsStructWithBLOBs>(cm);
 	}
-	@ApiOperation(value = "车载终端注册信息管理查询", notes = "车载终端注册信息管理查询")
+	@ApiOperation(value = "远程命令结构管理查询", notes = "远程命令结构管理查询")
 	@RequestMapping(path = "/monitor/csStruct/que/v1", method = { RequestMethod.POST, RequestMethod.GET })
 	ApiMessage<PageInfo<CsStructWithBLOBs>> que(CsStructQueryInput input) {
 		PageInfo<CsStructWithBLOBs> pi = csStructInf.que(input);

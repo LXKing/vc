@@ -12,6 +12,8 @@ public interface IMqClient {
 
   boolean send(String topic, byte[] srcByteArray);
 
+  boolean send(String topic, byte[] srcByteArray,int qos);
+
   boolean start();
 
   void subscribeTopic();

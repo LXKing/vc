@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.SrvHostMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.SrvHost">
+		<result column="sh_id" jdbcType="INTEGER" property="shId" />
+		<result column="sh_name" jdbcType="VARCHAR" property="shName" />
+		<result column="sh_key" jdbcType="VARCHAR" property="shKey" />
+		<result column="sh_topic" jdbcType="VARCHAR" property="shTopic" />
+		<result column="sh_transform_remote" jdbcType="CHAR" property="shTransformRemote" />
+		<result column="sh_transform_status" jdbcType="CHAR" property="shTransformStatus" />
+		<result column="sh_transform_can" jdbcType="CHAR" property="shTransformCan" />
+		<result column="sh_add_time" jdbcType="TIMESTAMP" property="shAddTime" />
+		<result column="sh_upt_time" jdbcType="TIMESTAMP" property="shUptTime" />
+		<result column="sh_status" jdbcType="TINYINT" property="shStatus" />
+		<result column="sh_appid" jdbcType="VARCHAR" property="shAppid" />
+	</resultMap>
+	
+	
+</mapper>

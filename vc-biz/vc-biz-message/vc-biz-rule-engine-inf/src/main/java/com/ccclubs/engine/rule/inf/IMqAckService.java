@@ -1,7 +1,6 @@
 package com.ccclubs.engine.rule.inf;
 
 
-import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 
 public interface IMqAckService {
@@ -10,7 +9,7 @@ public interface IMqAckService {
 
   void setMessageSender(IMqMessageSender handler);
 
-  void synchronizeCarTime(MqMessage msg, MQTT_66 mqtt_66);
+  void synchronizeCarTime(MqMessage msg, long terminalTime);
 
   void ackTakeCar(MqMessage msg);
 

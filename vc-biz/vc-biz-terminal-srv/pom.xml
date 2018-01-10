@@ -39,11 +39,6 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-mongodb</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-spring</artifactId>
             <version>${frm.version}</version>
         </dependency>

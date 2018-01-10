@@ -91,7 +91,7 @@ public class CommandApi {
         VersionQryInput qryInput = new VersionQryInput();
         qryInput.setVin(input.getVin());
         VersionQryOutput version = versionInf.isLatestVersion(qryInput);
-        if (version.getTerminalType() != 3) {
+        if (!(version.getTerminalType() == 0 || version.getTerminalType() == 1 || version.getTerminalType() == 3)) {
             //当前仅支持通领车机升级 TODO
             throw new ApiException(ApiEnum.TERMINAL_NOT_TL);
         }
@@ -344,16 +344,18 @@ public class CommandApi {
 
     //当前正在处理指令的终端
     public static final String REDIS_KEY_NOW_CMD = "rates:";
+    private static final long timeout = 10L;
+    private static TimeUnit timeUnit = TimeUnit.SECONDS;
 
     private boolean isRateLimit(String vin) {
 
         ValueOperations ops = redisTemplate.opsForValue();
-        Object count = ops.get(REDIS_KEY_NOW_CMD + vin);
-        if (null == count) {
-            ops.set(REDIS_KEY_NOW_CMD + vin, 1, 10, TimeUnit.SECONDS);
+        String redisKey = REDIS_KEY_NOW_CMD + vin;
+        Long current = ops.increment(redisKey, 1);
+        if (1L == current) {
+            redisTemplate.expire(redisKey,timeout,timeUnit);
             return false;
         } else {
-            Long current = ops.increment(REDIS_KEY_NOW_CMD + vin, 1);
             if (current > 5) {
                 return true;
             } else {

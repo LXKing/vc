@@ -9,6 +9,7 @@ import com.ccclubs.frm.mqtt.inf.IMqClient;
 import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.ons.OnsProperties;
+import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.jt808.inf.I808MessageProcessService;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IGpsDataService;
@@ -46,8 +47,7 @@ import org.springframework.context.annotation.Primary;
  **/
 @SpringBootApplication
 @Import({MybatisConfig.class})
-@ImportAutoConfiguration({OnsProperties.class,
-    MqttAliyunProperties.class})
+@ImportAutoConfiguration({OnsProperties.class,MqttAliyunProperties.class, RedisAutoConfiguration.class})
 public class Gateway808SrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(Gateway808SrvApp.class);

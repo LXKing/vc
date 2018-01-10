@@ -16,7 +16,6 @@ import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 终端车辆解绑
@@ -39,7 +38,7 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
     public UnBindVehicleOutput unBindVehicle(UnBindVehicleInput input) {
 
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
-        CsMachine machine = queryTerminalService.queryTerminalByTeNo(input.getTeNo());
+        CsMachine machine = queryTerminalService.queryCsMachineByTeNo(input.getTeNo());
 
         // 1.校验输入的车辆和终端是否存在
         if (vehicle == null) {
@@ -54,7 +53,7 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
             //开始解绑
             vehicle.setCsvMachine(null);
             vehicle.setCsvUpdateTime(new Date());
-            updateVehicleService.update(vehicle);
+            updateVehicleService.unbindTbox(vehicle);
         } else {
             throw new ApiException(ApiEnum.NO_BINDING_EXISTS, input.getVin(), input.getTeNo());
         }

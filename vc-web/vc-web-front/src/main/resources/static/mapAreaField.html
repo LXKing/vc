@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+<title>多边形区域</title>
+<link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css" />
+<script charset="utf-8" src="http://webapi.amap.com/maps?v=1.4.0&key=0a7423560970ad2922ad3d7506d2d6b2"></script>
+<script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+</head>
+<body>
+	<div id="container" tabindex="0"></div>
+	<div class="button-group">
+		<input id='bt1' type="button" class="button" value="绘制区域" />
+		<input id='bt2' type="button" class="button" value="保存坐标" style="display: none" onclick="getPoints()"/>
+	</div>
+	<script src="../js/require.js?v=2.3.5" data-main="/js/main"></script>
+	<script type="text/javascript">
+		var map = new AMap.Map('container', {
+			resizeEnable : true,
+			zoom : 17,
+			center: [106.549197,29.55933]
+		});
+		var polygonArr;//多边形覆盖物节点坐标数组
+		var polyline;//线
+		var polygon;//多边形
+		var marker;
+		var circle;
+		var count, clickListener, mousemoveListener, mousedownListener, resetDrawListener;
+		var drawType;//绘画类型，圆、点标记、多边形
+		var radius;//半径
+		var init = function() {
+			polygonArr = new Array();
+			count = 0;
+			if (polyline) {
+				map.remove(polyline);
+			}
+			if (polygon) {
+				map.remove(polygon);
+			}
+			if (marker) {
+				map.remove(marker);
+			}
+			if (circle) {
+				map.remove(circle);
+			}
+			polyline = new AMap.Polyline({
+				strokeColor : "#3366FF", //线颜色
+				strokeOpacity : 1, //线透明度
+				strokeWeight : 2, //线宽
+				strokeStyle : "solid", //线样式
+				strokeDasharray : [ 10, 5 ]
+			});
+			polygon = new AMap.Polygon({
+				strokeColor : "#FF33FF", //线颜色
+				strokeOpacity : 0.2, //线透明度
+				strokeWeight : 3, //线宽
+				fillColor : "#1791fc", //填充色
+				fillOpacity : 0.35
+			});
+			marker = new AMap.Marker({
+	            icon: "http://webapi.amap.com/theme/v1.3/markers/n/mark_b.png"
+	        });
+			circle = new AMap.Circle({
+		        strokeColor: "#F33", //线颜色
+		        strokeOpacity: 1, //线透明度
+		        strokeWeight: 3, //线粗细度
+		        fillColor: "#ee2200", //填充颜色
+		        fillOpacity: 0.35//填充透明度
+		    });
+			drawType = GetQueryString("type");
+			radius = GetQueryString("radius")
+		}
+		var _onClick = function(e) {
+			switch (drawType) {
+			case "marker":
+				drawMarker(e);
+				break;
+			case "circle":
+				drawCircle(e);
+				break;
+			default:
+				drawPolygon(e);
+				break;
+			}
+		}
+		
+		/**
+		*
+		*/
+		function drawMarker(e){
+			marker.setPosition(e.lnglat);
+			marker.setMap(map);
+			polygonArr[count] = e.lnglat;
+			bShow();
+		}
+		
+		/**
+		*
+		*/
+		function drawCircle(e){
+			marker.setPosition(e.lnglat);
+			marker.setMap(map);
+			circle.setRadius(radius == null ? 500 : radius);
+			circle.setCenter(e.lnglat);
+			circle.setMap(map);
+			polygonArr[count] = e.lnglat;
+			bShow();
+		}
+		
+		/**
+		*
+		*/
+		function drawPolygon(e){
+			if (count != 0) {
+				//点重合操作太困难 认为两点距离小于10既 开始点与结束点重合 绘画完成
+				if (polygonArr.length > 1 && polygonArr[0].distance(polygonArr[polygonArr.length - 1]) < 10) {
+					polygonArr[count] = polygonArr[0];
+					endDraw();
+					remove();
+				} else {
+					polygonArr[count] = e.lnglat;
+				}
+			} else {
+				polygonArr.push(e.lnglat);
+				mousemoveListener = AMap.event.addListener(map, "mousemove",editDraw);//绑定地图事件
+				mousedownListener = AMap.event.addListener(map, "mousedown",_onClick);
+			}
+			count = polygonArr.length;
+		}
+		
+		/**
+		 *开始绘画
+		 */
+		var editDraw = function(e) {
+			polygonArr[count] = e.lnglat;
+			if (polygonArr.length > 1 && polygonArr[0].distance(polygonArr[polygonArr.length - 1]) < 10) {
+				polygonArr[count] = polygonArr[0];
+			}
+			polyline.setPath(polygonArr);
+			polyline.setMap(map);
+		}
+
+		/**
+		 *结束绘画
+		 */
+		var endDraw = function() {
+			polygon.setPath(polygonArr);
+			polygon.setMap(map);
+			bShow();
+			resetDrawListener = AMap.event.addDomListener(button1, 'click',resetDraw);//给div绑定单击事件  
+		}
+
+		/**
+		 *重新绘画
+		 */
+		var resetDraw = function() {
+			bind();
+		}
+
+		var bind = function() {
+			remove();//防止重复绑定
+			init();//初始化数据
+			bHide();
+			clickListener = AMap.event.addListener(map, "click", _onClick);//绑定地图事件
+		}
+
+		var bShow = function() {
+			button1.value = "重新绘制";
+			button1.style.display = "block";
+			button2.style.display = "block";
+		}
+		var bHide = function() {
+			button1.style.display = "none";
+			button2.style.display = "none";
+		}
+
+		/**
+		 *移除绑定事件
+		 */
+		var remove = function() {
+			if (clickListener) {
+				AMap.event.removeListener(clickListener);//移除地图事件，以绑定时返回的对象作为参数
+			}
+			if (mousemoveListener) {
+				AMap.event.removeListener(mousemoveListener);//移除地图事件，以绑定时返回的对象作为参数
+			}
+			if (mousedownListener) {
+				AMap.event.removeListener(mousedownListener);//移除地图事件，以绑定时返回的对象作为参数
+			}
+		}
+		var getPoints = function(){
+			var points = "";
+			var length = polygonArr.length;
+			for(var i = 0;i<length;i++){
+				if(i+1 == length ){
+					points += polygonArr[i].toString();
+				}else{
+					points += polygonArr[i].toString()+"|";
+				}
+			}
+			require(["tpui-core"],function(){
+		    	closeTopWin(true,{polygonArr:points});
+			});
+		}
+		
+		//如果传入参数，需要默认初始化图形
+		var initDraw = function(){
+			init();
+			var data = GetQueryString("data");
+			var drawType = GetQueryString("type");
+			if(data != null && data != undefined && data!=""){
+				switch (drawType) {
+				case "marker":
+					var lnglat = data.split(",");
+					marker.setPosition([lnglat[0], lnglat[1]]);
+					marker.setMap(map);
+					break;
+				case "circle":
+					break;
+				default:
+					var dataList = data.split("|");
+					for(var i = 0 ;i<dataList.length;i++){
+						var lnglat = dataList[i].split(",");
+						polygonArr.push([lnglat[0], lnglat[1]]);
+					}
+					polygon.setPath(polygonArr);
+					polygon.setMap(map);
+					break;
+				}
+			}
+		}
+		
+		function GetQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		    var r = window.location.search.substr(1).match(reg);
+		    if(r != null) return unescape(r[2]);
+		    return null;
+	    }
+		
+		//绑定Dom事件
+		var button1 = document.getElementById('bt1');
+		var button2 = document.getElementById('bt2');
+		var listener1 = AMap.event.addDomListener(button1, 'click', bind);//给div绑定单击事件  
+		
+		initDraw();
+	</script>
+</body>
+</html>

@@ -3,7 +3,9 @@ package com.ccclubs.mongo.orm.model;
 import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * 历史状态
@@ -11,6 +13,7 @@ import java.util.Date;
  * @author jianghaiyang
  * @create 2017-08-07
  **/
+@Document(collection = "CsHistoryState")
 public class CsHistoryState extends AbstractDocumentOld implements Serializable {
 
     @AutomaticSequence
@@ -19,48 +22,57 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
     private Integer cshsHost;// 非空
     private String cshsNumber;// 非空
     private Integer cshsCar;//
-    private Date cshsAddTime;// 非空
-    private Date cshsCurrentTime;//
+    private Long cshsAddTime;// 非空
+    private Long cshsCurrentTime;//
     private String cshsRented;//
-    private String cshsWarn;//
+    private Integer cshsWarn;//
     private String cshsRfid;//
     private String cshsRfidDte;//
-    private String cshsObdMile;//
-    private String cshsEngineT;//
-    private String cshsMileage;//
-    private String cshsSpeed;//
-    private String cshsMotor;//
+    private Integer cshsObdMile;//
+    private Integer cshsEngineT;//
+    private Integer cshsMileage;//
+    private Short cshsSpeed;//
+    private Integer cshsMotor;//
     private String cshsOil;//
-    private String cshsPower;//
-    private String cshsEvBattery;//
-    private String cshsCharging;//
+    private Integer cshsPower;//
+    private Byte cshsEvBattery;//
+    private Byte cshsCharging;//
     private String cshsFuelMileage;//
     private String cshsElectricMileage;//
     private String cshsEndurance;//
-    private String cshsTemperature;//
-    private String cshsCsq;//
+    private Short cshsTemperature;//
+    private Short cshsCsq;//
     private String cshsPowerConsumption;//
-    private String cshsLongitude;//
-    private String cshsLatitude;//
-    private Integer cshsGpsValid;//
-    private Integer cshsGpsCn;//
-    private Integer cshsGpsCount;//
+    private BigDecimal cshsLongitude;//
+    private BigDecimal cshsLatitude;//
+    private Byte cshsGpsValid;//
+    private Short cshsGpsCn;//
+    private Short cshsGpsCount;//
     private String cshsDir;//
-    private String cshsCircular;// 0:内循环 1:外循环
-    private String cshsPtc;// 0:OFF 1:ON
-    private String cshsCompres;// 0:OFF 1:ON
-    private String cshsFan;// 0:OFF 1:1档 2:2档 3:3档 4:4档
-    private String cshsSaving;// 0:标准模式 1:最佳省电 2:极度省电
+    private Byte cshsCircular;// 0:内循环 1:外循环
+    private Byte cshsPtc;// 0:OFF 1:ON
+    private Byte cshsCompres;// 0:OFF 1:ON
+    private Byte cshsFan;// 0:OFF 1:1档 2:2档 3:3档 4:4档
+    private Byte cshsSaving;// 0:标准模式 1:最佳省电 2:极度省电
     private String cshsDoor;//
-    private Long cshsEngine;//
-    private Long cshsKey;//
-    private Long cshsLight;//
-    private Long cshsLock;//
-    private Long cshsNetType;//    state_net_type:当前状态网络类型
-    private String cshsBaseLac;//
-    private String cshsBaseCi;//
-    private String cshsOrder;//
+    private Byte cshsEngine;//
+    private Byte cshsKey;//
+    private Integer cshsLight;//
+    private Integer cshsLock;//
+    private Byte cshsNetType;//    state_net_type:当前状态网络类型
+    private Integer cshsBaseLac;//
+    private Integer cshsBaseCi;//
+    private Long cshsOrder;//
     private String cshsMoData;//
+    private Integer cshsGear;//档位
+
+    public Integer getCshsGear() {
+        return cshsGear;
+    }
+
+    public void setCshsGear(Integer cshsGear) {
+        this.cshsGear = cshsGear;
+    }
 
     public Long getCshsId() {
         return cshsId;
@@ -102,19 +114,19 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsCar = cshsCar;
     }
 
-    public Date getCshsAddTime() {
+    public Long getCshsAddTime() {
         return cshsAddTime;
     }
 
-    public void setCshsAddTime(Date cshsAddTime) {
+    public void setCshsAddTime(Long cshsAddTime) {
         this.cshsAddTime = cshsAddTime;
     }
 
-    public Date getCshsCurrentTime() {
+    public Long getCshsCurrentTime() {
         return cshsCurrentTime;
     }
 
-    public void setCshsCurrentTime(Date cshsCurrentTime) {
+    public void setCshsCurrentTime(Long cshsCurrentTime) {
         this.cshsCurrentTime = cshsCurrentTime;
     }
 
@@ -126,11 +138,11 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsRented = cshsRented;
     }
 
-    public String getCshsWarn() {
+    public Integer getCshsWarn() {
         return cshsWarn;
     }
 
-    public void setCshsWarn(String cshsWarn) {
+    public void setCshsWarn(Integer cshsWarn) {
         this.cshsWarn = cshsWarn;
     }
 
@@ -150,43 +162,43 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsRfidDte = cshsRfidDte;
     }
 
-    public String getCshsObdMile() {
+    public Integer getCshsObdMile() {
         return cshsObdMile;
     }
 
-    public void setCshsObdMile(String cshsObdMile) {
+    public void setCshsObdMile(Integer cshsObdMile) {
         this.cshsObdMile = cshsObdMile;
     }
 
-    public String getCshsEngineT() {
+    public Integer getCshsEngineT() {
         return cshsEngineT;
     }
 
-    public void setCshsEngineT(String cshsEngineT) {
+    public void setCshsEngineT(Integer cshsEngineT) {
         this.cshsEngineT = cshsEngineT;
     }
 
-    public String getCshsMileage() {
+    public Integer getCshsMileage() {
         return cshsMileage;
     }
 
-    public void setCshsMileage(String cshsMileage) {
+    public void setCshsMileage(Integer cshsMileage) {
         this.cshsMileage = cshsMileage;
     }
 
-    public String getCshsSpeed() {
+    public Short getCshsSpeed() {
         return cshsSpeed;
     }
 
-    public void setCshsSpeed(String cshsSpeed) {
+    public void setCshsSpeed(Short cshsSpeed) {
         this.cshsSpeed = cshsSpeed;
     }
 
-    public String getCshsMotor() {
+    public Integer getCshsMotor() {
         return cshsMotor;
     }
 
-    public void setCshsMotor(String cshsMotor) {
+    public void setCshsMotor(Integer cshsMotor) {
         this.cshsMotor = cshsMotor;
     }
 
@@ -198,27 +210,27 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsOil = cshsOil;
     }
 
-    public String getCshsPower() {
+    public Integer getCshsPower() {
         return cshsPower;
     }
 
-    public void setCshsPower(String cshsPower) {
+    public void setCshsPower(Integer cshsPower) {
         this.cshsPower = cshsPower;
     }
 
-    public String getCshsEvBattery() {
+    public Byte getCshsEvBattery() {
         return cshsEvBattery;
     }
 
-    public void setCshsEvBattery(String cshsEvBattery) {
+    public void setCshsEvBattery(Byte cshsEvBattery) {
         this.cshsEvBattery = cshsEvBattery;
     }
 
-    public String getCshsCharging() {
+    public Byte getCshsCharging() {
         return cshsCharging;
     }
 
-    public void setCshsCharging(String cshsCharging) {
+    public void setCshsCharging(Byte cshsCharging) {
         this.cshsCharging = cshsCharging;
     }
 
@@ -246,19 +258,19 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsEndurance = cshsEndurance;
     }
 
-    public String getCshsTemperature() {
+    public Short getCshsTemperature() {
         return cshsTemperature;
     }
 
-    public void setCshsTemperature(String cshsTemperature) {
+    public void setCshsTemperature(Short cshsTemperature) {
         this.cshsTemperature = cshsTemperature;
     }
 
-    public String getCshsCsq() {
+    public Short getCshsCsq() {
         return cshsCsq;
     }
 
-    public void setCshsCsq(String cshsCsq) {
+    public void setCshsCsq(Short cshsCsq) {
         this.cshsCsq = cshsCsq;
     }
 
@@ -270,43 +282,43 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsPowerConsumption = cshsPowerConsumption;
     }
 
-    public String getCshsLongitude() {
+    public BigDecimal getCshsLongitude() {
         return cshsLongitude;
     }
 
-    public void setCshsLongitude(String cshsLongitude) {
+    public void setCshsLongitude(BigDecimal cshsLongitude) {
         this.cshsLongitude = cshsLongitude;
     }
 
-    public String getCshsLatitude() {
+    public BigDecimal getCshsLatitude() {
         return cshsLatitude;
     }
 
-    public void setCshsLatitude(String cshsLatitude) {
+    public void setCshsLatitude(BigDecimal cshsLatitude) {
         this.cshsLatitude = cshsLatitude;
     }
 
-    public Integer getCshsGpsValid() {
+    public Byte getCshsGpsValid() {
         return cshsGpsValid;
     }
 
-    public void setCshsGpsValid(Integer cshsGpsValid) {
+    public void setCshsGpsValid(Byte cshsGpsValid) {
         this.cshsGpsValid = cshsGpsValid;
     }
 
-    public Integer getCshsGpsCn() {
+    public Short getCshsGpsCn() {
         return cshsGpsCn;
     }
 
-    public void setCshsGpsCn(Integer cshsGpsCn) {
+    public void setCshsGpsCn(Short cshsGpsCn) {
         this.cshsGpsCn = cshsGpsCn;
     }
 
-    public Integer getCshsGpsCount() {
+    public Short getCshsGpsCount() {
         return cshsGpsCount;
     }
 
-    public void setCshsGpsCount(Integer cshsGpsCount) {
+    public void setCshsGpsCount(Short cshsGpsCount) {
         this.cshsGpsCount = cshsGpsCount;
     }
 
@@ -318,43 +330,43 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsDir = cshsDir;
     }
 
-    public String getCshsCircular() {
+    public Byte getCshsCircular() {
         return cshsCircular;
     }
 
-    public void setCshsCircular(String cshsCircular) {
+    public void setCshsCircular(Byte cshsCircular) {
         this.cshsCircular = cshsCircular;
     }
 
-    public String getCshsPtc() {
+    public Byte getCshsPtc() {
         return cshsPtc;
     }
 
-    public void setCshsPtc(String cshsPtc) {
+    public void setCshsPtc(Byte cshsPtc) {
         this.cshsPtc = cshsPtc;
     }
 
-    public String getCshsCompres() {
+    public Byte getCshsCompres() {
         return cshsCompres;
     }
 
-    public void setCshsCompres(String cshsCompres) {
+    public void setCshsCompres(Byte cshsCompres) {
         this.cshsCompres = cshsCompres;
     }
 
-    public String getCshsFan() {
+    public Byte getCshsFan() {
         return cshsFan;
     }
 
-    public void setCshsFan(String cshsFan) {
+    public void setCshsFan(Byte cshsFan) {
         this.cshsFan = cshsFan;
     }
 
-    public String getCshsSaving() {
+    public Byte getCshsSaving() {
         return cshsSaving;
     }
 
-    public void setCshsSaving(String cshsSaving) {
+    public void setCshsSaving(Byte cshsSaving) {
         this.cshsSaving = cshsSaving;
     }
 
@@ -366,67 +378,67 @@ public class CsHistoryState extends AbstractDocumentOld implements Serializable 
         this.cshsDoor = cshsDoor;
     }
 
-    public Long getCshsEngine() {
+    public Byte getCshsEngine() {
         return cshsEngine;
     }
 
-    public void setCshsEngine(Long cshsEngine) {
+    public void setCshsEngine(Byte cshsEngine) {
         this.cshsEngine = cshsEngine;
     }
 
-    public Long getCshsKey() {
+    public Byte getCshsKey() {
         return cshsKey;
     }
 
-    public void setCshsKey(Long cshsKey) {
+    public void setCshsKey(Byte cshsKey) {
         this.cshsKey = cshsKey;
     }
 
-    public Long getCshsLight() {
+    public Integer getCshsLight() {
         return cshsLight;
     }
 
-    public void setCshsLight(Long cshsLight) {
+    public void setCshsLight(Integer cshsLight) {
         this.cshsLight = cshsLight;
     }
 
-    public Long getCshsLock() {
+    public Integer getCshsLock() {
         return cshsLock;
     }
 
-    public void setCshsLock(Long cshsLock) {
+    public void setCshsLock(Integer cshsLock) {
         this.cshsLock = cshsLock;
     }
 
-    public Long getCshsNetType() {
+    public Byte getCshsNetType() {
         return cshsNetType;
     }
 
-    public void setCshsNetType(Long cshsNetType) {
+    public void setCshsNetType(Byte cshsNetType) {
         this.cshsNetType = cshsNetType;
     }
 
-    public String getCshsBaseLac() {
+    public Integer getCshsBaseLac() {
         return cshsBaseLac;
     }
 
-    public void setCshsBaseLac(String cshsBaseLac) {
+    public void setCshsBaseLac(Integer cshsBaseLac) {
         this.cshsBaseLac = cshsBaseLac;
     }
 
-    public String getCshsBaseCi() {
+    public Integer getCshsBaseCi() {
         return cshsBaseCi;
     }
 
-    public void setCshsBaseCi(String cshsBaseCi) {
+    public void setCshsBaseCi(Integer cshsBaseCi) {
         this.cshsBaseCi = cshsBaseCi;
     }
 
-    public String getCshsOrder() {
+    public Long getCshsOrder() {
         return cshsOrder;
     }
 
-    public void setCshsOrder(String cshsOrder) {
+    public void setCshsOrder(Long cshsOrder) {
         this.cshsOrder = cshsOrder;
     }
 
