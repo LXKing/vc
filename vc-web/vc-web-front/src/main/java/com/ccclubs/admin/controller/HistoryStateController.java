@@ -1,25 +1,27 @@
 package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.model.HistoryState;
+import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.HistoryStateQuery;
 import com.ccclubs.admin.resolver.HistoryStateResolver;
 import com.ccclubs.admin.service.IHistoryStateService;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.task.threads.ReportThread;
+import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.vo.TableResult;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ccclubs.admin.vo.VoResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 车辆状态历史数据Controller
@@ -31,13 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/monitor/historyState")
 public class HistoryStateController {
-  Logger logger= LoggerFactory.getLogger(HistoryStateController.class);
+  private  static Logger logger= LoggerFactory.getLogger(HistoryStateController.class);
 
   @Autowired
   IHistoryStateService historyStateService;
 
   @Autowired
-  IReportService reportService;
+  ReportThread reportThread;
 
   /**
    * 获取分页列表数据
@@ -50,6 +52,7 @@ public class HistoryStateController {
       @RequestParam(defaultValue = "true") Boolean isResolve) {
 
     if (null == query.getCsNumberEquals()) {
+      //TODO 需要Phoenix支持只使用时间的查询。
       return new TableResult<HistoryState>();
     }
     TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows, order);
@@ -87,52 +90,40 @@ public class HistoryStateController {
   /**
    * 根据文本检索车辆历史状态信息并导出。
    */
-  @RequestMapping(value = "/report", method = RequestMethod.GET)
-  public void getReport(HttpServletResponse res, HistoryStateQuery query,
-      @RequestParam(defaultValue = "0") Integer page,
-      @RequestParam(defaultValue = "10") Integer rows,
-      @RequestParam(defaultValue = "desc") String order,
-      @RequestParam(defaultValue = "true") Boolean isResolve) {
-
-    if (null == query.getCsNumberEquals()) {
-      return;
+  @RequestMapping(value = "/report", method = RequestMethod.POST)
+  public VoResult<String> getReport(@RequestBody ReportParam<HistoryStateQuery> reportParam)
+  {
+    List<HistoryState> list;
+    if (null == reportParam.getQuery().getCsNumberEquals()) {
+      //TODO 需要Phoenix支持只使用时间的查询。
+      VoResult<String> r = new VoResult<>();
+      r.setSuccess(false).setMessage("导出任务需要足够的参数。");
+      return r;
     }
-    TableResult<HistoryState> pageInfo = historyStateService.getPage(query, page, rows, order);
-    List<HistoryState> list = pageInfo.getData();
+    TableResult<HistoryState> pageInfo = historyStateService.getPage(
+            reportParam.getQuery(),
+            reportParam.getPage(),
+            reportParam.getRows(),
+            reportParam.getOrder());
+    list = pageInfo.getData();
+
+
     for (HistoryState data : list) {
-      registResolvers(data, isResolve);
+      registResolvers(data, reportParam.getResolve());
     }
 
-    OutputStream os = null;
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    String dateNowStr = sdf.format(System.currentTimeMillis());
-    /**
-     * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
-     * */
-    String fileName = "historyStates_" + page + "_" + rows + "_" + dateNowStr + ".xls";
-    try {
-      res.setHeader("content-type", "application/vnd.ms-excel");
-      res.setContentType("application/vnd.ms-excel");
-      res.setHeader("Content-Disposition",
-          "attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
-      os = res.getOutputStream();
-      //文件路径
-      ByteArrayOutputStream bytes = null;
-      bytes = reportService.reportHistoryStates(list);
-      os.write(bytes.toByteArray());
-      os.flush();
-      os.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        if (os != null) {
-          os.close();
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
+    String uuid = UUID.randomUUID().toString();
+    reportThread.setBaseName("History_State");
+    reportThread.setList(list);
+    reportThread.setUserUuid(uuid);
+    reportThread.setReportParam(reportParam);
+    logger.info("start running report History_State thread.");
+    EvManageContext.getThreadPool().execute(reportThread);
+
+    VoResult<String> r = new VoResult<>();
+    r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+    r.setValue(uuid);
+    return r;
 
   }
 

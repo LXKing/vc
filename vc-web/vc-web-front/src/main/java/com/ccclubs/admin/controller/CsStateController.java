@@ -4,18 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.task.threads.ReportThread;
+import com.ccclubs.admin.util.EvManageContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ccclubs.admin.vo.TableResult;
@@ -39,8 +37,10 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/monitor/state")
 public class CsStateController {
+	private static Logger logger= LoggerFactory.getLogger(CsStateController.class);
+
 	@Autowired
-	IReportService reportService;
+	ReportThread reportThread;
 
 	@Autowired
 	ICsStateService csStateService;
@@ -131,47 +131,35 @@ public class CsStateController {
 		return VoResult.success().setValue(mapList);
 	}
 
-	@RequestMapping(value = "/report", method = RequestMethod.GET)
-	public void getReport(HttpServletResponse res, CsStateQuery query,
-						  @RequestParam(defaultValue = "0") Integer page,
-						  @RequestParam(defaultValue = "10") Integer rows) {
-		PageInfo<CsState> pageInfo = csStateService.getPage(query.getCrieria(), page, rows);
-		List<CsState> list = pageInfo.getList();
+	@RequestMapping(value = "/report", method = RequestMethod.POST)
+	public VoResult<String> getReport(@RequestBody ReportParam<CsStateQuery> reportParam ) {
+		List<CsState> list;
+		if (reportParam.getAllReport()==0){
+			PageInfo<CsState> pageInfo = csStateService.getPage(
+					reportParam.getQuery().getCrieria(),
+					reportParam.getPage(),
+					reportParam.getRows());
+			list = pageInfo.getList();
+		}
+		else {
+			list=csStateService.getAllByParam(reportParam.getQuery().getCrieria());
+		}
 		for(CsState data : list){
 			registResolvers(data);
 		}
 
-		OutputStream os = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String dateNowStr = sdf.format(System.currentTimeMillis());
-		/**
-		 * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
-		 * */
-		String fileName = "CsState_" + page + "_" + rows + "_" + dateNowStr + ".xls";
-		try {
-			res.setHeader("content-type", "application/vnd.ms-excel");
-			res.setContentType("application/vnd.ms-excel");
-			res.setHeader("Content-Disposition",
-					"attachment; filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859-1"));
-			os = res.getOutputStream();
-			//文件路径
-			ByteArrayOutputStream bytes = null;
-			bytes = reportService.reportCsState(list);
-			os.write(bytes.toByteArray());
-			os.flush();
-			os.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if (os != null) {
-					os.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		String uuid = UUID.randomUUID().toString();
+		reportThread.setBaseName("State");
+		reportThread.setList(list);
+		reportThread.setUserUuid(uuid);
+		reportThread.setReportParam(reportParam);
+		logger.info("start running report State thread.");
+		EvManageContext.getThreadPool().execute(reportThread);
 
+		VoResult<String> r = new VoResult<>();
+		r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+		r.setValue(uuid);
+		return r;
 
 	}
 	

@@ -12,6 +12,24 @@ public class ReportParam<T> implements Serializable {
     private Integer page=0;
     private Integer rows=10;
     private Integer allReport =0;
+    private String order="desc";
+    private Boolean isResolve=true;
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
+
+    public Boolean getResolve() {
+        return isResolve;
+    }
+
+    public void setResolve(Boolean resolve) {
+        isResolve = resolve;
+    }
 
     public Integer getPage() {
         return page;

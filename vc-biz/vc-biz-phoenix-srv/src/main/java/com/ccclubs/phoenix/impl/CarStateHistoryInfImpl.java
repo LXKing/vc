@@ -194,7 +194,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         }
         long end_mills=System.currentTimeMillis();
         long cost_seconds=(end_mills-start_mills)/1000;
-        System.out.println("本次查询耗时"+cost_seconds+"秒!");
+        logger.info("本次查询耗时"+cost_seconds+"秒!");
         return carStateList;
     }
     @Override

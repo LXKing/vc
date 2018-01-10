@@ -178,16 +178,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         return;
       }
 
-      mapping = terminalUtils.getMapping(gbMessage.getVin());
-      if (mapping == null || mapping.getMachine() == null || StringUtils
-          .empty(mapping.getNumber())) {
-        loggerBusiness.info(
-            JSON.toJSONString(
-                new TerminalNotRegister(gbMessage.getVin(), "GB", "国标协议终端，当前在线，但系统中不存在，请排查原因 ",
-                    gbMessage.getPacketDescr())));
-        return;
-      }
-
       getParseGbDataService().processMessage(gbMessage, srcByteArray);
       return;
     }

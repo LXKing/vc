@@ -80,11 +80,26 @@ public abstract class CrudService<D extends BaseDAO<T, PK>, T, PK> implements Ba
 //    }
 //
 //
-//	@Override
-//	public List<T> getAll() {
-//		return dao.selectAll();
-//	}
-    
+	@Override
+	public List<T> getAll() {
+		return dao.selectAll();
+	}
+
+	@Override
+	public List<T> getAllByParam(Object t) {
+		logger.debug("BankCrudService query all start param: t = {}", t);
+		List<T> results = null;
+		try {
+			results = dao.selectByExample(t);
+		} catch (Exception e) {
+			StringWriter sw = new StringWriter();
+			e.printStackTrace(new PrintWriter(sw));
+			logger.error("Exception BankCrudService query all error: {}", sw.toString());
+		}
+		logger.debug("BankCrudService query all end");
+		return results;
+	}
+
 	@Override
 	public PageInfo<T> getPage(Object t, int pageNum, int pageSize) {
 		logger.debug("BankCrudService queryPage start param: t = {}", t);
@@ -125,7 +140,7 @@ public abstract class CrudService<D extends BaseDAO<T, PK>, T, PK> implements Ba
 
 	@Override
 	public int batchDelete(Object[] ids) {
-		if(ids == null) return 0;
+		if(ids == null) {return 0;}
 		
 		int count = 0;
 		for(Object id : ids){

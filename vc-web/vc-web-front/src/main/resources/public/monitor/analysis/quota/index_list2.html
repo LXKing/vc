@@ -90,7 +90,7 @@
       var params = {rows: currSize, page: currPage, allReport: 1};
       params = transferParamsWithSortExport(params, "createTime");
       var clmsCopy = $.extend(true, [], clms);
-      params.clms = clmsCopy.splice(1, clms.length);
+      params.clms = clmsCopy.splice(1, clms.length-1);
       params.query = getFormData(this.getQueryForm());
       console.log(JSON.stringify(params));
 
@@ -135,10 +135,6 @@
                 end: function () {
                   //清除定时操作
                   clearInterval(myVar);
-//                  $('#exportWrapper').addClass("hidden");
-//                  $('.export-result').addClass("hidden");
-//                  $('.export-running').removeClass("hidden");
-//                  $('#downloadUrl .btn').attr('href', '');
                 }
               });
 
@@ -148,9 +144,6 @@
                       if (result.success && result.value != null) {
                         console.log(JSON.stringify(result));
                         //清除定时操作
-//                        $('#exportWrapper .export-result').removeClass("hidden");
-//                        $('#exportWrapper .export-running').addClass("hidden");
-//                        $('#exportWrapper .btn').attr('href', result.value);
                         $(window.parent.document).find("#exportWrapper .export-result").removeClass("hidden");
                         $(window.parent.document).find("#exportWrapper .export-running").addClass("hidden");
                         $(window.parent.document).find("#exportWrapper .btn").attr('href', result.value);
