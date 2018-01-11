@@ -13,7 +13,7 @@ public interface CsMiddleReportMapper {
 
     List<CsMiddleReport> selectByExample(CsMiddleReportExample example);
 
-    void  updateByExampleSelective(@Param("record") CsMiddleReport record,@Param("example") CsMiddleReportExample example);
+    void  updateByExampleSelective(@Param("record") CsMiddleReport record, @Param("example") CsMiddleReportExample example);
 
     void insertBatchSelective(List<CsMiddleReport> list);
 
