@@ -25,6 +25,11 @@ public class CsVehicleServiceImpl extends
 
   @Override
   public void insertBatchSelective(List<CsVehicle> list) {
-        getDao().insertBatchSelective(list);
+         getDao().insertBatchSelective(list);
+  }
+
+  @Override
+  public void updateBatchByExampleSelective(List<CsVehicle> list) {
+    getDao().updateBatchByExampleSelective(list);
   }
 }

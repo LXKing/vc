@@ -22,6 +22,10 @@
                     <li sctl="batchDel">
                         <a href="javascript:operate.batchDel();">批量删除</a>
                     </li>
+
+                    <li sctl="insertBatch">
+                        <a href="javascript:operate.insertBatch();">批量插入</a>
+                    </li>
                 </ul>
             </div>
             <div class="btn-group">
@@ -252,6 +256,27 @@
             }, function () {
             });
         },
+
+        insertBatch:function () {
+            var o=this;
+            showTopWin({
+                type: 2,
+                shade: 0.4,
+                maxmin: true,
+                area: ['770px', '580px'],
+                content: "/admin/machine/insertBatchReport.html?uuid="+(new Date().getTime()),
+                zIndex: layer.zIndex, //重点1
+                end:function(result){
+                    if(result.success){
+                        layer.msg("操作成功！", {icon: 1, time:1600});
+                        grid.reloadData();
+                    }
+                }
+            });
+        },
+
+
+
         batchDel: function () {
             var o = this;
             var ids = grid.getSelectIds();

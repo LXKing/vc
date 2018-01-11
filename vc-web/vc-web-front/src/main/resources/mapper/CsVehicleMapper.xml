@@ -41,11 +41,10 @@
 		</set>
 		where csv_id = #{csvId,jdbcType=INTEGER}
 	</update>
-	
 
 
 
-	<insert id="insertBatchSelective" useGeneratedKeys="true" parameterType="java.util.List">
+	<insert id="insertBatchSelective" useGeneratedKeys="true" parameterType="java.util.List" >
 		insert into cs_vehicle(
 		csv_access, csv_host, csv_car_no,csv_vin, csv_engine_no,
 		csv_certific, csv_color, csv_model,csv_machine, csv_machines,csv_color_code,csv_bataccu_code,
@@ -69,5 +68,87 @@
 		</foreach>
 	</insert>
 
+	<update id="updateBatchByExampleSelective" parameterType="java.util.List">
+		<foreach collection="list" index="index" item="item" open="" close="" separator=";">
+			update cs_vehicle
+			<set>
+				<if test=" item.csvAccess!= null">
+					csv_access=#{item.csvAccess,jdbcType=INTEGER},
+				</if>
 
+				<if test=" item.csvHost!= null">
+					csv_host=#{item.csvHost,jdbcType=INTEGER},
+				</if>
+
+				<if test=" item.csvCarNo!= null">
+					csv_car_no=#{item.csvCarNo,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvEngineNo!= null">
+					csv_engine_no=#{item.csvEngineNo,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvCertific!= null">
+					csv_certific=#{item.csvCertific,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvColor!= null">
+				 	csv_color=#{item.csvColor,jdbcType=TINYINT},
+				</if>
+
+				<if test=" item.csvModel!= null">
+					csv_model=#{item.csvModel,jdbcType=INTEGER},
+				</if>
+
+				<if test=" item.csvMachine!= null">
+					csv_machine=#{item.csvMachine,jdbcType=INTEGER},
+				</if>
+
+				<if test=" item.csvMachines!= null">
+					csv_machines=#{item.csvMachines,jdbcType=INTEGER},
+				</if>
+
+				<if test=" item.csvColorCode!= null">
+					csv_color_code=#{item.csvColorCode,jdbcType=TINYINT},
+				</if>
+
+				<if test=" item.csvBataccuCode!= null">
+					csv_bataccu_code=#{item.csvBataccuCode,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvProdDate!= null">
+				csv_prod_date=#{item.csvProdDate,jdbcType=TIMESTAMP},
+				</if>
+
+				<if test=" item.csvLandmark!= null">
+				csv_landmark=#{item.csvLandmark,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvDomain!= null">
+				csv_domain=#{item.csvDomain,jdbcType=TINYINT},
+				</if>
+
+				<if test=" item.csvModelCodeFull!= null">
+				csv_model_code_full=#{item.csvModelCodeFull,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvModelCodeSimple!= null">
+				csv_model_code_simple=#{item.csvModelCodeSimple,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvInteriorColorCode!= null">
+				csv_interior_color_code=#{item.csvInteriorColorCode,jdbcType=VARCHAR},
+				</if>
+
+				<if test=" item.csvStatus!= null">
+					csv_status=#{item.csvStatus,jdbcType=TINYINT},
+				</if>
+
+				<if test=" item.csvUpdateTime!= null">
+					csv_update_time=#{item.csvUpdateTime,jdbcType=TIMESTAMP}
+				</if>
+			</set>
+			where csv_vin=#{item.csvVin,jdbcType=VARCHAR}
+		</foreach>
+	</update>
 </mapper>

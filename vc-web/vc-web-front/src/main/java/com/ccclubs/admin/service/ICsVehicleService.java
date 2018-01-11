@@ -12,5 +12,7 @@ import java.util.List;
 public interface ICsVehicleService extends BaseService<CsVehicle, Integer>{
   int unbindTbox(CsVehicle record);
 
-  void insertBatchSelective(List<CsVehicle> list);
+ void insertBatchSelective(List<CsVehicle> list);
+
+  void updateBatchByExampleSelective(List<CsVehicle> list);
 }

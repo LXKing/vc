@@ -19,4 +19,6 @@ public interface CsVehicleMapper extends BaseDAO<CsVehicle,Integer>{
   int unbindTbox(CsVehicle record);
 
   void insertBatchSelective(List<CsVehicle> list);
+
+  void updateBatchByExampleSelective(List<CsVehicle> list);
 }
