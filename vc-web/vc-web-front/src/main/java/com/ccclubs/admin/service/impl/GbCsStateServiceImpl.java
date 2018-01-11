@@ -40,18 +40,35 @@ public class GbCsStateServiceImpl implements IGbCsStateService {
     public PageInfo<GBMessage> getPage(Object t, int page, int rows) {
         int offset = page == 1 ? 0 : (page - 1) * rows;
         List<GBMessage> list = new ArrayList<>();
-        Set<String> set = redisTemplate.opsForZSet().reverseRangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE, offset, rows);
-        for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
-            GBMessage gbMessage = new GBMessage();
-            String vin = iterator.next();
-            gbMessage.ReadFromBytes(Tools.HexString2Bytes((String) redisTemplate.opsForHash().get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin)));
-            list.add((gbMessage));
-        }
         PageInfo<GBMessage> pageInfo = new PageInfo<>();
-        pageInfo.setPageSize(rows);
-        pageInfo.setPageNum(page);
-        pageInfo.setTotal(redisTemplate.opsForZSet().size(RedisConst.REDIS_KEY_RT_STATES_ZSET));
-        pageInfo.setList(list);
+        if(null == t) {
+            Set<String> set = redisTemplate.opsForZSet()
+                .reverseRangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE,
+                    offset, rows);
+            for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
+                GBMessage gbMessage = new GBMessage();
+                String vin = iterator.next();
+                gbMessage.ReadFromBytes(Tools.HexString2Bytes((String) redisTemplate.opsForHash()
+                    .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin)));
+                list.add((gbMessage));
+            }
+
+            pageInfo.setPageSize(rows);
+            pageInfo.setPageNum(page);
+            pageInfo.setTotal(redisTemplate.opsForZSet().size(RedisConst.REDIS_KEY_RT_STATES_ZSET));
+            pageInfo.setList(list);
+        }else {
+            GBMessage gbMessage = new GBMessage();
+            String vin = t.toString();
+            gbMessage.ReadFromBytes(Tools.HexString2Bytes((String) redisTemplate.opsForHash()
+                .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin)));
+            list.add((gbMessage));
+
+            pageInfo.setPageSize(rows);
+            pageInfo.setPageNum(page);
+            pageInfo.setTotal(list.size());
+            pageInfo.setList(list);
+        }
         return pageInfo;
     }
 
