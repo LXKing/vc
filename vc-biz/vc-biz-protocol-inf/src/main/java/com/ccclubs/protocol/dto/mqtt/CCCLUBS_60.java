@@ -1309,6 +1309,44 @@ public class CCCLUBS_60 implements IMessageBody {
     }
   }
 
+  /**
+   * 获取自动配置状态
+   * **/
+  public Boolean getAutoConfigStatusLockdoor(){
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 152) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
+      return (autoConfigStatus.getAutoConfigStatus()&0x2)==0x0;//开启自动锁门
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * 获取自动配置状态
+   * **/
+  public Boolean getAutoConfigStatusCharge(){
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 152) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
+      return (autoConfigStatus.getAutoConfigStatus()&0x1)==0x0;//不开启自动蓄电
+    } else {
+      return null;
+    }
+  }
+
 
   @Override
   public byte[] WriteToBytes() {
