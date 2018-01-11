@@ -31,9 +31,9 @@ public class GbCsStateController {
    * 获取分页列表数据
    */
   @RequestMapping(value = "list", method = RequestMethod.GET)
-  public TableResult<GBMessage> list(@RequestParam(defaultValue = "1") Integer page,
+  public TableResult<GBMessage> list(String vin,@RequestParam(defaultValue = "1") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
-    PageInfo<GBMessage> pageInfo = igbCsStateService.getPage(null, page, rows);
+    PageInfo<GBMessage> pageInfo = igbCsStateService.getPage(vin, page, rows);
     TableResult<GBMessage> r = new TableResult<>(pageInfo);
     return r;
   }

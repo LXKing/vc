@@ -394,7 +394,7 @@
                               } else {
                                   option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
                               }
-                              table.reload(tableId, transferParamsWithSort(params, "csvId"));
+                              table.reload(tableId, transferParamsWithSort(option, "csvId"));
                           },
 							getSelectIds:function(){
 								var ids = [];
