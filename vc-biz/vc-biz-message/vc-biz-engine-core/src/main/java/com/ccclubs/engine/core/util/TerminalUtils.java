@@ -310,11 +310,11 @@ public class TerminalUtils {
       }
     }
   //修改重启关闭自动锁门
-    if (terminalInfo.getAutoConfigStatusLockdoor() != null) {
-      if (terminalInfo.getAutoConfigStatusLockdoor() == true && !functions.contains("#3#")) {
+    if (terminalInfo.getAutoConfigStatusUnlockdoor() != null) {
+      if (terminalInfo.getAutoConfigStatusUnlockdoor() == true && !functions.contains("#3#")) {
         functions = StringUtils.empty(functions) ? "#3#" : functions + ",#3#";
         csMachineNew.setCsmFunctions(functions);
-      } else if (terminalInfo.getAutoConfigStatusLockdoor() == false && functions.contains("#3#")) {
+      } else if (terminalInfo.getAutoConfigStatusUnlockdoor() == false && functions.contains("#3#")) {
         functions = functions.replaceAll(",#3#", "").replaceAll("#3#,", "").replaceAll("#3#", "");
         csMachineNew.setCsmFunctions(functions);
       }

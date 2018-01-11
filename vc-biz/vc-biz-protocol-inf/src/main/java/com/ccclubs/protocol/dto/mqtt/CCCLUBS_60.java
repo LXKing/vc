@@ -1312,7 +1312,7 @@ public class CCCLUBS_60 implements IMessageBody {
   /**
    * 获取自动配置状态
    * **/
-  public Boolean getAutoConfigStatusLockdoor(){
+  public Boolean getAutoConfigStatusUnlockdoor(){
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if ((item.getAdditionalId() & 0xFF) == 152) {
