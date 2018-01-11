@@ -309,7 +309,7 @@ public class TerminalUtils {
         csMachineNew.setCsmFunctions(functions);
       }
     }
-  //修改重启开启自动锁门
+  //修改重启关闭自动锁门
     if (terminalInfo.getAutoConfigStatusLockdoor() != null) {
       if (terminalInfo.getAutoConfigStatusLockdoor() == true && !functions.contains("#3#")) {
         functions = StringUtils.empty(functions) ? "#3#" : functions + ",#3#";

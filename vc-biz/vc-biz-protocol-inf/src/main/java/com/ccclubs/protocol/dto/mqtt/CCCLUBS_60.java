@@ -1322,7 +1322,7 @@ public class CCCLUBS_60 implements IMessageBody {
     }
     if (additionalItem != null) {
       MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
-      return (autoConfigStatus.getAutoConfigStatus()&0x2)==0x0;//开启自动锁门
+      return (autoConfigStatus.getAutoConfigStatus()&0x2)!=0x0;//关闭自动锁门
     } else {
       return null;
     }
