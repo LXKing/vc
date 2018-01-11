@@ -98,7 +98,7 @@ public class ReturnCheckImpl implements ReturnCheckInf{
         ReturnCheckOutput output = new ReturnCheckOutput();
 
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }

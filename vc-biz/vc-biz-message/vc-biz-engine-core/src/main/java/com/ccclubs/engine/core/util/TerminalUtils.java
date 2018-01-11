@@ -295,9 +295,31 @@ public class TerminalUtils {
       }
     }
 
-    // 插枪还车
+
     String functions =
         StringUtils.empty(csMachine.getCsmFunctions()) ? "" : csMachine.getCsmFunctions();
+
+//开启自动续电
+    if (terminalInfo.getAutoConfigStatusCharge() != null) {
+      if (terminalInfo.getAutoConfigStatusCharge() == true && !functions.contains("#4#")) {
+        functions = StringUtils.empty(functions) ? "#4#" : functions + ",#4#";
+        csMachineNew.setCsmFunctions(functions);
+      } else if (terminalInfo.getAutoConfigStatusCharge() == false && functions.contains("#4#")) {
+        functions = functions.replaceAll(",#4#", "").replaceAll("#4#,", "").replaceAll("#4#", "");
+        csMachineNew.setCsmFunctions(functions);
+      }
+    }
+  //修改重启关闭自动锁门
+    if (terminalInfo.getAutoConfigStatusUnlockdoor() != null) {
+      if (terminalInfo.getAutoConfigStatusUnlockdoor() == true && !functions.contains("#3#")) {
+        functions = StringUtils.empty(functions) ? "#3#" : functions + ",#3#";
+        csMachineNew.setCsmFunctions(functions);
+      } else if (terminalInfo.getAutoConfigStatusUnlockdoor() == false && functions.contains("#3#")) {
+        functions = functions.replaceAll(",#3#", "").replaceAll("#3#,", "").replaceAll("#3#", "");
+        csMachineNew.setCsmFunctions(functions);
+      }
+    }
+    // 插枪还车
     if (terminalInfo.getPlugGun() != null) {
       // 修改为插枪还车
       if (terminalInfo.getPlugGun() == 1 && !functions.contains("#2#")) {

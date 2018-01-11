@@ -126,7 +126,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 output.setMessageId(csRemote.getCsrId());
                 break;
             case 2://sync
-                output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+                output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
                 break;
             case 3://http
                 break;
@@ -187,7 +187,7 @@ public class OrderCmdImpl implements OrderCmdInf {
                 output.setMessageId(csRemote.getCsrId());
                 break;
             case 2://sync
-                output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+                output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
                 break;
             case 3://http
                 break;

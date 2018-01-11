@@ -25,7 +25,7 @@
   <div id="container" tabindex="0"></div>
   <div id="panel" class="scrollbar1">
     <input style="margin-top: 16px;" name="cssCarEquals" placeholder="请输入车架号"
-           class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/query">
+           class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/search">
     <div id="test1" style="height: 45px;"></div>
     <ul id="myList">
     </ul>
@@ -81,6 +81,8 @@
     radius: 1000,
     extensions: "all"
   });
+
+  var $vinId = $("input[name='cssCarEquals']");
 
   AMapUI.loadUI(['misc/MarkerList', 'overlay/AwesomeMarker', 'overlay/SimpleInfoWindow'],
       function (MarkerList, AwesomeMarker, SimpleInfoWindow) {
@@ -381,11 +383,11 @@
 //          alert($vinId.val());
           if ($vinId.val() === '') {
             params.page = 1;
-            params.cssCarEquals = undefined;
+            params.vin = undefined;
             loadData(url);
           } else {
             params.page = 1;
-            params.cssCarEquals = $vinId.val();
+            params.vin = $vinId.val();
             loadData(url);
           }
         });
