@@ -299,7 +299,7 @@ public class TerminalUtils {
     String functions =
         StringUtils.empty(csMachine.getCsmFunctions()) ? "" : csMachine.getCsmFunctions();
 
-//不开启自动续电
+//开启自动续电
     if (terminalInfo.getAutoConfigStatusCharge() != null) {
       if (terminalInfo.getAutoConfigStatusCharge() == true && !functions.contains("#4#")) {
         functions = StringUtils.empty(functions) ? "#4#" : functions + ",#4#";
@@ -309,7 +309,7 @@ public class TerminalUtils {
         csMachineNew.setCsmFunctions(functions);
       }
     }
-  //修改重启自动锁门
+  //修改重启开启自动锁门
     if (terminalInfo.getAutoConfigStatusLockdoor() != null) {
       if (terminalInfo.getAutoConfigStatusLockdoor() == true && !functions.contains("#3#")) {
         functions = StringUtils.empty(functions) ? "#3#" : functions + ",#3#";

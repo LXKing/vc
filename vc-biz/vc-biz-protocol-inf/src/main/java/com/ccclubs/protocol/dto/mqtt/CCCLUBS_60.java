@@ -1341,7 +1341,7 @@ public class CCCLUBS_60 implements IMessageBody {
     }
     if (additionalItem != null) {
       MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
-      return (autoConfigStatus.getAutoConfigStatus()&0x1)==0x0;//不开启自动蓄电
+      return (autoConfigStatus.getAutoConfigStatus()&0x1)!=0x0;//开启自动蓄电
     } else {
       return null;
     }
