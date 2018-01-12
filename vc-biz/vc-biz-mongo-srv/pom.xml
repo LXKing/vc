@@ -8,30 +8,32 @@
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>vc-biz-mongo-srv</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-mongodb</artifactId>
+            <artifactId>vc-frm-mongo</artifactId>
             <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-cache</artifactId>
+            <artifactId>vc-frm-spring</artifactId>
             <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-pub-orm</artifactId>
-            <version>${biz.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-mongo-orm</artifactId>
             <version>${biz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
     </dependencies>
-    <artifactId>vc-biz-mongo-srv</artifactId>
-
 
 </project>

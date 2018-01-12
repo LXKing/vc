@@ -26,5 +26,6 @@
         <module>vc-frm-cache</module>
         <module>vc-frm-phoenix</module>
         <module>vc-frm-oss</module>
+        <module>vc-frm-mongo</module>
     </modules>
 </project>

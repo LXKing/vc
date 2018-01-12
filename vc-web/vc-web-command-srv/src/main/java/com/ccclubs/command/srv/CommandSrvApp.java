@@ -1,7 +1,7 @@
 package com.ccclubs.command.srv;
 
 import com.ccclubs.command.util.CommandProp;
-import com.ccclubs.frm.mongodb.config.MongoConfig;
+import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.MqttOwnProperties;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
@@ -27,8 +27,7 @@ import org.springframework.context.annotation.Primary;
 @Import({MybatisConfig.class})
 @EnableConfigurationProperties({CommandProp.class, MqttAliyunProperties.class,
     MqttOwnProperties.class})
-@ImportAutoConfiguration({RedisAutoConfiguration.class, MongoConfig.class})
-//@ImportResource(locations = "classpath*:/com/ccclubs/terminal/xml/terminal-remote.xml")
+@ImportAutoConfiguration({RedisAutoConfiguration.class, MultipleMongoConfig.class})
 public class CommandSrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(CommandSrvApp.class);

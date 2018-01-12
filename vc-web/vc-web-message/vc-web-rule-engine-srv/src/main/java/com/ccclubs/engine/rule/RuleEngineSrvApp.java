@@ -2,7 +2,7 @@ package com.ccclubs.engine.rule;
 
 import com.ccclubs.common.BatchProperties;
 import com.ccclubs.engine.rule.inf.config.RuleEngineConfig;
-import com.ccclubs.frm.mongodb.config.MongoConfig;
+import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.MqttOwnProperties;
 import com.ccclubs.frm.mybatis.MybatisConfig;
@@ -30,7 +30,7 @@ import java.io.IOException;
 @SpringBootApplication
 @Import({MybatisConfig.class})
 @ImportAutoConfiguration({RedisAutoConfiguration.class,OnsProperties.class,
-        MqttAliyunProperties.class, MqttOwnProperties.class, RuleEngineConfig.class,MongoConfig.class,
+        MqttAliyunProperties.class, MqttOwnProperties.class, RuleEngineConfig.class, MultipleMongoConfig.class,
     BatchProperties.class})
 @EnableScheduling
 public class RuleEngineSrvApp extends SpringBootServletInitializer {

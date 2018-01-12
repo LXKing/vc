@@ -10,8 +10,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>www.ccclubs</groupId>
+			<artifactId>vc-biz-quota-model</artifactId>
+			<version>${biz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>www.ccclubs</groupId>
 			<artifactId>vc-frm-mybatis</artifactId>
-			<version>${demo.version}</version>
+			<version>${frm.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

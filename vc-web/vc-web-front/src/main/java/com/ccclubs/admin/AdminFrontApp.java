@@ -1,9 +1,12 @@
 package com.ccclubs.admin;
 
 import com.ccclubs.admin.config.MvcConfigurer;
-import com.ccclubs.admin.config.MybatisMapperConfig;
 import com.ccclubs.frm.druid.DruidJdbcConfig;
+import com.ccclubs.frm.mongo.config.HistoryMongoConfig;
+import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
+import com.ccclubs.frm.mongo.config.RemoteMongoConfig;
 import com.ccclubs.frm.mybatis.MybatisFactoryConfig;
+import com.ccclubs.frm.mybatis.MybatisMapperConfig;
 import com.ccclubs.frm.oss.OssAutoConfiguration;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -18,11 +21,8 @@ import org.springframework.context.annotation.Import;
  * @author jianghaiyang
  * @create 2017-09-15
  **/
-@SpringBootApplication
-@Import({DruidJdbcConfig.class, MybatisFactoryConfig.class, MybatisMapperConfig.class,
-    MvcConfigurer.class, RedisAutoConfiguration.class, OssAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = "com.ccclubs")
 public class AdminFrontApp extends SpringBootServletInitializer {
-
 
   /**
    * war打包用，相当于web.xml配置
@@ -38,10 +38,6 @@ public class AdminFrontApp extends SpringBootServletInitializer {
     springApplication.addListeners(new AppContext());
     springApplication.run(args);
 
-
-   // TestOss.getFromApplication().runTest();
-
   }
-
 
 }

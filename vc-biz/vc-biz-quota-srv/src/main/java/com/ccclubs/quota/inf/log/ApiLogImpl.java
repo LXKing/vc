@@ -1,7 +1,7 @@
 package com.ccclubs.quota.inf.log;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 import com.ccclubs.quota.vo.log.ApiLogInput;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;

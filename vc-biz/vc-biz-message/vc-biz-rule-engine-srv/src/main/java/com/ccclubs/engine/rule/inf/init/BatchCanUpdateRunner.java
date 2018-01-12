@@ -2,7 +2,7 @@ package com.ccclubs.engine.rule.inf.init;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.common.BatchProperties;
-import com.ccclubs.mongo.modify.UpdateCanService;
+import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.pub.orm.model.CsCan;

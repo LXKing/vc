@@ -1,6 +1,6 @@
 package com.ccclubs.mongo.orm.dao;
 
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 
 /**
  * Created by qsxiaogang on 2017/7/6.

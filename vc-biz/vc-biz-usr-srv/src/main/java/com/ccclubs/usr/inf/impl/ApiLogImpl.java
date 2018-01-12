@@ -2,16 +2,12 @@ package com.ccclubs.usr.inf.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.mongo.orm.dao.VcApiLogDao;
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 import com.ccclubs.usr.dto.ApiLogInput;
 import com.ccclubs.usr.dto.ApiLogOutput;
 import com.ccclubs.usr.inf.ApiLogInf;
 import com.ccclubs.usr.version.UserServiceVersion;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 /**
  * 记录API调用日志

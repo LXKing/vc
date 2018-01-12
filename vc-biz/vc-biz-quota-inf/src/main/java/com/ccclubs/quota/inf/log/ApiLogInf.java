@@ -1,6 +1,6 @@
 package com.ccclubs.quota.inf.log;
 
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 import com.ccclubs.quota.vo.log.ApiLogInput;
 import com.github.pagehelper.PageInfo;
 

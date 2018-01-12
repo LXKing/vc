@@ -14,7 +14,7 @@ import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
-import com.ccclubs.mongo.orm.model.CsLogger;
+import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_6C;
 import com.ccclubs.protocol.dto.mqtt.CStruct;

@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-mongodb</artifactId>
+            <artifactId>vc-frm-mongo</artifactId>
             <version>${frm.version}</version>
         </dependency>
         <dependency>

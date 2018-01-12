@@ -1,8 +1,7 @@
 package com.ccclubs.mongo.modify;
 
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
-import com.ccclubs.mongo.orm.model.CsRemote;
-import java.util.Date;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -68,7 +67,7 @@ public class UpdateRemoteService {
       update.set("csrResultCode", remote.getCsrResultCode());
     }
 
-    update.set("csrUpdateTime", new Date().getTime());
+    update.set("csrUpdateTime", System.currentTimeMillis());
 
     dao.update(query, update);
   }

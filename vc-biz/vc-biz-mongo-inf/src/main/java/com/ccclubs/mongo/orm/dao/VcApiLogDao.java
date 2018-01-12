@@ -1,7 +1,7 @@
 package com.ccclubs.mongo.orm.dao;
 
 
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 
 /**
  * API调用日志

@@ -1,7 +1,7 @@
 package com.ccclubs.engine.cmd.srv;
 
 import com.ccclubs.engine.cmd.inf.config.CmdEngineConfig;
-import com.ccclubs.frm.mongodb.config.MongoConfig;
+import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
 import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.MqttOwnProperties;
 import com.ccclubs.frm.mybatis.MybatisConfig;
@@ -28,7 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @Import({MybatisConfig.class})
 @ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class, CmdEngineConfig.class,
-    MongoConfig.class, MqttAliyunProperties.class, MqttOwnProperties.class})
+    MultipleMongoConfig.class, MqttAliyunProperties.class, MqttOwnProperties.class})
 @EnableScheduling
 public class CmdEngineSrvApp extends SpringBootServletInitializer {
 
