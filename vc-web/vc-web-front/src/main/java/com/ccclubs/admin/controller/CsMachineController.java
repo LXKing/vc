@@ -2,6 +2,7 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.model.CsMachine;
+import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.CsMachineQuery;
 import com.ccclubs.admin.service.ICsMachineService;
@@ -11,11 +12,20 @@ import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -290,4 +300,164 @@ public class CsMachineController {
     return r;
 
   }
+
+  /**
+   * 批量导入车辆信息
+   * @param fileUpload
+   * @return
+   */
+  @RequestMapping(value = "/insertBatch", method = RequestMethod.POST)
+  public VoResult<?> insertVchicleBatch(@RequestParam("fileUpload") MultipartFile fileUpload,CsMachine csMachineTemp) {
+    try {
+      List<CsMachine> existList =getConditionVinList(fileUpload,csMachineTemp);
+      List<CsMachine> tempList=csMachineService.selectAll();
+      Map<String,Object> tempMap=new HashMap<>();
+      for (CsMachine csMachine:tempList){
+        String csmTeNo=csMachine.getCsmTeNo();
+        String csmMobile=csMachine.getCsmMobile();
+        String csmNumber=csMachine.getCsmNumber();
+        //
+        tempMap.put(csmTeNo,1);
+        tempMap.put(csmMobile,1);
+        tempMap.put(csmNumber,1);
+      }
+      //更新vin码相同的list数据
+      List<CsMachine> updateList=new ArrayList<>();
+      //根据唯一索引==删除list中的数据
+      Iterator<CsMachine> it = existList.iterator();
+      while(it.hasNext()){
+        CsMachine csMcachine = it.next();
+        //csvVin码
+        if(csMcachine.getCsmTeNo()!=null){
+          if(tempMap.containsKey(csMcachine.getCsmTeNo())){
+            updateList.add(csMcachine);
+            it.remove();
+            continue;
+          }
+        }else if(csMcachine.getCsmMobile()!=null){
+          if (tempMap.containsKey(csMcachine.getCsmMobile())){
+            it.remove();
+            continue;
+          }
+        }else if(csMcachine.getCsmNumber()!=null){
+          if(tempMap.containsKey(csMcachine.getCsmNumber())){
+            it.remove();
+            continue;
+          }
+        }
+      }
+      //vin码相同时更新表中数据
+//      if (updateList!=null&&updateList.size()>0){
+//        csMachineService.updateBatchByExampleSelective( updateList);
+//      }
+      //插入数据
+      if(existList!=null&&existList.size()>0){
+        csMachineService.insertBatchSelective(existList);
+      }
+
+      return VoResult.success();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  public  List<CsMachine> getConditionVinList(MultipartFile file,CsMachine csMachineTemp){
+
+    List<CsMachine> externalList=new ArrayList<>();
+    try {
+      Workbook workbook=null;
+      InputStream is = file.getInputStream();
+      String excelName= file.getOriginalFilename();
+      if(excelName.indexOf(".xlsx")>-1){
+        workbook = new XSSFWorkbook(is);
+      }else{
+        workbook = new HSSFWorkbook(is);
+      }
+      // 循环工作表Sheet--从第三行开始计算
+      for (int numSheet =0; numSheet < 1; numSheet++) {
+        Sheet sheet = workbook.getSheetAt(numSheet);
+        if (sheet == null) {
+          continue;
+        }
+        int rows=sheet.getPhysicalNumberOfRows();
+        int columns=sheet.getRow(2).getPhysicalNumberOfCells();//从第二行开始算
+        // 循环行Row
+        CsMachine csMachine=null;
+        for (int rowNum = 2; rowNum < rows; rowNum++) {
+          String rowinfo = "";
+          Row row = sheet.getRow(rowNum);
+          if (row != null) {
+            csMachine = new CsMachine();
+            //遍历列
+            //状态默认值
+            for (int columnNum=1;columnNum<columns;columnNum++){
+              Cell cell = row.getCell(columnNum);
+              getExternalData(csMachine,cell,columnNum);
+            }
+            csMachine.setCsmAccess(csMachineTemp.getCsmAccess());
+            csMachine.setCsmHost(csMachineTemp.getCsmHost());
+            csMachine.setCsmTeType(csMachineTemp.getCsmTeType());
+            csMachine.setCsmProtocol(csMachineTemp.getCsmProtocol());
+            csMachine.setCsmStatus(csMachineTemp.getCsmStatus());
+            csMachine.setCsmAddTime(new Date());
+            csMachine.setCsmUpdateTime(new Date());
+            externalList.add(csMachine);
+          }
+        }
+        break;
+      }
+      return externalList;
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public  void getExternalData(CsMachine csMachine, Cell cell, int columnNum) {
+    if (cell != null) {
+      cell.setCellType(Cell.CELL_TYPE_STRING);
+      String value = cell.getStringCellValue();
+      if (null!=value&&!"".equals(value)){
+        switch (columnNum) {
+
+          case 1:
+            //车机号
+            csMachine.setCsmNumber(value);
+            break;
+
+          case 2:
+            //终端编号
+            csMachine.setCsmTeNo(value);
+            break;
+          case 3:
+          //终端型号
+            csMachine.setCsmTeModel(value);
+            break;
+
+          case 4:
+            //手机号码
+            csMachine.setCsmMobile(value);
+            break;
+
+          case 5:
+            //iccid
+            csMachine.setCsmIccid(value);
+            break;
+        }
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
 }

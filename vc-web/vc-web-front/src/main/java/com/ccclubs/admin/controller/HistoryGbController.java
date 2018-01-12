@@ -1,18 +1,14 @@
 package com.ccclubs.admin.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.ccclubs.admin.model.ReportParam;
+import com.ccclubs.admin.task.threads.ReportThread;
+import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ccclubs.admin.vo.TableResult;
@@ -37,6 +33,8 @@ public class HistoryGbController {
 	Logger logger= LoggerFactory.getLogger(HistoryGbController.class);
 	@Autowired
 	IHistoryGbService historyGbService;
+	@Autowired
+	ReportThread reportThread;
 
 	/**
 	 * 获取分页列表数据
@@ -71,8 +69,48 @@ public class HistoryGbController {
 			data.registResolver(com.ccclubs.admin.resolver.HistoryGbResolver.校验结果.getResolver());
 		}
 	}
-	
 
+	/**
+	 * 根据文本检索车辆历史状态信息并导出。
+	 */
+	@RequestMapping(value = "/report", method = RequestMethod.POST)
+	public VoResult<String> getReport(@RequestBody ReportParam<HistoryGbQuery> reportParam)
+	{
+		List<HistoryGb> list;
+		if (null == reportParam.getQuery().getCsVinEquals()||
+				null==reportParam.getQuery().getAddTimeEnd()||
+				null==reportParam.getQuery().getAddTimeStart()) {
+			//TODO 需要Phoenix支持只使用时间的查询。
+			VoResult<String> r = new VoResult<>();
+			r.setSuccess(false).setMessage("导出任务需要足够的参数。");
+			return r;
+		}
+		TableResult<HistoryGb> pageInfo = historyGbService.getPage(
+				reportParam.getQuery(),
+				reportParam.getPage(),
+				reportParam.getRows(),
+				reportParam.getOrder());
+		list = pageInfo.getData();
+
+
+		for (HistoryGb data : list) {
+			registResolvers(data);
+		}
+
+		String uuid = UUID.randomUUID().toString();
+		reportThread.setBaseName("History_Gb");
+		reportThread.setList(list);
+		reportThread.setUserUuid(uuid);
+		reportThread.setReportParam(reportParam);
+		logger.info("start running report History_Gb thread.");
+		EvManageContext.getThreadPool().execute(reportThread);
+
+		VoResult<String> r = new VoResult<>();
+		r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
+		r.setValue(uuid);
+		return r;
+
+	}
 	
 	
 

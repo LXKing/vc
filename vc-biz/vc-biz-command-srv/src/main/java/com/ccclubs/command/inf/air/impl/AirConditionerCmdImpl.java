@@ -108,7 +108,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
 
         AirMonoOutput output = new AirMonoOutput();
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }
@@ -146,7 +146,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
 
         AirAllOutput output = new AirAllOutput();
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }

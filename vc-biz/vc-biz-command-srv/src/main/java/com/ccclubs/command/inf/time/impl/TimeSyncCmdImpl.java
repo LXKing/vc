@@ -107,7 +107,7 @@ public class TimeSyncCmdImpl implements TimeSyncCmdInf {
     TimeSyncOutput output = new TimeSyncOutput();
 
     // 4.校验结果返回
-    output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+    output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
     return output;
   }
