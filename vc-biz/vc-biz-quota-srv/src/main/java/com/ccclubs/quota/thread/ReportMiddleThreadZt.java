@@ -31,7 +31,7 @@ public class ReportMiddleThreadZt {
 
 
 
-    @Scheduled(cron="0 15 5 * * ?")
+    @Scheduled(cron="${zt.threadInterval}")
     public void scheduleThread(){
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
@@ -78,8 +78,8 @@ public class ReportMiddleThreadZt {
                 BigDecimal csmrExceptionMile=null;
                 Short   csmrMileState=2;
                 if(csmrObdMile.compareTo(oldObdMile)==-1){
-                    csmrObdMile=oldObdMile;
                     csmrExceptionMile=csmrObdMile;
+                    csmrObdMile=oldObdMile;
                     csmrMileState=1;
                 }
                 Short csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
@@ -113,7 +113,7 @@ public class ReportMiddleThreadZt {
                 example=new CsMiddleReportExample();
                 criteria=example.createCriteria();
                 criteria.andCsmrStatusEqualTo((short)2).andCsmrNumberIn(numberList);//获取最新添加的数据
-                csMiddleReportMapper.updateByExampleSelective(csMiddleReport,example);
+                csMiddleReportMapper.updateByExampleSelective(record,example);
             }
             //往中间报表（cs_middle_report）添加数据
             csMiddleReportMapper.insertBatchSelective(dataList);
@@ -131,6 +131,7 @@ public class ReportMiddleThreadZt {
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+        criteria.andCsmrObdMileGreaterThan(new BigDecimal(0));
         example.setOrderByClause("csmr_vin");
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //把待统计的数据归类
