@@ -83,8 +83,7 @@ public class CsRemoteService {
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());
         query.limit(pageVo.getPageSize());
-        Sort sort = new Sort(Sort.Direction.DESC, "csrAddTime");
-        query.with(sort);
+        query.with(pageVo.getSort());
         List<CsRemote> logs = remoteMongoTemplate.find(query, CsRemote.class);
         PageInfo pageInfo = new PageInfo<>(logs);
         long total = remoteMongoTemplate.count(query, CsRemote.class);

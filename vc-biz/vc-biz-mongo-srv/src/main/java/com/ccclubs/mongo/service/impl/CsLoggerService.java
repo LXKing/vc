@@ -57,8 +57,7 @@ public class CsLoggerService {
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());
         query.limit(pageVo.getPageSize());
-        Sort sort = new Sort(Sort.Direction.DESC, "cslAddTime");
-        query.with(sort);
+        query.with(pageVo.getSort());
         List<CsLogger> logs = historyMongoTemplate.find(query, CsLogger.class);
         PageInfo pageInfo = new PageInfo<>(logs);
         long total = historyMongoTemplate.count(query, CsLogger.class);
