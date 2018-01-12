@@ -3,6 +3,7 @@ package com.ccclubs.quota.orm.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class CsIndexReport implements Serializable {
 
@@ -116,10 +117,10 @@ public class CsIndexReport implements Serializable {
      * 修改时间
      */
 
-    private String  modifyDate;
+    private Date modifyDate;
 
 
-    private String facTime;
+    private Date facTime;
 
 
     private static final long serialVersionUID = 1L;
@@ -388,19 +389,19 @@ public class CsIndexReport implements Serializable {
         this.dataType = dataType;
     }
 
-    public String getModifyDate() {
+    public Date getModifyDate() {
         return modifyDate;
     }
 
-    public void setModifyDate(String modifyDate) {
+    public void setModifyDate(Date modifyDate) {
         this.modifyDate = modifyDate;
     }
 
-    public String getFacTime() {
+    public Date getFacTime() {
         return facTime;
     }
 
-    public void setFacTime(String facTime) {
+    public void setFacTime(Date facTime) {
         this.facTime = facTime;
     }
 

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.aliyun.phoenix:ali-phoenix-core:4.11.0-AliHBase-1.1-0.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/aliyun/phoenix/ali-phoenix-core/4.11.0-AliHBase-1.1-0.2/ali-phoenix-core-4.11.0-AliHBase-1.1-0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/aliyun/phoenix/ali-phoenix-core/4.11.0-AliHBase-1.1-0.2/ali-phoenix-core-4.11.0-AliHBase-1.1-0.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/aliyun/phoenix/ali-phoenix-core/4.11.0-AliHBase-1.1-0.2/ali-phoenix-core-4.11.0-AliHBase-1.1-0.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

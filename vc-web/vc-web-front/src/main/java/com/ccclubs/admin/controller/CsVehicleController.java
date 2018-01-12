@@ -18,15 +18,23 @@ import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 车辆信息管理Controller
@@ -477,6 +485,241 @@ public class CsVehicleController {
 
 
 
+  }
+  /**
+   * 批量导入车辆信息
+   *
+   * @return
+   */
+  @RequestMapping(value = "/insertBatch", method = RequestMethod.POST)
+  public VoResult<?> insertVchicleBatch(@CookieValue("token") String token,@RequestParam("fileUpload") MultipartFile fileUpload,CsVehicle csVehicleTemp) {
+    try {
+
+      //
+      List<CsVehicle> existList =getConditionVinList(fileUpload,csVehicleTemp);
+      List<CsVehicle> tempList=csVehicleService.selectAll();
+      Map<String,Object> tempMap=new HashMap<>();
+      for (CsVehicle csVehicle:tempList){
+        String csvVin=csVehicle.getCsvVin();
+        String csvMachine=csVehicle.getCsvMachine()+"";
+        String csvEngineNo=csVehicle.getCsvEngineNo();
+        //
+        tempMap.put(csvVin,1);
+        tempMap.put(csvMachine,1);
+        tempMap.put(csvEngineNo,1);
+      }
+      //更新vin码相同的list数据
+      List<CsVehicle> updateList=new ArrayList<>();
+      //删除list中的数据
+      Iterator<CsVehicle> it = existList.iterator();
+      //插入的vin码
+     List<String>insertVinList=new ArrayList<>();
+      while(it.hasNext()){
+        CsVehicle csVehicle = it.next();
+        //csvVin码
+        if(tempMap.containsKey(csVehicle.getCsvVin())){
+          if(csVehicle.getCsvVin()!=null){
+            updateList.add(csVehicle);
+            it.remove();
+            continue;
+          }
+        }else if (tempMap.containsKey(csVehicle.getCsvMachine())){
+          if(csVehicle.getCsvMachine()!=null){
+            it.remove();
+            continue;
+          }
+        }else if(tempMap.containsKey(csVehicle.getCsvEngineNo())){
+          if(csVehicle.getCsvEngineNo()!=null){
+            it.remove();
+            continue;
+          }
+        }
+        insertVinList.add(csVehicle.getCsvVin());
+      }
+      //vin码相同时更新表中数据
+      if (updateList!=null&&updateList.size()>0){
+         csVehicleService.updateBatchByExampleSelective( updateList);
+      }
+      //插入数据
+
+      if(existList!=null&&existList.size()>0){
+        csVehicleService.insertBatchSelective(existList);
+      }
+
+      /**
+       * 根据用户所属组添加对应信息
+       */
+      SrvUser user = userAccessUtils.getCurrentUser(token);
+      SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+      if (srvGroup!=null&&"factory_user".equals(srvGroup.getSgFlag())){
+        if(insertVinList!=null&&insertVinList.size()>0){
+          CsVehicleCrieria condition=new CsVehicleCrieria();
+          CsVehicleCrieria.Criteria criteria=condition.createCriteria();
+          criteria.andcsvVinIn(insertVinList);
+          List<CsVehicle> resultIdList= csVehicleService.selectByExample(condition);
+            if(resultIdList!=null){
+              List<CsMapping> csMappingList=new ArrayList<>();
+              CsMapping csMapping=null;
+              for (CsVehicle csVehicle:resultIdList){
+                csMapping=new CsMapping();
+                csMapping.setCsmManage(user.getSuId());
+                csMapping.setCsmCar(csVehicle.getCsvId());
+                csMappingList.add(csMapping);
+              }
+              csMappingService.insertBatchSelective(csMappingList);
+            }
+          }
+      }
+      return VoResult.success();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  //获取excel中的内容
+  public  List<CsVehicle> getConditionVinList(MultipartFile file,CsVehicle csVehicleTemp){
+
+    List<CsVehicle> externalList=new ArrayList<>();
+    try {
+      Workbook workbook=null;
+      InputStream is = file.getInputStream();
+      String excelName= file.getOriginalFilename();
+      if(excelName.indexOf(".xlsx")>-1){
+        workbook = new XSSFWorkbook(is);
+      }else{
+        workbook = new HSSFWorkbook(is);
+      }
+      // 循环工作表Sheet--从第三行开始计算
+      for (int numSheet =0; numSheet < 1; numSheet++) {
+        Sheet sheet = workbook.getSheetAt(numSheet);
+        if (sheet == null) {
+          continue;
+        }
+        int rows=sheet.getPhysicalNumberOfRows();
+        int columns=sheet.getRow(2).getPhysicalNumberOfCells();//从第二行开始算
+
+        // 循环行Row
+        CsVehicle csVehicle=null;
+        for (int rowNum = 2; rowNum < rows; rowNum++) {
+          String rowinfo = "";
+          Row row = sheet.getRow(rowNum);
+          if (row != null) {
+            csVehicle = new CsVehicle();
+            //遍历列
+            //状态默认值
+            for (int columnNum=1;columnNum<columns;columnNum++){
+              Cell cell = row.getCell(columnNum);
+              getExternalData(csVehicle,cell,columnNum);
+            }
+              //
+            if(csVehicleTemp.getCsvAccess()!=null){
+              csVehicle.setCsvAccess(csVehicleTemp.getCsvAccess());
+            }else{
+              csVehicle.setCsvAccess(0);
+            }
+             //
+            if(csVehicleTemp.getCsvHost()!=null){
+              csVehicle.setCsvHost(csVehicleTemp.getCsvHost());
+            }else{
+              csVehicle.setCsvHost(0);
+            }
+
+            if(csVehicleTemp.getCsvStatus()!=null){
+              csVehicle.setCsvStatus(csVehicleTemp.getCsvStatus());
+            }else{
+              csVehicle.setCsvStatus((short)1);
+            }
+            csVehicle.setCsvAddTime(new Date());
+            csVehicle.setCsvUpdateTime(new Date());
+            externalList.add(csVehicle);
+          }
+        }
+        break;
+      }
+      return externalList;
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public  void getExternalData(CsVehicle csVehicle, Cell cell, int columnNum) {
+    if (cell != null) {
+      cell.setCellType(Cell.CELL_TYPE_STRING);
+      String value = cell.getStringCellValue();
+      if (null!=value&&!"".equals(value)){
+        switch (columnNum) {
+          //真实车牌号CsvCarNo
+          case 1:
+            csVehicle.setCsvCarNo(value);
+            break;
+          //车架号vin
+          case 2:
+            csVehicle.setCsvVin(value);
+            break;
+          //发动机号csv_engine_no
+          case 3:
+            csVehicle.setCsvEngineNo(value);
+            break;
+          //合格证号csv_certific
+          case 4:
+            csVehicle.setCsvCertific(value);
+            break;
+          //颜色csv_color
+          case 5:
+            csVehicle.setCsvColor(Integer.parseInt(value));
+            break;
+          case 6:
+            //终端编号
+            CsMachine record = new CsMachine();
+            record.setCsmTeNo(value);
+            CsMachine csMachine = csMachineService.selectOne(record);
+            if (csMachine != null) {
+              csVehicle.setCsvMachine(csMachine.getCsmId());
+            }
+            break;
+          case 7:
+            //车颜色代码csv_color_code
+            csVehicle.setCsvColorCode(Short.parseShort(value));
+            break;
+          case 8:
+            //可充电储能系统编码csv_bataccu_code
+            csVehicle.setCsvBataccuCode(value);
+            break;
+          case 9:
+            //出厂日期csv_prod_date
+            try{
+              SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+              Date dateTime =dff.parse(value);
+              csVehicle.setCsvProdDate(dateTime);
+            }catch (Exception e){
+              e.printStackTrace();
+            }
+            break;
+          case 10:
+            //地标类型csv_landmark
+            csVehicle.setCsvLandmark(value);
+            break;
+          case 11:
+            //车辆领域csv_domain
+            csVehicle.setCsvDomain(Short.parseShort(value));
+            break;
+          case 12:
+            //车型代码csv_model_code_full
+            csVehicle.setCsvModelCodeFull(value);
+            break;
+          case 13:
+            //车型备案型号csv_model_code_simple
+            csVehicle.setCsvModelCodeSimple(value);
+            break;
+          case 14:
+            //内饰颜色csv_interior_color_code
+            csVehicle.setCsvInteriorColorCode(value);
+            break;
+        }
+      }
+    }
   }
 
 }

@@ -39,6 +39,26 @@
 		<result column="csm_add_time" jdbcType="TIMESTAMP" property="csmAddTime" />
 		<result column="csm_status" jdbcType="TINYINT" property="csmStatus" />
 	</resultMap>
-	
-	
+
+
+	<insert id="insertBatchSelective" useGeneratedKeys="true" parameterType="java.util.List">
+		insert into cs_machine(
+		csm_access,csm_host, csm_number, csm_te_no, csm_te_type, csm_te_model,csm_mobile, csm_iccid,
+		 csm_protocol,csm_update_time,csm_add_time,csm_status
+		)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >
+			(
+			#{item.csmAccess,jdbcType=INTEGER}, #{item.csmHost,jdbcType=INTEGER},
+			#{item.csmNumber,jdbcType=VARCHAR}, #{item.csmTeNo,jdbcType=VARCHAR},
+			#{item.csmTeType,jdbcType=TINYINT}, #{item.csmTeModel,jdbcType= VARCHAR},
+			#{item.csmMobile,jdbcType=VARCHAR},#{item.csmIccid,jdbcType=VARCHAR},
+			#{item.csmProtocol,jdbcType=BIGINT}, #{item.csmUpdateTime,jdbcType=TIMESTAMP},
+			#{item.csmAddTime,jdbcType=TIMESTAMP},	#{item.csmStatus,jdbcType=TINYINT}
+
+			)
+		</foreach>
+	</insert>
+
+
 </mapper>
