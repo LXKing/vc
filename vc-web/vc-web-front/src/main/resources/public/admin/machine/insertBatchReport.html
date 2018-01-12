@@ -47,7 +47,7 @@
 					<dt>子域</dt>
 					<dd>
 						<input name="csmHost" placeholder="" class="form-control" >
-						<!--<label id="csmHost-error" class="error" for="csmHost"><i class="fa fa-info-circle fieldTip">必填</i></label>-->
+						<label id="csmHost-error" class="error" for="csmHost"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 
@@ -70,7 +70,7 @@
 					<dt>授权系统</dt>
 					<dd>
 						<input name="csmAccess" placeholder="" class="form-control" >
-						<!--<label id="csmAccess-error" class="error" for="csmAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>-->
+						<label id="csmAccess-error" class="error" for="csmAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 
@@ -126,7 +126,8 @@
                     },
                     "csmHost":{
                         "maxlength":11,
-                        "digits":true
+                        "digits":true,
+                        "required":true
                     },
                     "csmTeNo":{
                         "maxlength":32,
