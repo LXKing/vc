@@ -4,6 +4,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -29,13 +30,13 @@ public class MultipleMongoConfig {
 
     @Primary
     @Bean(name = HistoryMongoConfig.MONGO_TEMPLATE)
-    public MongoTemplate primaryMongoTemplate() throws Exception {
+    public MongoTemplate historyMongoTemplate() throws Exception {
         return new MongoTemplate(historyFactory(this.mongoProperties.getHistory()));
     }
 
     @Bean
     @Qualifier(RemoteMongoConfig.MONGO_TEMPLATE)
-    public MongoTemplate secondaryMongoTemplate() throws Exception {
+    public MongoTemplate remoteMongoTemplate() throws Exception {
         return new MongoTemplate(remoteFactory(this.mongoProperties.getRemote()));
     }
 

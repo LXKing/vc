@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
+import org.springframework.data.domain.Pageable;
 
 public class TableResult<T> {
 
@@ -22,8 +23,18 @@ public class TableResult<T> {
         this.data = page.getList() == null ? new ArrayList<>() : page.getList();
     }
 
+    public TableResult(int pageNum,int pageSize,PageInfo<T> page) {
+        this.page = new Page(pageNum, pageSize, page.getTotal());
+        this.data = page.getList() == null ? new ArrayList<>() : page.getList();
+    }
+
     public TableResult(org.springframework.data.domain.Page<T> page) {
         this.page = new Page(page.getNumber(), page.getSize(), page.getTotalElements());
+        this.data = page.getContent() == null ? new ArrayList<>() : page.getContent();
+    }
+
+    public TableResult(int pageNum,int pageSize,org.springframework.data.domain.Page<T> page) {
+        this.page = new Page(pageNum, pageSize, page.getTotalElements());
         this.data = page.getContent() == null ? new ArrayList<>() : page.getContent();
     }
 

@@ -3,14 +3,11 @@ package com.ccclubs.admin.controller;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.mongo.orm.query.CsLoggerQuery;
-import com.ccclubs.mongo.srv.CsLoggerService;
+import com.ccclubs.mongo.service.impl.CsLoggerService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * CsLogger
@@ -29,14 +26,27 @@ public class CsLoggerController {
 
     /**
      * 获取分页列表数据
+     * @param query
+     * @param page
+     * @param rows
+     * @return
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsLogger> list(CsLoggerQuery query,
                                       @RequestParam(defaultValue = "0") Integer page,
                                       @RequestParam(defaultValue = "10") Integer rows) {
-        Page<CsLogger> pageResult = csLoggerService.getPage(query, new PageRequest(page, rows));
-        TableResult<CsLogger> tableResult = new TableResult<>(pageResult);
+        PageInfo<CsLogger> pageResult = csLoggerService.getPage(query, new PageRequest(page, rows));
+        TableResult<CsLogger> tableResult = new TableResult<>(page, rows, pageResult);
         return tableResult;
     }
 
+    /**
+     * 删除数据
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "delete/{ids}", method = RequestMethod.DELETE)
+    public int list(@PathVariable("ids") String ids) {
+        return csLoggerService.delete(ids);
+    }
 }
