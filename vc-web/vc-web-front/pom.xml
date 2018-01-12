@@ -16,6 +16,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
         </dependency>
+        <!-- 容器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+        <!-- frm -->
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-mybatis</artifactId>
@@ -23,12 +29,28 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-mongo-srv</artifactId>
+            <artifactId>vc-frm-oss</artifactId>
             <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-oss</artifactId>
+            <artifactId>vc-frm-dubbox</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-redis</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-spring</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <!-- biz -->
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-mongo-srv</artifactId>
             <version>${frm.version}</version>
         </dependency>
         <dependency>
@@ -48,42 +70,22 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-dubbox</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-redis</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-phoenix-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
+        <!-- 第三方 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-core</artifactId>
-            <version>${frm.version}</version>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.13</version>
+            <version>3.9</version>
             <exclusions>
                 <exclusion>
                     <artifactId>poi</artifactId>
@@ -100,6 +102,7 @@
             <artifactId>commons-io</artifactId>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
