@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("command/csRemote")
+@RequestMapping("history/csRemote")
 public class CsRemoteController {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")

@@ -46,7 +46,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public List<T> list(Query query) {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 return this.historyMongoTemplate.find(query, this.getClazz());
@@ -59,7 +59,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public T findOne(Query query) {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 return this.historyMongoTemplate.findOne(query, this.getClazz());
@@ -75,7 +75,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         if (null != update) {
             update.set("lastModifiedDate", DateTime.now());
         }
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 this.historyMongoTemplate.findAndModify(query, update, this.getClazz());
@@ -91,7 +91,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public T save(T entity) {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         try {
             switch (packageName) {
                 case MongoConstants.HISTORY_PACKAGE_SCAN:
@@ -115,7 +115,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      */
     @Override
     public T findById(Object id) {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 return this.historyMongoTemplate.findById(id, this.getClazz());
@@ -128,7 +128,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public List<T> list() {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 return this.historyMongoTemplate.findAll(getClazz());
@@ -142,7 +142,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public void deleteById(Object id) {
-        String packageName = this.clazz.getPackage().getName();
+        String packageName = this.getClazz().getPackage().getName();
         switch (packageName) {
             case MongoConstants.HISTORY_PACKAGE_SCAN:
                 this.historyMongoTemplate.remove(new Query(Criteria.where("_id").is(id)),
