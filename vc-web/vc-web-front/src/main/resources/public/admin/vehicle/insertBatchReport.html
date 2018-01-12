@@ -23,7 +23,7 @@
 <body >
 <br/>
 <br/>
-	<a style="margin-left:30px;"  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/excelTemplate.xls">条件模板下载(内)</a>
+	<a style="margin-left:30px;"  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/csVehicleTemplate.xlsx">条件模板下载</a>
 	<br/>
 	<br/>
 
@@ -36,14 +36,16 @@
 				<dl>
 					<dt>Excel文件上传</dt>
 					<dd>
-						<input  placeholder=""    type="file" class="form-control" id="fileUpload"  name="fileUpload" /><!-- 定义change事件,选择文件后触发 -->
+						<input style="height: 35px; text-align:left;vertical-align:middle" placeholder=""    type="file" class="form-control" id="fileUpload"  name="fileUpload" /><!-- 定义change事件,选择文件后触发 -->
 						<label id="file-error" class="error" for="fileUpload"><i class="fa fa-info-circle fieldTip">必填</i></label>
 						<br/>
 						<span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
 					</dd>
 				</dl>
-
 			</div>
+
+			<br/>
+			<br/>
 
 			<div class="form-group" id="conditionId" style="...">
 

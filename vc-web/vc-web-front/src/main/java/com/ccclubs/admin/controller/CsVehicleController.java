@@ -546,7 +546,6 @@ public class CsVehicleController {
         csVehicleService.insertBatchSelective(existList);
       }
 
-
       /**
        * 根据用户所属组添加对应信息
        */
@@ -571,7 +570,6 @@ public class CsVehicleController {
             }
           }
       }
-
       return VoResult.success();
     } catch (Exception e) {
       e.printStackTrace();
