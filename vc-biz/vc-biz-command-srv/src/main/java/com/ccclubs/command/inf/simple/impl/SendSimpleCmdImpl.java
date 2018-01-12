@@ -157,7 +157,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 output.setMessageId(csRemote.getCsrId());
                 break;
             case 2://sync
-                output = confirmResult(csRemote, structId);
+                output = confirmResult(csRemote, structId, csMachine);
                 break;
             case 3://http
                 break;
@@ -165,7 +165,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         return output;
     }
 
-    private SimpleCmdOutput confirmResult(CsRemote csRemote, Integer structId) {
+    private SimpleCmdOutput confirmResult(CsRemote csRemote, Integer structId, CsMachine csMachine) {
         Long startTime = System.currentTimeMillis();
         try {
             while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
@@ -177,7 +177,12 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                     csRemote.setCsrUpdateTime(System.currentTimeMillis());
                     csRemote.setCsrStatus(1);
                     csRemote.setCsrResult(result);
-                    loggerBusiness.info(JSONObject.toJSONString(csRemote));
+                    JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
+                    jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
+                    jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
+                    jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
+                    jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+                    loggerBusiness.info(JSONObject.toJSONString(jsonObject));
                     CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result, new TypeReference<CommonResult<SimpleCmdOutput>>() {
                     });
 
@@ -196,7 +201,12 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
             logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());
             csRemote.setCsrStatus(-1);
-            loggerBusiness.info(JSONObject.toJSONString(csRemote));
+            JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
+            jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
+            jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
+            jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
+            jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+            loggerBusiness.info(JSONObject.toJSONString(jsonObject));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
 
         } catch (ApiException ex) {

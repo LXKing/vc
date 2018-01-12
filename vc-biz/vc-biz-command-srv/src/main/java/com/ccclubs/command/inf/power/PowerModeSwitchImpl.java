@@ -103,7 +103,7 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
         PowerModeOutput output = new PowerModeOutput();
 
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
 

@@ -1,467 +1,468 @@
 <div class="menubar">
-    <div class="buttoncons">
-        <button type="button" class="btn btn-primary  btn-outline" onclick="operate.add();" sctl="add">
-            <i class="glyphicon fa fa-plus-circle"></i>
-            新增
+  <div class="buttoncons">
+    <button type="button" class="btn btn-primary  btn-outline" onclick="operate.add();" sctl="add">
+      <i class="glyphicon fa fa-plus-circle"></i>
+      新增
+    </button>
+
+    <div class="btn-group" title="列">
+      <div class="btn-group">
+        <button data-toggle="dropdown"
+                class="btn btn-default dropdown-toggle btn-outline gridMoreOper"
+                aria-expanded="false">
+          <i class="glyphicon fa fa-cogs"></i>
+          操作
+          <span class="caret"></span>
         </button>
 
-        <div class="btn-group" title="列">
-            <div class="btn-group">
-                <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper"
-                        aria-expanded="false">
-                    <i class="glyphicon fa fa-cogs"></i>
-                    操作
-                    <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu">
-                    <li sctl="exportData">
-                        <a href="javascript:operate.exportData();">数据导出</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li sctl="batchDel">
-                        <a href="javascript:operate.batchDel();">批量删除</a>
-                    </li>
-
-                    <li sctl="insertBatch">
-                        <a href="javascript:operate.insertBatch();">批量插入</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="btn-group">
-                <button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown"
-                        aria-expanded="false">
-                    <i class="glyphicon glyphicon-list"></i>
-                    自定义显示列
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu tableMenu showHideMenu" role="menu">
-                    <li><label><input value="csmId" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>编号</label></li>
-                    <li><label><input value="csmAccessText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>接入商</label></li>
-                    <li><label><input value="csmHost" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>子域</label></li>
-                    <li><label><input value="csmNumber" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>车机号</label></li>
-                    <li><label><input value="csmTeNo" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>序列号</label></li>
-                    <li><label><input value="csmTeTypeText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>终端类型</label></li>
-                    <li><label><input value="csmTeModel" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>终端型号</label></li>
-                    <li><label><input value="csmTeCode" type="checkbox" onclick='showHideColumn(this, this.value);'>厂商代码</label>
-                    </li>
-                    <li><label><input value="csmTeLotNo" type="checkbox" onclick='showHideColumn(this, this.value);'>终端批号</label>
-                    </li>
-                    <li><label><input value="csmTeSerial" type="checkbox" onclick='showHideColumn(this, this.value);'>终端流水</label>
-                    </li>
-                    <li><label><input value="csmMobile" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>SIM卡</label></li>
-                    <li><label><input value="csmIccid" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>ICCID</label></li>
-                    <li><label><input value="csmPassword" type="checkbox" onclick='showHideColumn(this, this.value);'>服务密码</label>
-                    </li>
-                    <li><label><input value="csmProtocolText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>协议类型</label></li>
-                    <li><label><input value="csmFunctions" type="checkbox" onclick='showHideColumn(this, this.value);'>功能标签</label>
-                    </li>
-                    <li><label><input value="csmBluetoothVersion" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>蓝牙版本</label></li>
-                    <li><label><input value="csmBluetoothMac" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>蓝牙地址</label></li>
-                    <li><label><input value="csmBluetoothPsd" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>蓝牙密码</label></li>
-                    <li><label><input value="csmMqttFlag" type="checkbox" onclick='showHideColumn(this, this.value);'>服务器标识</label>
-                    </li>
-                    <li><label><input value="csmSuperSim" type="checkbox" onclick='showHideColumn(this, this.value);'>超级手机号</label>
-                    </li>
-                    <li><label><input value="csmV2" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>硬件版本</label></li>
-                    <li><label><input value="csmV3" type="checkbox" onclick='showHideColumn(this, this.value);'>DVD当前版本</label>
-                    </li>
-                    <li><label><input value="csmV3To" type="checkbox" onclick='showHideColumn(this, this.value);'>DVD最新版本</label>
-                    </li>
-                    <li><label><input value="csmSuitText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>适配车型</label></li>
-                    <li><label><input value="csmTlV1" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>软件版本</label></li>
-                    <li><label><input value="csmTlV2" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>分时租赁版本</label></li>
-                    <li><label><input value="csmNetType" type="checkbox" onclick='showHideColumn(this, this.value);'>网络类型</label>
-                    </li>
-                    <li><label><input value="csmProTypeText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>终端协议</label></li>
-                    <li><label><input value="csmBaudRate" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>CAN1波特率</label></li>
-                    <li><label><input value="csmRemark" type="checkbox" onclick='showHideColumn(this, this.value);'>备注信息</label>
-                    </li>
-                    <li><label><input value="csmUpdateTime" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>修改时间</label></li>
-                    <li><label><input value="csmAddTime" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>添加时间</label></li>
-                    <li><label><input value="csmStatusText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>状态</label></li>
-                </ul>
-            </div>
-        </div>
+        <ul class="dropdown-menu">
+          <li sctl="exportData">
+            <a href="javascript:operate.exportData();">数据导出</a>
+          </li>
+          <li class="divider"></li>
+          <li sctl="batchDel">
+            <a href="javascript:operate.batchDel();">批量删除</a>
+          </li>
+        </ul>
+      </div>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default btn-outline dropdown-toggle"
+                data-toggle="dropdown"
+                aria-expanded="false">
+          <i class="glyphicon glyphicon-list"></i>
+          自定义显示列
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu tableMenu showHideMenu" role="menu">
+          <li><label><input value="csmId" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>编号</label></li>
+          <li><label><input value="csmAccessText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>接入商</label></li>
+          <li><label><input value="csmHost" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>子域</label></li>
+          <li><label><input value="csmNumber" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>车机号</label></li>
+          <li><label><input value="csmTeNo" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>序列号</label></li>
+          <li><label><input value="csmTeTypeText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>终端类型</label></li>
+          <li><label><input value="csmTeModel" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>终端型号</label></li>
+          <li><label><input value="csmTeCode" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>厂商代码</label>
+          </li>
+          <li><label><input value="csmTeLotNo" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>终端批号</label>
+          </li>
+          <li><label><input value="csmTeSerial" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>终端流水</label>
+          </li>
+          <li><label><input value="csmMobile" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>SIM卡</label></li>
+          <li><label><input value="csmIccid" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>ICCID</label></li>
+          <li><label><input value="csmPassword" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>服务密码</label>
+          </li>
+          <li><label><input value="csmProtocolText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>协议类型</label></li>
+          <li><label><input value="csmFunctions" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>功能标签</label>
+          </li>
+          <li><label><input value="csmBluetoothVersion" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>蓝牙版本</label></li>
+          <li><label><input value="csmBluetoothMac" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>蓝牙地址</label></li>
+          <li><label><input value="csmBluetoothPsd" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>蓝牙密码</label></li>
+          <li><label><input value="csmMqttFlag" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>服务器标识</label>
+          </li>
+          <li><label><input value="csmSuperSim" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>超级手机号</label>
+          </li>
+          <li><label><input value="csmV2" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>硬件版本</label></li>
+          <li><label><input value="csmV3" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>DVD当前版本</label>
+          </li>
+          <li><label><input value="csmV3To" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>DVD最新版本</label>
+          </li>
+          <li><label><input value="csmSuitText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>适配车型</label></li>
+          <li><label><input value="csmTlV1" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>软件版本</label></li>
+          <li><label><input value="csmTlV2" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>分时租赁版本</label></li>
+          <li><label><input value="csmNetType" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>网络类型</label>
+          </li>
+          <li><label><input value="csmProTypeText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>终端协议</label></li>
+          <li><label><input value="csmBaudRate" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>CAN1波特率</label></li>
+          <li><label><input value="csmRemark" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>备注信息</label>
+          </li>
+          <li><label><input value="csmUpdateTime" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>修改时间</label></li>
+          <li><label><input value="csmAddTime" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>添加时间</label></li>
+          <li><label><input value="csmStatusText" checked="checked" type="checkbox"
+                            onclick='showHideColumn(this, this.value);'>状态</label></li>
+        </ul>
+      </div>
     </div>
+  </div>
 </div>
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-    <a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail"
-       title="查看"><i class="fa fa-file-text"></i></a>
-    <a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i
-            class="fa fa-wrench"></i></a>
-    <a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i
-            class="fa fa-trash"></i></a>
+  <a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn"
+     lay-event="detail"
+     title="查看"><i class="fa fa-file-text"></i></a>
+  <a href='javascript:' sctl="update" class="btn btn-warning btn-outline grid_oper_btn"
+     lay-event="edit" title="编辑"><i
+      class="fa fa-wrench"></i></a>
+  <a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del"
+     title="删除"><i
+      class="fa fa-trash"></i></a>
 </div>
 
 <script type="text/javascript">
-    var currPage = 1, currSize = 15;
+  var currPage = 1, currSize = 15;
 
-    var operate = {
-        getGrid: function () {
-            return grid;
-        },
-        getQueryForm: function () {
-            return $(".queryform");
-        },
-        getMenuBar: function () {
-            return $(".btn-group");
-        },
-        query: function () {
-            grid.reloadData({where: getFormData(this.getQueryForm())});
-        },
+  var operate = {
+    getGrid: function () {
+      return grid;
+    },
+    getQueryForm: function () {
+      return $(".queryform");
+    },
+    getMenuBar: function () {
+      return $(".btn-group");
+    },
+    query: function () {
+      grid.reloadData({where: getFormData(this.getQueryForm())});
+    },
 
+    exportData: function () {
+      var params = {rows: currSize, page: currPage, allReport: 1};
+      params = transferParamsWithSortExport(params, "csmId");
+      var clmsCopy = $.extend(true, [], clms);
+      params.clms = clmsCopy.splice(1, clms.length - 2);
+      params.query = getFormData(this.getQueryForm());
+      console.log(JSON.stringify(params));
 
-        exportData: function () {
-            var params = {rows: currSize, page: currPage, allReport: 1};
-            params = transferParamsWithSortExport(params, "csmId");
-            var clmsCopy = $.extend(true, [], clms);
-            params.clms = clmsCopy.splice(1, clms.length-2);
-            params.query = getFormData(this.getQueryForm());
-            console.log(JSON.stringify(params));
+      var myVar;
 
-            var myVar;
+      ajaxRequest(getServUrl("/admin/machine/report"), "POST",
+          JSON.stringify(params), function (r) {
+            if (r.success) {
+              console.log(JSON.stringify(r));
 
-            ajaxRequest(getServUrl("/admin/machine/report"), "POST",
-                JSON.stringify(params), function (r) {
-                    if (r.success) {
-                        console.log(JSON.stringify(r));
-
-                        showTopWin({
-                            type: 1,
-                            shade: 0.4,
-                            title: '导出Excel文件',
-                            maxmin: true,
-                            area: ['550px', '185px'],
-                            content: '<div id="exportWrapper" class="modal-body">\n'
-                            + '  <div class="row">\n'
-                            + '    <div class="col-xs-12">\n'
-                            + '      <div class="progress active">\n'
-                            + '        <div id="progressbar" class="progress-bar progress-bar-primary progress-bar-striped"\n'
-                            + '             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"\n'
-                            + '             style="width: 100%;">\n'
-                            + '          <span class="sr-only">0% Complete (success)</span>\n'
-                            + '        </div>\n'
-                            + '      </div>\n'
-                            + '    </div>\n'
-                            + '  </div>\n'
-                            + '  <div class="row export-running">\n'
-                            + '    <div class="col-xs-12">\n'
-                            + '      正在执行数据导出任务\n'
-                            + '    </div>\n'
-                            + '  </div>\n'
-                            + '  <div class="row export-result hidden">\n'
-                            + '    <div class="col-xs-12">\n'
-                            + '      <span id="downloadUrl">Excel文件已经导出，<a target="_blank" class="btn btn-primary"><i\n'
-                            + '          class="fa fa-download"></i>点击下载文件</a></span>\n'
-                            + '    </div>\n'
-                            + '  </div>\n'
-                            + '</div>',
-                            zIndex: layer.zIndex, //重点1
-                            end: function () {
-                                //清除定时操作
-                                clearInterval(myVar);
-                            }
-                        });
-
-                        myVar = setInterval(function () {
-                            ajaxRequest(getServUrl("/report/fetch"), "GET",
-                                {fileUuid: r.value}, function (result) {
-                                    if (result.success && result.value != null) {
-                                        console.log(JSON.stringify(result));
-                                        //清除定时操作
-                                        $(window.parent.document).find("#exportWrapper .export-result").removeClass("hidden");
-                                        $(window.parent.document).find("#exportWrapper .export-running").addClass("hidden");
-                                        $(window.parent.document).find("#exportWrapper .btn").attr('href', result.value);
-                                        clearInterval(myVar);
-                                    }
-                                }, false);
-                        }, 2000);
-                    }
-                }, false, "application/json;charset=UTF-8");
-        },
-        add: function () {
-            var o = this;
-            showTopWin({
-                type: 2,
+              showTopWin({
+                type: 1,
                 shade: 0.4,
+                title: '导出Excel文件',
                 maxmin: true,
-                area: ['770px', '580px'],
-                content: "/admin/machine/add.html?uuid=" + (new Date().getTime()),
+                area: ['550px', '185px'],
+                content: '<div id="exportWrapper" class="modal-body">\n'
+                + '  <div class="row">\n'
+                + '    <div class="col-xs-12">\n'
+                + '      <div class="progress active">\n'
+                + '        <div id="progressbar" class="progress-bar progress-bar-primary progress-bar-striped"\n'
+                + '             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"\n'
+                + '             style="width: 100%;">\n'
+                + '          <span class="sr-only">0% Complete (success)</span>\n'
+                + '        </div>\n'
+                + '      </div>\n'
+                + '    </div>\n'
+                + '  </div>\n'
+                + '  <div class="row export-running">\n'
+                + '    <div class="col-xs-12">\n'
+                + '      正在执行数据导出任务\n'
+                + '    </div>\n'
+                + '  </div>\n'
+                + '  <div class="row export-result hidden">\n'
+                + '    <div class="col-xs-12">\n'
+                + '      <span id="downloadUrl">Excel文件已经导出，<a target="_blank" class="btn btn-primary"><i\n'
+                + '          class="fa fa-download"></i>点击下载文件</a></span>\n'
+                + '    </div>\n'
+                + '  </div>\n'
+                + '</div>',
                 zIndex: layer.zIndex, //重点1
-                end: function (result) {
-                    if (result.success) {
-                        layer.msg("操作成功！", {icon: 1, time: 1600});
-                        grid.reloadData();
-                    }
+                end: function () {
+                  //清除定时操作
+                  clearInterval(myVar);
                 }
-            });
-        },
-        update: function (id) {
-            var o = this;
-            showTopWin({
-                type: 2,
-                shade: 0.4,
-                maxmin: true,
-                area: ['770px', '580px'],
-                content: "/admin/machine/edit.html?id=" + id,
-                zIndex: layer.zIndex, //重点1
-                end: function (result) {
-                    if (result.success) {
-                        layer.msg("操作成功！", {icon: 1, time: 1600});
-                        grid.reloadData();
-                    }
-                }
-            });
-        },
-        del: function (id) {
-            var o = this;
-            layer.confirm("您确认删除该条数据吗？", {
-                btn: ["删除", "取消"]
-            }, function () {
-                ajaxRequest(getServUrl("/admin/machine/delete?ids=" + id), "DELETE", {},
-                    function (r) {
-                        if (r.success) {
-                            layer.msg("操作成功！", {icon: 1, time: 1600});
-                            grid.reloadData();
-                        } else {
-                            layer.msg(r.message, {icon: 7, time: 1600});
-                            grid.reloadData();
-                        }
-                    });
-            }, function () {
-            });
-        },
+              });
 
-        insertBatch:function () {
-            var o=this;
-            showTopWin({
-                type: 2,
-                shade: 0.4,
-                maxmin: true,
-                area: ['770px', '580px'],
-                content: "/admin/machine/insertBatchReport.html?uuid="+(new Date().getTime()),
-                zIndex: layer.zIndex, //重点1
-                end:function(result){
-                    if(result.success){
-                        layer.msg("操作成功！", {icon: 1, time:1600});
-                        grid.reloadData();
-                    }
-                }
-            });
-        },
-
-
-
-        batchDel: function () {
-            var o = this;
-            var ids = grid.getSelectIds();
-            if (ids.length === 0) {
-                layer.msg("请选中要操作的数据行！", {icon: 7, time: 500});
-                return;
+              myVar = setInterval(function () {
+                ajaxRequest(getServUrl("/report/fetch"), "GET",
+                    {fileUuid: r.value}, function (result) {
+                      if (result.success && result.value != null) {
+                        console.log(JSON.stringify(result));
+                        //清除定时操作
+                        $(window.parent.document).find("#exportWrapper .export-result").removeClass(
+                            "hidden");
+                        $(window.parent.document).find("#exportWrapper .export-running").addClass(
+                            "hidden");
+                        $(window.parent.document).find("#exportWrapper .btn").attr('href',
+                            result.value);
+                        clearInterval(myVar);
+                      }
+                    }, false);
+              }, 2000);
             }
-            layer.confirm("您确认删除选中数据吗？", {
-                btn: ["删除", "取消"]
-            }, function () {
-                ajaxRequest(getServUrl("/admin/machine/delete?ids=" + ids), "DELETE", {},
-                    function (r) {
-                        if (r.success) {
-                            layer.msg("操作成功！", {icon: 1, time: 1600});
-                            grid.reloadData();
-                        } else {
-                            layer.msg(r.message, {icon: 7, time: 1600});
-                            grid.reloadData();
-                        }
-                    });
-            }, function () {
+          }, false, "application/json;charset=UTF-8");
+    },
+    add: function () {
+      var o = this;
+      showTopWin({
+        type: 2,
+        shade: 0.4,
+        maxmin: true,
+        area: ['770px', '580px'],
+        content: "/admin/machine/add.html?uuid=" + (new Date().getTime()),
+        zIndex: layer.zIndex, //重点1
+        end: function (result) {
+          if (result.success) {
+            layer.msg("操作成功！", {icon: 1, time: 1600});
+            grid.reloadData();
+          }
+        }
+      });
+    },
+    update: function (id) {
+      var o = this;
+      showTopWin({
+        type: 2,
+        shade: 0.4,
+        maxmin: true,
+        area: ['770px', '580px'],
+        content: "/admin/machine/edit.html?id=" + id,
+        zIndex: layer.zIndex, //重点1
+        end: function (result) {
+          if (result.success) {
+            layer.msg("操作成功！", {icon: 1, time: 1600});
+            grid.reloadData();
+          }
+        }
+      });
+    },
+    del: function (id) {
+      var o = this;
+      layer.confirm("您确认删除该条数据吗？", {
+        btn: ["删除", "取消"]
+      }, function () {
+        ajaxRequest(getServUrl("/admin/machine/delete?ids=" + id), "DELETE", {},
+            function (r) {
+              if (r.success) {
+                layer.msg("操作成功！", {icon: 1, time: 1600});
+                grid.reloadData();
+              } else {
+                layer.msg(r.message, {icon: 7, time: 1600});
+                grid.reloadData();
+              }
             });
-        },
-        detail: function (id) {
-            showTopWin({
-                type: 2,
-                shade: 0.4,
-                maxmin: true,
-                area: ['770px', '580px'],
-                content: "/admin/machine/detail.html?id=" + id,
-                zIndex: layer.zIndex //重点1
+      }, function () {
+      });
+    },
+    batchDel: function () {
+      var o = this;
+      var ids = grid.getSelectIds();
+      if (ids.length === 0) {
+        layer.msg("请选中要操作的数据行！", {icon: 7, time: 500});
+        return;
+      }
+      layer.confirm("您确认删除选中数据吗？", {
+        btn: ["删除", "取消"]
+      }, function () {
+        ajaxRequest(getServUrl("/admin/machine/delete?ids=" + ids), "DELETE", {},
+            function (r) {
+              if (r.success) {
+                layer.msg("操作成功！", {icon: 1, time: 1600});
+                grid.reloadData();
+              } else {
+                layer.msg(r.message, {icon: 7, time: 1600});
+                grid.reloadData();
+              }
             });
-        }
-    };
-
-    var tableId = "TCsMachine";
-    var clms = [{checkbox: true}
-        , {field: "csmId", title: "编号", width: 110, sort: true}
-        , {field: "csmAccessText", title: "接入商", width: 110, sort: true}
-        , {field: "csmNumber", title: "车机号", width: 110, sort: true}
-        , {field: "csmTeNo", title: "序列号", width: 160, sort: true}
-        , {field: "csmTeTypeText", title: "终端类型", width: 110, sort: true}
-        , {field: "csmTeModel", title: "终端型号", width: 110, sort: true}
-        , {field: "csmMobile", title: "SIM卡", width: 140, sort: true}
-        , {field: "csmIccid", title: "ICCID", width: 200, sort: true}
-        , {field: "csmProtocolText", title: "协议类型", width: 110, sort: true}
-        , {field: "csmBluetoothVersion", title: "蓝牙版本", width: 110, sort: true}
-        , {field: "csmBluetoothMac", title: "蓝牙地址", width: 110, sort: true}
-        , {field: "csmBluetoothPsd", title: "蓝牙密码", width: 110, sort: true}
-        , {field: "csmV2", title: "硬件版本", width: 110, sort: true}
-        , {field: "csmSuitText", title: "适配车型", width: 110, sort: true}
-        , {field: "csmTlV1", title: "软件版本", width: 110, sort: true}
-        , {field: "csmTlV2", title: "分时租赁版本", width: 110, sort: true}
-        , {field: "csmProTypeText", title: "终端协议", width: 110, sort: true}
-        , {field: "csmBaudRate", title: "CAN1波特率", width: 110, sort: true}
-        , {field: "csmUpdateTime", title: "修改时间", width: 160, sort: true}
-        , {field: "csmAddTime", title: "添加时间", width: 160, sort: true}
-        , {field: "csmStatusText", title: "状态", width: 80, sort: true}
-        , {field: 'operate', title: '操作', width: 120, fixed: 'right', toolbar: '#gridToolBar'}
-    ];
-
-    var option = {
-        id: tableId,
-        elem: "#table",
-        page: true,
-        limits: [10, 15, 20, 30, 50, 100],
-        limit: 15,
-        height: getTableHeight(),
-        url: getServUrl("/admin/machine/list"),
-        cols: [clms],
-        done: function (res, curr, count) {
-            currPage = curr;
-            currSize = res.page.size;
-        },
-        response: {
-            statusName: "code",
-            statusCode: 0,
-            msgName: "msg",
-            dataName: "data",
-            countName: "count"
-        },
-        request: {limitName: "rows"},
-        where: {
-            sidx: "csmId",
-            sord: "desc"
-        }
-    };
-
-    function showHideColumn() {
-        var showHide = {};
-        $(".tableMenu").find("input[type=checkbox]").each(function (i) {
-            var flag = $(this).is(':checked');
-            showHide[$(this).val()] = flag;
-        });
-        $(".layui-table-view").remove();
-        var r = [];
-        for (var i = 0; i < clms.length; i++) {
-            var field = clms[i]["field"];
-            if (showHide[field] === true || clms[i].checkbox === true || clms[i].fixed) {
-                r.push(clms[i]);
-            }
-        }
-        option["cols"] = [r];
-        grid.render(option);
+      }, function () {
+      });
+    },
+    detail: function (id) {
+      showTopWin({
+        type: 2,
+        shade: 0.4,
+        maxmin: true,
+        area: ['770px', '580px'],
+        content: "/admin/machine/detail.html?id=" + id,
+        zIndex: layer.zIndex //重点1
+      });
     }
+  };
 
-    function getTableHeight() {
-        var height = $(window).height() - ($(".queryForm_wrapper").height() + $(".menubar").height() + 25);
+  var tableId = "TCsMachine";
+  var clms = [{checkbox: true}
+    , {field: "csmId", title: "编号", width: 110, sort: true}
+    , {field: "csmAccessText", title: "接入商", width: 110, sort: true}
+    , {field: "csmNumber", title: "车机号", width: 110, sort: true}
+    , {field: "csmTeNo", title: "序列号", width: 160, sort: true}
+    , {field: "csmTeTypeText", title: "终端类型", width: 110, sort: true}
+    , {field: "csmTeModel", title: "终端型号", width: 110, sort: true}
+    , {field: "csmMobile", title: "SIM卡", width: 140, sort: true}
+    , {field: "csmIccid", title: "ICCID", width: 200, sort: true}
+    , {field: "csmProtocolText", title: "协议类型", width: 110, sort: true}
+    , {field: "csmBluetoothVersion", title: "蓝牙版本", width: 110, sort: true}
+    , {field: "csmBluetoothMac", title: "蓝牙地址", width: 110, sort: true}
+    , {field: "csmBluetoothPsd", title: "蓝牙密码", width: 110, sort: true}
+    , {field: "csmV2", title: "硬件版本", width: 110, sort: true}
+    , {field: "csmSuitText", title: "适配车型", width: 110, sort: true}
+    , {field: "csmTlV1", title: "软件版本", width: 110, sort: true}
+    , {field: "csmTlV2", title: "分时租赁版本", width: 110, sort: true}
+    , {field: "csmProTypeText", title: "终端协议", width: 110, sort: true}
+    , {field: "csmBaudRate", title: "CAN1波特率", width: 110, sort: true}
+    , {field: "csmUpdateTime", title: "修改时间", width: 160, sort: true}
+    , {field: "csmAddTime", title: "添加时间", width: 160, sort: true}
+    , {field: "csmStatusText", title: "状态", width: 80, sort: true}
+    , {field: 'operate', title: '操作', width: 120, fixed: 'right', toolbar: '#gridToolBar'}
+  ];
+
+  var option = {
+    id: tableId,
+    elem: "#table",
+    page: true,
+    limits: [10, 15, 20, 30, 50, 100],
+    limit: 15,
+    height: getTableHeight(),
+    url: getServUrl("/admin/machine/list"),
+    cols: [clms],
+    done: function (res, curr, count) {
+      currPage = curr;
+      currSize = res.page.size;
+    },
+    response: {
+      statusName: "code",
+      statusCode: 0,
+      msgName: "msg",
+      dataName: "data",
+      countName: "count"
+    },
+    request: {limitName: "rows"},
+    where: {
+      sidx: "csmId",
+      sord: "desc"
+    }
+  };
+
+  function showHideColumn() {
+    var showHide = {};
+    $(".tableMenu").find("input[type=checkbox]").each(function (i) {
+      var flag = $(this).is(':checked');
+      showHide[$(this).val()] = flag;
+    });
+    $(".layui-table-view").remove();
+    var r = [];
+    for (var i = 0; i < clms.length; i++) {
+      var field = clms[i]["field"];
+      if (showHide[field] === true || clms[i].checkbox === true || clms[i].fixed) {
+        r.push(clms[i]);
+      }
+    }
+    option["cols"] = [r];
+    grid.render(option);
+  }
+
+  function getTableHeight() {
+    var height = $(window).height() - ($(".queryForm_wrapper").height() + $(".menubar").height()
+        + 25);
 //		 if(height>1000)return 1000;
-        console.log(height);
-        return height;
-    }
+    console.log(height);
+    return height;
+  }
 
-    $(window).resize(function () {
-        option["height"] = getTableHeight();
-        $(".layui-table-view").remove();
-        grid.render(option);
-    });
+  $(window).resize(function () {
+    option["height"] = getTableHeight();
+    $(".layui-table-view").remove();
+    grid.render(option);
+  });
 
-    $(function () {
-        (function (p) {
-            authUtil.initSctl();
+  $(function () {
+    (function (p) {
+      authUtil.initSctl();
 
-            layui.use(['laypage', 'layer', 'table', 'element'], function () {
-                var laypage = layui.laypage, 		//分页
-                    layer = layui.layer, 			//弹层
-                    table = layui.table, 			//表格
-                    element = layui.element; 		//元素操作
+      layui.use(['laypage', 'layer', 'table', 'element'], function () {
+        var laypage = layui.laypage, 		//分页
+            layer = layui.layer, 			//弹层
+            table = layui.table, 			//表格
+            element = layui.element; 		//元素操作
 
-                table.render(option);
-                //表头排序
-                table.on("sort", function (obj) {
-                    table.reload(tableId, {
-                        initSort: obj,
-                        where: {
-                            sidx: obj.field.indexOf("Text") != -1 ? obj.field.replace("Text", "") : obj.field,
-                            sord: obj.type
-                        }
-                    });
-                });
+        table.render(option);
+        //表头排序
+        table.on("sort", function (obj) {
+          table.reload(tableId, {
+            initSort: obj,
+            where: {
+              sidx: obj.field.indexOf("Text") != -1 ? obj.field.replace("Text", "") : obj.field,
+              sord: obj.type
+            }
+          });
+        });
 
-                table.on("tool", function (obj) {
-                    var data = obj.data 	//获得当前行数据
-                        , layEvent = obj.event; 	//获得 lay-event 对应的值
-                    var id = data["csmId"];
-                    if (layEvent === 'detail') {
-                        operate.detail(id)
-                    } else if (layEvent === 'del') {
-                        operate.del(id)
-                    } else if (layEvent === 'edit') {
-                        operate.update(id)
-                    } else if (layEvent === 'oper') {
-                        var menu = [];
-                        showOperMenu($(this), menu);
-                    }
-                });
+        table.on("tool", function (obj) {
+          var data = obj.data 	//获得当前行数据
+              , layEvent = obj.event; 	//获得 lay-event 对应的值
+          var id = data["csmId"];
+          if (layEvent === 'detail') {
+            operate.detail(id)
+          } else if (layEvent === 'del') {
+            operate.del(id)
+          } else if (layEvent === 'edit') {
+            operate.update(id)
+          } else if (layEvent === 'oper') {
+            var menu = [];
+            showOperMenu($(this), menu);
+          }
+        });
 
-                grid = {
-                    render: function (option) {
-                        if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
-                            option.where = getFormData(operate.getQueryForm());
-                        } else {
-                            option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
-                        }
-                        table.render(transferParamsWithSort(option, "csmId"));
-                    },
-                    reloadData: function (params) {
-                        if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
-                            option.where = getFormData(operate.getQueryForm());
-                        } else {
-                            option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
-                        }
-                        table.reload(tableId, transferParamsWithSort(params, "csmId"));
-                    },
-                    getSelectIds: function () {
-                        var ids = [];
-                        var checkStatus = table.checkStatus(tableId), data = checkStatus.data;
-                        for (var i in data) {
-                            ids.push(data[i]["csmId"]);
-                        }
-                        return ids;
-                    }
-                };
-            });
+        grid = {
+          render: function (option) {
+            if (typeof(option) === 'undefined') {
+              option = {};
+            }
+            if (typeof(option) === 'undefined' || typeof(option.where) === 'undefined'
+                || typeof(option.where) === 'undefined') {
+              option.where = getFormData(operate.getQueryForm());
+            } else {
+              option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+            }
+            table.render(transferParamsWithSort(option, "csmId"));
+          },
+          reloadData: function (option) {
+            if (typeof(option) === 'undefined') {
+              option = {};
+            }
+            if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+              option.where = getFormData(operate.getQueryForm());
+            } else {
+              option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+            }
+            table.reload(tableId, transferParamsWithSort(option, "csmId"));
+          },
+          getSelectIds: function () {
+            var ids = [];
+            var checkStatus = table.checkStatus(tableId), data = checkStatus.data;
+            for (var i in data) {
+              ids.push(data[i]["csmId"]);
+            }
+            return ids;
+          }
+        };
+      });
 
-        })(authUtil.get("/admin/machine/index.html") || {});
-    });
+    })(authUtil.get("/admin/machine/index.html") || {});
+  });
 </script>

@@ -94,7 +94,9 @@ public class HistoryStateController {
   public VoResult<String> getReport(@RequestBody ReportParam<HistoryStateQuery> reportParam)
   {
     List<HistoryState> list;
-    if (null == reportParam.getQuery().getCsNumberEquals()) {
+    if (null == reportParam.getQuery().getCsNumberEquals()||
+            null==reportParam.getQuery().getCurrentTimeStart()||
+            null==reportParam.getQuery().getCurrentTimeEnd()) {
       //TODO 需要Phoenix支持只使用时间的查询。
       VoResult<String> r = new VoResult<>();
       r.setSuccess(false).setMessage("导出任务需要足够的参数。");

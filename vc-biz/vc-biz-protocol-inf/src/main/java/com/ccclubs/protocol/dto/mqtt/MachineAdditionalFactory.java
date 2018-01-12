@@ -373,6 +373,10 @@ public class MachineAdditionalFactory {
         additional = new MachineAdditional_OutputStatus();
         additional.ReadFromBytes(bytes);
         break;
+      case 152:
+        additional=new MachineAdditional_AutoConfigStatus();
+        additional.ReadFromBytes(bytes);
+        break;
 
       case 202:
         additional = new MachineAdditional_MergeDoorStatusWithMask();
