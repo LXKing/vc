@@ -12,7 +12,6 @@
         <module>vc-frm-token</module>
         <module>vc-frm-dubbox</module>
         <module>vc-frm-redis</module>
-        <module>vc-frm-mongodb</module>
         <module>vc-frm-mybatis</module>
         <module>vc-frm-logger</module>
         <module>vc-frm-spring</module>
