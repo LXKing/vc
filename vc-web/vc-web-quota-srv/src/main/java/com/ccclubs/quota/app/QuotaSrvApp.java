@@ -2,7 +2,6 @@ package com.ccclubs.quota.app;
 
 import java.io.IOException;
 
-import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +16,7 @@ import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 
 @SpringBootApplication
-@Import({RedisAutoConfiguration.class, MybatisConfig.class, MultipleMongoConfig.class})
+@Import({RedisAutoConfiguration.class, MybatisConfig.class})
 public class QuotaSrvApp extends SpringBootServletInitializer {
 	private static final Logger logger = LoggerFactory.getLogger(QuotaSrvApp.class);
 
