@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.CsTboxBindHisMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsTboxBindHis">
+		<result column="cstb_id" jdbcType="BIGINT" property="cstbId" />
+		<result column="cstb_vehicle_id" jdbcType="BIGINT" property="cstbVehicleId" />
+		<result column="cstb_machine_id" jdbcType="BIGINT" property="cstbMachineId" />
+		<result column="cstb_start_time" jdbcType="TIMESTAMP" property="cstbStartTime" />
+		<result column="cstb_end_time" jdbcType="TIMESTAMP" property="cstbEndTime" />
+		<result column="cstb_status" jdbcType="TINYINT" property="cstbStatus" />
+		<result column="cstb_add_time" jdbcType="TIMESTAMP" property="cstbAddTime" />
+		<result column="cstb_mod_time" jdbcType="TIMESTAMP" property="cstbModTime" />
+		<result column="cstb_oper_id" jdbcType="BIGINT" property="cstbOperId" />
+		<result column="cstb_oper_type" jdbcType="TINYINT" property="cstbOperType" />
+	</resultMap>
+	
+	
+</mapper>
