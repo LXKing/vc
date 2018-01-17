@@ -11,8 +11,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.support.ResourcePropertySource;
-
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 
@@ -29,7 +27,7 @@ public class QuotaSrvApp extends SpringBootServletInitializer {
     
     public static void main(String[] args) throws IOException, InterruptedException {
     	ConfigurableApplicationContext ctx = SpringApplication.run(QuotaSrvApp.class, args);
-        ctx.getEnvironment().getPropertySources().addFirst(new ResourcePropertySource("classpath:filtered.properties"));
+//        ctx.getEnvironment().getPropertySources().addFirst(new ResourcePropertySource("classpath:filtered.properties"));
 		String[] profiles = ctx.getEnvironment().getActiveProfiles();
 		for(String p : profiles){
 			logger.info("Env profile:{}", p);

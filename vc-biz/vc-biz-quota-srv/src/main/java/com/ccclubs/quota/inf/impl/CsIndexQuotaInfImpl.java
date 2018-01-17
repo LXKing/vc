@@ -49,9 +49,6 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	@Resource
 	private CsMiddleReportMapper csMiddleReportMapper;
 
-	@Autowired
-	private  DBHelperZt  dbHelperZt;
-
 	@Transactional
 	@Override
 	public void metaBuilder() {
@@ -624,32 +621,6 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 			exlist = csIndexReportMapper.selectByExample(example);
 		}
 		//此条数据修改时间
-		long modifyDate;
-		if(exlist!=null&&exlist.size()>0){
-			modifyDate=exlist.get(0).getModifyDate().getTime();
-			for(int i=1 ;i<exlist.size();i++){
-				long tempTime=exlist.get(i).getModifyDate().getTime();
-				if(modifyDate>tempTime){
-					modifyDate=tempTime;
-				}
-			}
-		}else{
-			modifyDate=System.currentTimeMillis();
-		}
-		//数据库时间与现在时间相差的天数
-		int dayInterval= DateTimeUtil.daysBetween(modifyDate,System.currentTimeMillis());
-		//取最新的obd里程，并统计各项指标
-		if(dayInterval>dbHelperZt.getUpdateInterval()){
-			CsMiddleReportExample middleExample=new CsMiddleReportExample();
-			CsMiddleReportExample.Criteria middleCriteria=middleExample.createCriteria();
-
-			dbHelperZt.getDBConnect();
-			//返回最新的指标数据并入库
-			dbHelperZt.getZtCurrentOBDTemp(exlist);
-			dbHelperZt.dbClose();
-			//入库前 --更新
-			multiThreadsUpdateTable(exlist);
-		}
 		Map<String,CsIndexReport> dateMap=new HashMap<>();
 		for(CsIndexReport csIndexReport: exlist){
 			dateMap.put(csIndexReport.getCsVin(),csIndexReport);
