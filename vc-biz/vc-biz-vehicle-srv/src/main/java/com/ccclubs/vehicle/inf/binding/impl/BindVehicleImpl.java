@@ -2,6 +2,7 @@ package com.ccclubs.vehicle.inf.binding.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.modify.UpdateTboxBindHisService;
 import com.ccclubs.common.modify.UpdateVehicleService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
@@ -9,6 +10,7 @@ import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
+import com.ccclubs.pub.orm.model.CsTboxBindHis;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.vo.VehicleVo;
 import com.ccclubs.vehicle.dto.BindVehicleInput;
@@ -36,6 +38,8 @@ public class BindVehicleImpl implements BindVehicleInf {
   @Autowired
   UpdateVehicleService updateVehicleService;
 
+  @Autowired
+  UpdateTboxBindHisService updateTboxBindHisService;
   /**
    * 车机绑定
    */
@@ -71,6 +75,19 @@ public class BindVehicleImpl implements BindVehicleInf {
       vehicle.setCsvMachine(machine.getCsmId());
       vehicle.setCsvUpdateTime(new Date());
       updateVehicleService.update(vehicle);
+      //Tbox的绑定关系
+      CsTboxBindHis csTboxBindHis=new CsTboxBindHis();
+      csTboxBindHis.setCstbVehicleId((long)vehicle.getCsvId());
+      csTboxBindHis.setCstbMachineId((long)machine.getCsmId());
+      csTboxBindHis.setCstbStartTime(new Date());
+      //状态 1:正常 0:无效
+      csTboxBindHis.setCstbStatus((short)1);
+      csTboxBindHis.setCstbAddTime(new Date());
+      csTboxBindHis.setCstbModTime(new Date());
+      csTboxBindHis.setCstbOperId(Long.parseLong(input.getAppId()));
+      //操作人类型 1:运营商 2:后台用户
+      csTboxBindHis.setCstbOperType((short)1);
+      updateTboxBindHisService.insert(csTboxBindHis);
     }
 
     BindVehicleOutput output = new BindVehicleOutput();
