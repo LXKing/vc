@@ -1,12 +1,17 @@
 package com.ccclubs.mongo.orm.model.history;
 
 import com.ccclubs.frm.spring.annotation.AutomaticSequence;
+import com.ccclubs.frm.spring.resolver.Resolver;
 import com.ccclubs.mongo.orm.model.AbstractDocumentOld;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
+ * 车机网络日志
  * Created by Administrator on 2017/8/2 0002.
  */
 @Document(collection = "CsLogger")
@@ -85,5 +90,39 @@ public class CsLogger extends AbstractDocumentOld implements Serializable {
 
   public void setCslStatus(Short cslStatus) {
     this.cslStatus = cslStatus;
+  }
+
+  //默认构造函数
+  public CsLogger(){
+
+  }
+
+  //主键构造函数
+  public CsLogger(Long id){
+    this.cslId = id;
+  }
+
+  //设置非空字段
+  public CsLogger setNotNull(Long cslId){
+    this.cslId=cslId;
+    return this;
+  }
+
+  public Object getcslStatusText(){
+    return resolve("cslStatusText");
+  }
+
+  @Transient
+  Map<String, Resolver<CsLogger>> resolvers = new HashMap<String, Resolver<CsLogger>>();
+
+  public void registResolver(Resolver<CsLogger> resolver){
+    this.resolvers.put(resolver.getName(), resolver);
+  }
+
+  public Object resolve(String key){
+    if(resolvers.get(key)!=null){
+      return resolvers.get(key).execute(this);
+    }
+    return null;
   }
 }

@@ -1,7 +1,7 @@
 package com.ccclubs.admin.resolver;
 
 import com.ccclubs.admin.metadata.MetaDef;
-import com.ccclubs.admin.vo.Resolver;
+import com.ccclubs.frm.spring.resolver.Resolver;
 import com.ccclubs.admin.model.CsStatistics;
 
 

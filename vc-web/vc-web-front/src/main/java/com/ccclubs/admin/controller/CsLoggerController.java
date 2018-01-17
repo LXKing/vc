@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
  * CsLogger
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("history/csLogger")
+@RequestMapping("monitor/historyLogger")
 public class CsLoggerController {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -36,6 +37,10 @@ public class CsLoggerController {
                                       @RequestParam(defaultValue = "0") Integer page,
                                       @RequestParam(defaultValue = "10") Integer rows) {
         PageInfo<CsLogger> pageResult = csLoggerService.getPage(query, new PageRequest(page, rows));
+        List<CsLogger> list = pageResult.getList();
+        for(CsLogger data : list){
+            registResolvers(data);
+        }
         TableResult<CsLogger> tableResult = new TableResult<>(page, rows, pageResult);
         return tableResult;
     }
@@ -49,4 +54,14 @@ public class CsLoggerController {
     public int list(@PathVariable("ids") String ids) {
         return csLoggerService.delete(ids);
     }
+
+    /**
+     * 注册属性内容解析器
+     */
+    void registResolvers(CsLogger data){
+        if(data!=null){
+            data.registResolver(com.ccclubs.admin.resolver.CsLoggerResolver.状态.getResolver());
+        }
+    }
+
 }

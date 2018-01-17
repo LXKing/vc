@@ -74,18 +74,21 @@ public class CsRemoteService {
         if (StringUtils.isNotEmpty(queryVo.getCsrEditor())) {
             query.addCriteria(criteria.and("csrEditor").regex(".*?" + queryVo.getCsrEditor() + ".*"));
         }
-        if (null != queryVo.getStartTime()) {
-            query.addCriteria(criteria.and("csrAddTime").gte(queryVo.getStartTime()));
+        if (null != queryVo.getStartTime()&&null != queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("csrAddTime").gte(queryVo.getStartTime().getTime()).lte(queryVo.getEndTime().getTime()));
         }
-        if (null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csrAddTime").lte(queryVo.getEndTime()));
+        if (null != queryVo.getStartTime()&&null == queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("csrAddTime").gte(queryVo.getStartTime().getTime()));
+        }
+        if (null == queryVo.getStartTime()&&null != queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("csrAddTime").lte(queryVo.getEndTime().getTime()));
         }
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());
         query.limit(pageVo.getPageSize());
         query.with(pageVo.getSort());
-        List<CsRemote> logs = remoteMongoTemplate.find(query, CsRemote.class);
-        PageInfo pageInfo = new PageInfo<>(logs);
+        List<CsRemote> remotes = remoteMongoTemplate.find(query, CsRemote.class);
+        PageInfo pageInfo = new PageInfo<>(remotes);
         long total = remoteMongoTemplate.count(query, CsRemote.class);
         int pages = (int) (total / pageVo.getPageSize() + ((total % pageVo.getPageSize() == 0) ? 0 : 1));
         pageInfo.setTotal(total);

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>编号：</dt>
+					<dd>
+					<input name="csrId" placeholder="请输入编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>授权系统：</dt>
+					<dd>
+					<input name="csrAccess" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>子域：</dt>
+					<dd>
+					<input name="csrHost" placeholder="请输入子域" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机号：</dt>
+					<dd>
+					<input name="csrNumber" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>关联车辆：</dt>
+					<dd>
+					<input name="csrCar" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>发送方式：</dt>
+					<dd>
+					<select class="form-control m-b" name="csrWay"  >
+                         <option></option>
+                         <option value="0">网关</option>
+                         <option value="1">短信</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>指令类型：</dt>
+					<dd>
+					<input name="csrType" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/control/struct/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>控制串码：</dt>
+					<dd>
+					<input name="csrCode" placeholder="请输入控制串码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>返回串码：</dt>
+					<dd>
+					<input name="csrResultCode" placeholder="请输入返回串码" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>返回结果：</dt>
+					<dd>
+					<input name="csrResult" placeholder="请输入返回结果" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>操作人：</dt>
+					<dd>
+					<input name="csrEditor" placeholder="请输入操作人" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>备注：</dt>
+					<dd>
+					<input name="csrRemark" placeholder="请输入备注" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>成功时间：</dt>
+					<dd>
+					<input name="csrUpdateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+					<input name="csrAddTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>发送状态：</dt>
+					<dd>
+					<select class="form-control m-b" name="csrState"  >
+                         <option></option>
+                         <option value="0">未发送</option>
+                         <option value="1">已发送</option>
+                         <option value="2">组装中</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>操作结果：</dt>
+					<dd>
+					<select class="form-control m-b" name="csrStatus"  >
+                         <option></option>
+                         <option value="0">未知</option>
+                         <option value="1">操作成功</option>
+                         <option value="2">操作失败</option>
+                    </select>
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/monitor/historyRemote/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/monitor/historyRemote/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

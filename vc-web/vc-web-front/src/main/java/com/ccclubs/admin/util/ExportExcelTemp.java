@@ -1,6 +1,6 @@
 package com.ccclubs.admin.util;
 
-import com.ccclubs.admin.vo.Resolver;
+import com.ccclubs.frm.spring.resolver.Resolver;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 

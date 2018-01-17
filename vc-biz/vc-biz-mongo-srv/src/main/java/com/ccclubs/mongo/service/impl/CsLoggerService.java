@@ -48,11 +48,14 @@ public class CsLoggerService {
         if (StringUtils.isNotEmpty(queryVo.getCslData())) {
             query.addCriteria(criteria.and("cslData").regex(".*?" + queryVo.getCslData() + ".*"));
         }
-        if (null != queryVo.getStartTime()) {
-            query.addCriteria(criteria.and("cslAddTime").gte(queryVo.getStartTime()));
+        if (null != queryVo.getStartTime()&&null != queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("cslAddTime").gte(queryVo.getStartTime().getTime()).lte(queryVo.getEndTime().getTime()));
         }
-        if (null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("cslAddTime").lte(queryVo.getEndTime()));
+        if (null != queryVo.getStartTime()&&null == queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("cslAddTime").gte(queryVo.getStartTime().getTime()));
+        }
+        if (null == queryVo.getStartTime()&&null != queryVo.getEndTime()) {
+            query.addCriteria(criteria.and("cslAddTime").lte(queryVo.getEndTime().getTime()));
         }
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());

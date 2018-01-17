@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * CsRemote
  *
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
  **/
 @SuppressWarnings("unused")
 @RestController
-@RequestMapping("history/csRemote")
+@RequestMapping("monitor/historyRemote")
 public class CsRemoteController {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
@@ -39,7 +41,10 @@ public class CsRemoteController {
                                       @RequestParam(defaultValue = "10") Integer rows,
                                       @RequestParam(defaultValue = "csrAddTime") String order) {
         PageInfo<CsRemote> pageResult = csRemoteService.getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
-
+        List<CsRemote> list = pageResult.getList();
+        for(CsRemote data : list){
+            registResolvers(data);
+        }
         TableResult<CsRemote> tableResult = new TableResult<>(page, rows, pageResult);
         return tableResult;
     }
@@ -54,4 +59,19 @@ public class CsRemoteController {
         return csRemoteService.delete(ids);
     }
 
+
+    /**
+     * 注册属性内容解析器
+     */
+    void registResolvers(CsRemote data){
+        if(data!=null){
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.授权系统.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.车机号.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.关联车辆.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.发送方式.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.指令类型.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.发送状态.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.CsRemoteResolver.操作结果.getResolver());
+        }
+    }
 }
