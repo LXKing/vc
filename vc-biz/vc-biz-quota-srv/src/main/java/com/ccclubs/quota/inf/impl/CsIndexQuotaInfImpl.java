@@ -49,9 +49,6 @@ public class CsIndexQuotaInfImpl implements CsIndexQuotaInf {
 	@Resource
 	private CsMiddleReportMapper csMiddleReportMapper;
 
-	@Autowired
-	private  DBHelperZt  dbHelperZt;
-
 	@Transactional
 	@Override
 	public void metaBuilder() {
