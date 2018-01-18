@@ -41,10 +41,20 @@
             <artifactId>vc-frm-core</artifactId>
             <version>${frm.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-common-srv</artifactId>
             <version>${biz.version}</version>
+        </dependency>-->
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-pub-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-redis</artifactId>
+            <version>${frm.version}</version>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>

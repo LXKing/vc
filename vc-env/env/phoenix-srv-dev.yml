@@ -30,22 +30,20 @@ dubbo:
     retries: -1
 
 
-
-druid:
-  driver: com.mysql.jdbc.Driver
-  jdbc:
-    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
-    username: zkj_user
-    password: kANXZYqf2UzghVY7DnjP
-  initialSize: 2
-  maxActive: 4
-  maxIdle: 2
-  minIdle: 1
-  maxWait: 60000
-  timeBetweenEvictionRunsMillis: 3000
-  minEvictableIdleTimeMillis: 300000
-  maxPoolPreparedStatementPerConnectionSize: 20
-
+ccclubs:
+  data:
+    #批量任务配置
+    batch:
+      #批量更新单次最大值，最大间隔时间，线程池数量，队列最大长度
+      updateBatchSize: 1000
+      updateMaxDurTime: 3000
+      updateThreads: 20
+      updateQueueMax: 50000
+      #批量写入mongodb单次最大值，最大间隔时间，线程池数量，队列最大长度
+      mongoInsertBatchSize: 2000
+      mongoInsertMaxDurTime: 10000
+      mongoInsertThreads: 20
+      mongoInsertQueueMax: 200000
 mybatis:
   scan:
     basePackage: com.ccclubs.**.mapper
