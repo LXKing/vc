@@ -1,9 +1,9 @@
-package com.ccclubs.phoenix.tesks.runner;
+package com.ccclubs.phoenix.tasks.runner;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.common.BatchProperties;
-import com.ccclubs.phoenix.tesks.processor.HistoryCanUtils;
-import com.ccclubs.phoenix.tesks.util.RedisConstant;
+import com.ccclubs.phoenix.tasks.processor.HistoryCanUtils;
+import com.ccclubs.phoenix.tasks.util.BatchProperties;
+import com.ccclubs.phoenix.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
