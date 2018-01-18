@@ -1,4 +1,4 @@
-package com.ccclubs.admin.vo;
+package com.ccclubs.frm.spring.resolver;
 
 public interface IMetaData {
 	

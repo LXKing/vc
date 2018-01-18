@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.ccclubs.admin.vo.Resolver;
+import com.ccclubs.frm.spring.resolver.Resolver;
 
 /**
  * 车辆统计数据

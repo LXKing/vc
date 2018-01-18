@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="cslId">
+				<dt>编号：</dt>
+				<dd  >
+					<input  name="cslId" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cslNumber">
+				<dt>车机号：</dt>
+				<dd  >
+					<input  name="cslNumber" placeholder="" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
+				</dd>
+			</dl>
+<dl cond="cslOrder" style="display:none;">
+				<dt>订单号：</dt>
+				<dd  >
+					<input  name="cslOrder" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cslLog" style="display:none;">
+				<dt>日志信息：</dt>
+				<dd  >
+					<input  name="cslLog" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cslData" style="display:none;">
+				<dt>原始数据：</dt>
+				<dd  >
+					<input  name="cslData" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cslAddTime">
+				<dt>添加时间：</dt>
+				<dd class="timergroup" >
+					<input  name="startTime"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="endTime" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="cslStatus">
+				<dt>状态：</dt>
+				<dd  >
+					<input  name="cslStatus" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="cslId" value="cslId"  type="checkbox" onclick='showHideCondition(this, this.value);' >主键</label></li>
+			        <li><label><input cond="cslNumber" value="cslNumber"  type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="cslOrder" value="cslOrder"  type="checkbox" onclick='showHideCondition(this, this.value);' >订单号</label></li>
+			        <li><label><input cond="cslLog" value="cslLog"  type="checkbox" onclick='showHideCondition(this, this.value);' >日志信息</label></li>
+			        <li><label><input cond="cslData" value="cslData"  type="checkbox" onclick='showHideCondition(this, this.value);' >原始数据</label></li>
+			        <li><label><input cond="cslAddTime" value="cslAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="cslStatus" value="cslStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

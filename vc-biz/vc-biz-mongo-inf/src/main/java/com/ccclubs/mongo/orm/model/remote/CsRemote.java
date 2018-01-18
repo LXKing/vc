@@ -1,11 +1,17 @@
 package com.ccclubs.mongo.orm.model.remote;
 
 import com.ccclubs.frm.spring.annotation.AutomaticSequence;
+import com.ccclubs.frm.spring.resolver.Resolver;
 import com.ccclubs.mongo.orm.model.AbstractDocumentOld;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * 远程控制记录
+ */
 @Document(collection = "CsRemote")
 public class CsRemote extends AbstractDocumentOld implements Serializable {
 
@@ -39,7 +45,58 @@ public class CsRemote extends AbstractDocumentOld implements Serializable {
   private Long csrAddTime;// 非空
   private Integer csrState;// 非空 0:未发送 1:已发送 2:组装中
   private Integer csrStatus;// 非空 0:未知 1:操作成功 2:操作失败
+  //默认构造函数
+  public CsRemote(){
 
+  }
+
+  //主键构造函数
+  public CsRemote(Long id){
+    this.csrId = id;
+  }
+
+  //设置非空字段
+  public CsRemote setNotNull(Long csrId, Long csrAddTime){
+    this.csrId=csrId;
+    this.csrAddTime=csrAddTime;
+    return this;
+  }
+
+  public Object getcsrAccessText(){
+    return resolve("csrAccessText");
+  }
+  public Object getcsrNumberText(){
+    return resolve("csrNumberText");
+  }
+  public Object getcsrCarText(){
+    return resolve("csrCarText");
+  }
+  public Object getcsrWayText(){
+    return resolve("csrWayText");
+  }
+  public Object getcsrTypeText(){
+    return resolve("csrTypeText");
+  }
+  public Object getcsrStateText(){
+    return resolve("csrStateText");
+  }
+  public Object getcsrStatusText(){
+    return resolve("csrStatusText");
+  }
+
+  @Transient
+  Map<String, Resolver<CsRemote>> resolvers = new HashMap<String, Resolver<CsRemote>>();
+
+  public void registResolver(Resolver<CsRemote> resolver){
+    this.resolvers.put(resolver.getName(), resolver);
+  }
+
+  public Object resolve(String key){
+    if(resolvers.get(key)!=null){
+      return resolvers.get(key).execute(this);
+    }
+    return null;
+  }
   public Long getCsrId() {
     return csrId;
   }

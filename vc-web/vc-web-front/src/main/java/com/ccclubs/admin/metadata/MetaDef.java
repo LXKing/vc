@@ -3,21 +3,12 @@ package com.ccclubs.admin.metadata;
 import com.ccclubs.admin.AppContext;
 import com.ccclubs.admin.entity.CsMachineCrieria;
 import com.ccclubs.admin.entity.SrvDictCrieria;
-import com.ccclubs.admin.model.CsMachine;
-import com.ccclubs.admin.model.CsModel;
-import com.ccclubs.admin.model.CsVehicle;
-import com.ccclubs.admin.model.SrvDict;
-import com.ccclubs.admin.model.SrvHost;
-import com.ccclubs.admin.model.SrvUser;
-import com.ccclubs.admin.service.ICsMachineService;
-import com.ccclubs.admin.service.ICsModelService;
-import com.ccclubs.admin.service.ICsVehicleService;
-import com.ccclubs.admin.service.ISrvDictService;
-import com.ccclubs.admin.service.ISrvHostService;
-import com.ccclubs.admin.service.ISrvUserService;
-import com.ccclubs.admin.vo.IDictMetaData;
-import com.ccclubs.admin.vo.IMetaData;
+import com.ccclubs.admin.model.*;
+import com.ccclubs.admin.service.*;
 import java.util.List;
+
+import com.ccclubs.frm.spring.resolver.IDictMetaData;
+import com.ccclubs.frm.spring.resolver.IMetaData;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -119,7 +110,7 @@ public class MetaDef {
   };
 
   /**
-   * 根据 CsMachine id 获取序列号
+   * 根据 CsMachine id 获取终端序列号
    */
   public final static IMetaData getMachineInfo = new IMetaData() {
 
@@ -151,6 +142,24 @@ public class MetaDef {
         CsVehicle record = csVehicleService.selectByPrimaryKey(data);
         if (null != record) {
           return (T) record.getCsvVin();
+        }
+      }
+      return null;
+    }
+  };
+
+  /**
+   * 依据 Id 获取指令类型名称
+   */
+  public final static IMetaData getStructName = new IMetaData() {
+
+    @Override
+    public <T> T get(Object data) {
+      ICsStructService structService = AppContext.CTX.getBean(ICsStructService.class);
+      if (null != structService && null != data && !StringUtils.isEmpty(data.toString())) {
+        CsStruct record = structService.selectByPrimaryKey(data);
+        if (null != record) {
+          return (T) record.getCssName();
         }
       }
       return null;
