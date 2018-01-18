@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tesks.processor;
+package com.ccclubs.phoenix.tasks.processor;
 
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarGb;

@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tesks.model;
+package com.ccclubs.phoenix.tasks.model;
 
 import com.ccclubs.frm.spring.annotation.AutomaticSequence;
 

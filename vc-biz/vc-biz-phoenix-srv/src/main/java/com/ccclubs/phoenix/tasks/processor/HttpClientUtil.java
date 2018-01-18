@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tesks.processor;
+package com.ccclubs.phoenix.tasks.processor;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
