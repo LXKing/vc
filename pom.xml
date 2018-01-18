@@ -75,6 +75,8 @@
 		<hessian.version>4.0.38</hessian.version>
 		<!-- Prometheus -->
 		<prometheus.springboot.version>1.0.0</prometheus.springboot.version>
+		<!--netty-->
+		<netty.version>4.1.15.Final</netty.version>
 	</properties>
 	<build>
 		<plugins>
