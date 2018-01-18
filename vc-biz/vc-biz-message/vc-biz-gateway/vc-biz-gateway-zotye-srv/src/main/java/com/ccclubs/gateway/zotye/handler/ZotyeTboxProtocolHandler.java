@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.tippy.handler;
+package com.ccclubs.gateway.zotye.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

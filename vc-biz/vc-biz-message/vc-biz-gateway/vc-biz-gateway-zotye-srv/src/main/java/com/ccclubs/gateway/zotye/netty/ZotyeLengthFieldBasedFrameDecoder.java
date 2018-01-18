@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.tippy.netty;
+package com.ccclubs.gateway.zotye.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
