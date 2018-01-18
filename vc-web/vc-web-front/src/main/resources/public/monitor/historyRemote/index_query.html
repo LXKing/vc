@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="csrId" style="display:none;">
+				<dt>编号：</dt>
+				<dd  >
+					<input  name="csrId" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrAccess" >
+				<dt>授权系统：</dt>
+				<dd  >
+					<input  name="csrAccess" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+				</dd>
+			</dl>
+<dl cond="csrHost" style="display:none;">
+				<dt>子域：</dt>
+				<dd  >
+					<input  name="csrHost" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrNumber">
+				<dt>车机号：</dt>
+				<dd  >
+					<input  name="csrNumber" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
+				</dd>
+			</dl>
+<dl cond="csrCar" >
+				<dt>关联车辆：</dt>
+				<dd  >
+					<input  name="csrCar" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/query">
+				</dd>
+			</dl>
+<dl cond="csrWay" style="display:none;">
+				<dt>发送方式：</dt>
+				<dd  >
+					<select class="form-control"  name="csrWay"  >
+	                    <option></option>
+                         <option value="0">网关</option>
+                         <option value="1">短信</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="csrType" style="display:none;">
+				<dt>指令类型：</dt>
+				<dd  >
+					<input  name="csrType" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/control/struct/query">
+				</dd>
+			</dl>
+<dl cond="csrCode" style="display:none;">
+				<dt>控制串码：</dt>
+				<dd  >
+					<input  name="csrCode" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrResultCode" style="display:none;">
+				<dt>返回串码：</dt>
+				<dd  >
+					<input  name="csrResultCode" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrResult" style="display:none;">
+				<dt>返回结果：</dt>
+				<dd  >
+					<input  name="csrResult" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrEditor">
+				<dt>操作人：</dt>
+				<dd  >
+					<input  name="csrEditor" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrRemark" style="display:none;">
+				<dt>备注：</dt>
+				<dd  >
+					<input  name="csrRemark" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="csrUpdateTime" style="display:none;">
+				<dt>成功时间：</dt>
+				<dd class="timergroup" >
+					<input  name="csrUpdateTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="csrUpdateTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csrAddTime">
+				<dt>添加时间：</dt>
+				<dd class="timergroup" >
+					<input  name="startTime"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="endTime" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="csrState">
+				<dt>发送状态：</dt>
+				<dd  >
+					<select class="form-control"  name="csrState"  >
+	                    <option></option>
+                         <option value="0">未发送</option>
+                         <option value="1">已发送</option>
+                         <option value="2">组装中</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="csrStatus">
+				<dt>操作结果：</dt>
+				<dd  >
+					<select class="form-control"  name="csrStatus"  >
+	                    <option></option>
+                         <option value="0">未知</option>
+                         <option value="1">操作成功</option>
+                         <option value="2">操作失败</option>
+                    </select>
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="csrId" value="csrId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="csrAccess" value="csrAccessText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >授权系统</label></li>
+			        <li><label><input cond="csrHost" value="csrHost"  type="checkbox" onclick='showHideCondition(this, this.value);' >子域</label></li>
+			        <li><label><input cond="csrNumber" value="csrNumberText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="csrCar" value="csrCarText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >关联车辆</label></li>
+			        <li><label><input cond="csrWay" value="csrWayText"  type="checkbox" onclick='showHideCondition(this, this.value);' >发送方式</label></li>
+			        <li><label><input cond="csrType" value="csrTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >指令类型</label></li>
+			        <li><label><input cond="csrCode" value="csrCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >控制串码</label></li>
+			        <li><label><input cond="csrResultCode" value="csrResultCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >返回串码</label></li>
+			        <li><label><input cond="csrResult" value="csrResult"  type="checkbox" onclick='showHideCondition(this, this.value);' >返回结果</label></li>
+			        <li><label><input cond="csrEditor" value="csrEditor"  type="checkbox" onclick='showHideCondition(this, this.value);' >操作人</label></li>
+			        <li><label><input cond="csrRemark" value="csrRemark"  type="checkbox" onclick='showHideCondition(this, this.value);' >备注</label></li>
+			        <li><label><input cond="csrUpdateTime" value="csrUpdateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >成功时间</label></li>
+			        <li><label><input cond="csrAddTime" value="csrAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="csrState" value="csrStateText"  type="checkbox" onclick='showHideCondition(this, this.value);' >发送状态</label></li>
+			        <li><label><input cond="csrStatus" value="csrStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >操作结果</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

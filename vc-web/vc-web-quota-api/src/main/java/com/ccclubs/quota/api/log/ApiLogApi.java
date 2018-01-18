@@ -2,7 +2,7 @@ package com.ccclubs.quota.api.log;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.frm.spring.entity.ApiMessage;
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 import com.ccclubs.quota.inf.log.ApiLogInf;
 import com.ccclubs.quota.vo.log.ApiLogInput;
 import com.github.pagehelper.PageInfo;

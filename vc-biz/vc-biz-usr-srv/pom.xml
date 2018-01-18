@@ -18,6 +18,11 @@
 			<artifactId>vc-biz-usr-orm</artifactId>
 			<version>${biz.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-mongo-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>www.ccclubs</groupId>
 			<artifactId>vc-frm-redis</artifactId>
@@ -35,14 +40,14 @@
 		</dependency>
 		<dependency>
 			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-frm-mongodb</artifactId>
+			<artifactId>vc-frm-mongo</artifactId>
 			<version>${frm.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-mongo-orm</artifactId>
-            <version>${biz.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>www.ccclubs</groupId>
+			<artifactId>vc-frm-spring</artifactId>
+			<version>${frm.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>

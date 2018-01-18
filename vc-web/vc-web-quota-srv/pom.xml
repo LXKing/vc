@@ -38,6 +38,8 @@
 			<artifactId>vc-frm-mybatis</artifactId>
 			<version>${frm.version}</version>
 		</dependency>
+
+
 	</dependencies>
 	<build>
 		<plugins>

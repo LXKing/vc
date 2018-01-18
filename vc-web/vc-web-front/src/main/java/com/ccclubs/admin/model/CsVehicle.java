@@ -12,7 +12,7 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.ccclubs.admin.vo.Resolver;
+import com.ccclubs.frm.spring.resolver.Resolver;
 
 /**
  * 车辆信息管理
@@ -116,6 +116,14 @@ public class CsVehicle implements java.io.Serializable
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date csvUpdateTime;
+
+	//
+	private Integer csvHost;
+
+	private Integer csvColor;
+
+	private String csvMachines;
+
 
 
 
@@ -443,5 +451,35 @@ public class CsVehicle implements java.io.Serializable
 	**/
 	public void setCsvUpdateTime(Date csvUpdateTime){
 		this.csvUpdateTime = csvUpdateTime;
+	}
+
+	public Integer getCsvHost() {
+		return csvHost;
+	}
+
+	public void setCsvHost(Integer csvHost) {
+		this.csvHost = csvHost;
+	}
+
+	public Integer getCsvColor() {
+		return csvColor;
+	}
+
+	public void setCsvColor(Integer csvColor) {
+		this.csvColor = csvColor;
+	}
+
+	public String getCsvMachines() {
+		return csvMachines;
+	}
+
+	public void setCsvMachines(String csvMachines) {
+		this.csvMachines = csvMachines;
+	}
+
+
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
 	}
 }

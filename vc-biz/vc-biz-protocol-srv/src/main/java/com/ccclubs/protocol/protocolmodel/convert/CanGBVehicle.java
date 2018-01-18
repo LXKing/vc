@@ -41,7 +41,7 @@ public class CanGBVehicle {
 
                 case 0x0300:
                     //
-                    float speed=gb_02_01.getSpeedString( can_item.getmCanData2()&0xffff);
+                    float speed=gb_02_01.getSpeedString( can_item.getmCanData2()&0xff);
                     gb_02_01.setSpeed(speed);//车速
                     //
                     int dcDcStatus=gb_02_01.getDcDcStatusString( (can_item.getmCanData1() >>3 )&0x1);

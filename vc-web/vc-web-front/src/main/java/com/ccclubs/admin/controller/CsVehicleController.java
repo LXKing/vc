@@ -1,32 +1,35 @@
 package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.entity.CsMappingCrieria;
+import com.ccclubs.admin.entity.CsTboxBindHisCrieria;
 import com.ccclubs.admin.entity.CsVehicleCrieria;
 import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.query.CsVehicleQuery;
-import com.ccclubs.admin.service.ICsMachineService;
-import com.ccclubs.admin.service.ICsMappingService;
-import com.ccclubs.admin.service.ICsModelMappingService;
-import com.ccclubs.admin.service.ICsVehicleService;
-import com.ccclubs.admin.service.IReportService;
-import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.service.*;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
+import com.ccclubs.frm.spring.constant.ApiEnum;
+import com.ccclubs.frm.spring.exception.ApiException;
 import com.github.pagehelper.PageInfo;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 车辆信息管理Controller
@@ -57,6 +60,8 @@ public class CsVehicleController {
   @Autowired
   UserAccessUtils userAccessUtils;
 
+  @Autowired
+  ICsTboxBindHisService tboxBindHisService;
   /**
    * 获取分页列表数据
    */
@@ -241,8 +246,9 @@ public class CsVehicleController {
    * 更换TBox
    */
   @RequestMapping(value = "/bind", method = RequestMethod.POST)
-  public VoResult<?> bind(CsVehicle data) {
+  public VoResult<?> bind(@CookieValue("token") String token, CsVehicle data) {
     CsVehicle oldVehicle = csVehicleService.selectByPrimaryKey(data.getCsvId());
+    SrvUser user = userAccessUtils.getCurrentUser(token);
     if (null == data.getCsvMachine()) {
       if (null == oldVehicle.getCsvMachine()) {
         return VoResult.success();
@@ -251,6 +257,8 @@ public class CsVehicleController {
       {
         data.setCsvUpdateTime(new Date());
         csVehicleService.unbindTbox(data);
+        //记录tbox解绑的日志-
+        insertUnBindTobxLog(data.getCsvId(),oldVehicle.getCsvMachine(),user.getSuId());
         return VoResult.success();
       }
     } else {
@@ -258,9 +266,17 @@ public class CsVehicleController {
       conditionVehicle.setCsvMachine(data.getCsvMachine());
       CsVehicle existVehicle = csVehicleService.selectOne(conditionVehicle);
       if (null == existVehicle) {
+        oldVehicle = csVehicleService.selectByPrimaryKey(data.getCsvId());
+
         conditionVehicle.setCsvId(data.getCsvId());
         conditionVehicle.setCsvUpdateTime(new Date());
         csVehicleService.updateByPrimaryKeySelective(data);
+        //记录tbox更换日志-并增加一条新的记录
+        if(oldVehicle!=null&&oldVehicle.getCsvMachine()!=null){
+          insertUnBindTobxLog(oldVehicle.getCsvId(),oldVehicle.getCsvMachine(),user.getSuId());//解绑
+        }
+
+        insertBindTobxLog(data.getCsvId(),data.getCsvMachine(),user.getSuId());//绑定
         return VoResult.success();
       } else if (existVehicle.getCsvId().equals(data.getCsvId())) {
         return VoResult.success();
@@ -269,6 +285,58 @@ public class CsVehicleController {
       }
     }
   }
+
+  /**
+   * 记录解绑时的日志
+   */
+  public void insertUnBindTobxLog(long csvId,long csvMachineId,long operateId){
+    CsTboxBindHis record=new CsTboxBindHis();
+    record.setCstbEndTime(new Date());
+    record.setCstbModTime(new Date());
+    //
+    CsTboxBindHisCrieria example=new CsTboxBindHisCrieria();
+    CsTboxBindHisCrieria.Criteria criteria=example.createCriteria();
+    criteria.andcstbVehicleIdEqualTo(csvId);
+    criteria.andcstbMachineIdEqualTo(csvMachineId);
+    criteria.andcstbEndTimeIsNull();
+    List<CsTboxBindHis>list=tboxBindHisService.selectByExample(example);
+    if(list==null||list.isEmpty()){
+      record.setCstbVehicleId(csvId);
+      record.setCstbMachineId(csvMachineId);
+      record.setCstbStartTime(new Date());
+      //状态 1:正常 0:无效
+      record.setCstbStatus((short)1);
+      record.setCstbAddTime(new Date());
+      record.setCstbModTime(new Date());
+      record.setCstbEndTime(new Date());
+      record.setCstbOperId(operateId);
+      //操作人类型 1:运营商 2:后台用户
+      record.setCstbOperType((short)2);
+      tboxBindHisService.insert(record);
+    }else {
+      tboxBindHisService.updateByExampleSelective(record,example);
+    }
+  }
+
+  /**
+   * 记录Tbox绑定时的日志
+   */
+  public void insertBindTobxLog(long csvId,long csvMachineId,long operateId ){
+    CsTboxBindHis csTboxBindHis=new CsTboxBindHis();
+    csTboxBindHis.setCstbVehicleId(csvId);
+    csTboxBindHis.setCstbMachineId(csvMachineId);
+    csTboxBindHis.setCstbStartTime(new Date());
+    //状态 1:正常 0:无效
+    csTboxBindHis.setCstbStatus((short)1);
+    csTboxBindHis.setCstbAddTime(new Date());
+    csTboxBindHis.setCstbModTime(new Date());
+    csTboxBindHis.setCstbOperId(operateId);
+    //操作人类型 1:运营商 2:后台用户
+    csTboxBindHis.setCstbOperType((short)2);
+    tboxBindHisService.insert(csTboxBindHis);
+
+  }
+
 
 
   /**
@@ -474,9 +542,297 @@ public class CsVehicleController {
     r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
     r.setValue(uuid);
     return r;
+  }
+
+  /**
+   * 批量导入车辆信息
+   * @return
+   */
+  @RequestMapping(value = "/insertBatch", method = RequestMethod.POST)
+  @Transactional
+  public VoResult<?> insertVchicleBatch(@CookieValue("token") String token,@RequestParam("fileUpload") MultipartFile fileUpload,CsVehicle csVehicleTemp) {
+    try {
+      SrvUser user = userAccessUtils.getCurrentUser(token);
+      //根据vin码查找相同的数据
+      List<CsVehicle> tempList=csVehicleService.selectAll();
+      //
+      Map<String,CsVehicle> tempMap=new HashMap<>();
+      for (CsVehicle csVehicle:tempList){
+        String csvVin=csVehicle.getCsvVin();
+        String csvMachine=csVehicle.getCsvMachine()+"";
+        String csvEngineNo=csVehicle.getCsvEngineNo();
+        //
+        if(csvVin!=null){
+          tempMap.put(csvVin,csVehicle);
+        }else if(csVehicle.getCsvMachine()!=null){
+          tempMap.put(csvMachine,csVehicle);
+        }else if (csvEngineNo!=null){
+          tempMap.put(csvEngineNo,csVehicle);
+        }
+      }
+      List<CsVehicle> existList =getConditionVinList(fileUpload,csVehicleTemp);
+      //更新vin码相同的list数据
+      List<CsVehicle> updateList=new ArrayList<>();
+      //插入的vin码
+      List<String>insertVinList=new ArrayList<>();
+      //
+      getItemListData(existList,updateList,insertVinList,tempMap,user);
+      //vin码相同时更新表中数据---判断车机信息
+      if (updateList!=null&&updateList.size()>0){
+         csVehicleService.updateBatchByExampleSelective(updateList);
+      }
+      //插入数据
+      if(existList!=null&&existList.size()>0){
+        csVehicleService.insertBatchSelective(existList);
+      }
+       //根据用户所属组添加对应信息
+      insertCsMappingByTokenAndVin(token,insertVinList);
+      //记录批量插入的车辆与车机的对应关系的日志记录
+      insertBatchTboxBindLog(insertVinList,user.getSuId());
+      return VoResult.success();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
 
+  /**
+   * 根据批量插入数据，车机与车辆的对应关系加入到tbox记录中
+   */
+  public void insertBatchTboxBindLog(List<String>insertVinList,long operateId){
+    if(insertVinList!=null&&insertVinList.size()>0){
+        CsVehicleCrieria condition=new CsVehicleCrieria();
+        CsVehicleCrieria.Criteria criteria=condition.createCriteria();
+        criteria.andcsvVinIn(insertVinList).andcsvMachineIsNotNull();
+        List<CsVehicle> vehicleList=csVehicleService.selectByExample(condition);
+        List<CsTboxBindHis> tboxList=new ArrayList<>();
+        CsTboxBindHis csTboxBindHis=null;
+        for (CsVehicle csVehicle:vehicleList){
+          csTboxBindHis=new CsTboxBindHis();
+          csTboxBindHis.setCstbVehicleId((long)csVehicle.getCsvId());
+          csTboxBindHis.setCstbMachineId((long)csVehicle.getCsvMachine());
+          csTboxBindHis.setCstbStartTime(new Date());
+          //状态 1:正常 0:无效
+          csTboxBindHis.setCstbStatus((short)1);
+          csTboxBindHis.setCstbAddTime(new Date());
+          csTboxBindHis.setCstbModTime(new Date());
+          csTboxBindHis.setCstbOperId(operateId);
+          //操作人类型 1:运营商 2:后台用户
+          csTboxBindHis.setCstbOperType((short)2);
+          tboxList.add(csTboxBindHis);
+        }
+        tboxBindHisService.insertList(tboxList);
+    }
+  }
 
+  /**
+   * 根据用户所属组添加CsMapping对应信息
+   */
+  public void insertCsMappingByTokenAndVin(String token,List<String> vinList){
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+    SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+    if (srvGroup!=null&&"factory_user".equals(srvGroup.getSgFlag())){
+      if(vinList!=null&&vinList.size()>0){
+        CsVehicleCrieria condition=new CsVehicleCrieria();
+        CsVehicleCrieria.Criteria criteria=condition.createCriteria();
+        criteria.andcsvVinIn(vinList);
+        List<CsVehicle> resultIdList= csVehicleService.selectByExample(condition);
+        if(resultIdList!=null){
+          List<CsMapping> csMappingList=new ArrayList<>();
+          CsMapping csMapping=null;
+          for (CsVehicle csVehicle:resultIdList){
+            csMapping=new CsMapping();
+            csMapping.setCsmManage(user.getSuId());
+            csMapping.setCsmCar(csVehicle.getCsvId());
+            csMappingList.add(csMapping);
+          }
+          csMappingService.insertBatchSelective(csMappingList);
+        }
+      }
+    }
+  }
+  //整理各list中的数据
+  public void getItemListData(List<CsVehicle> existList, List<CsVehicle> updateList,List<String>insertVinList, Map<String,CsVehicle> tempMap,SrvUser user){
+      //删除list中的数据
+      Iterator<CsVehicle> it = existList.iterator();
+      while(it.hasNext()){
+        CsVehicle csVehicle = it.next();
+        //csvVin码
+        if(tempMap.containsKey(csVehicle.getCsvMachine())){
+            it.remove();
+            continue;
+        }else if(tempMap.containsKey(csVehicle.getCsvEngineNo())){
+            it.remove();
+            continue;
+        }else if(tempMap.containsKey(csVehicle.getCsvVin())){//需要更新的数据
+          if(csVehicle.getCsvMachine()!=null){//添加的车架号为空--直接添加
+            CsVehicle oldVehicle=tempMap.get(csVehicle.getCsvVin());
+            if(!csVehicle.getCsvMachine().equals(oldVehicle.getCsvMachine())){//车机号不等时更新
+              if(oldVehicle.getCsvMachine()!=null){
+                insertUnBindTobxLog(oldVehicle.getCsvId(),oldVehicle.getCsvMachine(),user.getSuId());//解绑
+              }
+              insertBindTobxLog(oldVehicle.getCsvId(),csVehicle.getCsvMachine(),user.getSuId());//绑定
+            }
+          }
+          updateList.add(csVehicle);
+          it.remove();
+          continue;
+        }
+        //最后插入的数据
+        insertVinList.add(csVehicle.getCsvVin());
+      }
+  }
+
+  //从excel中获取csVehicle中内容=
+  public  List<CsVehicle> getConditionVinList(MultipartFile file,CsVehicle csVehicleTemp){
+    List<CsVehicle> externalList=new ArrayList<>();
+    try {
+      Workbook workbook=null;
+      InputStream is = file.getInputStream();
+      String excelName= file.getOriginalFilename();
+      if(excelName.indexOf(".xlsx")>-1){
+        workbook = new XSSFWorkbook(is);
+      }else{
+        workbook = new HSSFWorkbook(is);
+      }
+      // 循环工作表Sheet--从第三行开始计算
+      for (int numSheet =0; numSheet < 1; numSheet++) {
+        Sheet sheet = workbook.getSheetAt(numSheet);
+        if (sheet == null) {
+          continue;
+        }
+        int rows=sheet.getPhysicalNumberOfRows();
+        int columns=sheet.getRow(2).getPhysicalNumberOfCells();//从第二行开始算
+        // 循环行Row
+        CsVehicle csVehicle=null;
+        for (int rowNum = 2; rowNum < rows; rowNum++) {
+          String rowinfo = "";
+          Row row = sheet.getRow(rowNum);
+          if (row != null) {
+            csVehicle = new CsVehicle();
+            //遍历列
+            //状态默认值
+            for (int columnNum=1;columnNum<columns;columnNum++){
+              Cell cell = row.getCell(columnNum);
+              getExternalData(csVehicle,cell,columnNum);
+            }
+              //
+            if(csVehicleTemp.getCsvAccess()!=null){
+              csVehicle.setCsvAccess(csVehicleTemp.getCsvAccess());
+            }else{
+              csVehicle.setCsvAccess(0);
+            }
+             //
+            if(csVehicleTemp.getCsvHost()!=null){
+              csVehicle.setCsvHost(csVehicleTemp.getCsvHost());
+            }else{
+              csVehicle.setCsvHost(0);
+            }
+            if(csVehicleTemp.getCsvStatus()!=null){
+              csVehicle.setCsvStatus(csVehicleTemp.getCsvStatus());
+            }else{
+              csVehicle.setCsvStatus((short)1);
+            }
+            if(csVehicleTemp.getCsvModel()!=null){
+              csVehicle.setCsvModel(csVehicleTemp.getCsvModel());
+            }else{
+              csVehicle.setCsvModel(0);
+            }
+            csVehicle.setCsvAddTime(new Date());
+            csVehicle.setCsvUpdateTime(new Date());
+            externalList.add(csVehicle);
+          }
+        }
+        break;
+      }
+      return externalList;
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public  void getExternalData(CsVehicle csVehicle, Cell cell, int columnNum) {
+    if (cell != null) {
+      cell.setCellType(Cell.CELL_TYPE_STRING);
+      String value = cell.getStringCellValue();
+      if (null!=value&&!"".equals(value)){
+        switch (columnNum) {
+          //真实车牌号CsvCarNo
+          case 1:
+            csVehicle.setCsvCarNo(value);
+            break;
+          //车架号vin
+          case 2:
+            csVehicle.setCsvVin(value);
+            break;
+          //发动机号csv_engine_no
+          case 3:
+            csVehicle.setCsvEngineNo(value);
+            break;
+          //合格证号csv_certific
+          case 4:
+            csVehicle.setCsvCertific(value);
+            break;
+          //颜色csv_color
+          case 5:
+            csVehicle.setCsvColor(Integer.parseInt(value));
+            break;
+          case 6:
+            //终端编号---判断==能否绑定
+            CsMachine record = new CsMachine();
+            record.setCsmTeNo(value);
+            CsMachine csMachine = csMachineService.selectOne(record);
+            if (csMachine != null) {
+              CsVehicle vehicleRecord=new CsVehicle();
+              vehicleRecord.setCsvMachine(csMachine.getCsmId());
+              if(csVehicleService.selectCount(vehicleRecord)<1){//绑定
+                csVehicle.setCsvMachine(csMachine.getCsmId());
+              }
+            }
+            break;
+          case 7:
+            //车颜色代码csv_color_code
+            csVehicle.setCsvColorCode(Short.parseShort(value));
+            break;
+          case 8:
+            //可充电储能系统编码csv_bataccu_code
+            csVehicle.setCsvBataccuCode(value);
+            break;
+          case 9:
+            //出厂日期csv_prod_date
+            try{
+              SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+              Date dateTime =dff.parse(value);
+              csVehicle.setCsvProdDate(dateTime);
+            }catch (Exception e){
+              e.printStackTrace();
+            }
+            break;
+          case 10:
+            //地标类型csv_landmark
+            csVehicle.setCsvLandmark(value);
+            break;
+          case 11:
+            //车辆领域csv_domain
+            csVehicle.setCsvDomain(Short.parseShort(value));
+            break;
+          case 12:
+            //车型代码csv_model_code_full
+            csVehicle.setCsvModelCodeFull(value);
+            break;
+          case 13:
+            //车型备案型号csv_model_code_simple
+            csVehicle.setCsvModelCodeSimple(value);
+            break;
+          case 14:
+            //内饰颜色csv_interior_color_code
+            csVehicle.setCsvInteriorColorCode(value);
+            break;
+        }
+      }
+    }
   }
 
 }

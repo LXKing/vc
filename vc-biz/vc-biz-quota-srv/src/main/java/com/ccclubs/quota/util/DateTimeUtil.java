@@ -222,6 +222,27 @@ public class DateTimeUtil {
         return blockMap;
     }
 
+    public static int getMonthSpace(Date date1, Date date2)  {
+
+        try{
+            Calendar bef = Calendar.getInstance();
+            Calendar aft = Calendar.getInstance();
+            bef.setTime(date2);
+            aft.setTime(date1);
+            int result = aft.get(Calendar.MONTH) - bef.get(Calendar.MONTH);
+            int month = (aft.get(Calendar.YEAR) - bef.get(Calendar.YEAR)) * 12;
+            //
+            if(Math.abs(month + result)==0){
+                return 1;
+            }else{
+                return Math.abs(month + result);
+            }
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+        return 1;
+    }
+
 
     public static int getMonthSpace(String date1, String date2)  {
 
@@ -297,14 +318,30 @@ public class DateTimeUtil {
         return sdf.format(date);
     }
 
+    public static  Date getStringToDate(String dateString){
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(dateString);
+            return date;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public static void main(String[] args) {
+        String dateString = "2012-12-06";
+        try
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = sdf.parse(dateString);
 
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
-//      System.out.print(DateTimeUtil.daysBetween("2017-10-23 00:00:00",DateTimeUtil.getDateTimeByFormat1(System.currentTimeMillis())));
-
-      System.out.println(new Date(System.currentTimeMillis()));
-      System.out.println(DateTimeUtil.dateToString(new Date(System.currentTimeMillis())));
-//        System.out.println(daysBetween("2017-10-23 00:00:00","2017-10-26 14:23:26"));
     }
 }
