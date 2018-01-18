@@ -9,10 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.ccclubs.frm.spring.resolver.Resolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.ccclubs.admin.vo.Resolver;
 
 /**
  * 
@@ -87,22 +87,22 @@ public class CsTboxBindHis implements java.io.Serializable
 		this.cstbId=cstbId;
 		return this;
 	}
-	
-	
+
+
 	@Transient
 	Map<String, Resolver<CsTboxBindHis>> resolvers = new HashMap<String, Resolver<CsTboxBindHis>>();
-	
+
 	public void registResolver(Resolver<CsTboxBindHis> resolver){
 		this.resolvers.put(resolver.getName(), resolver);
 	}
-	
+
 	public Object resolve(String key){
 		if(resolvers.get(key)!=null){
 			return resolvers.get(key).execute(this);
 		}
 		return null;
 	}
-	
+
 	/*******************************主键**********************************/	
 	/**
 	* 主键 [非空]      
