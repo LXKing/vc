@@ -15,9 +15,9 @@ public abstract class ConvertUtils {
         try {
             result=param.longValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -26,9 +26,9 @@ public abstract class ConvertUtils {
         try {
             result=param.longValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -37,9 +37,9 @@ public abstract class ConvertUtils {
         try {
             result=String.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -48,9 +48,9 @@ public abstract class ConvertUtils {
         try {
             result=String.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -59,9 +59,9 @@ public abstract class ConvertUtils {
         try {
             result=String.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -70,9 +70,9 @@ public abstract class ConvertUtils {
         try {
             result=String.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -81,10 +81,10 @@ public abstract class ConvertUtils {
         try {
             result=String.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }
         catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -94,9 +94,9 @@ public abstract class ConvertUtils {
         try {
             result=param.intValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -106,9 +106,9 @@ public abstract class ConvertUtils {
         try {
             result=param.intValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -117,9 +117,9 @@ public abstract class ConvertUtils {
         try {
             result=Integer.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -129,9 +129,9 @@ public abstract class ConvertUtils {
         try {
             result=param.floatValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -140,9 +140,9 @@ public abstract class ConvertUtils {
         try {
             result=param.floatValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -152,9 +152,9 @@ public abstract class ConvertUtils {
         try {
             result=Float.valueOf(param);
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -165,9 +165,9 @@ public abstract class ConvertUtils {
         try {
             result=param.floatValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }
@@ -178,9 +178,9 @@ public abstract class ConvertUtils {
         try {
             result=param.doubleValue();
         }catch (NullPointerException e){
-            //e.getMessage();
+            e.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
         return result;
     }

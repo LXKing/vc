@@ -18,6 +18,8 @@
         <module>vc-biz-gateway-gb-inf</module>
         <module>vc-biz-gateway-mqtt-srv</module>
         <module>vc-biz-gateway-mqtt-inf</module>
+        <module>vc-biz-gateway-zotye-inf</module>
+        <module>vc-biz-gateway-zotye-srv</module>
     </modules>
 
 

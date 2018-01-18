@@ -23,7 +23,8 @@
         <module>vc-web-front</module>
         <module>vc-web-phoenix-api</module>
 		<module>vc-web-phoenix-srv</module>
-	</modules>
+        <module>vc-web-test-app</module>
+    </modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
