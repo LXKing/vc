@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tesks.util;
+package com.ccclubs.phoenix.tasks.util;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

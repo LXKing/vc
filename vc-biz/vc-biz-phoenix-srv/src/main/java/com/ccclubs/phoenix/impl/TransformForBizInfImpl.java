@@ -1,3 +1,4 @@
+/*
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
@@ -31,3 +32,4 @@ public class TransformForBizInfImpl implements TransformForBizInf {
         return null;
     }
 }
+*/

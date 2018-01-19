@@ -1,11 +1,11 @@
-package com.ccclubs.phoenix.tesks.processor;
+package com.ccclubs.phoenix.tasks.processor;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarState;
-import com.ccclubs.phoenix.tesks.model.CsHistoryState;
-import com.ccclubs.phoenix.tesks.util.RedisConstant;
+import com.ccclubs.phoenix.tasks.model.CsHistoryState;
+import com.ccclubs.phoenix.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

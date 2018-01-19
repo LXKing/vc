@@ -1,16 +1,13 @@
-package com.ccclubs.phoenix.tesks.processor;
+package com.ccclubs.phoenix.tasks.processor;
 
-import com.alibaba.dubbo.config.annotation.Reference;
-import com.alibaba.fastjson.JSON;
 import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarCan;
-import com.ccclubs.phoenix.tesks.model.CsHistoryCan;
-import com.ccclubs.phoenix.tesks.util.RedisConstant;
+import com.ccclubs.phoenix.tasks.model.CsHistoryCan;
+import com.ccclubs.phoenix.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

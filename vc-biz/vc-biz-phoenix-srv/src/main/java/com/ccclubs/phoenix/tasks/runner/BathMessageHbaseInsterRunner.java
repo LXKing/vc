@@ -1,9 +1,9 @@
-package com.ccclubs.phoenix.tesks.runner;
+package com.ccclubs.phoenix.tasks.runner;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.common.BatchProperties;
-import com.ccclubs.phoenix.tesks.processor.HistoryMessageUtils;
-import com.ccclubs.phoenix.tesks.util.RedisConstant;
+import com.ccclubs.phoenix.tasks.processor.HistoryMessageUtils;
+import com.ccclubs.phoenix.tasks.util.BatchProperties;
+import com.ccclubs.phoenix.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.dto.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +57,9 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
                     if (messageListSrcSize > 0) {
                         long redisListStartTime = System.currentTimeMillis();
                         while (System.currentTimeMillis() - redisListStartTime < batchProperties
-                                .getMongoInsertMaxDurTime()) {
+                                .getHbaseInsertMaxDurTime()) {
                             int stateListWaitSize = waitList.size();
-                            if (stateListWaitSize > batchProperties.getMongoInsertBatchSize()) {
+                            if (stateListWaitSize > batchProperties.getHbaseInsertBatchSize()) {
                                 break;
                             }
                             //取出队列中 等待写入的数据
