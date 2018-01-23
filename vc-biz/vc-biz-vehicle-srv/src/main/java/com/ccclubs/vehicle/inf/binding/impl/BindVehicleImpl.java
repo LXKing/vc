@@ -76,20 +76,8 @@ public class BindVehicleImpl implements BindVehicleInf {
       vehicle.setCsvUpdateTime(new Date());
       updateVehicleService.update(vehicle);
       //Tbox的绑定关系
-      CsTboxBindHis csTboxBindHis=new CsTboxBindHis();
-      csTboxBindHis.setCstbVehicleId((long)vehicle.getCsvId());
-      csTboxBindHis.setCstbMachineId((long)machine.getCsmId());
-      csTboxBindHis.setCstbStartTime(new Date());
-      //状态 1:正常 0:无效
-      csTboxBindHis.setCstbStatus((short)1);
-      csTboxBindHis.setCstbAddTime(new Date());
-      csTboxBindHis.setCstbModTime(new Date());
-      csTboxBindHis.setCstbOperId(Long.parseLong(input.getAppId()));
-      //操作人类型 1:运营商 2:后台用户
-      csTboxBindHis.setCstbOperType((short)1);
-      updateTboxBindHisService.insert(csTboxBindHis);
+      insertBindTobxLog(vehicle,machine,input.getAppId());
     }
-
     BindVehicleOutput output = new BindVehicleOutput();
     output.setTeNo(input.getTeNo());
     return output;
@@ -122,4 +110,26 @@ public class BindVehicleImpl implements BindVehicleInf {
     }
   }
 
+  /**
+   * 记录Tbox绑定时的日志
+   */
+  public void insertBindTobxLog(CsVehicle csVehicle,CsMachine csMachine,String operateId ){
+    CsTboxBindHis csTboxBindHis=new CsTboxBindHis();
+    csTboxBindHis.setCstbVehicleId((long)csVehicle.getCsvId());
+    csTboxBindHis.setCstbMachineId((long)csMachine.getCsmId());
+    csTboxBindHis.setCstbVin(csVehicle.getCsvVin());
+    csTboxBindHis.setCstbNumber(csMachine.getCsmNumber());
+    csTboxBindHis.setCstbTeNo(csMachine.getCsmTeNo());
+    csTboxBindHis.setCstbStartTime(new Date());
+    //状态 1:正常 0:无效
+    csTboxBindHis.setCstbStatus((short)1);
+    csTboxBindHis.setCstbAddTime(new Date());
+    csTboxBindHis.setCstbModTime(new Date());
+    if (operateId!=null){
+      csTboxBindHis.setCstbBindOperId(Long.parseLong(operateId));
+    }
+    //操作人类型 1:运营商 2:后台用户
+    csTboxBindHis.setCstbOperType((short)1);
+    updateTboxBindHisService.insert(csTboxBindHis);
+  }
 }
