@@ -88,7 +88,7 @@ public class HistoryCanController {
 		}
 		TableResult<HistoryCan> pageInfo = historyCanService.getPage(
 				reportParam.getQuery(),
-				reportParam.getPage(),
+				-1,//reportParam.getPage(),
 				reportParam.getRows(),
 				reportParam.getOrder());
 		list = pageInfo.getData();
