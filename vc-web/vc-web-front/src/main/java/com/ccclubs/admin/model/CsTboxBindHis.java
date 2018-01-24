@@ -12,10 +12,8 @@ import javax.persistence.Transient;
 import com.ccclubs.frm.spring.resolver.Resolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
-
-
 /**
- * 
+ *
  * @author Joel
  */
 public class CsTboxBindHis implements java.io.Serializable
@@ -24,32 +22,47 @@ public class CsTboxBindHis implements java.io.Serializable
 	/**
 	 * [cstb_id]主键
 	 */
-	
+
 	private @Id@GeneratedValue(strategy = GenerationType.IDENTITY)  Long cstbId;
 	/**
 	 * [cstb_vehicle_id]车辆
 	 */
-	
+
 	private   Long cstbVehicleId;
 	/**
 	 * [cstb_machine_id]终端
 	 */
-	
+
 	private   Long cstbMachineId;
 	/**
-	 * [cstb_start_time]绑定开始时间
+	 * [cstb_vin]车辆vin码
+	 */
+
+	private   String cstbVin;
+	/**
+	 * [cstb_number]车机号
+	 */
+
+	private   String cstbNumber;
+	/**
+	 * [cstb_te_no]终端编号
+	 */
+
+	private   String cstbTeNo;
+	/**
+	 * [cstb_start_time]开始时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date cstbStartTime;
 	/**
-	 * [cstb_end_time]绑定结束时间
+	 * [cstb_end_time]结束时间
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date cstbEndTime;
 	/**
 	 * [cstb_status]状态 1:正常 0:无效
 	 */
-	
+
 	private   Short cstbStatus;
 	/**
 	 * [cstb_add_time]添加时间
@@ -62,26 +75,31 @@ public class CsTboxBindHis implements java.io.Serializable
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private   Date cstbModTime;
 	/**
-	 * [cstb_oper_id]操作人
+	 * [cstb_bind_oper_id]绑定人
 	 */
-	
-	private   Long cstbOperId;
+
+	private   Long cstbBindOperId;
+	/**
+	 * [cstb_unbind_oper_id]解绑人
+	 */
+
+	private   Long cstbUnbindOperId;
 	/**
 	 * [cstb_oper_type]操作人类型 1:运营商 2:后台用户
 	 */
-	
+
 	private   Short cstbOperType;
-	
+
 	//默认构造函数
 	public CsTboxBindHis(){
-	
+
 	}
-	
+
 	//主键构造函数
 	public CsTboxBindHis(Long id){
 		this.cstbId = id;
 	}
-	
+
 	//设置非空字段
 	public CsTboxBindHis setNotNull(Long cstbId){
 		this.cstbId=cstbId;
@@ -103,143 +121,199 @@ public class CsTboxBindHis implements java.io.Serializable
 		return null;
 	}
 
-	/*******************************主键**********************************/	
+	/*******************************主键**********************************/
 	/**
-	* 主键 [非空]      
-	**/
+	 * 主键 [非空]
+	 **/
 	public Long getCstbId(){
 		return this.cstbId;
 	}
-	
+
 	/**
-	* 主键 [非空]     
-	**/
+	 * 主键 [非空]
+	 **/
 	public void setCstbId(Long cstbId){
 		this.cstbId = cstbId;
 	}
-	/*******************************车辆**********************************/	
+	/*******************************车辆**********************************/
 	/**
-	* 车辆 [可空]      
-	**/
+	 * 车辆 [可空]
+	 **/
 	public Long getCstbVehicleId(){
 		return this.cstbVehicleId;
 	}
-	
+
 	/**
-	* 车辆 [可空]     
-	**/
+	 * 车辆 [可空]
+	 **/
 	public void setCstbVehicleId(Long cstbVehicleId){
 		this.cstbVehicleId = cstbVehicleId;
 	}
-	/*******************************终端**********************************/	
+	/*******************************终端**********************************/
 	/**
-	* 终端 [可空]      
-	**/
+	 * 终端 [可空]
+	 **/
 	public Long getCstbMachineId(){
 		return this.cstbMachineId;
 	}
-	
+
 	/**
-	* 终端 [可空]     
-	**/
+	 * 终端 [可空]
+	 **/
 	public void setCstbMachineId(Long cstbMachineId){
 		this.cstbMachineId = cstbMachineId;
 	}
-	/*******************************绑定开始时间**********************************/	
+	/*******************************车辆vin码**********************************/
 	/**
-	* 绑定开始时间 [可空]      
-	**/
+	 * 车辆vin码 [可空]
+	 **/
+	public String getCstbVin(){
+		return this.cstbVin;
+	}
+
+	/**
+	 * 车辆vin码 [可空]
+	 **/
+	public void setCstbVin(String cstbVin){
+		this.cstbVin = cstbVin;
+	}
+	/*******************************车机号**********************************/
+	/**
+	 * 车机号 [可空]
+	 **/
+	public String getCstbNumber(){
+		return this.cstbNumber;
+	}
+
+	/**
+	 * 车机号 [可空]
+	 **/
+	public void setCstbNumber(String cstbNumber){
+		this.cstbNumber = cstbNumber;
+	}
+	/*******************************终端编号**********************************/
+	/**
+	 * 终端编号 [可空]
+	 **/
+	public String getCstbTeNo(){
+		return this.cstbTeNo;
+	}
+
+	/**
+	 * 终端编号 [可空]
+	 **/
+	public void setCstbTeNo(String cstbTeNo){
+		this.cstbTeNo = cstbTeNo;
+	}
+	/*******************************开始时间**********************************/
+	/**
+	 * 开始时间 [可空]
+	 **/
 	public Date getCstbStartTime(){
 		return this.cstbStartTime;
 	}
-	
+
 	/**
-	* 绑定开始时间 [可空]     
-	**/
+	 * 开始时间 [可空]
+	 **/
 	public void setCstbStartTime(Date cstbStartTime){
 		this.cstbStartTime = cstbStartTime;
 	}
-	/*******************************绑定结束时间**********************************/	
+	/*******************************结束时间**********************************/
 	/**
-	* 绑定结束时间 [可空]      
-	**/
+	 * 结束时间 [可空]
+	 **/
 	public Date getCstbEndTime(){
 		return this.cstbEndTime;
 	}
-	
+
 	/**
-	* 绑定结束时间 [可空]     
-	**/
+	 * 结束时间 [可空]
+	 **/
 	public void setCstbEndTime(Date cstbEndTime){
 		this.cstbEndTime = cstbEndTime;
 	}
-	/*******************************状态 1:正常 0:无效**********************************/	
+	/*******************************状态 1:正常 0:无效**********************************/
 	/**
-	* 状态 1:正常 0:无效 [可空]      
-	**/
+	 * 状态 1:正常 0:无效 [可空]
+	 **/
 	public Short getCstbStatus(){
 		return this.cstbStatus;
 	}
-	
+
 	/**
-	* 状态 1:正常 0:无效 [可空]     
-	**/
+	 * 状态 1:正常 0:无效 [可空]
+	 **/
 	public void setCstbStatus(Short cstbStatus){
 		this.cstbStatus = cstbStatus;
 	}
-	/*******************************添加时间**********************************/	
+	/*******************************添加时间**********************************/
 	/**
-	* 添加时间 [可空]      
-	**/
+	 * 添加时间 [可空]
+	 **/
 	public Date getCstbAddTime(){
 		return this.cstbAddTime;
 	}
-	
+
 	/**
-	* 添加时间 [可空]     
-	**/
+	 * 添加时间 [可空]
+	 **/
 	public void setCstbAddTime(Date cstbAddTime){
 		this.cstbAddTime = cstbAddTime;
 	}
-	/*******************************修改时间**********************************/	
+	/*******************************修改时间**********************************/
 	/**
-	* 修改时间 [可空]      
-	**/
+	 * 修改时间 [可空]
+	 **/
 	public Date getCstbModTime(){
 		return this.cstbModTime;
 	}
-	
+
 	/**
-	* 修改时间 [可空]     
-	**/
+	 * 修改时间 [可空]
+	 **/
 	public void setCstbModTime(Date cstbModTime){
 		this.cstbModTime = cstbModTime;
 	}
-	/*******************************操作人**********************************/	
+	/*******************************绑定人**********************************/
 	/**
-	* 操作人 [可空]      
-	**/
-	public Long getCstbOperId(){
-		return this.cstbOperId;
+	 * 绑定人 [可空]
+	 **/
+	public Long getCstbBindOperId(){
+		return this.cstbBindOperId;
 	}
-	
+
 	/**
-	* 操作人 [可空]     
-	**/
-	public void setCstbOperId(Long cstbOperId){
-		this.cstbOperId = cstbOperId;
+	 * 绑定人 [可空]
+	 **/
+	public void setCstbBindOperId(Long cstbBindOperId){
+		this.cstbBindOperId = cstbBindOperId;
 	}
-	/*******************************操作人类型 1:运营商 2:后台用户**********************************/	
+	/*******************************解绑人**********************************/
 	/**
-	* 操作人类型 1:运营商 2:后台用户 [可空]      
-	**/
+	 * 解绑人 [可空]
+	 **/
+	public Long getCstbUnbindOperId(){
+		return this.cstbUnbindOperId;
+	}
+
+	/**
+	 * 解绑人 [可空]
+	 **/
+	public void setCstbUnbindOperId(Long cstbUnbindOperId){
+		this.cstbUnbindOperId = cstbUnbindOperId;
+	}
+	/*******************************操作人类型 1:运营商 2:后台用户**********************************/
+	/**
+	 * 操作人类型 1:运营商 2:后台用户 [可空]
+	 **/
 	public Short getCstbOperType(){
 		return this.cstbOperType;
 	}
-	
+
 	/**
-	* 操作人类型 1:运营商 2:后台用户 [可空]     
-	**/
+	 * 操作人类型 1:运营商 2:后台用户 [可空]
+	 **/
 	public void setCstbOperType(Short cstbOperType){
 		this.cstbOperType = cstbOperType;
 	}

@@ -50,6 +50,12 @@
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-pub-orm</artifactId>
             <version>${biz.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>www.ccclubs</groupId>
+                    <artifactId>vc-frm-mybatis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>

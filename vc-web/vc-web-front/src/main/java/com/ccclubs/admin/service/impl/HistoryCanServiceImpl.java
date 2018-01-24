@@ -59,9 +59,18 @@ public class HistoryCanServiceImpl  implements IHistoryCanService{
                     pageNo,pageSize,order);
             if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
                 if (apiMessage.getData()!=null){
-                    if (apiMessage.getData().getTotal()>0){
+                    if (null!=apiMessage.getData().getTotal()
+                            &&apiMessage.getData().getTotal()>0){
                         List<CarCan> carCanList=apiMessage.getData().getList();
                         page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
+                        result.setData(dealCarCanToHistoryCanAll(carCanList));
+                        result.setPage(page);
+                    }
+                    //这里是查询全部的数据的处理流程，用于导出全部数据。
+                    else if (null!=apiMessage.getData().getList()
+                            &&apiMessage.getData().getList().size()>0){
+                        List<CarCan> carCanList=apiMessage.getData().getList();
+                        page=new Page(pageNo,pageSize,apiMessage.getData().getList().size());
                         result.setData(dealCarCanToHistoryCanAll(carCanList));
                         result.setPage(page);
                     }
