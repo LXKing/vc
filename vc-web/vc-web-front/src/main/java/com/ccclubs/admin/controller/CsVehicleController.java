@@ -11,8 +11,6 @@ import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
-import com.ccclubs.frm.spring.constant.ApiEnum;
-import com.ccclubs.frm.spring.exception.ApiException;
 import com.github.pagehelper.PageInfo;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -114,7 +112,7 @@ public class CsVehicleController {
       CsMappingCrieria csMappingCrieria = new CsMappingCrieria();
       CsMappingCrieria.Criteria criteriaMapping = csMappingCrieria.createCriteria();
       criteriaMapping.andcsmManageEqualTo(user.getSuId());
-      List<CsMapping> csMappingList = csMappingService.selectByExample(criteriaMapping);
+      List<CsMapping> csMappingList = csMappingService.selectByExample(csMappingCrieria);
       if (null != csMappingList && csMappingList.size() > 0) {
         Integer[] carIds = new Integer[csMappingList.size()];
         for (int i = 0; i < csMappingList.size(); i++) {
@@ -652,7 +650,10 @@ public class CsVehicleController {
           csTboxBindHis.setCstbOperType((short)2);
           tboxList.add(csTboxBindHis);
         }
-        tboxBindHisService.insertBatchSelective(tboxList);
+        if(tboxList!=null&&tboxList.size()>0){
+          tboxBindHisService.insertBatchSelective(tboxList);
+        }
+
     }
   }
 
@@ -662,7 +663,7 @@ public class CsVehicleController {
   public void insertCsMappingByTokenAndVin(String token,List<String> vinList){
     SrvUser user = userAccessUtils.getCurrentUser(token);
     SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
-    if (srvGroup!=null&&"factory_user".equals(srvGroup.getSgFlag())){
+    if (srvGroup!=null&&"platform_user".equals(srvGroup.getSgFlag())){
       if(vinList!=null&&vinList.size()>0){
         CsVehicleCrieria condition=new CsVehicleCrieria();
         CsVehicleCrieria.Criteria criteria=condition.createCriteria();
