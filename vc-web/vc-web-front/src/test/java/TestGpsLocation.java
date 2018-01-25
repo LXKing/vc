@@ -24,7 +24,7 @@ public class TestGpsLocation {
   private String Url = "http://restapi.amap.com/v3/geocode/regeo?key=5be19569db0ef4581842854b91cffbf7&location=";
 
   @Test
-  public void vehicleRegister() throws Exception, Throwable {
+  public void gpsTransfer() throws Exception, Throwable {
     String jsonString = readToString(
         "E:\\WorkSpace\\JavaSpace\\vc\\vc-web\\vc-web-front\\src\\test\\java\\json.txt");
     JSONArray array = JSON.parseArray(jsonString);

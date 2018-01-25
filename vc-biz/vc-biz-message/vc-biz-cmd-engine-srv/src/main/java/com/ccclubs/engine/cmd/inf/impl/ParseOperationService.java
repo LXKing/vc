@@ -6,10 +6,10 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.RedisHelper;
 import com.ccclubs.engine.core.util.RemoteHelper;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.mongo.modify.UpdateRemoteService;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
@@ -99,6 +99,8 @@ public class ParseOperationService implements IParseDataService {
    * 新版本复合远程控制指令 ，目前暂时仅供众行EVPOP使用
    */
   private void processMultipleOperation(MqMessage tm) {
+    CsRemote csRemote;
+    CommonWriter commonWriter = null;
     try {
 
       if (tm.getTransId() == 0 || tm.getMsgBody().length < 4) {
@@ -106,12 +108,11 @@ public class ParseOperationService implements IParseDataService {
       }
       byte[] byteMsg = tm.WriteToBytes();
 
-      CommonWriter commonWriter = CommonWriter.readObject(byteMsg, CommonWriter.class);
+      commonWriter = CommonWriter.readObject(byteMsg, CommonWriter.class);
 
       MyBuffer myBuffer = new MyBuffer(tm.getMsgBody());
-      //取命令码，两个字节
+      //取命令码，四个字节
       int fcCode = myBuffer.getInt();
-      CsRemote csRemote;
       switch (fcCode) {
         //远程开门
         case 0x1000FF00:
@@ -255,6 +256,45 @@ public class ParseOperationService implements IParseDataService {
               byteMsg[21] == 0 && (byteMsg[22] == 0 || (byteMsg[22] & 0xFF) == 0xFF));
           updateRemoteService.update(csRemote);
           break;
+        // 批量查询(带参数)
+        case 0x10200000:
+          String resultJsonCommonSelect = JSON.toJSONString(
+              CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+
+          redisHelper
+              .setRemote(String.valueOf(commonWriter.mId),
+                  resultJsonCommonSelect);
+
+          transferRemoteStatus(tm, resultJsonCommonSelect);
+
+          csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonCommonSelect,
+              true);
+          updateRemoteService.update(csRemote);
+          break;
+        // 远程关门(带参数)
+        case 0x10210000:
+          // 获取参数
+          short fcCodeParams = myBuffer.getShort();
+          // 获取结果
+          short fcCodeResult = myBuffer.getShort();
+
+          String resultJsonCloseWithParams;
+          resultJsonCloseWithParams = RemoteHelper
+              .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
+                  myBuffer.gets(tm.getMsgBody().length - 4 - 2 -2),
+                  fcCodeResult);
+
+          redisHelper
+              .setRemote(String.valueOf(commonWriter.mId),
+                  resultJsonCloseWithParams);
+
+          transferRemoteStatus(tm, resultJsonCloseWithParams);
+
+          csRemote = RemoteHelper
+              .getRemote(commonWriter.mId, tm.getHexString(), resultJsonCloseWithParams,
+                  fcCodeResult == 0 || fcCodeResult == 0x00FF);
+          updateRemoteService.update(csRemote);
+          break;
         default:
           //状态获取
           CCCLUBS_60 terminalInfo = new CCCLUBS_60();
@@ -292,6 +332,11 @@ public class ParseOperationService implements IParseDataService {
     } catch (Exception e) {
       e.printStackTrace();
       logger.error("processMultipleOperation" + e.getMessage(), e);
+      if (null != commonWriter) {
+        csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), "协议错误",
+            false);
+        updateRemoteService.update(csRemote);
+      }
     }
   }
 

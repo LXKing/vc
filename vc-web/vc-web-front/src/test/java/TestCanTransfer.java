@@ -19,11 +19,10 @@ import org.junit.Test;
 public class TestCanTransfer {
 
   @Test
-  public void vehicleRegister() throws Exception, Throwable {
+  public void anTransfer() throws Exception, Throwable {
     String jsonString = readToString(
         "E:\\WorkSpace\\JavaSpace\\vc\\vc-web\\vc-web-front\\src\\test\\java\\jsonCan.txt");
     JSONArray array = JSON.parseArray(jsonString);
-
     for (int i = 0; i < array.size(); i++) {
       JSONObject item = (JSONObject) array.get(i);
       System.out.println(item);
