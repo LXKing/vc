@@ -62,10 +62,6 @@ public class ParseOperationServiceTest {
     csMachine2.setCsmAddTime(new Date());
     csMachine2.setCsmAccess(1);
 
-    redisHelper
-        .setRemoteOld(String.valueOf(11111),
-            JSON.toJSONString(mqMessage));
-
     logger.info(JSON.toJSONString(csMachine2));
 
     redisTemplate.opsForValue().set("Test:CsMachine", csMachine2);
