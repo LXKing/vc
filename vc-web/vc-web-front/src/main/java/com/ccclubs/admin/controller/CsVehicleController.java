@@ -869,6 +869,12 @@ public class CsVehicleController {
     }
   }
 
+  /**
+   *  车辆表与mapping表关联信息
+   * @param token
+   * @param fileUpload
+   * @return
+   */
   @RequestMapping(value = "/mappingRelationBatch", method = RequestMethod.POST)
   public VoResult<?>  mappingRelationBatch(@CookieValue("token") String token,@RequestParam("fileUpload") MultipartFile fileUpload) {
     SrvUser user = userAccessUtils.getCurrentUser(token);
