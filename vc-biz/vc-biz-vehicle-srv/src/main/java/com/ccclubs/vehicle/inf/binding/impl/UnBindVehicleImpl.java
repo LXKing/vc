@@ -67,37 +67,52 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
             vehicle.setCsvUpdateTime(new Date());
             updateVehicleService.unbindTbox(vehicle);
             //记录tobxd的解绑关系
-            CsTboxBindHis record=new CsTboxBindHis();
-            record.setCstbEndTime(new Date());
-            record.setCstbModTime(new Date());
-            //
-            CsTboxBindHisExample example=new CsTboxBindHisExample();
-            CsTboxBindHisExample.Criteria criteria=example.createCriteria();
-            criteria.andcstbVehicleIdEqualTo((long)vehicle.getCsvId());
-            criteria.andcstbMachineIdEqualTo((long)machine.getCsmId());
-            criteria.andcstbEndTimeIsNull();
-            List<CsTboxBindHis> list=queryTboxBindHisService.selectByExample(example);
-            if(list==null||list.isEmpty()){
-                record.setCstbVehicleId((long)vehicle.getCsvId());
-                record.setCstbMachineId((long)machine.getCsmId());
-                record.setCstbStartTime(new Date());
-                //状态 1:正常 0:无效
-                record.setCstbStatus((short)1);
-                record.setCstbAddTime(new Date());
-                record.setCstbModTime(new Date());
-                record.setCstbEndTime(new Date());
-                if(input.getAppId()!=null){
-                    record.setCstbOperId(Long.parseLong(input.getAppId()));
-                }
-                //操作人类型 1:运营商 2:后台用户
-                record.setCstbOperType((short)1);
-                updateTboxBindHisService.insert(record);
-            }else {
-                updateTboxBindHisService.updateByExampleSelective(record,example);
-            }
+            insertUnBindTobxLog(vehicle,machine,input.getAppId());
         } else {
             throw new ApiException(ApiEnum.NO_BINDING_EXISTS, input.getVin(), input.getTeNo());
         }
         return null;
     }
+
+
+    /**
+     * 记录解绑时的日志
+     */
+    public void insertUnBindTobxLog(CsVehicle csVehicle ,CsMachine csMachine,String operateId){
+        CsTboxBindHis record=new CsTboxBindHis();
+        //
+        CsTboxBindHisExample example=new CsTboxBindHisExample();
+        CsTboxBindHisExample.Criteria criteria=example.createCriteria();
+        criteria.andcstbVehicleIdEqualTo((long)csVehicle.getCsvId());
+        criteria.andcstbMachineIdEqualTo((long)csMachine.getCsmId());
+        criteria.andcstbEndTimeIsNull();
+        List<CsTboxBindHis> list=queryTboxBindHisService.selectByExample(example);
+        if(list==null||list.isEmpty()){
+            record.setCstbVehicleId((long)csVehicle.getCsvId());
+            record.setCstbMachineId((long)csMachine.getCsmId());
+            record.setCstbVin(csVehicle.getCsvVin());
+            record.setCstbNumber(csMachine.getCsmNumber());
+            record.setCstbTeNo(csMachine.getCsmTeNo());
+            record.setCstbStartTime(new Date());
+            //状态 1:正常 0:无效
+            record.setCstbStatus((short)1);
+            record.setCstbAddTime(new Date());
+            record.setCstbModTime(new Date());
+            record.setCstbEndTime(new Date());
+            if(operateId!=null){
+                record.setCstbUnbindOperId(Long.parseLong(operateId));
+            }
+            //操作人类型 1:运营商 2:后台用户
+            record.setCstbOperType((short)1);
+            updateTboxBindHisService.insert(record);
+        }else {
+            record.setCstbEndTime(new Date());
+            record.setCstbModTime(new Date());
+            if(operateId!=null){
+                record.setCstbUnbindOperId(Long.parseLong(operateId));
+            }
+            updateTboxBindHisService.updateByExampleSelective(record,example);
+        }
+    }
+
 }
