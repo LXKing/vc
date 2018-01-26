@@ -737,7 +737,7 @@ public class CsVehicleController {
           continue;
         }
         int rows=sheet.getPhysicalNumberOfRows();
-        int columns=sheet.getRow(2).getPhysicalNumberOfCells();//从第二行开始算
+        int columns=sheet.getRow(1).getPhysicalNumberOfCells();//从第二行开始算
         // 循环行Row
         CsVehicle csVehicle=null;
         for (int rowNum = 2; rowNum < rows; rowNum++) {
@@ -868,5 +868,94 @@ public class CsVehicleController {
       }
     }
   }
+
+  @RequestMapping(value = "/mappingRelationBatch", method = RequestMethod.POST)
+  public VoResult<?>  mappingRelationBatch(@CookieValue("token") String token,@RequestParam("fileUpload") MultipartFile fileUpload) {
+    SrvUser user = userAccessUtils.getCurrentUser(token);
+    SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+    if (srvGroup==null||!"platform_user".equals(srvGroup.getSgFlag())){
+      return  VoResult.error(null,"不是企业用户");
+    }
+    List<String> vinList=getConditionVinList(fileUpload);
+    if(vinList!=null&&vinList.size()>0){
+      CsVehicleCrieria  example=new CsVehicleCrieria();
+      CsVehicleCrieria.Criteria criteria=example.createCriteria();
+      //
+      criteria.andcsvVinIn(vinList);
+      List<CsVehicle> csVehicleList=csVehicleService.selectByExample(example);
+      //--
+      List<Integer> mapCarList=new ArrayList<>();
+      for (CsVehicle csVehicle:csVehicleList){
+        mapCarList.add(csVehicle.getCsvId());
+      }
+      //
+      CsMappingCrieria mapingExample=new CsMappingCrieria();
+      CsMappingCrieria.Criteria mapingCriteria1=mapingExample.createCriteria();
+      mapingCriteria1.andcsmCarIn(mapCarList);
+      mapingCriteria1.andcsmManageEqualTo(user.getSuId());
+      List<CsMapping>mappingList=csMappingService.selectByExample(mapingExample);
+      Map<Integer,Object>mapingMap=new HashMap<>(mappingList.size());
+      for(CsMapping csMapping:mappingList){
+        mapingMap.put(csMapping.getCsmCar(),null);
+      }
+      //过滤掉重复的数据
+      List<CsMapping> csMappingList=new ArrayList<>();
+      CsMapping csMapping=null;
+       for (CsVehicle csVehicle:csVehicleList){
+            if (!mapingMap.containsKey(csVehicle.getCsvId())){
+              csMapping=new CsMapping();
+              csMapping.setCsmCar(csVehicle.getCsvId());
+              csMapping.setCsmManage(user.getSuId());
+              csMappingList.add(csMapping);
+            }
+       }
+       if (csMappingList!=null&&csMappingList.size()>0){
+         csMappingService.insertBatchSelective(csMappingList);
+       }
+    }
+    return  VoResult.success();
+  }
+
+  //从excel中获取csVehicle中内容=
+  public  List<String> getConditionVinList(MultipartFile file){
+    List<String> externalList=new ArrayList<>();
+    try {
+      Workbook workbook=null;
+      InputStream is = file.getInputStream();
+      String excelName= file.getOriginalFilename();
+      if(excelName.indexOf(".xlsx")>-1){
+        workbook = new XSSFWorkbook(is);
+      }else{
+        workbook = new HSSFWorkbook(is);
+      }
+      // 循环工作表Sheet--从第三行开始计算
+      for (int numSheet =0; numSheet < 1; numSheet++) {
+        Sheet sheet = workbook.getSheetAt(numSheet);
+        if (sheet == null) {
+          continue;
+        }
+        int rows=sheet.getPhysicalNumberOfRows();
+        int columns=sheet.getRow(1).getPhysicalNumberOfCells();//从第二行开始算
+        // 循环行Row
+        for (int rowNum = 1; rowNum < rows; rowNum++) {
+          Row row = sheet.getRow(rowNum);
+          if (row != null) {
+            //遍历列
+            //状态默认值
+              Cell cell = row.getCell(0);
+              externalList.add(cell.getStringCellValue());
+          }
+        }
+        break;
+      }
+      return externalList;
+    }catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+
 
 }
