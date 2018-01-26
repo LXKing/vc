@@ -243,6 +243,7 @@ public class ParseOperationService implements IParseDataService {
         case 0x10178800:
           //发动机停止
         case 0x10170000:
+        case 0x10220010:
           String resultJsonCommon = JSON.toJSONString(
               CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
 
