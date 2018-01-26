@@ -26,12 +26,20 @@
 		<br/>
 		<br/>
 		<form  class="form-horizontal" id="addform" style="margin:15px;" enctype="multipart/form-data" >
-			<div class="form-group" id="conditionId" style="height:80%;">
-				<input placeholder="" style="width:30%;"  maxlength="30" size="30" type="file" class="form-control searchinput" id="fileUpload"  name="fileUpload" /><!-- 定义change事件,选择文件后触发 -->
-				<br/><span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
 
+
+
+			<div  class="form-group"  style="...">
+
+				<dl>
+					<dd>
+						<input style="height: 35px; text-align:left;vertical-align:middle" placeholder=""    type="file" class="form-control" id="fileUpload"  name="fileUpload" /><!-- 定义change事件,选择文件后触发 -->
+						<label id="file-error" class="error" for="fileUpload"><i class="fa fa-info-circle fieldTip">必填</i></label>
+						<br/>
+						<span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
+					</dd>
+				</dl>
 			</div>
-
 
 			<div class="form-group windowButtonBar">
 				<div class="hr-line-dashed"></div>
