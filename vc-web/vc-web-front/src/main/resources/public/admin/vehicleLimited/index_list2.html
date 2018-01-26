@@ -25,6 +25,10 @@
 						 <li sctl="insertBatch">
 							 <a href="javascript:operate.insertBatch();">批量插入</a>
 						 </li>
+
+						 <li sctl="relationBatch">
+							 <a href="javascript:operate.relationBatch();">Maping-Vehicle关联</a>
+						 </li>
 		             </ul>
 		         </div>
 			 	<div class="btn-group">
@@ -139,6 +143,25 @@
                 }
             });
         },
+
+        relationBatch:function () {
+            var o=this;
+            showTopWin({
+                type: 2,
+                shade: 0.4,
+                maxmin: true,
+                area: ['650px', '460px'],
+                content: "/admin/vehicleLimited/mappingRelationBatch.html?uuid="+(new Date().getTime()),
+                zIndex: layer.zIndex, //重点1
+                end:function(result){
+                    if(result.success){
+                        layer.msg("操作成功！", {icon: 1, time:1600});
+                        grid.reloadData();
+                    }
+                }
+            });
+        },
+
 
 		del:function(id){
 			var o = this;
