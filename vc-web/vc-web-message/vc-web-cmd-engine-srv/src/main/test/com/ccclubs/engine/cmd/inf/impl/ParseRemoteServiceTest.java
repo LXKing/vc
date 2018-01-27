@@ -36,7 +36,7 @@ public class ParseRemoteServiceTest {
     CsRemote csRemote;
     CommonWriter commonWriter = null;
 //    String hexString = "5436364B3030353100000000072DCBC9061021000000C300FF03140421FC6642CA020000CC020000CE0400000000D002030067010268010069010071080000000000000000720658B00000E9F57404000000007601006C0100880100";
-    String hexString = "5436364B3030353100000000072DCBC9061021000000C3008103140421FC6642CA020000CC020000CE0400000000D002030067010268010069010071080000000000000000720658B00000E9F57404000000007601006C0100880100";
+    String hexString = "543637463437323000000000072F101B0610210000008003140421FF7297CA027E00CC020000CE0401FE0000D002030067010268010069010271080659C6BB01C350557206A3380ADF07A074040000092E7601246C0100880100";
 //      String hexString = "5436364B3030353100000000072D588F0610210000100000FF03140421FB7023CA020000CC020000CE0400000000D002030067010268010069010071080000000000000000720658B00000E9F57404000000007601006C0100880100";
 //      String hexString = "5436364B3030353100000000072D2EFD061004FF000000";
     MqMessage tm = new MqMessage();
@@ -163,15 +163,13 @@ public class ParseRemoteServiceTest {
           break;
         // 远程关门(带参数)
         case 0x10210000:
-          // 获取参数
-          short fcCodeParams = myBuffer.getShort();
           // 获取结果
           short fcCodeResult = myBuffer.getShort();
 
           String resultJsonCloseWithParams;
           resultJsonCloseWithParams = RemoteHelper
               .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
-                  myBuffer.gets(tm.getMsgBody().length - 4 - 2 - 2), fcCodeResult);
+                  myBuffer.gets(tm.getMsgBody().length - 4 - 2), fcCodeResult);
 
           csRemote = RemoteHelper
               .getRemote(commonWriter.mId, tm.getHexString(), resultJsonCloseWithParams,
