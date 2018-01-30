@@ -1,3 +1,4 @@
+/*
 package com.ccclubs.hbase.phoenix.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -5,11 +6,13 @@ import com.alibaba.druid.pool.DruidDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+*/
 /**
  * Module Desc:
  * User: taosm
  * DateTime: 2018/1/4 0004
- */
+ *//*
+
 public class PhoenixHelper {
     private DruidDataSource phoenixDataSource;
 
@@ -48,3 +51,4 @@ public class PhoenixHelper {
         phoenixDataSource.close();
     }
 }
+*/
