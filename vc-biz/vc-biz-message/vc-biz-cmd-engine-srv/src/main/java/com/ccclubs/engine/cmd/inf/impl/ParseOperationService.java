@@ -280,7 +280,7 @@ public class ParseOperationService implements IParseDataService {
           String resultJsonCloseWithParams;
           resultJsonCloseWithParams = RemoteHelper
               .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
-                  myBuffer.gets(tm.getMsgBody().length - 4 -2),
+                  myBuffer.gets(tm.getMsgBody().length - 4 -2 -2),
                   fcCodeResult);
 
           redisHelper
