@@ -1,9 +1,10 @@
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
-import com.ccclubs.hbase.phoenix.config.PhoenixHelper;
+import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
@@ -19,8 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 
@@ -144,13 +143,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             "and current_time<=? ";
 
 
-
-
     @Autowired
-    private JdbcTemplate phoenixJdbcTemplate;
-
-    @Autowired
-    private PhoenixHelper phoenixHelper;
+    private PhoenixTool phoenixTool;
 
     @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
@@ -164,38 +158,56 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "order by current_time  " + carStateHistoryParam.getOrder() + " ";
 
         List<CarState> carStateList = new ArrayList<CarState>();
-        long start_mills = System.currentTimeMillis();
-        List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
-                new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        String cs_number = carStateHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
-                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-                        ps.setString(1, cs_number);
-                        ps.setLong(2, start_time);
-                        ps.setLong(3, end_time);
+
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement pst = null;
+        try {
+            pst = connection.prepareStatement(query_sql);
+            String cs_number = carStateHistoryParam.getCs_number();
+            long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
+            pst.setString(1, cs_number);
+            pst.setLong(2, start_time);
+            pst.setLong(3, end_time);
+            ResultSet rs = pst.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(rs);
+            CarState carState = null;
+            for (Object obj : jsonArray) {
+                JSONObject jsonObject = (JSONObject)obj;
+                carState = new CarState();
+                String[] fields = queryFields.split(",");
+                for (String field : fields) {
+                    try {
+                        BeanUtils.setProperty(carState, field, jsonObject.get(StringUtils.upperCase(field)));
+                    } catch (Exception ex) {
+                        logger.error(ex.getMessage());
                     }
-                },
-                new CarStateMapper());
-
-        CarState carState = null;
-        for (JSONObject jsonObject : jsonObjList) {
-            carState = new CarState();
-            String[] fields = queryFields.split(",");
-            for (String field : fields) {
+                }
+                carStateList.add(carState);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(pst!=null){
                 try {
-                    BeanUtils.setProperty(carState, field, jsonObject.get(StringUtils.upperCase(field)));
-                } catch (Exception ex) {
-
+                    pst.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
                 }
             }
-            carStateList.add(carState);
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
-        long end_mills=System.currentTimeMillis();
-        long cost_seconds=(end_mills-start_mills)/1000;
-        logger.info("本次查询耗时"+cost_seconds+"秒!");
         return carStateList;
+
+
     }
     @Override
     public List<CarState> queryCarStateListWithPage(final CarStateHistoryParam carStateHistoryParam) {
@@ -213,33 +225,53 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 "order by current_time  " + carStateHistoryParam.getOrder() + " " +
                 "limit ? offset ? ";
         List<CarState> carStateList = new ArrayList<CarState>();
-        List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
-                new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        String cs_number = carStateHistoryParam.getCs_number();
-                        long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
-                        long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-                        ps.setString(1, cs_number);
-                        ps.setLong(2, start_time);
-                        ps.setLong(3, end_time);
-                        ps.setInt(4, limit);
-                        ps.setInt(5, offset);
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement pst = null;
+        try {
+            pst = connection.prepareStatement(query_sql);
+            String cs_number = carStateHistoryParam.getCs_number();
+            long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
+            pst.setString(1, cs_number);
+            pst.setLong(2, start_time);
+            pst.setLong(3, end_time);
+            pst.setInt(4, limit);
+            pst.setInt(5, offset);
+            ResultSet rs = pst.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(rs);
+            CarState carState = null;
+            for (Object obj : jsonArray) {
+                JSONObject jsonObject = (JSONObject)obj;
+                carState = new CarState();
+                String[] fields = queryFields.split(",");
+                for (String field : fields) {
+                    try {
+                        BeanUtils.setProperty(carState, field, jsonObject.get(StringUtils.upperCase(field)));
+                    } catch (Exception ex) {
+                        logger.error(ex.getMessage());
                     }
-                },
-                new CarStateMapper());
-        CarState carState = null;
-        for (JSONObject jsonObject : jsonObjList) {
-            carState = new CarState();
-            String[] fields = queryFields.split(",");
-            for (String field : fields) {
+                }
+                carStateList.add(carState);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(pst!=null){
                 try {
-                    BeanUtils.setProperty(carState, field, jsonObject.get(StringUtils.upperCase(field)));
-                } catch (Exception ex) {
-
+                    pst.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
                 }
             }
-            carStateList.add(carState);
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
         return carStateList;
     }
@@ -248,24 +280,41 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
-
-        total = phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
-            @Override
-            public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-                String cs_number = carStateHistoryParam.getCs_number();
-                long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
-                long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-                ps.setString(1, cs_number);
-                ps.setLong(2, start_time);
-                ps.setLong(3, end_time);
-                ResultSet rs = ps.executeQuery();
-                long record_count = 0;
-                while (rs.next()) {
-                    record_count = rs.getLong(1);
-                }
-                return record_count;
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement pst = null;
+        try {
+            pst = connection.prepareStatement(count_sql);
+            String cs_number = carStateHistoryParam.getCs_number();
+            long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
+            pst.setString(1, cs_number);
+            pst.setLong(2, start_time);
+            pst.setLong(3, end_time);
+            ResultSet rs = pst.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(rs);
+            if(jsonArray!=null&&jsonArray.size()>0){
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                total=jsonObject.getLong("TOTAL");
             }
-        });
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(pst!=null){
+                try {
+                    pst.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
         return total;
     }
     @Override
@@ -274,15 +323,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         long total = -1L;
         //首先判断是否是分页查询
         if (carStateHistoryParam.getPage_no() > 0) {
-//            //判断是否已获取过记录总数
-//            total=carStateHistoryParam.getTotal();
-//            //已经获取过记录总数
-//            if(total>-1){
-//                total = carStateHistoryParam.getTotal();
-//            }
-//            else{
-//                total = queryCarStateListCount(carStateHistoryParam);
-//            }
             total = queryCarStateListCount(carStateHistoryParam);
             List<CarState> carStateList = queryCarStateListWithPage(carStateHistoryParam);
             carStateHistoryOutput.setTotal(total);
@@ -302,7 +342,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         Connection connection = null;
         PreparedStatement carStatePs = null;
         try {
-            connection = phoenixHelper.getConnection();
+            connection = phoenixTool.getConnection();
             carStatePs = connection.prepareStatement(insert_sql);
             Long count =0L;
             for(CarState carState:records){
