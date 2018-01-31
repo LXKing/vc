@@ -1,3 +1,4 @@
+/*
 package com.ccclubs.hbase.phoenix.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -7,11 +8,13 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+*/
 /**
  * Module Desc:
  * User: taosm
  * DateTime: 2017/11/27 0027
- */
+ *//*
+
 @org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(PhoenixProperties.class)
 public class PhoenixAutoConfiguration {
@@ -67,3 +70,4 @@ public class PhoenixAutoConfiguration {
         return phoenixHelper;
     }
 }
+*/
