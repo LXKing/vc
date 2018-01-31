@@ -8,6 +8,7 @@ server:
 spring:
   redis:
     host: 118.178.229.234
+    port: 63791
     database: 7
   aop:
     proxyTargetClass: true
