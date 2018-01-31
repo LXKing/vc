@@ -1,8 +1,9 @@
-package com.ccclubs.phoenix.tasks.jobs;
+package com.ccclubs.engine.rule.inf.task;
 
 
-import com.ccclubs.phoenix.tasks.util.BatchProperties;
-import com.ccclubs.phoenix.tasks.util.RedisConstant;
+
+import com.ccclubs.common.BatchProperties;
+import com.ccclubs.engine.rule.inf.config.RedisConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;

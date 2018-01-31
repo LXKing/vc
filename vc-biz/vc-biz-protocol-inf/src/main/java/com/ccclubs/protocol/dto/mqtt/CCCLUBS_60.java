@@ -6,6 +6,8 @@ import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.MyBuffer;
 import com.ccclubs.protocol.util.Tools;
 import java.math.BigDecimal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 终端基础信息，终端推送信息，包含： <ul> <li>车机号</li> <li>订单号</li> <li>0x6001</li> <li>序列号</li> <li>手机号</li>
@@ -16,7 +18,7 @@ import java.math.BigDecimal;
  */
 public class CCCLUBS_60 implements IMessageBody {
 
-  //  private static Logger logger = LoggerFactory.getLogger(CCCLUBS_60.class);
+    private static Logger logger = LoggerFactory.getLogger(CCCLUBS_60.class);
   private static int SUBCODE_02 = 0x02;
   private static int SUBCODE_03 = 0x03;
   private int subFucCode;
@@ -1364,20 +1366,30 @@ public class CCCLUBS_60 implements IMessageBody {
 
   @Override
   public void ReadFromBytes(byte[] messageBodyBytes) {
-    MyBuffer buff = new MyBuffer(messageBodyBytes);
-    setSubFucCode(buff.get());
-    setAdditionals(new java.util.ArrayList<IMachineAdditionalItem>());
+    Byte additionalId = null;
+    try {
+      MyBuffer buff = new MyBuffer(messageBodyBytes);
+      setSubFucCode(buff.get());
+      setAdditionals(new java.util.ArrayList<>());
 
-    while (buff.hasRemain()) {
-      byte additionalId = buff.get();
-      byte additionalLength = buff.get();
-      byte[] additionalBytes = buff.gets(additionalLength);
-      IMachineAdditionalItem item = MachineAdditionalFactory
-          .createMachineAdditionalFactory(additionalId, additionalLength, additionalBytes);
-      if (item != null) {
-        getAdditionals().add(item);
-      } else {
+      while (buff.hasRemain()) {
+        additionalId = buff.get();
+        byte additionalLength = buff.get();
+        byte[] additionalBytes = buff.gets(additionalLength);
+        IMachineAdditionalItem item = MachineAdditionalFactory
+            .createMachineAdditionalFactory(additionalId, additionalLength, additionalBytes);
+        if (item != null) {
+          getAdditionals().add(item);
+        } else {
 //        logger.info("未知的终端基础属性:" + additionalId + ",附加长度:" + additionalLength);
+        }
+      }
+    }catch (Exception ex){
+      ex.printStackTrace();
+      logger.error(ex.getMessage(),ex);
+      if (null != additionalId) {
+        logger.error("messageBodyBytes: "+Tools.ToHexString(messageBodyBytes));
+        logger.error("additionalId: 0x"+Tools.ToHexString(additionalId));
       }
     }
   }

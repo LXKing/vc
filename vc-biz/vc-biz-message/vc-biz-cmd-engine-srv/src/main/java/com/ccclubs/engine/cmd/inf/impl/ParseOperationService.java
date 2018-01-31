@@ -243,6 +243,7 @@ public class ParseOperationService implements IParseDataService {
         case 0x10178800:
           //发动机停止
         case 0x10170000:
+        case 0x10220010:
           String resultJsonCommon = JSON.toJSONString(
               CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
 
@@ -273,15 +274,13 @@ public class ParseOperationService implements IParseDataService {
           break;
         // 远程关门(带参数)
         case 0x10210000:
-          // 获取参数
-          short fcCodeParams = myBuffer.getShort();
           // 获取结果
           short fcCodeResult = myBuffer.getShort();
 
           String resultJsonCloseWithParams;
           resultJsonCloseWithParams = RemoteHelper
               .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
-                  myBuffer.gets(tm.getMsgBody().length - 4 - 2 -2),
+                  myBuffer.gets(tm.getMsgBody().length - 4 -2 -2),
                   fcCodeResult);
 
           redisHelper
