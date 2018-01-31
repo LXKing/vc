@@ -1,4 +1,4 @@
-package com.ccclubs.vtsearch.srv;
+package com.ccclubs.vtsearch;
 
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;

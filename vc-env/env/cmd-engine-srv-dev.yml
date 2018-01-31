@@ -41,8 +41,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 
 #MQ topic
 mq:

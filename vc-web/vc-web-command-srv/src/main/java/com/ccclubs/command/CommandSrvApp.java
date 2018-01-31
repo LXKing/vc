@@ -1,4 +1,4 @@
-package com.ccclubs.command.srv;
+package com.ccclubs.command;
 
 import com.ccclubs.command.util.CommandProp;
 import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
