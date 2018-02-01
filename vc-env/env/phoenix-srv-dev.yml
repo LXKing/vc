@@ -7,13 +7,15 @@ server:
 
 spring:
   redis:
-    host: 127.0.0.1
+    host: 118.178.229.234
+    port: 63791
+    database: 7
   aop:
     proxyTargetClass: true
 
 dubbo:
   scan:
-    annotationPackage: com.ccclubs.phoenix
+    annotationPackage: com.ccclubs
   application:
     name: srv
   registry:

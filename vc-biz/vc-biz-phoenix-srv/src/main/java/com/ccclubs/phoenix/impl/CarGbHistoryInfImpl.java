@@ -7,7 +7,6 @@ import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
-import com.ccclubs.phoenix.orm.mapper.CarGbMapper;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import org.apache.commons.beanutils.BeanUtils;
@@ -15,9 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import java.sql.*;
 import java.util.ArrayList;

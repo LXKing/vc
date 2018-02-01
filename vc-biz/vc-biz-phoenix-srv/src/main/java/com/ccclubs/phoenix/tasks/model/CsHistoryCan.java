@@ -1,7 +1,5 @@
 package com.ccclubs.phoenix.tasks.model;
 
-import com.ccclubs.frm.spring.annotation.AutomaticSequence;
-
 import java.io.Serializable;
 
 /**
@@ -11,7 +9,7 @@ import java.io.Serializable;
  * @create 2017-08-08
  **/
 public class CsHistoryCan  implements Serializable {
-    @AutomaticSequence
+
     private Long cshcId;
     private Integer cshcAccess;
     private Integer cshcHost;
