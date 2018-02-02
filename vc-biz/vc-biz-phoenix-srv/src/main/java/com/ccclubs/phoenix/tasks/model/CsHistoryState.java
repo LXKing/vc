@@ -1,7 +1,5 @@
 package com.ccclubs.phoenix.tasks.model;
 
-import com.ccclubs.frm.spring.annotation.AutomaticSequence;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -13,7 +11,7 @@ import java.math.BigDecimal;
  **/
 public class CsHistoryState  implements Serializable {
 
-    @AutomaticSequence
+
     private Long cshsId;// 主键 非空
     private Integer cshsAccess;// 非空
     private Integer cshsHost;// 非空
