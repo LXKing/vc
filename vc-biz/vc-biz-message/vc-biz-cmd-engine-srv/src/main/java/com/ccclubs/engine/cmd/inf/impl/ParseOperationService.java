@@ -274,6 +274,8 @@ public class ParseOperationService implements IParseDataService {
           break;
         // 远程关门(带参数)
         case 0x10210000:
+          // 获取参数
+          short fcCodeParams = myBuffer.getShort();
           // 获取结果
           short fcCodeResult = myBuffer.getShort();
 
