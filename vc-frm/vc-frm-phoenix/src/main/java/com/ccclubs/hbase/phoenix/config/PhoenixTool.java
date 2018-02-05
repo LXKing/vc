@@ -1,9 +1,8 @@
 package com.ccclubs.hbase.phoenix.config;
-
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -19,19 +18,23 @@ import java.sql.*;
 @EnableConfigurationProperties(PhoenixProperties.class)
 @Service
 public class PhoenixTool {
-    private static Logger logger = Logger.getLogger(PhoenixTool.class);
+    private static Logger logger = LoggerFactory.getLogger(PhoenixTool.class);
     @Autowired
     private PhoenixProperties phoenixProperties;
 
     //获取Phoenix连接
     public Connection getConnection(){
         Connection connection = null;
+
         try {
             Class.forName("org.apache.phoenix.jdbc.PhoenixDriver");
             connection = DriverManager.getConnection("jdbc:phoenix:"+phoenixProperties.getZk_url());
-        } catch (Exception e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage());
+        }catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+
         return connection;
     }
 
@@ -53,6 +56,15 @@ public class PhoenixTool {
         }
         catch (SQLException exception){
             logger.error(exception.getMessage());
+        }
+        finally {
+            if (rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
         return jsonArray;
     }

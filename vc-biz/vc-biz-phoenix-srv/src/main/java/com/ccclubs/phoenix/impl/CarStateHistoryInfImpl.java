@@ -8,7 +8,6 @@ import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
-import com.ccclubs.phoenix.orm.mapper.CarStateMapper;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.orm.model.PaceBlock;
@@ -19,9 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -280,9 +276,10 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
-        Connection connection = phoenixTool.getConnection();
+        Connection connection = null;
         PreparedStatement pst = null;
         try {
+            connection= phoenixTool.getConnection();;
             pst = connection.prepareStatement(count_sql);
             String cs_number = carStateHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);

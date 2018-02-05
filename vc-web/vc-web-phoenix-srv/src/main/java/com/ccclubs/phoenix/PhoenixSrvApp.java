@@ -32,12 +32,7 @@ public class PhoenixSrvApp extends SpringBootServletInitializer {
     public static void main(String[] args) throws IOException, InterruptedException {
         ConfigurableApplicationContext ctx = SpringApplication.run(PhoenixSrvApp.class, args);
 
-        ctx.getEnvironment().getPropertySources().addFirst(new ResourcePropertySource("classpath:filtered.properties"));
-        String[] profiles = ctx.getEnvironment().getActiveProfiles();
-        for(String p : profiles){
-            logger.info("Env profile:{}", p);
-        }
-        //初步决定在此处判断运行环境，来判断是否可以存储hbase
+
     }
 
 
