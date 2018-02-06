@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.command.dto.*;
 import com.ccclubs.command.inf.air.AirConditionerCmdInf;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
+import com.ccclubs.command.inf.lock.LockDoorInf;
 import com.ccclubs.command.inf.order.OrderCmdInf;
 import com.ccclubs.command.inf.power.PowerModeSwitchInf;
 import com.ccclubs.command.inf.simple.SendSimpleCmdInf;
@@ -45,34 +46,37 @@ import java.util.concurrent.TimeUnit;
 public class CommandApi {
 
     @Reference(version = CommandServiceVersion.V1)
-    private TerminalUpgradeInf upgradeCmd;
+    TerminalUpgradeInf upgradeCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private SendSimpleCmdInf simpleCmd;
+    SendSimpleCmdInf simpleCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private PowerModeSwitchInf powerModeSwitchCmd;
+    PowerModeSwitchInf powerModeSwitchCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private TimeSyncCmdInf timeSyncCmd;
+    TimeSyncCmdInf timeSyncCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private AirConditionerCmdInf airCmd;
+    AirConditionerCmdInf airCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private OrderCmdInf orderCmd;
+    OrderCmdInf orderCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    private QueryTerminalInfoInf versionInf;
+    QueryTerminalInfoInf versionInf;
 
     @Reference(version = CommandServiceVersion.V1)
-    private HttpConfirmResultInf httpConfirmInf;
+    HttpConfirmResultInf httpConfirmInf;
 
     @Reference(version = CommandServiceVersion.V1)
-    private ReturnCheckInf returnCheckInf;
+    ReturnCheckInf returnCheckInf;
 
     @Reference(version = CommandServiceVersion.V1)
-    private SetDvdVersionInf setDvdVersionInf;
+    SetDvdVersionInf setDvdVersionInf;
+
+    @Reference(version = CommandServiceVersion.V1)
+    LockDoorInf lockDoorInf;
 
     /**
      * 1.车机的一键升级功能
@@ -327,7 +331,25 @@ public class CommandApi {
     }
 
     /**
-     * 9.指令结果HTTP方式确认
+     * 9.车门落锁-带控制参数
+     *
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "车门落锁-带控制参数", notes = "车门落锁-带控制参数")
+    @PostMapping("lockDoorWithCtrl")
+    public ApiMessage<LockDoorOutput> lockDoorWithCtrl(@RequestHeader("appId") String appId, LockDoorInput input) {
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
+        LockDoorOutput output = lockDoorInf.lockDoorWithCtrl(input);
+        return new ApiMessage<>(output);
+    }
+
+    /**
+     * 10.指令结果HTTP方式确认
      *
      * @param input
      * @return

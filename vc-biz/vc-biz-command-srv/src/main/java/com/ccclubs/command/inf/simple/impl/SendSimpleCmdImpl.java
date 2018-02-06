@@ -9,7 +9,7 @@ import com.ccclubs.command.dto.SimpleCmdInput;
 import com.ccclubs.command.dto.SimpleCmdOutput;
 import com.ccclubs.command.inf.simple.SendSimpleCmdInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
+import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
@@ -61,7 +61,9 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private ValidateHelper validateHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
 
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
@@ -137,21 +139,23 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         }
 
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId.longValue());
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, Map.class);
         List<Map> values = JSONArray.parseArray("[{}]", Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId.longValue(), array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
         logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        SimpleCmdOutput output = new SimpleCmdOutput();
         // 4.确认结果
+        SimpleCmdOutput output = new SimpleCmdOutput();
         switch (input.getResultType()) {
             case 1://async
                 output.setMessageId(csRemote.getCsrId());

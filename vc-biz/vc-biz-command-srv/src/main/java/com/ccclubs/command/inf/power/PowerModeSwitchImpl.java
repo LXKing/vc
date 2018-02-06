@@ -5,11 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.command.dto.PowerModeInput;
 import com.ccclubs.command.dto.PowerModeOutput;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
-import com.ccclubs.command.util.ResultHelper;
-import com.ccclubs.command.util.CommandConstants;
-import com.ccclubs.command.util.TerminalOnlineHelper;
-import com.ccclubs.command.util.ValidateHelper;
+import com.ccclubs.command.remote.CsRemoteManager;
+import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
@@ -54,7 +51,9 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
     private ResultHelper resultHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
 
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
@@ -63,7 +62,7 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
     @DataAuth
     public PowerModeOutput powerModeSwitch(PowerModeInput input) {
 
-        Integer structId = CommandConstants.CMD_POWER;
+        Long structId = CommandConstants.CMD_POWER.longValue();
         if (input.getType() != 0 && input.getType() != 1 && input.getType() != 2) {
             throw new ApiException(ApiEnum.POWER_MODE_NOT_FOUND);
         }
@@ -83,7 +82,7 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
         terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));//todo
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
@@ -92,17 +91,16 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId, array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
         logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        Long startTime = System.currentTimeMillis();
-
-        PowerModeOutput output = new PowerModeOutput();
-
         // 4.确认结果
+        PowerModeOutput output = new PowerModeOutput();
         output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;

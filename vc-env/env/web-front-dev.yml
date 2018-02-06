@@ -47,8 +47,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
