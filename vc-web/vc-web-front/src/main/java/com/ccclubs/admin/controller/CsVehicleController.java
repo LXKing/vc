@@ -163,6 +163,9 @@ public class CsVehicleController {
 //      return VoResult.error("30003", String.format("发动机(电机)编号 %s 已存在", data.getCsvEngineNo()));
 //    }
 
+    if(data.getCsvHost()==null){
+      data.setCsvHost(0);
+    }
     csVehicleService.insert(data);
     return VoResult.success();
   }
@@ -378,7 +381,7 @@ public class CsVehicleController {
       CsMappingCrieria csMappingCrieria = new CsMappingCrieria();
       CsMappingCrieria.Criteria criteriaMapping = csMappingCrieria.createCriteria();
       criteriaMapping.andcsmManageEqualTo(user.getSuId());
-      List<CsMapping> csMappingList = csMappingService.selectByExample(criteriaMapping);
+      List<CsMapping> csMappingList = csMappingService.selectByExample(csMappingCrieria);
       if (null != csMappingList && csMappingList.size() > 0) {
         List<Integer> carIds = new ArrayList<>();
         for (CsMapping aCsMappingList : csMappingList) {
