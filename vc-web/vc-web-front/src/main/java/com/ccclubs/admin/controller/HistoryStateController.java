@@ -46,7 +46,7 @@ public class HistoryStateController {
    */
   @RequestMapping(value = "/list", method = RequestMethod.GET)
   public TableResult<HistoryState> list(HistoryStateQuery query,
-      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "1") Integer page,
       @RequestParam(defaultValue = "10") Integer rows,
       @RequestParam(defaultValue = "desc") String order,
       @RequestParam(defaultValue = "true") Boolean isResolve) {
