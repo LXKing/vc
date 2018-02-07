@@ -19,6 +19,7 @@ public class CsRemote extends AbstractDocumentOld implements Serializable {
 
   @AutomaticSequence
   private Long csrId;// 主键 非空
+  private Long csrsId;// 808指令流水号，只有2个字节存储
   private Integer csrAccess;// 非空
   private Integer csrHost;// 非空
   private String csrNumber;// 非空
@@ -103,6 +104,14 @@ public class CsRemote extends AbstractDocumentOld implements Serializable {
 
   public void setCsrId(Long csrId) {
     this.csrId = csrId;
+  }
+
+  public Long getCsrsId() {
+    return csrsId;
+  }
+
+  public void setCsrsId(Long csrsId) {
+    this.csrsId = csrsId;
   }
 
   public Integer getCsrAccess() {

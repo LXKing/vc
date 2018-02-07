@@ -1,12 +1,5 @@
 package com.ccclubs.admin;
 
-import com.ccclubs.admin.config.MvcConfigurer;
-import com.ccclubs.frm.druid.DruidJdbcConfig;
-import com.ccclubs.frm.mongo.config.HistoryMongoConfig;
-import com.ccclubs.frm.mongo.config.MultipleMongoConfig;
-import com.ccclubs.frm.mongo.config.RemoteMongoConfig;
-import com.ccclubs.frm.mybatis.MybatisFactoryConfig;
-import com.ccclubs.frm.mybatis.MybatisMapperConfig;
 import com.ccclubs.frm.oss.OssAutoConfiguration;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import org.springframework.boot.SpringApplication;
@@ -22,22 +15,23 @@ import org.springframework.context.annotation.Import;
  * @create 2017-09-15
  **/
 @SpringBootApplication(scanBasePackages = "com.ccclubs")
+@Import({RedisAutoConfiguration.class, OssAutoConfiguration.class})
 public class AdminFrontApp extends SpringBootServletInitializer {
 
-  /**
-   * war打包用，相当于web.xml配置
-   */
-  @Override
-  protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-    return application.sources(AdminFrontApp.class);
-  }
+    /**
+     * war打包用，相当于web.xml配置
+     */
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(AdminFrontApp.class);
+    }
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    SpringApplication springApplication= new SpringApplication(AdminFrontApp.class);
-    springApplication.addListeners(new AppContext());
-    springApplication.run(args);
+        SpringApplication springApplication = new SpringApplication(AdminFrontApp.class);
+        springApplication.addListeners(new AppContext());
+        springApplication.run(args);
 
-  }
+    }
 
 }

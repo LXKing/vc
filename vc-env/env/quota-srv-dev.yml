@@ -40,6 +40,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:

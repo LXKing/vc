@@ -43,7 +43,7 @@ public class ValidateService {
      */
     public boolean validateAuth(String appId, String vin, String teNo) {
 
-        logger.debug("validate data auth for appId {} vin {} teNo {} start", appId, vin, teNo);
+        logger.info("validate data auth for appId {} vin {} teNo {} start", appId, vin, teNo);
 
         SrvHost host = hostService.queryHostByAppid(appId);
         if (null == host) {

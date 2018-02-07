@@ -74,18 +74,13 @@ public class CommandProcessInfImpl implements CommandProcessInf {
   @Override
   public void dealRemoteCommand(CsRemote remote, Object[] array) {
     try {
-      Query query = new Query(Criteria.where("_id").is(remote.getId()));
-      final Update update = new Update();
       String resultCode = CmdUtils
           .getSimpleMQTTRemoteCommend(remote.getCsrId(), remote.getCsrNumber(), array);
 
       if (!StringUtils.empty(resultCode)) {
-        update.set("csrCode", resultCode);
         sendMessage(remote, resultCode);
       }
-      update.set("csrState", 1);
 
-      rdao.update(query, update);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage(), e);

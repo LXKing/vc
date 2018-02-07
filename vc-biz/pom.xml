@@ -9,8 +9,6 @@
     <artifactId>vc-biz</artifactId>
     <packaging>pom</packaging>
     <modules>
-
-
         <module>vc-biz-pub-orm</module>
         <module>vc-biz-vehicle-inf</module>
         <module>vc-biz-vehicle-srv</module>
