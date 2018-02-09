@@ -35,5 +35,6 @@
         <module>vc-biz-mongo-srv</module>
         <module>vc-biz-quota-model</module>
         <module>vc-biz-pub-model</module>
+        <module>vc-biz-job-srv</module>
     </modules>
 </project>

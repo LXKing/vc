@@ -1,11 +1,22 @@
 package com.ccclubs.common.query;
 
 import com.ccclubs.frm.cache.CacheConstants;
+import com.ccclubs.pub.orm.mapper.BackCsVehicleMapper;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
+import com.ccclubs.pub.orm.mapper.SrvUserMapper;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.CsVehicleExample;
+import com.ccclubs.pub.orm.model.SrvUser;
+import com.ccclubs.pub.orm.model.SrvUserExample;
+import com.ccclubs.pub.orm.page.PageInput;
+import com.ccclubs.pub.orm.vo.VehicleMachineVo;
+import com.ccclubs.pub.orm.vo.VehicleVo;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.jarvis.cache.annotation.Cache;
 import com.jarvis.cache.annotation.ExCache;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.stereotype.Component;
@@ -21,6 +32,12 @@ public class QueryVehicleService {
 
   @Resource
   CsVehicleMapper dao;
+
+  @Resource
+  SrvUserMapper userDao;
+
+  @Resource
+  BackCsVehicleMapper backDao;
 
   /**
    * 查询车辆，由于存在批量注册车辆，查询车辆暂时不走缓存
@@ -98,6 +115,17 @@ public class QueryVehicleService {
     return null;
   }
 
+  public SrvUser querySrvUserByUsername(String username) {
+    SrvUserExample example = new SrvUserExample();
+    SrvUserExample.Criteria criteria = example.createCriteria();
+    criteria.andSuUsernameEqualTo(username);
+    List<SrvUser> list = userDao.selectByExample(example);
+    if (list.size() > 0) {
+      return list.get(0);
+    }
+    return null;
+  }
+
 
   public CsVehicle queryVehicleById(Integer vehicle) {
     return dao.selectByPrimaryKey(vehicle);
@@ -108,5 +136,19 @@ public class QueryVehicleService {
       @ExCache(expire = CacheConstants.NORMAL_EXPIRE, key = "'CsVehicle:csvMachine:'+#retVal.csvMachine", condition = "!#empty(#retVal) && !#empty(#retVal.csvMachine) && #retVal.csvMachine > 0")})
   public CsVehicle queryVehicleByIdFromCache(Integer id) {
     return queryVehicleById(id);
+  }
+
+  /**
+   * 根据用户查询名下车辆
+   * @param vo
+   * @return
+   */
+  public PageInfo<VehicleMachineVo> queryVehicleMachineByPage(VehicleMachineVo vo, PageInput input) {
+    PageHelper.startPage(input.getPage(), input.getRows());
+    List<VehicleMachineVo> list = backDao.queryVehicleMachineByPage(vo);
+    if (list == null || list.size() == 0) {
+      return new PageInfo<>(new ArrayList<>());
+    }
+    return new PageInfo<>(list);
   }
 }
