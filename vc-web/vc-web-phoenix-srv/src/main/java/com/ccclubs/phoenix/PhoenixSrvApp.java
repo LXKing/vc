@@ -1,5 +1,6 @@
 package com.ccclubs.phoenix;
 
+import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.phoenix.tasks.util.BatchProperties;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import java.io.IOException;
 
 @SpringBootApplication
-@Import({BatchProperties.class,RedisAutoConfiguration.class})
+@Import({MybatisConfig.class,BatchProperties.class,RedisAutoConfiguration.class})
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class PhoenixSrvApp extends SpringBootServletInitializer {

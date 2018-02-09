@@ -6,10 +6,14 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.ccclubs.admin.model.ReportParam;
-import com.ccclubs.admin.service.IReportService;
+import com.ccclubs.admin.entity.CsMappingCrieria;
+import com.ccclubs.admin.entity.CsVehicleCrieria;
+import com.ccclubs.admin.model.*;
+import com.ccclubs.admin.query.CsVehicleQuery;
+import com.ccclubs.admin.service.*;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
+import com.ccclubs.admin.util.UserAccessUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.ccclubs.admin.vo.TableResult;
 
 import com.ccclubs.admin.entity.CsStateCrieria;
-import com.ccclubs.admin.model.CsState;
-import com.ccclubs.admin.service.ICsStateService;
 import com.ccclubs.admin.query.CsStateQuery;
 import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
@@ -45,6 +47,17 @@ public class CsStateController {
 	@Autowired
 	ICsStateService csStateService;
 
+	@Autowired
+	ISrvGroupService srvGroupService;
+	@Autowired
+	ICsModelMappingService csModelMappingService;
+	@Autowired
+	ICsMappingService csMappingService;
+	@Autowired
+	UserAccessUtils userAccessUtils;
+	@Autowired
+	ICsVehicleService csVehicleService;
+
 	/**
 	 * 获取分页列表数据
 	 * @param query
@@ -53,8 +66,13 @@ public class CsStateController {
 	 * @return
 	 */
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public TableResult<CsState> list(CsStateQuery query, @RequestParam(defaultValue = "0") Integer page,
+	public TableResult<CsState> list(
+			@CookieValue("token") String token,
+			CsStateQuery query,
+			@RequestParam(defaultValue = "0") Integer page,
 			@RequestParam(defaultValue = "10") Integer rows) {
+		SrvUser user = userAccessUtils.getCurrentUser(token);
+		this.addQueryConditionsByUser(user, query);
 		PageInfo<CsState> pageInfo = csStateService.getPage(query.getCrieria(), page, rows);
 		List<CsState> list = pageInfo.getList();
 		for(CsState data : list){
@@ -65,7 +83,60 @@ public class CsStateController {
 		return r;
 	}
 
-	
+	/**
+	 * 根据用户添加查询条件。
+	 */
+	private void addQueryConditionsByUser(SrvUser user, CsStateQuery query) {
+		//首先判断用户所在的组。
+		SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+		if (srvGroup.getSgFlag().equals("sys_user")) {
+			//系统用户，此种用户可以随意查询（为所欲为）
+
+		} else if (srvGroup.getSgFlag().equals("factory_user")) {
+			CsVehicleCrieria csVehicleCrieria=new CsVehicleCrieria();
+			CsVehicleCrieria.Criteria criteria=csVehicleCrieria.createCriteria();
+			List<CsVehicle> csVehicleList=null;
+			//车厂 （按照车型进行查询）
+			CsModelMapping csModelMapping = new CsModelMapping();
+			csModelMapping.setUserId(user.getSuId());
+			List<CsModelMapping> csModelMappingList = csModelMappingService.select(csModelMapping);
+			if (null != csModelMappingList && csModelMappingList.size() > 0) {
+				List<Integer> csModelIds = new ArrayList<>();
+				for (int i = 0; i < csModelMappingList.size(); i++) {
+					csModelIds.add(csModelMappingList.get(i).getModelId());
+				}
+				criteria.andcsvModelIn(csModelIds);
+				//csVehicleQuery.setCsvModelIn(csModelIds);
+			}
+
+			csVehicleList=csVehicleService.selectByExample(csVehicleCrieria);
+			if (csVehicleList!=null){
+				Integer[] carIds=new Integer[csVehicleList.size()];
+				for (int i=0;i<csVehicleList.size();i++){
+					carIds[i]=csVehicleList.get(i).getCsvId();
+				}
+				query.setCssCarIn(carIds);
+			}else {
+				//query.setCssCarEquals();
+			}
+
+
+		} else if (srvGroup.getSgFlag().equals("platform_user")) {
+			//小散户（通过mapping进行对应）
+			CsMappingCrieria csMappingCrieria = new CsMappingCrieria();
+			CsMappingCrieria.Criteria criteria = csMappingCrieria.createCriteria();
+			criteria.andcsmManageEqualTo(user.getSuId());
+			List<CsMapping> csMappingList = csMappingService.selectByExample(csMappingCrieria);
+			if (null != csMappingList && csMappingList.size() > 0) {
+				Integer[] carIds = new Integer[csMappingList.size()];
+				for (int i = 0; i < csMappingList.size(); i++) {
+					carIds[i] = csMappingList.get(i).getCsmCar();
+				}
+				query.setCssCarIn(carIds);
+			}
+
+		}
+	}
 	
 	
 	/**

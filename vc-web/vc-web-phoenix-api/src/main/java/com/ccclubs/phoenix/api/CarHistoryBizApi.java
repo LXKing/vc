@@ -31,7 +31,8 @@ import java.util.List;
 public class CarHistoryBizApi {
 
     private static final Logger logger= LoggerFactory.getLogger(CarHistoryBizApi.class);
-
+    private static final long ONE_MOUTH=2592000000L;
+    private static final long ONE_WEEK=604800000L;
 
     @Reference(version = "1.0.0")
     private CarStateHistoryInf carStateHistoryInf;
@@ -49,8 +50,12 @@ public class CarHistoryBizApi {
     @ApiSecurity
     @RequestMapping(value = "/states-query",method = RequestMethod.POST)
     public ApiMessage<CarStateHistoryOutput> queryCarStateList(@RequestBody CarStateHistoryParam param) {
-        logger.info("we get a request form states:",param);
+        logger.info("we get a request form states:"+param.toString());
 
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         param.setCs_number(transformForBizService.getCsNumberByCsVin(param.getCsVin()));
         if (null==param.getCs_number()||param.getCs_number().isEmpty()){
             logger.info("we find a PARAMS_VALID_FAILED at states.");
@@ -75,7 +80,11 @@ public class CarHistoryBizApi {
     @ApiSecurity
     @RequestMapping(value = "/drivepaces-query",method = RequestMethod.POST)
     public ApiMessage<CarStateHistoryOutput> queryDrivePaces(@RequestBody CarStateHistoryParam param) {
-        logger.info("we get a request form drivepaces:",param);
+        logger.info("we get a request form drivepaces:"+param.toString());
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         param.setCs_number(transformForBizService.getCsNumberByCsVin(param.getCsVin()));
         if (null==param.getCs_number()||param.getCs_number().isEmpty()){
             logger.info("we find a PARAMS_VALID_FAILED at drivepaces.");
@@ -108,6 +117,10 @@ public class CarHistoryBizApi {
     @RequestMapping(value = "/gbs",method = RequestMethod.GET)
     public ApiMessage<CarGbHistoryOutput> queryCarGbList(CarGbHistoryParam param){
         logger.debug("we receive a gb get request."+param.toString());
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         if (!paramCheck(param.getCs_vin(),
                 param.getStart_time(),
                 param.getEnd_time(),
@@ -125,6 +138,7 @@ public class CarHistoryBizApi {
     public ApiMessage<CarGbHistoryOutput> saveCarGbList(@RequestBody List<CarGb> carGbList){
 
         logger.debug("we receive a gb date list.");
+
         //logger.warn(carGbList.toString());
         CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
         if(carGbList!=null&&carGbList.size()>0) {
@@ -137,10 +151,13 @@ public class CarHistoryBizApi {
     //状态查询，内部
     @RequestMapping(value = "/states-internal",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryCarStateListInternal(CarStateHistoryParam param) {
-        logger.info("we get aiInternal request form states:",param);
-
+        logger.info("we get a internal request form states:"+param.toString());
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         if (null==param.getCs_number()||param.getCs_number().isEmpty()){
-            logger.info("we find a PARAMS_VALID_FAILED at states.");
+            logger.info("we find a PARAMS_VALID_FAILED at states."+param.toString());
             return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
         }
         logger.debug("we receive a state get request."+param.toString());
@@ -160,7 +177,11 @@ public class CarHistoryBizApi {
     //驾驶阶段数据查询(内部使用)
     @RequestMapping(value = "/drivepaces-internal",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryDrivePacesInternal(CarStateHistoryParam param) {
-        logger.info("we get a Internal request form drivepaces:",param);
+        logger.info("we get a Internal request form drivepaces:"+param.toString());
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         if (null==param.getCs_number()||param.getCs_number().isEmpty()){
             logger.info("we find a PARAMS_VALID_FAILED at drivepaces.");
             return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
@@ -205,6 +226,10 @@ public class CarHistoryBizApi {
     @RequestMapping(value = "/cans",method = RequestMethod.GET)
     public ApiMessage<CarCanHistoryOutput> queryCarCanList(CarCanHistoryParam param){
         logger.debug("we receive a can get request."+param.toString());
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         if (!paramCheck(param.getCs_number(),
                 param.getStart_time(),
                 param.getEnd_time(),
@@ -235,6 +260,10 @@ public class CarHistoryBizApi {
     //充电阶段数据查询
     @RequestMapping(value = "/chargingpaces",method = RequestMethod.GET)
     public ApiMessage<CarStateHistoryOutput> queryChargingPaces(CarStateHistoryParam param){
+        if (this.paramTimeCheck(param.getStart_time(),param.getEnd_time())){
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg()+"查询间隔过长");
+        }
         if (!paramCheck(param.getCs_number(),
                 param.getStart_time(),
                 param.getEnd_time(),
@@ -271,4 +300,20 @@ public class CarHistoryBizApi {
         }
         return true;
     }
+
+    /**
+     * 检查查询的时间，其查询的间隔不能过长。
+     * */
+    private boolean paramTimeCheck(String startTime,String endTime){
+        boolean flag =false;//false为验证通过。
+        long startTimeLong=DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.UNIX_FORMAT);
+        long endTimeLong=DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.UNIX_FORMAT);
+        long timeLong=endTimeLong-startTimeLong;
+        if(timeLong>ONE_MOUTH){
+            flag=true;
+        }
+        return flag;
+    }
+
+
 }

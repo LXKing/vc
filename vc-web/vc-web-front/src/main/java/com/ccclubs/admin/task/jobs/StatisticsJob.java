@@ -75,7 +75,7 @@ public class StatisticsJob implements Runnable {
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-        logger.info("Job longlongtime calculate done ,now saving."+csStatistics.toString());
+        logger.debug("Job longlongtime calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 
@@ -98,7 +98,7 @@ public class StatisticsJob implements Runnable {
         //csStatistics.setCssTotalCharge(statisticsExecutor.calculateTotalCharge());
         //csStatistics.setCssTotalPowerConsumption(statisticsExecutor.calculateTotalPowerConsumption());
         //csStatistics.setCssTotalRunTime(statisticsExecutor.calculateTotalRunTime());
-        logger.info("Job sharttime calculate done ,now saving."+csStatistics.toString());
+        logger.debug("Job sharttime calculate done ,now saving."+csStatistics.toString());
         statisticsExecutor.saveResult(csStatistics);
     }
 
