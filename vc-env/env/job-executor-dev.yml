@@ -1,5 +1,5 @@
 server:
-  port: 11118
+  port: 11119
 
 oss:
   accessKeyId: LTAIYzY8yT3GTuj1
@@ -53,3 +53,10 @@ xxl:
       logretentiondays: -1
     accessToken:
 
+email:
+  host: smtp.mxhichina.com
+  smtp_username: jianghaiyang@ccclubs.com
+  smtp_password: -ccpose1130
+  sender_name: 车机中心监控平台
+  ecoding: UTF-8
+  to_email: fengjun@ccclubs.com
