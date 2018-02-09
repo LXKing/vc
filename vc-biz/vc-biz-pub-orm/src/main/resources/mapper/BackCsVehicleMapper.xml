@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ccclubs.pub.orm.mapper.CsVehicleMapper">
+<mapper namespace="com.ccclubs.pub.orm.mapper.BackCsVehicleMapper">
     <resultMap id="BaseResultMap" type="com.ccclubs.pub.orm.vo.VehicleMachineVo">
         <id column="csv_id" jdbcType="INTEGER" property="csvId"/>
         <result column="user_id" jdbcType="INTEGER" property="userId" />
