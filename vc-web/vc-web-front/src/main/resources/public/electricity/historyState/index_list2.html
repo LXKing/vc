@@ -186,8 +186,10 @@
 			  url:getServUrl("/electricity/historyState/list"),
 			  cols:  [clms],
 			  done: function(res, curr, count){
-			      currSize=res.page.size;
-					  currPage=curr;
+                  if(curr>res.page.total)
+                      curr = res.page.total;
+                  currPage = curr;
+                  currSize = res.page.size;
 			  },
       	  	  response: {
 	      		  statusName: "code",
