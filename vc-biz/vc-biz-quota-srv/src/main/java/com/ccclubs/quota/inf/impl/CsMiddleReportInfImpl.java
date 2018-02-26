@@ -53,9 +53,10 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
         dbHelperZt.dbClose();
         //更新中间报表状态车机条件
-        List<String>numberList=new ArrayList<>();
+        List<Long>csmrIdOldList=new ArrayList<>();
         //
         if (currentList!=null&&currentList.size()>0){
+           //
             List<CsMiddleReport> dataList=new ArrayList<>();
             CsMiddleReport csMiddleReport=null;
             for (Map map:currentList){
@@ -79,6 +80,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                     if(csmrVin.equals(oldVin)&&csmrNumber.equals(oldNumber)){
                         oldObdMile=oldVinMap.getCsmrObdMile();
                     }
+                    csmrIdOldList.add(oldVinMap.getCsmrId());
                 }
                 BigDecimal csmrExceptionMile=null;
                 Short   csmrMileState=2;
@@ -112,16 +114,17 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 csMiddleReport.setCsmrProdTime(csmrProdTime);
                 csMiddleReport.setCsmrSaleTime(csmrProdTime);
                 dataList.add(csMiddleReport);
-                numberList.add(csmrNumber);
             }
-            // 假如vinList=中数据不为空，更新数据
-            if(!numberList.isEmpty()){
+//            // csmrIdOldList=中数据不为空，更新数据
+            if(middleList!=null&&middleList.size()>0){
+                //更新表中状态的数据
                 CsMiddleReport record=new CsMiddleReport();
                 record.setCsmrStatus((short)1);
                 //
                 example=new CsMiddleReportExample();
                 criteria=example.createCriteria();
-                criteria.andCsmrStatusEqualTo((short)2).andCsmrNumberIn(numberList);//获取最新添加的数据
+                criteria.andCsmrIdIn(csmrIdOldList);//获取最新添加的数据
+                logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
                 csMiddleReportMapper.updateByExampleSelective(record,example);
             }
             //往中间报表（cs_middle_report）添加数据
