@@ -93,6 +93,7 @@ public class HistoryStateController {
   @RequestMapping(value = "/report", method = RequestMethod.POST)
   public VoResult<String> getReport(@RequestBody ReportParam<HistoryStateQuery> reportParam)
   {
+    reportParam.setAllReport(1);//强行修改状态数据导出为全部导出。
     List<HistoryState> list;
     if (null == reportParam.getQuery().getCsNumberEquals()||
             null==reportParam.getQuery().getCurrentTimeStart()||
@@ -118,7 +119,6 @@ public class HistoryStateController {
     reportThread.setBaseName("History_State");
     reportThread.setList(list);
     reportThread.setUserUuid(uuid);
-    reportParam.setAllReport(1);//强行修改状态数据导出为全部导出。
     reportThread.setReportParam(reportParam);
     logger.info("start running report History_State thread.");
     EvManageContext.getThreadPool().execute(reportThread);
