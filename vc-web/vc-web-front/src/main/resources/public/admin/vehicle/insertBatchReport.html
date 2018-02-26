@@ -66,24 +66,32 @@
 
 					</dd>
 				</dl>
-				<dl  >
-					<dt>车辆领域</dt>
-					<dd>
-						<select class="form-control" name="csvDomain"  >
-							<option></option>
-							<option value="2">公共领域</option>
-							<option value="1">个人领域</option>
-							<option value="0">未知</option>
-						</select>
+				<!--<dl  >-->
+					<!--<dt>车辆领域</dt>-->
+					<!--<dd>-->
+						<!--<select class="form-control" name="csvDomain"  >-->
+							<!--<option></option>-->
+							<!--<option value="2">公共领域</option>-->
+							<!--<option value="1">个人领域</option>-->
+							<!--<option value="0">未知</option>-->
+						<!--</select>-->
 
-					</dd>
-				</dl>
+					<!--</dd>-->
+				<!--</dl>-->
 
 				<dl  >
 					<dt>状态</dt>
 					<dd>
 						<input  name="csvStatus" placeholder="" class="form-control searchinput" dataWhere="status" dataUrl="/base/dict/query">
 						<label id="csvStatus-error" class="error" for="csvStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+
+				<dl  >
+					<dt>接入商</dt>
+					<dd>
+						<input name="csvAccess" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/base/access/query">
+						<label id="csvAccess-error" class="error" for="csvAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 
