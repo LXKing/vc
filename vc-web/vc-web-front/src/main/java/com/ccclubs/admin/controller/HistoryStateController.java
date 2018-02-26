@@ -104,7 +104,7 @@ public class HistoryStateController {
     }
     TableResult<HistoryState> pageInfo = historyStateService.getPage(
             reportParam.getQuery(),
-            reportParam.getPage(),
+            -1,//reportParam.getPage(),
             reportParam.getRows(),
             reportParam.getOrder());
     list = pageInfo.getData();
@@ -118,6 +118,7 @@ public class HistoryStateController {
     reportThread.setBaseName("History_State");
     reportThread.setList(list);
     reportThread.setUserUuid(uuid);
+    reportParam.setAllReport(1);//强行修改状态数据导出为全部导出。
     reportThread.setReportParam(reportParam);
     logger.info("start running report History_State thread.");
     EvManageContext.getThreadPool().execute(reportThread);
