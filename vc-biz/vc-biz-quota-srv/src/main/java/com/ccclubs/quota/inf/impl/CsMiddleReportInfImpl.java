@@ -120,12 +120,29 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 //更新表中状态的数据
                 CsMiddleReport record=new CsMiddleReport();
                 record.setCsmrStatus((short)1);
-                //
-                example=new CsMiddleReportExample();
-                criteria=example.createCriteria();
-                criteria.andCsmrIdIn(csmrIdOldList);//获取最新添加的数据
-                logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
-                csMiddleReportMapper.updateByExampleSelective(record,example);
+                int i=0;
+                List<Long> idList =new ArrayList<>();
+                for (Long csmrId:csmrIdOldList ){
+                    i++;
+                    idList.add(csmrId);
+                    if(i>10000){
+                        example=new CsMiddleReportExample();
+                        criteria=example.createCriteria();
+                        criteria.andCsmrIdIn(idList);//获取最新添加的数据
+                        logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+                        csMiddleReportMapper.updateByExampleSelective(record,example);
+                        idList.clear();
+                        i=0;
+                    }
+                }
+                if(idList!=null&&idList.size()>0){
+                    example=new CsMiddleReportExample();
+                    criteria=example.createCriteria();
+                    criteria.andCsmrIdIn(idList);//获取最新添加的数据
+                    logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+                    csMiddleReportMapper.updateByExampleSelective(record,example);
+                    idList.clear();
+                }
             }
             //往中间报表（cs_middle_report）添加数据
             logger.info("往中间报表（cs_middle_report）添加数据 ");
@@ -139,6 +156,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
      * 1.向众泰表更新数据
      * 1)先统计数据-2)清数据-3)添加
      */
+    @Override
     public void updateReportData(){
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
