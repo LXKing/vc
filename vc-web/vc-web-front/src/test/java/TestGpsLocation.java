@@ -26,8 +26,17 @@ public class TestGpsLocation {
   @Test
   public void gpsTransfer() throws Exception, Throwable {
     String jsonString = readToString(
-        "E:\\WorkSpace\\JavaSpace\\vc\\vc-web\\vc-web-front\\src\\test\\java\\json.txt");
+        "D:\\json.txt");
+
+
+//    String jsonString = readToString(
+//        "E:\\WorkSpace\\JavaSpace\\vc\\vc-web\\vc-web-front\\src\\test\\java\\json.txt");
     JSONArray array = JSON.parseArray(jsonString);
+
+
+
+
+
 
     for (int i = 0; i < array.size(); i++) {
       JSONObject item = (JSONObject) array.get(i);
