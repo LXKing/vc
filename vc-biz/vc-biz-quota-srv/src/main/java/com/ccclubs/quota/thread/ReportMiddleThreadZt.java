@@ -37,6 +37,7 @@ public class ReportMiddleThreadZt {
     @Scheduled(cron="${zt.threadInterval}")
     @Transactional(rollbackFor={RuntimeException.class,Exception.class})
     public void scheduleThread(){
+        //更新指标中间表
         csMiddleReportInf.triggerMiddleReport();
     }
 }
