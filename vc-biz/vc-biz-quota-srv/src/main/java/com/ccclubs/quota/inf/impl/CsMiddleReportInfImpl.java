@@ -34,24 +34,60 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
 
 
     /**
-     * 通过接口调用的方式触发国标数据统计(T+1模式)
+     * 根据中间历史表数据及当前最新统计的数据更新cs_middle_report数据
      */
     @Override
-    public void triggerMiddleReport() {
+    public void triggerMiddleReport (){
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //
+        dbHelperZt.getDBConnect();
+        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
+        dbHelperZt.dbClose();
+        //更新cs_middle_report中的数据
+        getStayToUpdateData(currentList,middleList);
+    }
+
+    @Override
+    public void triggerGbReport (){
+        CsMiddleReportExample example=new CsMiddleReportExample();
+        CsMiddleReportExample.Criteria criteria=example.createCriteria();
+        criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+        List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
+        //
+        dbHelperZt.getDBConnect();
+        List<Map<String,Object>> currentList=dbHelperZt.getGbReportDate();
+        dbHelperZt.dbClose();
+        //更新cs_middle_report中的数据
+        getStayToUpdateData(currentList,middleList);
+    }
+
+    /**
+     * 通过接口调用的方式触发国标数据统计(T+1模式)
+     */
+    public void getStayToUpdateData( List<Map<String,Object>> currentList,List<CsMiddleReport> middleList) {
+//        CsMiddleReportExample example=new CsMiddleReportExample();
+//        CsMiddleReportExample.Criteria criteria=example.createCriteria();
+//        criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+//        List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
+//        //
+//        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
+//        for(CsMiddleReport csMiddleReport:middleList){
+//            String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
+//            oldMiddleMap.put(key,csMiddleReport);
+//        }
+//        //
+//        dbHelperZt.getDBConnect();
+//        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
+//        dbHelperZt.dbClose();
+
         Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
         for(CsMiddleReport csMiddleReport:middleList){
             String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
             oldMiddleMap.put(key,csMiddleReport);
         }
-        //
-        dbHelperZt.getDBConnect();
-        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
-        dbHelperZt.dbClose();
         //更新中间报表状态车机条件
         List<Long>csmrIdOldList=new ArrayList<>();
         //
@@ -69,7 +105,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 }
                 Integer csmrModel=Integer.parseInt(map.get("csmrModel").toString());
                 //判断obd数据
-                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());
+                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());//数据库里的最新里程数据
 
                 //找出最新对应的obdMile里程
                 BigDecimal oldObdMile=new BigDecimal(0)  ;
@@ -93,7 +129,6 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 if(map.get("csmrDomain")!=null){
                     csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
                 }
-
                 //
                 Date csmrProdTime=null;
                 if(map.get("csmrProdTime")!=null){
@@ -122,6 +157,8 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 record.setCsmrStatus((short)1);
                 int i=0;
                 List<Long> idList =new ArrayList<>();
+                CsMiddleReportExample example=null;
+                CsMiddleReportExample.Criteria criteria=null;
                 for (Long csmrId:csmrIdOldList ){
                     i++;
                     idList.add(csmrId);
@@ -161,7 +198,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
-        criteria.andCsmrObdMileGreaterThan(new BigDecimal(0));
+//        criteria.andCsmrObdMileGreaterThan(new BigDecimal(0));
         example.setOrderByClause("csmr_vin");
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //把待统计的数据归类
@@ -187,7 +224,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             BigDecimal  mileTemp=middleList.get(0).getCsmrObdMile();
             Date csAddTimeTemp=middleList.get(0).getCsmrAddTime();
             Date csProdTimeTemp=middleList.get(0).getCsmrProdTime();
-
+            //
             for (int i=1;i<middleList.size();i++){
                 String csVin=middleList.get(i).getCsmrVin();
                 String csNumber=middleList.get(i).getCsmrNumber();
@@ -208,31 +245,52 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             csIndexReport=new CsIndexReport();
             csIndexReport.setCsVin(csVinTemp);
             csIndexReport.setCsNumber(csNumberTemp);
-            //月均行驶里程
-            BigDecimal monthlyAvgMile = dbHelperZt.getObdByMonth(csProdTimeTemp, new Date(), mileTemp.intValue());
-            csIndexReport.setMonthlyAvgMile(monthlyAvgMile);
-            //平均单日运行时间
-            BigDecimal avgDriveTimePerDay = dbHelperZt.getAvgDriveTimePerDay(mileTemp.intValue());
-            csIndexReport.setAvgDriveTimePerDay(avgDriveTimePerDay);
-            //纯电行驶里程
-            BigDecimal electricRange = dbHelperZt.getElectricRange();
-            csIndexReport.setElectricRange(electricRange);
-            // 百公里耗电量
-            BigDecimal powerConsumePerHundred = dbHelperZt.getPowerConsumePerHundred(electricRange);
-            csIndexReport.setPowerConsumePerHundred(powerConsumePerHundred);
-            //累计充电量
-            BigDecimal cumulativeCharge =  dbHelperZt.getCumulativeCharge(mileTemp.intValue(), powerConsumePerHundred);
-            csIndexReport.setCumulativeCharge(cumulativeCharge);
-            //车辆一次充满电所用最少时间
-            BigDecimal minChargeTime =  dbHelperZt.getMinChargeTime();
-            csIndexReport.setMinChargeTime(minChargeTime);
-            //最大充电功率
-            BigDecimal maxChargePower =  dbHelperZt.getMaxChargePower();
-            csIndexReport.setMaxChargePower(maxChargePower);
-            //累计行驶里程
-            csIndexReport.setCumulativeMileage(mileTemp);
-            csIndexReport.setModifyDate(new Date());
-            csIndexReport.setFacTime(csProdTimeTemp);
+            if(0==mileTemp.intValue()){
+                //月均行驶里程
+                csIndexReport.setMonthlyAvgMile(mileTemp);
+                //平均单日运行时间
+                csIndexReport.setAvgDriveTimePerDay(mileTemp);
+                //纯电行驶里程
+                csIndexReport.setElectricRange(mileTemp);
+                // 百公里耗电量
+                csIndexReport.setPowerConsumePerHundred(mileTemp);
+                //累计充电量
+                csIndexReport.setCumulativeCharge(mileTemp);
+                //车辆一次充满电所用最少时间
+                csIndexReport.setMinChargeTime(mileTemp);
+                //最大充电功率
+                csIndexReport.setMaxChargePower(mileTemp);
+                //累计行驶里程
+                csIndexReport.setCumulativeMileage(mileTemp);
+                csIndexReport.setModifyDate(new Date());
+                csIndexReport.setFacTime(csProdTimeTemp);
+            }else{
+                //月均行驶里程
+                BigDecimal monthlyAvgMile = dbHelperZt.getObdByMonth(csProdTimeTemp, new Date(), mileTemp.intValue());
+                csIndexReport.setMonthlyAvgMile(monthlyAvgMile);
+                //平均单日运行时间
+                BigDecimal avgDriveTimePerDay = dbHelperZt.getAvgDriveTimePerDay(mileTemp.intValue());
+                csIndexReport.setAvgDriveTimePerDay(avgDriveTimePerDay);
+                //纯电行驶里程
+                BigDecimal electricRange = dbHelperZt.getElectricRange();
+                csIndexReport.setElectricRange(electricRange);
+                // 百公里耗电量
+                BigDecimal powerConsumePerHundred = dbHelperZt.getPowerConsumePerHundred(electricRange);
+                csIndexReport.setPowerConsumePerHundred(powerConsumePerHundred);
+                //累计充电量
+                BigDecimal cumulativeCharge =  dbHelperZt.getCumulativeCharge(mileTemp.intValue(), powerConsumePerHundred);
+                csIndexReport.setCumulativeCharge(cumulativeCharge);
+                //车辆一次充满电所用最少时间
+                BigDecimal minChargeTime =  dbHelperZt.getMinChargeTime();
+                csIndexReport.setMinChargeTime(minChargeTime);
+                //最大充电功率
+                BigDecimal maxChargePower =  dbHelperZt.getMaxChargePower();
+                csIndexReport.setMaxChargePower(maxChargePower);
+                //累计行驶里程
+                csIndexReport.setCumulativeMileage(mileTemp);
+                csIndexReport.setModifyDate(new Date());
+                csIndexReport.setFacTime(csProdTimeTemp);
+            }
             insertData.add(csIndexReport);
         }
         //更新cs_index_report中数据

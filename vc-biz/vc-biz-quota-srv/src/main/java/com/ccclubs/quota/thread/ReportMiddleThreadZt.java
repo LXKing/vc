@@ -40,4 +40,10 @@ public class ReportMiddleThreadZt {
         //更新指标中间表
         csMiddleReportInf.triggerMiddleReport();
     }
+    @Scheduled(cron="0 0 0 * * ?")
+    @Transactional(rollbackFor={RuntimeException.class,Exception.class})
+    public void scheduleThreadForGb(){
+        //更新指标中间表
+        csMiddleReportInf.triggerGbReport();
+    }
 }

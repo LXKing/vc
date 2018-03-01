@@ -172,11 +172,11 @@ public class TestVtsearch {
     @Test
     public void unbindVehicle() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//127.0.0.1:8081
-        HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/unbindVehicle");
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/unbindVehicle");
         httpPost.setHeader("Content-Type", "application/json");
         UnBindVehicleInput input = new UnBindVehicleInput();
-        input.setVin("LJ8E3C1M0HD314619");//LJ8E3C1M4GB003303
-        input.setTeNo("67Y4438");//CFXT31603230127
+        input.setVin("LJ8E3C1MXGB010174");
+        input.setTeNo("6380099");
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
@@ -207,11 +207,11 @@ public class TestVtsearch {
     public void bindVehicle() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://101.37.178.63/operate/bindVehicle");
+      HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/bindVehicle");
         httpPost.setHeader("Content-Type", "application/json");
         UnBindVehicleInput input = new UnBindVehicleInput();
-        input.setVin("LJ8E3C1M0HD314619");
-        input.setTeNo("67Y4438");
+        input.setVin("LJ8E3C1MXGB010174");
+        input.setTeNo("6380099");
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);

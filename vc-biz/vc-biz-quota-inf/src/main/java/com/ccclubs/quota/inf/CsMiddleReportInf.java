@@ -14,4 +14,6 @@ public interface CsMiddleReportInf {
      * 计算国补数据指标数据
      */
     void updateReportData();
+
+    void triggerGbReport();
 }
