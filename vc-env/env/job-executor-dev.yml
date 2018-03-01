@@ -1,0 +1,62 @@
+server:
+  port: 11119
+
+oss:
+  accessKeyId: LTAIYzY8yT3GTuj1
+  accessKeySecret: Gdj4x2l5rOzC2r586Ur75EpdtARLt7
+  endpoint: https://oss-cn-hangzhou.aliyuncs.com
+
+spring:
+  data:
+    mongodb:
+      history:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: vc_history
+      remote:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: vc_remote
+
+druid:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  initialSize: 2
+  maxActive: 4
+  maxIdle: 2
+  minIdle: 1
+  maxWait: 60000
+  timeBetweenEvictionRunsMillis: 3000
+  minEvictableIdleTimeMillis: 300000
+  maxPoolPreparedStatementPerConnectionSize: 20
+  filters:
+
+### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
+xxl:
+  job:
+    admin:
+      addresses: http://127.0.0.1:8080
+    executor:
+      appname: vc-job-executor
+      ip:
+      port: 9999
+      logpath: /var/logs/vc/job/handler
+      logretentiondays: -1
+    accessToken:
+
+email:
+  host: smtp.mxhichina.com
+  smtp_username: jianghaiyang@ccclubs.com
+  smtp_password: -ccpose1130
+  sender_name: 车机中心监控平台
+  ecoding: UTF-8
+  to_email: fengjun@ccclubs.com
