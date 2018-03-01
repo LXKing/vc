@@ -2,8 +2,15 @@ package com.ccclubs.quota.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.frm.spring.constant.RedisConst;
+import com.ccclubs.protocol.dto.gb.GBMessage;
+import com.ccclubs.protocol.dto.gb.GB_02;
+import com.ccclubs.protocol.dto.gb.GB_02_01;
+import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.quota.orm.model.CsIndexReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -17,6 +24,8 @@ import java.util.Date;
  */
 @Component
 public class DBHelperZt {
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Value("${zt.driver}")
     public  String driver;
@@ -67,6 +76,48 @@ public class DBHelperZt {
     }
 
     /**
+     * 依据车型获取国标数据的obd里程等信息。
+     * @auther Alban
+     * **/
+    public List<Map<String,Object>>  getGbReportDate(){
+        List<Map<String,Object>> tempList=new ArrayList<>();
+        try {
+            String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber" +
+                    "FROM cs_vehicle t1, cs_machine t2 " +
+                    "WHERE t1.csv_model=22 AND t1.csv_machine=t2.csm_id";
+            pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            ResultSetMetaData metaData = rs.getMetaData();
+            while(rs.next()){
+                Map<String,Object>mapTemp=new HashMap<>();
+                for(int i=1;i<=metaData.getColumnCount();i++){
+                    //String columnName1 = metaData.getColumnName(i);
+                    String columnName = metaData.getColumnLabel(i);//列别名
+                    Object columnValue = rs.getObject(columnName);
+                    mapTemp.put(columnName,columnValue);
+                }
+                String vin=rs.getString("csmrVin");
+                Object hexObject=redisTemplate.opsForHash().get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
+                if (null==hexObject){continue;}
+                String hexString = (String) hexObject;
+                GBMessage gbMessage = new GBMessage();
+                gbMessage.ReadFromBytes(Tools.HexString2Bytes(hexString));
+                GB_02 gb_02=(GB_02) gbMessage.getMessageContents();
+                //这里的get（0）是由于gb0201排在第一个。注意这里可能会出现的Bug。
+                //Fixme 可能存在取值不是自己想要的结果的bug。
+                GB_02_01 gb_02_01=(GB_02_01) gb_02.getAdditionals().get(0);
+                int csmrObdMile=gb_02_01.getMileage();
+                mapTemp.put("csmrObdMile",csmrObdMile);
+                tempList.add(mapTemp);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  tempList;
+    }
+
+
+    /**
      * 根据车机与vin码对应关系获取obd_mile
      * @return
      */
@@ -80,7 +131,7 @@ public class DBHelperZt {
             while(rs.next()){
                 Map<String,Object>mapTemp=new HashMap<>();
                 for(int i=1;i<=metaData.getColumnCount();i++){
-                    String columnName1 = metaData.getColumnName(i);
+                    //String columnName1 = metaData.getColumnName(i);
                     String columnName = metaData.getColumnLabel(i);//列别名
                     Object columnValue = rs.getObject(columnName);
                     mapTemp.put(columnName,columnValue);
