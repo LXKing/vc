@@ -8,9 +8,9 @@ public class CarCanHistoryParam extends Page  implements Serializable{
 
     private String cs_number;
 
-    private Long start_time;
+    private String start_time;
 
-    private Long end_time;
+    private String end_time;
 
     private String order="desc";
 
@@ -23,19 +23,19 @@ public class CarCanHistoryParam extends Page  implements Serializable{
         this.cs_number = cs_number;
     }
 
-    public Long getStart_time() {
+    public String getStart_time() {
         return start_time;
     }
 
-    public void setStart_time(Long start_time) {
+    public void setStart_time(String start_time) {
         this.start_time = start_time;
     }
 
-    public Long getEnd_time() {
+    public String getEnd_time() {
         return end_time;
     }
 
-    public void setEnd_time(Long end_time) {
+    public void setEnd_time(String end_time) {
         this.end_time = end_time;
     }
 
