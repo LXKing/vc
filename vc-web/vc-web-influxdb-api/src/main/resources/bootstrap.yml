@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: influxdb-api
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: influxdb-api
+      uri: ${spring.cloud.config.uri}
+      
