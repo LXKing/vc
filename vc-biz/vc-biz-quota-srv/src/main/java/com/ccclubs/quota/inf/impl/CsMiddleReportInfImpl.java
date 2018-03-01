@@ -34,24 +34,46 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
 
 
     /**
-     * 通过接口调用的方式触发国标数据统计(T+1模式)
+     * 根据中间历史表数据及当前最新统计的数据更新cs_middle_report数据
      */
     @Override
-    public void triggerMiddleReport() {
+    public void triggerMiddleReport (){
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //
+        dbHelperZt.getDBConnect();
+        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
+        dbHelperZt.dbClose();
+        //更新cs_middle_report中的数据
+        getStayToUpdateData(currentList,middleList);
+    }
+
+    /**
+     * 通过接口调用的方式触发国标数据统计(T+1模式)
+     */
+    public void getStayToUpdateData( List<Map<String,Object>> currentList,List<CsMiddleReport> middleList) {
+//        CsMiddleReportExample example=new CsMiddleReportExample();
+//        CsMiddleReportExample.Criteria criteria=example.createCriteria();
+//        criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+//        List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
+//        //
+//        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
+//        for(CsMiddleReport csMiddleReport:middleList){
+//            String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
+//            oldMiddleMap.put(key,csMiddleReport);
+//        }
+//        //
+//        dbHelperZt.getDBConnect();
+//        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
+//        dbHelperZt.dbClose();
+
         Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
         for(CsMiddleReport csMiddleReport:middleList){
             String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
             oldMiddleMap.put(key,csMiddleReport);
         }
-        //
-        dbHelperZt.getDBConnect();
-        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
-        dbHelperZt.dbClose();
         //更新中间报表状态车机条件
         List<Long>csmrIdOldList=new ArrayList<>();
         //
@@ -69,7 +91,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 }
                 Integer csmrModel=Integer.parseInt(map.get("csmrModel").toString());
                 //判断obd数据
-                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());
+                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());//数据库里的最新里程数据
 
                 //找出最新对应的obdMile里程
                 BigDecimal oldObdMile=new BigDecimal(0)  ;
@@ -93,7 +115,6 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 if(map.get("csmrDomain")!=null){
                     csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
                 }
-
                 //
                 Date csmrProdTime=null;
                 if(map.get("csmrProdTime")!=null){
@@ -122,6 +143,8 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 record.setCsmrStatus((short)1);
                 int i=0;
                 List<Long> idList =new ArrayList<>();
+                CsMiddleReportExample example=null;
+                CsMiddleReportExample.Criteria criteria=null;
                 for (Long csmrId:csmrIdOldList ){
                     i++;
                     idList.add(csmrId);
@@ -187,7 +210,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             BigDecimal  mileTemp=middleList.get(0).getCsmrObdMile();
             Date csAddTimeTemp=middleList.get(0).getCsmrAddTime();
             Date csProdTimeTemp=middleList.get(0).getCsmrProdTime();
-
+            //
             for (int i=1;i<middleList.size();i++){
                 String csVin=middleList.get(i).getCsmrVin();
                 String csNumber=middleList.get(i).getCsmrNumber();
