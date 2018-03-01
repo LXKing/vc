@@ -83,7 +83,7 @@ public class DBHelperZt {
         List<Map<String,Object>> tempList=new ArrayList<>();
         try {
             String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber" +
-                    "FROM cs_vehicle t1, cs_machine t2 " +
+                    " FROM cs_vehicle t1, cs_machine t2 " +
                     "WHERE t1.csv_model=22 AND t1.csv_machine=t2.csm_id";
             pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
@@ -124,7 +124,7 @@ public class DBHelperZt {
     public List<Map<String,Object>> getMiddleReportData(){
         List<Map<String,Object>> tempList=new ArrayList<>();
         try {
-            String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber,t3.css_obd_mile csmrObdMile FROM cs_vehicle t1, cs_machine t2 LEFT JOIN cs_state t3 ON t2.csm_number=t3.css_number WHERE t1.csv_machine=t2.csm_id AND css_obd_mile IS NOT NULL ";
+            String sql = "  SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber,t3.css_obd_mile csmrObdMile FROM cs_vehicle t1, cs_machine t2 LEFT JOIN cs_state t3 ON t2.csm_number=t3.css_number WHERE t1.csv_model!=22 AND t1.csv_machine=t2.csm_id AND css_obd_mile IS NOT NULL ";
             pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
