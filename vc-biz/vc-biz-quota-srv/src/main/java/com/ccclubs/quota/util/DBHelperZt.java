@@ -1,7 +1,5 @@
 package com.ccclubs.quota.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.gb.GB_02;
@@ -13,9 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -144,98 +140,6 @@ public class DBHelperZt {
         return  tempList;
     }
 
-
-    //统计最新的众泰--国标指标数据***************************************
-    public  void getZtCurrentOBDTemp(List<CsIndexReport> exVinList){
-        try {
-            String sql = "SELECT css_number, css_obd_mile ,css_add_time from cs_state WHERE  css_number IN (";
-            //
-            StringBuffer sb=new StringBuffer();
-            for (CsIndexReport csIndexReport:exVinList){
-                sb.append("\'"+csIndexReport.getCsNumber()+"\'").append(" ,");
-            }
-            String  sqlResult = sql+sb.substring(0,sb.lastIndexOf(","))+")";
-            //
-            pst = conn.prepareStatement(sqlResult);
-            ResultSet rs = pst.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
-            //先把当前obd里程的数据
-            List<Map<String,Object>>tempList=new ArrayList<>();
-            while(rs.next()){
-                Map<String,Object>mapTemp=new HashMap<>();
-                for(int i=1;i<=metaData.getColumnCount();i++){
-                    String columnName = metaData.getColumnName(i);
-                    Object columnValue = rs.getObject(columnName);
-                    mapTemp.put(columnName,columnValue);
-                }
-                tempList.add(mapTemp);
-            }
-            //组装list条件数据
-            for (CsIndexReport csIndexReport:exVinList){
-                String csNumber=csIndexReport.getCsNumber();
-                if(csNumber==null||csNumber==""){
-                    continue;
-                }
-                //车辆出厂日期默认值
-                Date facTime= DateTimeUtil.getStringToDate("2017-01-01 00:00:00");
-                if(csIndexReport.getFacTime()!=null){
-                    facTime=csIndexReport.getFacTime();
-                }
-                //
-                for (Map<String,Object> temp:tempList){
-                    String  csState_csNumber=temp.get("css_number").toString();
-                    if(csNumber.equals(csState_csNumber)){
-                        //通过obd里程统计各项指标数据
-                        int currentObd =Integer.parseInt(temp.get("css_obd_mile").toString());
-                        if(currentObd!=0) {
-                            Date currTime =DateTimeUtil.getStringToDate(temp.get("css_add_time").toString());
-                            //
-                            //月均行驶里程
-                            BigDecimal monthlyAvgMile = getObdByMonth(facTime, currTime, currentObd);
-                            //纯电行驶里程
-                            BigDecimal electricRange = getElectricRange();
-                            // 百公里耗电量
-                            BigDecimal powerConsumePerHundred = getPowerConsumePerHundred(electricRange);
-                            //累计充电量
-                            BigDecimal cumulativeCharge = getCumulativeCharge(currentObd, powerConsumePerHundred);
-                            //车辆一次充满电所用最少时间
-                            BigDecimal minChargeTime = getMinChargeTime();
-                            //最大充电功率
-                            BigDecimal maxChargePower = getMaxChargePower();
-                            //平均单日运行时间
-                            BigDecimal avgDriveTimePerDay = getAvgDriveTimePerDay(currentObd);
-                            //----//
-                            csIndexReport.setMonthlyAvgMile(monthlyAvgMile);
-                            csIndexReport.setElectricRange(electricRange);
-                            csIndexReport.setPowerConsumePerHundred(powerConsumePerHundred);
-                            csIndexReport.setCumulativeCharge(cumulativeCharge);
-                            csIndexReport.setMinChargeTime(minChargeTime);
-                            csIndexReport.setMaxChargePower(maxChargePower);
-                            csIndexReport.setAvgDriveTimePerDay(avgDriveTimePerDay);
-                            csIndexReport.setCumulativeMileage(new BigDecimal(currentObd));
-                            //
-                            csIndexReport.setModifyDate(new Date());
-                        }else{
-                            csIndexReport.setMonthlyAvgMile(null);
-                            csIndexReport.setElectricRange(null);
-                            csIndexReport.setPowerConsumePerHundred(null);
-                            csIndexReport.setCumulativeCharge(null);
-                            csIndexReport.setMinChargeTime(null);
-                            csIndexReport.setMaxChargePower(null);
-                            csIndexReport.setAvgDriveTimePerDay(null);
-                            csIndexReport.setCumulativeMileage(null);
-                            //
-                            csIndexReport.setModifyDate(new Date());
-                        }
-                        break;
-                    }
-                }
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
     //**************************各项指标计算公式***********************************
     //月均行驶里程
     public   BigDecimal getObdByMonth(Date facTime,Date currTime,int currentObd){
@@ -268,9 +172,17 @@ public class DBHelperZt {
 
 
     ////纯电行驶里程
-    public   BigDecimal getElectricRange(){
-        BigDecimal start=new BigDecimal(120);
-        BigDecimal end=new BigDecimal(190);
+    public   BigDecimal getElectricRange(int csModel){
+        BigDecimal start=null;
+        BigDecimal end=null;
+        //v10为22的车型
+        if(csModel==22){
+            start=new BigDecimal(150);
+            end=new BigDecimal(210);
+        }else{
+            start=new BigDecimal(120);
+            end=new BigDecimal(185);
+        }
         //
         BigDecimal   ff=  random(start,end);
         BigDecimal   f1   =   ff.setScale(2,   BigDecimal.ROUND_HALF_UP);

@@ -224,6 +224,8 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             BigDecimal  mileTemp=middleList.get(0).getCsmrObdMile();
             Date csAddTimeTemp=middleList.get(0).getCsmrAddTime();
             Date csProdTimeTemp=middleList.get(0).getCsmrProdTime();
+            //车型
+            int csmrModel=middleList.get(0).getCsmrModel();
             //
             for (int i=1;i<middleList.size();i++){
                 String csVin=middleList.get(i).getCsmrVin();
@@ -272,7 +274,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal avgDriveTimePerDay = dbHelperZt.getAvgDriveTimePerDay(mileTemp.intValue());
                 csIndexReport.setAvgDriveTimePerDay(avgDriveTimePerDay);
                 //纯电行驶里程
-                BigDecimal electricRange = dbHelperZt.getElectricRange();
+                BigDecimal electricRange = dbHelperZt.getElectricRange(csmrModel);
                 csIndexReport.setElectricRange(electricRange);
                 // 百公里耗电量
                 BigDecimal powerConsumePerHundred = dbHelperZt.getPowerConsumePerHundred(electricRange);
