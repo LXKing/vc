@@ -50,6 +50,20 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         getStayToUpdateData(currentList,middleList);
     }
 
+    @Override
+    public void triggerGbReport (){
+        CsMiddleReportExample example=new CsMiddleReportExample();
+        CsMiddleReportExample.Criteria criteria=example.createCriteria();
+        criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+        List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
+        //
+        dbHelperZt.getDBConnect();
+        List<Map<String,Object>> currentList=dbHelperZt.getGbReportDate();
+        dbHelperZt.dbClose();
+        //更新cs_middle_report中的数据
+        getStayToUpdateData(currentList,middleList);
+    }
+
     /**
      * 通过接口调用的方式触发国标数据统计(T+1模式)
      */
