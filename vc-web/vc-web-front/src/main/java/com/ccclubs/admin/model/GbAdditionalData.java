@@ -9,4 +9,5 @@ package com.ccclubs.admin.model;
  * \
  */
 public class GbAdditionalData {
+
 }

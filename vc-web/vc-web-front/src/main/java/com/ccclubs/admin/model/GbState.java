@@ -110,12 +110,12 @@ public class GbState implements java.io.Serializable
 	 * [longitude_string]经度
 	 */
 	
-	private   Long longitudeString;
+	private   Float longitudeString;
 	/**
 	 * [latitude_string]纬度
 	 */
 	
-	private   Long latitudeString;
+	private   Float latitudeString;
 	
 	//默认构造函数
 	public GbState(){
@@ -391,28 +391,28 @@ public class GbState implements java.io.Serializable
 	/**
 	* 经度 [可空]      
 	**/
-	public Long getLongitudeString(){
+	public Float getLongitudeString(){
 		return this.longitudeString;
 	}
 	
 	/**
 	* 经度 [可空]     
 	**/
-	public void setLongitudeString(Long longitudeString){
+	public void setLongitudeString(Float longitudeString){
 		this.longitudeString = longitudeString;
 	}
 	/*******************************纬度**********************************/	
 	/**
 	* 纬度 [可空]      
 	**/
-	public Long getLatitudeString(){
+	public Float getLatitudeString(){
 		return this.latitudeString;
 	}
 	
 	/**
 	* 纬度 [可空]     
 	**/
-	public void setLatitudeString(Long latitudeString){
+	public void setLatitudeString(Float latitudeString){
 		this.latitudeString = latitudeString;
 	}
 }
