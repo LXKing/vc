@@ -56,7 +56,7 @@
 	</div>
 
 <script type="text/javascript">
-
+    var currPage = 1, currSize = 15;
 	var operate = {
 		getGrid:function(){
 			return grid;
@@ -70,8 +70,75 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
-		
-		
+
+        exportData: function () {
+            var params = {rows: currSize, page: currPage, allReport: 1};
+            params = transferParamsWithSortExport(params, "timeText");
+            var clmsCopy = $.extend(true, [], clms);
+            params.clms = clmsCopy.splice(1, clms.length - 1);
+            params.query = getFormData(this.getQueryForm());
+            console.log(JSON.stringify(params));
+
+            var myVar;
+
+            ajaxRequest(getServUrl("/electricity/gbState/report"), "POST",
+                JSON.stringify(params), function (r) {
+                    if (r.success) {
+                        console.log(JSON.stringify(r));
+
+                        showTopWin({
+                            type: 1,
+                            shade: 0.4,
+                            title: '导出Excel文件',
+                            maxmin: true,
+                            area: ['550px', '185px'],
+                            content: '<div id="exportWrapper" class="modal-body">\n'
+                            + '  <div class="row">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      <div class="progress active">\n'
+                            + '        <div id="progressbar" class="progress-bar progress-bar-primary progress-bar-striped"\n'
+                            + '             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"\n'
+                            + '             style="width: 100%;">\n'
+                            + '          <span class="sr-only">0% Complete (success)</span>\n'
+                            + '        </div>\n'
+                            + '      </div>\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '  <div class="row export-running">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      正在执行数据导出任务\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '  <div class="row export-result hidden">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      <span id="downloadUrl">Excel文件已经导出，<a target="_blank" class="btn btn-primary"><i\n'
+                            + '          class="fa fa-download"></i>点击下载文件</a></span>\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '</div>',
+                            zIndex: layer.zIndex, //重点1
+                            end: function () {
+                                //清除定时操作
+                                clearInterval(myVar);
+                            }
+                        });
+
+                        myVar = setInterval(function () {
+                            ajaxRequest(getServUrl("/report/fetch"), "GET",
+                                {fileUuid: r.value}, function (result) {
+                                    if (result.success && result.value != null) {
+                                        console.log(JSON.stringify(result));
+                                        //清除定时操作
+                                        $(window.parent.document).find("#exportWrapper .export-result").removeClass("hidden");
+                                        $(window.parent.document).find("#exportWrapper .export-running").addClass("hidden");
+                                        $(window.parent.document).find("#exportWrapper .btn").attr('href', result.value);
+                                        clearInterval(myVar);
+                                    }
+                                }, false);
+                        }, 2000);
+                    }
+                }, false, "application/json;charset=UTF-8");
+        },
 		
 		batchDel:function(){
 			var o = this;
@@ -139,7 +206,15 @@
 			  height:getTableHeight(),
 			  url:getServUrl("/electricity/gbState/list"),
 			  cols:  [clms],
-			  done: function(res, curr, count){},
+			  done: function(res, curr, count){
+                  console.log(curr);
+                  //currPage = curr;
+                  //currSize=res.page.size;
+                  if (curr > res.page.total)
+                      curr = res.page.total;
+                  currPage = curr;
+                  currSize = res.page.size;
+			  },
       	  	  response: {
 	      		  statusName: "code",
 	  		      statusCode: 0,
@@ -175,7 +250,7 @@
 	function getTableHeight(){
 		 var height = $(window).height() - ($(".queryForm_wrapper").height()+$(".menubar").height() + 25);
 //		 if(height>1000)return 1000;
-		console.log(height);
+		 console.log(height);
 		 return height;
 	}
 

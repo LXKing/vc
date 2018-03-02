@@ -207,7 +207,7 @@ public class CsState implements java.io.Serializable
 	
 	private   String cssDoor;
 	/**
-	 * [css_engine]发动机状态0:无效 1:未熄火 2:已熄火
+	 * [css_engine]发动机状态0:无效 1:未熄火 2:已熄火 3:ACC
 	 */
 	
 	private   Short cssEngine;

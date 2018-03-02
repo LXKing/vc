@@ -3,6 +3,8 @@ package com.ccclubs.admin.service;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 /**
  * 国标实时状态
  *
@@ -18,6 +20,12 @@ public interface IGbCsStateService {
      * @return
      */
     PageInfo<GBMessage> getPage(Object t, int page, int rows);
+
+    /**
+     *
+     * 全部查询
+     */
+    List<GBMessage> getAllGBMessage();
 
     /**
      * 详情
