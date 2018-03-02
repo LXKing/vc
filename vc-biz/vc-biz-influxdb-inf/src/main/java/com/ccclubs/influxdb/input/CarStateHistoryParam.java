@@ -49,9 +49,6 @@ public class CarStateHistoryParam extends Page implements Serializable{
         this.end_time = end_time;
     }
 
-
-
-
     public String getOrder() {
         return order;
     }

@@ -147,6 +147,13 @@ public class CsIndexQuotaApi {
         return new ApiMessage<String>("success");
     }
 
+
+    @ApiOperation(value="从中间表计算国补指标数据", notes="数据指标模式")
+    @RequestMapping(path="/triggerGbReport", method={RequestMethod.POST, RequestMethod.GET})
+    public  ApiMessage<String>  triggerGbReport(){
+        csMiddleReportInf.triggerGbReport();
+        return new ApiMessage<String>("success");
+    }
 }
 
 

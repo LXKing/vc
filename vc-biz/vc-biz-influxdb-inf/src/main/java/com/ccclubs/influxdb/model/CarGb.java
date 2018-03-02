@@ -19,8 +19,8 @@ public class CarGb implements Serializable {
     private Long add_time;
 
     //报文上传时间
-    @Column(name = "current_time")
-    private Long current_time;
+    @Column(name = "time")
+    private String current_time;
 
     //报文内容
     @Column(name = "gb_data")
@@ -59,11 +59,11 @@ public class CarGb implements Serializable {
         this.add_time = add_time;
     }
 
-    public Long getCurrent_time() {
+    public String getCurrent_time() {
         return current_time;
     }
 
-    public void setCurrent_time(Long current_time) {
+    public void setCurrent_time(String current_time) {
         this.current_time = current_time;
     }
 

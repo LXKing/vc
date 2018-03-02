@@ -9,7 +9,7 @@ public class Page implements Serializable{
     //查询页号
     private Integer page_no=-1;
     //页最大记录数量(默认20)
-    private Integer page_size=3;
+    private Integer page_size=20;
     //记录总数
     private Long total =-1L;
 
