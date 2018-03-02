@@ -107,7 +107,7 @@ public class DBHelperZt {
                          gb_02_01=(GB_02_01) iRealTimeAdditionalItem;
                     }
                 }
-
+                if (gb_02_01==null){continue;}
                 int csmrObdMile=gb_02_01.getMileage();
                 mapTemp.put("csmrObdMile",csmrObdMile);
                 tempList.add(mapTemp);
