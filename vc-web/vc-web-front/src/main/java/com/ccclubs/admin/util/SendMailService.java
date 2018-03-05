@@ -19,6 +19,9 @@ public class SendMailService {
     @Value("${email.host}")
     private String HOSTNAME;     //邮件服务器
 
+    @Value("${email.port}")
+    private int PORT;     //邮件服务器发送端口
+
     @Value("${email.smtp_username}")
     private String SMTP_USERNAME; //发件人用户名
 
@@ -70,7 +73,7 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
         email.setCharset(CODING);
-        email.setSmtpPort(465);
+        email.setSmtpPort(587);
         email.addTo(toEmail.split(","));
         if(StringUtils.isNotEmpty(ccEmail)){
             email.addBcc(ccEmail.split(","));
