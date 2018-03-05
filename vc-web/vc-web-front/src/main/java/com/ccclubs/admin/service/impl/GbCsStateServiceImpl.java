@@ -58,10 +58,15 @@ public class GbCsStateServiceImpl implements IGbCsStateService {
             pageInfo.setTotal(redisTemplate.opsForZSet().size(RedisConst.REDIS_KEY_RT_STATES_ZSET));
             pageInfo.setList(list);
         }else {
-            GBMessage gbMessage = new GBMessage();
+            GBMessage gbMessage =null;
             String vin = t.toString();
-            gbMessage.ReadFromBytes(Tools.HexString2Bytes((String) redisTemplate.opsForHash()
-                .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin)));
+            Object hexObj=redisTemplate.opsForHash()
+                    .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
+            if (null!=hexObj){
+                gbMessage=new GBMessage();
+                gbMessage.ReadFromBytes(Tools.HexString2Bytes((String) hexObj));
+            }
+
             list.add((gbMessage));
 
             pageInfo.setPageSize(rows);
