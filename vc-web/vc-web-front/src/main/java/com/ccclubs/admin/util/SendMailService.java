@@ -19,8 +19,8 @@ public class SendMailService {
     @Value("${email.host}")
     private String HOSTNAME;     //邮件服务器
 
-    @Value("${email.port}")
-    private int PORT;     //邮件服务器发送端口
+//    @Value("${email.port}")
+//    private int PORT;     //邮件服务器发送端口
 
     @Value("${email.smtp_username}")
     private String SMTP_USERNAME; //发件人用户名
