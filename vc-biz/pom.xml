@@ -37,5 +37,8 @@
         <module>vc-biz-mongo-srv</module>
         <module>vc-biz-quota-model</module>
         <module>vc-biz-pub-model</module>
+        <module>vc-biz-job-srv</module>
+        <module>vc-biz-influxdb-srv</module>
+        <module>vc-biz-influxdb-inf</module>
     </modules>
 </project>

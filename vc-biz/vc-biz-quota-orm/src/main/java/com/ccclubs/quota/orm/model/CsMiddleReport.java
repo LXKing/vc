@@ -14,6 +14,8 @@ public class CsMiddleReport implements Serializable{
 
         private static final long serialVersionUID =         1L;
 
+        private  Long csmrId;
+
         /**
          * [csmr_vin]车辆VIN码
          */
@@ -243,4 +245,11 @@ public class CsMiddleReport implements Serializable{
             this.csmrSaleTime = csmrSaleTime;
         }
 
+        public Long getCsmrId() {
+                return csmrId;
+        }
+
+        public void setCsmrId(Long csmrId) {
+                this.csmrId = csmrId;
+        }
 }

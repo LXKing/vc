@@ -6,11 +6,8 @@ import com.ccclubs.command.dto.DvdVersionIntput;
 import com.ccclubs.command.dto.DvdVersionOutput;
 import com.ccclubs.command.inf.update.SetDvdVersionInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
-import com.ccclubs.command.util.CommandConstants;
-import com.ccclubs.command.util.ResultHelper;
-import com.ccclubs.command.util.TerminalOnlineHelper;
-import com.ccclubs.command.util.ValidateHelper;
+import com.ccclubs.command.remote.CsRemoteManager;
+import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
@@ -53,7 +50,9 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
     private ResultHelper resultHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
 
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
@@ -61,7 +60,7 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
     @Override
     @DataAuth
     public DvdVersionOutput setDvdVersion(DvdVersionIntput input) {
-        Integer structId = CommandConstants.CMD_DVD;
+        Long structId = CommandConstants.CMD_DVD.longValue();
         logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
@@ -77,7 +76,7 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
         terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
@@ -86,15 +85,16 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId.longValue(), array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
         logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        DvdVersionOutput output = new DvdVersionOutput();
-
         // 4.确认结果
+        DvdVersionOutput output = new DvdVersionOutput();
         output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;

@@ -46,7 +46,7 @@ public class HistoryStateController {
    */
   @RequestMapping(value = "/list", method = RequestMethod.GET)
   public TableResult<HistoryState> list(HistoryStateQuery query,
-      @RequestParam(defaultValue = "0") Integer page,
+      @RequestParam(defaultValue = "1") Integer page,
       @RequestParam(defaultValue = "10") Integer rows,
       @RequestParam(defaultValue = "desc") String order,
       @RequestParam(defaultValue = "true") Boolean isResolve) {
@@ -93,6 +93,7 @@ public class HistoryStateController {
   @RequestMapping(value = "/report", method = RequestMethod.POST)
   public VoResult<String> getReport(@RequestBody ReportParam<HistoryStateQuery> reportParam)
   {
+    reportParam.setAllReport(1);//强行修改状态数据导出为全部导出。
     List<HistoryState> list;
     if (null == reportParam.getQuery().getCsNumberEquals()||
             null==reportParam.getQuery().getCurrentTimeStart()||
@@ -104,7 +105,7 @@ public class HistoryStateController {
     }
     TableResult<HistoryState> pageInfo = historyStateService.getPage(
             reportParam.getQuery(),
-            reportParam.getPage(),
+            -1,//reportParam.getPage(),
             reportParam.getRows(),
             reportParam.getOrder());
     list = pageInfo.getData();

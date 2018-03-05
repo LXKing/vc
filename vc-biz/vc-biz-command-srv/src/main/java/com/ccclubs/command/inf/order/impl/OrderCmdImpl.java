@@ -6,11 +6,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.command.dto.*;
 import com.ccclubs.command.inf.order.OrderCmdInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
-import com.ccclubs.command.util.CommandConstants;
-import com.ccclubs.command.util.ResultHelper;
-import com.ccclubs.command.util.TerminalOnlineHelper;
-import com.ccclubs.command.util.ValidateHelper;
+import com.ccclubs.command.remote.CsRemoteManager;
+import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
@@ -51,7 +48,9 @@ public class OrderCmdImpl implements OrderCmdInf {
     @Resource
     private ValidateHelper validateHelper;
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
     @Resource
     private ResultHelper resultHelper;
     @Resource
@@ -66,7 +65,7 @@ public class OrderCmdImpl implements OrderCmdInf {
     @DataAuth
     public IssueOrderOutput issueOrderData(IssueOrderInput input) {
 
-        Integer structId = CommandConstants.CMD_ORDER;
+        Long structId = CommandConstants.CMD_ORDER.longValue();
         Date startTime = StringUtils.date(input.getStartTime(), CommandConstants.DATE_FORMAT);
         Date endTime = StringUtils.date(input.getEndTime(), CommandConstants.DATE_FORMAT);
 
@@ -96,7 +95,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             rfidCode, code, input.getRealName(), input.getMobile(), input.getGender());
 
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
@@ -105,19 +104,13 @@ public class OrderCmdImpl implements OrderCmdInf {
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId, array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
         logger.debug("command send start.");
-        try {
-            process.dealRemoteCommand(csRemote, array);
-        } catch (ApiException ex) {
-            throw ex;
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new ApiException(ApiEnum.SYSTEM_ERROR);
-        }
+        process.dealRemoteCommand(csRemote, array);
 
         IssueOrderOutput output = new IssueOrderOutput();
         // 4.确认结果
@@ -142,7 +135,7 @@ public class OrderCmdImpl implements OrderCmdInf {
     @Override
     @DataAuth
     public IssueAuthOrderOutput issueAuthOrderData(IssueAuthOrderInput input) {
-        Integer structId = CommandConstants.CMD_ORDER_AUTH;
+        Long structId = CommandConstants.CMD_ORDER_AUTH.longValue();
         Date startTime = StringUtils.date(input.getStartTime(), CommandConstants.DATE_FORMAT);
         Date endTime = StringUtils.date(input.getEndTime(), CommandConstants.DATE_FORMAT);
 
@@ -166,22 +159,16 @@ public class OrderCmdImpl implements OrderCmdInf {
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId, array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
         logger.debug("command send start.");
-        try {
-            process.dealRemoteCommand(csRemote, array);
-        } catch (ApiException ex) {
-            throw ex;
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-            throw new ApiException(ApiEnum.SYSTEM_ERROR);
-        }
+        process.dealRemoteCommand(csRemote, array);
 
-        IssueAuthOrderOutput output = new IssueAuthOrderOutput();
         // 4.确认结果
+        IssueAuthOrderOutput output = new IssueAuthOrderOutput();
         switch (input.getResultType()) {
             case 1://async
                 output.setMessageId(csRemote.getCsrId());

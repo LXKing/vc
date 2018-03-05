@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.dao.GbStateMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.GbState">
+		<result column="gs_id" jdbcType="INT" property="gsId" />
+		<result column="vin" jdbcType="VARCHAR" property="vin" />
+		<result column="time_text" jdbcType="VARCHAR" property="timeText" />
+		<result column="vehicle_status_string" jdbcType="VARCHAR" property="vehicleStatusString" />
+		<result column="charging_string" jdbcType="VARCHAR" property="chargingString" />
+		<result column="running_mode_string" jdbcType="VARCHAR" property="runningModeString" />
+		<result column="speed_string" jdbcType="VARCHAR" property="speedString" />
+		<result column="mileage_string" jdbcType="VARCHAR" property="mileageString" />
+		<result column="voltage_string" jdbcType="VARCHAR" property="voltageString" />
+		<result column="current_string" jdbcType="VARCHAR" property="currentString" />
+		<result column="soc_string" jdbcType="VARCHAR" property="socString" />
+		<result column="dc_dc_status_string" jdbcType="VARCHAR" property="dcDcStatusString" />
+		<result column="gear_string" jdbcType="VARCHAR" property="gearString" />
+		<result column="insulation_resistance_string" jdbcType="VARCHAR" property="insulationResistanceString" />
+		<result column="accelerated_pedal_stroke_value_string" jdbcType="VARCHAR" property="acceleratedPedalStrokeValueString" />
+		<result column="brake_pedal_state_string" jdbcType="VARCHAR" property="brakePedalStateString" />
+		<result column="position_status_string" jdbcType="VARCHAR" property="positionStatusString" />
+		<result column="longitude_string" jdbcType="FLOAT" property="longitudeString" />
+		<result column="latitude_string" jdbcType="FLOAT" property="latitudeString" />
+	</resultMap>
+	
+	
+</mapper>

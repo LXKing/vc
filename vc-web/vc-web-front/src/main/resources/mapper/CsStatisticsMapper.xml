@@ -5,7 +5,7 @@
     <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
     
 	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsStatistics">
-		<result column="css_id" jdbcType="TINYINT" property="cssId" />
+		<result column="css_id" jdbcType="BIGINT" property="cssId" />
 		<result column="css_time" jdbcType="TIMESTAMP" property="cssTime" />
 		<result column="css_unit_time" jdbcType="BIGINT" property="cssUnitTime" />
 		<result column="css_registered_num" jdbcType="TINYINT" property="cssRegisteredNum" />

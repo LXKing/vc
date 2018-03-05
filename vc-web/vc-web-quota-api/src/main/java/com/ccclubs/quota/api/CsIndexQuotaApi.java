@@ -1,6 +1,7 @@
 package com.ccclubs.quota.api;
 
 import com.ccclubs.quota.api.util.CsIndexReportUtil;
+import com.ccclubs.quota.inf.CsMiddleReportInf;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.dubbo.config.annotation.Reference;
@@ -25,6 +26,9 @@ public class CsIndexQuotaApi {
 
 	@Reference(version="1.0.0")
     private CsIndexQuotaInf csIndexQuotaInf;
+
+    @Reference(version="1.0.0")
+	private CsMiddleReportInf csMiddleReportInf;
  
     @ApiOperation(value="指标统计标准", notes="指标统计标准,生成")
     @RequestMapping(path="/csIndex/meta/v1", method={RequestMethod.POST, RequestMethod.GET})
@@ -123,6 +127,33 @@ public class CsIndexQuotaApi {
         return null;
     }
 
+    /**
+     *国补数据触发功能（T+1模式）
+     */
+    @ApiOperation(value="国补数据触发功能", notes="T+1模式")
+    @RequestMapping(path="/triggerReport", method={RequestMethod.POST, RequestMethod.GET})
+    public  ApiMessage<String>  triggerReport(){
+        csMiddleReportInf.triggerMiddleReport();
+        return new ApiMessage<String>("success");
+    }
+
+    /**
+     * 从中间表计算国补指标数据
+     */
+    @ApiOperation(value="从中间表计算国补指标数据", notes="数据指标模式")
+    @RequestMapping(path="/updateReportData", method={RequestMethod.POST, RequestMethod.GET})
+    public  ApiMessage<String>  updateReportData(){
+        csMiddleReportInf.updateReportData();
+        return new ApiMessage<String>("success");
+    }
+
+
+    @ApiOperation(value="从中间表计算国补指标数据", notes="数据指标模式")
+    @RequestMapping(path="/triggerGbReport", method={RequestMethod.POST, RequestMethod.GET})
+    public  ApiMessage<String>  triggerGbReport(){
+        csMiddleReportInf.triggerGbReport();
+        return new ApiMessage<String>("success");
+    }
 }
 
 

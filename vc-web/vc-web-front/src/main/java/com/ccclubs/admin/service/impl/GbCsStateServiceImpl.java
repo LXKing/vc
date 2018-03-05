@@ -73,6 +73,22 @@ public class GbCsStateServiceImpl implements IGbCsStateService {
     }
 
     /**
+     * 全部查询
+     */
+    @Override
+    public List<GBMessage> getAllGBMessage() {
+        List<GBMessage> list = new ArrayList<>();
+        List<String> hexStringList=redisTemplate.opsForHash().values(RedisConst.REDIS_KEY_RT_STATES_HASH);
+
+        for (String hexString:hexStringList) {
+            GBMessage gbMessage = new GBMessage();
+            gbMessage.ReadFromBytes(Tools.HexString2Bytes(hexString));
+            list.add((gbMessage));
+        }
+        return list;
+    }
+
+    /**
      * 详情
      *
      * @param vin

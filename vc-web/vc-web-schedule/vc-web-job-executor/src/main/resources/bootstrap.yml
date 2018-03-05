@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: job-executor
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      #profile: dev
+      #label: master
+      uri: ${spring.cloud.config.uri}
+      

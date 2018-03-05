@@ -99,6 +99,8 @@ public class LogicHelperMqtt {
     csState.setCssCsq((short) (mqtt_66.getCsq() & 0xFF));
     csState.setCssCurrentTime(new Date(mqtt_66.getTime()));
     csState.setCssRfidDte(mqtt_66.getRfidDte());
+    // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
+    if ((mqtt_66.getObdMiles() & 0xFFFFFFFF)>0)
     csState.setCssObdMile(mqtt_66.getObdMiles() & 0xFFFFFFFF);
     csState.setCssEngineT(mqtt_66.getEngineTemperature() & 0xFF);
 
@@ -206,6 +208,8 @@ public class LogicHelperMqtt {
     csState.setCssCurrentTime(new Date(mqtt_68_03.getTime()));
     csState.setCssRfidDte(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
     //FIXME 数据库字段设计为 Decimal
+    // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
+    if(mqtt_68_03.getObdMile().doubleValue()>0);
     csState.setCssObdMile(mqtt_68_03.getObdMile().intValue());
     csState.setCssEngineT(mqtt_68_03.getTankTemperature());
     //FIXME 数据库字段设计为 Decimal

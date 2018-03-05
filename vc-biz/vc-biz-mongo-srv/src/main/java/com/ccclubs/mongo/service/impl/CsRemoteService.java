@@ -105,4 +105,14 @@ public class CsRemoteService {
         WriteResult result = remoteMongoTemplate.remove(query, CsRemote.class);
         return result.getN();
     }
+
+    public CsRemote queryById(Long csrId) {
+        Query query = new Query(Criteria.where("csrId").is(csrId));
+        CsRemote csRemote = remoteMongoTemplate.findOne(query,CsRemote.class);
+        return csRemote;
+    }
+
+    public void save(CsRemote remote) {
+        remoteMongoTemplate.insert(remote);
+    }
 }

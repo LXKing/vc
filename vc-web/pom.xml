@@ -23,7 +23,10 @@
         <module>vc-web-front</module>
         <module>vc-web-phoenix-api</module>
 		<module>vc-web-phoenix-srv</module>
-    </modules>
+        <module>vc-web-schedule</module>
+        <module>vc-web-influxdb-api</module>
+		<module>vc-web-influxdb-srv</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

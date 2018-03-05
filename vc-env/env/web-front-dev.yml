@@ -9,7 +9,9 @@ oss:
 
 spring:
   redis:
-    host: 127.0.0.1
+    host: 118.178.229.234
+    port: 63791
+    database: 7
   data:
     mongodb:
       history:
@@ -47,8 +49,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:

@@ -1,12 +1,12 @@
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
-import com.ccclubs.hbase.phoenix.config.PhoenixHelper;
+import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
-import com.ccclubs.phoenix.orm.mapper.CarGbMapper;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import org.apache.commons.beanutils.BeanUtils;
@@ -14,11 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCallback;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,12 +56,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             "and add_time>=? " +
             "and add_time<=? ";
 
-
     @Autowired
-    private JdbcTemplate phoenixJdbcTemplate;
-
-    @Autowired
-    private PhoenixHelper phoenixHelper;
+    private PhoenixTool phoenixTool;
 
     @Override
     public List<CarGb> queryCarGbListNoPage(final CarGbHistoryParam carGbHistoryParam) {
@@ -80,32 +71,53 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "order by add_time  "+carGbHistoryParam.getOrder()+" ";
 
         List<CarGb> carGbList = new ArrayList<CarGb>();
-        List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
-                new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        String cs_vin = carGbHistoryParam.getCs_vin();
-                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
-                        ps.setString(1,cs_vin);
-                        ps.setLong(2,start_time);
-                        ps.setLong(3,end_time);
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(query_sql);
+            String cs_vin = carGbHistoryParam.getCs_vin();
+            long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            preparedStatement.setString(1,cs_vin);
+            preparedStatement.setLong(2,start_time);
+            preparedStatement.setLong(3,end_time);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
+            CarGb carGb=null;
+            for (Object object:jsonArray
+                 ) {
+                JSONObject jsonObject = (JSONObject)object;
+                carGb=new CarGb();
+                String[] fields = queryFields.split(",");
+                for(String field:fields){
+                    try{
+                        BeanUtils.setProperty(carGb,field,jsonObject.get(StringUtils.upperCase(field)));
                     }
-                },
-                new CarGbMapper());
-        CarGb carGb = null;
-        for(JSONObject jsonObject:jsonObjList){
-            carGb = new CarGb();
-            String[] fields = queryFields.split(",");
-            for(String field:fields){
-                try{
-                    BeanUtils.setProperty(carGb,field,jsonObject.get(StringUtils.upperCase(field)));
+                    catch (Exception ex){
+                        logger.error(ex.getMessage());
+                    }
                 }
-                catch (Exception ex){
-
+                carGbList.add(carGb);
+            }
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
                 }
             }
-            carGbList.add(carGb);
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
         return carGbList;
     }
@@ -127,35 +139,55 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
                 "limit ? offset ? ";
 
         List<CarGb> carGbList = new ArrayList<CarGb>();
-        List<JSONObject> jsonObjList = phoenixJdbcTemplate.query(query_sql,
-                new PreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps) throws SQLException {
-                        String cs_vin = carGbHistoryParam.getCs_vin();
-                        long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-                        long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
-                        ps.setString(1,cs_vin);
-                        ps.setLong(2,start_time);
-                        ps.setLong(3,end_time);
-                        ps.setInt(4,limit);
-                        ps.setInt(5,offset);
-                        System.out.println();
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement=connection.prepareStatement(query_sql);
+            String cs_vin = carGbHistoryParam.getCs_vin();
+            long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            preparedStatement.setString(1,cs_vin);
+            preparedStatement.setLong(2,start_time);
+            preparedStatement.setLong(3,end_time);
+            preparedStatement.setInt(4,limit);
+            preparedStatement.setInt(5,offset);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
+            CarGb carGb=null;
+            for (Object object:jsonArray
+                    ) {
+                JSONObject jsonObject = (JSONObject)object;
+                carGb=new CarGb();
+                String[] fields = queryFields.split(",");
+                for(String field:fields){
+                    try{
+                        BeanUtils.setProperty(carGb,field,jsonObject.get(StringUtils.upperCase(field)));
                     }
-                },
-                new CarGbMapper());
-        CarGb carGb = null;
-        for(JSONObject jsonObject:jsonObjList){
-            carGb = new CarGb();
-            String[] fields = queryFields.split(",");
-            for(String field:fields){
-                try{
-                    BeanUtils.setProperty(carGb,field,jsonObject.get(StringUtils.upperCase(field)));
+                    catch (Exception ex){
+                        logger.error(ex.getMessage());
+                    }
                 }
-                catch (Exception ex){
-
+                carGbList.add(carGb);
+            }
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
                 }
             }
-            carGbList.add(carGb);
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
         }
         return carGbList;
     }
@@ -163,24 +195,42 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
     @Override
     public Long queryCarGbListCount(final CarGbHistoryParam carGbHistoryParam) {
         long total=0L;
-
-        total=phoenixJdbcTemplate.execute(count_sql, new PreparedStatementCallback<Long>() {
-            @Override
-            public Long doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-                String cs_vin = carGbHistoryParam.getCs_vin();
-                long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-                long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
-                ps.setString(1,cs_vin);
-                ps.setLong(2,start_time);
-                ps.setLong(3,end_time);
-                ResultSet rs = ps.executeQuery();
-                long record_count=0;
-                while(rs.next()){
-                    record_count = rs.getLong(1);
-                }
-                return record_count;
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement=connection.prepareStatement(count_sql);
+            String cs_vin = carGbHistoryParam.getCs_vin();
+            long start_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carGbHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            preparedStatement.setString(1,cs_vin);
+            preparedStatement.setLong(2,start_time);
+            preparedStatement.setLong(3,end_time);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
+            if(jsonArray!=null&&jsonArray.size()>0){
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                total=jsonObject.getLong("TOTAL");
             }
-        });
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+
+            if(connection!=null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
         return total;
     }
 
@@ -213,7 +263,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         PreparedStatement carGbPs = null;
 
         try {
-            connection = phoenixHelper.getConnection();
+            connection = phoenixTool.getConnection();
             carGbPs = connection.prepareStatement(insert_sql);
             Long count =0L;
             //logger.info("国标赋值for循环外部。");
