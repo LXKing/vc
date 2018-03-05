@@ -49,7 +49,7 @@ public class GbStateServiceImpl extends CrudService<GbStateMapper, GbState, Inte
             if (!(gb_02_01==null&&gb_02_05==null)){
                 gbState=new GbState();
                 gbState.setvin(gbMessage.getVin());
-                gbState.setTimeText(gbMessage.getMessageContents().getTime());
+                gbState.settimeString(gbMessage.getMessageContents().getTime());
                 if (gb_02_01!=null){
                     gbState.setAcceleratedPedalStrokeValueString(gb_02_01.getAcceleratedPedalStrokeValueString());
                     gbState.setBrakePedalStateString(gb_02_01.getBrakePedalStateString());

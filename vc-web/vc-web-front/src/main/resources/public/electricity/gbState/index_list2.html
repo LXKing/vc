@@ -25,7 +25,7 @@
 					<ul class="dropdown-menu tableMenu showHideMenu" role="menu">
 				        <li><label><input value="gsId"  type="checkbox" onclick='showHideColumn(this, this.value);' >ID</label></li>
 				        <li><label><input value="vin" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >VIN</label></li>
-				        <li><label><input value="timeText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文时间</label></li>
+				        <li><label><input value="timeString" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文时间</label></li>
 				        <li><label><input value="vehicleStatusString" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆状态</label></li>
 				        <li><label><input value="chargingString" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >充电状态</label></li>
 				        <li><label><input value="runningModeString" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >运行模式</label></li>
@@ -73,9 +73,9 @@
 
         exportData: function () {
             var params = {rows: currSize, page: currPage, allReport: 1};
-            params = transferParamsWithSortExport(params, "timeText");
+            params = transferParamsWithSortExport(params, "timeString");
             var clmsCopy = $.extend(true, [], clms);
-            params.clms = clmsCopy.splice(1, clms.length - 1);
+            params.clms = clmsCopy.splice(1, clms.length - 2);
             params.query = getFormData(this.getQueryForm());
             console.log(JSON.stringify(params));
 
@@ -177,7 +177,7 @@
 	var tableId = "TGbState";
 	var clms = [{checkbox: true}
 	  		,{field: "vin", title: "VIN", width: 110, sort:true}
-	  		,{field: "timeText", title: "报文时间", width: 110, sort:true}
+	  		,{field: "timeString", title: "报文时间", width: 110, sort:true}
 	  		,{field: "vehicleStatusString", title: "车辆状态", width: 110, sort:true}
 	  		,{field: "chargingString", title: "充电状态", width: 110, sort:true}
 	  		,{field: "runningModeString", title: "运行模式", width: 110, sort:true}
@@ -224,7 +224,7 @@
 	      	  },
 	      	  request:{limitName: "rows"},
 	      	  where:{
-	      			sidx:"timeText",
+	      			sidx:"timeString",
 					sord:"desc"
 	      	  }
 	};

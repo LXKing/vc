@@ -35,7 +35,7 @@ public class GbState implements java.io.Serializable
 	 * [time_text]报文时间
 	 */
 	
-	private   String timeText;
+	private   String timeString;
 	/**
 	 * [vehicle_status_string]车辆状态
 	 */
@@ -128,9 +128,9 @@ public class GbState implements java.io.Serializable
 	}
 	
 	//设置非空字段
-	public GbState setNotNull(String vin,String timeText){
+	public GbState setNotNull(String vin,String timeString){
 		this.vin=vin;
-		this.timeText=timeText;
+		this.timeString=timeString;
 		return this;
 	}
 	
@@ -181,15 +181,15 @@ public class GbState implements java.io.Serializable
 	/**
 	* 报文时间 [非空]      
 	**/
-	public String getTimeText(){
-		return this.timeText;
+	public String gettimeString(){
+		return this.timeString;
 	}
 	
 	/**
 	* 报文时间 [非空]     
 	**/
-	public void setTimeText(String timeText){
-		this.timeText = timeText;
+	public void settimeString(String timeString){
+		this.timeString = timeString;
 	}
 	/*******************************车辆状态**********************************/	
 	/**
