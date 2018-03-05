@@ -7,7 +7,7 @@
 	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.GbState">
 		<result column="gs_id" jdbcType="BIGINT" property="gsId" />
 		<result column="vin" jdbcType="VARCHAR" property="vin" />
-		<result column="time_text" jdbcType="VARCHAR" property="timeText" />
+		<result column="time_string" jdbcType="VARCHAR" property="timeString" />
 		<result column="vehicle_status_string" jdbcType="VARCHAR" property="vehicleStatusString" />
 		<result column="charging_string" jdbcType="VARCHAR" property="chargingString" />
 		<result column="running_mode_string" jdbcType="VARCHAR" property="runningModeString" />
