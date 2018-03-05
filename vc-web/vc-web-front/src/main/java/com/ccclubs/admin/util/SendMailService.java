@@ -72,14 +72,16 @@ public class SendMailService {
         email.setCharset(CODING);
 
         email.addTo(toEmail.split(","));
-        email.addCc(ccEmail.split(","));
+        if(StringUtils.isNotEmpty(ccEmail)){
+            email.addBcc(ccEmail.split(","));
+        }
         email.setFrom(SMTP_USERNAME, USERNAME);
         email.setSubject(subject);
         email.setMsg(msg);
         EmailAttachment attachment = new EmailAttachment();
         if ("false".equals(attachmentProp.get(AttachmentConst.IS_REMOTE))) {
             // 本地文件d:/xxx.doc
-            attachment.setPath(attachmentProp.get(attachmentProp.get(AttachmentConst.LOCAL_FILE_PATH)));
+            attachment.setPath(attachmentProp.get(AttachmentConst.LOCAL_FILE_PATH));
         } else {
             // 远程文件filePath
             attachment.setURL(new URL(attachmentProp.get(AttachmentConst.REMOTE_FILE_PATH)));
@@ -88,7 +90,6 @@ public class SendMailService {
         attachment.setDisposition(EmailAttachment.ATTACHMENT);
         attachment.setDescription(attachmentProp.get(AttachmentConst.DESCRIPTION));
         attachment.setName(attachmentProp.get(AttachmentConst.FILE_NAME));
-
         email.attach(attachment);
         email.send();
 

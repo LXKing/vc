@@ -1,5 +1,7 @@
 package com.ccclubs.admin.task.jobs;
 
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.admin.constants.AttachmentConst;
 import com.ccclubs.admin.model.SrvUser;
@@ -19,21 +21,24 @@ import com.mongodb.BasicDBList;
 import com.mongodb.CommandResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.EmailException;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 异常车辆巡检任务
@@ -60,6 +65,9 @@ public class ExpDataCheckJob implements Runnable {
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Resource(name = "historyMongoTemplate")
     MongoTemplate historyMongoTemplate;
+
+    @Value("${filedisk.path}")
+    private String filePath;     //文件报存路径
 
     @Override
     public void run() {
@@ -109,40 +117,39 @@ public class ExpDataCheckJob implements Runnable {
         if (count > 0) {
             logger.info("检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
             // todo 导出Excel 发邮件
+            List<CsVehicleExp> list = historyMongoTemplate.findAll(CsVehicleExp.class);
+            Date start = new Date();
+            ExportParams params = new ExportParams("车辆异常数据", "异常车辆");
+            Workbook workbook = ExcelExportUtil.exportExcel(params, CsVehicleExp.class, list);
+            logger.info("数据导出花费时间：" + (new Date().getTime() - start.getTime()));
+            File savefile = new File(filePath);
+            if (!savefile.exists()) {
+                savefile.mkdirs();
+            }
+            FileOutputStream fos;
             try {
-                sendMailService.sendHtmlEmail(jobParam.getToEmail(), jobParam.getCcEmail(), "", jobParam.getSubject()
-                        , "检测到 " + count + " 条数据异常的车辆，请及时处理！");
+                fos = new FileOutputStream(filePath + "Vehicle_Exp_All_Data.xls");
+                workbook.write(fos);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                throw new ApiException(ApiEnum.FAIL.code(), "未找到导出的文件路径！");
+            } catch (IOException e) {
+                throw new ApiException(ApiEnum.FAIL.code(), "导出文件时发生错误！");
+            }
+
+            Map<String, String> attachmentProp = new HashMap<>();
+            attachmentProp.put(AttachmentConst.IS_REMOTE, "false");
+            attachmentProp.put(AttachmentConst.LOCAL_FILE_PATH, "D:/excel/Vehicle_Exp_All_Data.xls");
+            attachmentProp.put(AttachmentConst.DESCRIPTION, "异常车辆数据");
+            attachmentProp.put(AttachmentConst.FILE_NAME, "异常车辆数据.xls");
+            try {
+                sendMailService.sendMultiPartEmail(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
+                        "检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
             } catch (EmailException e) {
                 throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
+            } catch (MalformedURLException e) {
+                throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
             }
-//            if (listToExport.size() < 65535) {
-//                logger.info("检测到 " + listToExport.size() + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
-                // todo 导出Excel 发邮件
-//                Map<String, String> attachmentProp = new HashMap<>();
-//                attachmentProp.put(AttachmentConst.IS_REMOTE, "false");
-//                attachmentProp.put(AttachmentConst.LOCAL_FILE_PATH, "/11.txt");
-//                attachmentProp.put(AttachmentConst.DESCRIPTION, "异常车辆数据");
-//                attachmentProp.put(AttachmentConst.FILE_NAME, "异常车辆数据");
-//                try {
-//                    sendMailService.sendMultiPartEmail(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
-//                            "检测到 " + listToExport.size() + " 条数据异常的车辆", attachmentProp);
-//                } catch (EmailException e) {
-//                    throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
-//                } catch (MalformedURLException e) {
-//                    throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
-//                }
-//            } else {
-//                logger.info("检测到 " + listToExport.size() + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
-                // todo 导出Excel 发邮件
-//                try {
-//                    sendMailService.sendHtmlEmail(jobParam.getToEmail(), jobParam.getCcEmail(), "", jobParam.getSubject()
-//                            , "检测到 " + listToExport.size() + " 条数据异常的车辆");
-//                } catch (EmailException e) {
-//                    throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
-//                }
-//            }
-
         }
     }
-
 }

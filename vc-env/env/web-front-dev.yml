@@ -72,3 +72,6 @@ email:
   smtp_password: vcloud!@#$%12345
   sender_name: 车机中心监控平台
   ecoding: UTF-8
+
+filedisk:
+  path: /opt/vc_folder/
