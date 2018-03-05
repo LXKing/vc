@@ -3,6 +3,7 @@
  */
 // var servUrl = "http://118.178.230.105:7004";
 var servUrl 	= "http://localhost:9009";
+// var servUrl     = "http://localhost:8080"
 /**
  * 统一认证地址
  */
@@ -111,7 +112,7 @@ var getSrvlimit = function (path) {
             path: path
         },
         success: function (data) {
-            console.log(data.data);
+            // console.log(data.data);
             if (data.success) {
                 datas = data.data;
                 return datas;
@@ -487,7 +488,7 @@ function ajaxRequest(url, type, data, callback, async, contentType) {
 
         },
         error: function (xhr, textStatus) {
-            console.log(JSON.stringify(xhr) + "--" + textStatus);
+            // console.log(JSON.stringify(xhr) + "--" + textStatus);
             layer.msg('系统繁忙');
             return false;
         }

@@ -14,9 +14,8 @@
     #container {
       width: 100%;
       height: 100%;
-      margin: 0px;
+      margin: 0;
     }
-
     #loadingTip {
       position: absolute;
       z-index: 9999;
@@ -27,13 +26,37 @@
       color: #fff;
       font-size: 14px;
     }
-
     #operateContainer {
       width: 100%;
       overflow: auto;
       height: 50px;
       border-left: 1px solid #eaeaea;
       background: #fff;
+    }
+    #panel {
+      position: absolute;
+      top: 50px;
+      right: 0;
+    }
+    #routes-container {
+      overflow: hidden;
+    }
+    .speedBox .speedRange {
+      margin: 0;
+      width: 100px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .detailInformation {
+      width: 360px;
+      background-color: #f0f0f0;
+    }
+    .table>tbody>tr>th,.table>tbody>tr>td {
+      padding: 8px;
+      text-align: center;
+    }
+    table caption {
+      padding-left: 20px;
     }
   </style>
   <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
@@ -56,8 +79,7 @@
         <!--<input name="cssCarEquals" placeholder="请输入VIN" class="form-control searchinput"-->
         <!--dataWhere=""-->
         <!--dataUrl="/admin/vehicle/query"></dd>-->
-        <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput"
-               dataWhere="" dataUrl="/admin/vehicle/find"></dd>
+        <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/find"></dd>
     </dl>
     <dl>
       <dt>轨迹时间</dt>
@@ -72,11 +94,39 @@
       <button id="searchButton" class="btn btn-success " type="button"><i
           class="glyphicon fa fa-search"></i>查询
       </button>
-
     </div>
   </form>
 </div>
 <div id="container"></div>
+
+<div id="panel">
+  <div id="routes-container">
+    <div class="detailInformation">
+      <table class="table table-striped">
+        <caption>
+          <div class="speedBox">
+            <span class="speedTxt"></span>
+            <input class="speedRange" name="speedRange" type="range" min="1000" max="1000000" step="1000" value="1000" />
+          </div>
+        </caption>
+        <tbody>
+          <tr>
+            <th>速度</th>
+            <th>时间</th>
+            <th>里程</th>
+            <th>soc</th>
+          </tr>
+          <tr>
+            <td class="speed">&nbsp;</td>
+            <td class="time">&nbsp;</td>
+            <td class="mile">&nbsp;</td>
+            <td class="soc">&nbsp;</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 <script src="/js/jquery.min.js?v=2.1.4"></script>
 <script src="/js/bootstrap.min.js?v=3.3.5"></script>
@@ -98,315 +148,339 @@
 <script src="/js/map/coordtransform.js"></script>
 <script src="/js/moment.js"></script>
 <script type="text/javascript">
-  $(".searchinput").each(function () {
-    $(this).searchinput({});
-  });
-  //创建地图
-  var map = new AMap.Map('container', {
-    zoom: 10
-  });
-  //中国地图范围
-  var posn1 = new AMap.LngLat(72.60, 17.25);
-  var posn2 = new AMap.LngLat(136.65, 53.8);
-  var boundsChina = new AMap.Bounds(posn1, posn2);
+  var currentSpeed,currendTime,currendMiles,currendSoc;
+  var trackData=[];
+  var longitude,latitude;
+  var map;
+  var pathSimplifierIns;
+  $('#panel').hide();
 
-  AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
+  $(function () {
 
-    if (!PathSimplifier.supportCanvas) {
-      alert('当前环境不支持 Canvas！');
-      return;
-    }
-
-    //just some colors
-    var colors = ["#66aa00"];
-
-    var pathSimplifierIns = new PathSimplifier({
-      zIndex: 100,
-//      autoSetFitView: false,
-      map: map, //所属的地图实例
-
-      getPath: function (pathData, pathIndex) {
-
-        return pathData.path;
-      },
-      getHoverTitle: function (pathData, pathIndex, pointIndex) {
-
-        if (pointIndex >= 0) {
-          //point
-          return pathData.name + '，点：' + pointIndex + '/' + pathData.path.length;
-        }
-
-        return pathData.name + '，点数量' + pathData.path.length;
-      },
-      renderOptions: {
-        pathLineStyle: {
-          dirArrowStyle: true
-        },
-        getPathStyle: function (pathItem, zoom) {
-
-          var color = colors[0],
-              lineWidth = Math.round(2 * Math.pow(1.1, zoom - 3));
-
-          return {
-            pathLineStyle: {
-              strokeStyle: color,
-              lineWidth: lineWidth
-            },
-            pathLineSelectedStyle: {
-              lineWidth: lineWidth + 2
-            },
-            pathNavigatorStyle: {
-              fillStyle: color
-            }
-          };
-        }
-      }
+    $(".searchinput").each(function () {
+      $(this).searchinput({});
     });
 
-    window.pathSimplifierIns = pathSimplifierIns;
-
-    var navg, total, hasMore = true, isFirstLoad = true,totalPoint =0;
-    var params = {
-      csNumberEquals: '',
-      page: 1,
-      rows: 300,
-      currentTimeStart: '',
-      currentTimeEnd: '',
-      isResolve:false,
-      order: 'asc'
-    };
-
-    var pathObjectArray = [];
-    var pathObject = {};
-    //设置name
-    pathObject.name = '车辆行驶轨迹';
-    pathObject.path = [];
-    //当前仅有1条轨迹信息
-    pathObjectArray.push(pathObject);
-
-    var $vinId = $("input[name='cssNumberEquals']");
-    var $startTime = $("input[name='cssCurrentTimeStart']");
-    var $endTime = $("input[name='cssCurrentTimeEnd']");
-
-    $vinId.on('input', function (e) {
-      // 这里可以写你想要的验证代码；
-      if ($vinId.val() !== '') {
-        params.csNumberEquals = $vinId.val();
-//        loadData();
-      }
+    //创建地图
+    map = new AMap.Map('container', {
+      zoom: 10
     });
+    //中国地图范围
+    var posn1 = new AMap.LngLat(72.60, 17.25);
+    var posn2 = new AMap.LngLat(136.65, 53.8);
+    var boundsChina = new AMap.Bounds(posn1, posn2);
 
-    $('#searchButton').on('click', function () {
-      if (!checkParams()) {
+    AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
+      if (!PathSimplifier.supportCanvas) {
+        alert('当前环境不支持 Canvas！');
         return;
       }
+      //just some colors
+      var colors = ["#66aa00"];
+      pathSimplifierIns = new PathSimplifier({
+        zIndex: 100,
+      //autoSetFitView: false,
+        map: map, //所属的地图实例
 
-      $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+        getPath: function (pathData, pathIndex) {
+          return pathData.path;
+        },
 
-      params.page = 1;
-      hasMore = true;
-      isFirstLoad = true;
-      totalPoint = 0;
+        getHoverTitle: function (pathData, pathIndex, pointIndex) {
+          if (pointIndex >= 0) {
+            //point
+            return pathData.name + '，点：' + pointIndex + '/' + pathData.path.length;
+          }
+          return pathData.name + '，点数量' + pathData.path.length;
+        },
 
-      loadData();
+        renderOptions: {
+          pathLineStyle: {
+            dirArrowStyle: true
+          },
+          getPathStyle: function (pathItem, zoom) {
+            var color = colors[0],
+                lineWidth = Math.round(2 * Math.pow(1.1, zoom - 3));
+            return {
+              pathLineStyle: {
+                strokeStyle: color,
+                lineWidth: lineWidth
+              },
+              pathLineSelectedStyle: {
+                lineWidth: lineWidth + 2
+              },
+              pathNavigatorStyle: {
+                fillStyle: color
+              }
+            };
+          }
+        }
+      });
 
-      setTimeout(expandPath,5000);
-    });
+      window.pathSimplifierIns = pathSimplifierIns;
 
-    function checkParams() {
-      if ($vinId.val() === '' || typeof($vinId.val()) === 'undefined') {
-        layer.msg('请选择一辆车', {icon: 7, time: 1600});
-        return false;
+      var navg, total, hasMore = true, isFirstLoad = true,totalPoint =0;
+      var params = {
+        csNumberEquals: '',
+        page: 1,
+        rows: 300,
+        currentTimeStart: '',
+        currentTimeEnd: '',
+        isResolve:false,
+        order: 'asc'
+      };
+
+      var pathObjectArray = [];
+      var pathObject = {};
+      //设置name
+      pathObject.name = '车辆行驶轨迹';
+      pathObject.path = [];
+      //当前仅有1条轨迹信息
+      pathObjectArray.push(pathObject);
+
+      var $vinId = $("input[name='cssNumberEquals']");
+      var $startTime = $("input[name='cssCurrentTimeStart']");
+      var $endTime = $("input[name='cssCurrentTimeEnd']");
+
+      $vinId.on('input', function (e) {
+        // 这里可以写你想要的验证代码；
+        if ($vinId.val() !== '') {
+          params.csNumberEquals = $vinId.val();
+          // loadData();
+        }
+      });
+
+      //点击查询按钮
+      $('#searchButton').on('click', function () {
+        pathSimplifierIns.render();
+        if (!checkParams()) {
+          return;
+        }
+        $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+
+        params.page = 1;
+        hasMore = true;
+        isFirstLoad = true;
+        totalPoint = 0;
+
+        initSpeed();
+        loadData();
+        setTimeout(expandPath,5000);
+      });
+
+      function checkParams() {
+        if ($vinId.val() === '' || typeof($vinId.val()) === 'undefined') {
+          layer.msg('请选择一辆车', {icon: 7, time: 1600});
+          return false;
+        }
+        if ($startTime.val() === '' || typeof($startTime.val()) === 'undefined') {
+          layer.msg('请选择开始时间', {icon: 7, time: 1600});
+          return false;
+        }
+        if ($endTime.val() === '' || typeof($endTime.val()) === 'undefined') {
+          layer.msg('请选择结束时间', {icon: 7, time: 1600});
+          return false;
+        }
+        if (moment($startTime.val()).diff(moment($endTime.val()), 'seconds') >= 0) {
+          layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
+          return false;
+        }
+        params.csNumberEquals = $vinId.val();
+        params.currentTimeStart = $startTime.val();
+        params.currentTimeEnd = $endTime.val();
+        return true;
       }
 
-      if ($startTime.val() === '' || typeof($startTime.val()) === 'undefined') {
-        layer.msg('请选择开始时间', {icon: 7, time: 1600});
-        return false;
+      // 加速减速
+      function initSpeed () {
+        function updateSpeedTxt () {
+          var speed = parseInt($('.speedRange').val(),10);
+          $('.speedTxt').html('播放速度:' + speed + 'km/h');
+          $('#loadingTip').remove();
+        }
+        $('.speedRange').on('change', updateSpeedTxt);
+        $('.speedRange').on('change', loadData);
+        updateSpeedTxt();
+        $('#panel').show();
       }
 
-      if ($endTime.val() === '' || typeof($endTime.val()) === 'undefined') {
-        layer.msg('请选择结束时间', {icon: 7, time: 1600});
-        return false;
-      }
-
-      if (moment($startTime.val()).diff(moment($endTime.val()), 'seconds') >= 0) {
-        layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
-        return false;
-      }
-
-      params.csNumberEquals = $vinId.val();
-      params.currentTimeStart = $startTime.val();
-      params.currentTimeEnd = $endTime.val();
-
-      return true;
-    }
-
-    function loadData() {
-      $.getJSON(
+      function loadData() {
+        $.getJSON(
           getServUrl('/monitor/historyState/list'),
           params,
           function (d) {
-
             $('#loadingTip').remove();
-
             if (0 !== d.code) {
-//              alert("数据请求异常！")
               layer.msg('数据请求异常！', {icon: 7, time: 1500});
               hasMore = false;
               return;
             }
-
-            // 判断是否还有更多数据
-            total = d.count;
-
-            if (0 === total) {
-//              alert("数据请求异常！")
-              if(totalPoint === 0) {
-                layer.msg('没有找到轨迹数据！', {icon: 7, time: 1500});
-              }
+          // 判断是否还有更多数据
+          total = d.count;
+          if (0 === total) {
+            if(totalPoint === 0) {
+              layer.msg('没有找到轨迹数据！', {icon: 7, time: 1500});
+              pathSimplifierIns.setData();
+              $('#panel').hide();
+            }
+              hasMore = false;
+              return;
+          }
+          if (d.data.length === 0) {
+            console.log("已经没有更多数据！");
+            if(totalPoint === 0) {
+              layer.msg('已经没有更多数据！', {icon: 7, time: 1500});
+            }
               hasMore = false;
               return;
             }
-
-            if (d.data.length === 0) {
-//              alert("已经没有更多数据！")
-              console.log("已经没有更多数据！");
-              if(totalPoint === 0) {
-                layer.msg('已经没有更多数据！', {icon: 7, time: 1500});
-              }
-              hasMore = false;
-              return;
-            }
-
             if (params.page > d.page.total) {
               hasMore = false;
               return;
             }
-
             var pathRoutes = [];
             var item
             for (var i = 0, len = d.data.length; i < len; i++) {
               item = d.data[i];
+              if (i == 0) {
+                longitude = item.longitude;
+                latitude = item.latitude;
+                currentSpeed = item.speed;
+                currendTime = item.currentTime;
+                currendMiles = item.obdMiles;
+                currendSoc = item.evBattery;
+              }
               if (typeof(item.longitude) !== 'undefined' && typeof(item.latitude) !== 'undefined'
-                  && item.longitude !== null && item.latitude !== null && item.longitude > 0
-                  && item.latitude > 0) {
+                && item.longitude !== null && item.latitude !== null && item.longitude > 0
+                && item.latitude > 0) {
                 var posArray = coordtransform.wgs84togcj02(item.longitude, item.latitude);
                 if (isInChina(posArray)) {
                   pathRoutes.push(posArray);
                 }
+                trackData.push([item.speed,item.currentTime,item.obdMiles,item.evBattery]);
               }
             }
 
             totalPoint+=pathRoutes.length;
-
+            
             if (pathRoutes.length === 0) {
-//              alert("没有更多GPS数据！");
               console.log("没有更多GPS数据！");
               return;
             }
-
             if (isFirstLoad) {
               isFirstLoad = false;
+              if (pathSimplifierIns._data != undefined && pathSimplifierIns._data.pointNum > 0) {
+                 pathSimplifierIns.setData();
+                 pathObjectArray[0].path = [];
+              }
+              
               //设置path数组
               pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
-
               pathSimplifierIns.setData(pathObjectArray);
-
               //initRoutesContainer(d);
-
               //创建一个巡航器
               navg = pathSimplifierIns.createPathNavigator(0, {
-//              loop: true,
-                speed: 1000,
+                //loop: true,
+                // speed: 1000,
+                speed: parseInt($('.speedRange').val(),10),
                 pathNavigatorStyle: {
                   width: 16,
                   height: 32,
-                  content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
-                      onerror),
+                  content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,onerror),
                   strokeStyle: null,
                   fillStyle: null,
                 }
               });
-
               navg.start();
 
+              $('.speed').html(currentSpeed);
+              $('.time').html(currendTime);
+              $('.mile').html(currendMiles);
+              $('.soc').html(currendSoc);
+
+              navg.on("move", function(event) {
+                if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
+                  $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
+                  $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
+                  $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
+                  $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                }
+              });
+                map.setCenter(new AMap.LngLat(longitude,latitude));
             } else {
               var cursor = navg.getCursor().clone(), //保存巡航器的位置
                   status = navg.getNaviStatus();
-
-              pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
-              pathSimplifierIns.setData(pathObjectArray); //延展路径
-
-              //重新建立一个巡航器
-              navg = pathSimplifierIns.createPathNavigator(0, {
-                //loop: true, //循环播放
-                speed: 1000 //巡航速度，单位千米/小时
-                , pathNavigatorStyle: {
-                  width: 16,
-                  height: 32,
-                  content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
-                      onerror),
-                  strokeStyle: null,
-                  fillStyle: null,
+                pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+                pathSimplifierIns.setData(pathObjectArray); //延展路径
+                //重新建立一个巡航器
+                navg = pathSimplifierIns.createPathNavigator(0, {
+                  //loop: true, //循环播放
+                  // speed: 1000,//巡航速度，单位千米/小时
+                  speed: parseInt($('.speedRange').val(),10),
+                  pathNavigatorStyle: {
+                    width: 16,
+                    height: 32,
+                    content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,onerror),
+                    strokeStyle: null,
+                    fillStyle: null,
+                  }
+                });
+                if (status !== 'stop') {
+                  navg.start();
+                  navg.on("move", function(event) {
+                    if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
+                      $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
+                      $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
+                      $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
+                      $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                    }
+                  });
+                  map.setCenter(new AMap.LngLat(longitude,latitude));
                 }
-              });
-
-              if (status !== 'stop') {
-                navg.start();
-              }
-
-              //恢复巡航器的位置
-              if (cursor.idx >= 0) {
-                navg.moveToPoint(cursor.idx, cursor.tail);
+                //恢复巡航器的位置
+                if (cursor.idx >= 0) {
+                  navg.moveToPoint(cursor.idx, cursor.tail);
+                }
               }
             }
+        );
+      }
+      function onload() {
+        pathSimplifierIns.renderLater();
+      }
+
+      function onerror(e) {
+        alert('图片加载失败！');
+      }
+
+      /**
+       * 5 秒检查一次轨迹是否完成
+       */
+      function expandPath() {
+        function doExpand() {
+          if (!hasMore) {
+            return false;
           }
-      );
-    }
-
-    function onload() {
-      pathSimplifierIns.renderLater();
-    }
-
-    function onerror(e) {
-      alert('图片加载失败！');
-    }
-
-    /**
-     * 5 秒检查一次轨迹是否完成
-     */
-    function expandPath() {
-
-      function doExpand() {
-
-        if (!hasMore) {
-          return false;
+          params.page++;
+          $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+          loadData();
+          return true;
         }
-
-        params.page++;
-
-        $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
-
-        loadData();
-
-        return true;
+        if (doExpand()) {
+          setTimeout(expandPath, 7 * 1000);
+        }
       }
+    });
 
-      if (doExpand()) {
-        setTimeout(expandPath, 7 * 1000);
+    //是否在中国境内
+    function isInChina(posn) {
+        if (posn != null && posn != "" && posn.length > 0) {
+          return boundsChina.contains(new AMap.LngLat(posn[0], posn[1]));
+        } else {
+        return false;
       }
-    }
-  });
-
-  //是否在中国境内
-  function isInChina(posn) {
-    if (posn != null && posn != "" && posn.length > 0) {
-      return boundsChina.contains(new AMap.LngLat(posn[0], posn[1]));
-    }
-    else {
-      return false;
-    }
-  };
+    };
+  });    
 </script>
 </body>
 
