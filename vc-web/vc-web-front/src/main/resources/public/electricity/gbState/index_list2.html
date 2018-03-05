@@ -162,16 +162,20 @@
 				});
 			}, function(){});
 		},
-		detail:function(id){
+		/*detail:function(vin){
 			showTopWin({
 				  type: 2,
 				  shade: 0.4,
 				  maxmin: true,
 				  area: ['770px', '580px'],
-				  content: "/electricity/gbState/detail.html?id="+id,
+				  content: "/electricity/gbState/detail.html?vin="+vin,
 				  zIndex: layer.zIndex //重点1
 			});
-		}
+		}*/
+        detail:function(hex){
+            window.open("/electricity/state/monitor.html?hexString=" + hex);
+        }
+
 	};
 
 	var tableId = "TGbState";
@@ -286,8 +290,9 @@
 						  	var data = obj.data 	//获得当前行数据
 							,layEvent = obj.event; 	//获得 lay-event 对应的值
 							var id = data["gsId"];
+
 						  	if(layEvent === 'detail'){
-					      		operate.detail(id)
+					      		operate.detail(data["hexString"])
 					   	  	} else if(layEvent === 'del'){
 					      		operate.del(id)
 					    	} else if(layEvent === 'edit'){

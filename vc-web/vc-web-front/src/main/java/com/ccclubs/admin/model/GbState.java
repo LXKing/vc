@@ -116,6 +116,8 @@ public class GbState implements java.io.Serializable
 	 */
 	
 	private   Float latitudeString;
+
+	private String hexString;
 	
 	//默认构造函数
 	public GbState(){
@@ -414,5 +416,13 @@ public class GbState implements java.io.Serializable
 	**/
 	public void setLatitudeString(Float latitudeString){
 		this.latitudeString = latitudeString;
+	}
+
+	public String getHexString() {
+		return hexString;
+	}
+
+	public void setHexString(String hexString) {
+		this.hexString = hexString;
 	}
 }
