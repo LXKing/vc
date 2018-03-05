@@ -70,7 +70,7 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
         email.setCharset(CODING);
-
+        email.setSmtpPort(465);
         email.addTo(toEmail.split(","));
         if(StringUtils.isNotEmpty(ccEmail)){
             email.addBcc(ccEmail.split(","));

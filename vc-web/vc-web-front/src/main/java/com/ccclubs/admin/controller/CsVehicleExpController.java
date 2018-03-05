@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,8 +42,9 @@ public class CsVehicleExpController {
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsVehicleExp> list(CsVehicleExpQuery query,
                                           @RequestParam(defaultValue = "0") Integer page,
-                                          @RequestParam(defaultValue = "10") Integer rows) {
-        PageInfo<CsVehicleExp> pageResult = csVehicleExpService.getPage(query, new PageRequest(page, rows));
+                                          @RequestParam(defaultValue = "10") Integer rows,
+                                          @RequestParam(defaultValue = "csvAddTime") String order) {
+        PageInfo<CsVehicleExp> pageResult = csVehicleExpService.getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
         List<CsVehicleExp> list = pageResult.getList();
         for(CsVehicleExp data : list){
             registResolvers(data);

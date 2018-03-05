@@ -75,13 +75,13 @@ public class CsVehicleExpService {
         }
 
         if (null != queryVo.getStartTime() && null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvProdDate").gte(queryVo.getStartTime().getTime()).lte(queryVo.getEndTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime().getTime()).lte(queryVo.getEndTime().getTime()));
         }
         if (null != queryVo.getStartTime() && null == queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvProdDate").gte(queryVo.getStartTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime().getTime()));
         }
         if (null == queryVo.getStartTime() && null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvProdDate").lte(queryVo.getEndTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").lte(queryVo.getEndTime().getTime()));
         }
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());
