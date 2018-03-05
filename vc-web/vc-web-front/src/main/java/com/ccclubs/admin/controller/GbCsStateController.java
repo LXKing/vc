@@ -93,16 +93,15 @@ public class GbCsStateController {
         return r;
     }
 
-
-    @Autowired
+    /*@Autowired
     RedisTemplate redisTemplate;
     @RequestMapping(value = "set", method = RequestMethod.GET)
     public String set() {
         redisTemplate.opsForHash()
-                .put(RedisConst.REDIS_KEY_RT_STATES_HASH, "LJ8E3C1M1GB009060", "232302FE4C4A38453343314D314742303039303630010025120206173B38010203010000000042460CBD271737010F03D30000050106B3716402102A5631");
-        redisTemplate.opsForZSet().add(RedisConst.REDIS_KEY_RT_STATES_ZSET, "LJ8E3C1M1GB009060", 1518075475000L);
+                .put(RedisConst.REDIS_KEY_RT_STATES_HASH, "LJ8M3A5M9GB002366", "232302FE4C4A38453343314D314742303039303630010025120206173B38010203010000000042460CBD271737010F03D30000050106B3716402102A5631");
+        redisTemplate.opsForZSet().add(RedisConst.REDIS_KEY_RT_STATES_ZSET, "LJ8M3A5M9GB002366", 1518075475002L);
         return "123";
-    }
+    }*/
 
 
 }
