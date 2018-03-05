@@ -3,10 +3,7 @@ package com.ccclubs.admin.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 /**
  * 开启严格匹配模式，至匹配/add，不匹配add.html
@@ -15,6 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  **/
 @Configuration
 public class MvcConfigurer extends WebMvcConfigurerAdapter {
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    registry.addMapping("/**").allowedHeaders("*").allowedMethods("POST,GET").allowedOrigins("*").allowCredentials(true);
+  }
 
 //  @Override
 //  public void addViewControllers(ViewControllerRegistry registry) {
