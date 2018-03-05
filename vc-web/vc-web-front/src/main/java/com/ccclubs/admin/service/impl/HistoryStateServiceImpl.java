@@ -68,9 +68,17 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
                     pageNo,pageSize,order);
             if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
                 if (apiMessage.getData()!=null){
-                    if (apiMessage.getData().getTotal()>0&&apiMessage.getData().getList().size()>0){
+                    if (null!=apiMessage.getData().getTotal()
+                            &&apiMessage.getData().getTotal()>0){
                         List<CarState> carStateList=apiMessage.getData().getList();
                         page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
+                        result.setData(dealCarStateToHistoryStateAll(carStateList));
+                        result.setPage(page);
+                    }
+                    else if (null!=apiMessage.getData().getList()
+                            &&apiMessage.getData().getList().size()>0){
+                        List<CarState> carStateList=apiMessage.getData().getList();
+                        page=new Page(pageNo,pageSize,apiMessage.getData().getList().size());
                         result.setData(dealCarStateToHistoryStateAll(carStateList));
                         result.setPage(page);
                     }

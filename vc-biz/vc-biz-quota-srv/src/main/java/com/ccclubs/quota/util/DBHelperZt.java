@@ -1,14 +1,18 @@
 package com.ccclubs.quota.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.frm.spring.constant.RedisConst;
+import com.ccclubs.protocol.dto.gb.GBMessage;
+import com.ccclubs.protocol.dto.gb.GB_02;
+import com.ccclubs.protocol.dto.gb.GB_02_01;
+import com.ccclubs.protocol.inf.IRealTimeAdditionalItem;
+import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.quota.orm.model.CsIndexReport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
@@ -17,6 +21,8 @@ import java.util.Date;
  */
 @Component
 public class DBHelperZt {
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Value("${zt.driver}")
     public  String driver;
@@ -67,20 +73,67 @@ public class DBHelperZt {
     }
 
     /**
-     * 根据车机与vin码对应关系获取obd_mile
-     * @return
-     */
-    public List<Map<String,Object>> getMiddleReportData(){
+     * 依据车型获取国标数据的obd里程等信息。
+     * @auther Alban
+     * **/
+    public List<Map<String,Object>>  getGbReportDate(){
         List<Map<String,Object>> tempList=new ArrayList<>();
         try {
-            String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber,t3.css_obd_mile csmrObdMile FROM cs_vehicle t1, cs_machine t2 LEFT JOIN cs_state t3 ON t2.csm_number=t3.css_number WHERE t1.csv_machine=t2.csm_id AND css_obd_mile IS NOT NULL";
+            String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber " +
+                    "FROM cs_vehicle t1, cs_machine t2 " +
+                    "WHERE t1.csv_model=22 AND t1.csv_machine=t2.csm_id";
             pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();
             while(rs.next()){
                 Map<String,Object>mapTemp=new HashMap<>();
                 for(int i=1;i<=metaData.getColumnCount();i++){
-                    String columnName1 = metaData.getColumnName(i);
+                    //String columnName1 = metaData.getColumnName(i);
+                    String columnName = metaData.getColumnLabel(i);//列别名
+                    Object columnValue = rs.getObject(columnName);
+                    mapTemp.put(columnName,columnValue);
+                }
+                String vin=rs.getString("csmrVin");
+                Object hexObject=redisTemplate.opsForHash().get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
+                if (null==hexObject){continue;}
+                String hexString = (String) hexObject;
+                GBMessage gbMessage = new GBMessage();
+                gbMessage.ReadFromBytes(Tools.HexString2Bytes(hexString));
+                GB_02 gb_02=(GB_02) gbMessage.getMessageContents();
+                //这里的get（0）是由于gb0201排在第一个。注意这里可能会出现的Bug。
+                GB_02_01 gb_02_01=null;
+                for (IRealTimeAdditionalItem iRealTimeAdditionalItem:gb_02.getAdditionals()){
+                    if (iRealTimeAdditionalItem.getAdditionalId()==1){
+                         gb_02_01=(GB_02_01) iRealTimeAdditionalItem;
+                    }
+                }
+                if (gb_02_01==null){continue;}
+                int csmrObdMile=gb_02_01.getMileage();
+                mapTemp.put("csmrObdMile",csmrObdMile);
+                tempList.add(mapTemp);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  tempList;
+    }
+
+
+    /**
+     * 根据车机与vin码对应关系获取obd_mile
+     * @return
+     */
+    public List<Map<String,Object>> getMiddleReportData(){
+        List<Map<String,Object>> tempList=new ArrayList<>();
+        try {
+            String sql = "  SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber,t3.css_obd_mile csmrObdMile FROM cs_vehicle t1, cs_machine t2 LEFT JOIN cs_state t3 ON t2.csm_number=t3.css_number WHERE t1.csv_model!=22 AND t1.csv_machine=t2.csm_id AND css_obd_mile IS NOT NULL ";
+            pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            ResultSetMetaData metaData = rs.getMetaData();
+            while(rs.next()){
+                Map<String,Object>mapTemp=new HashMap<>();
+                for(int i=1;i<=metaData.getColumnCount();i++){
+                    //String columnName1 = metaData.getColumnName(i);
                     String columnName = metaData.getColumnLabel(i);//列别名
                     Object columnValue = rs.getObject(columnName);
                     mapTemp.put(columnName,columnValue);
@@ -93,98 +146,6 @@ public class DBHelperZt {
         return  tempList;
     }
 
-
-    //统计最新的众泰--国标指标数据***************************************
-    public  void getZtCurrentOBDTemp(List<CsIndexReport> exVinList){
-        try {
-            String sql = "SELECT css_number, css_obd_mile ,css_add_time from cs_state WHERE  css_number IN (";
-            //
-            StringBuffer sb=new StringBuffer();
-            for (CsIndexReport csIndexReport:exVinList){
-                sb.append("\'"+csIndexReport.getCsNumber()+"\'").append(" ,");
-            }
-            String  sqlResult = sql+sb.substring(0,sb.lastIndexOf(","))+")";
-            //
-            pst = conn.prepareStatement(sqlResult);
-            ResultSet rs = pst.executeQuery();
-            ResultSetMetaData metaData = rs.getMetaData();
-            //先把当前obd里程的数据
-            List<Map<String,Object>>tempList=new ArrayList<>();
-            while(rs.next()){
-                Map<String,Object>mapTemp=new HashMap<>();
-                for(int i=1;i<=metaData.getColumnCount();i++){
-                    String columnName = metaData.getColumnName(i);
-                    Object columnValue = rs.getObject(columnName);
-                    mapTemp.put(columnName,columnValue);
-                }
-                tempList.add(mapTemp);
-            }
-            //组装list条件数据
-            for (CsIndexReport csIndexReport:exVinList){
-                String csNumber=csIndexReport.getCsNumber();
-                if(csNumber==null||csNumber==""){
-                    continue;
-                }
-                //车辆出厂日期默认值
-                Date facTime= DateTimeUtil.getStringToDate("2017-01-01 00:00:00");
-                if(csIndexReport.getFacTime()!=null){
-                    facTime=csIndexReport.getFacTime();
-                }
-                //
-                for (Map<String,Object> temp:tempList){
-                    String  csState_csNumber=temp.get("css_number").toString();
-                    if(csNumber.equals(csState_csNumber)){
-                        //通过obd里程统计各项指标数据
-                        int currentObd =Integer.parseInt(temp.get("css_obd_mile").toString());
-                        if(currentObd!=0) {
-                            Date currTime =DateTimeUtil.getStringToDate(temp.get("css_add_time").toString());
-                            //
-                            //月均行驶里程
-                            BigDecimal monthlyAvgMile = getObdByMonth(facTime, currTime, currentObd);
-                            //纯电行驶里程
-                            BigDecimal electricRange = getElectricRange();
-                            // 百公里耗电量
-                            BigDecimal powerConsumePerHundred = getPowerConsumePerHundred(electricRange);
-                            //累计充电量
-                            BigDecimal cumulativeCharge = getCumulativeCharge(currentObd, powerConsumePerHundred);
-                            //车辆一次充满电所用最少时间
-                            BigDecimal minChargeTime = getMinChargeTime();
-                            //最大充电功率
-                            BigDecimal maxChargePower = getMaxChargePower();
-                            //平均单日运行时间
-                            BigDecimal avgDriveTimePerDay = getAvgDriveTimePerDay(currentObd);
-                            //----//
-                            csIndexReport.setMonthlyAvgMile(monthlyAvgMile);
-                            csIndexReport.setElectricRange(electricRange);
-                            csIndexReport.setPowerConsumePerHundred(powerConsumePerHundred);
-                            csIndexReport.setCumulativeCharge(cumulativeCharge);
-                            csIndexReport.setMinChargeTime(minChargeTime);
-                            csIndexReport.setMaxChargePower(maxChargePower);
-                            csIndexReport.setAvgDriveTimePerDay(avgDriveTimePerDay);
-                            csIndexReport.setCumulativeMileage(new BigDecimal(currentObd));
-                            //
-                            csIndexReport.setModifyDate(new Date());
-                        }else{
-                            csIndexReport.setMonthlyAvgMile(null);
-                            csIndexReport.setElectricRange(null);
-                            csIndexReport.setPowerConsumePerHundred(null);
-                            csIndexReport.setCumulativeCharge(null);
-                            csIndexReport.setMinChargeTime(null);
-                            csIndexReport.setMaxChargePower(null);
-                            csIndexReport.setAvgDriveTimePerDay(null);
-                            csIndexReport.setCumulativeMileage(null);
-                            //
-                            csIndexReport.setModifyDate(new Date());
-                        }
-                        break;
-                    }
-                }
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
     //**************************各项指标计算公式***********************************
     //月均行驶里程
     public   BigDecimal getObdByMonth(Date facTime,Date currTime,int currentObd){
@@ -217,9 +178,17 @@ public class DBHelperZt {
 
 
     ////纯电行驶里程
-    public   BigDecimal getElectricRange(){
-        BigDecimal start=new BigDecimal(120);
-        BigDecimal end=new BigDecimal(190);
+    public   BigDecimal getElectricRange(int csModel){
+        BigDecimal start=null;
+        BigDecimal end=null;
+        //v10为22的车型
+        if(csModel==22){
+            start=new BigDecimal(150);
+            end=new BigDecimal(210);
+        }else{
+            start=new BigDecimal(120);
+            end=new BigDecimal(185);
+        }
         //
         BigDecimal   ff=  random(start,end);
         BigDecimal   f1   =   ff.setScale(2,   BigDecimal.ROUND_HALF_UP);

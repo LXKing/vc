@@ -362,8 +362,10 @@
     url: getServUrl("/admin/machine/list"),
     cols: [clms],
     done: function (res, curr, count) {
-      currPage = curr;
-      currSize = res.page.size;
+        if(curr>res.page.total)
+            curr = res.page.total;
+        currPage = curr;
+        currSize = res.page.size;
     },
     response: {
       statusName: "code",

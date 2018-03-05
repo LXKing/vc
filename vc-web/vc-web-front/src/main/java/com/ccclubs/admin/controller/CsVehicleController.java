@@ -600,13 +600,16 @@ public class CsVehicleController {
       getItemListData(existList,updateList,insertVinList,tempMap,user);
       //vin码相同时更新表中数据---判断车机信息
       if (updateList!=null&&updateList.size()>0){
+        logger.info("开始  更新csVehicle数据");
          csVehicleService.updateBatchByExampleSelective(updateList);
       }
       //插入数据
       if(existList!=null&&existList.size()>0){
+        logger.info("开始  批量导入车辆信息");
         csVehicleService.insertBatchSelective(existList);
       }
        //根据用户所属组添加对应信息
+      logger.info("开始  批量导入车辆信息");
       insertCsMappingByTokenAndVin(token,insertVinList);
       //记录批量插入的车辆与车机的对应关系的日志记录
       insertBatchTboxBindLog(insertVinList,user.getSuId());
@@ -654,6 +657,7 @@ public class CsVehicleController {
           tboxList.add(csTboxBindHis);
         }
         if(tboxList!=null&&tboxList.size()>0){
+          logger.info("开始  tobx更换对应关系记录");
           tboxBindHisService.insertBatchSelective(tboxList);
         }
 
@@ -681,6 +685,7 @@ public class CsVehicleController {
             csMapping.setCsmCar(csVehicle.getCsvId());
             csMappingList.add(csMapping);
           }
+          logger.info("开始  csVehicle_csMaping对应关系插入");
           csMappingService.insertBatchSelective(csMappingList);
         }
       }
@@ -754,28 +759,32 @@ public class CsVehicleController {
               Cell cell = row.getCell(columnNum);
               getExternalData(csVehicle,cell,columnNum);
             }
-              //
+              //接入商
             if(csVehicleTemp.getCsvAccess()!=null){
               csVehicle.setCsvAccess(csVehicleTemp.getCsvAccess());
             }else{
               csVehicle.setCsvAccess(0);
             }
-             //
+             //子域
             if(csVehicleTemp.getCsvHost()!=null){
               csVehicle.setCsvHost(csVehicleTemp.getCsvHost());
             }else{
               csVehicle.setCsvHost(0);
             }
+            //状态
             if(csVehicleTemp.getCsvStatus()!=null){
               csVehicle.setCsvStatus(csVehicleTemp.getCsvStatus());
             }else{
               csVehicle.setCsvStatus((short)1);
             }
+            //车型
             if(csVehicleTemp.getCsvModel()!=null){
               csVehicle.setCsvModel(csVehicleTemp.getCsvModel());
             }else{
               csVehicle.setCsvModel(0);
             }
+
+
             csVehicle.setCsvAddTime(new Date());
             csVehicle.setCsvUpdateTime(new Date());
             externalList.add(csVehicle);
@@ -840,7 +849,7 @@ public class CsVehicleController {
           case 9:
             //出厂日期csv_prod_date
             try{
-              SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+              SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd");
               Date dateTime =dff.parse(value);
               csVehicle.setCsvProdDate(dateTime);
             }catch (Exception e){
