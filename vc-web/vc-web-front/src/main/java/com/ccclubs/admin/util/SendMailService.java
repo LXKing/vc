@@ -161,4 +161,22 @@ public class SendMailService {
         email.send();
 
     }
+
+    public void sslSend(String toEmail, String ccEmail, String subject,
+                                            String msg, Map<String, String> attachmentProp) throws EmailException, MalformedURLException {
+        MailConfig mailInfo = new MailConfig();
+        mailInfo.setMailServerHost(HOSTNAME);
+        mailInfo.setMailServerPort(String.valueOf(PORT));
+        mailInfo.setValidate(true);
+        mailInfo.setUserName(SMTP_USERNAME);
+        mailInfo.setPassword(SMTP_PASSWORD);
+        mailInfo.setFromAddress(SMTP_USERNAME);
+        mailInfo.setToAddress(toEmail.split(","));
+        mailInfo.setToCarbonCopyAddress(ccEmail.split(","));
+        mailInfo.setAttachFileNames(new String[]{attachmentProp.get(AttachmentConst.LOCAL_FILE_PATH)});
+        mailInfo.setSubject(subject);
+        mailInfo.setContent(msg);
+
+        SendMailUtil.sendMail(mailInfo);
+    }
 }
