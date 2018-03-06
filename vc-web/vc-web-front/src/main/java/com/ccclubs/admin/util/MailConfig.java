@@ -13,6 +13,10 @@ public class MailConfig  implements java.io.Serializable {
     private String mailServerPort = "465";
     // 邮件发送者的地址
     private String fromAddress;
+    // 邮件发送者的别名
+    private String fromName;
+    // 邮件编码
+    private String charset;
     // 邮件接收者的地址
     private String[] toAddress;
     // 邮件密送接收者的地址
@@ -126,5 +130,19 @@ public class MailConfig  implements java.io.Serializable {
         this.toCarbonCopyAddress = toCarbonCopyAddress;
     }
 
+    public String getFromName() {
+        return fromName;
+    }
 
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
 }

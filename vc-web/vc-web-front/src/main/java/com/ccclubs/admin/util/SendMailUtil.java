@@ -1,9 +1,11 @@
 package com.ccclubs.admin.util;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.mail.util.IDNEmailAddressConverter;
+
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -15,12 +17,7 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
-
+import javax.mail.internet.*;
 
 
 /**
@@ -29,18 +26,19 @@ import javax.mail.internet.MimeUtility;
 public class SendMailUtil {
     /**
      * 以文本格式发送邮件 (支持群发,带附件)
+     *
      * @param senderInfo 待发送的邮件的信息
      * @return
      */
-    public static boolean sendMail(final MailConfig senderInfo){
+    public static boolean sendMail(final MailConfig senderInfo) {
         boolean flag = false;
 
         // 判断是否需要身份验证
         Authenticator authenticator = null;
         Properties props = senderInfo.getProperties();
-        if(senderInfo.isValidate()){
+        if (senderInfo.isValidate()) {
             // 如果需要身份认证，则创建一个密码验证器
-             authenticator = new Authenticator() {
+            authenticator = new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     // 用户名、密码
@@ -56,12 +54,25 @@ public class SendMailUtil {
             // 根据session创建一个邮件消息
             Message sendMailMessage = new MimeMessage(sendMailSession);
             // 创建邮件发送者地址
-            Address from = new InternetAddress(senderInfo.getFromAddress());
+            //Address from = new InternetAddress(senderInfo.getFromAddress());
+
+            InternetAddress from = new InternetAddress((new IDNEmailAddressConverter()).toASCII(senderInfo.getFromAddress()));
+            if (StringUtils.isNotEmpty(senderInfo.getFromName())) {
+                if (StringUtils.isEmpty(senderInfo.getCharset())) {
+                    from.setPersonal(senderInfo.getFromName());
+                } else {
+                    Charset set = Charset.forName(senderInfo.getCharset());
+                    from.setPersonal(senderInfo.getFromName(), set.name());
+                }
+            }
+
+            from.validate();
+
             // 设置邮件消息的发送者
             sendMailMessage.setFrom(from);
             // 创建邮件接收者地址
             String[] tos = senderInfo.getToAddress();
-            if(tos != null && tos.length != 0){
+            if (tos != null && tos.length != 0) {
                 InternetAddress[] to = new InternetAddress[tos.length];
                 // 设置邮件消息的发送者
                 for (int i = 0; i < tos.length; i++) {
@@ -71,7 +82,7 @@ public class SendMailUtil {
             }
             // 设置邮件抄送者地址
             String[] toCCs = senderInfo.getToCarbonCopyAddress();
-            if(toCCs != null && toCCs.length != 0){
+            if (toCCs != null && toCCs.length != 0) {
                 InternetAddress[] toCC = new InternetAddress[toCCs.length];
                 // 设置邮件消息的发送者
                 for (int i = 0; i < toCCs.length; i++) {
@@ -81,7 +92,7 @@ public class SendMailUtil {
             }
             // 设置邮件密送者地址
             String[] toBCCs = senderInfo.getToBlindCarbonCopyAddress();
-            if(toBCCs != null && toBCCs.length != 0){
+            if (toBCCs != null && toBCCs.length != 0) {
                 InternetAddress[] toBCC = new InternetAddress[toBCCs.length];
                 for (int i = 0; i < toBCCs.length; i++) {
                     toBCC[i] = new InternetAddress(toBCCs[i]);
@@ -89,12 +100,12 @@ public class SendMailUtil {
                 sendMailMessage.addRecipients(Message.RecipientType.BCC, toBCC);
             }
             // 设置邮件主题
-            sendMailMessage.setSubject(MimeUtility.encodeText(senderInfo.getSubject(),"utf-8","B"));
+            sendMailMessage.setSubject(MimeUtility.encodeText(senderInfo.getSubject(), "utf-8", "B"));
             // 设置邮件内容
             //sendMailMessage.setText(senderInfo.getContent());
             Multipart multipart = new MimeMultipart();
             // 邮件文本内容
-            if(senderInfo.getContent() != null && !"".equals(senderInfo.getContent())){
+            if (senderInfo.getContent() != null && !"".equals(senderInfo.getContent())) {
                 BodyPart part = new MimeBodyPart();
                 part.setContent(senderInfo.getContent(), "text/plain;charset=utf-8");//设置邮件文本内容
                 multipart.addBodyPart(part);
@@ -119,27 +130,27 @@ public class SendMailUtil {
             // 发送邮件
             Transport transport = sendMailSession.getTransport("smtp");
             transport.connect(senderInfo.getUserName(), senderInfo.getPassword());
-            transport.send(sendMailMessage,sendMailMessage.getAllRecipients());
+            transport.send(sendMailMessage, sendMailMessage.getAllRecipients());
             transport.close();
             flag = true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return flag;
     }
 
-    public static boolean sendHtmlMail(final MailConfig senderInfo){
+    public static boolean sendHtmlMail(final MailConfig senderInfo) {
         boolean flag = false;
         // 判断是否需要身份验证
         Authenticator authenticator = null;
         Properties props = senderInfo.getProperties();
-        if(senderInfo.isValidate()){
+        if (senderInfo.isValidate()) {
             // 如果需要身份认证，则创建一个密码验证器
             authenticator = new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                // 用户名、密码
-                return new PasswordAuthentication(senderInfo.getUserName(), senderInfo.getPassword());
+                    // 用户名、密码
+                    return new PasswordAuthentication(senderInfo.getUserName(), senderInfo.getPassword());
                 }
             };
         }
@@ -149,12 +160,23 @@ public class SendMailUtil {
             // 根据session创建一个邮件消息
             Message sendMailMessage = new MimeMessage(sendMailSession);
             // 创建邮件发送者地址
-            Address from = new InternetAddress(senderInfo.getFromAddress());
+            //Address from = new InternetAddress(senderInfo.getFromAddress());
+            InternetAddress from = new InternetAddress((new IDNEmailAddressConverter()).toASCII(senderInfo.getFromAddress()));
+            if (StringUtils.isNotEmpty(senderInfo.getFromName())) {
+                if (StringUtils.isEmpty(senderInfo.getCharset())) {
+                    from.setPersonal(senderInfo.getFromName());
+                } else {
+                    Charset set = Charset.forName(senderInfo.getCharset());
+                    from.setPersonal(senderInfo.getFromName(), set.name());
+                }
+            }
+
+            from.validate();
             // 设置邮件消息的发送者
             sendMailMessage.setFrom(from);
             // 创建邮件接收者地址
             String[] tos = senderInfo.getToAddress();
-            if(tos != null && tos.length != 0){
+            if (tos != null && tos.length != 0) {
                 InternetAddress[] to = new InternetAddress[tos.length];
                 // 设置邮件消息的发送者
                 for (int i = 0; i < tos.length; i++) {
@@ -164,7 +186,7 @@ public class SendMailUtil {
             }
             // 设置邮件抄送者地址
             String[] toCCs = senderInfo.getToCarbonCopyAddress();
-            if(toCCs != null && toCCs.length != 0){
+            if (toCCs != null && toCCs.length != 0) {
                 InternetAddress[] toCC = new InternetAddress[toCCs.length];
                 // 设置邮件消息的发送者
                 for (int i = 0; i < toCCs.length; i++) {
@@ -174,7 +196,7 @@ public class SendMailUtil {
             }
             // 设置邮件密送者地址
             String[] toBCCs = senderInfo.getToBlindCarbonCopyAddress();
-            if(toBCCs != null && toBCCs.length != 0){
+            if (toBCCs != null && toBCCs.length != 0) {
                 InternetAddress[] toBCC = new InternetAddress[toBCCs.length];
                 for (int i = 0; i < toBCCs.length; i++) {
                     toBCC[i] = new InternetAddress(toBCCs[i]);
@@ -182,12 +204,12 @@ public class SendMailUtil {
                 sendMailMessage.addRecipients(Message.RecipientType.BCC, toBCC);
             }
             // 设置邮件主题
-            sendMailMessage.setSubject(MimeUtility.encodeText(senderInfo.getSubject(),"utf-8","B"));
+            sendMailMessage.setSubject(MimeUtility.encodeText(senderInfo.getSubject(), "utf-8", "B"));
             // 设置邮件内容
             //sendMailMessage.setText(senderInfo.getContent());
             Multipart multipart = new MimeMultipart();
             // 邮件文本内容
-            if(senderInfo.getContent() != null && !"".equals(senderInfo.getContent())){
+            if (senderInfo.getContent() != null && !"".equals(senderInfo.getContent())) {
                 BodyPart part = new MimeBodyPart();
                 part.setContent(senderInfo.getContent(), "text/html;charset=utf-8");//设置邮件文本内容
                 multipart.addBodyPart(part);
@@ -213,18 +235,18 @@ public class SendMailUtil {
             //Transport.send(sendMailMessage);
             Transport transport = sendMailSession.getTransport("smtp");
             transport.connect(senderInfo.getUserName(), senderInfo.getPassword());
-            transport.send(sendMailMessage,sendMailMessage.getAllRecipients());
+            transport.send(sendMailMessage, sendMailMessage.getAllRecipients());
             // 关闭transport
             transport.close();
             flag = true;
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return flag;
     }
 
     /*public static void main(String[] args) {
-    	
+
     	ExecutorService threadPool = Executors.newCachedThreadPool();
         final MailConfig mailInfo = new MailConfig();
         mailInfo.setMailServerHost("smtp.ccclubs.com");

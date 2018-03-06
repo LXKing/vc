@@ -24,10 +24,7 @@ public class SendMailService {
     @Value("${email.host}")
     private String HOSTNAME;     //邮件服务器
 
-    //@Value("${email.port}")
-    private boolean isValidate;     //是否需要认证
-
-    //@Value("${email.port}")
+    @Value("${email.port}")
     private int PORT = 465;     //邮件服务器发送端口
 
     @Value("${email.smtp_username}")
@@ -81,35 +78,7 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
         email.setCharset(CODING);
-        email.setSmtpPort(465);
-        //SSL
-        Authenticator authenticator = null;
-        Properties pro = new Properties();
-        pro.put("mail.smtp.host", HOSTNAME);
-        pro.put("mail.smtp.starttls.enable", true);
-        pro.put("mail.smtp.auth", isValidate);
-        if("465".equals(PORT)){
-            pro.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            pro.put("mail.smtp.socketFactory.port", PORT);
-        }else{
-            pro.put("mail.smtp.port", PORT);
-        }
-        if(isValidate){
-            // 如果需要身份认证，则创建一个密码验证器
-            authenticator = new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    // 用户名、密码
-                    return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
-                }
-            };
-        }
-        // 根据邮件会话属性和密码验证器构造一个发送邮件的session
-        Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
-        email.setSslSmtpPort(String.valueOf(465));
-        email.setSSLOnConnect(true);
-        email.setSSLCheckServerIdentity(true);
-        email.setMailSession(sendMailSession);
+        email.setSmtpPort(PORT);
         email.addTo(toEmail.split(","));
         if(StringUtils.isNotEmpty(ccEmail)){
             email.addBcc(ccEmail.split(","));
@@ -162,6 +131,16 @@ public class SendMailService {
 
     }
 
+    /**
+     * @param toEmail ：收件人地址
+     * @param subject ：主题
+     * @param msg     ：内容
+     * @param attachmentProp ：附件信息
+     * @return void
+     * @throws
+     * @Title: 阿里云ECS
+     * @Description: 带附件发送
+     */
     public void sslSend(String toEmail, String ccEmail, String subject,
                                             String msg, Map<String, String> attachmentProp) throws EmailException, MalformedURLException {
         MailConfig mailInfo = new MailConfig();
@@ -171,12 +150,13 @@ public class SendMailService {
         mailInfo.setUserName(SMTP_USERNAME);
         mailInfo.setPassword(SMTP_PASSWORD);
         mailInfo.setFromAddress(SMTP_USERNAME);
+        mailInfo.setFromName(USERNAME);
         mailInfo.setToAddress(toEmail.split(","));
         mailInfo.setToCarbonCopyAddress(ccEmail.split(","));
         mailInfo.setAttachFileNames(new String[]{attachmentProp.get(AttachmentConst.LOCAL_FILE_PATH)});
         mailInfo.setSubject(subject);
         mailInfo.setContent(msg);
-
+        mailInfo.setCharset(CODING);
         SendMailUtil.sendMail(mailInfo);
     }
 }

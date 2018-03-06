@@ -58,7 +58,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
     @Resource
     ExpDataCheckJob expDataCheckJob;
 
-    @Scheduled(cron="0 0 1 * * ?")
+    @Scheduled(cron="0 0 1,14 * * ?")
     public void expDataCheckJob(){
         logger.info("执行了一次 车辆异常数据的巡检。");
         EvManageContext.getThreadPool().execute(expDataCheckJob);
