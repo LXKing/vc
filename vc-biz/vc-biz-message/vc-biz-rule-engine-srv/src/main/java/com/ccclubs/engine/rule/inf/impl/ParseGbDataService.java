@@ -10,18 +10,19 @@ import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
-import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
-import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.gb.GBMessageType;
 import com.ccclubs.protocol.dto.gb.GB_02;
+import com.ccclubs.protocol.dto.gb.GB_02_01;
+import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.pub.orm.model.CsVehicle;
-
+import java.util.Date;
 import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,9 @@ public class ParseGbDataService implements IParseGbDataService {
 
   // TODO:目前仅国标对接测试车辆才转发给天津数据中心
   private int TRANSFER_ACCESS = 10;
+  // TODO:V10车型，2017年生产的车辆
+  private int V10_MODEL = 22;
+  private Date V10_MAX_PROD_DATE = new Date(1514736000000L);
 
   @Override
   public void processMessage(GBMessage message, byte[] srcByteArray) {
@@ -68,6 +72,9 @@ public class ParseGbDataService implements IParseGbDataService {
                   message.getPacketDescr())));
       return;
     }
+
+    // add at 2018-03-06 ，V10车型，2017年生产的车辆，累计里程在充电时，存在跳变，实时数据为0时，平台需要矫正，加入最后一次最新里程，详情见V10车型产品王杰邮件
+    message = correctionObdMiles(message, csVehicle);
 
     transferToMq(message, csVehicle);
 
@@ -105,6 +112,54 @@ public class ParseGbDataService implements IParseGbDataService {
     //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
     ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+  }
+
+  /**
+   * add at 2018-03-06 ，V10车型，2017年生产的车辆，累计里程在充电时，存在跳变，实时数据为0时，平台需要矫正，加入最后一次最新里程，详情见V10车型产品王杰
+   * 2018年3月2日 (周五) 14:11 邮件
+   * ad at 2018-03-06 18:57
+   * @param message 待转换的国标数据
+   */
+  private GBMessage correctionObdMiles(final GBMessage message, final CsVehicle csVehicle) {
+    GBMessage correctionMessage = message;
+    // 仅针对V10
+    if (V10_MODEL != csVehicle.getCsvModel()) {
+      return correctionMessage;
+    }
+    // 2017年生产的车辆
+    if (null == csVehicle.getCsvProdDate() || csVehicle.getCsvProdDate()
+        .after(V10_MAX_PROD_DATE)) {
+      return correctionMessage;
+    }
+
+    if (null == message.getMessageContents()) {
+      return correctionMessage;
+    }
+
+    // 开始处理实时数据
+    if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType()
+        || GBMessageType.GB_MSG_TYPE_0X03 == message.getMessageType()) {
+      GB_02 gb_02 = (GB_02) message.getMessageContents();
+      GB_02_01 gb_02_01 = (GB_02_01) gb_02
+          .getRealTimeAdditionalItem(GBMessageType.GB_MSG_REAL_TIME_TYPE_0X01);
+      if (null == gb_02_01) {
+        return correctionMessage;
+      }
+      if (gb_02_01.getMileage() <= 0) {
+        Object obdMileage = redisTemplate.opsForHash()
+            .get(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin());
+        if (obdMileage != null) {
+          gb_02_01.setMileage(Integer.parseInt(String.valueOf(obdMileage)));
+          correctionMessage.setPacketDescr(Tools.ToHexString(correctionMessage.WriteToBytes()));
+        }
+      } else {
+        if(GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType())
+        redisTemplate.opsForHash()
+            .put(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin(), gb_02_01.getMileage());
+      }
+    }
+
+    return correctionMessage;
   }
 
   /**
