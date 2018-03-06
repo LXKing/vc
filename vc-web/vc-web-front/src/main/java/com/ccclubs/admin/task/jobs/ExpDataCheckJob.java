@@ -10,7 +10,9 @@ import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.service.IVcJobTriggerInfoService;
 import com.ccclubs.admin.task.param.ExpDataCheckJobParam;
+import com.ccclubs.admin.util.MailConfig;
 import com.ccclubs.admin.util.SendMailService;
+import com.ccclubs.admin.util.SendMailUtil;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.history.CsVehicleExp;
@@ -67,7 +69,7 @@ public class ExpDataCheckJob implements Runnable {
     MongoTemplate historyMongoTemplate;
 
     @Value("${filedisk.path}")
-    private String filePath;     //文件报存路径
+    private String filePath;     //文件保存目录
 
     @Override
     public void run() {
@@ -139,11 +141,12 @@ public class ExpDataCheckJob implements Runnable {
 
             Map<String, String> attachmentProp = new HashMap<>();
             attachmentProp.put(AttachmentConst.IS_REMOTE, "false");
-            attachmentProp.put(AttachmentConst.LOCAL_FILE_PATH, "D:/excel/Vehicle_Exp_All_Data.xls");
+            attachmentProp.put(AttachmentConst.LOCAL_FILE_PATH, filePath + "Vehicle_Exp_All_Data.xls");
             attachmentProp.put(AttachmentConst.DESCRIPTION, "异常车辆数据");
             attachmentProp.put(AttachmentConst.FILE_NAME, "异常车辆数据.xls");
             try {
-                sendMailService.sendMultiPartEmail(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
+                logger.info("开始发送通知邮件");
+                sendMailService.sslSend(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
                         "检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
             } catch (EmailException e) {
                 throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");

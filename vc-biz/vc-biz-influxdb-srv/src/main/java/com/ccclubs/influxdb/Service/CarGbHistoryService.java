@@ -1,11 +1,9 @@
-package com.ccclubs.influxdb.impl;
+package com.ccclubs.influxdb.Service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.influxdb.inf.CarGbHistoryInf;
-import com.ccclubs.influxdb.input.CarCanHistoryParam;
 import com.ccclubs.influxdb.input.CarGbHistoryParam;
-import com.ccclubs.influxdb.model.CarCan;
 import com.ccclubs.influxdb.model.CarGb;
 import com.ccclubs.influxdb.version.InfluxdbServiceVersion;
 import org.influxdb.dto.Point;
@@ -26,15 +24,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Service(version= InfluxdbServiceVersion.V1)
-public class CarGbHistoryInfImpl implements CarGbHistoryInf {
-    Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
+public class CarGbHistoryService  implements  CarGbHistoryInf{
+    Logger logger= LoggerFactory.getLogger(CarGbHistoryService.class);
 
     @Autowired
     private InfluxDBTemplate<Point> influxDBTemplate;
 
     private InfluxDBResultMapper resultMapper = new InfluxDBResultMapper() ;
     //
-    @Override
     public void insert( List<CarGb> recordList) {
         int i = 0;
         List<Point> pointList=new ArrayList<>();
@@ -64,7 +61,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         influxDBTemplate.write(pointList);
     }
 
-    @Override
     public List<CarGb> selectCarGbListByCondition(CarGbHistoryParam carGbHistoryParam) {
         String sql = "select  cs_vin, add_time,  gb_data, cs_access, cs_protocol, gb_type, cs_verify ,time from  INFLUXDB_CAR_GB_HISTORY  ";
         StringBuffer sb=new StringBuffer();
