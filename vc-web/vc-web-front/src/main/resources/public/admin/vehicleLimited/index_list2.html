@@ -88,7 +88,7 @@
         exportData:function(){
             var params = {rows: currSize, page: currPage, allReport: 1};
             params = transferParamsWithSortExport(params, "csvId");
-            var clmsCopy = $.defineExtend(true, [], clms);
+            var clmsCopy = $.extend(true, [], clms);
             params.clms = clmsCopy.splice(1, clms.length - 2);
             params.query = getFormData(this.getQueryForm());
             console.log(JSON.stringify(params));
