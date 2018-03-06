@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.Security;
 import java.util.Map;
 
 /**
@@ -19,8 +20,8 @@ public class SendMailService {
     @Value("${email.host}")
     private String HOSTNAME;     //邮件服务器
 
-//    @Value("${email.port}")
-//    private int PORT;     //邮件服务器发送端口
+    //@Value("${email.port}")
+    private int PORT;     //邮件服务器发送端口
 
     @Value("${email.smtp_username}")
     private String SMTP_USERNAME; //发件人用户名
@@ -48,7 +49,7 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);// 邮件服务器验证
         email.setCharset(CODING);
-
+        email.setSmtpPort(PORT);
         email.addTo(toEmail);
         email.setFrom(SMTP_USERNAME, USERNAME);
         email.setSubject(subject);
@@ -73,7 +74,12 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
         email.setCharset(CODING);
-        email.setSmtpPort(587);
+        email.setSmtpPort(465);
+        //SSL
+        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        email.setSslSmtpPort(String.valueOf(465));
+        email.setSSLOnConnect(true);
         email.addTo(toEmail.split(","));
         if(StringUtils.isNotEmpty(ccEmail)){
             email.addBcc(ccEmail.split(","));
@@ -113,7 +119,7 @@ public class SendMailService {
         email.setHostName(HOSTNAME);
         email.setAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
         email.setCharset(CODING);
-
+        email.setSmtpPort(PORT);
         email.addTo(toEmail.split(","));
         email.addCc(ccEmail.split(","));
         if(StringUtils.isNotEmpty(bccEmail)){
