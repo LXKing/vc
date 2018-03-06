@@ -255,7 +255,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.render(transferParamsWithSort(option, "id"));
                           },
@@ -263,7 +263,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.reload(tableId, transferParamsWithSort(params, "id"));
                           },

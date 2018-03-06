@@ -88,7 +88,7 @@
         exportData:function(){
             var params = {rows: currSize, page: currPage, allReport: 1};
             params = transferParamsWithSortExport(params, "csvId");
-            var clmsCopy = $.extend(true, [], clms);
+            var clmsCopy = $.defineExtend(true, [], clms);
             params.clms = clmsCopy.splice(1, clms.length - 2);
             params.query = getFormData(this.getQueryForm());
             console.log(JSON.stringify(params));
@@ -155,7 +155,7 @@
                         }, 2000);
                     }
                 }, false, "application/json;charset=UTF-8");
-            /*var params = $.extend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
+            /*var params = $.defineExtend(getFormData(this.getQueryForm()),{rows:currSize,page:currPage});
             params = transferParamsWithSortExport(params,"csvId");
             window.open(getServUrl("/admin/vehicle/report")+"?"+jsonToUri(params));*/
         },
@@ -410,7 +410,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.render(transferParamsWithSort(option, "csvId"));
                           },
@@ -418,7 +418,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.reload(tableId, transferParamsWithSort(params, "csvId"));
                           },
