@@ -74,14 +74,15 @@ public class CsVehicleExpService {
             query.addCriteria(criteria.and("csmIccid").regex(".*?" + queryVo.getCsmIccid() + ".*"));
         }
 
+        //注意mongo存储的是date类型
         if (null != queryVo.getStartTime() && null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime().getTime()).lte(queryVo.getEndTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime()).lte(queryVo.getEndTime()));
         }
         if (null != queryVo.getStartTime() && null == queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").gte(queryVo.getStartTime()));
         }
         if (null == queryVo.getStartTime() && null != queryVo.getEndTime()) {
-            query.addCriteria(criteria.and("csvAddTime").lte(queryVo.getEndTime().getTime()));
+            query.addCriteria(criteria.and("csvAddTime").lte(queryVo.getEndTime()));
         }
 
         query.skip((pageVo.getPageNumber() - 1) * pageVo.getPageSize());
