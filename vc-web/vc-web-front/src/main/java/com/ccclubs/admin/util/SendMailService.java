@@ -6,10 +6,14 @@ import org.apache.commons.mail.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.Security;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @since 2016/11/21 20:44 jianghaiyang
@@ -21,7 +25,10 @@ public class SendMailService {
     private String HOSTNAME;     //邮件服务器
 
     //@Value("${email.port}")
-    private int PORT;     //邮件服务器发送端口
+    private boolean isValidate;     //是否需要认证
+
+    //@Value("${email.port}")
+    private int PORT = 465;     //邮件服务器发送端口
 
     @Value("${email.smtp_username}")
     private String SMTP_USERNAME; //发件人用户名
@@ -76,10 +83,33 @@ public class SendMailService {
         email.setCharset(CODING);
         email.setSmtpPort(465);
         //SSL
-        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+        Authenticator authenticator = null;
+        Properties pro = new Properties();
+        pro.put("mail.smtp.host", HOSTNAME);
+        pro.put("mail.smtp.starttls.enable", true);
+        pro.put("mail.smtp.auth", isValidate);
+        if("465".equals(PORT)){
+            pro.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            pro.put("mail.smtp.socketFactory.port", PORT);
+        }else{
+            pro.put("mail.smtp.port", PORT);
+        }
+        if(isValidate){
+            // 如果需要身份认证，则创建一个密码验证器
+            authenticator = new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    // 用户名、密码
+                    return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+                }
+            };
+        }
+        // 根据邮件会话属性和密码验证器构造一个发送邮件的session
+        Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
         email.setSslSmtpPort(String.valueOf(465));
         email.setSSLOnConnect(true);
+        email.setSSLCheckServerIdentity(true);
+        email.setMailSession(sendMailSession);
         email.addTo(toEmail.split(","));
         if(StringUtils.isNotEmpty(ccEmail)){
             email.addBcc(ccEmail.split(","));

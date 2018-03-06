@@ -143,6 +143,7 @@ public class ExpDataCheckJob implements Runnable {
             attachmentProp.put(AttachmentConst.DESCRIPTION, "异常车辆数据");
             attachmentProp.put(AttachmentConst.FILE_NAME, "异常车辆数据.xls");
             try {
+                logger.info("开始发送通知邮件");
                 sendMailService.sendMultiPartEmail(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
                         "检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
             } catch (EmailException e) {
