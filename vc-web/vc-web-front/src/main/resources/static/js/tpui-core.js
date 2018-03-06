@@ -545,6 +545,66 @@ dateFormat = function (time, fmt) {
     return fmt;
 };
 
+/**
+ * 自定以，扩展 extend，支持 undefined 覆盖更新
+ * @type {jQuery.extend}
+ */
+jQuery.defineExtend = jQuery.fn.extend = function() {
+  var options, name, src, copy, copyIsArray, clone,
+      target = arguments[0] || {}, // 目标对象
+      i = 1,
+      length = arguments.length,
+      deep = false;
+  // 处理深度拷贝情况（第一个参数是boolean类型且为true）
+  if ( typeof target === "boolean" ) {
+    deep = target;
+    target = arguments[1] || {};
+    // 跳过第一个参数（是否深度拷贝）和第二个参数（目标对象）
+    i = 2;
+  }
+  // 如果目标不是对象或函数，则初始化为空对象
+  if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
+    target = {};
+  }
+  // 如果只指定了一个参数，则使用jQuery自身作为目标对象
+  if ( length === i ) {
+    target = this;
+    --i;
+  }
+  for ( ; i < length; i++ ) {
+    // Only deal with non-null/undefined values
+    if ( (options = arguments[ i ]) != null ) {
+      // Extend the base object
+      for ( name in options ) {
+        src = target[ name ];
+        copy = options[ name ];
+        // Prevent never-ending loop
+        if ( target === copy ) {
+          continue;
+        }
+        // 如果对象中包含了数组或者其他对象，则使用递归进行拷贝
+        if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+          // 处理数组
+          if ( copyIsArray ) {
+            copyIsArray = false;
+            // 如果目标对象不存在该数组，则创建一个空数组；
+            clone = src && jQuery.isArray(src) ? src : [];
+          } else {
+            clone = src && jQuery.isPlainObject(src) ? src : {};
+          }
+          // 从不改变原始对象，只做拷贝
+          target[ name ] = jQuery.defineExtend( deep, clone, copy );
+          // 不拷贝undefined值
+        } else {
+          target[ name ] = copy;
+        }
+      }
+    }
+  }
+  // 返回已经被修改的对象
+  return target;
+};
+
 function initCheckBoxValue(name, vals) {
     if (vals == undefined) return;
     var checkBoxArray = (vals + "").split(",");

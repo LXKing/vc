@@ -65,3 +65,13 @@ druid:
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
   filters:
+
+email:
+  host: smtp.mxhichina.com
+  smtp_username: vcloud@ccclubs.com
+  smtp_password: vcloud!@#$%12345
+  sender_name: 车机中心监控平台
+  ecoding: UTF-8
+
+filedisk:
+  path: /opt/vc_folder/
