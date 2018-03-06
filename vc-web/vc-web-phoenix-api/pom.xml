@@ -64,6 +64,11 @@
             <version>${frm.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-vehicle-inf</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
 
     </dependencies>
