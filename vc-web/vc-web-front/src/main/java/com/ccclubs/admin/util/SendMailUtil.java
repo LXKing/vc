@@ -223,7 +223,7 @@ public class SendMailUtil {
         return flag;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
     	
     	ExecutorService threadPool = Executors.newCachedThreadPool();
         final MailConfig mailInfo = new MailConfig();
@@ -248,5 +248,5 @@ public class SendMailUtil {
         // 这个类主要来发送邮件
        
         SendMailUtil.sendMail(mailInfo);
-    }
+    }*/
 }
