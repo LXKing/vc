@@ -85,7 +85,7 @@ public class CsVehicleExpController {
     /**
      * 手动触发根据文本检索车辆历史状态信息并导出。
      */
-    @RequestMapping(value = "trigger", method = RequestMethod.POST)
+    @RequestMapping(value = "trigger", method = RequestMethod.GET)
     public String trigger()
     {
         statisticsScheduler.expDataCheckJob();
