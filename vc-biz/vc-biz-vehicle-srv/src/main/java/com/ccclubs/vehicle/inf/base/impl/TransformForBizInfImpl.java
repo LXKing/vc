@@ -1,14 +1,12 @@
 
-package com.ccclubs.phoenix.impl;
+package com.ccclubs.vehicle.inf.base.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
-import com.ccclubs.phoenix.inf.TransformForBizInf;
 import com.ccclubs.pub.orm.model.CsVehicle;
+import com.ccclubs.vehicle.inf.base.TransformForBizInf;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
 
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
