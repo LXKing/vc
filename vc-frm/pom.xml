@@ -26,5 +26,6 @@
         <module>vc-frm-phoenix</module>
         <module>vc-frm-oss</module>
         <module>vc-frm-mongo</module>
+        <module>vc-frm-influxdb</module>
     </modules>
 </project>

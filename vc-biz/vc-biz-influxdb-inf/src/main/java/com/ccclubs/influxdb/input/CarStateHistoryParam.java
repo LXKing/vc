@@ -6,8 +6,6 @@ public class CarStateHistoryParam extends Page implements Serializable{
 
     private static final long serialVersionUID = -2518526959670695115L;
 
-    private String csVin;
-
     private String cs_number;
 
     private String start_time;
@@ -16,14 +14,6 @@ public class CarStateHistoryParam extends Page implements Serializable{
 
 
     private String order="desc";
-
-    public String getCsVin() {
-        return csVin;
-    }
-
-    public void setCsVin(String csVin) {
-        this.csVin = csVin;
-    }
 
     public String getCs_number() {
         return cs_number;
@@ -60,8 +50,7 @@ public class CarStateHistoryParam extends Page implements Serializable{
     @Override
     public String toString() {
         return "CarStateHistoryParam{" +
-                "csVin='" + csVin + '\'' +
-                ", cs_number='" + cs_number + '\'' +
+                "cs_number='" + cs_number + '\'' +
                 ", start_time='" + start_time + '\'' +
                 ", end_time='" + end_time + '\'' +
                 ", order='" + order + '\'' +
