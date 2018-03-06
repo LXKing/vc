@@ -14,17 +14,19 @@
 		             </button>
 
 		             <ul class="dropdown-menu">
-		                 <li sctl="exportData">
-		                     <a href="javascript:operate.exportData();">数据导出</a>
-		                 </li>
-		                 <li class="divider"></li>
-		                 <li sctl="batchDel">
-		                     <a href="javascript:operate.batchDel();">批量删除</a>
-		                 </li>
-
-						 <li sctl="insertBatch">
-							 <a href="javascript:operate.insertBatch();">批量插入</a>
-						 </li>
+		                <li sctl="exportData">
+		                  <a href="javascript:operate.exportData();">数据导出</a>
+		                </li>
+		                <li class="divider"></li>
+		                <li sctl="batchDel">
+		                  <a href="javascript:operate.batchDel();">批量删除</a>
+		                </li>
+      						  <li sctl="insertBatch">
+      							 <a href="javascript:operate.insertBatch();">批量插入</a>
+      						  </li>
+                    <li sctl="partialExport">
+                     <a href="javascript:operate.partialExport();">部分导出</a>
+                    </li>
 		             </ul>
 		         </div>
 			 	<div class="btn-group">
@@ -76,8 +78,7 @@
 	</div>
 
 <script type="text/javascript">
-    var currPage=1,currSize=15;
-
+  var currPage=1,currSize=15;
 	var operate = {
 		getGrid:function(){
 			return grid;
@@ -91,7 +92,7 @@
 		query:function(){
 			grid.reloadData({where:getFormData(this.getQueryForm())});
 		},
-        exportData:function(){
+    exportData:function(){
             var params = {rows: currSize, page: currPage, allReport: 1};
             params = transferParamsWithSortExport(params, "csvId");
             var clmsCopy = $.extend(true, [], clms);
@@ -161,7 +162,7 @@
                         }, 2000);
                     }
                 }, false, "application/json;charset=UTF-8");
-        },
+    },
 		bind:function(e){
 			var o = this;
 			showTopWin({
@@ -197,7 +198,7 @@
 			});
 		},
 
-        insertBatch:function () {
+    insertBatch:function () {
 			var o=this;
             showTopWin({
                 type: 2,
@@ -213,7 +214,10 @@
                     }
                 }
             });
-        },
+    },
+    partialExport:function () {
+      console.log("部分导出");
+    },
 		update:function(id){
 			var o = this;
 			showTopWin({
@@ -410,7 +414,7 @@
                           if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                               option.where = getFormData(operate.getQueryForm());
                           } else {
-                              option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                              option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                           }
                           table.render(transferParamsWithSort(option, "csvId"));
                       },
@@ -418,7 +422,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.reload(tableId, transferParamsWithSort(option, "csvId"));
                           },

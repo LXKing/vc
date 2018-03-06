@@ -2,8 +2,8 @@
 		<div class="buttoncons">
 			
 
-			 <div class="btn-group" title="列">
-			 	<div class="btn-group">
+			<div class="btn-group" title="列">
+			<div class="btn-group">
 		             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper" aria-expanded="false">
 		             	<i class="glyphicon fa fa-cogs"></i>
 		             	 操作
@@ -82,7 +82,7 @@
 </div>
 
 <script type="text/javascript">
-    var currPage=1,currSize=15;
+  var currPage=1,currSize=15;
 	var operate = {
 		getGrid:function(){
 			return grid;
@@ -102,17 +102,17 @@
             params = transferParamsWithSortExport(params,"cssId");
             window.open(getServUrl("/monitor/state/report")+"?"+jsonToUri(params));
             },*/
-        exportData: function () {
-            var params = {rows: currSize, page: currPage, allReport: 1};
-            params = transferParamsWithSortExport(params, "cssId");
-            var clmsCopy = $.extend(true, [], clms);
-            params.clms = clmsCopy.splice(1, clms.length-2);
-            params.query = getFormData(this.getQueryForm());
-            console.log(JSON.stringify(params));
+    exportData: function () {
+      var params = {rows: currSize, page: currPage, allReport: 1};
+      params = transferParamsWithSortExport(params, "cssId");
+      var clmsCopy = $.extend(true, [], clms);
+      params.clms = clmsCopy.splice(1, clms.length-2);
+      params.query = getFormData(this.getQueryForm());
+      console.log(JSON.stringify(params));
 
-            var myVar;
+      var myVar;
 
-            ajaxRequest(getServUrl("/monitor/state/report"), "POST",
+      ajaxRequest(getServUrl("/monitor/state/report"), "POST",
                 JSON.stringify(params), function (r) {
                     if (r.success) {
                         console.log(JSON.stringify(r));
@@ -256,23 +256,28 @@
 			  url:getServUrl("/monitor/state/list"),
 			  cols:  [clms],
 			  done: function(res, curr, count){
-                  if(curr>res.page.total)
-                      curr = res.page.total;
-                  currPage = curr;
-                  currSize = res.page.size;
+          if (res.page.total != 0) {
+            curr = 1;
+            // res.page.total = 0;
+          }
+          // if(curr>res.page.total) {
+          //   curr = res.page.total;
+          //   currPage = curr;
+          //   currSize = res.page.size;
+          // }
 			  },
-      	  	  response: {
-	      		  statusName: "code",
-	  		      statusCode: 0,
-	  		      msgName: "msg",
-	  		      dataName: "data",
-	  		      countName: "count"
-	      	  },
-	      	  request:{limitName: "rows"},
-	      	  where:{
-	      			sidx:"cssId",
+      	response: {
+	        statusName: "code",
+	  		  statusCode: 0,
+	  		  msgName: "msg",
+	  		  dataName: "data",
+	  		  countName: "count"
+	      },
+	      request:{limitName: "rows"},
+	      where:{
+	      	sidx:"cssId",
 					sord:"desc"
-	      	  }
+	      }
 	};
 
 	function showHideColumn(){
@@ -282,11 +287,11 @@
 			showHide[$(this).val()] = flag;
 		});
 		$(".layui-table-view").remove();
-	  	var r = [];
+	  var r = [];
 		for(var i=0;i<clms.length;i++){
 			var field = clms[i]["field"];
 			if(showHide[field]===true || clms[i].checkbox ===true || clms[i].fixed){
-				  r.push(clms[i]);
+				r.push(clms[i]);
 			}
 		}
 	 	option["cols"] = [r];
@@ -345,22 +350,23 @@
 					  });
 
 					  grid =  {
-                          render: function (option) {
-                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
-                                  option.where = getFormData(operate.getQueryForm());
-                              } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
-                              }
-                              table.render(transferParamsWithSort(option, "cssId"));
-                          },
-                          reloadData: function (params) {
-                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
-                                  option.where = getFormData(operate.getQueryForm());
-                              } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
-                              }
-                              table.reload(tableId, transferParamsWithSort(params, "cssId"));
-                          },
+              render: function (option) {
+                    if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                        option.where = getFormData(operate.getQueryForm());
+                    } else {
+                        option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
+                    }
+                    table.render(transferParamsWithSort(option, "cssId"));
+                },
+              reloadData: function (params) {
+                console.log(params);
+                    if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                      option.where = getFormData(operate.getQueryForm());
+                    } else {
+                      option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
+                    }
+                    table.reload(tableId, transferParamsWithSort(params, "cssId"));
+                },
 							getSelectIds:function(){
 								var ids = [];
 								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;
