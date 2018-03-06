@@ -1,4 +1,4 @@
-package com.ccclubs.influxdb.impl;
+package com.ccclubs.influxdb.Service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
@@ -14,9 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.influxdb.InfluxDBTemplate;
-import sun.awt.image.BufferedImageGraphicsConfig;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * Created by Administrator on 2018/1/30 0030.
  */
 @Service(version= InfluxdbServiceVersion.V1)
-public class CarCanHistoryInfImpl  implements CarCanHistoryInf{
+public class CarCanHistoryService implements CarCanHistoryInf{
     Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -33,7 +30,7 @@ public class CarCanHistoryInfImpl  implements CarCanHistoryInf{
 
     private InfluxDBResultMapper resultMapper = new InfluxDBResultMapper() ;
 //
-    @Override
+
     public void insert( List<CarCan> recordList) {
         int i = 0;
         List<Point> pointList=new ArrayList<>();
@@ -59,7 +56,7 @@ public class CarCanHistoryInfImpl  implements CarCanHistoryInf{
         influxDBTemplate.write(pointList);
     }
 
-    @Override
+
     public List<CarCan> selectCarCanListByCondition(CarCanHistoryParam carCanHistoryParam) {
         String sql = "select  cs_number,can_data,add_time,time  from  INFLUXDB_CAR_CAN_HISTORY  ";
         StringBuffer sb=null;
@@ -94,11 +91,5 @@ public class CarCanHistoryInfImpl  implements CarCanHistoryInf{
         return carCanList;
     }
 
-    public static void main(String[] orgs){
 
-
-        BigDecimal bigDecimal=new BigDecimal(0);
-
-      System.out.println(bigDecimal.intValue());
-    }
 }

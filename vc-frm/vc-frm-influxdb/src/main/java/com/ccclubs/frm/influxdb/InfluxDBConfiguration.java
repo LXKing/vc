@@ -1,4 +1,4 @@
-package com.ccclubs.influxdb.config;
+package com.ccclubs.frm.influxdb;
 
 import org.influxdb.dto.Point;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
