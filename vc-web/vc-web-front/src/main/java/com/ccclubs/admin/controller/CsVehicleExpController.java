@@ -2,6 +2,7 @@ package com.ccclubs.admin.controller;
 
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.resolver.CsVehicleExpResolver;
+import com.ccclubs.admin.task.schedulers.StatisticsScheduler;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.vo.TableResult;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.UUID;
 
@@ -75,6 +77,19 @@ public class CsVehicleExpController {
         r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
         r.setValue(uuid);
         return r;
+    }
+
+    @Resource
+    StatisticsScheduler statisticsScheduler;
+
+    /**
+     * 手动触发根据文本检索车辆历史状态信息并导出。
+     */
+    @RequestMapping(value = "trigger", method = RequestMethod.GET)
+    public String trigger()
+    {
+        statisticsScheduler.expDataCheckJob();
+        return "已触发";
     }
 
     /**
