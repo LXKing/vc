@@ -1,11 +1,9 @@
-package com.ccclubs.influxdb.impl;
+package com.ccclubs.influxdb.Service;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.influxdb.inf.CarStateHistoryInf;
-import com.ccclubs.influxdb.input.CarCanHistoryParam;
 import com.ccclubs.influxdb.input.CarStateHistoryParam;
-import com.ccclubs.influxdb.model.CarCan;
 import com.ccclubs.influxdb.model.CarState;
 import com.ccclubs.influxdb.version.InfluxdbServiceVersion;
 import org.influxdb.dto.Point;
@@ -26,8 +24,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Service(version= InfluxdbServiceVersion.V1)
-public class CarStateHistoryInfImpl implements CarStateHistoryInf {
-    Logger logger= LoggerFactory.getLogger(CarStateHistoryInfImpl.class);
+public class CarStateHistoryService implements  CarStateHistoryInf{
+    Logger logger= LoggerFactory.getLogger(CarStateHistoryService.class);
 
 
     @Autowired
@@ -35,7 +33,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
     private InfluxDBResultMapper resultMapper = new InfluxDBResultMapper() ;
     //
-    @Override
     public void insert( List<CarState> recordList) {
         int i = 0;
         List<Point> pointList=new ArrayList<>();
@@ -107,7 +104,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         influxDBTemplate.write(pointList);
     }
 
-    @Override
     public List<CarState> selectCarStateListByCondition(CarStateHistoryParam carStateHistoryParam) {
         String sql = "select " +
                 " cs_number, time , cs_access, add_time, rent_flg, warn_code," +
