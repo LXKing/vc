@@ -68,6 +68,7 @@ druid:
 
 email:
   host: smtp.mxhichina.com
+  port: 465
   smtp_username: vcloud@ccclubs.com
   smtp_password: vcloud!@#$%12345
   sender_name: 车机中心监控平台
