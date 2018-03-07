@@ -76,6 +76,14 @@
 
 </div>
 
+<script type="text/html" id="tlCsvProdDate">
+    <div>{{dateFormat(d.csvProdDate, "yyyy-MM-dd")}}</div>
+</script>
+
+<script type="text/html" id="tlCsvAddTime">
+    <div>{{dateFormat(d.csvAddTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+</script>
+
 <script type="text/javascript">
     var currPage=1,currSize=15;
     var operate = {
@@ -206,15 +214,15 @@
         , {field: "csvModelCodeSimple", title: "车型备案型号", width: 120, sort: true}
         , {field: "csvCarNo", title: "车牌号", width: 110, sort: true}
         , {field: "csmNumber", title: "车机号", width: 110, sort: true}
-        , {
-            field: "csvProdDate", title: "出厂日期", width: 110, sort: true, templet: function (d) {
-                return dateFormat(d.csvProdDate, "yyyy-MM-dd");
+        , /*{
+            field: "csvProdDate", title: "出厂日期", width: 110, sort: true, templet: function (data) {
+                return dateFormat(data.csvProdDate, "yyyy-MM-dd");
             }
+        },*/ {
+            field: "csvProdDate", title: "出厂日期", width: 110, sort: true, templet:'#tlCsvProdDate'
         }
         , {
-            field: "csvAddTime", title: "车辆添加时间", width: 170, sort: true, templet: function (d) {
-                return dateFormat(d.csvAddTime, "yyyy-MM-dd HH:mm:ss");
-            }
+            field: "csvAddTime", title: "车辆添加时间", width: 170, sort: true, templet: '#tlCsvAddTime'
         }
         /*, {field: "csvModelCodeFull", title: "车型代码", width: 110, sort: true}*/
         , {field: "csmTeTypeText", title: "终端类型", width: 110, sort: true}
@@ -289,7 +297,7 @@
         (function (p) {
             authUtil.initSctl();
 
-            layui.use(['laypage', 'layer', 'table', 'element'], function () {
+            layui.use(['laypage','laydate','laytpl','layer', 'table', 'element'], function () {
                 var laypage = layui.laypage, 		//分页
                     layer = layui.layer, 			//弹层
                     table = layui.table, 			//表格
