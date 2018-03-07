@@ -9,6 +9,9 @@ import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import java.io.IOException;
+import java.util.concurrent.*;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,5 +83,12 @@ public class CommandSrvApp extends SpringBootServletInitializer {
     return ownMqClient;
   }
 
+  @Bean("vcThreadPool")
+  public ExecutorService getThreadPool() {
+    ThreadFactory threadFactory = new ThreadFactoryBuilder().setNameFormat("remote-pool-%d").build();
+    ExecutorService pool = new ThreadPoolExecutor(80, 200, 60L, TimeUnit.SECONDS
+            , new LinkedBlockingDeque<>(2048), threadFactory, new ThreadPoolExecutor.AbortPolicy());
+    return pool;
+  }
 
 }
