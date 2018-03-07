@@ -144,3 +144,10 @@ zd:
     url: http://120.26.116.155:12121/update?cmdType=getCmd&version=1031
   validate:
     url: http://120.26.116.155:12121/update?cmdType=getStts&version=1031
+
+ThreadPool:
+  nameFormat: remote-cmd-pool-%d
+  corePoolSize: 80
+  maximumPoolSize: 200
+  keepAliveTime: 60
+  dequeCapacity: 2048
