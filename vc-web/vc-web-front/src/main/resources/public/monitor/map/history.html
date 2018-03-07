@@ -252,7 +252,6 @@
 
       //点击查询按钮
       $('#searchButton').on('click', function () {
-        pathSimplifierIns.render();
         if (!checkParams()) {
           return;
         }
@@ -326,7 +325,8 @@
               hasMore = false;
               return;
           }
-          if (d.data.length === 0) {
+          if (d.data == undefined || d.data.length == undefined || d.data.length === 0) {
+            $('#loadingTip').remove();
             console.log("已经没有更多数据！");
             if(totalPoint === 0) {
               layer.msg('已经没有更多数据！', {icon: 7, time: 1500});
@@ -406,7 +406,7 @@
                   $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
                 }
               });
-                map.setCenter(new AMap.LngLat(longitude,latitude));
+                // map.setCenter(new AMap.LngLat(longitude,latitude));
             } else {
               var cursor = navg.getCursor().clone(), //保存巡航器的位置
                   status = navg.getNaviStatus();
@@ -435,7 +435,7 @@
                       $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
                     }
                   });
-                  map.setCenter(new AMap.LngLat(longitude,latitude));
+                  // map.setCenter(new AMap.LngLat(longitude,latitude));
                 }
                 //恢复巡航器的位置
                 if (cursor.idx >= 0) {
