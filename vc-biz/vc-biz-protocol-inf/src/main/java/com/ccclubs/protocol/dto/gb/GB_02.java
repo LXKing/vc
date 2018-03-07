@@ -43,6 +43,22 @@ public class GB_02 implements IGbMessage {
     this.additionals = additionals;
   }
 
+  /**
+   * 获取 实时信息指定数据项
+   * @param additionalId
+   * @return
+   */
+  public IRealTimeAdditionalItem getRealTimeAdditionalItem(int additionalId) {
+    for (IRealTimeAdditionalItem item : this.getAdditionals()) {
+      if (additionalId == item.getAdditionalId()){
+        return item;
+      }
+    }
+
+    return null;
+  }
+
+
   @Override
   public byte[] WriteToBytes() {
     MyBuffer buff = new MyBuffer();
