@@ -2,6 +2,7 @@ package com.ccclubs.admin.task.schedulers;
 
 
 import com.ccclubs.admin.task.jobs.ExpDataCheckJob;
+import com.ccclubs.admin.task.jobs.ExpDataCleanJob;
 import com.ccclubs.admin.task.jobs.StatisticsJob;
 import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
@@ -58,12 +59,20 @@ public class StatisticsScheduler implements ApplicationContextAware {
     @Resource
     ExpDataCheckJob expDataCheckJob;
 
+    @Resource
+    ExpDataCleanJob expDataCleanJob;
+
     @Scheduled(cron="0 0 1 * * ?")
+    public void expDataCleanJob(){
+        logger.info("执行了一次 车辆异常数据的清理。");
+        EvManageContext.getThreadPool().execute(expDataCleanJob);
+    }
+
+    @Scheduled(cron="0 10 1 * * ?")
     public void expDataCheckJob(){
         logger.info("执行了一次 车辆异常数据的巡检。");
         EvManageContext.getThreadPool().execute(expDataCheckJob);
     }
-
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

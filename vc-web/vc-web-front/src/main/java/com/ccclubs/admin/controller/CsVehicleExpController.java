@@ -83,13 +83,23 @@ public class CsVehicleExpController {
     StatisticsScheduler statisticsScheduler;
 
     /**
-     * 手动触发根据文本检索车辆历史状态信息并导出。
+     * 手动触发清理mongo数据。
      */
-    @RequestMapping(value = "trigger", method = RequestMethod.GET)
-    public String trigger()
+    @RequestMapping(value = "trigger/clean", method = RequestMethod.GET)
+    public String triggerClean()
+    {
+        statisticsScheduler.expDataCleanJob();
+        return "已触发清理";
+    }
+
+    /**
+     * 手动触发巡检。
+     */
+    @RequestMapping(value = "trigger/check", method = RequestMethod.GET)
+    public String triggerCheck()
     {
         statisticsScheduler.expDataCheckJob();
-        return "已触发";
+        return "已触发巡检";
     }
 
     /**
