@@ -61,9 +61,6 @@ public class ExpDataCheckJob implements Runnable {
     @Resource
     ISrvUserService srvUserService;
 
-    @Resource
-    SendMailService sendMailService;
-
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Resource(name = "historyMongoTemplate")
     MongoTemplate historyMongoTemplate;
@@ -115,47 +112,6 @@ public class ExpDataCheckJob implements Runnable {
         }
 
         logger.info("数据写入mongo花费时间：" + (System.currentTimeMillis() - writeStart));
-        long exportStart = System.currentTimeMillis();
-        Query query = new Query();
-        long count = historyMongoTemplate.count(query, CsVehicleExp.class);
 
-        if (count > 0) {
-            logger.info("检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
-            // todo 导出Excel 发邮件
-            List<CsVehicleExp> list = historyMongoTemplate.findAll(CsVehicleExp.class);
-
-            ExportParams params = new ExportParams("车辆异常数据", "异常车辆");
-            Workbook workbook = ExcelExportUtil.exportExcel(params, CsVehicleExp.class, list);
-            logger.info("数据导出花费时间：" + (System.currentTimeMillis() - exportStart));
-            File savefile = new File(filePath);
-            if (!savefile.exists()) {
-                savefile.mkdirs();
-            }
-            FileOutputStream fos;
-            try {
-                fos = new FileOutputStream(filePath + "Vehicle_Exp_All_Data.xls");
-                workbook.write(fos);
-                fos.close();
-            } catch (FileNotFoundException e) {
-                throw new ApiException(ApiEnum.FAIL.code(), "未找到导出的文件路径！");
-            } catch (IOException e) {
-                throw new ApiException(ApiEnum.FAIL.code(), "导出文件时发生错误！");
-            }
-
-            Map<String, String> attachmentProp = new HashMap<>();
-            attachmentProp.put(AttachmentConst.IS_REMOTE, "false");
-            attachmentProp.put(AttachmentConst.LOCAL_FILE_PATH, filePath + "Vehicle_Exp_All_Data.xls");
-            attachmentProp.put(AttachmentConst.DESCRIPTION, "异常车辆数据");
-            attachmentProp.put(AttachmentConst.FILE_NAME, "异常车辆数据.xls");
-            try {
-                logger.info("开始发送通知邮件");
-                sendMailService.sslSend(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
-                        "检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
-            } catch (EmailException e) {
-                throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
-            } catch (MalformedURLException e) {
-                throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
-            }
-        }
     }
 }

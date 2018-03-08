@@ -3,6 +3,7 @@ package com.ccclubs.admin.task.schedulers;
 
 import com.ccclubs.admin.task.jobs.ExpDataCheckJob;
 import com.ccclubs.admin.task.jobs.ExpDataCleanJob;
+import com.ccclubs.admin.task.jobs.ExpDataExportJob;
 import com.ccclubs.admin.task.jobs.StatisticsJob;
 import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
@@ -62,6 +63,9 @@ public class StatisticsScheduler implements ApplicationContextAware {
     @Resource
     ExpDataCleanJob expDataCleanJob;
 
+    @Resource
+    ExpDataExportJob expDataExportJob;
+
     @Scheduled(cron="0 0 1 * * ?")
     public void expDataCleanJob(){
         logger.info("执行了一次 车辆异常数据的清理。");
@@ -74,10 +78,15 @@ public class StatisticsScheduler implements ApplicationContextAware {
         EvManageContext.getThreadPool().execute(expDataCheckJob);
     }
 
+    @Scheduled(cron="0 20 1 * * ?")
+    public void expDataExportJob(){
+        logger.info("执行了一次 车辆异常数据的导出。");
+        EvManageContext.getThreadPool().execute(expDataExportJob);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context=applicationContext;
     }
-
 
 }
