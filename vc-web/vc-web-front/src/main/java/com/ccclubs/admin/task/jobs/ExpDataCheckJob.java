@@ -99,6 +99,7 @@ public class ExpDataCheckJob implements Runnable {
                         || StringUtils.isEmpty(vo.getCsvEngineNo()) || StringUtils.isEmpty(vo.getCsvBataccuCode())
                         || StringUtils.isEmpty(vo.getCsvModelCodeSimple())) {
                     vehicleExp = new CsVehicleExp();
+                    vehicleExp.setCheckTime(new Date());
                     BeanUtils.copyProperties(vo, vehicleExp);
                     invalidData.add(vehicleExp);
                 }
