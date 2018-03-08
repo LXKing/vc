@@ -74,14 +74,13 @@ public class ExpDataCheckJob implements Runnable {
     @Override
     public void run() {
         logger.info("车辆数据开始巡检..");
+
         // 查询job信息
         VcJobTriggerInfo jobTriggerInfo = new VcJobTriggerInfo();
         jobTriggerInfo.setJobCode(this.getClass().getSimpleName());
         jobTriggerInfo = jobTriggerInfoService.selectOne(jobTriggerInfo);
         // 提取job参数
         ExpDataCheckJobParam jobParam = JSONObject.parseObject(jobTriggerInfo.getJobParam(), ExpDataCheckJobParam.class);
-        // 清空mongo异常数据
-        historyMongoTemplate.dropCollection(CsVehicleExp.class);
         SrvUser user = new SrvUser();
         user.setSuUsername(jobParam.getUsername());
         user = srvUserService.selectOne(user);
@@ -91,6 +90,7 @@ public class ExpDataCheckJob implements Runnable {
         VehicleMachineVo queryVo = new VehicleMachineVo();
         queryVo.setUserId(user.getSuId());
         PageInfo<VehicleMachineVo> ownData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(1, 500));
+        long writeStart = System.currentTimeMillis();
         // 分页处理
         for (int i = 1; i <= ownData.getPages(); i++) {
             PageInfo<VehicleMachineVo> pageData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(i, 500));
@@ -113,6 +113,9 @@ public class ExpDataCheckJob implements Runnable {
             }
 
         }
+
+        logger.info("数据写入mongo花费时间：" + (System.currentTimeMillis() - writeStart));
+        long exportStart = System.currentTimeMillis();
         Query query = new Query();
         long count = historyMongoTemplate.count(query, CsVehicleExp.class);
 
@@ -120,10 +123,10 @@ public class ExpDataCheckJob implements Runnable {
             logger.info("检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
             // todo 导出Excel 发邮件
             List<CsVehicleExp> list = historyMongoTemplate.findAll(CsVehicleExp.class);
-            Date start = new Date();
+
             ExportParams params = new ExportParams("车辆异常数据", "异常车辆");
             Workbook workbook = ExcelExportUtil.exportExcel(params, CsVehicleExp.class, list);
-            logger.info("数据导出花费时间：" + (new Date().getTime() - start.getTime()));
+            logger.info("数据导出花费时间：" + (System.currentTimeMillis() - exportStart));
             File savefile = new File(filePath);
             if (!savefile.exists()) {
                 savefile.mkdirs();

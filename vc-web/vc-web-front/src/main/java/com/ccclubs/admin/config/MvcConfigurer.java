@@ -36,7 +36,7 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
             //.excludePathPatterns("/oauth/**")
             .excludePathPatterns("/user/**")
             .excludePathPatterns("/monitor/gbState/set")
-            .excludePathPatterns("/monitor/expVehicle/trigger")
+            .excludePathPatterns("/monitor/expVehicle/trigger/**")
             .excludePathPatterns("/protocol/**")
             .excludePathPatterns("/monitor/gbState/detail/**")
             .excludePathPatterns("/report/**");
