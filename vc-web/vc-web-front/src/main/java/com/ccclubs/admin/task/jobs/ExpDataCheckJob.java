@@ -86,33 +86,77 @@ public class ExpDataCheckJob implements Runnable {
         }
         VehicleMachineVo queryVo = new VehicleMachineVo();
         queryVo.setUserId(user.getSuId());
-        PageInfo<VehicleMachineVo> ownData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(1, 500));
         long writeStart = System.currentTimeMillis();
-        // 分页处理
-        for (int i = 1; i <= ownData.getPages(); i++) {
-            PageInfo<VehicleMachineVo> pageData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(i, 500));
-            List<CsVehicleExp> invalidData = new ArrayList<>();
-            CsVehicleExp vehicleExp;
-            for (VehicleMachineVo vo : pageData.getList()) {
-                // 检验数据完整性
-                if (StringUtils.isEmpty(vo.getCsvVin()) || StringUtils.isEmpty(vo.getCsmTeNo()) || StringUtils.isEmpty(vo.getCsmIccid())
-                        || StringUtils.isEmpty(vo.getCsvEngineNo()) || StringUtils.isEmpty(vo.getCsvBataccuCode())
-                        || StringUtils.isEmpty(vo.getCsvModelCodeSimple())) {
-                    vehicleExp = new CsVehicleExp();
-                    vehicleExp.setCheckTime(new Date());
-                    BeanUtils.copyProperties(vo, vehicleExp);
-                    invalidData.add(vehicleExp);
-                }
+        // 统一一次处理
+        List<VehicleMachineVo> pageData = vehicleService.queryVehicleMachineByUser(queryVo);
+        List<CsVehicleExp> invalidData = new ArrayList<>();
+        CsVehicleExp vehicleExp;
+        for (VehicleMachineVo vo : pageData) {
+            // 检验数据完整性
+            if (StringUtils.isEmpty(vo.getCsvVin()) || StringUtils.isEmpty(vo.getCsmTeNo()) || StringUtils.isEmpty(vo.getCsmIccid())
+                    || StringUtils.isEmpty(vo.getCsvEngineNo()) || StringUtils.isEmpty(vo.getCsvBataccuCode())
+                    || StringUtils.isEmpty(vo.getCsvModelCodeSimple())) {
+                vehicleExp = new CsVehicleExp();
+                vehicleExp.setCheckTime(new Date());
+                BeanUtils.copyProperties(vo, vehicleExp);
+                invalidData.add(vehicleExp);
             }
-            logger.info("正在分页处理[第" + i + "页].");
-            //批量写入mongo
-            if (invalidData.size() > 0) {
-                historyMongoTemplate.insert(invalidData, CsVehicleExp.class);
-            }
-
+        }
+        logger.info("扫描完成. 检测到{}辆异常数据", invalidData.size());
+        //批量写入mongo
+        if (invalidData.size() > 0) {
+            historyMongoTemplate.insert(invalidData, CsVehicleExp.class);
         }
 
         logger.info("数据写入mongo花费时间：" + (System.currentTimeMillis() - writeStart));
 
     }
+
+//    @Override
+//    public void run() {
+//        logger.info("车辆数据开始巡检..");
+//
+//        // 查询job信息
+//        VcJobTriggerInfo jobTriggerInfo = new VcJobTriggerInfo();
+//        jobTriggerInfo.setJobCode(this.getClass().getSimpleName());
+//        jobTriggerInfo = jobTriggerInfoService.selectOne(jobTriggerInfo);
+//        // 提取job参数
+//        ExpDataCheckJobParam jobParam = JSONObject.parseObject(jobTriggerInfo.getJobParam(), ExpDataCheckJobParam.class);
+//        SrvUser user = new SrvUser();
+//        user.setSuUsername(jobParam.getUsername());
+//        user = srvUserService.selectOne(user);
+//        if (null == user) {
+//            return;
+//        }
+//        VehicleMachineVo queryVo = new VehicleMachineVo();
+//        queryVo.setUserId(user.getSuId());
+//        PageInfo<VehicleMachineVo> ownData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(1, 500));
+//        long writeStart = System.currentTimeMillis();
+//        // 分页处理
+//        for (int i = 1; i <= ownData.getPages(); i++) {
+//            PageInfo<VehicleMachineVo> pageData = vehicleService.queryVehicleMachineByPage(queryVo, new PageInput(i, 500));
+//            List<CsVehicleExp> invalidData = new ArrayList<>();
+//            CsVehicleExp vehicleExp;
+//            for (VehicleMachineVo vo : pageData.getList()) {
+//                // 检验数据完整性
+//                if (StringUtils.isEmpty(vo.getCsvVin()) || StringUtils.isEmpty(vo.getCsmTeNo()) || StringUtils.isEmpty(vo.getCsmIccid())
+//                        || StringUtils.isEmpty(vo.getCsvEngineNo()) || StringUtils.isEmpty(vo.getCsvBataccuCode())
+//                        || StringUtils.isEmpty(vo.getCsvModelCodeSimple())) {
+//                    vehicleExp = new CsVehicleExp();
+//                    vehicleExp.setCheckTime(new Date());
+//                    BeanUtils.copyProperties(vo, vehicleExp);
+//                    invalidData.add(vehicleExp);
+//                }
+//            }
+//            logger.info("正在分页处理[第" + i + "页]. 检测到{}辆异常数据", invalidData.size());
+//            //批量写入mongo
+//            if (invalidData.size() > 0) {
+//                historyMongoTemplate.insert(invalidData, CsVehicleExp.class);
+//            }
+//
+//        }
+//
+//        logger.info("数据写入mongo花费时间：" + (System.currentTimeMillis() - writeStart));
+//
+//    }
 }
