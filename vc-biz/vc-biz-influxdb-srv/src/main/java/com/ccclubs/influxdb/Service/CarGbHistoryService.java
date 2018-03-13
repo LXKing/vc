@@ -60,7 +60,7 @@ public class CarGbHistoryService  implements  CarGbHistoryInf{
         logger.info("influxdb 不到6千条CarGb数据开始批量插入");
         influxDBTemplate.write(pointList);
     }
-
+    @Override
     public List<CarGb> selectCarGbListByCondition(CarGbHistoryParam carGbHistoryParam) {
         String sql = "select  cs_vin, add_time,  gb_data, cs_access, cs_protocol, gb_type, cs_verify ,time from  INFLUXDB_CAR_GB_HISTORY  ";
         StringBuffer sb=new StringBuffer();

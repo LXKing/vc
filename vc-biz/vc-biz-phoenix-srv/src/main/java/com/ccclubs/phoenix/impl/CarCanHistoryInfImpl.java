@@ -32,6 +32,7 @@ import java.util.List;
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
+
     static final String insert_sql="upsert into " +
             "PHOENIX_CAR_CAN_HISTORY " +
             "(" +
@@ -55,8 +56,12 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             "where cs_number=? " +
             "and current_time>=? " +
             "and current_time<=? ";
+
     @Autowired
     private PhoenixTool phoenixTool;
+
+    @Autowired
+    private BaseInfImpl baseImpl;
 
     @Override
     public List<CarCan> queryCarCanListNoPage(final CarCanHistoryParam carCanHistoryParam) {
@@ -72,52 +77,27 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
         List<CarCan> carCanList = new ArrayList<CarCan>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet=null;
         try {
-            preparedStatement = connection.prepareStatement(query_sql);
             String cs_number = carCanHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
             long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+
+            preparedStatement = connection.prepareStatement(query_sql);
             preparedStatement.setString(1,cs_number);
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
-            CarCan carCan=null;
-            for (Object object:jsonArray
-                    ) {
-                JSONObject jsonObject = (JSONObject)object;
-                carCan=new CarCan();
-                String[] fields = queryFields.split(",");
-                for(String field:fields){
-                    try{
-                        BeanUtils.setProperty(carCan,field,jsonObject.get(StringUtils.upperCase(field)));
-                    }
-                    catch (Exception ex){
-                        logger.error(ex.getMessage());
-                    }
-                }
-                carCanList.add(carCan);
-            }
+            resultSet= preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+
+            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
         }
         finally {
-            if(preparedStatement!=null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
+            phoenixTool.closeResource(connection,
+                    preparedStatement,resultSet,"CarCan queryCarCanListNoPage");
         }
 
         return carCanList;
@@ -142,53 +122,30 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
         List<CarCan> carCanList = new ArrayList<CarCan>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet=null;
         try {
-            preparedStatement = connection.prepareStatement(query_sql);
+
             String cs_number = carCanHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
             long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+
+            preparedStatement = connection.prepareStatement(query_sql);
             preparedStatement.setString(1,cs_number);
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             preparedStatement.setInt(4,limit);
             preparedStatement.setInt(5,offset);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
-            CarCan carCan=null;
-            for (Object object:jsonArray
-                    ) {
-                JSONObject jsonObject = (JSONObject)object;
-                carCan=new CarCan();
-                String[] fields = queryFields.split(",");
-                for(String field:fields){
-                    try{
-                        BeanUtils.setProperty(carCan,field,jsonObject.get(StringUtils.upperCase(field)));
-                    }
-                    catch (Exception ex){
-                        logger.error(ex.getMessage());
-                    }
-                }
-                carCanList.add(carCan);
-            }
+            resultSet= preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+
+            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+
         }catch (SQLException e){
             logger.error(e.getMessage());
         }
         finally {
-            if(preparedStatement!=null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
-
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
+            phoenixTool.closeResource(connection,
+                    preparedStatement,resultSet,"CarCan queryCarCanListWithPage");
         }
         return carCanList;
     }
@@ -199,16 +156,18 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet=null;
         try {
-            preparedStatement = connection.prepareStatement(count_sql);
             String cs_number = carCanHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
             long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+
+            preparedStatement = connection.prepareStatement(count_sql);
             preparedStatement.setString(1,cs_number);
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = phoenixTool.queryRecords(resultSet);
+            resultSet= preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -217,21 +176,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             logger.error(e.getMessage());
         }
         finally {
-            if(preparedStatement!=null){
-                try {
-                    preparedStatement.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
+            phoenixTool.closeResource(connection,
+                    preparedStatement,resultSet,"CarCan queryCarCanListCount");
 
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
-            }
         }
 
         return total;
@@ -257,54 +204,20 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     }
 
     @Override
+    public void insertBulid(CarCan historyDate, PreparedStatement preparedStatement) throws SQLException {
+        String cs_number = historyDate.getCs_number();
+        Long current_time = historyDate.getCurrent_time();
+        String can_data = historyDate.getCan_data();
+        Long add_time = historyDate.getAdd_time();
+        preparedStatement.setString(1,cs_number);
+        preparedStatement.setLong(2,current_time);
+        preparedStatement.setString(3,can_data);
+        preparedStatement.setLong(4,add_time);
+        preparedStatement.addBatch();
+    }
+
+    @Override
     public void saveOrUpdate(final List<CarCan> records) {
-
-        Connection connection = null;
-        PreparedStatement carCanPs = null;
-        try {
-            connection = phoenixTool.getConnection();
-            carCanPs = connection.prepareStatement(insert_sql);
-            Long count =0L;
-            for(CarCan carCan:records){
-                count++;
-                String cs_number = carCan.getCs_number();
-                Long current_time = carCan.getCurrent_time();
-                String can_data = carCan.getCan_data();
-                Long add_time = carCan.getAdd_time();
-                carCanPs.setString(1,cs_number);
-                carCanPs.setLong(2,current_time);
-                carCanPs.setString(3,can_data);
-                carCanPs.setLong(4,add_time);
-                carCanPs.addBatch();
-                if(count%500==0){
-
-                    carCanPs.executeBatch();
-                    connection.commit();
-
-                }
-            }
-            carCanPs.executeBatch();
-            connection.commit();
-        }
-        catch (Exception e) {
-            logger.info("car can phoenix throw a error"+e.getMessage());
-            e.printStackTrace();
-        }
-        finally {
-            if(carCanPs!=null){
-                try {
-                    carCanPs.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(connection!=null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        baseImpl.saveOrUpdate(records,this,insert_sql,"CarCan");
     }
 }
