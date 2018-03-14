@@ -2,22 +2,17 @@ package com.ccclubs.frm.spring.handler;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.alibaba.dubbo.common.json.JSON;
-import com.ccclubs.frm.spring.entity.Subject;
-import com.ccclubs.usr.inf.TokenManageInf;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -46,21 +41,9 @@ public class ApiHandlerMethodArgumentResolver implements HandlerMethodArgumentRe
 	private static final String API_VERSION = "v";              // API接口版本
 	private static final String APP_ID = "appId";               // 访问ID
 	private static final String API_NAME = "apiName";           // 访问接口名称
-	private static final String API_TOKEN = "token";    // 鉴权信息 token的Header名称
-	private static final String REQUEST_CURRENT_USER = "CurrentUser"; //当前用户
 
 	@Resource
 	private AppIdAndKeyProp appIdAndKeyProp;
-
-	TokenManageInf tokenManager;
-
-	public TokenManageInf getTokenManager() {
-		return tokenManager;
-	}
-
-	public void setTokenManager(TokenManageInf tokenManager) {
-		this.tokenManager = tokenManager;
-	}
 
 	public ApiHandlerMethodArgumentResolver(AppIdAndKeyProp appIdAndKeyProp) {
 		this.appIdAndKeyProp = appIdAndKeyProp;
@@ -70,30 +53,6 @@ public class ApiHandlerMethodArgumentResolver implements HandlerMethodArgumentRe
 	public boolean supportsParameter(MethodParameter parameter) {
 		ApiSecurity as = parameter.getMethodAnnotation(ApiSecurity.class);
 		return null != as;
-	}
-
-	private boolean handleToken(String client_token, HttpServletRequest request, String appKey) {
-		if (client_token != null && client_token.length() > 0) {
-			Map<String, Object> claims;
-			try {
-				claims = tokenManager.parseToken(client_token, appKey);
-
-				Subject subject = JSON.parse(claims.get("sub").toString(), Subject.class);
-				logger.info("current request subject: {}", subject.toString());
-				//验证token
-				String server_token = tokenManager.getTokenByKey(subject.getAccount());
-				if (server_token != null && server_token.equals(client_token)) {
-					//设置current User
-					request.setAttribute(REQUEST_CURRENT_USER, subject);
-					return true;
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				return false;
-			}
-		}
-		request.setAttribute(REQUEST_CURRENT_USER, null);
-		return false;
 	}
 
 	@Override
@@ -106,9 +65,8 @@ public class ApiHandlerMethodArgumentResolver implements HandlerMethodArgumentRe
 		String v = request.getHeader(API_VERSION);
 		String appId = request.getHeader(APP_ID);
 		String apiName = request.getHeader(API_NAME);
-		String client_token = request.getHeader(API_TOKEN);
 
-		logger.debug("[request] sign:{}, v:{}, apiId:{}, apiName:{}, client_token:{}", sign, v, appId, apiName, client_token);
+		logger.debug("[request] sign:{}, v:{}, apiId:{}, apiName:{}", sign, v, appId, apiName);
 		InputStream is = request.getInputStream();
 		String jsonContents = IOUtils.toString(is, "UTF-8");
 		logger.debug("s:{}", jsonContents);
@@ -123,12 +81,7 @@ public class ApiHandlerMethodArgumentResolver implements HandlerMethodArgumentRe
 		if (StringUtils.isEmpty(appKey)) {
 			throw new ApiException(ApiEnum.SIGN_CHECK_APPKEY_ISNULL);
 		}
-		if (annotation.checkToken() && !handleToken(client_token, request, appKey)) {
-			logger.error("401 unauthorized for token: {}", client_token);
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			throw new ApiException(ApiEnum.UNAUTHORIZED_ERROR);
-		}
+
 		String calc_sign = HmacUtils.hmacSha1Hex(appKey, value);
 		if (StringUtils.isEmpty(sign) || StringUtils.isEmpty(calc_sign) || !calc_sign.equals(sign)) {
 			throw new ApiException(ApiEnum.SIGN_CHECK_FAILED);
