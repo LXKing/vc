@@ -33,7 +33,6 @@
         <module>vc-biz-pub-model</module>
         <module>vc-biz-influxdb-srv</module>
         <module>vc-biz-influxdb-inf</module>
-        <module>vc-biz-usr-inf</module>
         <module>vc-biz-usr-orm</module>
     </modules>
 </project>
