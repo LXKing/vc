@@ -3,8 +3,6 @@ package com.ccclubs.frm.spring.config;
 import java.util.List;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.ccclubs.usr.inf.TokenManageInf;
-import com.ccclubs.usr.version.UserServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,16 +26,14 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @EnableAsync
 @EnableConfigurationProperties({AppIdAndKeyProp.class})
 public class WebConfiguration extends WebMvcConfigurerAdapter {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("*");
-    }
 
     @Autowired
     private AppIdAndKeyProp appIdAndKeyProp;
 
-    @Reference(version = UserServiceVersion.V1)
-    TokenManageInf tokenManager;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedHeaders("*").allowedMethods("*").allowedOrigins("*");
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -58,10 +54,7 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         ApiHandlerMethodArgumentResolver handler = new ApiHandlerMethodArgumentResolver(appIdAndKeyProp);
-        if (tokenManager != null) {
-            handler.setTokenManager(tokenManager);
-            argumentResolvers.add(handler);
-        }
+        argumentResolvers.add(handler);
         super.addArgumentResolvers(argumentResolvers);
     }
 
@@ -75,8 +68,4 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         return new ApiExceptionHandler();
     }
 
-//    @Bean
-//    public ApiInvokeHandler apiInvokeHandler() {
-//        return new ApiInvokeHandler();
-//    }
 }

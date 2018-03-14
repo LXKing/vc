@@ -156,6 +156,10 @@
       <appender-ref ref="ALL_FILE"/>
       <appender-ref ref="ERROR_FILE"/>
     </logger>
+    <logger name="com.alibaba.druid" level="DEBUG" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
 
     <root level="${LOG_LEVEL:-DEBUG}">
       <appender-ref ref="STDOUT"/>

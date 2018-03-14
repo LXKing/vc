@@ -103,6 +103,16 @@ public class CsVehicleExpController {
     }
 
     /**
+     * 手动触发导出。
+     */
+    @RequestMapping(value = "trigger/export", method = RequestMethod.GET)
+    public String triggerExport()
+    {
+        statisticsScheduler.expDataExportJob();
+        return "已触发导出";
+    }
+
+    /**
      * 注册属性内容解析器
      */
     void registResolvers(CsVehicleExp data){

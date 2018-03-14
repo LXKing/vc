@@ -9,8 +9,6 @@
     <artifactId>vc-biz</artifactId>
     <packaging>pom</packaging>
     <modules>
-
-
         <module>vc-biz-pub-orm</module>
         <module>vc-biz-vehicle-inf</module>
         <module>vc-biz-vehicle-srv</module>
@@ -18,9 +16,6 @@
         <module>vc-biz-terminal-srv</module>
         <module>vc-biz-command-inf</module>
         <module>vc-biz-command-srv</module>
-        <module>vc-biz-usr-orm</module>
-  		<module>vc-biz-usr-inf</module>
-  		<module>vc-biz-usr-srv</module>
         <module>vc-biz-mongo-inf</module>
         <module>vc-biz-mongo-orm</module>
         <module>vc-biz-common-srv</module>
@@ -30,7 +25,6 @@
         <module>vc-biz-quota-orm</module>
         <module>vc-biz-quota-inf</module>
         <module>vc-biz-quota-srv</module>
-        <module>vc-biz-olap-orm</module>
         <module>vc-biz-phoenix-orm</module>
         <module>vc-biz-phoenix-inf</module>
         <module>vc-biz-phoenix-srv</module>
@@ -39,5 +33,7 @@
         <module>vc-biz-pub-model</module>
         <module>vc-biz-influxdb-srv</module>
         <module>vc-biz-influxdb-inf</module>
+        <module>vc-biz-usr-inf</module>
+        <module>vc-biz-usr-orm</module>
     </modules>
 </project>

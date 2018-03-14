@@ -71,13 +71,6 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.9</version>
 		</dependency>
-
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-biz-olap-orm</artifactId>
-			<version>${frm.version}</version>
-		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>

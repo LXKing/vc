@@ -180,11 +180,10 @@
 	}
 
 	function getTableHeight(){
-		 var height = $(window).height() - ($(".queryForm_wrapper").height()+$(".menubar").height() + 25);
-//		 if(height>1000)return 1000;
-		console.log(height);
-		 return height;
-	}
+      var height = $(window).height() - ($(".queryform").height() + 50);
+      if(height>1000)return 1000;
+      return height;
+  }
 
 	$(window).resize(function(){
 		option["height"] = getTableHeight();

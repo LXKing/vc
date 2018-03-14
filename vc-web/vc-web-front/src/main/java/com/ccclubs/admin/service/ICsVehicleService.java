@@ -27,4 +27,11 @@ public interface ICsVehicleService extends BaseService<CsVehicle, Integer>{
      * @return
      */
     PageInfo<VehicleMachineVo> queryVehicleMachineByPage(VehicleMachineVo vo, PageInput input);
+
+    /**
+     * 根据用户查询名下车辆
+     * @param vo
+     * @return
+     */
+    List<VehicleMachineVo> queryVehicleMachineByUser(VehicleMachineVo vo);
 }
