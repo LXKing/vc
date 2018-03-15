@@ -44,7 +44,7 @@ public class CsVehicleServiceImpl extends
     }
 
     /**
-     * 根据用户查询名下车辆
+     * 根据用户分页查询名下车辆
      *
      * @param vo
      * @return
@@ -56,5 +56,16 @@ public class CsVehicleServiceImpl extends
             return new PageInfo<>(new ArrayList<>());
         }
         return new PageInfo<>(list);
+    }
+
+    /**
+     * 根据用户查询名下车辆
+     *
+     * @param vo
+     * @return
+     */
+    @Override
+    public List<VehicleMachineVo> queryVehicleMachineByUser(VehicleMachineVo vo) {
+        return backDao.queryVehicleMachineByUser(vo);
     }
 }

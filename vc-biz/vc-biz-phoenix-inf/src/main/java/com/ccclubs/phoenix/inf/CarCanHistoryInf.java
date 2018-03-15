@@ -12,7 +12,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
-public interface CarCanHistoryInf {
+public interface CarCanHistoryInf extends BaseHistoryInf<CarCan>{
     //查询车辆CAN信息(非分页)
      List<CarCan> queryCarCanListNoPage(CarCanHistoryParam carCanHistoryParam);
 
@@ -25,6 +25,4 @@ public interface CarCanHistoryInf {
     //查询车辆CAN信息(封装)
      CarCanHistoryOutput queryCarCanListByOutput(CarCanHistoryParam carCanHistoryParam);
 
-    //写入或更新车辆CAN信息
-     void saveOrUpdate(List<CarCan> records);
 }

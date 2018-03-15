@@ -1,3 +1,56 @@
+.jqGrid_wrapper table tr:nth-child(odd){
+	background: #fff;
+}
+ .jqGrid_wrapper table tr:nth-child(even){
+	background: #F5F5F5;
+}
+.fa-cogs{
+    z-index:-1000;
+}
+.grid_oper_btn{
+    opacity:.9;
+}
+.grid_oper_btn .caret{
+	position: relative;
+	z-index:-1000;
+}
+.toBack{
+	position: absolute;z-index: -100;left: 2px;
+}
+.toFront{
+	padding-left: 16px;line-height: 23px;
+}
+.picList{/*æ¯ä¸€å¼ å›¾ç‰‡*/
+	height: 128px;width: 128px;float: left;margin:8px 10px 8px 0;position: relative;
+}
+.picList:hover{ cursor: pointer; }
+.delIcon{/*åˆ é™¤å›¾ç‰‡å°å›¾æ ‡*/
+	position: absolute;
+	right: -5px;
+	top: -7px;
+	width: 18px;
+	height: 18px;
+	padding: 3px;
+	text-align: center;
+	line-height: 14px;
+	border-radius: 100%;
+	font-size: 14px;
+	cursor: pointer;
+	color: #fff;
+	background-color: #666;
+}
+.delIcon:hover{ color: orange; }
+.addPic{/*æ·»åŠ å›¾ç‰‡æŒ‰é’®*/
+	margin:8px 0 8px 0;
+}
+.addPic:hover{  cursor: pointer;  }
+.detailPic{/*è¯¦æƒ…å›¾ç‰‡*/
+	position: absolute;transition:all 0.4s;top:0;margin:0 auto;z-index: 100;width: 0;
+}
+.pics-wrap{
+	display: flex;
+	flex-wrap: wrap;
+}
 .flex-wrap{
 	display: flex;
 	line-height:37px;
@@ -10,6 +63,11 @@
 	flex:1;
 	text-align: center;
 	border-right: 1px solid #e5e6e7;
+}
+.flex-center{
+	display: flex;
+	justify-content: center;
+	margin-left: 5.3333333%;
 }
 .add-refund{
 	display: inline-block;
@@ -72,11 +130,10 @@
 }
 
 .jqgrid_div{
-	margin-right: 0px;
-	padding:8px;
+	margin-right: 0px; 
 }
 
-/*-------------¼ìË÷Ìõ¼şÇøÓò------------*/
+/*-------------Â¼Ã¬Ã‹Ã·ÃŒÃµÂ¼Ã¾Ã‡Ã¸Ã“Ã²------------*/
 .fieldTip{
 	font-weight: normal;
 	color: #F4A460;
@@ -101,7 +158,7 @@
 .queryform dl dd input{
 	float: left; 
 }
-/*-------------±í¸ñÇøÓò------------*/
+/*-------------Â±Ã­Â¸Ã±Ã‡Ã¸Ã“Ã²------------*/
 .grid_oper_btn{
 	padding:2px 5px;margin-top:-6px;margin-bottom:-6px;margin-right:3px;
 }
@@ -224,7 +281,7 @@ input[type="checkbox"] + label {
 }
 .queryform .querybtns{
 	float: left; padding-top: 5px;
-	padding: 3px;
+	padding: 5px;
 	padding-left: 8px;
 }
 .timegroup .ttt{
@@ -242,7 +299,7 @@ input[type="checkbox"] + label {
 .timegrouplabel{
 	float: left; text-align: center; vertical-align: middle; line-height: 34px;
 }
-/*-------------±íµ¥ÇøÓò------------*/
+/*-------------Â±Ã­ÂµÂ¥Ã‡Ã¸Ã“Ã²------------*/
 
 .form_content{
 	padding-bottom: 20px;
@@ -306,10 +363,10 @@ input[type="checkbox"] + label {
 	float: right;
 }
 
-/*-------------ÊäÈëËÑË÷×é¼ş------------*/
+/*-------------ÃŠÃ¤ÃˆÃ«Ã‹Ã‘Ã‹Ã·Ã—Ã©Â¼Ã¾------------*/
 .searchinputDiv{
 	position: absolute;
-	z-index: 99999999;
+	z-index: 9999;
 }
 .searchWrapper {
 	background: none repeat scroll 0 0 #fff;
@@ -318,8 +375,10 @@ input[type="checkbox"] + label {
 	display: none;
 	width: 100%;
 	position:absolute;
-	z-index: 99999999;
+	z-index: 1000;
 	top: 36px;
+	height: 150px;
+	overflow: scroll;
 }
 .searchWrapper ul{
 	padding-left: 0px;
@@ -360,13 +419,20 @@ input[type="checkbox"] + label {
 	right: -117px;
 }
 .add-group-btn{
-	width: 34px;
+	width: 20px;
 	position: absolute;
 	top: 0px;
-	right: 0px;
+	right: -3px;
+}
+.add-group-btn .dropdown-toggle{
+	width: 20px;
+}
+.add-group-btn .dropdown-toggle span{
+    position: relative;
+    left: -3px;
 }
 
-/*-------------µ¯³ö¿òµ×²¿°´Å¥------------*/
+/*-------------ÂµÂ¯Â³Ã¶Â¿Ã²ÂµÃ—Â²Â¿Â°Â´Ã…Â¥------------*/
 .windowButtonBar{
 	width: 100%;
 	position: fixed;

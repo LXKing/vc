@@ -27,7 +27,7 @@ public  class PostGetTest{
     @Test
     public void postTest() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:12007/history/states-query");//query  101.37.178.63  116.62.29.30:7007
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/states-query");//query 127.0.0.1:12007    116.62.29.30:7007
         //http://101.37.178.63/history/drivepaces-query
         //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         CarStateHistoryParam input=new CarStateHistoryParam();

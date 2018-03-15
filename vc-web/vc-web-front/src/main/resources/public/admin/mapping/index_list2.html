@@ -194,11 +194,10 @@
 	}
 
 	function getTableHeight(){
-		 var height = $(window).height() - ($(".queryForm_wrapper").height()+$(".menubar").height() + 25);
-//		 if(height>1000)return 1000;
-		console.log(height);
-		 return height;
-	}
+      var height = $(window).height() - ($(".queryform").height() + 50);
+      if(height>1000)return 1000;
+      return height;
+  }
 
 	$(window).resize(function(){
 		option["height"] = getTableHeight();
@@ -249,7 +248,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.render(transferParamsWithSort(option, "csmId"));
                           },
@@ -257,7 +256,7 @@
                               if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
                                   option.where = getFormData(operate.getQueryForm());
                               } else {
-                                  option.where = $.extend(option.where, getFormData(operate.getQueryForm()));
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
                               }
                               table.reload(tableId, transferParamsWithSort(params, "csmId"));
                           },

@@ -3,6 +3,7 @@ package com.ccclubs.admin.task.schedulers;
 
 import com.ccclubs.admin.task.jobs.ExpDataCheckJob;
 import com.ccclubs.admin.task.jobs.ExpDataCleanJob;
+import com.ccclubs.admin.task.jobs.ExpDataExportJob;
 import com.ccclubs.admin.task.jobs.StatisticsJob;
 import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
@@ -25,32 +26,32 @@ import javax.annotation.Resource;
 
 /**
  * 这个类只应该被作为调度器使用，，请勿在此类中添加逻辑代码。
- * */
+ */
 @Component
 public class StatisticsScheduler implements ApplicationContextAware {
 
-    private static final Logger logger= LoggerFactory.getLogger(StatisticsScheduler.class);
+    private static final Logger logger = LoggerFactory.getLogger(StatisticsScheduler.class);
 
     private static ApplicationContext context;
 
     /**
      * 每隔一定的时间计算一次状态数据并且存入数据库。
-     * */
-    @Scheduled(cron="0 0/30 * * * ?")
-    public void shortTimeJob(){
+     */
+    @Scheduled(cron = "0 0/30 * * * ?")
+    public void shortTimeJob() {
         logger.info("执行了一次  30分钟间隔的计算。");
-        long unitTime=30*60*1000;
-        StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
+        long unitTime = 30 * 60 * 1000;
+        StatisticsJob statisticsJob = StatisticsJob.getFromApplication();
         statisticsJob.setUnitTime(unitTime);
         EvManageContext.getThreadPool().execute(statisticsJob);
 
     }
 
-    @Scheduled(cron="0 0 0 * * ?")
-    public void everyDayJob(){
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void everyDayJob() {
         logger.info("执行了一次  12点定时的计算。");
-        long unitTime=24*60*60*1000;
-        StatisticsJob statisticsJob=StatisticsJob.getFromApplication();
+        long unitTime = 24 * 60 * 60 * 1000;
+        StatisticsJob statisticsJob = StatisticsJob.getFromApplication();
         statisticsJob.setUnitTime(unitTime);
         EvManageContext.getThreadPool().execute(statisticsJob);
     }
@@ -62,22 +63,30 @@ public class StatisticsScheduler implements ApplicationContextAware {
     @Resource
     ExpDataCleanJob expDataCleanJob;
 
-    @Scheduled(cron="0 0 1 * * ?")
-    public void expDataCleanJob(){
+    @Resource
+    ExpDataExportJob expDataExportJob;
+
+    @Scheduled(cron = "0 5 22 * * ?")
+    public void expDataCleanJob() {
         logger.info("执行了一次 车辆异常数据的清理。");
         EvManageContext.getThreadPool().execute(expDataCleanJob);
     }
 
-    @Scheduled(cron="0 10 1 * * ?")
-    public void expDataCheckJob(){
+    @Scheduled(cron = "0 10 22 * * ?")
+    public void expDataCheckJob() {
         logger.info("执行了一次 车辆异常数据的巡检。");
-        EvManageContext.getThreadPool().execute(expDataCheckJob);
+        expDataCheckJob.run();
+    }
+
+    @Scheduled(cron = "0 20 22 * * ?")
+    public void expDataExportJob() {
+        logger.info("执行了一次 车辆异常数据的导出。");
+        EvManageContext.getThreadPool().execute(expDataExportJob);
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        context=applicationContext;
+        context = applicationContext;
     }
-
 
 }

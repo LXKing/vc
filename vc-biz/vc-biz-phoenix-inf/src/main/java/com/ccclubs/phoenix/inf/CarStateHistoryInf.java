@@ -32,7 +32,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
-public interface CarStateHistoryInf {
+public interface CarStateHistoryInf extends BaseHistoryInf<CarState>{
     //查询车辆状态信息(非分页)
      List<CarState> queryCarStateListNoPage(CarStateHistoryParam carStateHistoryParam);
 
@@ -45,8 +45,6 @@ public interface CarStateHistoryInf {
     //查询车辆状态信息(封装)
      CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam);
 
-    //写入或更新车辆状态信息
-     void saveOrUpdate(List<CarState> records);
 
     //驾驶阶段数据计算
      List<Pace> calDrivePaceList(List<CarState> carStateList);

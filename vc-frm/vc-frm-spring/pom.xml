@@ -48,11 +48,11 @@
             <artifactId>vc-frm-dubbox</artifactId>
             <version>${frm.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-usr-inf</artifactId>
             <version>${biz.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>

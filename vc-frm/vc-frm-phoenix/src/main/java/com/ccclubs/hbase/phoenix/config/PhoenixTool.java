@@ -33,39 +33,47 @@ public class PhoenixTool {
             logger.error(e.getMessage());
         }catch (ClassNotFoundException e) {
             e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return connection;
     }
 
-    //查询记录
-    public JSONArray queryRecords(ResultSet rs){
-        JSONArray jsonArray = new JSONArray();
-        try{
-            JSONObject obj = null;
-            ResultSetMetaData metaData = rs.getMetaData();
-            while(rs.next()){
-                obj = new JSONObject();
-                for(int i=1;i<=metaData.getColumnCount();i++){
-                    String columnName = metaData.getColumnName(i);
-                    Object columnValue = rs.getObject(columnName);
-                    obj.put(columnName,columnValue);
-                }
-                jsonArray.add(obj);
+    /**
+     * 关闭各类资源
+     * */
+    public void closeResource(Connection connection,
+                              PreparedStatement preparedStatement,
+                              ResultSet resultSet,
+                              String callerName){
+
+        if(preparedStatement!=null){
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                logger.error(e.getMessage());
             }
         }
-        catch (SQLException exception){
-            logger.error(exception.getMessage());
-        }
-        finally {
-            if (rs!=null){
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    logger.error(e.getMessage());
-                }
+
+        if (null!=resultSet){
+            try {
+                resultSet.close();
+            }catch (SQLException e) {
+                logger.error(e.getMessage());
             }
         }
-        return jsonArray;
+
+        if(connection!=null){
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error(e.getMessage());
+            }
+        }
+
+        if (callerName!=null) {
+            logger.debug(callerName + "  resource closed.");
+        }
+
     }
 }

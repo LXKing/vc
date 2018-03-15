@@ -8,7 +8,7 @@ import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 
 import java.util.List;
 
-public interface CarGbHistoryInf {
+public interface CarGbHistoryInf extends BaseHistoryInf<CarGb>{
     //查询车辆GB信息(非分页)
     public List<CarGb> queryCarGbListNoPage(CarGbHistoryParam carGbHistoryParam);
 
@@ -21,8 +21,7 @@ public interface CarGbHistoryInf {
     //查询车辆GB信息(封装)
     public CarGbHistoryOutput queryCarGbListByOutput(CarGbHistoryParam carGbHistoryParam);
 
-    //写入或更新车辆GB信息
-    public void saveOrUpdate(List<CarGb> records);
+
 
 
 }
