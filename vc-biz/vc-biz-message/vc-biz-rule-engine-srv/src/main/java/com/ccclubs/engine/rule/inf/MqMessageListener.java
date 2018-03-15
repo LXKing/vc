@@ -9,6 +9,9 @@ import com.ccclubs.protocol.util.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 用来消费阿里云消息队列ons
+ */
 public class MqMessageListener implements MessageListener {
 
   private static Logger logger = LoggerFactory.getLogger(MqMessageListener.class);

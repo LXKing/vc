@@ -17,6 +17,10 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 接收上行信息进行相应处理；
+ * 包括时间同步，取车应答，还车应答
+ */
 public class MqAckService implements IMqAckService {
 
   private static Logger logger = LoggerFactory.getLogger(MqAckService.class);

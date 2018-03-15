@@ -41,6 +41,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+/**
+ * 处理网关gateway发送出来的消息
+ * 订阅Topic：ser
+ * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
+ * 备注：包括808信息，国标信息，分时租赁信息
+ */
 public class MqMessageProcessService implements IMqMessageProcessService {
 
   private static Logger logger = LoggerFactory.getLogger(MqMessageProcessService.class);
@@ -85,10 +91,11 @@ public class MqMessageProcessService implements IMqMessageProcessService {
   @Override
   public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
       final String hexString) {
+    // 默认tag 为分时租赁协议TAG前缀
     if (StringUtils.empty(tag)) {
       tag = MqTagUtils.PROTOCOL_MQTT;
     }
-
+    // 终端，车辆关联关系
     MachineMapping mapping;
     // 808协议
     if (tag.startsWith(MqTagUtils.PROTOCOL_JT808)) {
@@ -105,9 +112,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 "808协议，当前在线，但系统中不存在，请排查原因 ", msgFromTerminal.getPacketDescr())));
         return;
       }
-      // 0x0200,0x0201,0x0704,0x0900
+      // 处理JT808协议对应的 0x0200,0x0201,0x0704,0x0900 这类消息
       if (headerType == 0x0200 || headerType == 0x0201) {
-        // 定位补报，需要将补报的定位信息批量入库
         JT_0200 jvi;
         if (headerType == 0x0200) {
           jvi = (JT_0200) msgFromTerminal.getMessageContents();
