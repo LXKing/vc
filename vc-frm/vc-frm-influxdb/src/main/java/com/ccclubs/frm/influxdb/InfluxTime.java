@@ -6,14 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by kevin on 16/11/28.
- *
- * 需要做lnfluxdb的表名的注解，需要加在类上。
- *
- */
-
-@Target({ElementType.TYPE})
+ * 需要做lnfluxdb的time属性的字段需要加上此注解
+ * */
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface InfluxTable {
+public @interface InfluxTime {
     public String name() default "";
 }

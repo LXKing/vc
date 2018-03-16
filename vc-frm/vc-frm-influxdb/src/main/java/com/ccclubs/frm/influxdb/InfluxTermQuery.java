@@ -1,9 +1,13 @@
 package com.ccclubs.frm.influxdb;
 
+import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +16,12 @@ import java.util.Map;
 
 /**
  * Created by kevin on 16/11/21.
+ * Edited by alban on 18/3/15
+ * description: 用于执行influxdb的通用查询基方法类。
  */
 @Service
 public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
+    private static Logger logger= LoggerFactory.getLogger(InfluxTermQuery.class);
 
     public InfluxTermQuery()
     {
@@ -28,7 +35,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         //sql = "SELECT used,free FROM disk order by time desc limit 10";
         Query query = new Query(sql, dbName);
         QueryResult ret = influxDB.query(query);
-        System.out.println(">InfluxDB: " + ret);
+//        System.out.println(">InfluxDB: " + ret);
         List<Map<String,Object>> rlst = new ArrayList<Map<String,Object>>();
         for(QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
@@ -41,9 +48,9 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
 
         }
-        System.out.println("rlst: ");
-        System.out.println(rlst);
-        System.out.println("rlst end---------------");
+//        System.out.println("rlst: ");
+//        System.out.println(rlst);
+//        System.out.println("rlst end---------------");
         return rlst;
     }
 
@@ -52,16 +59,16 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
     * */
     public List<T> query(Class entity,String sql)
     {
-        System.out.println(sql);
+        //System.out.println(sql);
         Query query = new Query(sql, dbName);
         QueryResult ret = influxDB.query(query);
-        System.out.println(ret);
-        System.out.println("---end---");
+        //System.out.println(ret);
+        //System.out.println("---end---");
         List<T> rlst = new ArrayList<T>();
         for(QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-            System.out.println(columns);
+            //System.out.println(columns);
             T row  = null;
             try {
                 row = (T)entity.newInstance();
@@ -103,9 +110,9 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
 
         }
-        System.out.println("rlst: ");
-        System.out.println(rlst);
-        System.out.println("rlst end---------------");
+//        System.out.println("rlst: ");
+//        System.out.println(rlst);
+//        System.out.println("rlst end---------------");
         return rlst;
     }
 
@@ -115,18 +122,20 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
     * @params 查询参数,名字-value 对
     * @whereClause  可选,可以定义 desc limit, order by等
     * */
-    public List<T> query(Class entity,Map<String,Object> params,String ...whereClause)
+
+    public List<T> query(T entity, @NotNull Map<String,Object> params, String ...whereClause)
     {
         //String sql = "SELECT used,free FROM disk order by time desc limit 10";
+        //entity.getAnnotation(InfluxTable.class);
         InfluxTable table = entity.getClass().getAnnotation(InfluxTable.class);
-        Field[] fields = entity.getDeclaredFields();
+        Field[] fields = entity.getClass().getDeclaredFields();
         StringBuffer sql = new StringBuffer(256);
         sql.append("select ");
         int i= 0;
         for(Field field:fields)
         {
-            sql.append(field.getName());
-            if(i++<fields.length) {
+            sql.append(insertBar(field.getName()));
+            if(++i<fields.length) {
                 sql.append(',');
             }
         }
@@ -139,10 +148,10 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             {
                 sql.append(" and ");
             }
-            sql.append(param.getKey()).append('=');
+            sql.append(insertBar(param.getKey())).append('=');
             Field field = null;
             try {
-                field = entity.getDeclaredField(param.getKey());
+                field = entity.getClass().getDeclaredField(param.getKey());
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -153,7 +162,10 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
             first = false;
         }
-        sql.append(' ').append(whereClause);
+        //FIXME 这里有拼接附加条件的sql语句问题。
+        if (null!=whereClause) {
+            sql.append(' ').append(whereClause);
+        }
 
         Query query = new Query(sql.toString(), dbName);
         QueryResult ret = influxDB.query(query);
@@ -162,10 +174,10 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         for(QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-            System.out.println(columns);
+//            System.out.println(columns);
             T row  = null;
             try {
-                row = (T)entity.newInstance();
+                row = (T)entity.getClass().newInstance();
 
                 for (List<Object> values : result.getSeries().get(0).getValues()) {
 
@@ -173,21 +185,48 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
                     {
                         String column =  trimBar(columns.get(idx));
                         Field field = null;
-                        try {
-                            field = entity.getDeclaredField(column);
-                        } catch (NoSuchFieldException e) {
-                            //如果找不到,到父类中找
-                            if(null==field) {
-                                try {
-                                    field = entity.getSuperclass().getDeclaredField(column);
-                                } catch (NoSuchFieldException e1) {
-                                    e1.printStackTrace();
+                        Boolean needSearchField=true;
+                        if ("time".equals(column)){
+                            for (Field f:fields){
+                                if(f.isAnnotationPresent(InfluxTime.class)){
+                                    field=f;
+                                    needSearchField=false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (needSearchField){
+                            try {
+                                field = entity.getClass().getDeclaredField(column);
+                            } catch (NoSuchFieldException e) {
+                                //如果找不到,到父类中找
+                                if(null==field) {
+                                    try {
+                                        field = entity.getClass().getSuperclass().getDeclaredField(column);
+                                    } catch (NoSuchFieldException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 }
                             }
                         }
 
-                        field.setAccessible(true);
-                        field.set(row,values.get(idx));
+                        if (!needSearchField){
+                            field.setAccessible(true);
+                            field.set(row,
+                                    DateTimeUtil.date2UnixFormat((String) values.get(idx),
+                                    DateTimeUtil.GMT_LONG_FORMAT)+8*60*60*1000);
+                        }
+                        else {
+                            field.setAccessible(true);
+                            if (Float.class==field.getType()||field.getType().getName()=="java.lang.Float")
+                            {
+                                Double doubleValue=(Double) values.get(idx);
+                                field.set(row,doubleValue.floatValue());
+                            }else {
+                                field.set(row,values.get(idx));
+                            }
+
+                        }
                     }
                     rlst.add(row);
                 }
@@ -199,7 +238,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
 
         }
-        System.out.println(rlst);
+//        System.out.println(rlst);
         return rlst;
     }
 
@@ -220,9 +259,9 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         for(Field field:fields)
         {
             sql.append("last(");
-            sql.append(field.getName());
+            sql.append(insertBar(field.getName()));
             sql.append(") as ");
-            sql.append(field.getName());
+            sql.append(insertBar(field.getName()));
 
             if(i++<fields.length) {
                 sql.append(',');
@@ -237,7 +276,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             {
                 sql.append(" and ");
             }
-            sql.append(param.getKey()).append('=');
+            sql.append(insertBar(param.getKey())).append('=');
             Field field = null;
             try {
                 field = entity.getDeclaredField(param.getKey());
@@ -261,7 +300,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         for(QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-            System.out.println(columns);
+//            System.out.println(columns);
             T row  = null;
             try {
                 row = (T)entity.newInstance();
@@ -303,25 +342,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
     }
 
 
-    @Override
-    public String trimBar(String column)
-    {
-        String arr[] = column.split("_");
-        StringBuffer buf = new StringBuffer();
-        boolean first = true;
-        for(String subColumn:arr)
-        {
-            if(first)
-            {
-                first = false;
-                buf.append(subColumn);
-            }
-            else {
-                buf.append(subColumn.replaceFirst(subColumn.substring(0, 1), subColumn.substring(0, 1).toUpperCase()));
-            }
-        }
-        return buf.toString();
-    }
+
 
 
 
