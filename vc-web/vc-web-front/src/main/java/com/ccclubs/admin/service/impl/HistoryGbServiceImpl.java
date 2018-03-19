@@ -60,9 +60,17 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
                     pageNo,pageSize,order);
             if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
                 if (apiMessage.getData()!=null){
-                    if (apiMessage.getData().getTotal()>0){
+                    if (null!=apiMessage.getData().getTotal()
+                            &&apiMessage.getData().getTotal()>0){
                         List<CarGb> carGbList=apiMessage.getData().getList();
                         page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
+                        result.setData(dealCarGbToHistoryGbAll(carGbList));
+                        result.setPage(page);
+                    }
+                    else if (null!=apiMessage.getData().getList()
+                            &&apiMessage.getData().getList().size()>0){
+                        List<CarGb> carGbList=apiMessage.getData().getList();
+                        page=new Page(pageNo,pageSize,apiMessage.getData().getList().size());
                         result.setData(dealCarGbToHistoryGbAll(carGbList));
                         result.setPage(page);
                     }
