@@ -174,7 +174,6 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         for(QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-//            System.out.println(columns);
             T row  = null;
             try {
                 row = (T)entity.getClass().newInstance();
@@ -341,25 +340,4 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
         return null;
     }
 
-
-
-
-
-
-
-    //    public static void main(String args[]) throws TableNotDefinedExcetion {
-//        InfluxBoneDao<BoneInfo> dao  =new InfluxBoneDao<BoneInfo>();
-////         BoneNetworkDevice bone = new BoneNetworkDevice("22f4---ffff---22222");
-////        bone.setDeviceName("zte2--2221212");
-////        List<BoneNetworkDevice> t =  new ArrayList<BoneNetworkDevice>();
-////        t.add(bone);
-////        dao.save(bone);
-//       // System.out.print(dao.convertToPoint("bone",bone));
-//        String sql = "SELECT * from t_r_bone_network_device order by time desc limit 10";
-//        //dao.query(BoneInfo.class,sql);
-//        System.out.println(dao.insertBar("deviceNameInfo"));
-//        System.out.println(dao.insertBar("uuid"));
-//        System.out.println(dao.trimBar("device_name_info"));
-//
-//    }
 }

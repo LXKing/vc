@@ -85,6 +85,9 @@ public class HistoryGbController {
 			r.setSuccess(false).setMessage("导出任务需要足够的参数。");
 			return r;
 		}
+		if (reportParam.getAllReport()==1){
+			reportParam.setPage(-1);
+		}
 		TableResult<HistoryGb> pageInfo = historyGbService.getPage(
 				reportParam.getQuery(),
 				reportParam.getPage(),
