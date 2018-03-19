@@ -70,3 +70,12 @@ spring:
       charset: UTF-8
       enable: true
       force: true
+  influxdb:
+    url: http://120.27.192.237:8086
+    username: admin
+    password: ahdd34534e
+    database: mydb
+    retention-policy: autogen
+    writeTimeout: 12000
+    readTimeout:  12000
+    connectTimeout: 500

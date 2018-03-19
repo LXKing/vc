@@ -1,10 +1,14 @@
 package com.ccclubs.frm.influxdb;
 
+import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.influxdb.InfluxDBTemplate;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -15,63 +19,28 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by kevin on 16/11/21.
+ * * Edited by alban on 18/3/15
+ * description: 用于执行influxdb的通用存储基方法类。
  */
 
 public class InfluxBoneDao<T> implements Serializable {
-    protected static InfluxDB influxDB = null;
-    @Value(value="${spring.influx.url}")
-    private static String url;
 
+    private static Logger logger= LoggerFactory.getLogger(InfluxBoneDao.class);
+    //@Value(value="${spring.influx.url}")
+    //private static String url;
+    protected static InfluxDB influxDB = null;
     static
     {
-//        influxDB = InfluxDBFactory.connect("http://192.168.102.211:8086", "root", "root");
-//        influxDB = InfluxDBFactory.connect("http://192.168.102.245:8086", "root", "root");
-        influxDB = InfluxDBFactory.connect("http://192.168.102.243:8086", "root", "root");
+        influxDB = InfluxDBFactory.connect("http://120.27.192.237:8086", "admin", "ahdd34534e");
         // Flush every 200 Points, at least every 100ms
 
 //        Pong pong = influxDB.ping();
     }
-    protected String dbName = "monitor";
-    protected String retentionPolicy = "bone";
+    /*@Autowired
+    private InfluxDBTemplate<Point> influxDBTemplate;*/
 
-       /* public static void main(String args[]) throws TableNotDefinedExcetion {
-        InfluxBoneDao<BoneInfo> dao  =new InfluxBoneDao<BoneInfo>();
-//         BoneNetworkDevice bone = new BoneNetworkDevice("22f4---ffff---22222");
-//        bone.setDeviceName("zte2--2221212");
-//        List<BoneNetworkDevice> t =  new ArrayList<BoneNetworkDevice>();
-//        t.add(bone);
-//        dao.save(bone);
-       // System.out.print(dao.convertToPoint("bone",bone));
-      //  String sql = "SELECT * from t_r_bone_network_device order by time desc limit 10";
-
-        //    dao.query(BoneInfo.class,sql);
-//        System.out.println(dao.insertBar("deviceNameInfo"));
-//        System.out.println(dao.insertBar("uuid"));
-//        System.out.println(dao.trimBar("device_name_info"));
-
-//            List<BoneInfo> tlist = new ArrayList<BoneInfo>();
-//
-//            long t1 = System.currentTimeMillis();
-//            for(int i=0;i<20;i++)
-//            {
-//                BoneInfo boneInfo = new BoneInfo();
-//                boneInfo.setUuid("uuid_"+i);
-//                boneInfo.setDeviceName("devcie_name_"+i);
-//                tlist.add(boneInfo);
-//                //dao.save(boneInfo);
-//            }
-//            dao.save(tlist);
-//            System.out.println(System.currentTimeMillis()-t1);
-            OnuFlowModel onuFlowModel = new OnuFlowModel();
-            onuFlowModel.setOnuId("test");
-            List<OnuFlowModel> onuFlowModels = new ArrayList<>();
-            OnuFlowDAO onuFlowDAO = new OnuFlowDAO();
-            onuFlowDAO.save(onuFlowModels);
-            CmFlowModel cmFlowModel = new CmFlowModel();
-            cmFlowModel.setCmId("test");
-            CmFlowDAO cmFlowDAO = new CmFlowDAO();
-            cmFlowDAO.save(cmFlowModel);
-    }*/
+    protected String dbName = "mydb";
+    protected String retentionPolicy = "autogen";
 
     public void save(List<Point> points, String tagName, String  tagValue) {
             //针对不同的表的多次写入,可以用一次写入来提高效率
@@ -93,11 +62,6 @@ public class InfluxBoneDao<T> implements Serializable {
     * 传入的实体中字段必须有缺省值,否则对应列不会写入到数据库
     * */
     public void save(List<T> points) throws TableNotDefinedExcetion{
-
-      // if (!influxDB.isBatchEnabled())
-      //      influxDB.enableBatch(5, 5, TimeUnit.MILLISECONDS);
-//        for (T point:points)
-//               save(point);
 
         //针对不同的表的多次写入,可以用一次写入来提高效率
             BatchPoints batchPoints = BatchPoints
@@ -147,9 +111,8 @@ public class InfluxBoneDao<T> implements Serializable {
     private Point convertToPoint(String table, T target)
     {
         Point.Builder builder = Point.measurement(table);
-        builder.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
-//        builder.tag("port","2");
-//        builder.tag("boardid","2");
+        Boolean haveInfluxTimeAnnotation=false;
+
         Class actualEditable = target.getClass();
         Field[] fields = actualEditable.getDeclaredFields();
         Method[] methods = actualEditable.getMethods();
@@ -162,7 +125,6 @@ public class InfluxBoneDao<T> implements Serializable {
                 continue;
             }
             String fieldName = methodName.substring(3,methodName.length());
-            //System.out.println(fieldName);
             Object value = null;
             try {
                     value = method.invoke(target,new Object[]{});
@@ -184,14 +146,18 @@ public class InfluxBoneDao<T> implements Serializable {
              {
 
                     String columnName = insertBar(field.getName());
-               //  System.out.println(columnName+":" + field.getName() + ":" + field.getType());
                  Boolean present = field.isAnnotationPresent(InfluxTag.class);
-
+                 Boolean isTime=field.isAnnotationPresent(InfluxTime.class);
                  switch (field.getType().getName()) {
                         case "java.lang.String":
-                            if (present) {
+                            if (present&&!isTime) {
                                 builder.tag(columnName, (String) value);
-                            } else {
+                            } else if (!present&&isTime){
+                                builder.time(DateTimeUtil.
+                                                date2UnixFormat((String) value,DateTimeUtil.UNIX_FORMAT),
+                                        TimeUnit.MILLISECONDS);
+                                haveInfluxTimeAnnotation=true;
+                            }else {
                                 builder.addField(columnName, (String) value);
                             }
                             break;
@@ -203,9 +169,13 @@ public class InfluxBoneDao<T> implements Serializable {
                             }
                             break;
                         case "java.lang.Long":
-                            if (present) {
+                            if (present&&!isTime) {
                                 builder.tag(columnName, (String) value);
-                            } else {
+                            } else if (!present&&isTime){
+                                builder.time((Long) value,
+                                        TimeUnit.MILLISECONDS);
+                                haveInfluxTimeAnnotation=true;
+                            }else {
                                 builder.addField(columnName, (Long) value);
                             }
                             break;
@@ -238,15 +208,21 @@ public class InfluxBoneDao<T> implements Serializable {
                             }
                             break;
                         default:
-                            System.out.print("can't find type to convert to point:" + field.getName() + ":" + field.getType());
+                            logger.info("can't find type to convert to point:" + field.getName() + ":" + field.getType());
                     }
 
             }
                 //long number double string boolean
         }
+        if (!haveInfluxTimeAnnotation){
+            builder.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        }
         return builder.build();
     }
 
+    /**
+     * 将下划线分隔的命名的字段名变换为驼峰命名的字段名
+     * */
     public String insertBar(String column)
     {
         char arr[] = column.toCharArray();
@@ -265,6 +241,10 @@ public class InfluxBoneDao<T> implements Serializable {
         }
         return buf.toString();
     }
+
+    /**
+     * 将驼峰命名的字段名变换为下划线分隔的命名的字段名
+     * */
     public String trimBar(String column) {
         String arr[] = column.split("_");
         StringBuffer buf = new StringBuffer();
