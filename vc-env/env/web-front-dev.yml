@@ -9,9 +9,10 @@ oss:
 
 spring:
   redis:
-    host: 118.178.229.234
-    port: 63791
-    database: 7
+    host: 127.0.0.1
+    port: 6379
+    #database: 7
+
   data:
     mongodb:
       history:
