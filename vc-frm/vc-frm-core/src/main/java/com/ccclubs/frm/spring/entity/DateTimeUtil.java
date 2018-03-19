@@ -18,6 +18,7 @@ public class DateTimeUtil {
     //public static final String format4 = "yyyy-MM-dd HH:mm";
     public static final String TIMETEMP_FORMAT = "yyyy-MM-dd HH:mm:ss.f";
     public static final String SHORT_FORMAT="yyyyMMdd";//对应Phoenix中的format5
+    public static final String GMT_LONG_FORMAT="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final SimpleDateFormat SDF_UNIX_FORMAT = new SimpleDateFormat(UNIX_FORMAT);
 
     static {
