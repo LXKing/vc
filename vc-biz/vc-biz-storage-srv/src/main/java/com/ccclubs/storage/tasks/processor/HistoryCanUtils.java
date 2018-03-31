@@ -1,18 +1,15 @@
-package com.ccclubs.phoenix.tasks.processor;
+package com.ccclubs.storage.tasks.processor;
 
-import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.orm.model.CarCan;
-import com.ccclubs.phoenix.tasks.model.CsHistoryCan;
-import com.ccclubs.phoenix.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsCan;
+import com.ccclubs.storage.impl.PhoenixStorageService;
+import com.ccclubs.storage.inf.BaseHbaseStorageInf;
+import com.ccclubs.storage.tasks.model.CsHistoryCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,22 +18,15 @@ import java.util.List;
  * @create 2017-10-11
  **/
 @Component
-public class HistoryCanUtils {
+public class HistoryCanUtils extends ConvertUtils implements BaseHbaseStorageInf<CsCan> {
 
   private static Logger logger = LoggerFactory.getLogger(HistoryCanUtils.class);
-  @Resource
-  private RedisTemplate redisTemplate;
 
-//  @Reference(version = "1.0.0")
   @Autowired
-  private CarCanHistoryInf carCanHistoryInf;
-  /*@Value("${ccclubs.data.batch.hbaseSrv.host:127.0.0.1}")
-  private String ip;
-  @Value("${ccclubs.data.batch.hbaseSrv.port:8080}")
-  private String port;
-  @Value("${ccclubs.data.batch.hbaseSrv.urlRootPath:history}")
-  private String urlRootPath;*/
+  private PhoenixStorageService phoenixStorageService;
 
+
+  @Override
   public void saveHistoryData(CsCan csCan) {
 
     CsHistoryCan canHistoryData = new CsHistoryCan();
@@ -54,27 +44,17 @@ public class HistoryCanUtils {
     canHistoryData.setCshcOrder(csCan.getCscOrder());
     canHistoryData.setCshcFault(csCan.getCscFault());
 
-    // 需要更新的当前状态加入等待队列
 //    ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_INSERT_QUEUE, canHistoryData);
-//    opsForList
-//        .leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canHistoryData);
-// add at 2017-12-20 历史数据不写 mongodb
-//    updateCanService.insertHis(canHistoryData);
-    ListOperations opsForList = redisTemplate.opsForList();
-    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
+//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
   }
 
+  @Override
   public void saveHistoryDataToHbase(CsCan csCan){
     CarCan carCanHistory=dealCsCanToCarCanHistory(csCan);
-    /*String objectJson = JSON.toJSONString(carCanHistory);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal can data json is done:" + objectJson);
-    String url="http://"+ip+":"+port+"/"+urlRootPath+"/can";
-    HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can !");*/
+
   }
 
+  @Override
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
     logger.info("准备转换can数据");
     if (null==csCanList||csCanList.size()<1){
@@ -83,14 +63,9 @@ public class HistoryCanUtils {
     }
     List<CarCan> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
     logger.info("即将存储can数据");
-    carCanHistoryInf.saveOrUpdate(carCanHistoryList);
+    phoenixStorageService.saveOrUpdate(carCanHistoryList);
     logger.info("存储can数据完成");
-    /*String objectJson = JSON.toJSONString(carCanHistoryList);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal can list json is done:" + objectJson);
-    String url="http://"+ip+":"+port+"/"+urlRootPath+"/cans";
-    HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for can list !");*/
+
   }
 
   public List<CarCan> dealCsCanListToCarCanHistoryList(List<CsCan> csCanList){

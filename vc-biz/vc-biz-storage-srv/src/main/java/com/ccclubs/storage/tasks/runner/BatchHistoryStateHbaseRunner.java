@@ -1,9 +1,10 @@
-package com.ccclubs.phoenix.tasks.runner;
+/*
+package com.ccclubs.storage.tasks.runner;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.phoenix.tasks.processor.HistoryStateUtils;
-import com.ccclubs.phoenix.tasks.util.BatchProperties;
-import com.ccclubs.phoenix.tasks.util.RedisConstant;
+import com.ccclubs.storage.tasks.processor.HistoryStateUtils;
+import com.ccclubs.storage.tasks.util.BatchProperties;
+import com.ccclubs.storage.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.model.CsState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +19,17 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+*/
 /**
  * CsState 当前状态数据更新
  *
  * @author qsxiaogang
  * @create 2017-10-14
- **/
+ **//*
+
 @Component
 @Order(2)
+@Deprecated
 public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
 
   @Autowired
@@ -38,7 +42,6 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
 
   private static final Logger logger = LoggerFactory.getLogger(BatchHistoryStateHbaseRunner.class);
 
-  @SuppressWarnings("unchecked")
   @Override
   public void run(String... strings) throws Exception {
     ExecutorService fixedThreadPool = Executors
@@ -100,3 +103,4 @@ public class BatchHistoryStateHbaseRunner implements CommandLineRunner {
     });
   }
 }
+*/

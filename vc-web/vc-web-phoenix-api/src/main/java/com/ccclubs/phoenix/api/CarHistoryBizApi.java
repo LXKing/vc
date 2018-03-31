@@ -133,7 +133,7 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carGbHistoryOutput);
     }
 
-    //车辆GB数据存储
+    /*//车辆GB数据存储
     @RequestMapping(value = "/gbs",method = RequestMethod.POST)
     public ApiMessage<CarGbHistoryOutput> saveCarGbList(@RequestBody List<CarGb> carGbList){
 
@@ -145,7 +145,7 @@ public class CarHistoryBizApi {
             carGbHistoryService.saveOrUpdate(carGbList);
         }
         return new ApiMessage<>(carGbHistoryOutput);
-    }
+    }*/
 
 
     //状态查询，内部
@@ -208,7 +208,7 @@ public class CarHistoryBizApi {
 
 
 
-    //车辆状态数据存储
+    /*//车辆状态数据存储
     @RequestMapping(value = "/states",method = RequestMethod.POST)
     public ApiMessage<CarStateHistoryOutput> saveCarStateList(@RequestBody List<CarState> carStateList){
         logger.debug("we receive a state date list.");
@@ -218,7 +218,7 @@ public class CarHistoryBizApi {
             carStateHistoryInf.saveOrUpdate(carStateList);
         }
         return new ApiMessage<>(carStateHistoryOutput);
-    }
+    }*/
 
 
 
@@ -242,7 +242,7 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carCanHistoryOutput);
     }
 
-    //车辆CAN数据存储
+   /* //车辆CAN数据存储
     @RequestMapping(value = "/cans",method = RequestMethod.POST)
     public ApiMessage<CarCanHistoryOutput> saveCarCanList(@RequestBody List<CarCan> carCanList){
 
@@ -253,7 +253,7 @@ public class CarHistoryBizApi {
             carCanHistoryInf.saveOrUpdate(carCanList);
         }
         return new ApiMessage<>(carCanHistoryOutput);
-    }
+    }*/
 
 
 

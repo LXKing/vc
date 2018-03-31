@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tasks.model;
+package com.ccclubs.storage.tasks.model;
 
 import java.io.Serializable;
 

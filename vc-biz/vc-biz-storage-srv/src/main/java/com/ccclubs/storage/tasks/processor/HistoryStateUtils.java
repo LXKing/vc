@@ -1,33 +1,27 @@
-package com.ccclubs.phoenix.tasks.processor;
+package com.ccclubs.storage.tasks.processor;
 
-import com.alibaba.fastjson.JSON;
-import com.ccclubs.frm.logger.VehicleControlLogger;
-import com.ccclubs.phoenix.inf.CarStateHistoryInf;
+
 import com.ccclubs.phoenix.orm.model.CarState;
-import com.ccclubs.phoenix.tasks.model.CsHistoryState;
-import com.ccclubs.phoenix.tasks.util.RedisConstant;
+import com.ccclubs.storage.impl.PhoenixStorageService;
+import com.ccclubs.storage.inf.BaseHbaseStorageInf;
+import com.ccclubs.storage.tasks.model.CsHistoryState;
 import com.ccclubs.pub.orm.model.CsState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author qsxiaogang
  * @create 2017-09-25
  **/
 @Component
-public class HistoryStateUtils extends ConvertUtils {
+public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageInf<CsState> {
 
-  //TODO 排除问题的代码请记得及时清理。
+  /*排除问题的代码请记得及时清理。
   private static Set<String> csNumberSet=new HashSet(){{
     add("T6792320");
     add("T6710126");
@@ -36,23 +30,20 @@ public class HistoryStateUtils extends ConvertUtils {
     add("T67D1110");
     add("GB005403");
     add("T6402162");
-  }};
-  @Resource
-  private RedisTemplate redisTemplate;
+  }};*/
+
 
   @Autowired
-  private CarStateHistoryInf carStateHistoryInf;
+  private PhoenixStorageService phoenixStorageService;
 
 
   private static final Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
 
-  private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
+  //private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
+  @Override
   public void saveHistoryData(CsState csState) {
-    // TODO:需要判断是否使用Hbase进行存储
-//    if ()
-//    saveHistoryDataToHbase(csState);
-//    return;
+
 
     CsHistoryState historyState = new CsHistoryState();
 
@@ -91,7 +82,6 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsLight(csState.getCssLight());
     historyState.setCshsLock(csState.getCssLock());
 
-    // TODO:依据车型Can解析
     historyState.setCshsObdMile(csState.getCssObdMile());
     historyState.setCshsSpeed(csState.getCssSpeed());
     historyState.setCshsEndurance(csState.getCssEndurance());
@@ -105,14 +95,12 @@ public class HistoryStateUtils extends ConvertUtils {
     historyState.setCshsGpsCount(csState.getCssGpsCount());
 
     // 需要更新的当前状态加入等待队列
-    ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_INSERT_QUEUE, historyState);
-    // add at 2017-12-20 历史数据不写mongodb
-//    updateStateService.insertHis(historyState);
-    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
+//    ListOperations opsForList = redisTemplate.opsForList();
+//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
   }
 
 
+  @Override
   public void saveHistoryDataToHbase(List<CsState> csStateList){
     logger.info("即将转换一批历史数据到csState");
     List<CarState> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
@@ -121,29 +109,16 @@ public class HistoryStateUtils extends ConvertUtils {
       return ;
     }
     logger.info("现在正在准备写入一批CsState");
-    carStateHistoryInf.saveOrUpdate(carStateHistoryList);
+
+    phoenixStorageService.saveOrUpdate(carStateHistoryList);
     logger.info("现在已经写入一批CsState");
-    /*String sourceJson = JSON.toJSONString(csStateList);
-    String objectJson = JSON.toJSONString(carStateHistoryList);
-    logger.debug("source: {} ,target: {}",sourceJson,objectJson);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal csState list json done:" + objectJson);
-    String url="http://"+ip+":"+port+"/"+urlRootPath+"/states";
-    HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for csStateList !");*/
 
   }
 
 
+  @Override
   public void saveHistoryDataToHbase(CsState csState) {
-
-    CarState csStateHistory=dealCsStateToCarStateHistory(csState);
-    /*String objectJson = JSON.toJSONString(csStateHistory);
-    //concurrentLinkedQueue.add(objectJson);
-    logger.debug("deal csState data json done:" + objectJson);
-    String url="http://"+ip+":"+port+"/"+urlRootPath+"/state";
-    HttpClientUtil.doPostJson(url, objectJson);
-    logger.debug("send post for csState !");*/
+//    CarState csStateHistory=dealCsStateToCarStateHistory(csState);
   }
 
 
@@ -220,9 +195,9 @@ public class HistoryStateUtils extends ConvertUtils {
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
-    if (csNumberSet.contains(csStateHistory.getCs_number())){
+    /*if (csNumberSet.contains(csStateHistory.getCs_number())){
       loggerBusiness.info(JSON.toJSONString(csStateHistory));
-    }
+    }*/
     return  csStateHistory;
   }
 

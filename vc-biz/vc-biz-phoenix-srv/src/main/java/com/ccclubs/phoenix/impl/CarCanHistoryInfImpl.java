@@ -9,8 +9,6 @@ import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
 
-    static final String insert_sql="upsert into " +
+    /*static final String insert_sql="upsert into " +
             "PHOENIX_CAR_CAN_HISTORY " +
             "(" +
             "CS_NUMBER," +
@@ -48,7 +46,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             "?, " + //CURRENT_TIME
             "?, " + //CAN_DATA
             "? " + //ADD_TIME
-            ")";
+            ")";*/
 
     static  final String count_sql = "select " +
             "count(cs_number) as total " +
@@ -60,8 +58,8 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     @Autowired
     private PhoenixTool phoenixTool;
 
-    @Autowired
-    private BaseInfImpl baseImpl;
+//    @Autowired
+//    private BaseInfImpl baseImpl;
 
     @Override
     public List<CarCan> queryCarCanListNoPage(final CarCanHistoryParam carCanHistoryParam) {
@@ -88,9 +86,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
 
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -136,9 +134,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setInt(4,limit);
             preparedStatement.setInt(5,offset);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
 
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -167,7 +165,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -203,21 +201,5 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
         return carCanHistoryOutput;
     }
 
-    @Override
-    public void insertBulid(CarCan historyDate, PreparedStatement preparedStatement) throws SQLException {
-        String cs_number = historyDate.getCs_number();
-        Long current_time = historyDate.getCurrent_time();
-        String can_data = historyDate.getCan_data();
-        Long add_time = historyDate.getAdd_time();
-        preparedStatement.setString(1,cs_number);
-        preparedStatement.setLong(2,current_time);
-        preparedStatement.setString(3,can_data);
-        preparedStatement.setLong(4,add_time);
-        preparedStatement.addBatch();
-    }
 
-    @Override
-    public void saveOrUpdate(final List<CarCan> records) {
-        baseImpl.saveOrUpdate(records,this,insert_sql,"CarCan");
-    }
 }

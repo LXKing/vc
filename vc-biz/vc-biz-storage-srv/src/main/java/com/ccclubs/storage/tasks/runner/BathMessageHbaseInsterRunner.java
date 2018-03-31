@@ -1,9 +1,10 @@
-package com.ccclubs.phoenix.tasks.runner;
+/*
+package com.ccclubs.storage.tasks.runner;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.phoenix.tasks.processor.HistoryMessageUtils;
-import com.ccclubs.phoenix.tasks.util.BatchProperties;
-import com.ccclubs.phoenix.tasks.util.RedisConstant;
+import com.ccclubs.storage.tasks.processor.HistoryMessageUtils;
+import com.ccclubs.storage.tasks.util.BatchProperties;
+import com.ccclubs.storage.tasks.util.RedisConstant;
 import com.ccclubs.pub.orm.dto.CsMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +20,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+*/
 /**
  * 国标状态数据写Hbase定时任务
  *
  * @author Alban
  * @create 2017-12-07
- **/
+ **//*
+
 @Component
 @Order(2)
+@Deprecated
 public class BathMessageHbaseInsterRunner implements CommandLineRunner {
 
     @Autowired
@@ -40,7 +44,6 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BathMessageHbaseInsterRunner.class);
 
-    @SuppressWarnings("unchecked")
     @Override
     public void run(String... strings) throws Exception {
         ExecutorService fixedThreadPool = Executors
@@ -48,7 +51,7 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
         fixedThreadPool.execute(() -> {
             while (true) {
                 logger.debug("BatchMessageInsertRunner start. {}");
-                List<CsMessage> waitList = new ArrayList();
+                List waitList = new ArrayList();
                 try {
                     Long startTime = System.currentTimeMillis();
                     //取出队列中所有等待更新的数据
@@ -82,7 +85,7 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
 
                     if (waitList.size() > 0) {
                         logger.info("取出Gb数据，开始准备存储");
-                        historyMessageUtils.saveHistoryGbDataToHbase(waitList);
+                        historyMessageUtils.saveHistoryDataToHbase(waitList);
                         logger.debug("size:{},time:{} BatchMessage hbase InsertRunner batch insert  ", waitList.size(),
                                 System.currentTimeMillis() - startTime);
 
@@ -99,3 +102,4 @@ public class BathMessageHbaseInsterRunner implements CommandLineRunner {
         });
     }
 }
+*/

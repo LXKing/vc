@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>vc-biz</artifactId>
+        <groupId>www.ccclubs</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>vc-biz-storage-srv</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-storage-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-redis</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-logger</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-pub-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-phoenix-orm</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-phoenix</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+    </dependencies>
+
+
+</project>

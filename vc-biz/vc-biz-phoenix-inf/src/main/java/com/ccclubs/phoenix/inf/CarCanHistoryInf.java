@@ -12,7 +12,8 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
-public interface CarCanHistoryInf extends BaseHistoryInf<CarCan>{
+// extends BaseHistoryInf<CarCan>
+public interface CarCanHistoryInf{
     //查询车辆CAN信息(非分页)
      List<CarCan> queryCarCanListNoPage(CarCanHistoryParam carCanHistoryParam);
 

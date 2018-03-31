@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.tasks.util;
+package com.ccclubs.storage.tasks.util;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  **/
 @ConfigurationProperties(prefix = "ccclubs.data.batch")
 public class BatchProperties {
+
 
   /**
    * update 任务定时执行周期，单位毫秒

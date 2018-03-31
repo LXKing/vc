@@ -1,4 +1,4 @@
-package com.ccclubs.phoenix.inf;
+package com.ccclubs.storage.inf;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
