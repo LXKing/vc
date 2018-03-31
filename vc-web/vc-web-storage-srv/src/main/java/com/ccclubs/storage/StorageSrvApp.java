@@ -38,8 +38,6 @@ public class StorageSrvApp extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         ConfigurableApplicationContext ctx = SpringApplication.run(StorageSrvApp.class, args);
-
-
     }
 
 

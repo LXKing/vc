@@ -1,4 +1,4 @@
-package com.ccclubs.pub.orm.dto;
+package com.ccclubs.pub.orm.model;
 
 import java.io.Serializable;
 

@@ -19,7 +19,7 @@ import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
-import com.ccclubs.pub.orm.dto.CsMessage;
+import com.ccclubs.pub.orm.model.CsMessage;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import java.util.Date;
 import javax.annotation.Resource;
