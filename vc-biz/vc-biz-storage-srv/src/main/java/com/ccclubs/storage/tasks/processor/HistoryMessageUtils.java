@@ -86,15 +86,15 @@ public class HistoryMessageUtils extends ConvertUtils  implements BaseHbaseStora
     @Override
     public void saveHistoryDataToHbase(List<CsMessage> listData) {
 
-        logger.info("即将转换国标数据");
+        logger.debug("即将转换国标数据");
         List<CarGb> carGbList=dealCsMessageListToCarGbHistoryLsit(listData);
         if(null==carGbList||carGbList.size()<1){
             logger.warn("carGbList is null! nothing history gb date saved");
             return ;
         }
-        logger.info("即将存储国标数据");
+        logger.debug("即将存储国标数据");
         phoenixStorageService.saveOrUpdate(carGbList);
-        logger.info("国标数据存储完成");
+        logger.debug("国标数据存储完成");
 
     }
 }

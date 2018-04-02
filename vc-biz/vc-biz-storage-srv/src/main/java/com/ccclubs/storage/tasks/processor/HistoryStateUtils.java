@@ -102,16 +102,16 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
 
   @Override
   public void saveHistoryDataToHbase(List<CsState> csStateList){
-    logger.info("即将转换一批历史数据到csState");
+    logger.debug("即将转换一批历史数据到csState");
     List<CarState> carStateHistoryList=dealCsStateListToCarStateHistoryLsit(csStateList);
     if(null==carStateHistoryList||carStateHistoryList.size()<1){
       logger.warn("carStateHistoryList is null! nothing history state date saved");
       return ;
     }
-    logger.info("现在正在准备写入一批CsState");
+    logger.debug("现在正在准备写入一批CsState");
 
     phoenixStorageService.saveOrUpdate(carStateHistoryList);
-    logger.info("现在已经写入一批CsState");
+    logger.debug("现在已经写入一批CsState");
 
   }
 

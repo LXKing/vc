@@ -56,15 +56,15 @@ public class HistoryCanUtils extends ConvertUtils implements BaseHbaseStorageInf
 
   @Override
   public void saveHistoryDataToHbase(List<CsCan> csCanList){
-    logger.info("准备转换can数据");
+    logger.debug("准备转换can数据");
     if (null==csCanList||csCanList.size()<1){
       logger.warn("csCanList is null!");
       return;
     }
     List<CarCan> carCanHistoryList=dealCsCanListToCarCanHistoryList(csCanList);
-    logger.info("即将存储can数据");
+    logger.debug("即将存储can数据");
     phoenixStorageService.saveOrUpdate(carCanHistoryList);
-    logger.info("存储can数据完成");
+    logger.debug("存储can数据完成");
 
   }
 

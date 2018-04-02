@@ -58,9 +58,12 @@ public class InsertToHbaseMap{
     HistoryMessageUtils historyMessageUtils;
     @Autowired
     HistoryStateUtils historyStateUtils;
-    private HashMap<String,BaseHbaseStorageInf> map;
+    private static HashMap<String,BaseHbaseStorageInf> map=null;
     InsertToHbaseMap() {
-        map = new HashMap();
+
+    }
+    private synchronized void  initMap(){
+        map=new HashMap<>();
         map.put(RedisConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE
                 ,historyMessageUtils);
         map.put(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE
@@ -69,6 +72,11 @@ public class InsertToHbaseMap{
                 ,historyStateUtils);
     }
     public HashMap<String,BaseHbaseStorageInf> getInstance() {
+        synchronized (this){
+            if(map==null){
+                initMap();
+            }
+        }
         return (HashMap<String,BaseHbaseStorageInf>)map.clone();
     }
 

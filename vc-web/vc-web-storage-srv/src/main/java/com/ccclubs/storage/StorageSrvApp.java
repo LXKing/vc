@@ -1,6 +1,7 @@
 package com.ccclubs.storage;
 
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
+import com.ccclubs.storage.tasks.util.BatchProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -25,11 +26,12 @@ import java.io.IOException;
  */
 
 @SpringBootApplication
-@Import({RedisAutoConfiguration.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@Import({BatchProperties.class, RedisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
 public class StorageSrvApp extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(StorageSrvApp.class);
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -39,7 +41,6 @@ public class StorageSrvApp extends SpringBootServletInitializer {
     public static void main(String[] args) throws IOException, InterruptedException {
         ConfigurableApplicationContext ctx = SpringApplication.run(StorageSrvApp.class, args);
     }
-
 
 
 }

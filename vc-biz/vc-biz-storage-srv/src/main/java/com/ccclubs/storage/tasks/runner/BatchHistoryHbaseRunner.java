@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.concurrent.*;
  * @Description: 死循环读取redis，然后通过Phoenix存储数据到HBASE的类。
  * 这是一个通用的类只要存储服务实现了{@link BaseHbaseStorageInf}接口即可。
  */
-
+@Component
 public class BatchHistoryHbaseRunner implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(BatchHistoryHbaseRunner.class);
@@ -59,11 +60,13 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
     public void run(String... strings) throws Exception {
         ExecutorService executorService = createThreadPool();
         Set<String> keySet = insertToHbaseMap.getInstance().keySet();
+
         for (String key : keySet
                 ) {
             executorService.execute(
                     () -> {
-                        executeBody(key, insertToHbaseMap.getInstance().get(key));
+                        BaseHbaseStorageInf baseHbaseStorageInf=insertToHbaseMap.getInstance().get(key);
+                        executeBody(key, baseHbaseStorageInf);
                     }
             );
         }
@@ -104,7 +107,7 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
                         System.currentTimeMillis() - startTime);
 
                 if (waitList.size() > 0) {
-                    logger.debug("Start storage Hbase:"+key+"\n"+"BatchHistoryHbaseRunner is runned:" + waitList.toString());
+                    logger.debug("Start storage Hbase:" + key + "\n" + "BatchHistoryHbaseRunner is runned:" + waitList.toString());
                     baseHistoryUtilsInf.saveHistoryDataToHbase(waitList);
                     logger.debug("size:{},time:{} BatchHistoryHbaseRunner batch insert  ",
                             waitList.size(),

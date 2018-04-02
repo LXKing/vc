@@ -21,7 +21,8 @@ import java.util.List;
  * @Author: Alban
  * @Date: 2018/3/31
  * @Time: 11:56
- * @Description: 请填写描述！
+ * @Description: 此类是{@Link BaseHistoryInf}接口的实现类。此类做了存储实体的基本操作交由
+ * 父类处理，其中，父类会调用本类的SQL拼接语句。
  */
 @Service
 public class PhoenixStorageService implements BaseHistoryInf {
@@ -394,15 +395,15 @@ public class PhoenixStorageService implements BaseHistoryInf {
 
     @Override
     public void saveOrUpdate(List records) {
-        String clazzName=records.getClass().getName();
+        String clazzName=records.get(0).getClass().getName();
         switch (clazzName){
-            case "CarCan":
+            case "com.ccclubs.phoenix.orm.model.CarCan":
                 baseImpl.saveOrUpdate((List<CarCan>) records,this,carCanInsertSql,"CarCan");
                 break;
-            case "CarGb":
+            case "com.ccclubs.phoenix.orm.model.CarGb":
                 baseImpl.saveOrUpdate((List<CarGb>)records,this,carGbInsertSql,"CarGb");
                 break;
-            case "CarState":
+            case "com.ccclubs.phoenix.orm.model.CarState":
                 baseImpl.saveOrUpdate((List<CarState>)records,this,carStateInsertSql,"CarState");
                 break;
             default:break;
