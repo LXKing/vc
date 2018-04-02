@@ -11,6 +11,14 @@ import java.util.Date;
  **/
 public class VehicleMachineVo implements Serializable {
     /**
+     * 查询开始时间
+     */
+    private String startDate;
+    /**
+     * 查询结束时间
+     */
+    private String endDate;
+    /**
      * [user_id]主机厂用户
      */
     private   Integer userId;
@@ -1465,5 +1473,21 @@ public class VehicleMachineVo implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

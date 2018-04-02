@@ -142,7 +142,7 @@ public class MessageFactory {
     }
 
     SrvHost srvHost = queryHostInfoService.queryHostById(csVehicle.getCsvAccess());
-    if (StringUtils.empty(srvHost.getShTopic())) {
+    if (StringUtils.empty(topic)) {
       topic = srvHost.getShTopic().trim();
     }
 

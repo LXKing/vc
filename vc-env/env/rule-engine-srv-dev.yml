@@ -27,6 +27,17 @@ spring:
         password: zkj2017
         database: vc_remote
         authenticationDatabase: vc_remote
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+#kafka GB实时数据 topic
+kafka:
+  topic:
+    gb:
+      rt: topic_gb_0x02
 
 ccclubs:
   data:
@@ -145,3 +156,5 @@ druid:
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
   filters:
+
+

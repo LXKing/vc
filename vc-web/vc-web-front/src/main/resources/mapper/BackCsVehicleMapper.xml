@@ -3,7 +3,7 @@
 <mapper namespace="com.ccclubs.admin.orm.mapper.BackCsVehicleMapper">
     <resultMap id="BaseResultMap" type="com.ccclubs.pub.orm.vo.VehicleMachineVo">
         <id column="csv_id" jdbcType="INTEGER" property="csvId"/>
-        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
         <result column="csv_access" jdbcType="INTEGER" property="csvAccess"/>
         <result column="csv_host" jdbcType="INTEGER" property="csvHost"/>
         <result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo"/>
@@ -227,8 +227,16 @@
         select
         <include refid="Base_Column_List1"/>
         from cs_vehicle a LEFT JOIN cs_machine b ON a.csv_machine = b.csm_id
-        WHERE a.csv_model IN
-        (SELECT model_id FROM cs_model_mapping WHERE user_id=#{userId,jdbcType=INTEGER})
+        <where>
+            <if test="startDate != null and startDate != ''">
+                and a.csv_prod_date <![CDATA[>]]> #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.csv_prod_date <![CDATA[<]]> #{endDate}
+            </if>
+            and a.csv_model IN
+            (SELECT model_id FROM cs_model_mapping WHERE user_id=#{userId,jdbcType=INTEGER})
+        </where>
         order by a.csv_id desc
     </select>
 </mapper>
