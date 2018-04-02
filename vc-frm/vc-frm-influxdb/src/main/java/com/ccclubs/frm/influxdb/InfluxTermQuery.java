@@ -217,12 +217,45 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
                         }
                         else {
                             field.setAccessible(true);
-                            if (Float.class==field.getType()||field.getType().getName()=="java.lang.Float")
-                            {
-                                Double doubleValue=(Double) values.get(idx);
-                                field.set(row,doubleValue.floatValue());
+                            Double doubleValue=null;
+                            if (null==values.get(idx)){
+                                field.set(row,null);
                             }else {
-                                field.set(row,values.get(idx));
+                                //TODO 用switch判断如何转换数值类型
+                                switch (field.getType().getName()){
+                                    case "java.lang.Float":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue.floatValue());
+                                        break;
+                                    case "java.lang.Integer":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue.intValue());
+                                        break;
+                                    case "java.lang.Short":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue.shortValue());
+                                        break;
+                                    case "java.lang.Double":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue);
+                                        break;
+                                    case "java.lang.Long":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue.longValue());
+                                        break;
+                                    case "java.lang.Number":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue);
+                                        break;
+                                    case "java.lang.Byte":
+                                        doubleValue=(Double) values.get(idx);
+                                        field.set(row,doubleValue.byteValue());
+                                        break;
+                                    default:
+                                        field.set(row,values.get(idx));
+                                        break;
+                                }
+
                             }
 
                         }

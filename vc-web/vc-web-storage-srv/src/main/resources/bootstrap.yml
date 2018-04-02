@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: storage-srv
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      uri: ${spring.cloud.config.uri}
+      
+mybatis:
+  scan:
+    basePackage: com.ccclubs.**.orm.mapper

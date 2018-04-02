@@ -9,8 +9,6 @@ import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +22,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
 
-    static final String insert_sql="upsert into " +
+    /*static final String insert_sql="upsert into " +
             "PHOENIX_CAR_GB_HISTORY " +
             "(" +
             "CS_VIN," +
@@ -47,7 +45,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             "?, " + //CS_PROTOCOL
             "?, " + //GB_TYPE
             "? " + //CS_VERIFY
-            ")";
+            ")";*/
 
     static final String count_sql = "select " +
             "count(cs_vin) as total " +
@@ -59,8 +57,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
     @Autowired
     private PhoenixTool phoenixTool;
 
-    @Autowired
-    private BaseInfImpl baseImpl;
+//    @Autowired
+//    private BaseInfImpl baseImpl;
 
     @Override
     public List<CarGb> queryCarGbListNoPage(final CarGbHistoryParam carGbHistoryParam) {
@@ -87,8 +85,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -132,8 +130,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setInt(4,limit);
             preparedStatement.setInt(5,offset);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -161,7 +159,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -197,7 +195,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return carGbHistoryOutput;
     }
 
-    @Override
+   /* @Override
     public void insertBulid(CarGb carGb,PreparedStatement preparedStatement) throws SQLException {
         String cs_vin = carGb.getCs_vin();
         Long add_time = carGb.getAdd_time();
@@ -243,5 +241,6 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
     @Override
     public void saveOrUpdate(final List<CarGb> records) {
         baseImpl.saveOrUpdate(records,this,insert_sql,"CarGb");
-    }
+    }*/
+
 }

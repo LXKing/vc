@@ -34,5 +34,7 @@
         <module>vc-biz-influxdb-srv</module>
         <module>vc-biz-influxdb-inf</module>
         <module>vc-biz-usr-orm</module>
+        <module>vc-biz-storage-inf</module>
+        <module>vc-biz-storage-srv</module>
     </modules>
 </project>
