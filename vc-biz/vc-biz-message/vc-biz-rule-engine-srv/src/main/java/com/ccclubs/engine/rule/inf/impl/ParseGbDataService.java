@@ -54,8 +54,6 @@ public class ParseGbDataService implements IParseGbDataService {
 
   private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
-  // TODO:目前仅国标对接测试车辆才转发给天津数据中心
-  private int TRANSFER_ACCESS = 10;
   // TODO:V10车型，2017年生产的车辆
   private int V10_MODEL = 22;
   private Date V10_MAX_PROD_DATE = new Date(1514736000000L);
@@ -167,10 +165,6 @@ public class ParseGbDataService implements IParseGbDataService {
    */
   private void transferToMq(GBMessage message, CsVehicle csVehicle) {
     try {
-      if (TRANSFER_ACCESS != csVehicle.getCsvAccess()) {
-        return;
-      }
-
       Message mqMessage = messageFactory
           .getMessage(topic, MqTagProperty.MQ_TERMINAL_GB, message);
       if (mqMessage != null) {

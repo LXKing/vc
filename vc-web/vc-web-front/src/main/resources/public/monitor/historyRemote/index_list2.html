@@ -70,7 +70,13 @@
 
 
 </div>
+<script type="text/html" id="tlCsrUpdateTime">
+    <div>{{dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+</script>
 
+<script type="text/html" id="tlCsrAddTime">
+    <div>{{dateFormat(d.csrAddTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+</script>
 <script type="text/javascript">
 
     var operate = {
@@ -137,14 +143,10 @@
         , {field: "csrResult", title: "返回结果", width: 110, sort: true}
         , {field: "csrEditor", title: "操作人", width: 110, sort: true}
         , {
-            field: "csrUpdateTime", title: "成功时间", width: 110, sort: true, templet: function (d) {
-                return dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss");
-            }
+            field: "csrUpdateTime", title: "成功时间", width: 110, sort: true, templet: '#tlCsrUpdateTime'
         }
         , {
-            field: "csrAddTime", title: "添加时间", width: 110, sort: true, templet: function (d) {
-                return dateFormat(d.csrAddTime, "yyyy-MM-dd HH:mm:ss");
-            }
+            field: "csrAddTime", title: "添加时间", width: 110, sort: true, templet: '#tlCsrAddTime'
         }
         , {field: "csrStateText", title: "发送状态", width: 110, sort: true}
         , {field: "csrStatusText", title: "操作结果", width: 110, sort: true}
@@ -195,19 +197,17 @@
         grid.render(option);
     }
 
-    function getTableHeight() {
-        var height = $(window).height() - ($(".queryForm_wrapper").height() + $(".menubar").height() + 25);
-//		 if(height>1000)return 1000;
-        console.log(height);
+    function getTableHeight(){
+        var height = $(window).height() - ($(".queryform").height() + 50);
+        if(height>1000)return 1000;
         return height;
     }
 
-    $(window).resize(function () {
+    $(window).resize(function(){
         option["height"] = getTableHeight();
         $(".layui-table-view").remove();
         grid.render(option);
     });
-
     $(function () {
         (function (p) {
             authUtil.initSctl();

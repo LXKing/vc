@@ -172,6 +172,7 @@ public class PushVehicleImpl implements PushVehicleInf {
     VehiclePushInput pushInput;
     try {
       String result = DESUtil.decrypt(input, PUSH_KEY);
+      loggerBusiness.info(result);
       pushInput = new ObjectMapper().readValue(result, VehiclePushInput.class);
     } catch (Exception e) {
       e.printStackTrace();

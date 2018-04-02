@@ -53,7 +53,9 @@
 
 
 </div>
-
+<script type="text/html" id="tlCslAddTime">
+    <div>{{dateFormat(d.cslAddTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+</script>
 <script type="text/javascript">
 
     var operate = {
@@ -114,9 +116,7 @@
         , {field: "cslLog", title: "日志信息", width: 110, sort: true}
         , {field: "cslData", title: "原始数据", width: 110, sort: true}
         , {
-            field: "cslAddTime", title: "添加时间", width: 110, sort: true, templet: function (d) {
-                return dateFormat(d.cslAddTime,"yyyy-MM-dd HH:mm:ss");
-            }
+            field: "cslAddTime", title: "添加时间", width: 110, sort: true, templet:'#tlCslAddTime'
         }
         , {field: "cslStatusText", title: "状态", width: 110, sort: true}
         //,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
@@ -165,12 +165,11 @@
         grid.render(option);
     }
 
-    function getTableHeight() {
-        var height = $(window).height() - ($(".queryForm_wrapper").height() + $(".menubar").height() + 25);
-//		 if(height>1000)return 1000;
-        console.log(height);
-        return height;
-    }
+    function getTableHeight(){
+      var height = $(window).height() - ($(".queryform").height() + 50);
+      if(height>1000)return 1000;
+      return height;
+  }
 
     $(window).resize(function () {
         option["height"] = getTableHeight();

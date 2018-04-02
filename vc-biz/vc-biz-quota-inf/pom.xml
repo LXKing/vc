@@ -34,12 +34,5 @@
             <artifactId>vc-biz-mongo-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
-
-		<dependency>
-			<groupId>www.ccclubs</groupId>
-			<artifactId>vc-biz-olap-orm</artifactId>
-			<version>${biz.version}</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 </project>

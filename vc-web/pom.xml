@@ -14,10 +14,7 @@
 		<module>vc-web-vtsearch-srv</module>
 		<module>vc-web-command-api</module>
 		<module>vc-web-command-srv</module>
-		<module>vc-web-usr-srv</module>
-		<module>vc-web-usr-api</module>
         <module>vc-web-message</module>
-		<module>vc-web-protocol-srv</module>
 		<module>vc-web-quota-api</module>
 		<module>vc-web-quota-srv</module>
         <module>vc-web-front</module>

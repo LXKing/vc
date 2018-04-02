@@ -37,6 +37,10 @@ public class TerminalStatus implements Serializable {
      */
     private Integer cssObdMile;
     /**
+     * 订单里程，最小0.1km
+     */
+    private Integer cssMileage;
+    /**
      * 发动机状态，1未熄火，2已熄火，0无效
      */
     private Integer cssEngine = 0;
@@ -261,6 +265,14 @@ public class TerminalStatus implements Serializable {
 
     public void setCssObdMile(Integer cssObdMile) {
         this.cssObdMile = cssObdMile;
+    }
+
+    public Integer getCssMileage() {
+        return cssMileage;
+    }
+
+    public void setCssMileage(Integer cssMileage) {
+        this.cssMileage = cssMileage;
     }
 
     public Integer getCssEngine() {

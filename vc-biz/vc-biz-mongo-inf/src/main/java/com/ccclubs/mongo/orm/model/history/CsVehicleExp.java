@@ -172,6 +172,19 @@ public class CsVehicleExp extends AbstractDocumentOld implements Serializable {
      */
     private String csmMobile;
 
+    /**
+     * 检测时间
+     */
+    private Date checkTime;
+
+    public Date getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(Date checkTime) {
+        this.checkTime = checkTime;
+    }
+
     public Long getCsvExpId() {
         return csvExpId;
     }
