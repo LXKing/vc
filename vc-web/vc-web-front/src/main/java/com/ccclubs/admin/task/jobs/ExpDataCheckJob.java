@@ -24,6 +24,8 @@ import com.mongodb.CommandResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.EmailException;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -86,6 +89,8 @@ public class ExpDataCheckJob implements Runnable {
         }
         VehicleMachineVo queryVo = new VehicleMachineVo();
         queryVo.setUserId(user.getSuId());
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        queryVo.setStartDate(sdf.format(DateTime.now().minusDays(jobParam.getDateRange()).toDate()));
         long writeStart = System.currentTimeMillis();
         // 统一一次处理
         List<VehicleMachineVo> pageData = vehicleService.queryVehicleMachineByUser(queryVo);
@@ -112,6 +117,9 @@ public class ExpDataCheckJob implements Runnable {
 
     }
 
+    public static void main(String[] args) {
+        System.err.println(DateTime.now().minusDays(30).toString("yyyy-MM-dd"));
+    }
 //    @Override
 //    public void run() {
 //        logger.info("车辆数据开始巡检..");
