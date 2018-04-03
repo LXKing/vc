@@ -1,7 +1,7 @@
 package com.ccclubs.storage.tasks.processor;
 
 import com.ccclubs.phoenix.orm.model.CarGb;
-import com.ccclubs.pub.orm.model.CsMessage;
+import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.storage.impl.PhoenixStorageService;
 import com.ccclubs.storage.inf.BaseHbaseStorageInf;
 import org.slf4j.Logger;
