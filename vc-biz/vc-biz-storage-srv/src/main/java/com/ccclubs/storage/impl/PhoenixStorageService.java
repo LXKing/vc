@@ -390,7 +390,19 @@ public class PhoenixStorageService implements BaseHistoryInf {
 
     @Override
     public void insertBulid(Object historyDate, PreparedStatement preparedStatement) throws SQLException {
-        return;
+        String clazzName=historyDate.getClass().getName();
+        switch (clazzName){
+            case "com.ccclubs.phoenix.orm.model.CarCan":
+                insertBulid((CarCan)historyDate,preparedStatement);
+                break;
+            case "com.ccclubs.phoenix.orm.model.CarGb":
+                insertBulid((CarGb)historyDate,preparedStatement);
+                break;
+            case "com.ccclubs.phoenix.orm.model.CarState":
+                insertBulid((CarState)historyDate,preparedStatement);
+                break;
+            default:break;
+        }
     }
 
     @Override
