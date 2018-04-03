@@ -46,10 +46,13 @@ public class PhoenixTool {
                               PreparedStatement preparedStatement,
                               ResultSet resultSet,
                               String callerName){
-
+        boolean preparedStatementFlag=false;
+        boolean resultSetFlag=false;
+        boolean connectionFlag=false;
         if(preparedStatement!=null){
             try {
                 preparedStatement.close();
+                preparedStatementFlag=true;
             } catch (SQLException e) {
                 logger.error(e.getMessage());
             }
@@ -58,21 +61,30 @@ public class PhoenixTool {
         if (null!=resultSet){
             try {
                 resultSet.close();
+                resultSetFlag=true;
             }catch (SQLException e) {
                 logger.error(e.getMessage());
             }
+        }else {
+            resultSetFlag=true;
         }
 
         if(connection!=null){
             try {
                 connection.close();
+                connectionFlag=true;
             } catch (SQLException e) {
                 logger.error(e.getMessage());
             }
         }
 
-        if (callerName!=null) {
+
+        if (connectionFlag&&preparedStatementFlag&&resultSetFlag){
             logger.debug(callerName + "  resource closed.");
+        }else {
+            if (!connectionFlag){logger.error(callerName+" connection release failed");}
+            if (!preparedStatementFlag){logger.error(callerName+" preparedStatement release failed");}
+            if (!resultSetFlag){logger.error(callerName+" resultSet release failed");}
         }
 
     }

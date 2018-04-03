@@ -1,6 +1,7 @@
-package com.ccclubs.phoenix;
+package com.ccclubs.storage;
 
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
+import com.ccclubs.storage.tasks.util.BatchProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -15,24 +16,33 @@ import org.springframework.context.annotation.Import;
 
 import java.io.IOException;
 
+/**
+ * Created with IntelliJ IDEA2017.
+ *
+ * @Author: Alban
+ * @Date: 2018/3/31
+ * @Time: 17:58
+ * @Description: 请填写描述！
+ */
+
 @SpringBootApplication
-@Import({RedisAutoConfiguration.class})
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+@Import({BatchProperties.class, RedisAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.ccclubs"})
-public class PhoenixSrvApp extends SpringBootServletInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(PhoenixSrvApp.class);
+public class StorageSrvApp extends SpringBootServletInitializer {
+    private static final Logger logger = LoggerFactory.getLogger(StorageSrvApp.class);
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(PhoenixSrvApp.class);
+        return application.sources(StorageSrvApp.class);
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        ConfigurableApplicationContext ctx = SpringApplication.run(PhoenixSrvApp.class, args);
-
-
+        ConfigurableApplicationContext ctx = SpringApplication.run(StorageSrvApp.class, args);
     }
 
 
-
 }
+
+

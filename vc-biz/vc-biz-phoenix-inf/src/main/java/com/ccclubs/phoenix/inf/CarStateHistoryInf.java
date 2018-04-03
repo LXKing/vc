@@ -32,7 +32,8 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
-public interface CarStateHistoryInf extends BaseHistoryInf<CarState>{
+// extends BaseHistoryInf<CarState>
+public interface CarStateHistoryInf{
     //查询车辆状态信息(非分页)
      List<CarState> queryCarStateListNoPage(CarStateHistoryParam carStateHistoryParam);
 
