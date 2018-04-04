@@ -8,12 +8,13 @@ import java.io.Serializable;
  **/
 public class ExpDataCheckJobParam implements Serializable {
     private String username; //用户（数据范围）
+    private int dateRange;   //生产日期查询多少天之内的数据（数据范围）
 
-    private String toEmail; //收件人
+    private String toEmail;  //收件人
 
-    private String ccEmail; //抄送收件人
+    private String ccEmail;  //抄送收件人
 
-    private String subject; //发送主题
+    private String subject;  //发送主题
 
     public String getUsername() {
         return username;
@@ -45,5 +46,13 @@ public class ExpDataCheckJobParam implements Serializable {
 
     public void setSubject(String subject) {
         this.subject = subject;
+    }
+
+    public int getDateRange() {
+        return dateRange;
+    }
+
+    public void setDateRange(int dateRange) {
+        this.dateRange = dateRange;
     }
 }

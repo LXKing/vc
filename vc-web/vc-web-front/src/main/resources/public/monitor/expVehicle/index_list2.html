@@ -10,9 +10,9 @@
                     操作
                     <span class="caret"></span>
                 </button>
-<!--sctl="exportData"-->
+                <!--sctl="exportData"-->
                 <ul class="dropdown-menu">
-                    <li>
+                    <li sctl="exportData">
                         <a href="javascript:operate.exportData();">数据导出</a>
                     </li>
                 </ul>
@@ -280,10 +280,9 @@
         grid.render(option);
     }
 
-    function getTableHeight() {
-        var height = $(window).height() - ($(".queryForm_wrapper").height() + $(".menubar").height() + 25);
-//		 if(height>1000)return 1000;
-        console.log(height);
+    function getTableHeight(){
+        var height = $(window).height() - ($(".queryform").height() + 50);
+        if(height>1000)return 1000;
         return height;
     }
 

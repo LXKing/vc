@@ -1,21 +1,24 @@
 package com.ccclubs.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.admin.service.IGbCsStateService;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
+import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.constant.RedisConst;
-import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 车辆实时监控（国标协议）
@@ -103,5 +106,35 @@ public class GbCsStateController {
         return "123";
     }*/
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    /**
+     * For Test
+     * 取得redis中GB RT数据
+     *
+     * @param key 秘钥
+     * @return
+     */
+    @RequestMapping(value = "getAllGBRTData", method = RequestMethod.GET)
+    public List<JSONObject> getAllGBRTData(String key) {
+        if (org.apache.commons.lang3.StringUtils.isEmpty(key) || !key.equals("kevin")) {
+            throw new ApiException(ApiEnum.FAIL.code(), "接口秘钥错误！");
+        }
+        Set<String> set = redisTemplate.opsForZSet()
+                .rangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE);
+        JSONObject jsonObject;
+        List<JSONObject> records = new ArrayList<>();
+        for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
+            jsonObject = new JSONObject();
+            String vin = iterator.next();
+            String message = (String) redisTemplate.opsForHash()
+                    .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
+            jsonObject.put("vin", vin);
+            jsonObject.put("message", message);
+            records.add(jsonObject);
+        }
+        return records;
+    }
 
 }

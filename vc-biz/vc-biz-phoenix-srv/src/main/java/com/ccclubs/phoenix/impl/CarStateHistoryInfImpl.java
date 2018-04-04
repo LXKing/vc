@@ -13,8 +13,6 @@ import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.orm.model.PaceBlock;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import com.ccclubs.phoenix.util.VehicleUtil;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +33,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
     static  final Logger logger= LoggerFactory.getLogger(CarStateHistoryInfImpl.class);
 
-    static final String insert_sql = "upsert into " +
+   /* static final String insert_sql = "upsert into " +
             "PHOENIX_CAR_STATE_HISTORY " +
             "(" +
             "CS_NUMBER," +
@@ -128,7 +126,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             "?, " + //CUR_ORDER
             "?, " + //NET_STRENGTH
             "? " + //GEAR
-            ")";
+            ")";*/
 
 
     static final String count_sql = "select " +
@@ -142,8 +140,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Autowired
     private PhoenixTool phoenixTool;
 
-    @Autowired
-    private BaseInfImpl baseImpl;
+//    @Autowired
+//    private BaseInfImpl baseImpl;
 
     @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
@@ -171,8 +169,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(2, start_time);
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -215,8 +213,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setInt(4, limit);
             pst.setInt(5, offset);
             resultSet= pst.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
-            BaseInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -243,7 +241,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(2, start_time);
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -276,7 +274,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         return carStateHistoryOutput;
     }
 
-    @Override
+    /*@Override
     public void insertBulid(CarState carState,PreparedStatement carStatePs) throws SQLException {
         String cs_number = carState.getCs_number();
         Long current_time = carState.getCurrent_time();
@@ -508,7 +506,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     //批量更新车辆状态数据
     public void saveOrUpdate(final List<CarState> records) {
         baseImpl.saveOrUpdate(records,this,insert_sql,"CarState");
-    }
+    }*/
 
     @Override
     //驾驶阶段数据计算

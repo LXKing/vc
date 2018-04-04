@@ -65,6 +65,7 @@ public class TransformUtils {
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
         terminalStatus.setCssObdMile(mqtt_66.getObdMiles() & 0xFFFFFFFF);
+        terminalStatus.setCssMileage(mqtt_66.getMiles() & 0xFFFFFFFF);
         terminalStatus.setCssOrder(message.getTransId());
         terminalStatus.setCssPower(mqtt_66.getBattery() & 0xFFFF);
         terminalStatus.setCssPtc(mqtt_66.getAirConditionerPtc());
@@ -141,6 +142,7 @@ public class TransformUtils {
             : csMachine.getCsmTeNo().trim().toUpperCase());
         //FIXME 数据库字段设计为 Decimal
         terminalStatus.setCssObdMile(mqtt_68_03.getObdMile().intValue());
+        terminalStatus.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles().intValue());
         terminalStatus.setCssOrder(message.getTransId());
         terminalStatus.setCssPower(mqtt_68_03.getBattery());
 
@@ -204,6 +206,7 @@ public class TransformUtils {
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
         terminalStatus.setCssObdMile(csState.getCssObdMile());
+        terminalStatus.setCssMileage(csState.getCssMileage());
         terminalStatus.setCssOrder(csState.getCssOrder());
         terminalStatus.setCssPower(csState.getCssPower());
         terminalStatus.setCssPtc(csState.getCssPtc()&0xFF);
