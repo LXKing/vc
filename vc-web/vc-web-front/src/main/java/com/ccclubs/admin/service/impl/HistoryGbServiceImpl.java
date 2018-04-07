@@ -13,6 +13,9 @@ import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
+import com.ccclubs.protocol.dto.gb.GBMessage;
+import com.ccclubs.protocol.util.Tools;
+import javax.tools.Tool;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -86,6 +89,39 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
     }
 
 
+    @Override
+    public TableResult<GBMessage> getGbMessagePage(HistoryGbQuery query, Integer pageNo, Integer pageSize, String order) {
+        ApiMessage<CarGbHistoryOutput> apiMessage;
+        TableResult<GBMessage> result=new TableResult<>();
+        Page page=new Page(0,pageSize,0);
+        result.setData(new ArrayList<>());
+        result.setPage(page);
+
+        String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
+        String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
+        try {
+            apiMessage=this.queryCarGbListFromHbase(query.getCsVinEquals(),
+                startTime,endTime,
+                pageNo,pageSize,order);
+            if(apiMessage!=null&&apiMessage.getCode()== ApiEnum.SUCCESS.code()){
+                if (apiMessage.getData()!=null){
+                    if (null!=apiMessage.getData().getTotal()
+                        && apiMessage.getData().getTotal() > 0 && null!=apiMessage.getData().getList()
+                        && apiMessage.getData().getList().size() > 0){
+                        List<CarGb> carGbList=apiMessage.getData().getList();
+                        page=new Page(pageNo,pageSize,apiMessage.getData().getTotal());
+                        result.setData(dealCarGbToGbMessageAll(carGbList));
+                        result.setPage(page);
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+
     private static HistoryGb dealCarGbToHistoryGb(CarGb carGb){
         if (null!=carGb){
             HistoryGb historyGb=new HistoryGb();
@@ -104,6 +140,22 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
         }
         else {return null;}
     }
+
+    private static List<GBMessage> dealCarGbToGbMessageAll(List<CarGb> carGbList){
+        GBMessage gbMessage = new GBMessage();
+        if (null!=carGbList&&carGbList.size() > 0){
+            List<GBMessage> historyGbList=new ArrayList<>();
+            for (CarGb carGb :carGbList){
+                gbMessage.ReadFromBytes(Tools.HexString2Bytes(carGb.getGb_data()));
+                historyGbList.add(gbMessage);
+            }
+            return historyGbList;
+        }
+        else {
+            return null;
+        }
+    }
+
 
     private static List<HistoryGb> dealCarGbToHistoryGbAll(List<CarGb> carGbList){
         if (null!=carGbList&&carGbList.size()>0){

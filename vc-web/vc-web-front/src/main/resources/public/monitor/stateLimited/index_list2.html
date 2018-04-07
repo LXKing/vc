@@ -77,6 +77,7 @@
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
 	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:'  class="btn btn-primary btn-outline grid_oper_btn" lay-event="location" title="定位"><i class="fa fa-location-arrow"></i></a>
 </div>
 
 <script type="text/javascript">
@@ -196,7 +197,10 @@
 				  content: "/monitor/stateLimited/detail.html?id="+id,
 				  zIndex: layer.zIndex //重点1
 			});
-		}
+		},
+    location:function(title,lat,lng){
+      window.open("http://uri.amap.com/marker?src=mypage&coordinate=wgs84&callnative=0&position="+lng+","+lat+"&name=" + title);
+    },
 	};
 
 	var tableId = "TCsState";
@@ -236,7 +240,7 @@
 	  		,{field: "cssBaseCi", title: "CI", width: 110, sort:true}
 	  		,{field: "cssOrder", title: "订单号", width: 110, sort:true}
 	  		,{field: "cssMoData", title: "报文数据", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
+      		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {
@@ -333,7 +337,9 @@
 					    	} else if(layEvent === 'oper'){
 					    		var menu = [];
 					    		showOperMenu($(this), menu);
-					    	}
+                }else if (layEvent === 'location'){
+                  operate.location(data["cssNumberText"],data["cssLatitude"],data["cssLongitude"])
+                }
 					  });
 
 					  grid =  {
