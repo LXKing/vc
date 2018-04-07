@@ -123,8 +123,8 @@
         <!--<input name="cssCarEquals" placeholder="请输入VIN" class="form-control searchinput"-->
         <!--dataWhere=""-->
         <!--dataUrl="/admin/vehicle/query"></dd>-->
-        <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput"
-               dataWhere="" dataUrl="/admin/vehicle/find"></dd>
+        <input name="csVinEquals" placeholder="请输入关键字" class="form-control searchinput"
+               dataWhere="" dataUrl="/admin/vehicle/search"></dd>
     </dl>
     <dl>
       <dt>轨迹时间</dt>
@@ -275,11 +275,11 @@
 
       var total, hasMore = true, isFirstLoad = true, totalPoint = 0;
       var params = {
-        csNumberEquals: '',
+        csVinEquals: '',
         page: 1,
-        rows: 300,
-        currentTimeStart: '',
-        currentTimeEnd: '',
+        rows: 500,
+        addTimeStart: '',
+        addTimeEnd: '',
         isResolve: false,
         order: 'asc'
       };
@@ -292,14 +292,14 @@
       //当前仅有1条轨迹信息
       pathObjectArray.push(pathObject);
 
-      var $vinId = $("input[name='cssNumberEquals']");
+      var $vin = $("input[name='csVinEquals']");
       var $startTime = $("input[name='cssCurrentTimeStart']");
       var $endTime = $("input[name='cssCurrentTimeEnd']");
 
-      $vinId.on('input', function (e) {
+      $vin.on('input', function (e) {
         // 这里可以写你想要的验证代码；
-        if ($vinId.val() !== '') {
-          params.csNumberEquals = $vinId.val();
+        if ($vin.val() !== '') {
+          params.csVinEquals = $vin.val();
           // loadData();
         }
       });
@@ -331,6 +331,8 @@
         hasMore = true;
         isFirstLoad = true;
         totalPoint = 0;
+        currentSpeed = undefined;
+        trackData = [];
 
         $('.carControl').on("click", function () {
           return;
@@ -342,7 +344,7 @@
       });
 
       function checkParams() {
-        if ($vinId.val() === '' || typeof($vinId.val()) === 'undefined') {
+        if ($vin.val() === '' || typeof($vin.val()) === 'undefined') {
           layer.msg('请选择一辆车', {icon: 7, time: 1600});
           return false;
         }
@@ -358,9 +360,9 @@
           layer.msg('结束时间应该比开始时间大', {icon: 7, time: 1600});
           return false;
         }
-        params.csNumberEquals = $vinId.val();
-        params.currentTimeStart = $startTime.val();
-        params.currentTimeEnd = $endTime.val();
+        params.csVinEquals = $vin.val();
+        params.addTimeStart = $startTime.val();
+        params.addTimeEnd = $endTime.val();
         return true;
       }
 
@@ -404,7 +406,7 @@
               var item;
               for (var i = 0, len = d.data.length; i < len; i++) {
                 item = d.data[i];
-                if (null !== item.errorMessage) {
+                if (typeof(item.errorMessage) !== 'undefined') {
                   continue;
                 }
                 // 实时数据或补发数据
@@ -439,16 +441,16 @@
                 $('#panel').show();
               }
 
-              if (pathRoutes.length === 0) {
-                console.log("没有更多GPS数据！");
-                return;
-              }
-
               if (isFirstLoad) {
                 isFirstLoad = false;
                 if (pathSimplifierIns._data != undefined && pathSimplifierIns._data.pointNum > 0) {
                   pathSimplifierIns.setData();
                   pathObjectArray[0].path = [];
+                }
+
+                if (pathRoutes.length === 0) {
+                  console.log("没有更多GPS数据！");
+                  return;
                 }
                 //设置path数组
                 pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
@@ -485,6 +487,11 @@
                   }
                 });
               } else {
+                if (pathRoutes.length === 0) {
+                  console.log("没有更多GPS数据！");
+                  return;
+                }
+
                 var cursor = navg.getCursor().clone(), //保存巡航器的位置
                     status = navg.getNaviStatus();
                 pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
