@@ -174,7 +174,11 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     csStateHistory.setLock_status(csState.getCssLock());
     csStateHistory.setNet_strength(convertToInterger(csState.getCssCsq()));
     csStateHistory.setNet_type(convertToString(csState.getCssNetType()));
-    csStateHistory.setObd_miles(convertToFloat(csState.getCssObdMile()));
+    if(null==csState.getCssObdMile()){
+      csStateHistory.setObd_miles(0f);
+    }else {
+      csStateHistory.setObd_miles(convertToFloat(csState.getCssObdMile()));
+    }
     csStateHistory.setOil_cost(convertToFloat(csState.getCssOil()));
     csStateHistory.setPtc_status(convertToInterger(csState.getCssPtc()));
     csStateHistory.setRent_flg(convertToInterger(csState.getCssRented()));
