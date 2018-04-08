@@ -1,5 +1,6 @@
 package com.ccclubs.admin.controller;
 
+import com.ccclubs.protocol.dto.gb.GBMessage;
 import java.util.*;
 
 import com.ccclubs.admin.model.ReportParam;
@@ -53,6 +54,20 @@ public class HistoryGbController {
 		for(HistoryGb data : list){
 			registResolvers(data);
 		}
+		return pageInfo;
+	}
+
+
+	/**
+	 * 获取分页列表数据
+	 */
+	@RequestMapping(value = "listGbMessage", method = RequestMethod.GET)
+	public TableResult<GBMessage> listGbMessage(HistoryGbQuery query, @RequestParam(defaultValue = "0") Integer page,
+			@RequestParam(defaultValue = "10") Integer rows,
+			@RequestParam(defaultValue = "desc" )String order) {
+		if (null==query.getCsVinEquals()){return  new TableResult<>();}
+		TableResult<GBMessage> pageInfo = historyGbService.getGbMessagePage(query, page, rows,order);
+
 		return pageInfo;
 	}
 
