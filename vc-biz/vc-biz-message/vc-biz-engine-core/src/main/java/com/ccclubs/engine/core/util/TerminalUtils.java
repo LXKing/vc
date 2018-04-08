@@ -273,6 +273,7 @@ public class TerminalUtils {
         csMachineNew.setCsmFunctions(functions);
       }
     }
+    //TODO 添加手刹和自动驾驶状态字段
 
     // 必须有蓝牙版本，mac地址，蓝牙密钥，并且mac地址不为 000000000000
     if (terminalInfo.getBleVersion() != null && (!StringUtils.empty(terminalInfo.getMacAddress())
