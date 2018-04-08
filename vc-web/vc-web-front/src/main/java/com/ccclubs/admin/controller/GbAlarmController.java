@@ -66,7 +66,7 @@ public class GbAlarmController {
         String json = JSON.toJSONString(input);
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8090/ev/getAlarmRecordPage")
+                .url("http://100.115.174.223/ev/getAlarmRecordPage")
                 .header("appId", "1000002")
                 .header("sign", HmacUtils.hmacSha1Hex("appkey", DigestUtils.md5Hex(json)))
                 .post(body)
@@ -96,7 +96,7 @@ public class GbAlarmController {
         String json = JSON.toJSONString(input);
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
         Request request = new Request.Builder()
-                .url("http://127.0.0.1:8090/ev/getAllAlarmRecord")
+                .url("http://100.115.174.223/ev/getAllAlarmRecord")
                 .header("appId", "1000002")
                 .header("sign", HmacUtils.hmacSha1Hex("appkey", DigestUtils.md5Hex(json)))
                 .post(body)
