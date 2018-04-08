@@ -69,8 +69,9 @@ vc-web-gateway-mqtt-srv     |        port:12002
 vc-web-gateway-gb-srv       |        port:12003
 vc-web-rule-engine-srv |   port:12004
 vc-web-cmd-engine-srv |  port:12005
-phoenix-srv |  port:11117
-phoenix-api |  port:7007
+vc-web-phoenix-api     |  port:7007
+vc-web-phoenix-srv     |  port:11117
+vc-web-storage-srv     |  port:12008
 
 
 ### mybatis generate自动生成插件(具体参考demo)
