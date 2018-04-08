@@ -69,12 +69,15 @@ public class CsVehicleController {
       @RequestParam(defaultValue = "0") Integer page,
       @RequestParam(defaultValue = "10") Integer rows) {
     SrvUser user = userAccessUtils.getCurrentUser(token);
-    this.addQueryConditionsByUser(user, query);
+    String authority=addQueryConditionsByUser(user, query);
 //想法是首先得到对应的用户组来进行处理，对query加上新的条件来限制查询到的结果。
 //    if (null == user) {
 //      return new ResultMsg<>(false,
 //          ResultCode.INVALID_TOKEN, null);
 //    }
+    if(null==authority){
+      return new TableResult<>();
+    }
 
     PageInfo<CsVehicle> pageInfo = csVehicleService.getPage(query.getCrieria(), page, rows);
     List<CsVehicle> list = pageInfo.getList();
@@ -89,12 +92,12 @@ public class CsVehicleController {
   /**
    * 根据用户添加查询条件。
    */
-  private void addQueryConditionsByUser(SrvUser user, CsVehicleQuery query) {
+  private String addQueryConditionsByUser(SrvUser user, CsVehicleQuery query) {
     //首先判断用户所在的组。
     SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
     if (srvGroup.getSgFlag().equals("sys_user")) {
       //系统用户，此种用户可以随意查询（为所欲为）
-
+          return "";
     } else if (srvGroup.getSgFlag().equals("factory_user")) {
       //车厂 （按照车型进行查询）
       CsModelMapping csModelMapping = new CsModelMapping();
@@ -120,9 +123,12 @@ public class CsVehicleController {
         }
         query.setCsvIdIn(carIds);
       }
-
     }
-
+    if (query.getCsvIdIn()==null){
+        return null;
+    }else{
+      return "";
+    }
 
   }
 
