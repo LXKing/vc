@@ -1349,6 +1349,8 @@ public class CCCLUBS_60 implements IMessageBody {
     }
   }
 
+  //TODO 修改手刹状态，自动驾驶状态
+
 
   @Override
   public byte[] WriteToBytes() {
