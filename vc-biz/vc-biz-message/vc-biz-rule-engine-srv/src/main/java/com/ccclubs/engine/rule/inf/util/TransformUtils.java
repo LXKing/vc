@@ -169,6 +169,7 @@ public class TransformUtils {
             StringUtils.empty(csMachine.getCsmTlV1()) ? 0 : Integer.parseInt(csMachine.getCsmTlV1()));
         terminalStatus.setSoftwareII(0);
         terminalStatus.setPluginVersion(csMachine.getCsmTlV2() == null ? 0 : csMachine.getCsmTlV2());
+        //Alban于2018年4月9日添加了手刹状态与自动驾驶状态
         terminalStatus.setAutopilot(mqtt_68_03.getCcclubs_60().getAutopilot());
         terminalStatus.setHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
         return terminalStatus;

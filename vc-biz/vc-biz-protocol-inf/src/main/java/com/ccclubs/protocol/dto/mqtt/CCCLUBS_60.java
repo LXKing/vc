@@ -1116,8 +1116,7 @@ public class CCCLUBS_60 implements IMessageBody {
       MachineAdditional_Autopilot machineAdditionalAutopilot = (MachineAdditional_Autopilot) additionalItem;
       return machineAdditionalAutopilot.getAutopilotState();
     } else {
-      //0为默认值
-      return 0;
+      return null;
     }
   }
   /**
