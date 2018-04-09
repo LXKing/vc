@@ -82,6 +82,7 @@ public class VtSearchApi {
         return new ApiMessage<>(output);
     }
 
+
     /**
      * 4.状态信息的实时读取
      *
@@ -104,6 +105,21 @@ public class VtSearchApi {
     public ApiMessage<List<TerminalQryOutput>> searchTerminalInfo(@RequestHeader("appId") String appId, TerminalListQryInput input) {
         input.setAppId(appId);
         List<TerminalQryOutput> output = queryTerminalInfoInf.searchTerminalInfo(input);
+        return new ApiMessage<>(output);
+    }
+
+    /**
+     * 6.状态信息批量实时读取
+     *
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value="车辆状态信息的实时读取（长安智行）", notes="通过VIN码查询车辆的实时状态信息")
+    @PostMapping("getRealTimeCarStates")
+    public ApiMessage<VehicleStatesQryOutput> getRealTimeCarStates(@RequestHeader("appId") String appId, VehicleStatesQryInput input) {
+        input.setAppId(appId);
+        VehicleStatesQryOutput output = queryVehicleStateInf.getRealTimeCarStates(input);
         return new ApiMessage<>(output);
     }
 
