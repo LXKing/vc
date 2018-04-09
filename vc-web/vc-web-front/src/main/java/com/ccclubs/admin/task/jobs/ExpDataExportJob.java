@@ -68,7 +68,7 @@ public class ExpDataExportJob implements Runnable {
         long count = historyMongoTemplate.count(query, CsVehicleExp.class);
 
         if (count > 0) {
-            logger.info("检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
+            logger.info("近 "+jobParam.getDateRange()+" 天检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
             query.with(new Sort(Sort.Direction.DESC, "csvAddTime"));
             List<CsVehicleExp> list = historyMongoTemplate.find(query, CsVehicleExp.class);
 
