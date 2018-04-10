@@ -47,7 +47,7 @@ public class GbAlarmController {
 
     @RequestMapping(value = "confirm", method = RequestMethod.POST)
     public VoResult<?> confirm(EvAlarmRecord record) {
-        record.setComfirmTime(new Date());
+        record.setConfirmTime(new Date());
         alarmRecordBaseInf.confirmAlarmState(record);
         return VoResult.success();
     }
