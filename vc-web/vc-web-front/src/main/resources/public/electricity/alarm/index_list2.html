@@ -53,12 +53,29 @@
 
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
-	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+    <a href='javascript:' sctl="canView" class="btn btn-warning btn-outline grid_oper_btn" lay-event="confirm"
+       title="报警确认"><i class="fa fa-wrench"></i></a>
 </div>
 
 <script type="text/javascript">
     var currPage = 1, currSize = 15;
     var operate = {
+        alarmConfirm: function (id) {
+            showTopWin({
+                type: 2,
+                shade: 0.4,
+                maxmin: true,
+                area: ['770px', '425px'],
+                content: "/electricity/alarm/alarmConfirm.html?id=" + id,
+                zIndex: layer.zIndex, //重点1
+                end: function (result) {
+                    if (result.success) {
+                        layer.msg("操作成功！", {icon: 1, time: 1600});
+                        grid.reloadData();
+                    }
+                }
+            });
+        },
         getGrid: function () {
             return grid;
         },
@@ -188,9 +205,12 @@
         , {field: "startTime", title: "开始时间", width: 150, sort: true}
         , {field: "endTime", title: "恢复时间", width: 150, sort: true}
         , {field: "statusText", title: "状态", width: 110, sort: true}
+        , {field: "confirmStateText", title: "报警确认", width: 110, sort: true}
+        , {field: "remark", title: "备注", width: 110, sort: true}
         /*, {field: "addTime", title: "添加时间", width: 110, sort: true}
         , {field: "updateTime", title: "更新时间", width: 110, sort: true}
-        , {field: 'operate', title: '操作', width: 0, fixed: 'right', toolbar: '#gridToolBar'}*/
+        */
+        , {field: 'operate', title: '操作', width: 0, fixed: 'right', toolbar: '#gridToolBar'}
     ];
 
     var option = {
@@ -236,13 +256,13 @@
         grid.render(option);
     }
 
-    function getTableHeight(){
+    function getTableHeight() {
         var height = $(window).height() - ($(".queryform").height() + 50);
-        if(height>1000)return 1000;
+        if (height > 1000) return 1000;
         return height;
     }
 
-    $(window).resize(function(){
+    $(window).resize(function () {
         option["height"] = getTableHeight();
         $(".layui-table-view").remove();
         grid.render(option);
@@ -280,6 +300,8 @@
                         operate.del(id)
                     } else if (layEvent === 'edit') {
                         operate.update(id)
+                    } else if (layEvent === 'confirm') {
+                        operate.alarmConfirm(id)
                     } else if (layEvent === 'oper') {
                         var menu = [];
                         showOperMenu($(this), menu);
