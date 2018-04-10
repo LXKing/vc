@@ -95,10 +95,10 @@ public class GbCsStateController {
         }
         return r;
     }
+//    @Autowired
+//    RedisTemplate redisTemplate;
 
-    /*@Autowired
-    RedisTemplate redisTemplate;
-    @RequestMapping(value = "set", method = RequestMethod.GET)
+    /*@RequestMapping(value = "set", method = RequestMethod.GET)
     public String set() {
         redisTemplate.opsForHash()
                 .put(RedisConst.REDIS_KEY_RT_STATES_HASH, "LJ8M3A5M9GB002366", "232302FE4C4A38453343314D314742303039303630010025120206173B38010203010000000042460CBD271737010F03D30000050106B3716402102A5631");
@@ -106,35 +106,32 @@ public class GbCsStateController {
         return "123";
     }*/
 
-    @Autowired
-    RedisTemplate redisTemplate;
-
-    /**
-     * For Test
-     * 取得redis中GB RT数据
-     *
-     * @param key 秘钥
-     * @return
-     */
-    @RequestMapping(value = "getAllGBRTData", method = RequestMethod.GET)
-    public List<JSONObject> getAllGBRTData(String key) {
-        if (org.apache.commons.lang3.StringUtils.isEmpty(key) || !key.equals("kevin")) {
-            throw new ApiException(ApiEnum.FAIL.code(), "接口秘钥错误！");
-        }
-        Set<String> set = redisTemplate.opsForZSet()
-                .rangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE);
-        JSONObject jsonObject;
-        List<JSONObject> records = new ArrayList<>();
-        for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
-            jsonObject = new JSONObject();
-            String vin = iterator.next();
-            String message = (String) redisTemplate.opsForHash()
-                    .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
-            jsonObject.put("vin", vin);
-            jsonObject.put("message", message);
-            records.add(jsonObject);
-        }
-        return records;
-    }
+//    /**
+//     * For Test
+//     * 取得redis中GB RT数据
+//     *
+//     * @param key 秘钥
+//     * @return
+//     */
+//    @RequestMapping(value = "getAllGBRTData", method = RequestMethod.GET)
+//    public List<JSONObject> getAllGBRTData(String key) {
+//        if (org.apache.commons.lang3.StringUtils.isEmpty(key) || !key.equals("kevin")) {
+//            throw new ApiException(ApiEnum.FAIL.code(), "接口秘钥错误！");
+//        }
+//        Set<String> set = redisTemplate.opsForZSet()
+//                .rangeByScore(RedisConst.REDIS_KEY_RT_STATES_ZSET, -1, Long.MAX_VALUE);
+//        JSONObject jsonObject;
+//        List<JSONObject> records = new ArrayList<>();
+//        for (Iterator<String> iterator = set.iterator(); iterator.hasNext(); ) {
+//            jsonObject = new JSONObject();
+//            String vin = iterator.next();
+//            String message = (String) redisTemplate.opsForHash()
+//                    .get(RedisConst.REDIS_KEY_RT_STATES_HASH, vin);
+//            jsonObject.put("vin", vin);
+//            jsonObject.put("message", message);
+//            records.add(jsonObject);
+//        }
+//        return records;
+//    }
 
 }
