@@ -214,9 +214,35 @@ public class TerminalStatus implements Serializable {
      * 分时租赁插件版本
      */
     private Integer pluginVersion = 0;
+    /**
+     * 手刹状态
+     * */
+    private Integer handbrake;
+    /**
+     * 自动驾驶状态
+     * */
+    private Integer autopilot;
+
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
+    }
+
+
+    public Integer getHandbrake() {
+        return handbrake;
+    }
+
+    public void setHandbrake(Integer handbrake) {
+        this.handbrake = handbrake;
+    }
+
+    public Integer getAutopilot() {
+        return autopilot;
+    }
+
+    public void setAutopilot(Integer autopilot) {
+        this.autopilot = autopilot;
     }
 
     public String getCssNumber() {

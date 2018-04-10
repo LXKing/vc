@@ -199,6 +199,8 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
     csStateHistory.setWarn_code(convertToString(csState.getCssWarn()));
 
+    csStateHistory.setAutopilot_status(csState.getCssAutopilot());
+    csStateHistory.setHandbrake_status(csState.getCssHandbrake());
     /*if (csNumberSet.contains(csStateHistory.getCs_number())){
       loggerBusiness.info(JSON.toJSONString(csStateHistory));
     }*/

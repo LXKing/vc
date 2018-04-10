@@ -54,6 +54,9 @@
     <result column="css_base_ci" jdbcType="INTEGER" property="cssBaseCi" />
     <result column="css_order" jdbcType="BIGINT" property="cssOrder" />
     <result column="css_mo_data" jdbcType="VARCHAR" property="cssMoData" />
+    <result column="css_te_no" jdbcType="VARCHAR" property="cssTeNo" />
+    <result column="css_autopilot" jdbcType="INTEGER" property="cssAutopilot" />
+    <result column="css_handbrake" jdbcType="INTEGER" property="cssHandbrake" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <!--
@@ -132,7 +135,8 @@
     css_electric_mileage, css_endurance, css_temperature, css_csq, css_power_consumption, 
     css_longitude, css_latitude, css_gps_valid, css_gps_cn, css_gps_count, css_dir, css_circular, 
     css_ptc, css_compres, css_fan, css_saving, css_door, css_engine, css_key, css_gear, 
-    css_light, css_lock, css_net_type, css_base_lac, css_base_ci, css_order, css_mo_data
+    css_light, css_lock, css_net_type, css_base_lac, css_base_ci, css_order, css_mo_data, 
+    css_te_no, css_autopilot, css_handbrake
   </sql>
   <select id="selectByExample" parameterType="com.ccclubs.pub.orm.model.CsStateExample" resultMap="BaseResultMap">
     <!--
@@ -200,7 +204,8 @@
       css_saving, css_door, css_engine, 
       css_key, css_gear, css_light, 
       css_lock, css_net_type, css_base_lac, 
-      css_base_ci, css_order, css_mo_data
+      css_base_ci, css_order, css_mo_data, 
+      css_te_no, css_autopilot, css_handbrake
       )
     values (#{cssId,jdbcType=INTEGER}, #{cssAccess,jdbcType=SMALLINT}, #{cssHost,jdbcType=SMALLINT}, 
       #{cssNumber,jdbcType=VARCHAR}, #{cssCar,jdbcType=INTEGER}, #{cssAddTime,jdbcType=TIMESTAMP}, 
@@ -217,7 +222,8 @@
       #{cssSaving,jdbcType=TINYINT}, #{cssDoor,jdbcType=VARCHAR}, #{cssEngine,jdbcType=TINYINT}, 
       #{cssKey,jdbcType=TINYINT}, #{cssGear,jdbcType=TINYINT}, #{cssLight,jdbcType=INTEGER}, 
       #{cssLock,jdbcType=INTEGER}, #{cssNetType,jdbcType=TINYINT}, #{cssBaseLac,jdbcType=INTEGER}, 
-      #{cssBaseCi,jdbcType=INTEGER}, #{cssOrder,jdbcType=BIGINT}, #{cssMoData,jdbcType=VARCHAR}
+      #{cssBaseCi,jdbcType=INTEGER}, #{cssOrder,jdbcType=BIGINT}, #{cssMoData,jdbcType=VARCHAR}, 
+      #{cssTeNo,jdbcType=VARCHAR}, #{cssAutopilot,jdbcType=INTEGER}, #{cssHandbrake,jdbcType=INTEGER}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.ccclubs.pub.orm.model.CsState">
@@ -371,6 +377,15 @@
       <if test="cssMoData != null">
         css_mo_data,
       </if>
+      <if test="cssTeNo != null">
+        css_te_no,
+      </if>
+      <if test="cssAutopilot != null">
+        css_autopilot,
+      </if>
+      <if test="cssHandbrake != null">
+        css_handbrake,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="cssId != null">
@@ -516,6 +531,15 @@
       </if>
       <if test="cssMoData != null">
         #{cssMoData,jdbcType=VARCHAR},
+      </if>
+      <if test="cssTeNo != null">
+        #{cssTeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cssAutopilot != null">
+        #{cssAutopilot,jdbcType=INTEGER},
+      </if>
+      <if test="cssHandbrake != null">
+        #{cssHandbrake,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -680,6 +704,15 @@
       <if test="record.cssMoData != null">
         css_mo_data = #{record.cssMoData,jdbcType=VARCHAR},
       </if>
+      <if test="record.cssTeNo != null">
+        css_te_no = #{record.cssTeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cssAutopilot != null">
+        css_autopilot = #{record.cssAutopilot,jdbcType=INTEGER},
+      </if>
+      <if test="record.cssHandbrake != null">
+        css_handbrake = #{record.cssHandbrake,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -738,7 +771,10 @@
       css_base_lac = #{record.cssBaseLac,jdbcType=INTEGER},
       css_base_ci = #{record.cssBaseCi,jdbcType=INTEGER},
       css_order = #{record.cssOrder,jdbcType=BIGINT},
-      css_mo_data = #{record.cssMoData,jdbcType=VARCHAR}
+      css_mo_data = #{record.cssMoData,jdbcType=VARCHAR},
+      css_te_no = #{record.cssTeNo,jdbcType=VARCHAR},
+      css_autopilot = #{record.cssAutopilot,jdbcType=INTEGER},
+      css_handbrake = #{record.cssHandbrake,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -891,6 +927,15 @@
       <if test="cssMoData != null">
         css_mo_data = #{cssMoData,jdbcType=VARCHAR},
       </if>
+      <if test="cssTeNo != null">
+        css_te_no = #{cssTeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="cssAutopilot != null">
+        css_autopilot = #{cssAutopilot,jdbcType=INTEGER},
+      </if>
+      <if test="cssHandbrake != null">
+        css_handbrake = #{cssHandbrake,jdbcType=INTEGER},
+      </if>
     </set>
     where css_id = #{cssId,jdbcType=INTEGER}
   </update>
@@ -946,7 +991,10 @@
       css_base_lac = #{cssBaseLac,jdbcType=INTEGER},
       css_base_ci = #{cssBaseCi,jdbcType=INTEGER},
       css_order = #{cssOrder,jdbcType=BIGINT},
-      css_mo_data = #{cssMoData,jdbcType=VARCHAR}
+      css_mo_data = #{cssMoData,jdbcType=VARCHAR},
+      css_te_no = #{cssTeNo,jdbcType=VARCHAR},
+      css_autopilot = #{cssAutopilot,jdbcType=INTEGER},
+      css_handbrake = #{cssHandbrake,jdbcType=INTEGER}
     where css_id = #{cssId,jdbcType=INTEGER}
   </update>
 
@@ -1095,6 +1143,12 @@
         </if>
         <if test="item.cssMoData != null">
           css_mo_data = #{item.cssMoData,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssAutopilot!=null">
+          css_autopilot=#{item.cssAutopilot,jdbcType=INTEGER}
+        </if>
+        <if test="item.cssHandbrake!=null">
+          css_handbrake=#{item.cssHandbrake,jdbcType=INTEGER}
         </if>
       </set>
       where css_id = #{item.cssId,jdbcType=INTEGER}

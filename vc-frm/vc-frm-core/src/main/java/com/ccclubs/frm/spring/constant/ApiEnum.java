@@ -48,8 +48,8 @@ public enum ApiEnum {
 	ALL_VEHICLE_VALIDATE_FAILED(101021, "all validate failed", "车辆及终端校验失败"),
 	COMMAND_EXECUTE_FAILED(101022, "command execute failed", "指令执行失败"),
 	OLD_VERSION_DETECTED(101023, "Old terminal version detected, please update your terminal to {} or higher", "终端版本过低，请升级到{}以上"),
-	TERMINAL_NOT_ONLINE(101024, "Terminal is not online at current time", "终端当前不在线");
-
+	TERMINAL_NOT_ONLINE(101024, "Terminal is not online at current time", "终端当前不在线"),
+	AUTOPILOT_CTRL_ERROR(101025,"autopilot parameter error","自动驾驶相关指令参数异常");
 	private int code;
 	private String msg;
 	private String memo;

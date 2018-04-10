@@ -59,7 +59,7 @@ public class PhoenixStorageService implements BaseHistoryInf {
             "LONGITUDE,LATITUDE,DIRECTION_ANGLE,CIRCULAR_MODE,PTC_STATUS," +
             "COMPRE_STATUS,FAN_MODE,SAVING_MODE,DOOR_STATUS,ENGINE_STATUS," +
             "KEY_STATUS,LIGHT_STATUS,LOCK_STATUS,NET_TYPE,BASE_LAC,BASE_CI," +
-            "CUR_ORDER, NET_STRENGTH,GEAR ) values (" +
+            "CUR_ORDER, NET_STRENGTH,GEAR,AUTOPILOT_STATUS,HANDBRAKE_STATUS ) values (" +
             "?, " + //CS_NUMBER
             "?, " + //CURRENT_TIME
             "?, " + //CS_ACCESS
@@ -102,7 +102,9 @@ public class PhoenixStorageService implements BaseHistoryInf {
             "?, " + //BASE_CI
             "?, " + //CUR_ORDER
             "?, " + //NET_STRENGTH
-            "? " + //GEAR
+            "?, " + //GEAR
+            "?, " + //AUTOPILOT
+            "? " + //HANDBRAKE
             ")";
 
 
@@ -150,6 +152,8 @@ public class PhoenixStorageService implements BaseHistoryInf {
         String cur_order = carState.getCur_order();
         Integer net_strength = carState.getNet_strength();
         Integer gear = carState.getGear();
+        Integer autopilot=carState.getAutopilot_status();
+        Integer handbrake=carState.getHandbrake_status();
 
         carStatePs.setString(1, cs_number);
         carStatePs.setLong(2, current_time);
@@ -172,7 +176,7 @@ public class PhoenixStorageService implements BaseHistoryInf {
         carStatePs.setString(7, rfid);
         carStatePs.setString(8, user_rfid);
         if (obd_miles == null) {
-            carStatePs.setNull(9, Types.FLOAT);
+            carStatePs.setFloat(9, 0F);
         } else {
             carStatePs.setFloat(9, obd_miles);
         }
@@ -329,6 +333,16 @@ public class PhoenixStorageService implements BaseHistoryInf {
             carStatePs.setNull(43,Types.INTEGER);
         }else {
             carStatePs.setInt(43,gear);
+        }
+        if (autopilot == null){
+            carStatePs.setNull(44,Types.INTEGER);
+        }else {
+            carStatePs.setInt(44,autopilot);
+        }
+        if (handbrake == null){
+            carStatePs.setNull(45,Types.INTEGER);
+        }else {
+            carStatePs.setInt(45,handbrake);
         }
         carStatePs.addBatch();
     }

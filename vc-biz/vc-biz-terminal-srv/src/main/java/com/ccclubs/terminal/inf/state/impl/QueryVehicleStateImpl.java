@@ -11,10 +11,15 @@ import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.terminal.dto.VehicleStateQryInput;
 import com.ccclubs.terminal.dto.VehicleStateQryOutput;
+import com.ccclubs.terminal.dto.VehicleStatesQryInput;
+import com.ccclubs.terminal.dto.VehicleStatesQryOutput;
 import com.ccclubs.terminal.inf.state.QueryVehicleStateInf;
 import com.ccclubs.terminal.version.TerminalServiceVersion;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 车辆状态数据查询实现
@@ -59,6 +64,40 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
     }
     VehicleStateQryOutput output = new VehicleStateQryOutput();
     BeanUtils.copyProperties(csState, output);
+    return output;
+  }
+
+  @Override
+  @DataAuth
+  public VehicleStatesQryOutput getRealTimeCarStates(VehicleStatesQryInput input) {
+    VehicleStatesQryOutput output=new VehicleStatesQryOutput();
+    List<VehicleStateQryOutput> vehicleStateQryOutputList=new ArrayList<>();
+    String[] vins=input.getVins();
+    for (String vin:vins
+         ) {
+      CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(vin);
+      // 未查询到车辆
+      if (null == csVehicle) {
+        continue;
+      }
+
+      //Step2.查询终端
+      // 未查询到终端
+      if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
+        continue;
+      }
+
+      //Step3.查询状态
+      CsState csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
+      if (null == csState) {
+        continue;
+      }
+      VehicleStateQryOutput vehicleStateQryOutput = new VehicleStateQryOutput();
+      BeanUtils.copyProperties(csState, vehicleStateQryOutput);
+      vehicleStateQryOutput.setCssVin(vin);
+      vehicleStateQryOutputList.add(vehicleStateQryOutput);
+    }
+    output.setVehicleStateQryOutputList(vehicleStateQryOutputList);
     return output;
   }
 }

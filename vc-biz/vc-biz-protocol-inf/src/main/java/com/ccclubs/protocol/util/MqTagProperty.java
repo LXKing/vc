@@ -7,12 +7,15 @@ package com.ccclubs.protocol.util;
  */
 public class MqTagProperty {
 
+
   // 包括 车机端订单下发回复、订单详细数据回复，续订回复 TAG
   public static String MQ_TERMINAL_ORDER = "terminal_order_";
   // 车机端 上行远程控制 TAG
   public static String MQ_TERMINAL_REMOTE = "terminal_remote_";
   // 车机端 状态数据 TAG
   public static String MQ_TERMINAL_STATUS = "terminal_status_";
+  //车机端 自动驾驶 TAG
+  public static String MQ_TERMINAL_AUTOPILOT = "terminal_ autopilot_";
   // 车机端 触发状态数据 TAG
   public static String MQ_TERMINAL_TRIGGER = "terminal_trigger_";
   // 车机端 报警数据 TAG

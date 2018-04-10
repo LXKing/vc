@@ -102,6 +102,10 @@ public class CarState implements Serializable{
     private String cur_order;
     //档位
     private Integer gear;
+    //自动驾驶状态
+    private Integer autopilot_status;
+    //手刹状态
+    private Integer handbrake_status;
 
     public Long getAdd_time() {
         return add_time;
@@ -464,6 +468,22 @@ public class CarState implements Serializable{
         this.gear = gear;
     }
 
+    public Integer getAutopilot_status() {
+        return autopilot_status;
+    }
+
+    public void setAutopilot_status(Integer autopilot_status) {
+        this.autopilot_status = autopilot_status;
+    }
+
+    public Integer getHandbrake_status() {
+        return handbrake_status;
+    }
+
+    public void setHandbrake_status(Integer handbrake_status) {
+        this.handbrake_status = handbrake_status;
+    }
+
     @Override
     public String toString() {
         return "CarState{" +
@@ -512,6 +532,10 @@ public class CarState implements Serializable{
                 ", base_ci='" + base_ci + '\'' +
                 ", cur_order='" + cur_order + '\'' +
                 ", gear=" + gear +
+                ", autopilot_status=" + autopilot_status +
+                ", handbrake_status=" + handbrake_status +
                 '}';
     }
+
+
 }
