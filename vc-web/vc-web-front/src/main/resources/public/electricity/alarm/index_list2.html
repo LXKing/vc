@@ -41,6 +41,12 @@
                                   onclick='showHideColumn(this, this.value);'>恢复时间</label></li>
                 <li><label><input value="statusText" checked="checked" type="checkbox"
                                   onclick='showHideColumn(this, this.value);'>状态</label></li>
+                <li><label><input value="confirmStateText" checked="checked" type="checkbox"
+                                  onclick='showHideColumn(this, this.value);'>报警确认</label></li>
+                <li><label><input value="confirmTime" checked="checked" type="checkbox"
+                                  onclick='showHideColumn(this, this.value);'>确认时间</label></li>
+                <li><label><input value="remark" checked="checked" type="checkbox"
+                                  onclick='showHideColumn(this, this.value);'>备注</label></li>
                 <!--<li><label><input value="addTime" checked="checked" type="checkbox"
                                   onclick='showHideColumn(this, this.value);'>添加时间</label></li>
                 <li><label><input value="updateTime" checked="checked" type="checkbox"
@@ -206,6 +212,7 @@
         , {field: "endTime", title: "恢复时间", width: 150, sort: true}
         , {field: "statusText", title: "状态", width: 110, sort: true}
         , {field: "confirmStateText", title: "报警确认", width: 110, sort: true}
+        , {field: "confirmTime", title: "确认时间", width: 110, sort: true}
         , {field: "remark", title: "备注", width: 110, sort: true}
         /*, {field: "addTime", title: "添加时间", width: 110, sort: true}
         , {field: "updateTime", title: "更新时间", width: 110, sort: true}
