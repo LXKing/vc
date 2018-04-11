@@ -156,7 +156,11 @@
       <appender-ref ref="ALL_FILE"/>
       <appender-ref ref="ERROR_FILE"/>
     </logger>
-    <logger name="com.alibaba.druid" level="DEBUG" additivity="false">
+    <logger name="com.alibaba.druid" level="ERROR" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.springframework.cloud.config" level="WARN" additivity="false">
       <appender-ref ref="ALL_FILE"/>
       <appender-ref ref="ERROR_FILE"/>
     </logger>
