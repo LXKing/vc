@@ -6,11 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.ccclubs.command.dto.ConfirmInput;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
-import com.ccclubs.command.remote.CsRemoteService;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
+import com.ccclubs.mongo.service.impl.CsRemoteService;
 import com.ccclubs.protocol.dto.CommonResult;
 
 import javax.annotation.Resource;

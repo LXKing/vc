@@ -2,7 +2,7 @@ package com.ccclubs.engine.core.util;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;
@@ -141,6 +141,7 @@ public class RemoteHelper {
         switch (operationCode) {
             // 关门
             case 0x10000000:
+            case 0x10210000:
                 CCCLUBS_60 terminalInfo = new CCCLUBS_60();
                 terminalInfo.ReadFromBytes(srcArray);
 
@@ -431,6 +432,17 @@ public class RemoteHelper {
      */
     private static StringBuilder getMutipleResult(int value, CCCLUBS_60 terminalInfo) {
         StringBuilder stringBuilder = new StringBuilder();
+        // 有车门未关好
+        if ((value & 0x1) == 0x01) {
+          StringBuilder stringBuilderDoor = getDoorString(
+              (byte) (terminalInfo.getTriggerMergeDoorStatusWithMask() & 0x00FF));
+          if (stringBuilderDoor.length() > 0) {
+            stringBuilder
+                .append(
+                    stringBuilderDoor.toString().substring(0, stringBuilderDoor.length() - 1) + "未关");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
+          }
+        }
         // 未熄火
         if (((value >> 1) & 0x1) == 0x01) {
             stringBuilder.append("发动机未熄火");
@@ -440,6 +452,11 @@ public class RemoteHelper {
         if (((value >> 2) & 0x1) == 0x01) {
             stringBuilder.append("钥匙未拔出");
             stringBuilder.append(ConstantUtils.SEPARATOR);
+        }
+        // 慢充未启动
+        if (((value >> 5) & 0x1) == 0x01) {
+          stringBuilder.append("未充电");
+          stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         // 有车灯未关
         if (((value >> 6) & 0x1) == 0x01) {
@@ -453,21 +470,15 @@ public class RemoteHelper {
                 stringBuilder.append(ConstantUtils.SEPARATOR);
             }
         }
-        // 有车门未关好
-        if ((value & 0x1) == 0x01) {
-            StringBuilder stringBuilderDoor = getDoorString(
-                    (byte) (terminalInfo.getTriggerMergeDoorStatusWithMask() & 0x00FF));
-            if (stringBuilderDoor.length() > 0) {
-                stringBuilder
-                        .append(
-                                stringBuilderDoor.toString().substring(0, stringBuilderDoor.length() - 1) + "未关");
-                stringBuilder.append(ConstantUtils.SEPARATOR);
-            }
+        // 钥匙未插入不允许操作
+        if (((value >> 7) & 0x1) == 0x01) {
+          stringBuilder.append("钥匙必须插入");
+          stringBuilder.append(ConstantUtils.SEPARATOR);
         }
-        // 慢充未启动
-        if (((value >> 5) & 0x1) == 0x01) {
-            stringBuilder.append("未充电");
-            stringBuilder.append(ConstantUtils.SEPARATOR);
+        // 参数获取错误
+        if (((value >> 8) & 0x1) == 0x01) {
+          stringBuilder.append("参数获取错误");
+          stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         return stringBuilder;
     }

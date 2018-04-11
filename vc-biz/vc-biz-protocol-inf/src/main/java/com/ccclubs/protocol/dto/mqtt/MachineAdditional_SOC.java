@@ -4,8 +4,7 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * SOC，动力电池电量,终端信息
+ * Created by qsxiaogang on 2017/4/17. SOC，动力电池电量,终端信息
  */
 public class MachineAdditional_SOC implements IMachineAdditionalItem {
 
@@ -15,7 +14,7 @@ public class MachineAdditional_SOC implements IMachineAdditionalItem {
   private byte soc;
 
   public int getSoc() {
-    return soc & 0xFF;
+    return soc;
   }
 
   public void setSoc(byte soc) {

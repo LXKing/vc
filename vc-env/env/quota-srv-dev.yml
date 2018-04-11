@@ -6,12 +6,20 @@ spring:
     host: 127.0.0.1
   data:  
     mongodb:  
-      host: 114.55.24.97
-      port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
-      authenticationDatabase: history
+      history:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: vc_history
+      remote:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: vc_remote
       
 dubbo:
   scan: 
@@ -32,6 +40,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
@@ -46,4 +55,13 @@ druid:
   timeBetweenEvictionRunsMillis: 3000
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
-  filters: 
+  filters:
+zt:
+  driver: com.mysql.jdbc.Driver
+  jdbc:
+    url:  jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    username: zkj_user
+    password: kANXZYqf2UzghVY7DnjP
+  threadInterval: 0 15 17 * * ?
+  updateInterval: 7
+  avgDriveTimePerDay: 0.2,1.5,  1.3,2.5,  2.3,3.5,  3.3,6,  5.3,12

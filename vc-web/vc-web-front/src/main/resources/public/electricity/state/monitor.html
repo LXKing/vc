@@ -1,0 +1,1297 @@
+<!-- MarkerList完整示例 -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/index.html -->
+  <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/MarkerList/examples/" />-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>国标协议单车监控</title>
+  <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+  <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <link href="/css/animate.min.css" rel="stylesheet">
+  <link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+  <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+  <link rel="stylesheet" href="/layui/css/layui.css?t=1510164124207" media="all">
+  <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">    <!-- jqgrid-->
+  <link href="/css/cnmain.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="/css/map/index.css">
+</head>
+
+<body>
+<blockquote class="layui-elem-quote" style="margin: 16px 16px 0 16px">
+  VIN：<span id="vinText"></span> ，报文时间：<span id="timeText"></span> <span id="data-loading"
+                                                                         class="layui-badge layui-bg-green hidden">数据加载中...</span>
+</blockquote>
+<div class="layui-tab layui-tab-card" style="margin: 16px 16px 0 16px">
+  <ul class="layui-tab-title">
+    <li id="1" class="layui-this">整车数据</li>
+    <li id="2">驱动电机数据</li>
+    <li id="3">燃料电池数据</li>
+    <li id="4">发动机数据</li>
+    <li id="5">车辆位置数据</li>
+    <li id="6">极值数据</li>
+    <li id="7">报警数据</li>
+    <li id="8">可充电储能装置电压数据</li>
+    <li id="9">可充电储能装置温度数据</li>
+  </ul>
+  <div class="layui-tab-content">
+    <div id="additionalId01" class="layui-tab-item layui-show">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>车辆状态</td>
+            <td id="vehicleStatus"></td>
+            <td id="vehicleStatusString"></td>
+            <td>0x01：车辆启动状态；0x02：熄火；0x03：其他状态；“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>充电状态</td>
+            <td id="charging"></td>
+            <td id="chargingString"></td>
+            <td>0x01：车辆启动状态；0x02：熄火；0x03：其他状态；“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>运行模式</td>
+            <td id="runningMode"></td>
+            <td id="runningModeString"></td>
+            <td>0x01: 纯电；0x02：混动；0x03：燃油；0xFE表示异常；0xFF表示无效</td>
+          </tr>
+          <tr>
+            <td>车速</td>
+            <td id="speed"></td>
+            <td id="speedString"></td>
+            <td>有效值范围：0～2200（表示0 km/h～220 km/h），最小计量单元：0.1km/h，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>累计里程</td>
+            <td id="mileage"></td>
+            <td id="mileageString"></td>
+            <td>有效值范围：0～9999999（表示0km～999999.9km），最小计量单元：0.1km。“0xFF, 0xFF,
+              0xFF,0xFE”表示异常，“0xFF,0xFF,0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>总电压</td>
+            <td id="voltage"></td>
+            <td id="voltageString"></td>
+            <td>有效值范围：0～10000（表示0V～1000V），最小计量单元：0.1V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>总电流</td>
+            <td id="current"></td>
+            <td id="currentString"></td>
+            <td>有效值范围：
+              0～20000（偏移量1000A，表示-1000A～+1000A），最小计量单元：0.1A，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>SOC</td>
+            <td id="soc"></td>
+            <td id="socString"></td>
+            <td>有效值范围：0～100（表示0%～100%），最小计量单元：1%，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>DC-DC状态</td>
+            <td id="dcDcStatus"></td>
+            <td id="dcDcStatusString"></td>
+            <td>0x01：工作；0x02：断开，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>挡位</td>
+            <td id="gear"></td>
+            <td id="gearString"></td>
+            <td>挡位：=0000空挡,1-13挡，=1110自动D挡，=1111停车P挡
+            </td>
+          </tr>
+          <tr>
+            <td>绝缘电阻</td>
+            <td id="insulationResistance"></td>
+            <td id="insulationResistanceString"></td>
+            <td>有效范围0~60000（表示0KΩ~60000KΩ），最小计量单元：1KΩ
+            </td>
+          </tr>
+          <tr>
+            <td>加速踏板行程值</td>
+            <td id="acceleratedPedalStrokeValue"></td>
+            <td id="acceleratedPedalStrokeValueString"></td>
+            <td>有效值范围：0～100（表示0%～100%），最小计量单元：1%，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>制动踏板状态</td>
+            <td id="brakePedalState"></td>
+            <td id="brakePedalStateString"></td>
+            <td>
+              有效值范围：0～100（表示0%～100%），最小计量单元：1%，“0”表示制动关的状态；在无具体行程值情况下，用“0x65”即“101”表示制动有效状态，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId02" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>驱动电机个数</td>
+            <td id="driveMotorNumber"></td>
+            <td id="driveMotorNumberString"></td>
+            <td>有效值1～253</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>驱动电机序号</td>
+            <td id="driveMotorSerial"></td>
+            <td id="driveMotorSerialString"></td>
+            <td>驱动电机顺序号，有效值范围1～253</td>
+          </tr>
+          <tr>
+            <td>驱动电机状态</td>
+            <td id="driveMotorStatus"></td>
+            <td id="driveMotorStatusString"></td>
+            <td>0x01：耗电；0x02：发电；0x03：关闭状态；0x04：准备状态“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>驱动电机控制器温度</td>
+            <td id="driveMotorControllerTemperature"></td>
+            <td id="driveMotorControllerTemperatureString"></td>
+            <td>有效值范围：0～250 （数值偏移量40℃，表示-40℃～+210℃），最小计量单元：1℃，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>驱动电机转速</td>
+            <td id="driveMotorSpeed"></td>
+            <td id="driveMotorSpeedString"></td>
+            <td>有效值范围：0～65531（数值偏移量20000表示-20000
+              r/min～45531r/min），最小计量单元：1r/min，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>驱动电机转矩</td>
+            <td id="driveMotorTorque"></td>
+            <td id="driveMotorTorqueString"></td>
+            <td>
+              有效值范围：0～65531（数值偏移量20000表示-2000N*m～4553.1N*m），最小计量单元：0.1N*m，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>驱动电机温度</td>
+            <td id="driveMotorTemperature"></td>
+            <td id="driveMotorTemperatureString"></td>
+            <td>有效值范围：0～250 （数值偏移量40℃，表示-40℃～+210℃），最小计量单元：1℃，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>电机控制器输入电压</td>
+            <td id="motorInputVoltage"></td>
+            <td id="motorInputVoltageString"></td>
+            <td>有效值范围：0～60000（表示0V～6000V），最小计量单元：0.1V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>电机控制器直流母线电流</td>
+            <td id="motorControllerDCBusCurrent"></td>
+            <td id="motorControllerDCBusCurrentString"></td>
+            <td>有效值范围：
+              0～20000（数值偏移量1000A，表示-1000A～+1000A），最小计量单元：0.1A，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId03" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>燃料电池电压</td>
+            <td id="fuelCellVoltage"></td>
+            <td id="fuelCellVoltageString"></td>
+            <td>有效值范围：0～20000（表示0V～2000V），最小计量单元：0.1V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>燃料电池电流</td>
+            <td id="fuelCellCurrent"></td>
+            <td id="fuelCellCurrentString"></td>
+            <td>有效值范围： 0～20000（表示0A～+2000A），最小计量单元：0.1A，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>燃料消耗率</td>
+            <td id="fuelConsumptionRate"></td>
+            <td id="fuelConsumptionRateString"></td>
+            <td>
+              有效值范围：0～60000（表示0kg/100km～600kg/100km），最小计量单元：0.01kg/100km，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>燃料电池温度探针总数</td>
+            <td id="fuelCellTemperatureProbeNumber"></td>
+            <td id="fuelCellTemperatureProbeNumberString"></td>
+            <td>
+              燃料电池温度探针总数；N个燃料电池温度探针，有效值范围：0～65531，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>探针温度值</td>
+            <td id="probeTemperature"></td>
+            <td id="probeTemperatureString"></td>
+            <td>有效值范围：0～240（数值偏移量40℃，表示-40℃～+200℃），最小计量单元：1℃</td>
+          </tr>
+          <tr>
+            <td>氢系统中最高温度</td>
+            <td id="hydrogenMaxTemperature"></td>
+            <td id="hydrogenMaxTemperatureString"></td>
+            <td>有效值范围：0～2400（偏移量40℃，表示-40℃～200℃），最小计量单元：0.1℃，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>氢系统中最高温度探针代号</td>
+            <td id="hydrogenMaxTemperatureProbeSerial"></td>
+            <td id="hydrogenMaxTemperatureProbeSerialString"></td>
+            <td>有效值范围：1～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>氢气最高浓度</td>
+            <td id="hydrogenMaxConcentration"></td>
+            <td id="hydrogenMaxConcentrationString"></td>
+            <td>有效值范围：0～60000（表示0ppm～50000ppm），最小计量单元：1ppm，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>氢气最高浓度传感器代号</td>
+            <td id="hydrogenMaxConcentrationSensorSerial"></td>
+            <td id="hydrogenMaxConcentrationSensorSerialString"></td>
+            <td>有效值范围：1～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>氢气最高压力</td>
+            <td id="hydrogenMaxPressure"></td>
+            <td id="hydrogenMaxPressureString"></td>
+            <td>有效值范围：0～1000（表示0MPa～100MPa），最小计量单元：0.1MPa</td>
+          </tr>
+          <tr>
+            <td>氢气最高压力传感器代号</td>
+            <td id="hydrogenMaxPressureSensorSerial"></td>
+            <td id="hydrogenMaxPressureSensorSerialString"></td>
+            <td>有效值范围：1～252，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>高压DC/DC状态</td>
+            <td id="highvoltageDCDCStatus"></td>
+            <td id="highvoltageDCDCStatusString"></td>
+            <td>0x01：工作；0x02：断开；“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId04" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>发动机状态</td>
+            <td id="engineStatus"></td>
+            <td id="engineStatusString"></td>
+            <td>0x01：启动状态；0x02：关闭状态，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>曲轴转速</td>
+            <td id="crankshaftSpeed"></td>
+            <td id="crankshaftSpeedString"></td>
+            <td>有效范围：0～60000(表示0rpm～60000rpm)，最小计量单元：1rpm，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>燃料消耗率</td>
+            <td id="fuelConsumptionRateRate"></td>
+            <td id="fuelConsumptionRateRateString"></td>
+            <td>
+              有效值范围：0～60000（表示0L/100km～600L/100km），最小计量单元：0.01L/100km，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId05" class="layui-tab-item">
+      <div id="container" style="width:100%;height: 300px;"></div>
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>定位状态</td>
+            <td id="positionStatus"></td>
+            <td id="positionStatusString"></td>
+            <td>bit0：0:有效定位；1:无效定位；bit2：0:北纬；1:南纬；bit3：0:东经；1:西经</td>
+          </tr>
+          <tr>
+            <td>经度</td>
+            <td id="longitude"></td>
+            <td id="longitudeString"></td>
+            <td>以度为单位的纬度值乘以10的6次方，精确到百万分之一度</td>
+          </tr>
+          <tr>
+            <td>纬度</td>
+            <td id="latitude"></td>
+            <td id="latitudeString"></td>
+            <td>以度为单位的纬度值乘以10的6次方，精确到百万分之一度</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId06" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>最高电压电池子系统号</td>
+            <td id="highestVoltageBatterySubsystemNumber"></td>
+            <td id="highestVoltageBatterySubsystemNumberString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最高电压电池单体代号</td>
+            <td id="highestVoltageBatterySingleModuleCode"></td>
+            <td id="highestVoltageBatterySingleModuleCodeString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>电池单体电压最高值</td>
+            <td id="batterySingleVoltageHighestValue"></td>
+            <td id="batterySingleVoltageHighestValueString"></td>
+            <td>有效值范围：0～15000（表示0V～15V），最小计量单元：0.001V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最低电压电池子系统号</td>
+            <td id="lowestVoltageBatterySubsystemNumber"></td>
+            <td id="lowestVoltageBatterySubsystemNumberString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最低电压电池单体代号</td>
+            <td id="lowestVoltageBatterySingleModuleCode"></td>
+            <td id="lowestVoltageBatterySingleModuleCodeString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>电池单体电压最低值</td>
+            <td id="batterySingleVoltageLowestValue"></td>
+            <td id="batterySingleVoltageLowestValueString"></td>
+            <td>有效值范围：0～15000（表示0V～15V），最小计量单元：0.001V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最高温度子系统号</td>
+            <td id="highestTemperatureSubsystemNumber"></td>
+            <td id="highestTemperatureSubsystemNumberString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最高温度探针单体代号</td>
+            <td id="highestTemperatureProbeMonomerSingleCode"></td>
+            <td id="highestTemperatureProbeMonomerSingleCodeString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最高温度值</td>
+            <td id="highestTemperatureValue"></td>
+            <td id="highestTemperatureValueString"></td>
+            <td>有效值范围：0～250（数值偏移量40℃，表示-40℃～+210℃），最小计量单元：1℃，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最低温度子系统号</td>
+            <td id="lowestTemperatureSubsystemNumber"></td>
+            <td id="lowestTemperatureSubsystemNumberString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最低温度探针子系统代号</td>
+            <td id="lowestTemperatureProbeSubsystemCode"></td>
+            <td id="lowestTemperatureProbeSubsystemCodeString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>最低温度值</td>
+            <td id="lowestTemperatureValue"></td>
+            <td id="lowestTemperatureValueString"></td>
+            <td>有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId07" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>最高报警等级</td>
+            <td id="highestAlarmLevel"></td>
+            <td id="highestAlarmLevelString"></td>
+            <td>
+              为当前发生的故障中的最高等级值，有效值范围：0～3，“0”表示无故障；“1”表示1级故障，指代不影响车辆正常行驶的故障；“2”表示2级故障，指代影响车辆性能，需驾驶员限制行驶的故障；“3”表示3级故障，为最高级别故障，指代驾驶员应立即停车处理或请求救援的故障；具体等级对应的故障内容由厂商自行定义；“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>通用报警标志</td>
+            <td id="generalAlarmFlag"></td>
+            <td id="generalAlarmFlagString"></td>
+            <td>通用报警标志位定义见表</td>
+          </tr>
+          <tr>
+            <td>可充电储能装置故障总数N1</td>
+            <td id="rechargeableEnergyStorageDeviceTotalNumberOfFailures"></td>
+            <td id="rechargeableEnergyStorageDeviceTotalNumberOfFailuresString"></td>
+            <td>N1个可充电储能装置故障，有效值范围：0～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>可充电储能装置故障代码列表</td>
+            <td id="rechargeableEnergyStorageDeviceFailuresCodeList"></td>
+            <td id="rechargeableEnergyStorageDeviceFailuresCodeListString"></td>
+            <td>扩展性数据，由厂商自行定义，可充电储能装置故障个数等于可充电储能装置故障总数N1</td>
+          </tr>
+          <tr>
+            <td>驱动电机故障总数N2</td>
+            <td id="driveMotorTotalNumberOfFailures"></td>
+            <td id="driveMotorTotalNumberOfFailuresString"></td>
+            <td>N2个驱动电机故障，有效值范围：0～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>驱动电机故障代码列表</td>
+            <td id="driveMotorFailuresCodeList"></td>
+            <td id="driveMotorFailuresCodeListString"></td>
+            <td>厂商自行定义，驱动电机故障个数等于驱动电机故障总数N2</td>
+          </tr>
+          <tr>
+            <td>发动机故障总数N3</td>
+            <td id="engineTotalNumberOfFailures"></td>
+            <td id="engineTotalNumberOfFailuresString"></td>
+            <td>N3个驱动电机故障，有效值范围：0～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>发动机故障列表</td>
+            <td id="engineFailuresCodeList"></td>
+            <td id="engineFailuresCodeListString"></td>
+            <td>厂商自行定义，发动机故障个数等于驱动电机故障总数N3</td>
+          </tr>
+          <tr>
+            <td>其他故障总数N4</td>
+            <td id="otherTotalNumberOfFailures"></td>
+            <td id="otherTotalNumberOfFailuresString"></td>
+            <td>N4个其他故障，有效值范围：0～252，“0xFE”表示异常，“0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>其他故障代码列表</td>
+            <td id="otherFailuresCodeList"></td>
+            <td id="otherFailuresCodeListString"></td>
+            <td>厂商自行定义，故障个数等于故障总数N4</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId08" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>可充电储能子系统个数</td>
+            <td id="chargeEnergyStoreSubSystemNumber"></td>
+            <td id="chargeEnergyStoreSubSystemNumberString"></td>
+            <td>
+              N个可充电储能子系统，有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>可充电储能子系统号</td>
+            <td id="chargeEnergyStoreSerial"></td>
+            <td id="chargeEnergyStoreSerialString"></td>
+            <td>有效值范围：1～250</td>
+          </tr>
+          <tr>
+            <td>可充电储能装置电压</td>
+            <td id="chargeEnergyStoreVoltage"></td>
+            <td id="chargeEnergyStoreVoltageString"></td>
+            <td>有效值范围：0～10000（表示0V～1000V），最小计量单元：0.1V，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>可充电储能装置电流</td>
+            <td id="chargeEnergyStoreCurrent"></td>
+            <td id="chargeEnergyStoreCurrentString"></td>
+            <td>有效值范围：
+              0～20000（数值偏移量1000A，表示-1000A～+1000A），最小计量单元：0.1A，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+          <tr>
+            <td>单体电池总数</td>
+            <td id="monomerBatteryNumber"></td>
+            <td id="monomerBatteryNumberString"></td>
+            <td>N个电池单体，有效值范围：1～65531，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>本帧起始电池序号</td>
+            <td id="frameStartBatterySerial"></td>
+            <td id="frameStartBatterySerialString"></td>
+            <td>当本帧单体个数超过200时，应拆分成多帧数据进行传输，有效值范围：1～65531</td>
+          </tr>
+          <tr>
+            <td>本帧单体电池总数</td>
+            <td id="frameStartBatteryNumber"></td>
+            <td id="frameStartBatteryNumberString"></td>
+            <td>本帧单体总数 m;有效值范围：1～200</td>
+          </tr>
+          <tr>
+            <td>单体电池电压</td>
+            <td id="monomerBatteryVoltageList"></td>
+            <td>
+              <div id="monomerBatteryVoltageListString" class="layui-table-cell"
+                   style="width: 150px"></div>
+            </td>
+            <td>
+              有效值范围：0～60000（表示0V～60.000V），最小计量单元：0.001V，单体电池电压个数等于本帧单体电池总数m，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="additionalId09" class="layui-tab-item">
+      <div class="layui-form">
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>可充电储能子系统个数</td>
+            <td id="rechargeableEnergyStorageSubsystemsTotalNumber"></td>
+            <td id="rechargeableEnergyStorageSubsystemsTotalNumberString"></td>
+            <td>
+              N个可充电储能装置，有效值范围：1～250，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="layui-table" lay-skin="line">
+          <colgroup>
+            <col width="150">
+            <col width="100">
+            <col width="150">
+            <col>
+          </colgroup>
+          <thead>
+          <tr>
+            <th>数据项</th>
+            <th>报文值</th>
+            <th>转义值</th>
+            <th>描述及要求</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>可充电储能子系统号</td>
+            <td id="rechargeableEnergyStorageSubsystemNumber"></td>
+            <td id="rechargeableEnergyStorageSubsystemNumberString"></td>
+            <td>有效值范围：1～250</td>
+          </tr>
+          <tr>
+            <td>可充电储能温度探针个数</td>
+            <td id="rechargeableEnergyStorageTemperatureProbesTotalNumber"></td>
+            <td id="rechargeableEnergyStorageTemperatureProbesTotalNumberString"></td>
+            <td>N个温度探针，有效值范围：1～65531，“0xFF,0xFE”表示异常，“0xFF,0xFF”表示无效</td>
+          </tr>
+          <tr>
+            <td>可充电储能子系统各温度探针检测到的温度值</td>
+            <td id="temperatureProbesList"></td>
+            <td id="temperatureProbesListString"></td>
+            <td>有效值范围：0～250 （数值偏移量40℃，表示-40℃～+210℃），最小计量单元：1℃，“0xFE”表示异常，“0xFF”表示无效
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/js/jquery.ResizableColumns.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/store.js"></script>
+<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/js/contabs.min.js"></script>
+<script src="/js/layer/layer.js"></script>
+<script src="/js/tpui-core.js"></script>
+<script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+<script src="/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="/layui/layui.all.js?t=1510164124207"></script>
+
+<script src="/js/map/coordtransform.js"></script>
+<script src="/js/map/GBMessageHelper.js"></script>
+<script src="/js/moment.js"></script>
+<script src="/js/timeago.min.js"></script>
+<script type="text/javascript"
+        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f&plugin=AMap.Geocoder'></script>
+<!-- UI组件库 1.0 -->
+<script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+
+</body>
+
+<script type="text/javascript">
+  var url = getServUrl("/monitor/gbState/detail/");
+  var urlTransfer = getServUrl("/monitor/gbState/transfer");
+
+  //创建地图
+  var map = new AMap.Map('container', {
+    zoom: 9
+  });
+
+  var marker;
+
+  //是否开启轮询
+  var isPolling = getQueryString("isPolling") || 0;
+  var myVar;
+
+  AMapUI.loadUI(['overlay/AwesomeMarker',//SimpleMarker
+      ],
+      function (AwesomeMarker) {
+        //....引用加载的UI....
+        marker = new AwesomeMarker({
+          awesomeIcon: 'car',
+          containerClassNames: 'my-marker',
+          iconStyle: 'red'
+        });
+
+        getState();
+
+        if (isPolling > 0) {
+          myVar = setInterval(function () {
+            getState();
+          }, 6000);
+        }
+
+      });
+
+  function getState() {
+    var vin = getQueryString("vin");
+    var hexString = getQueryString("hexString");
+    console.log(hexString)
+    if (vin !== null && vin !== '') {
+      $('.layui-elem-quote').addClass("hidden");
+      $("#data-loading").removeClass("hidden");
+      ajaxRequest(url + vin, "GET", null,
+          function (result) {
+            dealResult(result);
+          }, false);
+    } else if (hexString !== null && hexString !== '') {
+      $('.layui-elem-quote').addClass("hidden");
+      $("#data-loading").removeClass("hidden");
+      ajaxRequest(urlTransfer + "?hexString=" + hexString, "GET", null,
+          function (result) {
+            dealResult(result);
+          }, false);
+    }
+
+  }
+
+  function dealResult(result) {
+    if (result.success) {
+      $("#data-loading").addClass("hidden");
+      $('.layui-elem-quote').removeClass("hidden");
+
+      var gbMessage = result.value;
+
+      var vehicleData = getGBMessageAdditional(gbMessage, GBMessageType.VEHICLE_DATA);
+      var motorData = getGBMessageAdditional(gbMessage, GBMessageType.DRIVE_MOTOR_DATA);
+      var fuelData = getGBMessageAdditional(gbMessage, GBMessageType.FUEL_CEL_DATA);
+      var engineData = getGBMessageAdditional(gbMessage, GBMessageType.Engine_DATA);
+      var gpsData = getGBMessageAdditional(gbMessage, GBMessageType.VEHICLE_LOCATION_DATA);
+      var extremeData = getGBMessageAdditional(gbMessage, GBMessageType.EXTREME_DATA);
+      var alarmData = getGBMessageAdditional(gbMessage, GBMessageType.ALARM_DATA);
+      var voltageData = getGBMessageAdditional(gbMessage,
+          GBMessageType.RECHARGEABLE_STORAGE_DEVICE_VOLTAGE_DATA);
+      var temperatureData = getGBMessageAdditional(gbMessage,
+          GBMessageType.RECHARGEABLE_STORAGE_DEVICE_TEMPERATURE_DATA);
+
+      $("#vinText").html(getGBMessageVin(gbMessage));
+      $("#timeText").html(getGBMessageTime(gbMessage));
+
+      initVehicleData(vehicleData);
+      initMotorData(motorData);
+      initFuelData(fuelData);
+      initEngineData(engineData);
+      initGpsData(gpsData);
+      initExtremeData(extremeData);
+      initAlarmData(alarmData);
+      initVoltageData(voltageData);
+      initTemperatureData(temperatureData);
+
+    } else {
+      $("#data-loading").addClass("hidden");
+      layer.msg(result.message);
+      if (null != myVar) {
+        clearInterval(myVar);
+      }
+    }
+  }
+
+  function initVehicleData(vehicleData) {
+    $("#acceleratedPedalStrokeValue").html(vehicleData.acceleratedPedalStrokeValue);
+    $("#acceleratedPedalStrokeValueString").html(vehicleData.acceleratedPedalStrokeValueString);
+    $("#brakePedalState").html(vehicleData.brakePedalState);
+    $("#brakePedalStateString").html(vehicleData.brakePedalStateString);
+    $("#charging").html(vehicleData.charging);
+    $("#chargingString").html(vehicleData.chargingString);
+    $("#current").html(vehicleData.current);
+    $("#currentString").html(vehicleData.currentString);
+    $("#dcDcStatus").html(vehicleData.dcDcStatus);
+    $("#dcDcStatusString").html(vehicleData.dcDcStatusString);
+    $("#gear").html(vehicleData.gear);
+    $("#gearString").html(vehicleData.gearString);
+    $("#insulationResistance").html(vehicleData.insulationResistance);
+    $("#insulationResistanceString").html(vehicleData.insulationResistance);
+    $("#mileage").html(vehicleData.mileage);
+    $("#mileageString").html(vehicleData.mileageString);
+    $("#runningMode").html(vehicleData.runningMode);
+    $("#runningModeString").html(vehicleData.runningModeString);
+    $("#soc").html(vehicleData.soc);
+    $("#socString").html(vehicleData.socString);
+    $("#speed").html(vehicleData.speed);
+    $("#speedString").html(vehicleData.speedString);
+    $("#vehicleStatus").html(vehicleData.vehicleStatus);
+    $("#vehicleStatusString").html(vehicleData.vehicleStatusString);
+    $("#voltage").html(vehicleData.voltage);
+    $("#voltageString").html(vehicleData.voltageString);
+
+  }
+
+  function initMotorData(vehicleData) {
+    if (null != vehicleData) {
+      $("#driveMotorNumber").html(vehicleData.driveMotorNumber);
+      $("#driveMotorNumberString").html(vehicleData.driveMotorNumber);
+      if (vehicleData.driveMotorNumber > 0) {
+        var item = vehicleData.assemblyList[0];
+
+        $("#driveMotorControllerTemperature").html(item.driveMotorControllerTemperature);
+        $("#driveMotorControllerTemperatureString").html(
+            item.driveMotorControllerTemperatureString);
+        $("#driveMotorSerial").html(item.driveMotorSerial);
+        $("#driveMotorSerialString").html(item.driveMotorSerial);
+        $("#driveMotorSpeed").html(item.driveMotorSpeed);
+        $("#driveMotorSpeedString").html(item.driveMotorSpeedString);
+        $("#driveMotorStatus").html(item.driveMotorStatus);
+        $("#driveMotorStatusString").html(item.driveMotorStatusString);
+        $("#driveMotorTemperature").html(item.driveMotorTemperature);
+        $("#driveMotorTemperatureString").html(item.driveMotorTemperatureString);
+        $("#driveMotorTorque").html(item.driveMotorTorque);
+        $("#driveMotorTorqueString").html(item.driveMotorTorqueString);
+        $("#motorControllerDCBusCurrent").html(item.motorControllerDCBusCurrent);
+        $("#motorControllerDCBusCurrentString").html(item.motorControllerDCBusCurrentString);
+        $("#motorInputVoltage").html(item.motorInputVoltage);
+        $("#motorInputVoltageString").html(item.motorInputVoltageString);
+      }
+    } else {
+      $("#driveMotorControllerTemperature").html("-");
+      $("#driveMotorControllerTemperatureString").html("-");
+      $("#driveMotorSerial").html("-");
+      $("#driveMotorSerialString").html("-");
+      $("#driveMotorSpeed").html("-");
+      $("#driveMotorSpeedString").html("-");
+      $("#driveMotorStatus").html("-");
+      $("#driveMotorStatusString").html("-");
+      $("#driveMotorTemperature").html("-");
+      $("#driveMotorTemperatureString").html("-");
+      $("#driveMotorTorque").html("-");
+      $("#driveMotorTorqueString").html("-");
+      $("#motorControllerDCBusCurrent").html("-");
+      $("#motorControllerDCBusCurrentString").html("-");
+      $("#motorInputVoltage").html("-");
+      $("#motorInputVoltageString").html("-");
+    }
+  }
+
+  function initFuelData(vehicleData) {
+    if (null !== vehicleData) {
+      $("#fuelCellVoltage").html(vehicleData.fuelCellVoltage);
+      $("#fuelCellVoltageString").html(vehicleData.fuelCellVoltageString);
+      $("#fuelCellCurrent").html(vehicleData.fuelCellCurrent);
+      $("#fuelCellCurrentString").html(vehicleData.fuelCellCurrentString);
+      $("#fuelConsumptionRate").html(vehicleData.fuelConsumptionRate);
+      $("#fuelConsumptionRateString").html(vehicleData.fuelConsumptionRateString);
+      $("#fuelCellTemperatureProbeNumber").html(vehicleData.fuelCellTemperatureProbeNumber);
+      $("#fuelCellTemperatureProbeNumberString").html(
+          vehicleData.fuelCellTemperatureProbeNumberString);
+      $("#probeTemperature").html(vehicleData.probeTemperatureString);
+      $("#probeTemperatureString").html(vehicleData.probeTemperatureString);
+      $("#hydrogenMaxTemperature").html(vehicleData.hydrogenMaxTemperature);
+      $("#hydrogenMaxTemperatureString").html(vehicleData.hydrogenMaxTemperatureString);
+      $("#hydrogenMaxTemperatureProbeSerial").html(vehicleData.hydrogenMaxTemperatureProbeSerial);
+      $("#hydrogenMaxTemperatureProbeSerialString").html(
+          vehicleData.hydrogenMaxTemperatureProbeSerialString);
+      $("#hydrogenMaxConcentration").html(vehicleData.hydrogenMaxConcentration);
+      $("#hydrogenMaxConcentrationString").html(vehicleData.hydrogenMaxConcentrationString);
+      $("#hydrogenMaxConcentrationSensorSerial").html(
+          vehicleData.hydrogenMaxConcentrationSensorSerial);
+      $("#hydrogenMaxConcentrationSensorSerialString").html(
+          vehicleData.hydrogenMaxConcentrationSensorSerial);
+      $("#hydrogenMaxPressure").html(vehicleData.hydrogenMaxPressure);
+      $("#hydrogenMaxPressureString").html(vehicleData.hydrogenMaxPressureString);
+      $("#hydrogenMaxPressureSensorSerial").html(vehicleData.hydrogenMaxPressureSensorSerial);
+      $("#hydrogenMaxPressureSensorSerialString").html(vehicleData.hydrogenMaxPressureSensorSerial);
+      $("#highvoltageDCDCStatus").html(vehicleData.highvoltageDCDCStatus);
+      $("#highvoltageDCDCStatusString").html(vehicleData.highvoltageDCDCStatusString);
+    } else {
+      $("#fuelCellVoltage").html("-");
+      $("#fuelCellVoltageString").html("-");
+      $("#fuelCellCurrent").html("-");
+      $("#fuelCellCurrentString").html("-");
+      $("#fuelConsumptionRate").html("-");
+      $("#fuelConsumptionRateString").html("-");
+      $("#fuelCellTemperatureProbeNumber").html("-");
+      $("#fuelCellTemperatureProbeNumberString").html("-");
+      $("#probeTemperature").html("-");
+      $("#probeTemperatureString").html("-");
+      $("#hydrogenMaxTemperature").html("-");
+      $("#hydrogenMaxTemperatureString").html("-");
+      $("#hydrogenMaxTemperatureProbeSerial").html("-");
+      $("#hydrogenMaxTemperatureProbeSerialString").html("-");
+      $("#hydrogenMaxConcentration").html("-");
+      $("#hydrogenMaxConcentrationString").html("-");
+      $("#hydrogenMaxConcentrationSensorSerial").html("-");
+      $("#hydrogenMaxConcentrationSensorSerialString").html("-");
+      $("#hydrogenMaxPressure").html("-");
+      $("#hydrogenMaxPressureString").html("-");
+      $("#hydrogenMaxPressureSensorSerial").html("-");
+      $("#hydrogenMaxPressureSensorSerialString").html("-");
+      $("#highvoltageDCDCStatus").html("-");
+      $("#highvoltageDCDCStatusString").html("-");
+    }
+  }
+
+  function initFuelData(vehicleData) {
+    if (null !== vehicleData) {
+      $("#fuelCellVoltage").html(vehicleData.fuelCellVoltage);
+      $("#fuelCellVoltageString").html(vehicleData.fuelCellVoltageString);
+      $("#fuelCellCurrent").html(vehicleData.fuelCellCurrent);
+      $("#fuelCellCurrentString").html(vehicleData.fuelCellCurrentString);
+      $("#fuelConsumptionRate").html(vehicleData.fuelConsumptionRate);
+      $("#fuelConsumptionRateString").html(vehicleData.fuelConsumptionRateString);
+      $("#fuelCellTemperatureProbeNumber").html(vehicleData.fuelCellTemperatureProbeNumber);
+      $("#fuelCellTemperatureProbeNumberString").html(
+          vehicleData.fuelCellTemperatureProbeNumberString);
+      $("#probeTemperature").html(vehicleData.probeTemperatureString);
+      $("#probeTemperatureString").html(vehicleData.probeTemperatureString);
+      $("#hydrogenMaxTemperature").html(vehicleData.hydrogenMaxTemperature);
+      $("#hydrogenMaxTemperatureString").html(vehicleData.hydrogenMaxTemperatureString);
+      $("#hydrogenMaxTemperatureProbeSerial").html(vehicleData.hydrogenMaxTemperatureProbeSerial);
+      $("#hydrogenMaxTemperatureProbeSerialString").html(
+          vehicleData.hydrogenMaxTemperatureProbeSerialString);
+      $("#hydrogenMaxConcentration").html(vehicleData.hydrogenMaxConcentration);
+      $("#hydrogenMaxConcentrationString").html(vehicleData.hydrogenMaxConcentrationString);
+      $("#hydrogenMaxConcentrationSensorSerial").html(
+          vehicleData.hydrogenMaxConcentrationSensorSerial);
+      $("#hydrogenMaxConcentrationSensorSerialString").html(
+          vehicleData.hydrogenMaxConcentrationSensorSerial);
+      $("#hydrogenMaxPressure").html(vehicleData.hydrogenMaxPressure);
+      $("#hydrogenMaxPressureString").html(vehicleData.hydrogenMaxPressureString);
+      $("#hydrogenMaxPressureSensorSerial").html(vehicleData.hydrogenMaxPressureSensorSerial);
+      $("#hydrogenMaxPressureSensorSerialString").html(vehicleData.hydrogenMaxPressureSensorSerial);
+      $("#highvoltageDCDCStatus").html(vehicleData.highvoltageDCDCStatus);
+      $("#highvoltageDCDCStatusString").html(vehicleData.highvoltageDCDCStatusString);
+    } else {
+      $("#fuelCellVoltage").html("-");
+      $("#fuelCellVoltageString").html("-");
+      $("#fuelCellCurrent").html("-");
+      $("#fuelCellCurrentString").html("-");
+      $("#fuelConsumptionRate").html("-");
+      $("#fuelConsumptionRateString").html("-");
+      $("#fuelCellTemperatureProbeNumber").html("-");
+      $("#fuelCellTemperatureProbeNumberString").html("-");
+      $("#probeTemperature").html("-");
+      $("#probeTemperatureString").html("-");
+      $("#hydrogenMaxTemperature").html("-");
+      $("#hydrogenMaxTemperatureString").html("-");
+      $("#hydrogenMaxTemperatureProbeSerial").html("-");
+      $("#hydrogenMaxTemperatureProbeSerialString").html("-");
+      $("#hydrogenMaxConcentration").html("-");
+      $("#hydrogenMaxConcentrationString").html("-");
+      $("#hydrogenMaxConcentrationSensorSerial").html("-");
+      $("#hydrogenMaxConcentrationSensorSerialString").html("-");
+      $("#hydrogenMaxPressure").html("-");
+      $("#hydrogenMaxPressureString").html("-");
+      $("#hydrogenMaxPressureSensorSerial").html("-");
+      $("#hydrogenMaxPressureSensorSerialString").html("-");
+      $("#highvoltageDCDCStatus").html("-");
+      $("#highvoltageDCDCStatusString").html("-");
+    }
+  }
+
+  function initEngineData(vehicleData) {
+    if (null !== vehicleData) {
+      $("#engineStatus").html(vehicleData.engineStatus);
+      $("#engineStatusString").html(vehicleData.engineStatusString);
+      $("#crankshaftSpeed").html(vehicleData.crankshaftSpeed);
+      $("#crankshaftSpeedString").html(vehicleData.crankshaftSpeedString);
+      $("#fuelConsumptionRateRate").html(vehicleData.fuelConsumptionRate);
+      $("#fuelConsumptionRateRateString").html(vehicleData.fuelConsumptionRateString);
+    } else {
+      $("#engineStatus").html("-");
+      $("#engineStatusString").html("-");
+      $("#crankshaftSpeed").html("-");
+      $("#crankshaftSpeedString").html("-");
+      $("#fuelConsumptionRateRate").html("-");
+      $("#fuelConsumptionRateRateString").html("-");
+    }
+  }
+
+  function initGpsData(vehicleData) {
+    if (null != vehicleData) {
+      $("#positionStatus").html(vehicleData.positionStatus);
+      $("#positionStatusString").html(vehicleData.positionStatusString);
+      $("#longitude").html(vehicleData.longitude);
+      $("#longitudeString").html(vehicleData.longitude * 0.000001);
+      $("#latitude").html(vehicleData.latitude);
+      $("#latitudeString").html(vehicleData.latitude * 0.000001);
+      var gpsArray = coordtransform.wgs84togcj02(vehicleData.longitude
+          * 0.000001, vehicleData.latitude
+          * 0.000001);
+      var position = new AMap.LngLat(gpsArray[0], gpsArray[1]);
+      marker.setPosition(position);
+      marker.setMap(map);
+      map.setCenter(position);
+    }
+  }
+
+  function initExtremeData(vehicleData) {
+    if (null != vehicleData) {
+      $("#batterySingleVoltageHighestValue").html(vehicleData.batterySingleVoltageHighestValue);
+      $("#batterySingleVoltageHighestValueString").html(
+          vehicleData.batterySingleVoltageHighestValueString);
+      $("#batterySingleVoltageLowestValue").html(vehicleData.batterySingleVoltageLowestValue);
+      $("#batterySingleVoltageLowestValueString").html(
+          vehicleData.batterySingleVoltageLowestValueString);
+      $("#highestTemperatureProbeMonomerSingleCode").html(
+          vehicleData.highestTemperatureProbeMonomerSingleCode);
+      $("#highestTemperatureProbeMonomerSingleCodeString").html(
+          vehicleData.highestTemperatureProbeMonomerSingleCode);
+      $("#highestTemperatureSubsystemNumber").html(vehicleData.highestTemperatureSubsystemNumber);
+      $("#highestTemperatureSubsystemNumberString").html(
+          vehicleData.highestTemperatureSubsystemNumber);
+      $("#highestTemperatureValue").html(vehicleData.highestTemperatureValue);
+      $("#highestTemperatureValueString").html(vehicleData.highestTemperatureValueString);
+      $("#highestVoltageBatterySingleModuleCode").html(
+          vehicleData.highestVoltageBatterySingleModuleCode);
+      $("#highestVoltageBatterySingleModuleCodeString").html(
+          vehicleData.highestVoltageBatterySingleModuleCode);
+      $("#highestVoltageBatterySubsystemNumber").html(
+          vehicleData.highestVoltageBatterySubsystemNumber);
+      $("#highestVoltageBatterySubsystemNumberString").html(
+          vehicleData.highestVoltageBatterySubsystemNumber);
+      $("#lowestTemperatureProbeSubsystemCode").html(
+          vehicleData.lowestTemperatureProbeSubsystemCode);
+      $("#lowestTemperatureProbeSubsystemCodeString").html(
+          vehicleData.lowestTemperatureProbeSubsystemCode);
+      $("#lowestTemperatureSubsystemNumber").html(vehicleData.lowestTemperatureSubsystemNumber);
+      $("#lowestTemperatureSubsystemNumberString").html(
+          vehicleData.lowestTemperatureSubsystemNumber);
+      $("#lowestTemperatureValue").html(vehicleData.lowestTemperatureValue);
+      $("#lowestTemperatureValueString").html(vehicleData.lowestTemperatureValueString);
+      $("#lowestVoltageBatterySingleModuleCode").html(
+          vehicleData.lowestVoltageBatterySingleModuleCode);
+      $("#lowestVoltageBatterySingleModuleCodeString").html(
+          vehicleData.lowestVoltageBatterySingleModuleCode);
+      $("#lowestVoltageBatterySubsystemNumber").html(
+          vehicleData.lowestVoltageBatterySubsystemNumber);
+      $("#lowestVoltageBatterySubsystemNumberString").html(
+          vehicleData.lowestVoltageBatterySubsystemNumber);
+    }
+  }
+
+  function initAlarmData(vehicleData) {
+    if (null != vehicleData) {
+      $("#driveMotorFailuresCodeList").html(vehicleData.driveMotorFailuresCodeListString);
+      $("#driveMotorFailuresCodeListString").html(
+          vehicleData.driveMotorFailuresCodeListString);
+      $("#driveMotorTotalNumberOfFailures").html(vehicleData.driveMotorTotalNumberOfFailures);
+      $("#driveMotorTotalNumberOfFailuresString").html(
+          vehicleData.driveMotorTotalNumberOfFailures);
+      $("#engineFailuresCodeList").html(
+          vehicleData.engineFailuresCodeListString);
+      $("#engineFailuresCodeListString").html(
+          vehicleData.engineFailuresCodeListString);
+      $("#engineTotalNumberOfFailures").html(vehicleData.engineTotalNumberOfFailures);
+      $("#engineTotalNumberOfFailuresString").html(
+          vehicleData.engineTotalNumberOfFailures);
+      $("#generalAlarmFlag").html(vehicleData.generalAlarmFlag);
+      $("#generalAlarmFlagString").html(vehicleData.generalAlarmFlagString);
+      $("#highestAlarmLevel").html(
+          vehicleData.highestAlarmLevel);
+      $("#highestAlarmLevelString").html(
+          vehicleData.highestAlarmLevelString);
+      $("#otherFailuresCodeList").html(
+          vehicleData.otherFailuresCodeListString);
+      $("#otherFailuresCodeListString").html(
+          vehicleData.otherFailuresCodeListString);
+      $("#otherTotalNumberOfFailures").html(vehicleData.otherTotalNumberOfFailures);
+      $("#otherTotalNumberOfFailuresString").html(
+          vehicleData.otherTotalNumberOfFailures);
+      $("#rechargeableEnergyStorageDeviceFailuresCodeList").html(
+          vehicleData.rechargeableEnergyStorageDeviceFailuresCodeListString);
+      $("#rechargeableEnergyStorageDeviceFailuresCodeListString").html(
+          vehicleData.rechargeableEnergyStorageDeviceFailuresCodeListString);
+      $("#rechargeableEnergyStorageDeviceTotalNumberOfFailures").html(
+          vehicleData.rechargeableEnergyStorageDeviceTotalNumberOfFailures);
+      $("#rechargeableEnergyStorageDeviceTotalNumberOfFailuresString").html(
+          vehicleData.rechargeableEnergyStorageDeviceTotalNumberOfFailures);
+    }
+  }
+
+  function initVoltageData(vehicleData) {
+    if (null != vehicleData) {
+      $("#chargeEnergyStoreSubSystemNumber").html(vehicleData.chargeEnergyStoreSubSystemNumber);
+      $("#chargeEnergyStoreSubSystemNumberString").html(
+          vehicleData.chargeEnergyStoreSubSystemNumber);
+      if (vehicleData.chargeEnergyStoreSubSystemNumber > 0) {
+        var item = vehicleData.chargeEnergyStoreSubSystemVoltageList[0];
+
+        $("#chargeEnergyStoreCurrent").html(item.chargeEnergyStoreCurrent);
+        $("#chargeEnergyStoreCurrentString").html(item.chargeEnergyStoreCurrentString);
+        $("#chargeEnergyStoreSerial").html(item.chargeEnergyStoreSerial);
+        $("#chargeEnergyStoreSerialString").html(item.chargeEnergyStoreSerial);
+        $("#chargeEnergyStoreVoltage").html(item.chargeEnergyStoreVoltage);
+        $("#chargeEnergyStoreVoltageString").html(item.chargeEnergyStoreVoltageString);
+        $("#frameStartBatteryNumber").html(item.frameStartBatteryNumber);
+        $("#frameStartBatteryNumberString").html(item.frameStartBatteryNumber);
+        $("#frameStartBatterySerial").html(item.frameStartBatterySerial);
+        $("#frameStartBatterySerialString").html(item.frameStartBatterySerial);
+        $("#monomerBatteryNumber").html(item.monomerBatteryNumber);
+        $("#monomerBatteryNumberString").html(item.monomerBatteryNumberString);
+        $("#monomerBatteryVoltageList").html("");
+        $("#monomerBatteryVoltageListString").html(item.monomerBatteryVoltageListString);
+        $("#monomerBatteryVoltageListString").attr("title", item.monomerBatteryVoltageListString);
+      }
+    } else {
+      $("#chargeEnergyStoreCurrent").html("-");
+      $("#chargeEnergyStoreCurrentString").html("-");
+      $("#chargeEnergyStoreSerial").html("-");
+      $("#chargeEnergyStoreSerialString").html("-");
+      $("#chargeEnergyStoreVoltage").html("-");
+      $("#chargeEnergyStoreVoltageString").html("-");
+      $("#frameStartBatteryNumber").html("-");
+      $("#frameStartBatteryNumberString").html("-");
+      $("#frameStartBatterySerial").html("-");
+      $("#frameStartBatterySerialString").html("-");
+      $("#monomerBatteryNumber").html("-");
+      $("#monomerBatteryNumberString").html("-");
+      $("#monomerBatteryVoltageList").html("-");
+      $("#monomerBatteryVoltageListString").html("-");
+      $("#monomerBatteryVoltageListString").attr("title", "");
+    }
+  }
+
+  function initTemperatureData(vehicleData) {
+    if (null != vehicleData) {
+      $("#rechargeableEnergyStorageSubsystemsTotalNumber").html(
+          vehicleData.rechargeableEnergyStorageSubsystemsTotalNumber);
+      $("#rechargeableEnergyStorageSubsystemsTotalNumberString").html(
+          vehicleData.rechargeableEnergyStorageSubsystemsTotalNumber);
+      if (vehicleData.rechargeableEnergyStorageSubsystemsTotalNumber > 0) {
+        var item = vehicleData.assemblyList[0];
+
+        $("#rechargeableEnergyStorageSubsystemNumber").html(
+            item.rechargeableEnergyStorageSubsystemNumber);
+        $("#rechargeableEnergyStorageSubsystemNumberString").html(
+            item.rechargeableEnergyStorageSubsystemNumber);
+        $("#rechargeableEnergyStorageTemperatureProbesTotalNumber").html(
+            item.rechargeableEnergyStorageTemperatureProbesTotalNumber);
+        $("#rechargeableEnergyStorageTemperatureProbesTotalNumberString").html(
+            item.rechargeableEnergyStorageTemperatureProbesTotalNumberString);
+        $("#temperatureProbesList").html("");
+        $("#temperatureProbesListString").html(item.temperatureProbesListString);
+
+      }
+    } else {
+      $("#rechargeableEnergyStorageSubsystemNumber").html("-");
+      $("#rechargeableEnergyStorageSubsystemNumberString").html("-");
+      $("#rechargeableEnergyStorageTemperatureProbesTotalNumber").html("-");
+      $("#rechargeableEnergyStorageTemperatureProbesTotalNumberString").html("-");
+      $("#temperatureProbesList").html("-");
+      $("#temperatureProbesListString").html("-");
+
+    }
+  }
+</script>
+
+</html>

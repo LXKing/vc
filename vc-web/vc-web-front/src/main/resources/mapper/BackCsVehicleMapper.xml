@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.BackCsVehicleMapper">
+    <resultMap id="BaseResultMap" type="com.ccclubs.pub.orm.vo.VehicleMachineVo">
+        <id column="csv_id" jdbcType="INTEGER" property="csvId"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="csv_access" jdbcType="INTEGER" property="csvAccess"/>
+        <result column="csv_host" jdbcType="INTEGER" property="csvHost"/>
+        <result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo"/>
+        <result column="csv_vin" jdbcType="VARCHAR" property="csvVin"/>
+        <result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo"/>
+        <result column="csv_certific" jdbcType="VARCHAR" property="csvCertific"/>
+        <result column="csv_color" jdbcType="TINYINT" property="csvColor"/>
+        <result column="csv_model" jdbcType="INTEGER" property="csvModel"/>
+        <result column="csv_machine" jdbcType="INTEGER" property="csvMachine"/>
+        <result column="csv_machines" jdbcType="VARCHAR" property="csvMachines"/>
+        <result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode"/>
+        <result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode"/>
+        <result column="csv_prod_date" jdbcType="DATE" property="csvProdDate"/>
+        <result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark"/>
+        <result column="csv_domain" jdbcType="TINYINT" property="csvDomain"/>
+        <result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull"/>
+        <result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple"/>
+        <result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode"/>
+        <result column="csv_status" jdbcType="TINYINT" property="csvStatus"/>
+        <result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime"/>
+        <result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime"/>
+
+        <result column="csm_id" jdbcType="INTEGER" property="csmId"/>
+        <result column="csm_access" jdbcType="INTEGER" property="csmAccess"/>
+        <result column="csm_host" jdbcType="INTEGER" property="csmHost"/>
+        <result column="csm_number" jdbcType="CHAR" property="csmNumber"/>
+        <result column="csm_te_no" jdbcType="VARCHAR" property="csmTeNo"/>
+        <result column="csm_te_type" jdbcType="TINYINT" property="csmTeType"/>
+        <result column="csm_te_model" jdbcType="VARCHAR" property="csmTeModel"/>
+        <result column="csm_te_code" jdbcType="VARCHAR" property="csmTeCode"/>
+        <result column="csm_te_lot_no" jdbcType="VARCHAR" property="csmTeLotNo"/>
+        <result column="csm_te_serial" jdbcType="VARCHAR" property="csmTeSerial"/>
+        <result column="csm_mobile" jdbcType="VARCHAR" property="csmMobile"/>
+        <result column="csm_iccid" jdbcType="VARCHAR" property="csmIccid"/>
+        <result column="csm_password" jdbcType="VARCHAR" property="csmPassword"/>
+        <result column="csm_saving" jdbcType="TINYINT" property="csmSaving"/>
+        <result column="csm_device_vesion" jdbcType="TINYINT" property="csmDeviceVesion"/>
+        <result column="csm_protocol" jdbcType="BIGINT" property="csmProtocol"/>
+        <result column="csm_functions" jdbcType="VARCHAR" property="csmFunctions"/>
+        <result column="csm_bluetooth_version" jdbcType="INTEGER" property="csmBluetoothVersion"/>
+        <result column="csm_bluetooth_mac" jdbcType="VARCHAR" property="csmBluetoothMac"/>
+        <result column="csm_bluetooth_psd" jdbcType="VARCHAR" property="csmBluetoothPsd"/>
+        <result column="csm_mqtt_flag" jdbcType="VARCHAR" property="csmMqttFlag"/>
+        <result column="csm_super_sim" jdbcType="VARCHAR" property="csmSuperSim"/>
+        <result column="csm_ce_first" jdbcType="TIMESTAMP" property="csmCeFirst"/>
+        <result column="csm_ce_last" jdbcType="TIMESTAMP" property="csmCeLast"/>
+        <result column="csm_landmark" jdbcType="VARCHAR" property="csmLandmark"/>
+        <result column="csm_battery_capacity" jdbcType="DOUBLE" property="csmBatteryCapacity"/>
+        <result column="csm_mileage" jdbcType="DOUBLE" property="csmMileage"/>
+        <result column="csm_recharge_s" jdbcType="INTEGER" property="csmRechargeS"/>
+        <result column="csm_reg_no" jdbcType="VARCHAR" property="csmRegNo"/>
+        <result column="csm_be_no" jdbcType="VARCHAR" property="csmBeNo"/>
+        <result column="csm_be_code" jdbcType="VARCHAR" property="csmBeCode"/>
+        <result column="csm_be_lot_no" jdbcType="VARCHAR" property="csmBeLotNo"/>
+        <result column="csm_be_serial" jdbcType="VARCHAR" property="csmBeSerial"/>
+        <result column="csm_ev_cell_n" jdbcType="INTEGER" property="csmEvCellN"/>
+        <result column="csm_evs" jdbcType="VARCHAR" property="csmEvs"/>
+        <result column="csm_zzzl" jdbcType="TINYINT" property="csmZzzl"/>
+        <result column="csm_djlx" jdbcType="TINYINT" property="csmDjlx"/>
+        <result column="csm_edgl" jdbcType="INTEGER" property="csmEdgl"/>
+        <result column="csm_edzs" jdbcType="INTEGER" property="csmEdzs"/>
+        <result column="csm_edlj" jdbcType="INTEGER" property="csmEdlj"/>
+        <result column="csm_azsl" jdbcType="INTEGER" property="csmAzsl"/>
+        <result column="csm_bzlx" jdbcType="SMALLINT" property="csmBzlx"/>
+        <result column="csm_lqfs" jdbcType="SMALLINT" property="csmLqfs"/>
+        <result column="csm_xhlc" jdbcType="INTEGER" property="csmXhlc"/>
+        <result column="csm_zgcs" jdbcType="INTEGER" property="csmZgcs"/>
+        <result column="csm_v1" jdbcType="VARCHAR" property="csmV1"/>
+        <result column="csm_v2" jdbcType="VARCHAR" property="csmV2"/>
+        <result column="csm_v3" jdbcType="VARCHAR" property="csmV3"/>
+        <result column="csm_v3_to" jdbcType="VARCHAR" property="csmV3To"/>
+        <result column="csm_suit" jdbcType="INTEGER" property="csmSuit"/>
+        <result column="csm_tl_v1" jdbcType="VARCHAR" property="csmTlV1"/>
+        <result column="csm_tl_v2" jdbcType="INTEGER" property="csmTlV2"/>
+        <result column="csm_net_type" jdbcType="TINYINT" property="csmNetType"/>
+        <result column="csm_pro_type" jdbcType="TINYINT" property="csmProType"/>
+        <result column="csm_baud_rate" jdbcType="INTEGER" property="csmBaudRate"/>
+        <result column="csm_remark" jdbcType="VARCHAR" property="csmRemark"/>
+        <result column="csm_update_time" jdbcType="TIMESTAMP" property="csmUpdateTime"/>
+        <result column="csm_add_time" jdbcType="TIMESTAMP" property="csmAddTime"/>
+        <result column="csm_mark" jdbcType="VARCHAR" property="csmMark"/>
+        <result column="csm_mask" jdbcType="INTEGER" property="csmMask"/>
+        <result column="csm_status" jdbcType="TINYINT" property="csmStatus"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap1" type="com.ccclubs.pub.orm.vo.VehicleMachineVo">
+        <id column="csv_id" jdbcType="INTEGER" property="csvId"/>
+        <result column="csv_access" jdbcType="INTEGER" property="csvAccess"/>
+        <result column="csv_host" jdbcType="INTEGER" property="csvHost"/>
+        <result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo"/>
+        <result column="csv_vin" jdbcType="VARCHAR" property="csvVin"/>
+        <result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo"/>
+        <result column="csv_certific" jdbcType="VARCHAR" property="csvCertific"/>
+        <result column="csv_color" jdbcType="TINYINT" property="csvColor"/>
+        <result column="csv_model" jdbcType="INTEGER" property="csvModel"/>
+        <result column="csv_machine" jdbcType="INTEGER" property="csvMachine"/>
+        <result column="csv_machines" jdbcType="VARCHAR" property="csvMachines"/>
+        <result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode"/>
+        <result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode"/>
+        <result column="csv_prod_date" jdbcType="DATE" property="csvProdDate"/>
+        <result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark"/>
+        <result column="csv_domain" jdbcType="TINYINT" property="csvDomain"/>
+        <result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull"/>
+        <result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple"/>
+        <result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode"/>
+        <result column="csv_status" jdbcType="TINYINT" property="csvStatus"/>
+        <result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime"/>
+        <result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime"/>
+
+        <result column="csm_id" jdbcType="INTEGER" property="csmId"/>
+        <result column="csm_access" jdbcType="INTEGER" property="csmAccess"/>
+        <result column="csm_host" jdbcType="INTEGER" property="csmHost"/>
+        <result column="csm_number" jdbcType="CHAR" property="csmNumber"/>
+        <result column="csm_te_no" jdbcType="VARCHAR" property="csmTeNo"/>
+        <result column="csm_te_type" jdbcType="TINYINT" property="csmTeType"/>
+        <result column="csm_te_model" jdbcType="VARCHAR" property="csmTeModel"/>
+        <result column="csm_te_code" jdbcType="VARCHAR" property="csmTeCode"/>
+        <result column="csm_te_lot_no" jdbcType="VARCHAR" property="csmTeLotNo"/>
+        <result column="csm_te_serial" jdbcType="VARCHAR" property="csmTeSerial"/>
+        <result column="csm_mobile" jdbcType="VARCHAR" property="csmMobile"/>
+        <result column="csm_iccid" jdbcType="VARCHAR" property="csmIccid"/>
+        <result column="csm_password" jdbcType="VARCHAR" property="csmPassword"/>
+        <result column="csm_saving" jdbcType="TINYINT" property="csmSaving"/>
+        <result column="csm_device_vesion" jdbcType="TINYINT" property="csmDeviceVesion"/>
+        <result column="csm_protocol" jdbcType="BIGINT" property="csmProtocol"/>
+        <result column="csm_functions" jdbcType="VARCHAR" property="csmFunctions"/>
+        <result column="csm_bluetooth_version" jdbcType="INTEGER" property="csmBluetoothVersion"/>
+        <result column="csm_bluetooth_mac" jdbcType="VARCHAR" property="csmBluetoothMac"/>
+        <result column="csm_bluetooth_psd" jdbcType="VARCHAR" property="csmBluetoothPsd"/>
+        <result column="csm_mqtt_flag" jdbcType="VARCHAR" property="csmMqttFlag"/>
+        <result column="csm_super_sim" jdbcType="VARCHAR" property="csmSuperSim"/>
+        <result column="csm_ce_first" jdbcType="TIMESTAMP" property="csmCeFirst"/>
+        <result column="csm_ce_last" jdbcType="TIMESTAMP" property="csmCeLast"/>
+        <result column="csm_landmark" jdbcType="VARCHAR" property="csmLandmark"/>
+        <result column="csm_battery_capacity" jdbcType="DOUBLE" property="csmBatteryCapacity"/>
+        <result column="csm_mileage" jdbcType="DOUBLE" property="csmMileage"/>
+        <result column="csm_recharge_s" jdbcType="INTEGER" property="csmRechargeS"/>
+        <result column="csm_reg_no" jdbcType="VARCHAR" property="csmRegNo"/>
+        <result column="csm_be_no" jdbcType="VARCHAR" property="csmBeNo"/>
+        <result column="csm_be_code" jdbcType="VARCHAR" property="csmBeCode"/>
+        <result column="csm_be_lot_no" jdbcType="VARCHAR" property="csmBeLotNo"/>
+        <result column="csm_be_serial" jdbcType="VARCHAR" property="csmBeSerial"/>
+        <result column="csm_ev_cell_n" jdbcType="INTEGER" property="csmEvCellN"/>
+        <result column="csm_evs" jdbcType="VARCHAR" property="csmEvs"/>
+        <result column="csm_zzzl" jdbcType="TINYINT" property="csmZzzl"/>
+        <result column="csm_djlx" jdbcType="TINYINT" property="csmDjlx"/>
+        <result column="csm_edgl" jdbcType="INTEGER" property="csmEdgl"/>
+        <result column="csm_edzs" jdbcType="INTEGER" property="csmEdzs"/>
+        <result column="csm_edlj" jdbcType="INTEGER" property="csmEdlj"/>
+        <result column="csm_azsl" jdbcType="INTEGER" property="csmAzsl"/>
+        <result column="csm_bzlx" jdbcType="SMALLINT" property="csmBzlx"/>
+        <result column="csm_lqfs" jdbcType="SMALLINT" property="csmLqfs"/>
+        <result column="csm_xhlc" jdbcType="INTEGER" property="csmXhlc"/>
+        <result column="csm_zgcs" jdbcType="INTEGER" property="csmZgcs"/>
+        <result column="csm_v1" jdbcType="VARCHAR" property="csmV1"/>
+        <result column="csm_v2" jdbcType="VARCHAR" property="csmV2"/>
+        <result column="csm_v3" jdbcType="VARCHAR" property="csmV3"/>
+        <result column="csm_v3_to" jdbcType="VARCHAR" property="csmV3To"/>
+        <result column="csm_suit" jdbcType="INTEGER" property="csmSuit"/>
+        <result column="csm_tl_v1" jdbcType="VARCHAR" property="csmTlV1"/>
+        <result column="csm_tl_v2" jdbcType="INTEGER" property="csmTlV2"/>
+        <result column="csm_net_type" jdbcType="TINYINT" property="csmNetType"/>
+        <result column="csm_pro_type" jdbcType="TINYINT" property="csmProType"/>
+        <result column="csm_baud_rate" jdbcType="INTEGER" property="csmBaudRate"/>
+        <result column="csm_remark" jdbcType="VARCHAR" property="csmRemark"/>
+        <result column="csm_update_time" jdbcType="TIMESTAMP" property="csmUpdateTime"/>
+        <result column="csm_add_time" jdbcType="TIMESTAMP" property="csmAddTime"/>
+        <result column="csm_mark" jdbcType="VARCHAR" property="csmMark"/>
+        <result column="csm_mask" jdbcType="INTEGER" property="csmMask"/>
+        <result column="csm_status" jdbcType="TINYINT" property="csmStatus"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    user_id, csv_id, csv_access, csv_host, csv_car_no, csv_vin, csv_engine_no, csv_certific, csv_color,
+    csv_model, csv_machine, csv_machines, csv_color_code, csv_bataccu_code, csv_prod_date, 
+    csv_landmark, csv_domain, csv_model_code_full, csv_model_code_simple, csv_interior_color_code, 
+    csv_status, csv_add_time, csv_update_time, csm_id, csm_access, csm_host, csm_number, csm_te_no, csm_te_type, csm_te_model, csm_te_code,
+    csm_te_lot_no, csm_te_serial, csm_mobile, csm_iccid, csm_password, csm_saving, csm_device_vesion,
+    csm_protocol, csm_functions, csm_bluetooth_version, csm_bluetooth_mac, csm_bluetooth_psd,
+    csm_mqtt_flag, csm_super_sim, csm_ce_first, csm_ce_last, csm_landmark, csm_battery_capacity,
+    csm_mileage, csm_recharge_s, csm_reg_no, csm_be_no, csm_be_code, csm_be_lot_no, csm_be_serial,
+    csm_ev_cell_n, csm_evs, csm_zzzl, csm_djlx, csm_edgl, csm_edzs, csm_edlj, csm_azsl,
+    csm_bzlx, csm_lqfs, csm_xhlc, csm_zgcs, csm_v1, csm_v2, csm_v3, csm_v3_to, csm_suit,
+    csm_tl_v1, csm_tl_v2, csm_net_type, csm_pro_type, csm_baud_rate, csm_remark, csm_update_time,
+    csm_add_time, csm_mark, csm_mask, csm_status
+  </sql>
+
+    <sql id="Base_Column_List1">
+        csv_id, csv_access, csv_host, csv_car_no, csv_vin, csv_engine_no, csv_certific, csv_color,
+        csv_model, csv_machine, csv_machines, csv_color_code, csv_bataccu_code, csv_prod_date,
+        csv_landmark, csv_domain, csv_model_code_full, csv_model_code_simple, csv_interior_color_code,
+        csv_status, csv_add_time, csv_update_time, csm_id, csm_access, csm_host, csm_number, csm_te_no, csm_te_type, csm_te_model, csm_te_code,
+        csm_te_lot_no, csm_te_serial, csm_mobile, csm_iccid, csm_password, csm_saving, csm_device_vesion,
+        csm_protocol, csm_functions, csm_bluetooth_version, csm_bluetooth_mac, csm_bluetooth_psd,
+        csm_mqtt_flag, csm_super_sim, csm_ce_first, csm_ce_last, csm_landmark, csm_battery_capacity,
+        csm_mileage, csm_recharge_s, csm_reg_no, csm_be_no, csm_be_code, csm_be_lot_no, csm_be_serial,
+        csm_ev_cell_n, csm_evs, csm_zzzl, csm_djlx, csm_edgl, csm_edzs, csm_edlj, csm_azsl,
+        csm_bzlx, csm_lqfs, csm_xhlc, csm_zgcs, csm_v1, csm_v2, csm_v3, csm_v3_to, csm_suit,
+        csm_tl_v1, csm_tl_v2, csm_net_type, csm_pro_type, csm_baud_rate, csm_remark, csm_update_time,
+        csm_add_time, csm_mark, csm_mask, csm_status
+    </sql>
+
+    <select id="queryVehicleMachineByPage" parameterType="com.ccclubs.pub.orm.vo.VehicleMachineVo"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cs_vehicle a LEFT JOIN cs_machine b ON a.csv_machine = b.csm_id
+        LEFT JOIN cs_model_mapping c ON a.csv_model = c.model_id
+        <where>
+            <if test="userId != null">
+                and c.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="csvModel != null">
+                and a.csv_model = #{csvModel,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by a.csv_id desc
+    </select>
+    <select id="queryVehicleMachineByUser" parameterType="com.ccclubs.pub.orm.vo.VehicleMachineVo"
+            resultMap="BaseResultMap1">
+        select
+        <include refid="Base_Column_List1"/>
+        from cs_vehicle a LEFT JOIN cs_machine b ON a.csv_machine = b.csm_id
+        <where>
+            <if test="startDate != null and startDate != ''">
+                and a.csv_prod_date <![CDATA[>]]> #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                and a.csv_prod_date <![CDATA[<]]> #{endDate}
+            </if>
+            and a.csv_model IN
+            (SELECT model_id FROM cs_model_mapping WHERE user_id=#{userId,jdbcType=INTEGER})
+        </where>
+        order by a.csv_id desc
+    </select>
+</mapper>

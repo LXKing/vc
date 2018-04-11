@@ -2,6 +2,7 @@ package com.ccclubs.vehicle.inf.base.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
@@ -27,7 +28,7 @@ import java.util.List;
 public class QueryVehicleBaseImpl implements QueryVehicleBaseInf {
 
     @Autowired
-    private CsVehicleMapper dao;
+    QueryVehicleService queryVehicleService;
 
     @Autowired
     private VehicleProp prop;
@@ -36,19 +37,14 @@ public class QueryVehicleBaseImpl implements QueryVehicleBaseInf {
 //    @DataAuth
     public VehicleBaseOutput getProdDateAndCarColor(VehicleBaseInput input) {
 
-        CsVehicleExample example = new CsVehicleExample();
-        CsVehicleExample.Criteria criteria = example.createCriteria();
-        criteria.andCsvVinEqualTo(input.getVin());
-        List<CsVehicle> list = dao.selectByExample(example);
-
+        //Step1.查询车辆
+        CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         // 未查询到车辆
-        if (list.size() != 1) {
+        if (null == csVehicle) {
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
 
         VehicleBaseOutput result = new VehicleBaseOutput();
-        CsVehicle csVehicle = list.get(0);
-
         result.setColor(csVehicle.getCsvColorCode() == null ? null : prop.getColorMap().get(csVehicle.getCsvColorCode().toString()));
         result.setProdDate(csVehicle.getCsvProdDate() == null ? null : new SimpleDateFormat("yyyy-MM-dd").format(csVehicle.getCsvProdDate()));
 

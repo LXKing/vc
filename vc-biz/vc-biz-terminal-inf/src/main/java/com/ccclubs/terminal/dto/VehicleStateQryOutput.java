@@ -11,6 +11,8 @@ import java.util.Date;
  **/
 public class VehicleStateQryOutput implements java.io.Serializable{
 
+    //TODO Vin码
+
     private String cssTeNo;//终端序列号
 
     private Date cssCurrentTime;//下位机时间
@@ -43,6 +45,10 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private BigDecimal cssLatitude;//纬度【小数6位】
 
+    //TODO cssGpsValid GPS有效位
+    //TODO cssGpsCn GPS CN值
+    //TODO cssGpsCount GPS可视卫星数量
+
     private String cssDir;//方向角度
 
     private Byte cssCircular;//循环模式，（0:内循环 1:外循环）
@@ -52,6 +58,9 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Byte cssCompres;//压缩机，（0:OFF 1:ON）
 
     private Byte cssFan;//档风量，（0:OFF 1:1档 2:2档 3:3档 4:4档）
+
+    //TODO cssBaseLAC 基站信号 LAC 值
+    //TODO cssBaseCI  基站信号 CI值
 
     private Byte cssSaving;//省电模式，（0:标准模式 1:最佳省电 2:极度省电）
 
@@ -64,6 +73,9 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Integer cssLock;//门锁状态，共两个字节，高字节代表车门MASK，详见表E，低字节代表车门开关状态
 
     private Byte cssGear;//0：空挡；1：1挡；2：2挡；3：3挡；...13：倒挡；14：自动D挡；15：停车P挡
+
+    //TODO 手刹
+    //TODO 自动驾驶状态
 
     public String getCssTeNo() {
         return cssTeNo;

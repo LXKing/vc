@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<input name="csmId" id="keyInput" type="hidden"  />
+				<dl  >
+					<dt>编号</dt>
+					<dd>
+					<input name="csmId" disabled="disabled" placeholder="" class="form-control" >
+				<label id="csmId-error" class="error" for="csmId"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>接入商</dt>
+					<dd>
+					<input name="csmAccess" placeholder="" class="form-control searchinput" dataWhere=""  dataUrl="/base/access/query">
+				<label id="csmAccess-error" class="error" for="csmAccess"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机号</dt>
+					<dd>
+					<input name="csmNumber"  placeholder="" class="form-control" >
+						<label id="csmNumber-error" class="error" for="csmNumber"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>序列号</dt>
+					<dd>
+					<input name="csmTeNo"  placeholder="" class="form-control" >
+						<label id="csmTeNo-error" class="error" for="csmTeNo"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端类型</dt>
+					<dd>
+					<input name="csmTeType" placeholder="" class="form-control searchinput" dataWhere="csm_te_type"  dataUrl="/base/dict/query">
+						<label id="csmTeType-error" class="error" for="csmTeType"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>SIM卡</dt>
+					<dd>
+						<input name="csmMobile"  placeholder="" class="form-control" >
+						<label id="csmMobile-error" class="error" for="csmMobile"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>ICCID</dt>
+					<dd>
+						<input name="csmIccid"  placeholder="" class="form-control" >
+
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端型号</dt>
+					<dd>
+					<input name="csmTeModel"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>厂商代码</dt>
+					<dd>
+					<input name="csmTeCode"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端批号</dt>
+					<dd>
+					<input name="csmTeLotNo"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端流水</dt>
+					<dd>
+					<input name="csmTeSerial"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>服务密码</dt>
+					<dd>
+					<input name="csmPassword"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>协议类型</dt>
+					<dd>
+					<input name="csmProtocol" placeholder="" class="form-control searchinput" dataWhere="csm_protocol"  dataUrl="/base/dict/query">
+						<label id="csmProtocol-error" class="error" for="csmProtocol"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>功能标签</dt>
+					<dd>
+					<input name="csmFunctions"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>蓝牙版本</dt>
+					<dd>
+					<input name="csmBluetoothVersion"  placeholder="" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>蓝牙地址</dt>
+					<dd>
+					<input name="csmBluetoothMac"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>蓝牙密码</dt>
+					<dd>
+					<input name="csmBluetoothPsd"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>服务器标识</dt>
+					<dd>
+					<input name="csmMqttFlag"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>超级手机号</dt>
+					<dd>
+					<input name="csmSuperSim"  placeholder="" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>硬件版本</dt>
+					<dd>
+					<input name="csmV2"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>DVD当前版本</dt>
+					<dd>
+					<input name="csmV3"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>DVD最新版本</dt>
+					<dd>
+					<input name="csmV3To"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>适配车型</dt>
+					<dd>
+					<input name="csmSuit" placeholder="" class="form-control searchinput" dataWhere="suit"  dataUrl="/base/dict/query">
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>软件版本</dt>
+					<dd>
+					<input name="csmTlV1"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>分时租赁版本</dt>
+					<dd>
+					<input name="csmTlV2"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+
+				<dl  >
+					<dt>终端协议</dt>
+					<dd>
+					<select class="form-control" name="csmProType"  >
+                         <option></option>
+                         <option value="1">mqtt</option>
+                         <option value="2">808</option>
+                    </select>
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>CAN1波特率</dt>
+					<dd>
+					<input name="csmBaudRate"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>备注信息</dt>
+					<dd>
+					<input name="csmRemark"  placeholder="" class="form-control" >
+				
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态</dt>
+					<dd>
+					<input name="csmStatus" placeholder="" class="form-control searchinput" dataWhere="status"  dataUrl="/base/dict/query">
+				<label id="csmStatus-error" class="error" for="csmStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+		</div>
+		
+		<div class="form-group windowButtonBar">
+			<div class="hr-line-dashed"></div>
+			<div class="col-sm-10 col-sm-offset-1">
+				<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>
+				<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">关闭</button>
+			</div>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+				rules:{
+				"csmBaudRate":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csmIccid":{
+					"maxlength":20
+				},
+				"csmTeCode":{
+					"maxlength":8
+				},
+				"csmTeModel":{
+					"maxlength":32
+				},
+
+				"csmBluetoothPsd":{
+					"maxlength":32
+				},
+				"csmRemark":{
+					"maxlength":256
+				},
+				"csmBluetoothVersion":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csmHost":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csmTeNo":{
+					"maxlength":32,"required":true
+				},
+				"csmNumber":{
+					"maxlength":8,"required":true
+				},
+				"csmV2":{
+					"maxlength":32
+				},
+				"csmV3":{
+					"maxlength":32
+				},
+				"csmSuit":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csmAccess":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csmProtocol":{
+					"maxlength":20,
+					"digits":true,"required":true
+				},
+				"csmTlV2":{
+					"maxlength":11,
+					"digits":true
+				},
+				"csmTlV1":{
+					"maxlength":8
+				},
+				"csmStatus":{
+					"maxlength":4,
+					"digits":true,
+					"required":true
+				},
+				"csmTeLotNo":{
+					"maxlength":8
+				},
+				"csmTeSerial":{
+					"maxlength":8
+				},
+				"csmMobile":{
+					"maxlength":11,"required":true
+				},
+				"csmMqttFlag":{
+					"maxlength":32
+				},
+				"csmProType":{
+					"maxlength":4,
+					"digits":true
+				},
+				"csmPassword":{
+					"maxlength":32
+				},
+				"csmSuperSim":{
+					"maxlength":11
+				},
+				"csmV3To":{
+					"maxlength":32
+				},
+				"csmBluetoothMac":{
+					"maxlength":32
+				},
+				"csmFunctions":{
+					"maxlength":64
+				},
+				"csmId":{
+					"maxlength":11,
+					"digits":true,
+					"required":true
+				},
+				"csmTeType":{
+					"maxlength":4,
+					"digits":true,"required":true
+				}
+			}
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/admin/machine/update"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				},
+				submit:function(){
+					var queryJson = getFormData(this.form);
+			     	console.log("validate success! ===>"+queryJson);
+					ajaxRequest(this.url, "POST", queryJson, function(json) {
+						console.log(json);
+						closeTopWin(true);
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var id = getQueryString("id");
+				var url = getServUrl("/admin/machine/detail/")+id;
+				$("#keyInput").val(id);
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

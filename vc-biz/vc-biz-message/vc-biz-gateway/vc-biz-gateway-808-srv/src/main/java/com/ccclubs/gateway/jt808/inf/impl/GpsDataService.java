@@ -15,6 +15,7 @@ import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
+import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
@@ -36,10 +37,11 @@ public class GpsDataService implements IGpsDataService {
   // 获取实时数据
   // 保存终端参数
   // 处理GPS数据
+  @Override
   public final void processMessage(T808Message message) {
     // 消息类型
     int headerType = message.getHeader().getMessageType();
-    if (headerType == 0x0002 || headerType == 0x0001 // 心跳 -
+    if (headerType == 0x0001 // 终端应答 -
         || headerType == 0x0000 || headerType == 0x0100 // 注册
         || headerType == 0x0003 // 终端注销
         || headerType == 0x0102) // 鉴权 - -
@@ -49,7 +51,7 @@ public class GpsDataService implements IGpsDataService {
       return;
     }
 
-    if (headerType == 0x0200 || headerType == 0x0201) {
+    if (headerType == 0x0002 ||headerType == 0x0200 || headerType == 0x0201) {
       transferToMQ(message, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, message.getMessageType()));
     } else {
       processData(message);
@@ -60,6 +62,10 @@ public class GpsDataService implements IGpsDataService {
    * 将jt808协议数据转发到消息中间件MQ，topic：ser，tag：jt808
    */
   private void transferToMQ(T808Message message, String messageTag) {
+    if (null == message || null == message.getHeader()|| !StringUtils.empty(message.getErrorMessage()))
+    {
+      return;
+    }
     // 转发数据，数据流转topic：ser
     Message mqMessage = OnsMessageFactory
         .getProtocolMessage(topic, messageTag,

@@ -48,14 +48,19 @@
             <artifactId>vc-frm-dubbox</artifactId>
             <version>${frm.version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-usr-inf</artifactId>
             <version>${biz.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
         </dependency>
     </dependencies>
 </project>

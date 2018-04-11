@@ -32,14 +32,21 @@ public class DubboxExceptionFilter implements Filter {
     public DubboxExceptionFilter(Logger logger) {
         this.logger = logger;
     }
-    
+
+    @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         try {
             Result result = invoker.invoke(invocation);
             if (result.hasException() && GenericService.class != invoker.getInterface()) {
                 try {
                     Throwable exception = result.getException();
-
+                    //自定义接口异常
+                    if(exception instanceof ApiException){
+                        ApiException ae = (ApiException) exception;
+                        ApiMessage<String> am = new ApiMessage<String>(ae.getCode(), ae.getMsg(), ae.getTraceId());
+                        String s = JSON.json(am);
+                        return new RpcResult(new RuntimeException("dubbox:"+s));
+                    }
                     // 如果是checked异常，直接抛出
                     if (! (exception instanceof RuntimeException) && (exception instanceof Exception)) {
                         return result;
@@ -76,13 +83,6 @@ public class DubboxExceptionFilter implements Filter {
                     // 是Dubbo本身的异常，直接抛出
                     if (exception instanceof RpcException) {
                         return result;
-                    }
-                    //自定义接口异常
-                    if(exception instanceof ApiException){
-                    	ApiException ae = (ApiException) exception;
-                    	ApiMessage<String> am = new ApiMessage<String>(ae.getCode(), ae.getMsg(), ae.getTraceId());
-                    	String s = JSON.json(am);
-                    	return new RpcResult(new RuntimeException("dubbox:"+s));
                     }
 
                     // 否则，包装成RuntimeException抛给客户端

@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -48,11 +47,11 @@ public class ValidateService {
 
         SrvHost host = hostService.queryHostByAppid(appId);
         if (null == host) {
-            logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+            logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
             return false;
         }
         if (null == vin && null == teNo) {
-            logger.info("vin and teNo are all null,validate failed", appId, vin, teNo);
+            logger.error("vin and teNo are all null,validate failed", appId, vin, teNo);
             return false;
         }
         if (StringUtils.isNotEmpty(vin)) {
@@ -60,24 +59,24 @@ public class ValidateService {
             if (null != vehicle) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
-                if (host.getShId() != vehicle.getCsvAccess()) {
-                    logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                if (host.getShId().intValue() != vehicle.getCsvAccess()) {
+                    logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
                 }
             }
         }
         if (StringUtils.isNotEmpty(teNo)) {
-            CsMachine machine = terminalService.queryTerminalByTeNo(teNo);
+            CsMachine machine = terminalService.queryCsMachineByTeNo(teNo);
             if (null != machine) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
                 if (host.getShId() != machine.getCsmAccess()) {
-                    logger.info("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                    logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
                 }
             }
         }
-        logger.info("validate data auth for appId {} vin {} teNo {} success", appId, vin, teNo);
+        logger.debug("validate data auth for appId {} vin {} teNo {} success", appId, vin, teNo);
         return true;
     }
 }

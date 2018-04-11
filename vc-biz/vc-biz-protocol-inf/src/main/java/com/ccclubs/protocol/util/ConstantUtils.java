@@ -4,18 +4,22 @@ package com.ccclubs.protocol.util;
  * 程序中用到的约束，及常量
  */
 public final class ConstantUtils {
-
-  public static final Long SECOND = 1000l;
-  public static final Long MINUTE = SECOND * 60l;
-  public static final Long HOUR = MINUTE * 60l;
+  public static final Long SECOND = 1000L;
+  public static final Long MINUTE = SECOND * 60L;
+  public static final Long HOUR = MINUTE * 60L;
   public static final Long DAY = HOUR * 24;
   public static final long MONTH = DAY * 31;
   public static final long YEAR = DAY * 365;
 
+  // 记录终端在线的 redis key
+  public static final String ONLINE_REDIS_PRE = "online:";
+  // 终端在线的 exprie 时间
+  public static final Long ONLINE_IDE_TIME = 6 * MINUTE;
+
   public static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
   public static final String TIME_FORMAT_KEY = "_yyyy-MM-dd_HH-mm-ss";
   // 终端实际时间与服务器时间间隔
-  public static final Long TimeSynchronizationDur = 10 * SECOND;
+  public static final Long TimeSynchronizationDur = 5 * SECOND;
   // 2000年的毫秒数
   public static final long MACHINE_TIME = StringUtils.date("2000-01-01 00:00:00", TIME_FORMAT)
       .getTime();

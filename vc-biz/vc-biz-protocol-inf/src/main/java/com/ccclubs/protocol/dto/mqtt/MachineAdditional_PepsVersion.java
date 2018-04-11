@@ -4,8 +4,7 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * E200 PEPS 版本，终端信息
+ * Created by qsxiaogang on 2017/4/17. E200 PEPS 版本，终端信息
  */
 public class MachineAdditional_PepsVersion implements IMachineAdditionalItem {
 
@@ -25,7 +24,7 @@ public class MachineAdditional_PepsVersion implements IMachineAdditionalItem {
   }
 
   public int getPepsVersion() {
-    return pepsVersion & 0xFF;
+    return pepsVersion;
   }
 
   public void setPepsVersion(int pepsVersion) {

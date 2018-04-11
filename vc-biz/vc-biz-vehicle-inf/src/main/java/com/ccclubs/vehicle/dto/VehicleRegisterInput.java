@@ -18,7 +18,6 @@ public class VehicleRegisterInput  implements Serializable {
     /**
      *   真实车牌
      */
-    @NotNull(message = "车牌号必填")
     private String csvCarNo;
 
     /**
@@ -70,6 +69,21 @@ public class VehicleRegisterInput  implements Serializable {
      */
     //@NotNull(message = "可充电储能系统编码必填")
     private String csvBataccuCode;
+
+    /**
+     * 车辆领域：0:未知,1:个人领域,2:公共领域
+     */
+    private Byte csvDomain;
+
+    /**
+     * 车型代码
+     */
+    private String csvModelCodeFull;
+
+    /**
+     * 车型备案型号
+     */
+    private String csvModelCodeSimple;
 
     public VehicleRegisterInput(){}
     public VehicleRegisterInput(String csvCarNo, String csvVin, String csvEngineNo, String csvCertific, Byte csvColorCode, String csvModel, String csvProdDate, String teNo, String csvBataccuCode) {

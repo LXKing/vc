@@ -20,15 +20,14 @@ dubbo:
     name: dubbo
     threads: 100
     #host: 10.0.10.96
-    port: 20660
+    port: 20860
   provider:
     timeout: 120000
     retries: -1
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 #appId&appKey
 api:
   security:

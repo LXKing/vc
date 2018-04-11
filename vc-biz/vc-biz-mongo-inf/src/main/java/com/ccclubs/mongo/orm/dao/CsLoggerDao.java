@@ -1,6 +1,6 @@
 package com.ccclubs.mongo.orm.dao;
 
-import com.ccclubs.mongo.orm.model.CsLogger;
+import com.ccclubs.mongo.orm.model.history.CsLogger;
 
 
 /**

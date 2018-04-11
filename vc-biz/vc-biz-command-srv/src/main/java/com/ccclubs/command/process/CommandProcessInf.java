@@ -1,6 +1,6 @@
 package com.ccclubs.command.process;
 
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.pub.orm.model.CsMachine;
 
 public interface CommandProcessInf {
@@ -12,6 +12,13 @@ public interface CommandProcessInf {
    * @param isUpdate 是升级指令
    */
   void dealRemoteCommand(CsMachine csMachine, byte[] srcArray,boolean isUpdate);
+
+  /**
+   * 处理中导Http升级指令
+   * @param csMachine
+   * @param srcArray
+   */
+  void dealZdHttpUpdateCommand(CsMachine csMachine, byte[] srcArray);
 
   void dealRemoteCommand(CsRemote remote, Object[] array);
 }

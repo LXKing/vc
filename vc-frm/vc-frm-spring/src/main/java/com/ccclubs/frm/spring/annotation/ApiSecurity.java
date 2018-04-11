@@ -12,4 +12,5 @@ import java.lang.annotation.Target;
 @Target({ FIELD, METHOD, PARAMETER })
 public @interface ApiSecurity {
 	String type() default "";
+	boolean checkToken() default false;
 }

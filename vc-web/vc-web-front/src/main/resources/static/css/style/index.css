@@ -1,0 +1,177 @@
+li{
+	list-style: none;
+}
+#content-main{
+	height: 92%;
+}
+.navbar-header{
+	display: flex;
+	width: 100%;
+}
+.img-box{
+	width: 100%;
+	height: 60px;
+	background: #26B7BC ;
+    text-align: center;
+    line-height: 60px;
+    margin-bottom: 10px;
+}
+.navbar{
+	height: 60px;
+	background: #FAFAFB;
+}
+.select{
+	line-height: 60px;
+	flex: 1;
+	position: relative;
+	padding-left: 25px;
+}
+.select .select-btn:hover{
+	color: #21759b;
+	background: #F0F0F0;
+}
+.select-btn{
+	width: 138px;
+    display: inline-block;
+    padding-left:25px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    color: #4E6470;
+}
+.select-btn:after{
+	content:'';
+	position: absolute;
+	border: 5px solid;
+	border-left: 5px solid transparent;
+	border-top: 5px solid transparent;
+	transform:rotateZ(45deg);
+	top:22px;
+	left: 136px;
+	
+}
+.select-wrap{
+	width: 200px;
+    height: auto;
+    padding-left: 0;
+    position: absolute;
+    top: 63px;
+    left: 25px;
+    background: #fff;
+    box-shadow: 0px 0px 5px #888888;
+    display: none;
+}
+.select-wrap li {
+	border-bottom: 1px solid #E4E4E4;
+	padding-left: 15px;
+	position: relative;
+	font-size: 15px;
+	color: #4E6470;
+	height: 50px;
+	line-height: 50px;
+}
+.select-wrap li:hover{
+	background: #F0F0F0;
+	color: #21759b;
+}
+.select-wrap li:last-child{
+	border-bottom: none;
+}
+
+.username{
+	width: 111px;
+    line-height: 60px;
+    position: relative;
+}
+.username .account:hover{
+	color: #00a2ca;
+}
+.username .account:before{
+	content: '';
+	width: 25px;
+	height: 25px;
+	padding-left: 20px;
+	background: url('../../img/personal_icon.png') no-repeat;
+	position: absolute;
+	top: 21px;
+	left: -20px;
+}
+.account-msg{
+    width: 115px;
+    height: auto;
+    background: #fff;
+    position: absolute;
+    top: 61px;
+    left: -20px;
+	padding-left: 0;
+	border:1px solid #e7eaec;
+	border-top: none;
+	box-shadow:3px 3px 6px #f5f5f5;
+}
+.account-msg li{
+	/*line-height: 30px;*/
+	padding-left: 21px;
+	line-height: 30px;
+}
+.account-msg li:hover{
+	cursor: pointer;
+	background: #FAFAFA;
+}
+.account-msg .reset-password a{
+	color: #676a6c;
+}
+.show{display:block;}
+.content-info{
+	width: 220px;
+	height: 100%;
+	position: absolute;
+	right: -250px;
+	border-left: 1px solid #d7d4f0;
+	background: #f3f3f3;
+	transition:right 1s;
+}
+.pop{right:0;}
+.content-info-hide{
+	width: 30px;
+	height: 60px;
+	position: absolute;
+	background: grey;
+	left: -30px;
+	top: 50%;
+	transform: translateY(-100%);
+}
+.content-info-hide:hover{cursor: pointer;}
+.content-info-hide p{
+	width: 5px;
+	color: white;
+	margin:10px 0 0 8px;
+}
+.modal-content{
+	border-radius: 8px;
+	padding:12px 10px 25px 10px;
+}
+.modal-content .modal-header{
+	padding:1px 0 0 0;
+	border-bottom: none;
+}
+.modal-content .modal-header .logout-rocket{
+	width: 152px;
+	height: 180px;
+	margin:0 auto;
+	margin-top: 20px;
+}
+.modal-content .modal-header .logout-rocket p{
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+}
+.modal-content .modal-footer{
+	border-top: none;
+}
+.modal-content .modal-footer .btn{
+	width: 200px;
+	display: block;
+	margin:0 auto;
+	background: #6DE596;
+}
+

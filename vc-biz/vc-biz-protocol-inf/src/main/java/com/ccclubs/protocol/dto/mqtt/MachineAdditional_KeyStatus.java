@@ -14,7 +14,7 @@ public class MachineAdditional_KeyStatus implements IMachineAdditionalItem {
   public static int KEY_STATUS_OUT = 2;
 
   /**
-   * 1插入，2拔出，0无效
+   * 1插入，2拔出，0无效，0xFF无效
    */
   private int keyStatus;
 

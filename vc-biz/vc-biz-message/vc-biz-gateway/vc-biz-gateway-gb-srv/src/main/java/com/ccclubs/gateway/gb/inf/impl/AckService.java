@@ -33,11 +33,7 @@ public class AckService implements IAckService {
   }
 
   public void start() {
-    processRealDataThread = new Thread(new Runnable() {
-      public void run() {
-        ProcessRealDataThreadFunc();
-      }
-    });
+    processRealDataThread = new Thread(() -> ProcessRealDataThreadFunc());
     processRealDataThread.start();
   }
 
@@ -45,25 +41,22 @@ public class AckService implements IAckService {
     ExecutorService fixedThreadPool = Executors.newFixedThreadPool(getThreadPool());
 
     for (int i = 0; i < getThreadPool(); i++) {
-      fixedThreadPool.execute(new Runnable() {
-        @Override
-        public void run() {
-          while (true) {
-            try {
-              final GBMessage tm = dataQueue.poll();
-              if (tm != null) {
-                sendGeneralAck(tm);
-              }
-
-              try {
-                Thread.sleep(5L);
-              } catch (InterruptedException e1) {
-                logger.error(e1.getMessage(), e1);
-              }
-            } catch (Exception e) {
-              e.printStackTrace();
-              logger.info(e.getMessage(), e);
+      fixedThreadPool.execute(() -> {
+        while (true) {
+          try {
+            final GBMessage tm = dataQueue.poll();
+            if (tm != null) {
+              sendGeneralAck(tm);
             }
+
+            try {
+              Thread.sleep(2L);
+            } catch (InterruptedException e1) {
+              logger.error(e1.getMessage(), e1);
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+            logger.info(e.getMessage(), e);
           }
         }
       });

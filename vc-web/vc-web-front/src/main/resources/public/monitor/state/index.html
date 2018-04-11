@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>车辆实时数据</title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<link rel="stylesheet" href="/layui/css/layui.css?t=1510164124207" media="all">
+		<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">		<!-- jqgrid-->
+    <link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+
+	<body style="overflow: hidden;">
+		<div class="queryForm_wrapper"></div>
+		<div class="jqGrid_wrapper jqgrid_div"></div>
+		
+		<script src="/js/jquery.min.js?v=2.1.4"></script>
+		<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+		<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+		<script src="/js/jquery.ResizableColumns.js"></script>
+		<script src="/js/plugins/layer/laydate/laydate.js"></script>
+		<script src="/js/store.js"></script>
+		<script src="/js/plugins/sweetalert/sweetalert.min.js"></script>
+		<script src="/js/contabs.min.js"></script>
+		<script src="/js/layer/layer.js"></script>
+		<script src="/js/tpui-core.js"></script>
+		<script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+		<script src="/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+		<!-- <script src="/layui/layui.all.js?t=1510164124207"></script> -->
+		<script src="/layui/layui.js?t=1510164124207"></script>
+		
+		<script type="text/javascript">
+			$(document).ready(function () {
+		    $(".queryForm_wrapper").load("/monitor/state/index_query.html");
+		    $(".jqGrid_wrapper").load("/monitor/state/index_list2.html");
+			});
+		</script>
+	</body>
+</html>

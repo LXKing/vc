@@ -8,8 +8,17 @@ package com.ccclubs.protocol.util;
 public class MqTagUtils {
 
   // 网关接收到消息后，转发到数据解析层响应的TAG前缀
+  /**
+   * 分时租赁协议TAG前缀
+   */
   public static String PROTOCOL_MQTT = "MQTT";
+  /**
+   * JT808协议TAG前缀
+   */
   public static String PROTOCOL_JT808 = "JT";
+  /**
+   * 新能源国标GB32960协议TAG前缀
+   */
   public static String PROTOCOL_GB = "GB";
 
   /**

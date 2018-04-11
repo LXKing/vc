@@ -3,15 +3,24 @@ server:
 
 spring:
   redis:
-    host: 127.0.0.1
+    host: 118.178.229.234
+    port: 63791
   data:
     mongodb:
-      host: 114.55.24.97
-      port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
-      authenticationDatabase: history
+      history:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: vc_history
+      remote:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: vc_remote
 dubbo:
   scan:
     annotationPackage: com.ccclubs
@@ -20,24 +29,23 @@ dubbo:
   registry:
     address: zookeeper://127.0.0.1:2181
     protocol: zookeeper
-    port: 20660
+    port: 20760
   protocol:
     name: dubbo
     threads: 100
     #host: 10.0.10.96
-    port: 20660
+    port: 20760
   provider:
     timeout: 120000
     retries: -1
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 druid:
   driver: com.mysql.jdbc.Driver
   jdbc:
-    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+    url: jdbc:mysql://121.199.49.206:3306/vc_data?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
     username: zkj_user
     password: kANXZYqf2UzghVY7DnjP
   initialSize: 2
@@ -49,6 +57,11 @@ druid:
   minEvictableIdleTimeMillis: 300000
   maxPoolPreparedStatementPerConnectionSize: 20
   filters:
+
+#用于主机厂车追溯系统有车辆录入时主动推送，加密的key
+vehicle:
+  push:
+    zhongtai: 0F8987F17765D72BR713A939
 
 #配置业务参数 TODO 临时方案
 #各类型终端的最新插件版本

@@ -1,0 +1,46 @@
+phoenix:
+  #zookeeper所在主机地址
+  #zk_url: hb-proxy-pub-bp11zgdd317e4af0r-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-006.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-005.hbase.rds.aliyuncs.com
+  zk_url: hb-proxy-pub-bp1xa9wgerhn7o1pu-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-002.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-003.hbase.rds.aliyuncs.com
+server:
+  port: 11117
+
+spring:
+  redis:
+    host: 127.0.0.1
+
+  aop:
+    proxyTargetClass: true
+
+dubbo:
+  scan:
+    annotationPackage: com.ccclubs.storage
+  application:
+    name: storage-srv
+  registry:
+    address: 127.0.0.1:2181
+    protocol: zookeeper
+    port: 20660
+  protocol:
+    name: dubbo
+    threads: 100
+    #host: 10.0.10.96
+    port: 20660
+  provider:
+    timeout: 120000
+    retries: -1
+
+ccclubs:
+  data:
+    #批量任务配置
+    batch:
+      #批量更新单次最大值，最大间隔时间，线程池数量，队列最大长度
+      updateBatchSize: 1000
+      updateMaxDurTime: 3000
+      updateThreads: 20
+      updateQueueMax: 50000
+      #批量写入mongodb单次最大值，最大间隔时间，线程池数量，队列最大长度
+      mongoInsertBatchSize: 2000
+      mongoInsertMaxDurTime: 10000
+      mongoInsertThreads: 20
+      mongoInsertQueueMax: 200000

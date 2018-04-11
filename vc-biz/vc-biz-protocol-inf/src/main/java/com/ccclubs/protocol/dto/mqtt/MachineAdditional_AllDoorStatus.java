@@ -1,6 +1,5 @@
 package com.ccclubs.protocol.dto.mqtt;
 
-
 import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
@@ -8,6 +7,7 @@ import com.ccclubs.protocol.util.MyBuffer;
  * Created by qsxiaogang on 2017/4/17.
  * 所有门状态,终端信息
  */
+@Deprecated
 public class MachineAdditional_AllDoorStatus implements IMachineAdditionalItem {
 
   /**

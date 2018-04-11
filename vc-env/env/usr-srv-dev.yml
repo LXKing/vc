@@ -1,17 +1,25 @@
 server:
-  port: 11113
+  port: 11120
 
 spring:
   redis:
     host: 127.0.0.1
   data:  
     mongodb:
-      host: 114.55.24.97
-      port: 3717
-      username: zkj_user
-      password: zkj2017
-      database: history
-      authenticationDatabase: history
+      history:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: vc_history
+      remote:
+        host: 114.55.24.97
+        port: 3717
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: vc_remote
       
 dubbo:
   scan: 
@@ -32,8 +40,7 @@ dubbo:
   consumer:
     timeout: 120000
     check: false
-  monitor:
-    protocol: registry
+
 
 druid:
   driver: com.mysql.jdbc.Driver

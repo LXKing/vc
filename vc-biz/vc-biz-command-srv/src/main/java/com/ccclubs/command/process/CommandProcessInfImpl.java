@@ -1,21 +1,20 @@
 package com.ccclubs.command.process;
 
 import com.ccclubs.command.util.CommandMessageFactory;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
+import com.ccclubs.frm.mqtt.util.MqttConstants;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.CmdUtils;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
-import com.ccclubs.pub.orm.mapper.CsMachineMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
-import com.ccclubs.pub.orm.model.CsMachineExample;
-import java.util.List;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +42,20 @@ public class CommandProcessInfImpl implements CommandProcessInf {
   CsRemoteDao rdao;
 
   @Autowired
-  private CsMachineMapper mdao;
+  QueryTerminalService queryTerminalService;
 
   private static Logger logger = LoggerFactory.getLogger(CommandProcessInfImpl.class);
+
+  @Override
+  public void dealZdHttpUpdateCommand(CsMachine csMachine, byte[] srcArray) {
+    String downTopic = CommandMessageFactory.getP2pTopic(csMachine);
+    if (StringUtils.empty(downTopic)) {
+      return;
+    }
+    downTopic = downTopic + "update/";
+
+    sendFinalMessage(csMachine, downTopic, srcArray, true);
+  }
 
   @Override
   public void dealRemoteCommand(CsMachine csMachine, byte[] srcArray, boolean isUpdate) {
@@ -64,18 +74,13 @@ public class CommandProcessInfImpl implements CommandProcessInf {
   @Override
   public void dealRemoteCommand(CsRemote remote, Object[] array) {
     try {
-      Query query = new Query(Criteria.where("_id").is(remote.getId()));
-      final Update update = new Update();
       String resultCode = CmdUtils
           .getSimpleMQTTRemoteCommend(remote.getCsrId(), remote.getCsrNumber(), array);
 
       if (!StringUtils.empty(resultCode)) {
-        update.set("csrCode", resultCode);
         sendMessage(remote, resultCode);
       }
-      update.set("csrState", 1);
 
-      rdao.update(query, update);
     } catch (Exception e) {
       e.printStackTrace();
       logger.error(e.getMessage(), e);
@@ -84,16 +89,11 @@ public class CommandProcessInfImpl implements CommandProcessInf {
   }
 
   private void sendMessage(CsRemote csRemote, String message) {
-    CsMachineExample example = new CsMachineExample();
-    CsMachineExample.Criteria criteria = example.createCriteria();
-    criteria.andCsmNumberEqualTo(csRemote.getCsrNumber());
-    List<CsMachine> machines = mdao.selectByExample(example);
-
-    if (machines.size() != 1) {
+    CsMachine machine = queryTerminalService.queryCsMachineByCarNumber(csRemote.getCsrNumber());
+    if (null == machine) {
       throw new ApiException(ApiEnum.COMMAND_REQUIRED_TERMINAL_MISSING);
     }
-
-    sendMessage(machines.get(0), message, Tools.HexString2Bytes(message));
+    sendMessage(machine, message, Tools.HexString2Bytes(message));
   }
 
   private void sendMessage(CsMachine csMachine, String message, byte[] srcArray) {
@@ -121,7 +121,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
       mqttClient.send(topic, srcArray);
     } else {
       T808Message ts = ProtocolTools.package2T808Message(csMachine.getCsmMobile().trim(), srcArray);
-      mqttClient.send(topic, ts.WriteToBytes());
+      mqttClient.send(topic, ts.WriteToBytes(), MqttConstants.QOS_1);
     }
   }
 

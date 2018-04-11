@@ -8,15 +8,13 @@ import com.ccclubs.command.dto.AirMonoInput;
 import com.ccclubs.command.dto.AirMonoOutput;
 import com.ccclubs.command.inf.air.AirConditionerCmdInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
-import com.ccclubs.command.util.ResultHelper;
-import com.ccclubs.command.util.CommandConstants;
-import com.ccclubs.command.util.ValidateHelper;
+import com.ccclubs.command.remote.CsRemoteManager;
+import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -24,7 +22,6 @@ import com.ccclubs.pub.orm.model.CsStructWithBLOBs;
 import com.ccclubs.pub.orm.model.CsVehicle;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -32,7 +29,6 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -59,12 +55,18 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     private ResultHelper resultHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
+
+    @Resource
+    IdGeneratorHelper idGen;
 
     @Override
     @DataAuth
     public AirMonoOutput airConditionerMonoCtrl(AirMonoInput input) {
-        Integer structId = CommandConstants.CMD_AIR;
+        Long structId = CommandConstants.CMD_AIR.longValue();
         if (input.getItem() == 1 && input.getValue() != 0 && input.getValue() != 1) {
             throw new ApiException(ApiEnum.AIR_CTRL_CIRCULAR_ERROR);
         }
@@ -77,15 +79,18 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         if (input.getItem() == 4 && Arrays.binarySearch(CommandConstants.FAN, input.getValue()) < 0) {
             throw new ApiException(ApiEnum.AIR_CTRL_FAN_ERROR);
         }
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
+
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));//todo
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
@@ -94,16 +99,17 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId, array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
-        logger.info("command send start.");
-
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        AirMonoOutput output = new AirMonoOutput();
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        AirMonoOutput output = new AirMonoOutput();
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }
@@ -111,14 +117,15 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     @Override
     @DataAuth
     public AirAllOutput airConditionerAllCtrl(AirAllInput input) {
-        Integer structId = CommandConstants.CMD_AIR;
-
-        logger.info("begin process command {} start.", structId);
-
+        Long structId = CommandConstants.CMD_AIR.longValue();
+        logger.debug("begin process command {} start.", structId);
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
@@ -130,15 +137,17 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId, array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        AirAllOutput output = new AirAllOutput();
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        AirAllOutput output = new AirAllOutput();
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }

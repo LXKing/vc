@@ -10,6 +10,6 @@ public interface CsStructInf {
 	void add(CsStructAddInput input);
 	void del(BaseDeleteKeysInput input);
 	void mod(CsStructAddInput input);
-	CsStructWithBLOBs mod(Long cstId);
+	CsStructWithBLOBs mod(Long cssId);
 	PageInfo<CsStructWithBLOBs> que(CsStructQueryInput input);
 }

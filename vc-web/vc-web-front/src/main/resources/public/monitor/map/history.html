@@ -1,0 +1,541 @@
+<!-- 重点参数：renderOptions -->
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/index.html -->
+  <!--<base href="//webapi.amap.com/ui/1.0/ui/misc/PathSimplifier/examples/"/>-->
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+  <title>车辆轨迹</title>
+  <style>
+    html,
+    body,
+    #container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    #loadingTip {
+      position: absolute;
+      z-index: 9999;
+      top: 55px;
+      left: 0;
+      padding: 3px 10px;
+      background: red;
+      color: #fff;
+      font-size: 14px;
+    }
+    #operateContainer {
+      width: 100%;
+      overflow: auto;
+      height: 50px;
+      border-left: 1px solid #eaeaea;
+      background: #fff;
+    }
+    #panel {
+      position: absolute;
+      top: 50px;
+      right: 0;
+    }
+    #routes-container {
+      overflow: hidden;
+    }
+    .detailInformation {
+      width: 360px;
+      background-color: #f0f0f0;
+    }
+    .table>tbody>tr>th,.table>tbody>tr>td {
+      padding: 8px;
+      text-align: center;
+    }
+    table caption {
+      text-align: center;
+    }
+    .control {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+    .carControl {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+      background-color: rgba(255,255,255,.8);
+      box-shadow: 1px 1px 3px 1px #cbcbcb;
+      float: left;
+    }
+    .carControlPlay {
+      background: url('./start.png') no-repeat;
+      background-size: 40px 40px;
+      background-position: center;
+      background-color:rgba(255,255,255,.8);
+    }
+    .carControlPause {
+      background: url('./stop.png') no-repeat;
+      background-size: 40px 40px;
+      background-position: center;
+      background-color:rgba(255,255,255,.8);
+    }
+    .speedBox {
+      width: 310px;
+      height: 50px;
+      line-height: 50px;
+      background-color: rgba(255,255,255,.8);
+      box-shadow: 1px 1px 3px 1px #cbcbcb;
+      float: left;
+    }
+    .speedBox .speedRange {
+      height: 50px;
+      vertical-align: middle;
+    }
+  </style>
+  <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+  <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+  <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <link href="/css/animate.min.css" rel="stylesheet">
+  <link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+  <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+  <link rel="stylesheet" href="/layui/css/layui.css?t=1510164124207" media="all">
+  <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">    <!-- jqgrid-->
+  <link href="/css/cnmain.css" rel="stylesheet">
+</head>
+
+<body>
+  <div id="operateContainer">
+    <form class="form-horizontal queryform">
+      <dl>
+        <dt>车辆</dt>
+        <dd style="position: static;">
+          <!--<input name="cssCarEquals" placeholder="请输入VIN" class="form-control searchinput"-->
+          <!--dataWhere=""-->
+          <!--dataUrl="/admin/vehicle/query"></dd>-->
+          <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/find"></dd>
+      </dl>
+      <dl>
+        <dt>轨迹时间</dt>
+        <dd class="timergroup">
+          <input name="cssCurrentTimeStart" placeholder="开始时间" class="form-control timegroupinput"
+                 onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+          <label class="timegrouplabel">-</label>
+          <input name="cssCurrentTimeEnd" placeholder="结束时间" class="form-control timegroupinput"
+                 onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})"></dd>
+      </dl>
+      <div class="querybtns">
+        <button id="searchButton" class="btn btn-success " type="button"><i
+            class="glyphicon fa fa-search"></i>查询
+        </button>
+      </div>
+    </form>
+  </div>
+  <div id="container"></div>
+
+  <div id="panel">
+    <div id="routes-container">
+      <div class="detailInformation">
+        <table class="table table-striped">
+          <caption>
+            轨迹信息
+          </caption>
+          <tbody>
+            <tr>
+              <th>速度</th>
+              <th>时间</th>
+              <th>里程</th>
+              <th>soc</th>
+            </tr>
+            <tr>
+              <td class="speed">&nbsp;</td>
+              <td class="time">&nbsp;</td>
+              <td class="mile">&nbsp;</td>
+              <td class="soc">&nbsp;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="control">
+    <div class="carControl carControlPlay"></div>
+    <div class="speedBox">
+      <input class="speedRange" name="speedRange" type="range"  min="0" max="10000" step="10" value="1000" />
+    </div>
+  </div>
+
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/js/jquery.ResizableColumns.js"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/store.js"></script>
+<script src="/js/contabs.min.js"></script>
+<script src="/js/layer/layer.js"></script>
+<script src="/js/tpui-core.js"></script>
+<script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+<script src="/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="/layui/layui.all.js?t=1510164124207"></script>
+
+<script type="text/javascript"
+        src='//webapi.amap.com/maps?v=1.4.2&key=dff38aa9299fe308a8a106d8a1e3312f'></script>
+<!-- UI组件库 1.0 -->
+<script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+<script src="/js/map/coordtransform.js"></script>
+<script src="/js/moment.js"></script>
+<script type="text/javascript">
+  var currentSpeed,currendTime,currendMiles,currendSoc;
+  var trackData=[];
+  var longitude,latitude;
+  var map;
+  var pathSimplifierIns;
+  var status;
+  var navg,total;
+  var targetIndex = 100;
+
+  $('#panel').hide();
+  $('.control').hide();
+
+  $(function () {
+
+    $(".searchinput").each(function () {
+      $(this).searchinput({});
+    });
+
+    //创建地图
+    map = new AMap.Map('container', {
+      zoom: 10
+    });
+    //中国地图范围
+    var posn1 = new AMap.LngLat(72.60, 17.25);
+    var posn2 = new AMap.LngLat(136.65, 53.8);
+    var boundsChina = new AMap.Bounds(posn1, posn2);
+
+    AMapUI.load(['ui/misc/PathSimplifier', 'lib/$'], function (PathSimplifier, $) {
+      if (!PathSimplifier.supportCanvas) {
+        alert('当前环境不支持 Canvas！');
+        return;
+      }
+      //just some colors
+      var colors = ["#66aa00"];
+      pathSimplifierIns = new PathSimplifier({
+        zIndex: 100,
+        map: map, //所属的地图实例
+
+        getPath: function (pathData, pathIndex) {
+          return pathData.path;
+        },
+
+        getHoverTitle: function (pathData, pathIndex, pointIndex) {
+          if (pointIndex >= 0) {
+            //point
+            return pathData.name + '，点：' + pointIndex + '/' + pathData.path.length;
+          }
+          return pathData.name + '，点数量' + pathData.path.length;
+        },
+
+        renderOptions: {
+          pathLineStyle: {
+            dirArrowStyle: true
+          },
+          getPathStyle: function (pathItem, zoom) {
+            var color = colors[0],
+                lineWidth = Math.round(2 * Math.pow(1.1, zoom - 3));
+            return {
+              pathLineStyle: {
+                strokeStyle: color,
+                lineWidth: lineWidth
+              },
+              pathLineSelectedStyle: {
+                lineWidth: lineWidth + 2
+              },
+              pathNavigatorStyle: {
+                fillStyle: color
+              }
+            };
+          }
+        }
+      });
+
+      window.pathSimplifierIns = pathSimplifierIns;
+
+      var total, hasMore = true, isFirstLoad = true,totalPoint =0;
+      var params = {
+        csNumberEquals: '',
+        page: 1,
+        rows: 300,
+        currentTimeStart: '',
+        currentTimeEnd: '',
+        isResolve:false,
+        order: 'asc'
+      };
+
+      var pathObjectArray = [];
+      var pathObject = {};
+      //设置name
+      pathObject.name = '车辆行驶轨迹';
+      pathObject.path = [];
+      //当前仅有1条轨迹信息
+      pathObjectArray.push(pathObject);
+
+      var $vinId = $("input[name='cssNumberEquals']");
+      var $startTime = $("input[name='cssCurrentTimeStart']");
+      var $endTime = $("input[name='cssCurrentTimeEnd']");
+
+      $vinId.on('input', function (e) {
+        // 这里可以写你想要的验证代码；
+        if ($vinId.val() !== '') {
+          params.csNumberEquals = $vinId.val();
+          // loadData();
+        }
+      });
+
+      //暂停继续
+      $('.carControl').on("click",function () {
+        if (navg.getNaviStatus() ==="moving") {
+          $(this).removeClass('carControlPlay').addClass('carControlPause');
+          navg.stop();
+        } else if (navg.getNaviStatus() ==="stop") {
+          $(this).addClass('carControlPlay').removeClass('carControlPause');
+          navg.resume();
+        }
+      });
+
+      $('.speedRange').on('change',function () {
+        console.log(1);
+        navg.moveByDistance(500);
+      });
+
+      //点击查询按钮
+      $('#searchButton').on('click', function () {
+        if (!checkParams()) {
+          return;
+        }
+        $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+
+        params.page = 1;
+        hasMore = true;
+        isFirstLoad = true;
+        totalPoint = 0;
+
+        $('.carControl').on("click",function () {
+            return;
+        });
+        $('.carControl').addClass('carControlPlay').removeClass('carControlPause');
+        // initSpeed();
+        loadData();
+        setTimeout(expandPath,5000);
+      });
+
+      function checkParams() {
+        if ($vinId.val() === '' || typeof($vinId.val()) === 'undefined') {
+          layer.msg('请选择一辆车', {icon: 7, time: 1600});
+          return false;
+        }
+        if ($startTime.val() === '' || typeof($startTime.val()) === 'undefined') {
+          layer.msg('请选择开始时间', {icon: 7, time: 1600});
+          return false;
+        }
+        if ($endTime.val() === '' || typeof($endTime.val()) === 'undefined') {
+          layer.msg('请选择结束时间', {icon: 7, time: 1600});
+          return false;
+        }
+        if (moment($startTime.val()).diff(moment($endTime.val()), 'seconds') >= 0) {
+          layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
+          return false;
+        }
+        params.csNumberEquals = $vinId.val();
+        params.currentTimeStart = $startTime.val();
+        params.currentTimeEnd = $endTime.val();
+        return true;
+      }
+ 
+      function loadData() {
+        $.getJSON(
+          getServUrl('/monitor/historyState/list'),
+          params,
+          function (d) {
+            $('#loadingTip').remove();
+            if (0 !== d.code) {
+              layer.msg('数据请求异常！', {icon: 7, time: 1500});
+              hasMore = false;
+              return;
+            }
+            // 判断是否还有更多数据
+            total = d.count;
+            if (0 === total) {
+              if(totalPoint === 0) {
+                layer.msg('没有找到轨迹数据！', {icon: 7, time: 1500});
+                pathSimplifierIns.setData();
+                $('#panel').hide();
+                $('.control').hide();
+              }
+                hasMore = false;
+                return;
+            }
+            if (d.data == undefined || d.data.length == undefined || d.data.length === 0) {
+              $('#loadingTip').remove();
+              console.log("已经没有更多数据！");
+              if(totalPoint === 0) {
+                layer.msg('已经没有更多数据！', {icon: 7, time: 1500});
+              }
+                hasMore = false;
+                return;
+            }
+            if (params.page > d.page.total) {
+              hasMore = false;
+              return;
+            }
+            var pathRoutes = [];
+            var item
+            for (var i = 0, len = d.data.length; i < len; i++) {
+              item = d.data[i];
+              if (i == 0) {
+                longitude = item.longitude;
+                latitude = item.latitude;
+                currentSpeed = item.speed;
+                currendTime = item.currentTime;
+                currendMiles = item.obdMiles;
+                currendSoc = item.evBattery;
+              }
+              if (typeof(item.longitude) !== 'undefined' && typeof(item.latitude) !== 'undefined'
+                && item.longitude !== null && item.latitude !== null && item.longitude > 0
+                && item.latitude > 0) {
+                var posArray = coordtransform.wgs84togcj02(item.longitude, item.latitude);
+                if (isInChina(posArray)) {
+                  pathRoutes.push(posArray);
+                }
+                trackData.push([item.speed,item.currentTime,item.obdMiles,item.evBattery]);
+              }
+            }
+
+            totalPoint+=pathRoutes.length;
+
+            if (totalPoint != 0) {
+                $('.control').show();
+                $('#panel').show();
+            }
+
+            if (pathRoutes.length === 0) {
+              console.log("没有更多GPS数据！");
+              return;
+            }
+
+            if (isFirstLoad) {
+              isFirstLoad = false;
+              if (pathSimplifierIns._data != undefined && pathSimplifierIns._data.pointNum > 0) {
+                pathSimplifierIns.setData();
+                pathObjectArray[0].path = [];
+              }
+              //设置path数组
+              pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+              pathSimplifierIns.setData(pathObjectArray);
+              //initRoutesContainer(d);
+              //创建一个巡航器
+              navg = pathSimplifierIns.createPathNavigator(0, {
+                //loop: true,
+                // speed: 1000,
+                speed: parseInt($('.speedRange').val(),10),
+                pathNavigatorStyle: {
+                  width: 16,
+                  height: 32,
+                  content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,onerror),
+                  strokeStyle: null,
+                  fillStyle: null,
+                }
+              });
+              navg.start();
+
+              $('.speed').html(currentSpeed);
+              $('.time').html(currendTime);
+              $('.mile').html(currendMiles);
+              $('.soc').html(currendSoc);
+
+              navg.on("move", function(event) {
+                if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
+                  $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
+                  $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
+                  $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
+                  $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                }
+              });
+            } else {
+              var cursor = navg.getCursor().clone(), //保存巡航器的位置
+                  status = navg.getNaviStatus();
+                  pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+                  pathSimplifierIns.setData(pathObjectArray); //延展路径
+                  //重新建立一个巡航器
+                  navg = pathSimplifierIns.createPathNavigator(0, {
+                    //loop: true, //循环播放
+                    // speed: 1000,//巡航速度，单位千米/小时
+                    speed: parseInt($('.speedRange').val(),10),
+                    pathNavigatorStyle: {
+                      width: 16,
+                      height: 32,
+                      content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,onerror),
+                      strokeStyle: null,
+                      fillStyle: null,
+                    }
+                  });
+                  if (status !== "stop") {
+                    navg.start();
+
+                    $('.speed').html(currentSpeed);
+                    $('.time').html(currendTime);
+                    $('.mile').html(currendMiles);
+                    $('.soc').html(currendSoc);
+
+                    navg.on("move", function(event) {
+                      if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
+                        $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
+                        $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
+                        $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
+                        $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                      }
+                    });
+                  }
+                  //恢复巡航器的位置
+                  if (cursor.idx >= 0) {
+                    navg.moveToPoint(cursor.idx, cursor.tail);
+                  }
+            }          
+        });
+      }
+      function onload() {
+        pathSimplifierIns.renderLater();
+      }
+
+      function onerror(e) {
+        alert('图片加载失败！');
+      }
+
+      /**
+       * 5 秒检查一次轨迹是否完成
+       */
+      function expandPath() {
+        function doExpand() {
+          if (!hasMore) {
+            return false;
+          }
+          params.page++;
+          $('<div id="loadingTip">加载数据，请稍候...</div>').appendTo(document.body);
+          loadData();
+          return true;
+        }
+        if (doExpand()) {
+          setTimeout(expandPath, 7 * 1000);
+        }
+      }
+    });
+
+    //是否在中国境内
+    function isInChina(posn) {
+        if (posn != null && posn != "" && posn.length > 0) {
+          return boundsChina.contains(new AMap.LngLat(posn[0], posn[1]));
+        } else {
+        return false;
+        }
+    }
+  });    
+</script>
+</body>
+
+</html>

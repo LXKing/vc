@@ -1,12 +1,9 @@
 package com.ccclubs.quota.api.util;
 
-
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -50,7 +47,6 @@ public class ExportExcelTemp<T> implements Serializable{
     }
 
     public ExportExcelTemp(String savePath){
-
          try {
              File file = new File(savePath);
              HSSFWorkbook workbook;
@@ -128,6 +124,12 @@ public class ExportExcelTemp<T> implements Serializable{
         // 指定当单元格内容显示不下时自动换行
         style.setWrapText(true);
 
+        /**
+         *数据空时设置的背景色
+         */
+//        HSSFCellStyle styleground = workbook.createCellStyle();
+//        styleground.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);// 设置背景色
+//        styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
         // 产生表格标题行
         HSSFRow row = sheet.createRow(0);
         for (int i = 0; i < headers.length; i++) {
@@ -170,20 +172,9 @@ public class ExportExcelTemp<T> implements Serializable{
                     Method getMethod = tCls.getMethod(getMethodName,
                             new Class[] {});
                     Object value = getMethod.invoke(t, new Object[] {});
+
                     // 判断值的类型后进行强制类型转换
                     String textValue = null;
-                    if("csc_car_no".equals(fieldName)){
-                        if ("kong".equals(value)){
-                            for (int k=0;k<5;k++){
-                                index++;
-                                row = sheet.createRow(index);
-                            }
-                            break;
-                        }
-
-                    }
-
-
 
                     if (value instanceof Date) {
                         Date date = (Date) value;
@@ -210,10 +201,7 @@ public class ExportExcelTemp<T> implements Serializable{
                         if(value!=null){
                             textValue = value.toString();
                         }
-
                     }
-
-
                     // 如果不是图片数据，就利用正则表达式判断textValue是否全部由数字组成
                     if (textValue != null) {
                         Pattern p = Pattern.compile("^//d+(//.//d+)?$");
@@ -221,27 +209,8 @@ public class ExportExcelTemp<T> implements Serializable{
 
                         HSSFRichTextString richString = new HSSFRichTextString(
                                 textValue);
-
                         cell.setCellValue(richString);
-                        if(textValue=="波谷"){
-                            HSSFCellStyle styleground = workbook.createCellStyle();
-                            styleground.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);// 设置背景色
-                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-                            cell.setCellStyle(styleground);
-                        }else if(textValue=="波峰"){
-                            HSSFCellStyle styleground = workbook.createCellStyle();
-                            styleground.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);// 设置背景色
-                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-                            cell.setCellStyle(styleground);
-                        }else if(textValue=="一周内未使用的车辆"){
-                            HSSFCellStyle styleground = workbook.createCellStyle();
-                            styleground.setFillForegroundColor(HSSFColor.RED.index);// 设置背景色
-                            styleground.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-                            cell.setCellStyle(styleground);
-                            break;
-                        }
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }finally {

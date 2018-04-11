@@ -949,4 +949,155 @@
       css_mo_data = #{cssMoData,jdbcType=VARCHAR}
     where css_id = #{cssId,jdbcType=INTEGER}
   </update>
+
+  <!-- 批量更新 -->
+  <update id="batchUpdate" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update cs_state
+      <set>
+        <if test="item.cssAccess != null">
+          css_access = #{item.cssAccess,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssHost != null">
+          css_host = #{item.cssHost,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssNumber != null">
+          css_number = #{item.cssNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssCar != null">
+          css_car = #{item.cssCar,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssAddTime != null">
+          css_add_time = #{item.cssAddTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cssCurrentTime != null">
+          css_current_time = #{item.cssCurrentTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cssRented != null">
+          css_rented = #{item.cssRented,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssWarn != null">
+          css_warn = #{item.cssWarn,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssRfid != null">
+          css_rfid = #{item.cssRfid,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssRfidDte != null">
+          css_rfid_dte = #{item.cssRfidDte,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssObdMile != null">
+          css_obd_mile = #{item.cssObdMile,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssEngineT != null">
+          css_engine_t = #{item.cssEngineT,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssMileage != null">
+          css_mileage = #{item.cssMileage,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssSpeed != null">
+          css_speed = #{item.cssSpeed,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssMotor != null">
+          css_motor = #{item.cssMotor,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssOil != null">
+          css_oil = #{item.cssOil,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssPower != null">
+          css_power = #{item.cssPower,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssEvBattery != null">
+          css_ev_battery = #{item.cssEvBattery,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssCharging != null">
+          css_charging = #{item.cssCharging,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssFuelMileage != null">
+          css_fuel_mileage = #{item.cssFuelMileage,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssElectricMileage != null">
+          css_electric_mileage = #{item.cssElectricMileage,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssEndurance != null">
+          css_endurance = #{item.cssEndurance,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssTemperature != null">
+          css_temperature = #{item.cssTemperature,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssCsq != null">
+          css_csq = #{item.cssCsq,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssPowerConsumption != null">
+          css_power_consumption = #{item.cssPowerConsumption,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssLongitude != null">
+          css_longitude = #{item.cssLongitude,jdbcType=DECIMAL},
+        </if>
+        <if test="item.cssLatitude != null">
+          css_latitude = #{item.cssLatitude,jdbcType=DECIMAL},
+        </if>
+        <if test="item.cssGpsValid != null">
+          css_gps_valid = #{item.cssGpsValid,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssGpsCn != null">
+          css_gps_cn = #{item.cssGpsCn,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssGpsCount != null">
+          css_gps_count = #{item.cssGpsCount,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cssDir != null">
+          css_dir = #{item.cssDir,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssCircular != null">
+          css_circular = #{item.cssCircular,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssPtc != null">
+          css_ptc = #{item.cssPtc,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssCompres != null">
+          css_compres = #{item.cssCompres,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssFan != null">
+          css_fan = #{item.cssFan,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssSaving != null">
+          css_saving = #{item.cssSaving,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssDoor != null">
+          css_door = #{item.cssDoor,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cssEngine != null">
+          css_engine = #{item.cssEngine,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssKey != null">
+          css_key = #{item.cssKey,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssGear != null">
+          css_gear = #{item.cssGear,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssLight != null">
+          css_light = #{item.cssLight,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssLock != null">
+          css_lock = #{item.cssLock,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssNetType != null">
+          css_net_type = #{item.cssNetType,jdbcType=TINYINT},
+        </if>
+        <if test="item.cssBaseLac != null">
+          css_base_lac = #{item.cssBaseLac,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssBaseCi != null">
+          css_base_ci = #{item.cssBaseCi,jdbcType=INTEGER},
+        </if>
+        <if test="item.cssOrder != null">
+          css_order = #{item.cssOrder,jdbcType=BIGINT},
+        </if>
+        <if test="item.cssMoData != null">
+          css_mo_data = #{item.cssMoData,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where css_id = #{item.cssId,jdbcType=INTEGER}
+    </foreach>
+  </update>
 </mapper>

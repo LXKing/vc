@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-mongo-orm</artifactId>
+            <artifactId>vc-biz-mongo-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
         <dependency>
@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-mongodb</artifactId>
+            <artifactId>vc-frm-mongo</artifactId>
             <version>${frm.version}</version>
         </dependency>
         <dependency>
@@ -65,6 +65,14 @@
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-common-srv</artifactId>
             <version>${biz.version}</version>
+        </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+      </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
     </dependencies>
 

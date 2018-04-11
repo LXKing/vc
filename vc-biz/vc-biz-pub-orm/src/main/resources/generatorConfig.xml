@@ -105,10 +105,10 @@
 		</javaClientGenerator>
 
 
-		<table tableName="cs_can" schema="">
+		<table tableName="srv_user" schema="">
 			<!-- <generatedKey column="id" sqlStatement="select  replace(uuid(),'-','')   from dual" identity="false"/> -->
 		</table>
-		<table tableName="cs_his_machine_relation" schema=""></table>
+		<!--<table tableName="cs_his_machine_relation" schema=""></table>
 		<table tableName="cs_machine" schema=""></table>
 		<table tableName="cs_machine_mapping" schema=""></table>
 		<table tableName="cs_manage" schema=""></table>
@@ -135,7 +135,7 @@
 		<table tableName="srv_query" schema=""></table>
 		<table tableName="srv_sql" schema=""></table>
 		<table tableName="srv_user" schema=""></table>
-		<table tableName="tb_upgrade" schema=""></table>
+		<table tableName="tb_upgrade" schema=""></table>-->
 		<!-- optional   , only for mybatis3 runtime
              自动生成的键值（identity,或者序列值）
            如果指定此元素，MBG将会生成<selectKey>元素，然后将此元素插入到SQL Map的<insert> 元素之中

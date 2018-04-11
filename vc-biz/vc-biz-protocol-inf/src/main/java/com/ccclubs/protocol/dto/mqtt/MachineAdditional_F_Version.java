@@ -4,9 +4,9 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * <b>富士康专用<b/>富士康硬件版本，终端信息
+ * Created by qsxiaogang on 2017/4/17. <b>富士康专用<b/>富士康硬件版本，终端信息
  */
+@Deprecated
 public class MachineAdditional_F_Version implements IMachineAdditionalItem {
 
   /**
@@ -25,7 +25,7 @@ public class MachineAdditional_F_Version implements IMachineAdditionalItem {
   }
 
   public int getVersion() {
-    return version & 0xFFFF;
+    return version;
   }
 
   public void setVersion(int version) {

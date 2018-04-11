@@ -4,9 +4,9 @@ import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * <b>通领专用<b/>主版本，软件版本1，终端信息
+ * Created by qsxiaogang on 2017/4/17. <b>通领专用<b/>主版本，软件版本1，终端信息
  */
+@Deprecated
 public class MachineAdditional_SoftwareVersionI implements IMachineAdditionalItem {
 
   /**

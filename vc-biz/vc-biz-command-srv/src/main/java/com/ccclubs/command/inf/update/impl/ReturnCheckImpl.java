@@ -2,20 +2,17 @@ package com.ccclubs.command.inf.update.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONArray;
-import com.ccclubs.command.dto.PowerModeOutput;
 import com.ccclubs.command.dto.ReturnCheckInput;
 import com.ccclubs.command.dto.ReturnCheckOutput;
 import com.ccclubs.command.inf.update.ReturnCheckInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
-import com.ccclubs.command.util.CommandConstants;
-import com.ccclubs.command.util.ResultHelper;
-import com.ccclubs.command.util.ValidateHelper;
+import com.ccclubs.command.remote.CsRemoteManager;
+import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -55,13 +52,18 @@ public class ReturnCheckImpl implements ReturnCheckInf{
     private ResultHelper resultHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
+
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
 
     @Override
     @DataAuth
     public ReturnCheckOutput setReturn(ReturnCheckInput input) {
-        Integer structId = CommandConstants.CMD_RETURN;
-        logger.info("begin process command {} start.", structId);
+        Long structId = CommandConstants.CMD_RETURN.longValue();
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -72,8 +74,11 @@ public class ReturnCheckImpl implements ReturnCheckInf{
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
+
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
@@ -82,16 +87,17 @@ public class ReturnCheckImpl implements ReturnCheckInf{
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId.longValue(), array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        ReturnCheckOutput output = new ReturnCheckOutput();
-
         // 4.确认结果
-        output = resultHelper.confirmResult(csRemote, input.getResultType(), output);
+        ReturnCheckOutput output = new ReturnCheckOutput();
+        output = resultHelper.confirmResult(csRemote, input.getResultType(), output, csMachine);
 
         return output;
     }

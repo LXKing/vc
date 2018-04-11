@@ -458,4 +458,62 @@
       csc_status = #{cscStatus,jdbcType=TINYINT}
     where csc_id = #{cscId,jdbcType=BIGINT}
   </update>
+
+  <!-- 批量更新 -->
+  <update id="batchUpdate" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update cs_can
+      <set>
+        <if test="item.cscAccess != null">
+          csc_access = #{item.cscAccess,jdbcType=INTEGER},
+        </if>
+        <if test="item.cscHost != null">
+          csc_host = #{item.cscHost,jdbcType=INTEGER},
+        </if>
+        <if test="item.cscNumber != null">
+          csc_number = #{item.cscNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscCar != null">
+          csc_car = #{item.cscCar,jdbcType=INTEGER},
+        </if>
+        <if test="item.cscModel != null">
+          csc_model = #{item.cscModel,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cscType != null">
+          csc_type = #{item.cscType,jdbcType=SMALLINT},
+        </if>
+        <if test="item.cscOrder != null">
+          csc_order = #{item.cscOrder,jdbcType=BIGINT},
+        </if>
+        <if test="item.cscData != null">
+          csc_data = #{item.cscData,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscFault != null">
+          csc_fault = #{item.cscFault,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscUploadTime != null">
+          csc_upload_time = #{item.cscUploadTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cscAddTime != null">
+          csc_add_time = #{item.cscAddTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cscLarum != null">
+          csc_larum = #{item.cscLarum,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscPrompt != null">
+          csc_prompt = #{item.cscPrompt,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscDealDesc != null">
+          csc_deal_desc = #{item.cscDealDesc,jdbcType=VARCHAR},
+        </if>
+        <if test="item.cscDealTime != null">
+          csc_deal_time = #{item.cscDealTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.cscStatus != null">
+          csc_status = #{item.cscStatus,jdbcType=TINYINT},
+        </if>
+      </set>
+      where csc_id = #{item.cscId,jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

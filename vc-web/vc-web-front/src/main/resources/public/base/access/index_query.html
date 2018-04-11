@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="shId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="shIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="shName" >
+				<dt>接入商</dt>
+				<dd  >
+					<input  name="shNameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="shKey" >
+				<dt>接入KEY</dt>
+				<dd  >
+					<input  name="shKeyLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="shTopic" style="display:none;">
+				<dt>转发Topic</dt>
+				<dd  >
+					<input  name="shTopicEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="shTransformRemote" style="display:none;">
+				<dt>转发指令结果</dt>
+				<dd  >
+					<select class="form-control"  name="shTransformRemoteEquals"  >
+	                    <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="shTransformStatus" style="display:none;">
+				<dt>转发状态</dt>
+				<dd  >
+					<select class="form-control"  name="shTransformStatusEquals"  >
+	                    <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="shTransformCan" style="display:none;">
+				<dt>转发CAN</dt>
+				<dd  >
+					<select class="form-control"  name="shTransformCanEquals"  >
+	                    <option></option>
+                         <option value="1">转发</option>
+                         <option value="0">不转发</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="shAddTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd class="timergroup" >
+					<input  name="shAddTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="shAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="shUptTime" style="display:none;">
+				<dt>更新时间</dt>
+				<dd class="timergroup" >
+					<input  name="shUptTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="shUptTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="shStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="shStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+<dl cond="shAppid" >
+				<dt>接入ID</dt>
+				<dd  >
+					<input  name="shAppidLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="shId" value="shId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="shName" value="shName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入商</label></li>
+			        <li><label><input cond="shKey" value="shKey" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入KEY</label></li>
+			        <li><label><input cond="shTopic" value="shTopic"  type="checkbox" onclick='showHideCondition(this, this.value);' >转发Topic</label></li>
+			        <li><label><input cond="shTransformRemote" value="shTransformRemoteText"  type="checkbox" onclick='showHideCondition(this, this.value);' >转发指令结果</label></li>
+			        <li><label><input cond="shTransformStatus" value="shTransformStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >转发状态</label></li>
+			        <li><label><input cond="shTransformCan" value="shTransformCanText"  type="checkbox" onclick='showHideCondition(this, this.value);' >转发CAN</label></li>
+			        <li><label><input cond="shAddTime" value="shAddTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="shUptTime" value="shUptTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
+			        <li><label><input cond="shStatus" value="shStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+			        <li><label><input cond="shAppid" value="shAppid" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >接入ID</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

@@ -1,16 +1,14 @@
 package com.ccclubs.protocol.dto.mqtt;
-
 import com.ccclubs.protocol.inf.IMachineAdditionalItem;
 import com.ccclubs.protocol.util.MyBuffer;
 
 /**
- * Created by qsxiaogang on 2017/4/17.
- * 充电状态,终端信息
+ * Created by qsxiaogang on 2017/4/17. 充电状态,终端信息
  */
 public class MachineAdditional_ChargeStatus implements IMachineAdditionalItem {
 
   /**
-   * 1不充电，2充电，3慢充，4快充，0无效
+   * 0：未充电或无效，1：慢充，2：快充
    */
   private int chargeStatus;
 

@@ -1,7 +1,7 @@
 package com.ccclubs.mongo.orm.dao.impl;
 
 import com.ccclubs.mongo.orm.dao.VcApiLogDao;
-import com.ccclubs.mongo.orm.model.VcApiLog;
+import com.ccclubs.mongo.orm.model.history.VcApiLog;
 import org.springframework.stereotype.Component;
 
 /**

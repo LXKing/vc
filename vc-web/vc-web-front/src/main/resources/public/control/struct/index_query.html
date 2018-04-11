@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="cssId" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="cssIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssName" >
+				<dt>指令名称</dt>
+				<dd  >
+					<input  name="cssNameLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssType" >
+				<dt>命令类型</dt>
+				<dd  >
+					<select class="form-control"  name="cssTypeEquals"  >
+	                    <option></option>
+                         <option value="1">高级命令</option>
+                         <option value="0">一般命令</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="cssReqCode" style="display:none;">
+				<dt>请求示例</dt>
+				<dd  >
+					<input  name="cssReqCodeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssRequest" style="display:none;">
+				<dt>请求结构</dt>
+				<dd  >
+					<input  name="cssRequestEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssRepCode" style="display:none;">
+				<dt>响应示例</dt>
+				<dd  >
+					<input  name="cssRepCodeEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssResponse" style="display:none;">
+				<dt>响应结构</dt>
+				<dd  >
+					<input  name="cssResponseEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="cssStatus" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<input  name="cssStatusEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="cssId" value="cssId"  type="checkbox" onclick='showHideCondition(this, this.value);' >编号</label></li>
+			        <li><label><input cond="cssName" value="cssName" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >指令名称</label></li>
+			        <li><label><input cond="cssType" value="cssTypeText" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >命令类型</label></li>
+			        <li><label><input cond="cssReqCode" value="cssReqCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >请求示例</label></li>
+			        <li><label><input cond="cssRequest" value="cssRequest"  type="checkbox" onclick='showHideCondition(this, this.value);' >请求结构</label></li>
+			        <li><label><input cond="cssRepCode" value="cssRepCode"  type="checkbox" onclick='showHideCondition(this, this.value);' >响应示例</label></li>
+			        <li><label><input cond="cssResponse" value="cssResponse"  type="checkbox" onclick='showHideCondition(this, this.value);' >响应结构</label></li>
+			        <li><label><input cond="cssStatus" value="cssStatusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

@@ -32,6 +32,11 @@
             <artifactId>vc-frm-mqtt</artifactId>
             <version>${frm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-mongo-srv</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

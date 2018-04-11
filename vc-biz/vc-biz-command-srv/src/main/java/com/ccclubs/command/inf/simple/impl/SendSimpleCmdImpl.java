@@ -9,13 +9,14 @@ import com.ccclubs.command.dto.SimpleCmdInput;
 import com.ccclubs.command.dto.SimpleCmdOutput;
 import com.ccclubs.command.inf.simple.SendSimpleCmdInf;
 import com.ccclubs.command.process.CommandProcessInf;
-import com.ccclubs.command.remote.CsRemoteService;
+import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.CsRemote;
+import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
@@ -42,6 +43,7 @@ import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 public class SendSimpleCmdImpl implements SendSimpleCmdInf {
 
     private static final Logger logger = LoggerFactory.getLogger(SendSimpleCmdImpl.class);
+    private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
     @Autowired
     private CommandProcessInf process;
@@ -59,7 +61,12 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private ValidateHelper validateHelper;
 
     @Resource
-    private CsRemoteService remoteService;
+    private CsRemoteManager csRemoteManager;
+    @Resource
+    IdGeneratorHelper idGen;
+
+    @Resource
+    private TerminalOnlineHelper terminalOnlineHelper;
 
     @Override
     @DataAuth
@@ -67,7 +74,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
 
         Integer structId = commandProp.getCmdMap().get(input.getCmd() + "");
 
-        logger.info("begin process command {} start.", structId);
+        logger.debug("begin process command {} start.", structId);
         // 校验指令码
         if (null == structId) {
             throw new ApiException(ApiEnum.COMMAND_NOT_FOUND);
@@ -77,6 +84,9 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
+
+        // 0.检查终端是否在线
+        terminalOnlineHelper.isOnline(csMachine);
 
         /*****************************************************/
         /******************** 适配（低）终端版本 *****************/
@@ -124,30 +134,34 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
             case 14:
                 oldAdapter(csMachine, input, structId);
                 break;
+            default:
+                break;
         }
 
         // 1.查询指令结构体定义
-        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(Long.parseLong(structId.toString()));
+        CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId.longValue());
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, Map.class);
         List<Map> values = JSONArray.parseArray("[{}]", Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
-        CsRemote csRemote = remoteService.save(csVehicle, csMachine, structId, input.getAppId());
+        long csrId = idGen.getNextId();
+        CsRemote csRemote = CsRemoteUtil.construct(csVehicle, csMachine, structId.longValue(), array, input.getAppId(), csrId);
+        csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令
-        logger.info("command send start.");
+        logger.debug("command send start.");
         process.dealRemoteCommand(csRemote, array);
 
-        SimpleCmdOutput output = new SimpleCmdOutput();
         // 4.确认结果
+        SimpleCmdOutput output = new SimpleCmdOutput();
         switch (input.getResultType()) {
             case 1://async
                 output.setMessageId(csRemote.getCsrId());
                 break;
             case 2://sync
-                output = confirmResult(csRemote, structId);
+                output = confirmResult(csRemote, structId, csMachine);
                 break;
             case 3://http
                 break;
@@ -155,7 +169,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         return output;
     }
 
-    private SimpleCmdOutput confirmResult(CsRemote csRemote, Integer structId) {
+    private SimpleCmdOutput confirmResult(CsRemote csRemote, Integer structId, CsMachine csMachine) {
         Long startTime = System.currentTimeMillis();
         try {
             while ((System.currentTimeMillis() - startTime) < TIMEOUT) {
@@ -163,7 +177,16 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                 ValueOperations<String, String> ops = redisTemplate.opsForValue();
                 String result = ops.get(AssembleHelper.assembleKey(csRemote.getCsrId()));
                 if (null != result && !"".equals(result)) {
-                    logger.info("command {} send successfully.", structId);
+                    logger.debug("command {} send successfully.", structId);
+                    csRemote.setCsrUpdateTime(System.currentTimeMillis());
+                    csRemote.setCsrStatus(1);
+                    csRemote.setCsrResult(result);
+                    JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
+                    jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
+                    jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
+                    jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
+                    jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+                    loggerBusiness.info(JSONObject.toJSONString(jsonObject));
                     CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result, new TypeReference<CommonResult<SimpleCmdOutput>>() {
                     });
 
@@ -177,9 +200,17 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                         throw new ApiException(ApiEnum.COMMAND_EXECUTE_FAILED.code(), commonResult.getMessage());
                     }
                 }
-                Thread.sleep(100l);
+                Thread.sleep(300L);
             }
-            logger.error("command timeout and exit.");
+            logger.debug("command timeout and exit.");
+            csRemote.setCsrUpdateTime(System.currentTimeMillis());
+            csRemote.setCsrStatus(-1);
+            JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
+            jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
+            jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
+            jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
+            jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+            loggerBusiness.info(JSONObject.toJSONString(jsonObject));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
 
         } catch (ApiException ex) {
@@ -202,23 +233,11 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private Integer notAdapter(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
-                Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                if (null == csMachine.getCsmV1()) {
-                    throw new ApiException(ApiEnum.OLD_VERSION_DETECTED, supportV);
-                } else {
-                    Integer currV = Integer.parseInt(csMachine.getCsmV1().substring(4), 16);
-                    if (currV < supportV) {
-                        throw new ApiException(ApiEnum.OLD_VERSION_DETECTED, supportV);
-                    }
-                }
-                break;
             case 1://中导
+            case 3://通领
                 structId = getNotAdapterStructId(csMachine, input, structId);
                 break;
             case 2://慧瀚
-                break;
-            case 3://通领
-                structId = getNotAdapterStructId(csMachine, input, structId);
                 break;
         }
         return structId;
@@ -248,23 +267,11 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     private Integer oldAdapter(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         switch (csMachine.getCsmTeType()) {
             case 0://富士康
-                if (null == csMachine.getCsmV1()) {
-                    structId = commandProp.getCmdMap().get("5" + input.getCmd());
-                } else {
-                    Integer currV = Integer.parseInt(csMachine.getCsmV1().substring(4), 16);
-                    Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
-                    if (currV < supportV) {
-                        structId = commandProp.getCmdMap().get("5" + input.getCmd());
-                    }
-                }
-                break;
             case 1://中导
+            case 3://通领
                 structId = getAdapterStructId(csMachine, input, structId);
                 break;
             case 2://慧瀚
-                break;
-            case 3://通领
-                structId = getAdapterStructId(csMachine, input, structId);
                 break;
         }
         return structId;

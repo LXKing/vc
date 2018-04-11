@@ -36,25 +36,11 @@
       <artifactId>vc-biz-common-srv</artifactId>
       <version>${biz.version}</version>
     </dependency>
-
     <dependency>
       <groupId>www.ccclubs</groupId>
       <artifactId>vc-biz-pub-orm</artifactId>
       <version>${biz.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>www.ccclubs</groupId>
-      <artifactId>vc-biz-mongo-orm</artifactId>
-      <version>${biz.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>www.ccclubs</groupId>
-      <artifactId>vc-frm-mongodb</artifactId>
-      <version>${biz.version}</version>
-    </dependency>
-
   </dependencies>
 
 </project>

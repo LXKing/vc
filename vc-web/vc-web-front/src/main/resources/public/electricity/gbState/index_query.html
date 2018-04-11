@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="gsId" style="display:none;">
+				<dt>ID</dt>
+				<dd  >
+					<input  name="gsIdEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="vin" >
+				<dt>VIN</dt>
+				<dd  >
+					<input  name="vin" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="timeText" style="display:none;">
+				<dt>报文时间</dt>
+				<dd  >
+					<input  name="timeTextEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="vehicleStatusString" style="display:none;">
+				<dt>车辆状态</dt>
+				<dd  >
+					<input  name="vehicleStatusStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="chargingString" style="display:none;">
+				<dt>充电状态</dt>
+				<dd  >
+					<input  name="chargingStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="runningModeString" style="display:none;">
+				<dt>运行模式</dt>
+				<dd  >
+					<input  name="runningModeStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="speedString" style="display:none;">
+				<dt>车速</dt>
+				<dd  >
+					<input  name="speedStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="mileageString" style="display:none;">
+				<dt>累计里程</dt>
+				<dd  >
+					<input  name="mileageStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="voltageString" style="display:none;">
+				<dt>总电压</dt>
+				<dd  >
+					<input  name="voltageStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="currentString" style="display:none;">
+				<dt>总电流</dt>
+				<dd  >
+					<input  name="currentStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="socString" style="display:none;">
+				<dt>SOC</dt>
+				<dd  >
+					<input  name="socStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="dcDcStatusString" style="display:none;">
+				<dt>DC-DC状态</dt>
+				<dd  >
+					<input  name="dcDcStatusStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="gearString" style="display:none;">
+				<dt>挡位</dt>
+				<dd  >
+					<input  name="gearStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="insulationResistanceString" style="display:none;">
+				<dt>绝缘电阻</dt>
+				<dd  >
+					<input  name="insulationResistanceStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="acceleratedPedalStrokeValueString" style="display:none;">
+				<dt>加速踏板行程值</dt>
+				<dd  >
+					<input  name="acceleratedPedalStrokeValueStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="brakePedalStateString" style="display:none;">
+				<dt>制动踏板状态</dt>
+				<dd  >
+					<input  name="brakePedalStateStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="positionStatusString" style="display:none;">
+				<dt>定位状态</dt>
+				<dd  >
+					<input  name="positionStatusStringEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="longitudeString" style="display:none;">
+				<dt>经度</dt>
+				<dd  >
+					<input  name="longitudeStringEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="latitudeString" style="display:none;">
+				<dt>纬度</dt>
+				<dd  >
+					<input  name="latitudeStringEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="gsId" value="gsId"  type="checkbox" onclick='showHideCondition(this, this.value);' >ID</label></li>
+			        <li><label><input cond="vin" value="vin" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >VIN</label></li>
+			        <li><label><input cond="timeText" value="timeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >报文时间</label></li>
+			        <li><label><input cond="vehicleStatusString" value="vehicleStatusString"  type="checkbox" onclick='showHideCondition(this, this.value);' >车辆状态</label></li>
+			        <li><label><input cond="chargingString" value="chargingString"  type="checkbox" onclick='showHideCondition(this, this.value);' >充电状态</label></li>
+			        <li><label><input cond="runningModeString" value="runningModeString"  type="checkbox" onclick='showHideCondition(this, this.value);' >运行模式</label></li>
+			        <li><label><input cond="speedString" value="speedString"  type="checkbox" onclick='showHideCondition(this, this.value);' >车速</label></li>
+			        <li><label><input cond="mileageString" value="mileageString"  type="checkbox" onclick='showHideCondition(this, this.value);' >累计里程</label></li>
+			        <li><label><input cond="voltageString" value="voltageString"  type="checkbox" onclick='showHideCondition(this, this.value);' >总电压</label></li>
+			        <li><label><input cond="currentString" value="currentString"  type="checkbox" onclick='showHideCondition(this, this.value);' >总电流</label></li>
+			        <li><label><input cond="socString" value="socString"  type="checkbox" onclick='showHideCondition(this, this.value);' >SOC</label></li>
+			        <li><label><input cond="dcDcStatusString" value="dcDcStatusString"  type="checkbox" onclick='showHideCondition(this, this.value);' >DC-DC状态</label></li>
+			        <li><label><input cond="gearString" value="gearString"  type="checkbox" onclick='showHideCondition(this, this.value);' >挡位</label></li>
+			        <li><label><input cond="insulationResistanceString" value="insulationResistanceString"  type="checkbox" onclick='showHideCondition(this, this.value);' >绝缘电阻</label></li>
+			        <li><label><input cond="acceleratedPedalStrokeValueString" value="acceleratedPedalStrokeValueString"  type="checkbox" onclick='showHideCondition(this, this.value);' >加速踏板行程值</label></li>
+			        <li><label><input cond="brakePedalStateString" value="brakePedalStateString"  type="checkbox" onclick='showHideCondition(this, this.value);' >制动踏板状态</label></li>
+			        <li><label><input cond="positionStatusString" value="positionStatusString"  type="checkbox" onclick='showHideCondition(this, this.value);' >定位状态</label></li>
+			        <li><label><input cond="longitudeString" value="longitudeString"  type="checkbox" onclick='showHideCondition(this, this.value);' >经度</label></li>
+			        <li><label><input cond="latitudeString" value="latitudeString"  type="checkbox" onclick='showHideCondition(this, this.value);' >纬度</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

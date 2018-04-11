@@ -34,15 +34,15 @@ public class TestCommand {
     @Test
     public void upgrade() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:8888/command/oneKeyUpgrade");
+        HttpPost httpPost = new HttpPost("http://101.37.178.63/command/oneKeyUpgrade");
         //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         UpgradeInput input = new UpgradeInput();
-        input.setVin("HZ60112345678");
+        input.setVin("LJ8E3C1M3GB006029");
         String s = JSON.toJSONString(input);
         String value = DigestUtils.md5Hex(s);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("pfadf2pfavyybd", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000001");
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -64,17 +64,17 @@ public class TestCommand {
     @Test
     public void sendSimpleCmd() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
-        HttpPost httpPost = new HttpPost("http://101.37.178.63/command/sendSimpleCmd");
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7004/command/sendSimpleCmd");
         //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         SimpleCmdInput input = new SimpleCmdInput();
-        input.setVin("LJ8E3C1M7GB006101");
-        input.setCmd(6);//
+        input.setVin("CHEJIZHONGXING006");
+        input.setCmd(1);//
         input.setResultType(2);
         String s = JSON.toJSONString(input);
         String value = DigestUtils.md5Hex(s);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000013");
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 

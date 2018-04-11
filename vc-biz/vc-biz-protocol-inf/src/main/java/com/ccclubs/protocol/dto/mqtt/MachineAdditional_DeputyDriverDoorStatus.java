@@ -7,6 +7,7 @@ import com.ccclubs.protocol.util.MyBuffer;
  * Created by qsxiaogang on 2017/4/17.
  * 副驾驶门状态,终端信息
  */
+@Deprecated
 public class MachineAdditional_DeputyDriverDoorStatus implements IMachineAdditionalItem {
 
   /**

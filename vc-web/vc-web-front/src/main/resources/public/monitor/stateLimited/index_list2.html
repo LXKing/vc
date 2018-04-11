@@ -1,0 +1,375 @@
+<div class="menubar">
+		<div class="buttoncons">
+			
+
+			 <div class="btn-group" title="列">
+			 	<div class="btn-group">
+		             <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper" aria-expanded="false">
+		             	<i class="glyphicon fa fa-cogs"></i>
+		             	 操作
+		                <span class="caret"></span>
+		             </button>
+
+		             <ul class="dropdown-menu">
+		                 <li sctl="exportData">
+		                     <a href="javascript:operate.exportData();">数据导出</a>
+		                 </li>
+		             </ul>
+		         </div>
+			 	<div class="btn-group">
+				 	<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>
+				 		自定义显示列
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu showHideMenu" role="menu">
+				        <li><label><input value="cssId" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >编号</label></li>
+				        <li><label><input value="cssNumberText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车机号</label></li>
+				        <li><label><input value="cssCarText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆</label></li>
+				        <li><label><input value="cssAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接收时间</label></li>
+				        <li><label><input value="cssCurrentTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文时间</label></li>
+				        <li><label><input value="cssRented"  type="checkbox" onclick='showHideColumn(this, this.value);' >租赁状态</label></li>
+				        <li><label><input value="cssWarn" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报警码</label></li>
+				        <li><label><input value="cssRfid"  type="checkbox" onclick='showHideColumn(this, this.value);' >RFID卡号</label></li>
+				        <li><label><input value="cssRfidDte"  type="checkbox" onclick='showHideColumn(this, this.value);' >用户RFID</label></li>
+				        <li><label><input value="cssObdMile" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >累计里程</label></li>
+				        <li><label><input value="cssEngineT" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >发动机温度</label></li>
+				        <li><label><input value="cssMileage"  type="checkbox" onclick='showHideColumn(this, this.value);' >订单总里程</label></li>
+				        <li><label><input value="cssSpeed" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车速</label></li>
+				        <li><label><input value="cssMotor" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转速</label></li>
+				        <li><label><input value="cssOil" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >燃油量:</label></li>
+				        <li><label><input value="cssPower" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >小电瓶电量</label></li>
+				        <li><label><input value="cssEvBattery" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >SOC</label></li>
+				        <li><label><input value="cssChargingText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >充电状态</label></li>
+				        <li><label><input value="cssFuelMileage"  type="checkbox" onclick='showHideColumn(this, this.value);' >订单油里程</label></li>
+				        <li><label><input value="cssElectricMileage"  type="checkbox" onclick='showHideColumn(this, this.value);' >订单电里程</label></li>
+				        <li><label><input value="cssEndurance" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >续航里程</label></li>
+				        <li><label><input value="cssTemperature" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >温度</label></li>
+				        <li><label><input value="cssCsq" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >CSQ</label></li>
+				        <li><label><input value="cssLongitude" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >经度</label></li>
+				        <li><label><input value="cssLatitude" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >纬度</label></li>
+				        <li><label><input value="cssGpsValidText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >GPS有效性</label></li>
+				        <li><label><input value="cssGpsCn" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >GPS强度</label></li>
+				        <li><label><input value="cssGpsCount" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >GPS卫星数</label></li>
+				        <li><label><input value="cssDir" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >方向角</label></li>
+				        <li><label><input value="cssCircularText"  type="checkbox" onclick='showHideColumn(this, this.value);' >循环模式</label></li>
+				        <li><label><input value="cssPtcText"  type="checkbox" onclick='showHideColumn(this, this.value);' >PTC启停</label></li>
+				        <li><label><input value="cssCompresText"  type="checkbox" onclick='showHideColumn(this, this.value);' >压缩机</label></li>
+				        <li><label><input value="cssFanText"  type="checkbox" onclick='showHideColumn(this, this.value);' >档风量</label></li>
+				        <li><label><input value="cssSavingText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >功耗模式</label></li>
+				        <li><label><input value="cssDoor" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车门状态</label></li>
+				        <li><label><input value="cssEngineText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >发动机状态</label></li>
+				        <li><label><input value="cssKey" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >钥匙状态</label></li>
+				        <li><label><input value="cssGearText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >档位</label></li>
+				        <li><label><input value="cssLight" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车灯状态</label></li>
+				        <li><label><input value="cssLock" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车锁状态</label></li>
+				        <li><label><input value="cssNetTypeText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >网络类型</label></li>
+				        <li><label><input value="cssBaseLac" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >LAC</label></li>
+				        <li><label><input value="cssBaseCi" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >CI</label></li>
+				        <li><label><input value="cssOrder" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >订单号</label></li>
+				        <li><label><input value="cssMoData" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文数据</label></li>
+					</ul>
+				</div>
+			</div>
+	 	</div>
+	</div>
+
+<table id="table"></table>
+<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
+	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
+	<a href='javascript:'  class="btn btn-primary btn-outline grid_oper_btn" lay-event="location" title="定位"><i class="fa fa-location-arrow"></i></a>
+</div>
+
+<script type="text/javascript">
+    var currPage=1,currSize=15;
+	var operate = {
+		getGrid:function(){
+			return grid;
+		},
+		getQueryForm:function(){
+			return $(".queryform");
+		},
+		getMenuBar:function(){
+			return $(".btn-group");
+		},
+		query:function(){
+			grid.reloadData({where:getFormData(this.getQueryForm())});
+		},
+
+        exportData: function () {
+            var params = {rows: currSize, page: currPage, allReport: 1};
+            params = transferParamsWithSortExport(params, "cssId");
+            var clmsCopy = $.extend(true, [], clms);
+            params.clms = clmsCopy.splice(1, clms.length-2);
+            params.query = getFormData(this.getQueryForm());
+            console.log(JSON.stringify(params));
+
+            var myVar;
+
+            ajaxRequest(getServUrl("/monitor/state/report"), "POST",
+                JSON.stringify(params), function (r) {
+                    if (r.success) {
+                        console.log(JSON.stringify(r));
+
+                        showTopWin({
+                            type: 1,
+                            shade: 0.4,
+                            title: '导出Excel文件',
+                            maxmin: true,
+                            area: ['550px', '185px'],
+                            content: '<div id="exportWrapper" class="modal-body">\n'
+                            + '  <div class="row">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      <div class="progress active">\n'
+                            + '        <div id="progressbar" class="progress-bar progress-bar-primary progress-bar-striped"\n'
+                            + '             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"\n'
+                            + '             style="width: 100%;">\n'
+                            + '          <span class="sr-only">0% Complete (success)</span>\n'
+                            + '        </div>\n'
+                            + '      </div>\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '  <div class="row export-running">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      正在执行数据导出任务\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '  <div class="row export-result hidden">\n'
+                            + '    <div class="col-xs-12">\n'
+                            + '      <span id="downloadUrl">Excel文件已经导出，<a target="_blank" class="btn btn-primary"><i\n'
+                            + '          class="fa fa-download"></i>点击下载文件</a></span>\n'
+                            + '    </div>\n'
+                            + '  </div>\n'
+                            + '</div>',
+                            zIndex: layer.zIndex, //重点1
+                            end: function () {
+                                //清除定时操作
+                                clearInterval(myVar);
+                            }
+                        });
+
+                        myVar = setInterval(function () {
+                            ajaxRequest(getServUrl("/report/fetch"), "GET",
+                                {fileUuid: r.value}, function (result) {
+                                    if (result.success && result.value != null) {
+                                        console.log(JSON.stringify(result));
+                                        //清除定时操作
+                                        $(window.parent.document).find("#exportWrapper .export-result").removeClass("hidden");
+                                        $(window.parent.document).find("#exportWrapper .export-running").addClass("hidden");
+                                        $(window.parent.document).find("#exportWrapper .btn").attr('href', result.value);
+                                        clearInterval(myVar);
+                                    }
+                                }, false);
+                        }, 2000);
+                    }
+                }, false, "application/json;charset=UTF-8");
+        },
+		
+		
+		batchDel:function(){
+			var o = this;
+			var ids = grid.getSelectIds();
+			if(ids.length===0){
+				layer.msg("请选中要操作的数据行！", {icon: 7, time:500});
+				return;
+			}
+			layer.confirm("您确认删除选中数据吗？", {
+			  	btn: ["删除","取消"]
+			}, function(){
+				ajaxRequest(getServUrl("/monitor/state/delete?ids="+ids), "DELETE",{},
+				function(r){
+					if(r.success){
+						layer.msg("操作成功！", {icon: 1, time:1600});
+						grid.reloadData();
+					}else{
+						layer.msg(r.message, {icon: 7, time:1600});
+						grid.reloadData();
+					}
+				});
+			}, function(){});
+		},
+		detail:function(id){
+			showTopWin({
+				  type: 2,
+				  shade: 0.4,
+				  maxmin: true,
+				  area: ['770px', '580px'],
+				  content: "/monitor/stateLimited/detail.html?id="+id,
+				  zIndex: layer.zIndex //重点1
+			});
+		},
+    location:function(title,lat,lng){
+      window.open("http://uri.amap.com/marker?src=mypage&coordinate=wgs84&callnative=0&position="+lng+","+lat+"&name=" + title);
+    },
+	};
+
+	var tableId = "TCsState";
+	var clms = [{checkbox: true}
+	  		,{field: "cssId", title: "编号", width: 110, sort:true}
+	  		,{field: "cssNumberText", title: "车机号", width: 140, sort:true}
+	  		,{field: "cssCarText", title: "车辆", width: 180, sort:true}
+	  		,{field: "cssAddTime", title: "接收时间", width: 160, sort:true}
+	  		,{field: "cssCurrentTime", title: "报文时间", width: 160, sort:true}
+	  		,{field: "cssWarn", title: "报警码", width: 110, sort:true}
+	  		,{field: "cssObdMile", title: "累计里程", width: 140, sort:true}
+	  		,{field: "cssEngineT", title: "发动机温度", width: 110, sort:true}
+	  		,{field: "cssSpeed", title: "车速", width: 110, sort:true}
+	  		,{field: "cssMotor", title: "转速", width: 110, sort:true}
+	  		,{field: "cssOil", title: "燃油量:", width: 110, sort:true}
+	  		,{field: "cssPower", title: "小电瓶电量", width: 110, sort:true}
+	  		,{field: "cssEvBattery", title: "SOC", width: 110, sort:true}
+	  		,{field: "cssChargingText", title: "充电状态", width: 110, sort:true}
+	  		,{field: "cssEndurance", title: "续航里程", width: 110, sort:true}
+	  		,{field: "cssTemperature", title: "温度", width: 110, sort:true}
+	  		,{field: "cssCsq", title: "CSQ", width: 110, sort:true}
+	  		,{field: "cssLongitude", title: "经度", width: 110, sort:true}
+	  		,{field: "cssLatitude", title: "纬度", width: 110, sort:true}
+	  		,{field: "cssGpsValidText", title: "GPS有效性", width: 110, sort:true}
+	  		,{field: "cssGpsCn", title: "GPS强度", width: 110, sort:true}
+	  		,{field: "cssGpsCount", title: "GPS卫星数", width: 110, sort:true}
+	  		,{field: "cssDir", title: "方向角", width: 110, sort:true}
+	  		,{field: "cssSavingText", title: "功耗模式", width: 110, sort:true}
+	  		,{field: "cssDoor", title: "车门状态", width: 110, sort:true}
+	  		,{field: "cssEngineText", title: "发动机状态", width: 110, sort:true}
+	  		,{field: "cssKey", title: "钥匙状态", width: 110, sort:true}
+	  		,{field: "cssGearText", title: "档位", width: 110, sort:true}
+	  		,{field: "cssLight", title: "车灯状态", width: 110, sort:true}
+	  		,{field: "cssLock", title: "车锁状态", width: 110, sort:true}
+	  		,{field: "cssNetTypeText", title: "网络类型", width: 110, sort:true}
+	  		,{field: "cssBaseLac", title: "LAC", width: 110, sort:true}
+	  		,{field: "cssBaseCi", title: "CI", width: 110, sort:true}
+	  		,{field: "cssOrder", title: "订单号", width: 110, sort:true}
+	  		,{field: "cssMoData", title: "报文数据", width: 110, sort:true}
+      		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
+    ];
+
+	var option = {
+			  id:tableId,
+			  elem: "#table",
+			  page: true,
+			  limits: [10,15,20,30,50,100],
+			  limit: 15,
+			  height:getTableHeight(),
+			  url:getServUrl("/monitor/state/list"),
+			  cols:  [clms],
+			  done: function(res, curr, count){
+                  if(curr>res.page.total)
+                      curr = res.page.total;
+                  currPage = curr;
+                  currSize = res.page.size;
+			  },
+      	  	  response: {
+	      		  statusName: "code",
+	  		      statusCode: 0,
+	  		      msgName: "msg",
+	  		      dataName: "data",
+	  		      countName: "count"
+	      	  },
+	      	  request:{limitName: "rows"},
+	      	  where:{
+	      			sidx:"cssId",
+					sord:"desc"
+	      	  }
+	};
+
+	function showHideColumn(){
+		var showHide = {};
+		$(".tableMenu").find("input[type=checkbox]").each(function(i){
+			var flag = $(this).is(':checked');
+			showHide[$(this).val()] = flag;
+		});
+		$(".layui-table-view").remove();
+	  	var r = [];
+		for(var i=0;i<clms.length;i++){
+			var field = clms[i]["field"];
+			if(showHide[field]===true || clms[i].checkbox ===true || clms[i].fixed){
+				  r.push(clms[i]);
+			}
+		}
+	 	option["cols"] = [r];
+	 	grid.render(option);
+	}
+
+	function getTableHeight(){
+      var height = $(window).height() - ($(".queryform").height() + 50);
+      if(height>1000)return 1000;
+      return height;
+  }
+
+	$(window).resize(function(){
+		option["height"] = getTableHeight();
+		$(".layui-table-view").remove();
+		grid.render(option);
+	});
+
+	$(function(){
+			(function(p){
+				authUtil.initSctl();
+
+				layui.use(['laypage', 'layer', 'table', 'element'], function(){
+					  var laypage = layui.laypage, 		//分页
+					  	  layer = layui.layer, 			//弹层
+					  	  table = layui.table, 			//表格
+					  	  element = layui.element; 		//元素操作
+
+					  table.render(option);
+					  //表头排序
+					  table.on("sort", function(obj){
+						 	table.reload(tableId, {
+								 initSort:obj,
+								 where:{
+								 	 sidx:obj.field.indexOf("Text")!=-1?obj.field.replace("Text","") : obj.field,
+								 	 sord:obj.type
+								 }
+						 	});
+					  });
+
+					  table.on("tool", function(obj){
+						  	var data = obj.data 	//获得当前行数据
+							,layEvent = obj.event; 	//获得 lay-event 对应的值
+							var id = data["cssId"];
+						  	if(layEvent === 'detail'){
+					      		operate.detail(id)
+					   	  	} else if(layEvent === 'del'){
+					      		operate.del(id)
+					    	} else if(layEvent === 'edit'){
+					      		operate.update(id)
+					    	} else if(layEvent === 'oper'){
+					    		var menu = [];
+					    		showOperMenu($(this), menu);
+                }else if (layEvent === 'location'){
+                  operate.location(data["cssNumberText"],data["cssLatitude"],data["cssLongitude"])
+                }
+					  });
+
+					  grid =  {
+                          render: function (option) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.render(transferParamsWithSort(option, "cssId"));
+                          },
+                          reloadData: function (params) {
+                              if (typeof(option.where) === 'undefined' || typeof(option.where) === 'undefined') {
+                                  option.where = getFormData(operate.getQueryForm());
+                              } else {
+                                  option.where = $.defineExtend(option.where, getFormData(operate.getQueryForm()));
+                              }
+                              table.reload(tableId, transferParamsWithSort(params, "cssId"));
+                          },
+							getSelectIds:function(){
+								var ids = [];
+								var checkStatus = table.checkStatus(tableId), data = checkStatus.data;
+							    for (var i in data){
+						        	ids.push(data[i]["cssId"]);
+						        }
+							    return ids;
+							}
+					  };
+				});
+
+			})(authUtil.get("/monitor/stateLimited/index.html")||{});
+		});
+</script>
