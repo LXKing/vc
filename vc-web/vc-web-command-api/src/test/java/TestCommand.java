@@ -68,7 +68,7 @@ public class TestCommand {
         //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         SimpleCmdInput input = new SimpleCmdInput();
         input.setVin("CHEJIZHONGXING006");
-        input.setCmd(1);//
+        input.setCmd(3);
         input.setResultType(2);
         String s = JSON.toJSONString(input);
         String value = DigestUtils.md5Hex(s);
@@ -194,17 +194,17 @@ public class TestCommand {
     @Test
     public void powerModeSwitch() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002
-        HttpPost httpPost = new HttpPost("http://114.55.173.208:7002/command/powerModeSwitch");
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7004/command/powerModeSwitch");
         //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
         PowerModeInput input = new PowerModeInput();
-        input.setVin("LJ8E3C1M7GB006101");
+        input.setVin("CHEJIZHONGXING006");
         input.setType(new Byte("1"));//0:标准模式,1:最佳省电模式,2:极度省电模式
         input.setSecond(new Short("100"));//休眠秒数
         String s = JSON.toJSONString(input);
         String value = DigestUtils.md5Hex(s);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000013");
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -226,14 +226,14 @@ public class TestCommand {
     @Test
     public void confirm() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:8888/command/confirm");
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7004/command/confirm");
         ConfirmInput input = new ConfirmInput();
-        input.setMessageId(59L);
+        input.setMessageId(11L);
         String s = JSON.toJSONString(input);
         String value = DigestUtils.md5Hex(s);
-        String sign = HmacUtils.hmacSha1Hex("appkey", value);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000002");
+        httpPost.addHeader("appId", "1000013");
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
@@ -252,4 +252,73 @@ public class TestCommand {
         }
     }
 
+    /**
+     * 语音下发测试
+     * */
+    @Test
+    public void voice()throws Exception, Throwable{
+        CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7004/command/voice");
+        //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
+        VoiceIssuedInput input = new VoiceIssuedInput();
+        input.setVin("CHEJIZHONGXING006");
+        input.setVoiceNum(1);
+
+        String s = JSON.toJSONString(input);
+        String value = DigestUtils.md5Hex(s);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000013");
+        httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                String result = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(result);
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
+
+    /**
+     * 站点下发测试
+     * */
+    @Test
+    public void site()throws Exception, Throwable{
+        CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7004/command/site");
+        //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
+        SiteIssuedInput input = new SiteIssuedInput();
+        input.setVin("CHEJIZHONGXING007");
+        input.setSiteNum(1);
+
+        String s = JSON.toJSONString(input);
+        String value = DigestUtils.md5Hex(s);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000013");
+        httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                String result = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(result);
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
 }
