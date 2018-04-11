@@ -4,7 +4,9 @@ server:
 spring:
   redis:
     host: 118.178.229.234
+    password: WDnlDnt6f7GuYh
     port: 63791
+    database: 7
   data:
     mongodb:
       history:
