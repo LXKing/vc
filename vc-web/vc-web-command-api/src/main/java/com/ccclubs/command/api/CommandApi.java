@@ -3,6 +3,7 @@ package com.ccclubs.command.api;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.command.dto.*;
 import com.ccclubs.command.inf.air.AirConditionerCmdInf;
+import com.ccclubs.command.inf.autopilot.AutopilotInf;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
 import com.ccclubs.command.inf.lock.LockDoorInf;
 import com.ccclubs.command.inf.order.OrderCmdInf;
@@ -30,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -77,6 +76,9 @@ public class CommandApi {
 
     @Reference(version = CommandServiceVersion.V1)
     LockDoorInf lockDoorInf;
+
+    @Reference(version = CommandServiceVersion.V1)
+    AutopilotInf autopilotInf;
 
     /**
      * 1.车机的一键升级功能
@@ -361,6 +363,44 @@ public class CommandApi {
         return new ApiMessage<>(httpConfirmInf.confirm(input));
     }
 
+
+    /**
+     * 11.语音指令下发
+     *
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "语音指令下发", notes = "自动驾驶-下发语音编号指令")
+    @PostMapping("voice")
+    public ApiMessage voiceCommand(@RequestHeader("appId") String appId, VoiceIssuedInput input) {
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+        }
+        VoiceIssuedOutput output = autopilotInf.voiceCommandComply(input);
+        return new ApiMessage<>(output);
+
+    }
+
+    /**
+     * 12.站点编号下发
+     *
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "站点编号下发", notes = "自动驾驶-站点编号下发")
+    @PostMapping("site")
+    public ApiMessage siteCommand(@RequestHeader("appId") String appId, SiteIssuedInput input) {
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+        }
+        SiteIssuedOutput output = autopilotInf.siteCommandComply(input);
+        return new ApiMessage<>(output);
+    }
+
     @Autowired
     RedisTemplate redisTemplate;
 
@@ -375,7 +415,7 @@ public class CommandApi {
         String redisKey = REDIS_KEY_NOW_CMD + vin;
         Long current = ops.increment(redisKey, 1);
         if (1L == current) {
-            redisTemplate.expire(redisKey,timeout,timeUnit);
+            redisTemplate.expire(redisKey, timeout, timeUnit);
             return false;
         } else {
             if (current > 5) {

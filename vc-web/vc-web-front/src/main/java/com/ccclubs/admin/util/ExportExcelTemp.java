@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -261,35 +260,39 @@ public class ExportExcelTemp<T> implements Serializable {
         // 遍历集合数据，产生数据行
         Iterator<T> it = dataset.iterator();
         int index = 0;
-        Field[] srcfield=null;
-        boolean haveResolvers=false;
+        Field[] srcfield = null;
+        boolean haveResolvers = false;
         while (it.hasNext()) {
             index++;
             row = sheet.createRow(index);
             T t = it.next();
-            if (null==srcfield){
-                srcfield=new Field[headers.length];
+            if (null == srcfield) {
+                srcfield = new Field[headers.length];
                 try {
-                    for (int i=0;i<headers.length;i++){
-                        String fieldNameTemp=headers[i];
-                        if (fieldNameTemp.indexOf("Text")>-1){
-                            haveResolvers=true;
-                            srcfield[i]=t.getClass().getDeclaredField(fieldNameTemp.split("Text")[0]);
-                        }
-                        else {
-                            srcfield[i]=t.getClass().getDeclaredField(fieldNameTemp);
+                    for (int i = 0; i < headers.length; i++) {
+                        String fieldNameTemp = headers[i];
+                        if (fieldNameTemp.indexOf("Text") > -1) {
+                            // mod by jhy 2018.4.10
+                            if (t.getClass().getSimpleName().startsWith("Ev")) {
+                                srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+                            } else {
+                                haveResolvers = true;
+                                srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp.split("Text")[0]);
+                            }
+                        } else {
+                            srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
                         }
                     }
-                }catch (NoSuchFieldException e){
+                } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 }
 
             }
 //            Field[] srcfield = t.getClass().getDeclaredFields();
             HashMap<String, Resolver<T>> resolvers = null;
-            if (haveResolvers){
+            if (haveResolvers) {
                 try {
-                    Field field =t.getClass().getDeclaredField("resolvers");
+                    Field field = t.getClass().getDeclaredField("resolvers");
                     field.setAccessible(true);
                     resolvers = (HashMap<String, Resolver<T>>) field.get(t);
                 } catch (NoSuchFieldException e) {
@@ -309,14 +312,14 @@ public class ExportExcelTemp<T> implements Serializable {
                 HSSFCell cell = row.createCell(i);
 
                 Object value;
-                if (resolvers!=null&&resolvers.containsKey(fieldName.trim()+"Text")) {
-                    value = resolvers.get(fieldName.trim()+"Text").execute(t);
+                if (resolvers != null && resolvers.containsKey(fieldName.trim() + "Text")) {
+                    value = resolvers.get(fieldName.trim() + "Text").execute(t);
                 } else {
                     field.setAccessible(true);
-                    value=field.get(t);
+                    value = field.get(t);
                 }
 
-                String textValue=dealDataToCellString(value);
+                String textValue = dealDataToCellString(value);
                 // 如果不是图片数据，就当做富文本简单处理
                 if (textValue != null) {
                     HSSFRichTextString richString = new HSSFRichTextString(
@@ -332,8 +335,8 @@ public class ExportExcelTemp<T> implements Serializable {
 
     /**
      * 判断要操作的值的类型
-     * */
-    private String dealDataToCellString( Object value){
+     */
+    private String dealDataToCellString(Object value) {
         String textValue = null;
         // 判断值的类型后进行强制类型转换
         if (value instanceof Date) {
@@ -360,6 +363,7 @@ public class ExportExcelTemp<T> implements Serializable {
         }
         return textValue;
     }
+
     /**
      * 生成一个我们自定义的默认样式。
      */

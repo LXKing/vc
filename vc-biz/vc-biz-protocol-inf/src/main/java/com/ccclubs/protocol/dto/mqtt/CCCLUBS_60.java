@@ -1082,6 +1082,44 @@ public class CCCLUBS_60 implements IMessageBody {
   }
 
   /**
+   * 获取手刹手刹状态
+   * */
+  public Integer getHandbrake(){
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 153) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Handbrake machineAdditionalHandbrake = (MachineAdditional_Handbrake) additionalItem;
+      return machineAdditionalHandbrake.getHandbrakeState();
+    } else {
+      //3为未知
+      return 3;
+    }
+  }
+  /**
+   * 获取自动驾驶状态
+   * */
+
+  public Integer getAutopilot(){
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 154) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_Autopilot machineAdditionalAutopilot = (MachineAdditional_Autopilot) additionalItem;
+      return machineAdditionalAutopilot.getAutopilotState();
+    } else {
+      return null;
+    }
+  }
+  /**
    * 获取空调状态
    */
   public Integer getAirConditionerCircular() {
@@ -1349,7 +1387,7 @@ public class CCCLUBS_60 implements IMessageBody {
     }
   }
 
-  //TODO 修改手刹状态，自动驾驶状态
+
 
 
   @Override

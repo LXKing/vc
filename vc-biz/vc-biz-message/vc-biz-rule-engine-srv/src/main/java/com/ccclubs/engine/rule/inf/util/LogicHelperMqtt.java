@@ -243,6 +243,8 @@ public class LogicHelperMqtt {
     csState.setCssGpsValid((byte) mqtt_68_03.getGpsValid());
     csState.setCssGpsCn((short) mqtt_68_03.getCn());
     csState.setCssGpsCount((short) mqtt_68_03.getSatelliteCount());
+    csState.setCssAutopilot(mqtt_68_03.getCcclubs_60().getAutopilot());
+    csState.setCssHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
 
     if (mapping.getState() != null) {
       csState.setCssId(mapping.getState().intValue());

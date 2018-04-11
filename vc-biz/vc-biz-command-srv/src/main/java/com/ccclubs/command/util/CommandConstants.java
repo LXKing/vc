@@ -23,6 +23,8 @@ public class CommandConstants {
     public static final Integer CMD_ORDER = 85;     //订单下发
     public static final Integer CMD_ORDER_AUTH = 86;//订单下发-有授权信息
     public static final Integer CMD_LOCK = 102;     //车门落锁-带控制参数
+    public static final Integer CMD_SITE=110;//站点下发
+    public static final Integer CMD_VOICE=109;//语音编号下发
     //风量fan 0:OFF 1:1档 2:2档 3:3档 4:4档
     public static final Integer[] FAN = {0, 1, 2, 3, 4};
 

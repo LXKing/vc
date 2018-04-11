@@ -377,7 +377,14 @@ public class MachineAdditionalFactory {
         additional=new MachineAdditional_AutoConfigStatus();
         additional.ReadFromBytes(bytes);
         break;
-        //TODO 手刹和自动驾驶状态
+      case 153:
+        additional=new MachineAdditional_Handbrake();
+        additional.ReadFromBytes(bytes);
+        break;
+      case 154:
+        additional=new MachineAdditional_Autopilot();
+        additional.ReadFromBytes(bytes);
+        break;
       case 202:
         additional = new MachineAdditional_MergeDoorStatusWithMask();
         additional.ReadFromBytes(bytes);
