@@ -51,6 +51,6 @@ public class MachineAdditional_Handbrake implements IMachineAdditionalItem {
     @Override
     public void ReadFromBytes(byte[] bytes) {
         MyBuffer buff = new MyBuffer(bytes);
-        setHandbrakeState(buff.getInt());
+        setHandbrakeState(buff.get());
     }
 }
