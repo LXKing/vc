@@ -26,6 +26,17 @@ public class VoiceIssuedInput extends CommonInput implements Serializable {
     @NotNull(message = "语音编号不能为空")
     private Integer voiceNum;
 
+    @NotNull(message = "语音类型不能为空")
+    private Integer voiceType;
+
+    public Integer getVoiceType() {
+        return voiceType;
+    }
+
+    public void setVoiceType(Integer voiceType) {
+        this.voiceType = voiceType;
+    }
+
     public String getVin() {
         return vin;
     }
@@ -41,4 +52,5 @@ public class VoiceIssuedInput extends CommonInput implements Serializable {
     public void setVoiceNum(Integer voiceNum) {
         this.voiceNum = voiceNum;
     }
+
 }

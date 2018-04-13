@@ -142,7 +142,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer cssObdMile;
+    private BigDecimal cssObdMile;
 
     /**
      * Database Column Remarks:
@@ -153,7 +153,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer cssEngineT;
+    private BigDecimal cssEngineT;
 
     /**
      * Database Column Remarks:
@@ -164,7 +164,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Integer cssMileage;
+    private BigDecimal cssMileage;
 
     /**
      * Database Column Remarks:
@@ -175,7 +175,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssSpeed;
+    private BigDecimal cssSpeed;
 
     /**
      * Database Column Remarks:
@@ -197,7 +197,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private String cssOil;
+    private BigDecimal cssOil;
 
     /**
      * Database Column Remarks:
@@ -241,7 +241,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private String cssFuelMileage;
+    private BigDecimal cssFuelMileage;
 
     /**
      * Database Column Remarks:
@@ -252,7 +252,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private String cssElectricMileage;
+    private BigDecimal cssElectricMileage;
 
     /**
      * Database Column Remarks:
@@ -263,7 +263,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private String cssEndurance;
+    private BigDecimal cssEndurance;
 
     /**
      * Database Column Remarks:
@@ -274,7 +274,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private Short cssTemperature;
+    private BigDecimal cssTemperature;
 
     /**
      * Database Column Remarks:
@@ -362,7 +362,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    private String cssDir;
+    private BigDecimal cssDir;
 
     /**
      * Database Column Remarks:
@@ -847,7 +847,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Integer getCssObdMile() {
+    public BigDecimal getCssObdMile() {
         return cssObdMile;
     }
 
@@ -859,7 +859,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssObdMile(Integer cssObdMile) {
+    public void setCssObdMile(BigDecimal cssObdMile) {
         this.cssObdMile = cssObdMile;
     }
 
@@ -871,7 +871,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Integer getCssEngineT() {
+    public BigDecimal getCssEngineT() {
         return cssEngineT;
     }
 
@@ -883,7 +883,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssEngineT(Integer cssEngineT) {
+    public void setCssEngineT(BigDecimal cssEngineT) {
         this.cssEngineT = cssEngineT;
     }
 
@@ -895,7 +895,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Integer getCssMileage() {
+    public BigDecimal getCssMileage() {
         return cssMileage;
     }
 
@@ -907,7 +907,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssMileage(Integer cssMileage) {
+    public void setCssMileage(BigDecimal cssMileage) {
         this.cssMileage = cssMileage;
     }
 
@@ -919,7 +919,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssSpeed() {
+    public BigDecimal getCssSpeed() {
         return cssSpeed;
     }
 
@@ -931,7 +931,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssSpeed(Short cssSpeed) {
+    public void setCssSpeed(BigDecimal cssSpeed) {
         this.cssSpeed = cssSpeed;
     }
 
@@ -967,7 +967,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public String getCssOil() {
+    public BigDecimal getCssOil() {
         return cssOil;
     }
 
@@ -979,8 +979,8 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssOil(String cssOil) {
-        this.cssOil = cssOil == null ? null : cssOil.trim();
+    public void setCssOil(BigDecimal cssOil) {
+        this.cssOil = cssOil;
     }
 
     /**
@@ -1063,7 +1063,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public String getCssFuelMileage() {
+    public BigDecimal getCssFuelMileage() {
         return cssFuelMileage;
     }
 
@@ -1075,8 +1075,8 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssFuelMileage(String cssFuelMileage) {
-        this.cssFuelMileage = cssFuelMileage == null ? null : cssFuelMileage.trim();
+    public void setCssFuelMileage(BigDecimal cssFuelMileage) {
+        this.cssFuelMileage = cssFuelMileage;
     }
 
     /**
@@ -1087,7 +1087,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public String getCssElectricMileage() {
+    public BigDecimal getCssElectricMileage() {
         return cssElectricMileage;
     }
 
@@ -1099,8 +1099,8 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssElectricMileage(String cssElectricMileage) {
-        this.cssElectricMileage = cssElectricMileage == null ? null : cssElectricMileage.trim();
+    public void setCssElectricMileage(BigDecimal cssElectricMileage) {
+        this.cssElectricMileage = cssElectricMileage;
     }
 
     /**
@@ -1111,7 +1111,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public String getCssEndurance() {
+    public BigDecimal getCssEndurance() {
         return cssEndurance;
     }
 
@@ -1123,8 +1123,8 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssEndurance(String cssEndurance) {
-        this.cssEndurance = cssEndurance == null ? null : cssEndurance.trim();
+    public void setCssEndurance(BigDecimal cssEndurance) {
+        this.cssEndurance = cssEndurance;
     }
 
     /**
@@ -1135,7 +1135,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public Short getCssTemperature() {
+    public BigDecimal getCssTemperature() {
         return cssTemperature;
     }
 
@@ -1147,7 +1147,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssTemperature(Short cssTemperature) {
+    public void setCssTemperature(BigDecimal cssTemperature) {
         this.cssTemperature = cssTemperature;
     }
 
@@ -1327,7 +1327,7 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public String getCssDir() {
+    public BigDecimal getCssDir() {
         return cssDir;
     }
 
@@ -1339,8 +1339,8 @@ public class CsState implements Serializable {
      *
      * @mbg.generated
      */
-    public void setCssDir(String cssDir) {
-        this.cssDir = cssDir == null ? null : cssDir.trim();
+    public void setCssDir(BigDecimal cssDir) {
+        this.cssDir = cssDir;
     }
 
     /**

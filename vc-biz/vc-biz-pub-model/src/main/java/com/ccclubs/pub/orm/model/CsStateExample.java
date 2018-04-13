@@ -906,52 +906,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileEqualTo(Integer value) {
+        public Criteria andCssObdMileEqualTo(BigDecimal value) {
             addCriterion("css_obd_mile =", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileNotEqualTo(Integer value) {
+        public Criteria andCssObdMileNotEqualTo(BigDecimal value) {
             addCriterion("css_obd_mile <>", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileGreaterThan(Integer value) {
+        public Criteria andCssObdMileGreaterThan(BigDecimal value) {
             addCriterion("css_obd_mile >", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileGreaterThanOrEqualTo(Integer value) {
+        public Criteria andCssObdMileGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_obd_mile >=", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileLessThan(Integer value) {
+        public Criteria andCssObdMileLessThan(BigDecimal value) {
             addCriterion("css_obd_mile <", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileLessThanOrEqualTo(Integer value) {
+        public Criteria andCssObdMileLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_obd_mile <=", value, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileIn(List<Integer> values) {
+        public Criteria andCssObdMileIn(List<BigDecimal> values) {
             addCriterion("css_obd_mile in", values, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileNotIn(List<Integer> values) {
+        public Criteria andCssObdMileNotIn(List<BigDecimal> values) {
             addCriterion("css_obd_mile not in", values, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileBetween(Integer value1, Integer value2) {
+        public Criteria andCssObdMileBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_obd_mile between", value1, value2, "cssObdMile");
             return (Criteria) this;
         }
 
-        public Criteria andCssObdMileNotBetween(Integer value1, Integer value2) {
+        public Criteria andCssObdMileNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_obd_mile not between", value1, value2, "cssObdMile");
             return (Criteria) this;
         }
@@ -966,52 +966,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTEqualTo(Integer value) {
+        public Criteria andCssEngineTEqualTo(BigDecimal value) {
             addCriterion("css_engine_t =", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTNotEqualTo(Integer value) {
+        public Criteria andCssEngineTNotEqualTo(BigDecimal value) {
             addCriterion("css_engine_t <>", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTGreaterThan(Integer value) {
+        public Criteria andCssEngineTGreaterThan(BigDecimal value) {
             addCriterion("css_engine_t >", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTGreaterThanOrEqualTo(Integer value) {
+        public Criteria andCssEngineTGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_engine_t >=", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTLessThan(Integer value) {
+        public Criteria andCssEngineTLessThan(BigDecimal value) {
             addCriterion("css_engine_t <", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTLessThanOrEqualTo(Integer value) {
+        public Criteria andCssEngineTLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_engine_t <=", value, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTIn(List<Integer> values) {
+        public Criteria andCssEngineTIn(List<BigDecimal> values) {
             addCriterion("css_engine_t in", values, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTNotIn(List<Integer> values) {
+        public Criteria andCssEngineTNotIn(List<BigDecimal> values) {
             addCriterion("css_engine_t not in", values, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTBetween(Integer value1, Integer value2) {
+        public Criteria andCssEngineTBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_engine_t between", value1, value2, "cssEngineT");
             return (Criteria) this;
         }
 
-        public Criteria andCssEngineTNotBetween(Integer value1, Integer value2) {
+        public Criteria andCssEngineTNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_engine_t not between", value1, value2, "cssEngineT");
             return (Criteria) this;
         }
@@ -1026,52 +1026,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageEqualTo(Integer value) {
+        public Criteria andCssMileageEqualTo(BigDecimal value) {
             addCriterion("css_mileage =", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageNotEqualTo(Integer value) {
+        public Criteria andCssMileageNotEqualTo(BigDecimal value) {
             addCriterion("css_mileage <>", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageGreaterThan(Integer value) {
+        public Criteria andCssMileageGreaterThan(BigDecimal value) {
             addCriterion("css_mileage >", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageGreaterThanOrEqualTo(Integer value) {
+        public Criteria andCssMileageGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_mileage >=", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageLessThan(Integer value) {
+        public Criteria andCssMileageLessThan(BigDecimal value) {
             addCriterion("css_mileage <", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageLessThanOrEqualTo(Integer value) {
+        public Criteria andCssMileageLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_mileage <=", value, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageIn(List<Integer> values) {
+        public Criteria andCssMileageIn(List<BigDecimal> values) {
             addCriterion("css_mileage in", values, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageNotIn(List<Integer> values) {
+        public Criteria andCssMileageNotIn(List<BigDecimal> values) {
             addCriterion("css_mileage not in", values, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageBetween(Integer value1, Integer value2) {
+        public Criteria andCssMileageBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_mileage between", value1, value2, "cssMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssMileageNotBetween(Integer value1, Integer value2) {
+        public Criteria andCssMileageNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_mileage not between", value1, value2, "cssMileage");
             return (Criteria) this;
         }
@@ -1086,52 +1086,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedEqualTo(Short value) {
+        public Criteria andCssSpeedEqualTo(BigDecimal value) {
             addCriterion("css_speed =", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotEqualTo(Short value) {
+        public Criteria andCssSpeedNotEqualTo(BigDecimal value) {
             addCriterion("css_speed <>", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedGreaterThan(Short value) {
+        public Criteria andCssSpeedGreaterThan(BigDecimal value) {
             addCriterion("css_speed >", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssSpeedGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_speed >=", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedLessThan(Short value) {
+        public Criteria andCssSpeedLessThan(BigDecimal value) {
             addCriterion("css_speed <", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedLessThanOrEqualTo(Short value) {
+        public Criteria andCssSpeedLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_speed <=", value, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedIn(List<Short> values) {
+        public Criteria andCssSpeedIn(List<BigDecimal> values) {
             addCriterion("css_speed in", values, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotIn(List<Short> values) {
+        public Criteria andCssSpeedNotIn(List<BigDecimal> values) {
             addCriterion("css_speed not in", values, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedBetween(Short value1, Short value2) {
+        public Criteria andCssSpeedBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_speed between", value1, value2, "cssSpeed");
             return (Criteria) this;
         }
 
-        public Criteria andCssSpeedNotBetween(Short value1, Short value2) {
+        public Criteria andCssSpeedNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_speed not between", value1, value2, "cssSpeed");
             return (Criteria) this;
         }
@@ -1206,62 +1206,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssOilEqualTo(String value) {
+        public Criteria andCssOilEqualTo(BigDecimal value) {
             addCriterion("css_oil =", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilNotEqualTo(String value) {
+        public Criteria andCssOilNotEqualTo(BigDecimal value) {
             addCriterion("css_oil <>", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilGreaterThan(String value) {
+        public Criteria andCssOilGreaterThan(BigDecimal value) {
             addCriterion("css_oil >", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilGreaterThanOrEqualTo(String value) {
+        public Criteria andCssOilGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_oil >=", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilLessThan(String value) {
+        public Criteria andCssOilLessThan(BigDecimal value) {
             addCriterion("css_oil <", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilLessThanOrEqualTo(String value) {
+        public Criteria andCssOilLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_oil <=", value, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilLike(String value) {
-            addCriterion("css_oil like", value, "cssOil");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssOilNotLike(String value) {
-            addCriterion("css_oil not like", value, "cssOil");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssOilIn(List<String> values) {
+        public Criteria andCssOilIn(List<BigDecimal> values) {
             addCriterion("css_oil in", values, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilNotIn(List<String> values) {
+        public Criteria andCssOilNotIn(List<BigDecimal> values) {
             addCriterion("css_oil not in", values, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilBetween(String value1, String value2) {
+        public Criteria andCssOilBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_oil between", value1, value2, "cssOil");
             return (Criteria) this;
         }
 
-        public Criteria andCssOilNotBetween(String value1, String value2) {
+        public Criteria andCssOilNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_oil not between", value1, value2, "cssOil");
             return (Criteria) this;
         }
@@ -1456,62 +1446,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageEqualTo(String value) {
+        public Criteria andCssFuelMileageEqualTo(BigDecimal value) {
             addCriterion("css_fuel_mileage =", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageNotEqualTo(String value) {
+        public Criteria andCssFuelMileageNotEqualTo(BigDecimal value) {
             addCriterion("css_fuel_mileage <>", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageGreaterThan(String value) {
+        public Criteria andCssFuelMileageGreaterThan(BigDecimal value) {
             addCriterion("css_fuel_mileage >", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageGreaterThanOrEqualTo(String value) {
+        public Criteria andCssFuelMileageGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_fuel_mileage >=", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageLessThan(String value) {
+        public Criteria andCssFuelMileageLessThan(BigDecimal value) {
             addCriterion("css_fuel_mileage <", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageLessThanOrEqualTo(String value) {
+        public Criteria andCssFuelMileageLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_fuel_mileage <=", value, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageLike(String value) {
-            addCriterion("css_fuel_mileage like", value, "cssFuelMileage");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssFuelMileageNotLike(String value) {
-            addCriterion("css_fuel_mileage not like", value, "cssFuelMileage");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssFuelMileageIn(List<String> values) {
+        public Criteria andCssFuelMileageIn(List<BigDecimal> values) {
             addCriterion("css_fuel_mileage in", values, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageNotIn(List<String> values) {
+        public Criteria andCssFuelMileageNotIn(List<BigDecimal> values) {
             addCriterion("css_fuel_mileage not in", values, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageBetween(String value1, String value2) {
+        public Criteria andCssFuelMileageBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_fuel_mileage between", value1, value2, "cssFuelMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssFuelMileageNotBetween(String value1, String value2) {
+        public Criteria andCssFuelMileageNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_fuel_mileage not between", value1, value2, "cssFuelMileage");
             return (Criteria) this;
         }
@@ -1526,62 +1506,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageEqualTo(String value) {
+        public Criteria andCssElectricMileageEqualTo(BigDecimal value) {
             addCriterion("css_electric_mileage =", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageNotEqualTo(String value) {
+        public Criteria andCssElectricMileageNotEqualTo(BigDecimal value) {
             addCriterion("css_electric_mileage <>", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageGreaterThan(String value) {
+        public Criteria andCssElectricMileageGreaterThan(BigDecimal value) {
             addCriterion("css_electric_mileage >", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageGreaterThanOrEqualTo(String value) {
+        public Criteria andCssElectricMileageGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_electric_mileage >=", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageLessThan(String value) {
+        public Criteria andCssElectricMileageLessThan(BigDecimal value) {
             addCriterion("css_electric_mileage <", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageLessThanOrEqualTo(String value) {
+        public Criteria andCssElectricMileageLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_electric_mileage <=", value, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageLike(String value) {
-            addCriterion("css_electric_mileage like", value, "cssElectricMileage");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssElectricMileageNotLike(String value) {
-            addCriterion("css_electric_mileage not like", value, "cssElectricMileage");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssElectricMileageIn(List<String> values) {
+        public Criteria andCssElectricMileageIn(List<BigDecimal> values) {
             addCriterion("css_electric_mileage in", values, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageNotIn(List<String> values) {
+        public Criteria andCssElectricMileageNotIn(List<BigDecimal> values) {
             addCriterion("css_electric_mileage not in", values, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageBetween(String value1, String value2) {
+        public Criteria andCssElectricMileageBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_electric_mileage between", value1, value2, "cssElectricMileage");
             return (Criteria) this;
         }
 
-        public Criteria andCssElectricMileageNotBetween(String value1, String value2) {
+        public Criteria andCssElectricMileageNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_electric_mileage not between", value1, value2, "cssElectricMileage");
             return (Criteria) this;
         }
@@ -1596,62 +1566,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceEqualTo(String value) {
+        public Criteria andCssEnduranceEqualTo(BigDecimal value) {
             addCriterion("css_endurance =", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceNotEqualTo(String value) {
+        public Criteria andCssEnduranceNotEqualTo(BigDecimal value) {
             addCriterion("css_endurance <>", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceGreaterThan(String value) {
+        public Criteria andCssEnduranceGreaterThan(BigDecimal value) {
             addCriterion("css_endurance >", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceGreaterThanOrEqualTo(String value) {
+        public Criteria andCssEnduranceGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_endurance >=", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceLessThan(String value) {
+        public Criteria andCssEnduranceLessThan(BigDecimal value) {
             addCriterion("css_endurance <", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceLessThanOrEqualTo(String value) {
+        public Criteria andCssEnduranceLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_endurance <=", value, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceLike(String value) {
-            addCriterion("css_endurance like", value, "cssEndurance");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssEnduranceNotLike(String value) {
-            addCriterion("css_endurance not like", value, "cssEndurance");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssEnduranceIn(List<String> values) {
+        public Criteria andCssEnduranceIn(List<BigDecimal> values) {
             addCriterion("css_endurance in", values, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceNotIn(List<String> values) {
+        public Criteria andCssEnduranceNotIn(List<BigDecimal> values) {
             addCriterion("css_endurance not in", values, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceBetween(String value1, String value2) {
+        public Criteria andCssEnduranceBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_endurance between", value1, value2, "cssEndurance");
             return (Criteria) this;
         }
 
-        public Criteria andCssEnduranceNotBetween(String value1, String value2) {
+        public Criteria andCssEnduranceNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_endurance not between", value1, value2, "cssEndurance");
             return (Criteria) this;
         }
@@ -1666,52 +1626,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureEqualTo(Short value) {
+        public Criteria andCssTemperatureEqualTo(BigDecimal value) {
             addCriterion("css_temperature =", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotEqualTo(Short value) {
+        public Criteria andCssTemperatureNotEqualTo(BigDecimal value) {
             addCriterion("css_temperature <>", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureGreaterThan(Short value) {
+        public Criteria andCssTemperatureGreaterThan(BigDecimal value) {
             addCriterion("css_temperature >", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureGreaterThanOrEqualTo(Short value) {
+        public Criteria andCssTemperatureGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_temperature >=", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureLessThan(Short value) {
+        public Criteria andCssTemperatureLessThan(BigDecimal value) {
             addCriterion("css_temperature <", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureLessThanOrEqualTo(Short value) {
+        public Criteria andCssTemperatureLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_temperature <=", value, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureIn(List<Short> values) {
+        public Criteria andCssTemperatureIn(List<BigDecimal> values) {
             addCriterion("css_temperature in", values, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotIn(List<Short> values) {
+        public Criteria andCssTemperatureNotIn(List<BigDecimal> values) {
             addCriterion("css_temperature not in", values, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureBetween(Short value1, Short value2) {
+        public Criteria andCssTemperatureBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_temperature between", value1, value2, "cssTemperature");
             return (Criteria) this;
         }
 
-        public Criteria andCssTemperatureNotBetween(Short value1, Short value2) {
+        public Criteria andCssTemperatureNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_temperature not between", value1, value2, "cssTemperature");
             return (Criteria) this;
         }
@@ -2156,62 +2116,52 @@ public class CsStateExample {
             return (Criteria) this;
         }
 
-        public Criteria andCssDirEqualTo(String value) {
+        public Criteria andCssDirEqualTo(BigDecimal value) {
             addCriterion("css_dir =", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirNotEqualTo(String value) {
+        public Criteria andCssDirNotEqualTo(BigDecimal value) {
             addCriterion("css_dir <>", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirGreaterThan(String value) {
+        public Criteria andCssDirGreaterThan(BigDecimal value) {
             addCriterion("css_dir >", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirGreaterThanOrEqualTo(String value) {
+        public Criteria andCssDirGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("css_dir >=", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirLessThan(String value) {
+        public Criteria andCssDirLessThan(BigDecimal value) {
             addCriterion("css_dir <", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirLessThanOrEqualTo(String value) {
+        public Criteria andCssDirLessThanOrEqualTo(BigDecimal value) {
             addCriterion("css_dir <=", value, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirLike(String value) {
-            addCriterion("css_dir like", value, "cssDir");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssDirNotLike(String value) {
-            addCriterion("css_dir not like", value, "cssDir");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssDirIn(List<String> values) {
+        public Criteria andCssDirIn(List<BigDecimal> values) {
             addCriterion("css_dir in", values, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirNotIn(List<String> values) {
+        public Criteria andCssDirNotIn(List<BigDecimal> values) {
             addCriterion("css_dir not in", values, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirBetween(String value1, String value2) {
+        public Criteria andCssDirBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_dir between", value1, value2, "cssDir");
             return (Criteria) this;
         }
 
-        public Criteria andCssDirNotBetween(String value1, String value2) {
+        public Criteria andCssDirNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("css_dir not between", value1, value2, "cssDir");
             return (Criteria) this;
         }
@@ -3263,126 +3213,6 @@ public class CsStateExample {
 
         public Criteria andCssTeNoNotBetween(String value1, String value2) {
             addCriterion("css_te_no not between", value1, value2, "cssTeNo");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotIsNull() {
-            addCriterion("css_autopilot is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotIsNotNull() {
-            addCriterion("css_autopilot is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotEqualTo(Integer value) {
-            addCriterion("css_autopilot =", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotNotEqualTo(Integer value) {
-            addCriterion("css_autopilot <>", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotGreaterThan(Integer value) {
-            addCriterion("css_autopilot >", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotGreaterThanOrEqualTo(Integer value) {
-            addCriterion("css_autopilot >=", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotLessThan(Integer value) {
-            addCriterion("css_autopilot <", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotLessThanOrEqualTo(Integer value) {
-            addCriterion("css_autopilot <=", value, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotIn(List<Integer> values) {
-            addCriterion("css_autopilot in", values, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotNotIn(List<Integer> values) {
-            addCriterion("css_autopilot not in", values, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotBetween(Integer value1, Integer value2) {
-            addCriterion("css_autopilot between", value1, value2, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssAutopilotNotBetween(Integer value1, Integer value2) {
-            addCriterion("css_autopilot not between", value1, value2, "cssAutopilot");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeIsNull() {
-            addCriterion("css_handbrake is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeIsNotNull() {
-            addCriterion("css_handbrake is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeEqualTo(Integer value) {
-            addCriterion("css_handbrake =", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeNotEqualTo(Integer value) {
-            addCriterion("css_handbrake <>", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeGreaterThan(Integer value) {
-            addCriterion("css_handbrake >", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("css_handbrake >=", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeLessThan(Integer value) {
-            addCriterion("css_handbrake <", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeLessThanOrEqualTo(Integer value) {
-            addCriterion("css_handbrake <=", value, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeIn(List<Integer> values) {
-            addCriterion("css_handbrake in", values, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeNotIn(List<Integer> values) {
-            addCriterion("css_handbrake not in", values, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeBetween(Integer value1, Integer value2) {
-            addCriterion("css_handbrake between", value1, value2, "cssHandbrake");
-            return (Criteria) this;
-        }
-
-        public Criteria andCssHandbrakeNotBetween(Integer value1, Integer value2) {
-            addCriterion("css_handbrake not between", value1, value2, "cssHandbrake");
             return (Criteria) this;
         }
     }

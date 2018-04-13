@@ -17,19 +17,19 @@
     <result column="css_warn" jdbcType="INTEGER" property="cssWarn" />
     <result column="css_rfid" jdbcType="VARCHAR" property="cssRfid" />
     <result column="css_rfid_dte" jdbcType="VARCHAR" property="cssRfidDte" />
-    <result column="css_obd_mile" jdbcType="INTEGER" property="cssObdMile" />
-    <result column="css_engine_t" jdbcType="INTEGER" property="cssEngineT" />
-    <result column="css_mileage" jdbcType="INTEGER" property="cssMileage" />
-    <result column="css_speed" jdbcType="SMALLINT" property="cssSpeed" />
+    <result column="css_obd_mile" jdbcType="DECIMAL" property="cssObdMile" />
+    <result column="css_engine_t" jdbcType="DECIMAL" property="cssEngineT" />
+    <result column="css_mileage" jdbcType="DECIMAL" property="cssMileage" />
+    <result column="css_speed" jdbcType="DECIMAL" property="cssSpeed" />
     <result column="css_motor" jdbcType="INTEGER" property="cssMotor" />
-    <result column="css_oil" jdbcType="VARCHAR" property="cssOil" />
+    <result column="css_oil" jdbcType="DECIMAL" property="cssOil" />
     <result column="css_power" jdbcType="INTEGER" property="cssPower" />
     <result column="css_ev_battery" jdbcType="TINYINT" property="cssEvBattery" />
     <result column="css_charging" jdbcType="TINYINT" property="cssCharging" />
-    <result column="css_fuel_mileage" jdbcType="VARCHAR" property="cssFuelMileage" />
-    <result column="css_electric_mileage" jdbcType="VARCHAR" property="cssElectricMileage" />
-    <result column="css_endurance" jdbcType="VARCHAR" property="cssEndurance" />
-    <result column="css_temperature" jdbcType="SMALLINT" property="cssTemperature" />
+    <result column="css_fuel_mileage" jdbcType="DECIMAL" property="cssFuelMileage" />
+    <result column="css_electric_mileage" jdbcType="DECIMAL" property="cssElectricMileage" />
+    <result column="css_endurance" jdbcType="DECIMAL" property="cssEndurance" />
+    <result column="css_temperature" jdbcType="DECIMAL" property="cssTemperature" />
     <result column="css_csq" jdbcType="SMALLINT" property="cssCsq" />
     <result column="css_power_consumption" jdbcType="VARCHAR" property="cssPowerConsumption" />
     <result column="css_longitude" jdbcType="DECIMAL" property="cssLongitude" />
@@ -37,7 +37,7 @@
     <result column="css_gps_valid" jdbcType="TINYINT" property="cssGpsValid" />
     <result column="css_gps_cn" jdbcType="SMALLINT" property="cssGpsCn" />
     <result column="css_gps_count" jdbcType="SMALLINT" property="cssGpsCount" />
-    <result column="css_dir" jdbcType="VARCHAR" property="cssDir" />
+    <result column="css_dir" jdbcType="DECIMAL" property="cssDir" />
     <result column="css_circular" jdbcType="TINYINT" property="cssCircular" />
     <result column="css_ptc" jdbcType="TINYINT" property="cssPtc" />
     <result column="css_compres" jdbcType="TINYINT" property="cssCompres" />
@@ -210,14 +210,14 @@
     values (#{cssId,jdbcType=INTEGER}, #{cssAccess,jdbcType=SMALLINT}, #{cssHost,jdbcType=SMALLINT}, 
       #{cssNumber,jdbcType=VARCHAR}, #{cssCar,jdbcType=INTEGER}, #{cssAddTime,jdbcType=TIMESTAMP}, 
       #{cssCurrentTime,jdbcType=TIMESTAMP}, #{cssRented,jdbcType=VARCHAR}, #{cssWarn,jdbcType=INTEGER}, 
-      #{cssRfid,jdbcType=VARCHAR}, #{cssRfidDte,jdbcType=VARCHAR}, #{cssObdMile,jdbcType=INTEGER}, 
-      #{cssEngineT,jdbcType=INTEGER}, #{cssMileage,jdbcType=INTEGER}, #{cssSpeed,jdbcType=SMALLINT}, 
-      #{cssMotor,jdbcType=INTEGER}, #{cssOil,jdbcType=VARCHAR}, #{cssPower,jdbcType=INTEGER}, 
-      #{cssEvBattery,jdbcType=TINYINT}, #{cssCharging,jdbcType=TINYINT}, #{cssFuelMileage,jdbcType=VARCHAR}, 
-      #{cssElectricMileage,jdbcType=VARCHAR}, #{cssEndurance,jdbcType=VARCHAR}, #{cssTemperature,jdbcType=SMALLINT}, 
+      #{cssRfid,jdbcType=VARCHAR}, #{cssRfidDte,jdbcType=VARCHAR}, #{cssObdMile,jdbcType=DECIMAL}, 
+      #{cssEngineT,jdbcType=DECIMAL}, #{cssMileage,jdbcType=DECIMAL}, #{cssSpeed,jdbcType=DECIMAL}, 
+      #{cssMotor,jdbcType=INTEGER}, #{cssOil,jdbcType=DECIMAL}, #{cssPower,jdbcType=INTEGER}, 
+      #{cssEvBattery,jdbcType=TINYINT}, #{cssCharging,jdbcType=TINYINT}, #{cssFuelMileage,jdbcType=DECIMAL}, 
+      #{cssElectricMileage,jdbcType=DECIMAL}, #{cssEndurance,jdbcType=DECIMAL}, #{cssTemperature,jdbcType=DECIMAL}, 
       #{cssCsq,jdbcType=SMALLINT}, #{cssPowerConsumption,jdbcType=VARCHAR}, #{cssLongitude,jdbcType=DECIMAL}, 
       #{cssLatitude,jdbcType=DECIMAL}, #{cssGpsValid,jdbcType=TINYINT}, #{cssGpsCn,jdbcType=SMALLINT}, 
-      #{cssGpsCount,jdbcType=SMALLINT}, #{cssDir,jdbcType=VARCHAR}, #{cssCircular,jdbcType=TINYINT}, 
+      #{cssGpsCount,jdbcType=SMALLINT}, #{cssDir,jdbcType=DECIMAL}, #{cssCircular,jdbcType=TINYINT}, 
       #{cssPtc,jdbcType=TINYINT}, #{cssCompres,jdbcType=TINYINT}, #{cssFan,jdbcType=TINYINT}, 
       #{cssSaving,jdbcType=TINYINT}, #{cssDoor,jdbcType=VARCHAR}, #{cssEngine,jdbcType=TINYINT}, 
       #{cssKey,jdbcType=TINYINT}, #{cssGear,jdbcType=TINYINT}, #{cssLight,jdbcType=INTEGER}, 
@@ -422,22 +422,22 @@
         #{cssRfidDte,jdbcType=VARCHAR},
       </if>
       <if test="cssObdMile != null">
-        #{cssObdMile,jdbcType=INTEGER},
+        #{cssObdMile,jdbcType=DECIMAL},
       </if>
       <if test="cssEngineT != null">
-        #{cssEngineT,jdbcType=INTEGER},
+        #{cssEngineT,jdbcType=DECIMAL},
       </if>
       <if test="cssMileage != null">
-        #{cssMileage,jdbcType=INTEGER},
+        #{cssMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssSpeed != null">
-        #{cssSpeed,jdbcType=SMALLINT},
+        #{cssSpeed,jdbcType=DECIMAL},
       </if>
       <if test="cssMotor != null">
         #{cssMotor,jdbcType=INTEGER},
       </if>
       <if test="cssOil != null">
-        #{cssOil,jdbcType=VARCHAR},
+        #{cssOil,jdbcType=DECIMAL},
       </if>
       <if test="cssPower != null">
         #{cssPower,jdbcType=INTEGER},
@@ -449,16 +449,16 @@
         #{cssCharging,jdbcType=TINYINT},
       </if>
       <if test="cssFuelMileage != null">
-        #{cssFuelMileage,jdbcType=VARCHAR},
+        #{cssFuelMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssElectricMileage != null">
-        #{cssElectricMileage,jdbcType=VARCHAR},
+        #{cssElectricMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssEndurance != null">
-        #{cssEndurance,jdbcType=VARCHAR},
+        #{cssEndurance,jdbcType=DECIMAL},
       </if>
       <if test="cssTemperature != null">
-        #{cssTemperature,jdbcType=SMALLINT},
+        #{cssTemperature,jdbcType=DECIMAL},
       </if>
       <if test="cssCsq != null">
         #{cssCsq,jdbcType=SMALLINT},
@@ -482,7 +482,7 @@
         #{cssGpsCount,jdbcType=SMALLINT},
       </if>
       <if test="cssDir != null">
-        #{cssDir,jdbcType=VARCHAR},
+        #{cssDir,jdbcType=DECIMAL},
       </if>
       <if test="cssCircular != null">
         #{cssCircular,jdbcType=TINYINT},
@@ -594,22 +594,22 @@
         css_rfid_dte = #{record.cssRfidDte,jdbcType=VARCHAR},
       </if>
       <if test="record.cssObdMile != null">
-        css_obd_mile = #{record.cssObdMile,jdbcType=INTEGER},
+        css_obd_mile = #{record.cssObdMile,jdbcType=DECIMAL},
       </if>
       <if test="record.cssEngineT != null">
-        css_engine_t = #{record.cssEngineT,jdbcType=INTEGER},
+        css_engine_t = #{record.cssEngineT,jdbcType=DECIMAL},
       </if>
       <if test="record.cssMileage != null">
-        css_mileage = #{record.cssMileage,jdbcType=INTEGER},
+        css_mileage = #{record.cssMileage,jdbcType=DECIMAL},
       </if>
       <if test="record.cssSpeed != null">
-        css_speed = #{record.cssSpeed,jdbcType=SMALLINT},
+        css_speed = #{record.cssSpeed,jdbcType=DECIMAL},
       </if>
       <if test="record.cssMotor != null">
         css_motor = #{record.cssMotor,jdbcType=INTEGER},
       </if>
       <if test="record.cssOil != null">
-        css_oil = #{record.cssOil,jdbcType=VARCHAR},
+        css_oil = #{record.cssOil,jdbcType=DECIMAL},
       </if>
       <if test="record.cssPower != null">
         css_power = #{record.cssPower,jdbcType=INTEGER},
@@ -621,16 +621,16 @@
         css_charging = #{record.cssCharging,jdbcType=TINYINT},
       </if>
       <if test="record.cssFuelMileage != null">
-        css_fuel_mileage = #{record.cssFuelMileage,jdbcType=VARCHAR},
+        css_fuel_mileage = #{record.cssFuelMileage,jdbcType=DECIMAL},
       </if>
       <if test="record.cssElectricMileage != null">
-        css_electric_mileage = #{record.cssElectricMileage,jdbcType=VARCHAR},
+        css_electric_mileage = #{record.cssElectricMileage,jdbcType=DECIMAL},
       </if>
       <if test="record.cssEndurance != null">
-        css_endurance = #{record.cssEndurance,jdbcType=VARCHAR},
+        css_endurance = #{record.cssEndurance,jdbcType=DECIMAL},
       </if>
       <if test="record.cssTemperature != null">
-        css_temperature = #{record.cssTemperature,jdbcType=SMALLINT},
+        css_temperature = #{record.cssTemperature,jdbcType=DECIMAL},
       </if>
       <if test="record.cssCsq != null">
         css_csq = #{record.cssCsq,jdbcType=SMALLINT},
@@ -654,7 +654,7 @@
         css_gps_count = #{record.cssGpsCount,jdbcType=SMALLINT},
       </if>
       <if test="record.cssDir != null">
-        css_dir = #{record.cssDir,jdbcType=VARCHAR},
+        css_dir = #{record.cssDir,jdbcType=DECIMAL},
       </if>
       <if test="record.cssCircular != null">
         css_circular = #{record.cssCircular,jdbcType=TINYINT},
@@ -735,19 +735,19 @@
       css_warn = #{record.cssWarn,jdbcType=INTEGER},
       css_rfid = #{record.cssRfid,jdbcType=VARCHAR},
       css_rfid_dte = #{record.cssRfidDte,jdbcType=VARCHAR},
-      css_obd_mile = #{record.cssObdMile,jdbcType=INTEGER},
-      css_engine_t = #{record.cssEngineT,jdbcType=INTEGER},
-      css_mileage = #{record.cssMileage,jdbcType=INTEGER},
-      css_speed = #{record.cssSpeed,jdbcType=SMALLINT},
+      css_obd_mile = #{record.cssObdMile,jdbcType=DECIMAL},
+      css_engine_t = #{record.cssEngineT,jdbcType=DECIMAL},
+      css_mileage = #{record.cssMileage,jdbcType=DECIMAL},
+      css_speed = #{record.cssSpeed,jdbcType=DECIMAL},
       css_motor = #{record.cssMotor,jdbcType=INTEGER},
-      css_oil = #{record.cssOil,jdbcType=VARCHAR},
+      css_oil = #{record.cssOil,jdbcType=DECIMAL},
       css_power = #{record.cssPower,jdbcType=INTEGER},
       css_ev_battery = #{record.cssEvBattery,jdbcType=TINYINT},
       css_charging = #{record.cssCharging,jdbcType=TINYINT},
-      css_fuel_mileage = #{record.cssFuelMileage,jdbcType=VARCHAR},
-      css_electric_mileage = #{record.cssElectricMileage,jdbcType=VARCHAR},
-      css_endurance = #{record.cssEndurance,jdbcType=VARCHAR},
-      css_temperature = #{record.cssTemperature,jdbcType=SMALLINT},
+      css_fuel_mileage = #{record.cssFuelMileage,jdbcType=DECIMAL},
+      css_electric_mileage = #{record.cssElectricMileage,jdbcType=DECIMAL},
+      css_endurance = #{record.cssEndurance,jdbcType=DECIMAL},
+      css_temperature = #{record.cssTemperature,jdbcType=DECIMAL},
       css_csq = #{record.cssCsq,jdbcType=SMALLINT},
       css_power_consumption = #{record.cssPowerConsumption,jdbcType=VARCHAR},
       css_longitude = #{record.cssLongitude,jdbcType=DECIMAL},
@@ -755,7 +755,7 @@
       css_gps_valid = #{record.cssGpsValid,jdbcType=TINYINT},
       css_gps_cn = #{record.cssGpsCn,jdbcType=SMALLINT},
       css_gps_count = #{record.cssGpsCount,jdbcType=SMALLINT},
-      css_dir = #{record.cssDir,jdbcType=VARCHAR},
+      css_dir = #{record.cssDir,jdbcType=DECIMAL},
       css_circular = #{record.cssCircular,jdbcType=TINYINT},
       css_ptc = #{record.cssPtc,jdbcType=TINYINT},
       css_compres = #{record.cssCompres,jdbcType=TINYINT},
@@ -817,22 +817,22 @@
         css_rfid_dte = #{cssRfidDte,jdbcType=VARCHAR},
       </if>
       <if test="cssObdMile != null">
-        css_obd_mile = #{cssObdMile,jdbcType=INTEGER},
+        css_obd_mile = #{cssObdMile,jdbcType=DECIMAL},
       </if>
       <if test="cssEngineT != null">
-        css_engine_t = #{cssEngineT,jdbcType=INTEGER},
+        css_engine_t = #{cssEngineT,jdbcType=DECIMAL},
       </if>
       <if test="cssMileage != null">
-        css_mileage = #{cssMileage,jdbcType=INTEGER},
+        css_mileage = #{cssMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssSpeed != null">
-        css_speed = #{cssSpeed,jdbcType=SMALLINT},
+        css_speed = #{cssSpeed,jdbcType=DECIMAL},
       </if>
       <if test="cssMotor != null">
         css_motor = #{cssMotor,jdbcType=INTEGER},
       </if>
       <if test="cssOil != null">
-        css_oil = #{cssOil,jdbcType=VARCHAR},
+        css_oil = #{cssOil,jdbcType=DECIMAL},
       </if>
       <if test="cssPower != null">
         css_power = #{cssPower,jdbcType=INTEGER},
@@ -844,16 +844,16 @@
         css_charging = #{cssCharging,jdbcType=TINYINT},
       </if>
       <if test="cssFuelMileage != null">
-        css_fuel_mileage = #{cssFuelMileage,jdbcType=VARCHAR},
+        css_fuel_mileage = #{cssFuelMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssElectricMileage != null">
-        css_electric_mileage = #{cssElectricMileage,jdbcType=VARCHAR},
+        css_electric_mileage = #{cssElectricMileage,jdbcType=DECIMAL},
       </if>
       <if test="cssEndurance != null">
-        css_endurance = #{cssEndurance,jdbcType=VARCHAR},
+        css_endurance = #{cssEndurance,jdbcType=DECIMAL},
       </if>
       <if test="cssTemperature != null">
-        css_temperature = #{cssTemperature,jdbcType=SMALLINT},
+        css_temperature = #{cssTemperature,jdbcType=DECIMAL},
       </if>
       <if test="cssCsq != null">
         css_csq = #{cssCsq,jdbcType=SMALLINT},
@@ -877,7 +877,7 @@
         css_gps_count = #{cssGpsCount,jdbcType=SMALLINT},
       </if>
       <if test="cssDir != null">
-        css_dir = #{cssDir,jdbcType=VARCHAR},
+        css_dir = #{cssDir,jdbcType=DECIMAL},
       </if>
       <if test="cssCircular != null">
         css_circular = #{cssCircular,jdbcType=TINYINT},
@@ -955,19 +955,19 @@
       css_warn = #{cssWarn,jdbcType=INTEGER},
       css_rfid = #{cssRfid,jdbcType=VARCHAR},
       css_rfid_dte = #{cssRfidDte,jdbcType=VARCHAR},
-      css_obd_mile = #{cssObdMile,jdbcType=INTEGER},
-      css_engine_t = #{cssEngineT,jdbcType=INTEGER},
-      css_mileage = #{cssMileage,jdbcType=INTEGER},
-      css_speed = #{cssSpeed,jdbcType=SMALLINT},
+      css_obd_mile = #{cssObdMile,jdbcType=DECIMAL},
+      css_engine_t = #{cssEngineT,jdbcType=DECIMAL},
+      css_mileage = #{cssMileage,jdbcType=DECIMAL},
+      css_speed = #{cssSpeed,jdbcType=DECIMAL},
       css_motor = #{cssMotor,jdbcType=INTEGER},
-      css_oil = #{cssOil,jdbcType=VARCHAR},
+      css_oil = #{cssOil,jdbcType=DECIMAL},
       css_power = #{cssPower,jdbcType=INTEGER},
       css_ev_battery = #{cssEvBattery,jdbcType=TINYINT},
       css_charging = #{cssCharging,jdbcType=TINYINT},
-      css_fuel_mileage = #{cssFuelMileage,jdbcType=VARCHAR},
-      css_electric_mileage = #{cssElectricMileage,jdbcType=VARCHAR},
-      css_endurance = #{cssEndurance,jdbcType=VARCHAR},
-      css_temperature = #{cssTemperature,jdbcType=SMALLINT},
+      css_fuel_mileage = #{cssFuelMileage,jdbcType=DECIMAL},
+      css_electric_mileage = #{cssElectricMileage,jdbcType=DECIMAL},
+      css_endurance = #{cssEndurance,jdbcType=DECIMAL},
+      css_temperature = #{cssTemperature,jdbcType=DECIMAL},
       css_csq = #{cssCsq,jdbcType=SMALLINT},
       css_power_consumption = #{cssPowerConsumption,jdbcType=VARCHAR},
       css_longitude = #{cssLongitude,jdbcType=DECIMAL},
@@ -975,7 +975,7 @@
       css_gps_valid = #{cssGpsValid,jdbcType=TINYINT},
       css_gps_cn = #{cssGpsCn,jdbcType=SMALLINT},
       css_gps_count = #{cssGpsCount,jdbcType=SMALLINT},
-      css_dir = #{cssDir,jdbcType=VARCHAR},
+      css_dir = #{cssDir,jdbcType=DECIMAL},
       css_circular = #{cssCircular,jdbcType=TINYINT},
       css_ptc = #{cssPtc,jdbcType=TINYINT},
       css_compres = #{cssCompres,jdbcType=TINYINT},
