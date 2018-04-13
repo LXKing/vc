@@ -85,33 +85,34 @@ public class LogicHelperMqtt {
     csState.setCssAddTime(new Date());
     csState.setCssRented(String.valueOf(mqtt_66.getCarStatus() & 0xFF));
     csState.setCssRfid(mqtt_66.getRfid());
-    csState.setCssSpeed((short) mqtt_66.getSpeed());
+    csState.setCssSpeed(new BigDecimal(mqtt_66.getSpeed()));
     csState.setCssMotor(mqtt_66.getRpm() & 0xFFFF);
     csState.setCssPower(mqtt_66.getBattery() & 0xFFFF);
-    csState.setCssMileage(mqtt_66.getMiles());
+    csState.setCssMileage(new BigDecimal(mqtt_66.getMiles()));
     csState.setCssEngine((byte) mqtt_66.getEngineStatus());
     csState.setCssKey((byte) mqtt_66.getKeyStatus());
     //目前档位信息不对，暂时不用
 //        csState.setCssGear(mqtt_66.getGear());
     csState.setCssOrder(message.getTransId());
     csState.setCssWarn(mqtt_66.getAlarmType() & 0xFFFF);
-    csState.setCssTemperature((short) (mqtt_66.getTemperature() & 0xFF));
+    csState.setCssTemperature(new BigDecimal(mqtt_66.getTemperature() & 0xFF));
     csState.setCssCsq((short) (mqtt_66.getCsq() & 0xFF));
     csState.setCssCurrentTime(new Date(mqtt_66.getTime()));
     csState.setCssRfidDte(mqtt_66.getRfidDte());
     // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
-    if ((mqtt_66.getObdMiles() & 0xFFFFFFFF)>0)
-    csState.setCssObdMile(mqtt_66.getObdMiles() & 0xFFFFFFFF);
-    csState.setCssEngineT(mqtt_66.getEngineTemperature() & 0xFF);
+    if ((mqtt_66.getObdMiles() & 0xFFFFFFFF)>0) {
+      csState.setCssObdMile(new BigDecimal(mqtt_66.getObdMiles() & 0xFFFFFFFF));
+    }
+    csState.setCssEngineT(new BigDecimal(mqtt_66.getEngineTemperature() & 0xFF));
 
     if (MQTT_66.MODEL_STATUS_OIL == message.getFucCode()) {
       // 汽油车
-      csState.setCssEndurance("0");
-      csState.setCssOil(String.valueOf(mqtt_66.getEndurance() & 0xFFFF));
+      csState.setCssEndurance(BigDecimal.ZERO);
+      csState.setCssOil(new BigDecimal(mqtt_66.getEndurance() & 0xFFFF));
     } else {
       // 电动车
-      csState.setCssEndurance(String.valueOf(mqtt_66.getEndurance() & 0xFFFF));
-      csState.setCssOil("0");
+      csState.setCssEndurance(new BigDecimal(mqtt_66.getEndurance() & 0xFFFF));
+      csState.setCssOil(BigDecimal.ZERO);
     }
     csState.setCssEvBattery((byte) (mqtt_66.getSoc() & 0xFF));
     csState.setCssCharging((byte) (mqtt_66.getCharging() & 0xFF));
@@ -122,7 +123,7 @@ public class LogicHelperMqtt {
     csState.setCssSaving((byte) mqtt_66.getSavingModel());
     csState.setCssDoor(String.valueOf(mqtt_66.getDoorStatus()));
     csState.setCssMoData(message.getHexString());
-    csState.setCssDir(String.valueOf(mqtt_66.getHeading() & 0xFFFF));
+    csState.setCssDir(new BigDecimal(mqtt_66.getHeading() & 0xFFFF));
 
     csState.setCssNetType(mqtt_66.getNetType());
     csState.setCssBaseLac(mqtt_66.getBaseLAC());
@@ -193,29 +194,29 @@ public class LogicHelperMqtt {
     csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
     csState.setCssRfid(mqtt_68_03.getCcclubs_60().getTradeInitCard());
     //FIXME 数据库字段设计为 Decimal
-    csState.setCssSpeed(mqtt_68_03.getSpeed().shortValue());
+    csState.setCssSpeed(mqtt_68_03.getSpeed());
     csState.setCssMotor(mqtt_68_03.getRpm());
     csState.setCssPower(mqtt_68_03.getBattery());
-    csState.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles().intValue());
+    csState.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles());
     csState.setCssEngine((byte) mqtt_68_03.getEngineStatus());
     csState.setCssKey((byte) mqtt_68_03.getKeyStatus());
     csState.setCssGear((byte) mqtt_68_03.getGearStatus());
 
     csState.setCssOrder(message.getTransId());
     csState.setCssWarn(mqtt_68_03.getCcclubs_60().getAlarm());
-    csState.setCssTemperature((short) mqtt_68_03.getTerminalTemperature());
+    csState.setCssTemperature(new BigDecimal(mqtt_68_03.getTerminalTemperature()));
     csState.setCssCsq((short) mqtt_68_03.getCsq());
     csState.setCssCurrentTime(new Date(mqtt_68_03.getTime()));
     csState.setCssRfidDte(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
     //FIXME 数据库字段设计为 Decimal
     // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
     if(mqtt_68_03.getObdMile().doubleValue()>0);
-    csState.setCssObdMile(mqtt_68_03.getObdMile().intValue());
-    csState.setCssEngineT(mqtt_68_03.getTankTemperature());
+    csState.setCssObdMile(mqtt_68_03.getObdMile());
+    csState.setCssEngineT(new BigDecimal(mqtt_68_03.getTankTemperature()));
     //FIXME 数据库字段设计为 Decimal
-    csState.setCssEndurance(String.valueOf(mqtt_68_03.getCcclubs_60().getEndurance().intValue()));
+    csState.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance());
     //FIXME 数据库字段设计为 Decimal
-    csState.setCssOil(String.valueOf(mqtt_68_03.getCcclubs_60().getOil().intValue()));
+    csState.setCssOil(mqtt_68_03.getCcclubs_60().getOil());
     csState.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc().byteValue());
     csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
     int airConditioner = mqtt_68_03.getCcclubs_60().getAirConditionerCircular();
@@ -234,7 +235,7 @@ public class LogicHelperMqtt {
     csState.setCssDoor(String.valueOf(mqtt_68_03.getDoorStatusWithMask()));
     csState.setCssLight(mqtt_68_03.getLightStatusWithMask());
     csState.setCssMoData(message.getHexString());
-    csState.setCssDir(String.valueOf(mqtt_68_03.getHeading()));
+    csState.setCssDir(new BigDecimal(mqtt_68_03.getHeading()));
 
 //        csState.setCssNetType((long) mqtt_66.getNetType());
     csState.setCssBaseLac(mqtt_68_03.getCcclubs_60().getBaseLAC());

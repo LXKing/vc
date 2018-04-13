@@ -58,17 +58,17 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     historyState.setCshsLatitude(csState.getCssLatitude());
     historyState.setCshsCsq(csState.getCssCsq());
     historyState.setCshsCurrentTime(csState.getCssCurrentTime().getTime());
-    historyState.setCshsDir(csState.getCssDir());
+    historyState.setCshsDir(csState.getCssDir().toString());
     historyState.setCshsAddTime(System.currentTimeMillis());
-    historyState.setCshsMileage(csState.getCssMileage());
+    historyState.setCshsMileage(csState.getCssMileage().intValue());
     historyState.setCshsOrder(csState.getCssOrder());
-    historyState.setCshsTemperature(csState.getCssTemperature());
-    historyState.setCshsEngineT(csState.getCssEngineT());
-    historyState.setCshsOil(csState.getCssOil());
+    historyState.setCshsTemperature(csState.getCssTemperature().shortValue());
+    historyState.setCshsEngineT(csState.getCssEngineT().intValue());
+    historyState.setCshsOil(csState.getCssOil().toString());
     historyState.setCshsRented(csState.getCssRented());
     historyState.setCshsPower(csState.getCssPower());
-    historyState.setCshsFuelMileage(csState.getCssFuelMileage());
-    historyState.setCshsElectricMileage(csState.getCssElectricMileage());
+    historyState.setCshsFuelMileage(csState.getCssFuelMileage().toString());
+    historyState.setCshsElectricMileage(csState.getCssElectricMileage().toString());
 
     historyState.setCshsCircular(csState.getCssCircular());
     historyState.setCshsPtc(csState.getCssPtc());
@@ -82,9 +82,9 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     historyState.setCshsLight(csState.getCssLight());
     historyState.setCshsLock(csState.getCssLock());
 
-    historyState.setCshsObdMile(csState.getCssObdMile());
-    historyState.setCshsSpeed(csState.getCssSpeed());
-    historyState.setCshsEndurance(csState.getCssEndurance());
+    historyState.setCshsObdMile(csState.getCssObdMile().intValue());
+    historyState.setCshsSpeed(csState.getCssSpeed().shortValue());
+    historyState.setCshsEndurance(csState.getCssEndurance().toString());
     historyState.setCshsMotor(csState.getCssMotor());
     historyState.setCshsEvBattery(csState.getCssEvBattery());
     historyState.setCshsCharging(csState.getCssCharging());
@@ -160,15 +160,15 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     if (null != csState.getCssCurrentTime()) {
       csStateHistory.setCurrent_time(csState.getCssCurrentTime().getTime());
     }
-    csStateHistory.setDirection_angle(convertToFloat(csState.getCssDir()));
+    csStateHistory.setDirection_angle(csState.getCssDir().floatValue());
     csStateHistory.setDoor_status(convertToInterger(csState.getCssDoor()));
-    csStateHistory.setElec_miles(convertToFloat(csState.getCssElectricMileage()));
-    csStateHistory.setEndur_miles(convertToFloat(csState.getCssEndurance()));
+    csStateHistory.setElec_miles(csState.getCssElectricMileage().floatValue());
+    csStateHistory.setEndur_miles(csState.getCssEndurance().floatValue());
     csStateHistory.setGear(convertToInterger(csState.getCssGear()));
     csStateHistory.setEngine_status(convertToInterger(csState.getCssEngine()));
     csStateHistory.setEv_battery(convertToFloat(csState.getCssEvBattery()));
     csStateHistory.setFan_mode(convertToInterger(csState.getCssFan()));
-    csStateHistory.setFuel_miles(convertToFloat(csState.getCssFuelMileage()));
+    csStateHistory.setFuel_miles(csState.getCssFuelMileage().floatValue());
     csStateHistory.setKey_status(convertToInterger(csState.getCssKey()));
     csStateHistory.setLight_status(csState.getCssLight());
     csStateHistory.setLock_status(csState.getCssLock());
@@ -177,23 +177,23 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     if(null==csState.getCssObdMile()){
       csStateHistory.setObd_miles(0f);
     }else {
-      csStateHistory.setObd_miles(convertToFloat(csState.getCssObdMile()));
+      csStateHistory.setObd_miles(csState.getCssObdMile().floatValue());
     }
-    csStateHistory.setOil_cost(convertToFloat(csState.getCssOil()));
+    csStateHistory.setOil_cost(csState.getCssOil().floatValue());
     csStateHistory.setPtc_status(convertToInterger(csState.getCssPtc()));
     csStateHistory.setRent_flg(convertToInterger(csState.getCssRented()));
     csStateHistory.setRfid(csState.getCssRfid());
     csStateHistory.setSaving_mode(convertToInterger(csState.getCssSaving()));
-    csStateHistory.setSpeed(convertToFloat(csState.getCssSpeed()));
+    csStateHistory.setSpeed(csState.getCssSpeed().floatValue());
     csStateHistory.setUser_rfid(csState.getCssRfidDte());
     //csStateHistory.setRelate_car(convertToLong(csState.getCssCar()));
     csStateHistory.setPower_reserve(convertToFloat(csState.getCssPower()));
     csStateHistory.setMotor_speed(convertToFloat(csState.getCssMotor()));
     csStateHistory.setLongitude(convertToDouble(csState.getCssLongitude()));
     csStateHistory.setLatitude(convertToDouble(csState.getCssLatitude()));
-    csStateHistory.setEngine_tempe(convertToFloat(csState.getCssEngineT()));
-    csStateHistory.setTempe(convertToFloat(csState.getCssTemperature()));
-    csStateHistory.setTotal_miles(convertToFloat(csState.getCssMileage()));
+    csStateHistory.setEngine_tempe(csState.getCssEngineT().floatValue());
+    csStateHistory.setTempe(csState.getCssTemperature().floatValue());
+    csStateHistory.setTotal_miles(csState.getCssMileage().floatValue());
     csStateHistory.setGps_num(convertToInterger(csState.getCssGpsCount()));
     csStateHistory.setGps_strength(convertToInterger(csState.getCssGpsCn()));
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
