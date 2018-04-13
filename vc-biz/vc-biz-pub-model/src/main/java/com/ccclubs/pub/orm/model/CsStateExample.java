@@ -3215,6 +3215,126 @@ public class CsStateExample {
             addCriterion("css_te_no not between", value1, value2, "cssTeNo");
             return (Criteria) this;
         }
+
+        public Criteria andCssAutopilotIsNull() {
+            addCriterion("css_autopilot is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotIsNotNull() {
+            addCriterion("css_autopilot is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotEqualTo(Integer value) {
+            addCriterion("css_autopilot =", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotNotEqualTo(Integer value) {
+            addCriterion("css_autopilot <>", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotGreaterThan(Integer value) {
+            addCriterion("css_autopilot >", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotGreaterThanOrEqualTo(Integer value) {
+            addCriterion("css_autopilot >=", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotLessThan(Integer value) {
+            addCriterion("css_autopilot <", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotLessThanOrEqualTo(Integer value) {
+            addCriterion("css_autopilot <=", value, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotIn(List<Integer> values) {
+            addCriterion("css_autopilot in", values, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotNotIn(List<Integer> values) {
+            addCriterion("css_autopilot not in", values, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotBetween(Integer value1, Integer value2) {
+            addCriterion("css_autopilot between", value1, value2, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssAutopilotNotBetween(Integer value1, Integer value2) {
+            addCriterion("css_autopilot not between", value1, value2, "cssAutopilot");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeIsNull() {
+            addCriterion("css_handbrake is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeIsNotNull() {
+            addCriterion("css_handbrake is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeEqualTo(Integer value) {
+            addCriterion("css_handbrake =", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeNotEqualTo(Integer value) {
+            addCriterion("css_handbrake <>", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeGreaterThan(Integer value) {
+            addCriterion("css_handbrake >", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("css_handbrake >=", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeLessThan(Integer value) {
+            addCriterion("css_handbrake <", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeLessThanOrEqualTo(Integer value) {
+            addCriterion("css_handbrake <=", value, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeIn(List<Integer> values) {
+            addCriterion("css_handbrake in", values, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeNotIn(List<Integer> values) {
+            addCriterion("css_handbrake not in", values, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeBetween(Integer value1, Integer value2) {
+            addCriterion("css_handbrake between", value1, value2, "cssHandbrake");
+            return (Criteria) this;
+        }
+
+        public Criteria andCssHandbrakeNotBetween(Integer value1, Integer value2) {
+            addCriterion("css_handbrake not between", value1, value2, "cssHandbrake");
+            return (Criteria) this;
+        }
     }
 
     /**

@@ -1034,22 +1034,22 @@
           css_rfid_dte = #{item.cssRfidDte,jdbcType=VARCHAR},
         </if>
         <if test="item.cssObdMile != null">
-          css_obd_mile = #{item.cssObdMile,jdbcType=INTEGER},
+          css_obd_mile = #{item.cssObdMile,jdbcType=DECIMAL},
         </if>
         <if test="item.cssEngineT != null">
-          css_engine_t = #{item.cssEngineT,jdbcType=INTEGER},
+          css_engine_t = #{item.cssEngineT,jdbcType=DECIMAL},
         </if>
         <if test="item.cssMileage != null">
-          css_mileage = #{item.cssMileage,jdbcType=INTEGER},
+          css_mileage = #{item.cssMileage,jdbcType=DECIMAL},
         </if>
         <if test="item.cssSpeed != null">
-          css_speed = #{item.cssSpeed,jdbcType=SMALLINT},
+          css_speed = #{item.cssSpeed,jdbcType=DECIMAL},
         </if>
         <if test="item.cssMotor != null">
           css_motor = #{item.cssMotor,jdbcType=INTEGER},
         </if>
         <if test="item.cssOil != null">
-          css_oil = #{item.cssOil,jdbcType=VARCHAR},
+          css_oil = #{item.cssOil,jdbcType=DECIMAL},
         </if>
         <if test="item.cssPower != null">
           css_power = #{item.cssPower,jdbcType=INTEGER},
@@ -1061,16 +1061,16 @@
           css_charging = #{item.cssCharging,jdbcType=TINYINT},
         </if>
         <if test="item.cssFuelMileage != null">
-          css_fuel_mileage = #{item.cssFuelMileage,jdbcType=VARCHAR},
+          css_fuel_mileage = #{item.cssFuelMileage,jdbcType=DECIMAL},
         </if>
         <if test="item.cssElectricMileage != null">
-          css_electric_mileage = #{item.cssElectricMileage,jdbcType=VARCHAR},
+          css_electric_mileage = #{item.cssElectricMileage,jdbcType=DECIMAL},
         </if>
         <if test="item.cssEndurance != null">
-          css_endurance = #{item.cssEndurance,jdbcType=VARCHAR},
+          css_endurance = #{item.cssEndurance,jdbcType=DECIMAL},
         </if>
         <if test="item.cssTemperature != null">
-          css_temperature = #{item.cssTemperature,jdbcType=SMALLINT},
+          css_temperature = #{item.cssTemperature,jdbcType=DECIMAL},
         </if>
         <if test="item.cssCsq != null">
           css_csq = #{item.cssCsq,jdbcType=SMALLINT},
@@ -1094,7 +1094,7 @@
           css_gps_count = #{item.cssGpsCount,jdbcType=SMALLINT},
         </if>
         <if test="item.cssDir != null">
-          css_dir = #{item.cssDir,jdbcType=VARCHAR},
+          css_dir = #{item.cssDir,jdbcType=DECIMAL},
         </if>
         <if test="item.cssCircular != null">
           css_circular = #{item.cssCircular,jdbcType=TINYINT},
