@@ -41,13 +41,14 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
+        //
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //
         dbHelperZt.getDBConnect();
         List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
         dbHelperZt.dbClose();
         //更新cs_middle_report中的数据
-        getStayToUpdateData(currentList,middleList);
+        getStayToUpdateDataTemp(currentList,middleList);
     }
 
     @Override
@@ -61,132 +62,7 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         List<Map<String,Object>> currentList=dbHelperZt.getGbReportDate();
         dbHelperZt.dbClose();
         //更新cs_middle_report中的数据
-        getStayToUpdateData(currentList,middleList);
-    }
-
-    /**
-     * 通过接口调用的方式触发国标数据统计(T+1模式)
-     */
-    public void getStayToUpdateData( List<Map<String,Object>> currentList,List<CsMiddleReport> middleList) {
-//        CsMiddleReportExample example=new CsMiddleReportExample();
-//        CsMiddleReportExample.Criteria criteria=example.createCriteria();
-//        criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
-//        List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
-//        //
-//        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
-//        for(CsMiddleReport csMiddleReport:middleList){
-//            String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
-//            oldMiddleMap.put(key,csMiddleReport);
-//        }
-//        //
-//        dbHelperZt.getDBConnect();
-//        List<Map<String,Object>> currentList=dbHelperZt.getMiddleReportData();
-//        dbHelperZt.dbClose();
-
-        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
-        for(CsMiddleReport csMiddleReport:middleList){
-            String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
-            oldMiddleMap.put(key,csMiddleReport);
-        }
-        //更新中间报表状态车机条件
-        List<Long>csmrIdOldList=new ArrayList<>();
-        //
-        if (currentList!=null&&currentList.size()>0){
-           //
-            List<CsMiddleReport> dataList=new ArrayList<>();
-            CsMiddleReport csMiddleReport=null;
-            for (Map map:currentList){
-                csMiddleReport=new CsMiddleReport();
-                String csmrVin=map.get("csmrVin").toString();
-                String csmrNumber=map.get("csmrNumber").toString();
-                String csmrCarNo=null;
-                if(map.get("csmrCarNo")!=null){
-                    csmrCarNo =map.get("csmrCarNo").toString();
-                }
-                Integer csmrModel=Integer.parseInt(map.get("csmrModel").toString());
-                //判断obd数据
-                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());//数据库里的最新里程数据
-
-                //找出最新对应的obdMile里程
-                BigDecimal oldObdMile=new BigDecimal(0)  ;
-                CsMiddleReport oldVinMap= oldMiddleMap.get(csmrVin+"-"+csmrNumber);
-                if(oldVinMap!=null){
-                    String oldVin=oldVinMap.getCsmrVin();
-                    String oldNumber=oldVinMap.getCsmrNumber();
-                    if(csmrVin.equals(oldVin)&&csmrNumber.equals(oldNumber)){
-                        oldObdMile=oldVinMap.getCsmrObdMile();
-                    }
-                    csmrIdOldList.add(oldVinMap.getCsmrId());
-                }
-                BigDecimal csmrExceptionMile=null;
-                Short   csmrMileState=2;
-                if(csmrObdMile.compareTo(oldObdMile)==-1){
-                    csmrExceptionMile=csmrObdMile;
-                    csmrObdMile=oldObdMile;
-                    csmrMileState=1;
-                }
-                Short csmrDomain=null;
-                if(map.get("csmrDomain")!=null){
-                    csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
-                }
-                //
-                Date csmrProdTime=null;
-                if(map.get("csmrProdTime")!=null){
-                    csmrProdTime= DateTimeUtil.getStringToDate(map.get("csmrProdTime").toString());
-                }
-                //
-                csMiddleReport.setCsmrVin(csmrVin);
-                csMiddleReport.setCsmrNumber(csmrNumber);
-                csMiddleReport.setCsmrCarNo(csmrCarNo);
-                csMiddleReport.setCsmrModel(csmrModel);
-                //
-                csMiddleReport.setCsmrObdMile(csmrObdMile);
-                csMiddleReport.setCsmrExceptionMile(csmrExceptionMile);
-                csMiddleReport.setCsmrMileState(csmrMileState);
-                csMiddleReport.setCsmrStatus((short) 2);
-                csMiddleReport.setCsmrDomain(csmrDomain);
-                csMiddleReport.setCsmrAddTime(new Date());
-                csMiddleReport.setCsmrProdTime(csmrProdTime);
-                csMiddleReport.setCsmrSaleTime(csmrProdTime);
-                dataList.add(csMiddleReport);
-            }
-//            // csmrIdOldList=中数据不为空，更新数据
-            if(middleList!=null&&middleList.size()>0){
-                //更新表中状态的数据
-                CsMiddleReport record=new CsMiddleReport();
-                record.setCsmrStatus((short)1);
-                int i=0;
-                List<Long> idList =new ArrayList<>();
-                CsMiddleReportExample example=null;
-                CsMiddleReportExample.Criteria criteria=null;
-                for (Long csmrId:csmrIdOldList ){
-                    i++;
-                    idList.add(csmrId);
-                    if(i>10000){
-                        example=new CsMiddleReportExample();
-                        criteria=example.createCriteria();
-                        criteria.andCsmrIdIn(idList);//获取最新添加的数据
-                        logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
-                        csMiddleReportMapper.updateByExampleSelective(record,example);
-                        idList.clear();
-                        i=0;
-                    }
-                }
-                if(idList!=null&&idList.size()>0){
-                    example=new CsMiddleReportExample();
-                    criteria=example.createCriteria();
-                    criteria.andCsmrIdIn(idList);//获取最新添加的数据
-                    logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
-                    csMiddleReportMapper.updateByExampleSelective(record,example);
-                    idList.clear();
-                }
-            }
-            //往中间报表（cs_middle_report）添加数据
-            logger.info("往中间报表（cs_middle_report）添加数据 ");
-            csMiddleReportMapper.insertBatchSelective(dataList);
-            //更新众泰指标表中的数据
-            updateReportData();
-        }
+        getStayToUpdateDataTemp(currentList,middleList);
     }
     //
     /**
@@ -198,7 +74,6 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
         CsMiddleReportExample example=new CsMiddleReportExample();
         CsMiddleReportExample.Criteria criteria=example.createCriteria();
         criteria.andCsmrStatusEqualTo((short)2);//获取最新添加的数据
-//        criteria.andCsmrObdMileGreaterThan(new BigDecimal(0));
         example.setOrderByClause("csmr_vin");
         List<CsMiddleReport> middleList= csMiddleReportMapper.selectByExample(example);
         //把待统计的数据归类
@@ -233,14 +108,16 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal  mile=middleList.get(i).getCsmrObdMile();
                 Date csAddTime=middleList.get(i).getCsmrAddTime();
                 Date csProdTime=middleList.get(i).getCsmrProdTime();
+                BigDecimal csObdMile=middleList.get(i).getCsmrObdMile();
                 //vin码相同，里程相加
                 if(csVinTemp.equals(csVin)){
-                    mileTemp=mileTemp.add(mile);
+
                     //通过时间判断当前vin码绑定的车机号
                     if(csAddTimeTemp.getTime()<csAddTime.getTime()){
                         csNumberTemp=csNumber;
                         csAddTimeTemp=csProdTime;
                         csProdTimeTemp=csProdTime;
+                        mileTemp=csObdMile;
                     }
                 }
             }
@@ -302,4 +179,265 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             csIndexReportMapper.insertBatch(insertData);
         }
     }
+
+
+    /**
+     * 修改版v1.1
+     * @param currentList
+     * @param middleList
+     */
+    public void getStayToUpdateDataTemp( List<Map<String,Object>> currentList,List<CsMiddleReport> middleList) {
+
+        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
+        for(CsMiddleReport csMiddleReport:middleList){
+            String key=csMiddleReport.getCsmrVin();
+            oldMiddleMap.put(key,csMiddleReport);
+        }
+        //更新中间报表状态车机条件
+        List<String>csmrIdOldList=new ArrayList<>();
+        //
+        if (currentList!=null&&currentList.size()>0){
+            //
+            List<CsMiddleReport> dataList=new ArrayList<>();
+            CsMiddleReport csMiddleReport=null;
+            for (Map map:currentList){
+                csMiddleReport=new CsMiddleReport();
+                String csmrVin=map.get("csmrVin").toString();
+                String csmrNumber=map.get("csmrNumber").toString();
+                String csmrCarNo=null;
+                Date cssAddTime=DateTimeUtil.getStringToDate(map.get("cssAddTime").toString(),"yyyy-MM-dd HH:mm:ss");
+                //
+                if(map.get("csmrCarNo")!=null){
+                    csmrCarNo =map.get("csmrCarNo").toString();
+                }
+                Integer csmrModel=Integer.parseInt(map.get("csmrModel").toString());
+                //
+                //
+                //判断obd数据
+                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());//数据库里的最新里程数据
+
+                //先找出cs_middle_reoort表中对应的obdMile里程
+                BigDecimal oldObdMile=new BigDecimal(0)  ;
+                CsMiddleReport oldVinMap= oldMiddleMap.get(csmrVin);
+                String oldVin=null;
+                String oldNumber=null;
+                Date oldAddTime=null;
+                if(oldVinMap!=null){
+                     oldVin=oldVinMap.getCsmrVin();
+                     oldNumber=oldVinMap.getCsmrNumber();
+                     oldAddTime=oldVinMap.getCsmrAddTime();
+                    if(csmrVin.equals(oldVin)){//vim车机号相同
+                        oldObdMile=oldVinMap.getCsmrObdMile();
+                    }
+                    csmrIdOldList.add(oldVin);
+                }
+                /**
+                 * 判断插入数据库的obd里程
+                 */
+                BigDecimal csmrExceptionMile=null;
+                Short   csmrMileState=2;
+
+                if(csmrVin.equals(oldVin)){//先判断vin码是否相同
+                    if(csmrNumber.equals(oldNumber)){//再判断车机号是否相同
+                        if(csmrObdMile.compareTo(oldObdMile)==-1){
+                            csmrExceptionMile=csmrObdMile;
+                            csmrObdMile=oldObdMile;
+                            csmrMileState=1;
+                        }
+                    }else{//如车机号不同则为更换了的车机号
+                        if(cssAddTime.getTime()>oldAddTime.getTime()){//通过添加的obdMile里程时间区别
+                            if(csmrObdMile.compareTo(oldObdMile)==-1){
+                                csmrExceptionMile=csmrObdMile;
+                                csmrObdMile=oldObdMile;
+                                csmrMileState=1;
+                            }
+                        }else {
+                            csmrObdMile=oldObdMile;
+                        }
+                    }
+
+                }
+
+                //
+                Short csmrDomain=null;
+                if(map.get("csmrDomain")!=null){
+                    csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
+                }
+                //
+                Date csmrProdTime=null;
+                if(map.get("csmrProdTime")!=null){
+                    csmrProdTime= DateTimeUtil.getStringToDate(map.get("csmrProdTime").toString());
+                }
+
+
+                //
+                csMiddleReport.setCsmrVin(csmrVin);
+                csMiddleReport.setCsmrNumber(csmrNumber);
+                csMiddleReport.setCsmrCarNo(csmrCarNo);
+                csMiddleReport.setCsmrModel(csmrModel);
+                //
+                //主要处理此字段
+                csMiddleReport.setCsmrObdMile(csmrObdMile);
+                csMiddleReport.setCsmrExceptionMile(csmrExceptionMile);
+                csMiddleReport.setCsmrMileState(csmrMileState);
+                //
+                //
+                csMiddleReport.setCsmrStatus((short) 2);
+                csMiddleReport.setCsmrDomain(csmrDomain);
+                csMiddleReport.setCsmrAddTime(new Date());
+                csMiddleReport.setCsmrProdTime(csmrProdTime);
+                csMiddleReport.setCsmrSaleTime(csmrProdTime);
+                dataList.add(csMiddleReport);
+            }
+//            // csmrIdOldList=中数据不为空，更新数据
+            if(middleList!=null&&middleList.size()>0){
+                //更新表中状态的数据
+                CsMiddleReport record=new CsMiddleReport();
+                record.setCsmrStatus((short)1);
+                int i=0;
+                List<String> idList =new ArrayList<>();
+                CsMiddleReportExample example=null;
+                CsMiddleReportExample.Criteria criteria=null;
+                for (String vin:csmrIdOldList ){
+                    i++;
+                    idList.add(vin);
+                    if(i>10000){
+                        example=new CsMiddleReportExample();
+                        criteria=example.createCriteria();
+                        criteria.andCsmrVinIn(idList);//获取最新添加的数据
+                        logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+                        csMiddleReportMapper.updateByExampleSelective(record,example);
+                        idList.clear();
+                        i=0;
+                    }
+                }
+                if(idList!=null&&idList.size()>0){
+                    example=new CsMiddleReportExample();
+                    criteria=example.createCriteria();
+                    criteria.andCsmrVinIn(idList);//获取最新添加的数据
+                    logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+                    csMiddleReportMapper.updateByExampleSelective(record,example);
+                    idList.clear();
+                }
+            }
+            //往中间报表（cs_middle_report）添加数据
+            logger.info("往中间报表（cs_middle_report）添加数据 ");
+            csMiddleReportMapper.insertBatchSelective(dataList);
+            //更新众泰指标表中的数据
+            updateReportData();
+        }
+    }
+
+
+//    /**
+//     * 通过接口调用的方式触发国标数据统计(T+1模式)
+//     */
+//    public void getStayToUpdateData( List<Map<String,Object>> currentList,List<CsMiddleReport> middleList) {
+//
+//        Map<String,CsMiddleReport> oldMiddleMap=new HashMap<>();
+//        for(CsMiddleReport csMiddleReport:middleList){
+//            String key=csMiddleReport.getCsmrVin()+"-"+csMiddleReport.getCsmrNumber();
+//            oldMiddleMap.put(key,csMiddleReport);
+//        }
+//        //更新中间报表状态车机条件
+//        List<Long>csmrIdOldList=new ArrayList<>();
+//        //
+//        if (currentList!=null&&currentList.size()>0){
+//            //
+//            List<CsMiddleReport> dataList=new ArrayList<>();
+//            CsMiddleReport csMiddleReport=null;
+//            for (Map map:currentList){
+//                csMiddleReport=new CsMiddleReport();
+//                String csmrVin=map.get("csmrVin").toString();
+//                String csmrNumber=map.get("csmrNumber").toString();
+//                String csmrCarNo=null;
+//                if(map.get("csmrCarNo")!=null){
+//                    csmrCarNo =map.get("csmrCarNo").toString();
+//                }
+//                Integer csmrModel=Integer.parseInt(map.get("csmrModel").toString());
+//                //判断obd数据
+//                BigDecimal csmrObdMile=new BigDecimal(map.get("csmrObdMile").toString());//数据库里的最新里程数据
+//
+//                //找出最新对应的obdMile里程
+//                BigDecimal oldObdMile=new BigDecimal(0)  ;
+//                CsMiddleReport oldVinMap= oldMiddleMap.get(csmrVin+"-"+csmrNumber);
+//                if(oldVinMap!=null){
+//                    String oldVin=oldVinMap.getCsmrVin();
+//                    String oldNumber=oldVinMap.getCsmrNumber();
+//                    if(csmrVin.equals(oldVin)&&csmrNumber.equals(oldNumber)){
+//                        oldObdMile=oldVinMap.getCsmrObdMile();
+//                    }
+//                    csmrIdOldList.add(oldVinMap.getCsmrId());
+//                }
+//                BigDecimal csmrExceptionMile=null;
+//                Short   csmrMileState=2;
+//                if(csmrObdMile.compareTo(oldObdMile)==-1){
+//                    csmrExceptionMile=csmrObdMile;
+//                    csmrObdMile=oldObdMile;
+//                    csmrMileState=1;
+//                }
+//                Short csmrDomain=null;
+//                if(map.get("csmrDomain")!=null){
+//                    csmrDomain=Short.parseShort(map.get("csmrDomain").toString());
+//                }
+//                //
+//                Date csmrProdTime=null;
+//                if(map.get("csmrProdTime")!=null){
+//                    csmrProdTime= DateTimeUtil.getStringToDate(map.get("csmrProdTime").toString());
+//                }
+//                //
+//                csMiddleReport.setCsmrVin(csmrVin);
+//                csMiddleReport.setCsmrNumber(csmrNumber);
+//                csMiddleReport.setCsmrCarNo(csmrCarNo);
+//                csMiddleReport.setCsmrModel(csmrModel);
+//                //
+//                csMiddleReport.setCsmrObdMile(csmrObdMile);
+//                csMiddleReport.setCsmrExceptionMile(csmrExceptionMile);
+//                csMiddleReport.setCsmrMileState(csmrMileState);
+//                csMiddleReport.setCsmrStatus((short) 2);
+//                csMiddleReport.setCsmrDomain(csmrDomain);
+//                csMiddleReport.setCsmrAddTime(new Date());
+//                csMiddleReport.setCsmrProdTime(csmrProdTime);
+//                csMiddleReport.setCsmrSaleTime(csmrProdTime);
+//                dataList.add(csMiddleReport);
+//            }
+////            // csmrIdOldList=中数据不为空，更新数据
+//            if(middleList!=null&&middleList.size()>0){
+//                //更新表中状态的数据
+//                CsMiddleReport record=new CsMiddleReport();
+//                record.setCsmrStatus((short)1);
+//                int i=0;
+//                List<Long> idList =new ArrayList<>();
+//                CsMiddleReportExample example=null;
+//                CsMiddleReportExample.Criteria criteria=null;
+//                for (Long csmrId:csmrIdOldList ){
+//                    i++;
+//                    idList.add(csmrId);
+//                    if(i>10000){
+//                        example=new CsMiddleReportExample();
+//                        criteria=example.createCriteria();
+//                        criteria.andCsmrIdIn(idList);//获取最新添加的数据
+//                        logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+//                        csMiddleReportMapper.updateByExampleSelective(record,example);
+//                        idList.clear();
+//                        i=0;
+//                    }
+//                }
+//                if(idList!=null&&idList.size()>0){
+//                    example=new CsMiddleReportExample();
+//                    criteria=example.createCriteria();
+//                    criteria.andCsmrIdIn(idList);//获取最新添加的数据
+//                    logger.info("更新中间报表（cs_middle_report）status 状态数据 ");
+//                    csMiddleReportMapper.updateByExampleSelective(record,example);
+//                    idList.clear();
+//                }
+//            }
+//            //往中间报表（cs_middle_report）添加数据
+//            logger.info("往中间报表（cs_middle_report）添加数据 ");
+//            csMiddleReportMapper.insertBatchSelective(dataList);
+//            //更新众泰指标表中的数据
+//            updateReportData();
+//        }
+//    }
+
 }
