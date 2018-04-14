@@ -329,13 +329,28 @@ public class DateTimeUtil {
         return null;
     }
 
+    /**
+     * 通过字符串转换为日期
+     * @param dateString
+     * @param format
+     * @return
+     */
+    public static  Date getStringToDate(String dateString,String format){
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            Date date = sdf.parse(dateString);
+            return date;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
-        String dateString = "2012-12-06";
+        String dateString = "2018-03-06 14:59:5:0";
         try
         {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = sdf.parse(dateString);
+            getStringToDate(dateString,format1);
 
         }
         catch (Exception e)
