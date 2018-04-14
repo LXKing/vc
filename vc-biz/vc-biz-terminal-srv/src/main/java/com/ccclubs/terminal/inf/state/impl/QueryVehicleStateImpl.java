@@ -68,7 +68,6 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
   }
 
   @Override
-  @DataAuth
   public VehicleStatesQryOutput getRealTimeCarStates(VehicleStatesQryInput input) {
     VehicleStatesQryOutput output=new VehicleStatesQryOutput();
     List<VehicleStateQryOutput> vehicleStateQryOutputList=new ArrayList<>();

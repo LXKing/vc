@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.util.DESUtil;
 import com.ccclubs.terminal.dto.TerminalListQryInput;
 import com.ccclubs.terminal.dto.TerminalQryInput;
+import com.ccclubs.terminal.dto.VehicleStatesQryInput;
 import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.vehicle.dto.*;
 import org.apache.commons.codec.binary.Base64;
@@ -333,6 +334,45 @@ public class TestVtsearch {
 //        httpPost.addHeader("sign", sign);
 //        httpPost.addHeader("appId", "1000005");
         httpPost.setEntity(new StringEntity(DESUtil.encrypt(ss,"0F8987F17765D72BR713A939"), ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+
+                String s2 = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(s2);
+
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
+
+    /**
+     * vin码批量查询车辆状态接口测试
+     * */
+    @Test
+    public void getRealTimeCarStates()throws Exception, Throwable{
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/search/getRealTimeCarStates");
+        httpPost.setHeader("Content-Type", "application/json");
+        VehicleStatesQryInput input=new VehicleStatesQryInput();
+        String[] vins={"CHEJIZHONGXING006"};//,"LJ8E3C1M8GB007676","HZ60112345678"LS5A2AJX0FA000774
+        input.setVins(vins);
+        //LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        String ss = JSON.toJSONString(input);
+        System.err.println(ss);
+        String value = DigestUtils.md5Hex(ss);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000013");
+        httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
         try {

@@ -17,7 +17,6 @@ public class CsRemote extends AbstractDocumentOld implements Serializable {
 
   private static final long serialVersionUID = -5888775270769402565L;
 
-  @AutomaticSequence
   private Long csrId;// 主键 非空
   private Long csrsId;// 808指令流水号，只有2个字节存储
   private Integer csrAccess;// 非空

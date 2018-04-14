@@ -296,6 +296,38 @@ public class ParseOperationService implements IParseDataService {
                   fcCodeResult == 0 || fcCodeResult == 0x00FF);
           updateRemoteService.update(csRemote);
           break;
+        //语音指令
+        case 0x10240010:
+          short fcCodeVoice = myBuffer.getShort();
+          String resultJsonVoice = JSON.toJSONString(
+                  CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+
+          redisHelper
+                  .setRemote(String.valueOf(commonWriter.mId),
+                          resultJsonVoice);
+
+          transferRemoteStatus(tm, resultJsonVoice);
+
+          csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonVoice,
+                  (fcCodeVoice==0||fcCodeVoice==0x00FF));
+          updateRemoteService.update(csRemote);
+          break;
+        //站点下发
+        case 0x10260010:
+          short fcCodeSite = myBuffer.getShort();
+          String resultJsonSite = JSON.toJSONString(
+                  CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+
+          redisHelper
+                  .setRemote(String.valueOf(commonWriter.mId),
+                          resultJsonSite);
+
+          transferRemoteStatus(tm, resultJsonSite);
+
+          csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonSite,
+                  (fcCodeSite==0||fcCodeSite==0x00FF));
+          updateRemoteService.update(csRemote);
+          break;
         default:
           //状态获取
           CCCLUBS_60 terminalInfo = new CCCLUBS_60();
