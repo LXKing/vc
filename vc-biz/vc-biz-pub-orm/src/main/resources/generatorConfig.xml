@@ -105,7 +105,7 @@
 		</javaClientGenerator>
 
 
-		<table tableName="srv_user" schema="">
+		<table tableName="cs_state" schema="">
 			<!-- <generatedKey column="id" sqlStatement="select  replace(uuid(),'-','')   from dual" identity="false"/> -->
 		</table>
 		<!--<table tableName="cs_his_machine_relation" schema=""></table>

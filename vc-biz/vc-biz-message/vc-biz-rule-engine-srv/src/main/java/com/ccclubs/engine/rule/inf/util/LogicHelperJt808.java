@@ -135,14 +135,14 @@ public class LogicHelperJt808 {
         csStateInsert.setCssOrder(0L);
         csStateInsert.setCssWarn(0);
         csStateInsert.setCssPower(0);
-        csStateInsert.setCssMileage(0);
-        csStateInsert.setCssTemperature((short) 0);
-        csStateInsert.setCssEngineT(0);
-        csStateInsert.setCssOil("0");
+        csStateInsert.setCssMileage(BigDecimal.ZERO);
+        csStateInsert.setCssTemperature(BigDecimal.ZERO);
+        csStateInsert.setCssEngineT(BigDecimal.ZERO);
+        csStateInsert.setCssOil(BigDecimal.ZERO);
         csStateInsert.setCssRented("0");
         csStateInsert.setCssPower(0);
-        csStateInsert.setCssFuelMileage("0");
-        csStateInsert.setCssElectricMileage("0");
+        csStateInsert.setCssFuelMileage(BigDecimal.ZERO);
+        csStateInsert.setCssElectricMileage(BigDecimal.ZERO);
 
         csStateInsert.setCssCircular((byte) 0);
         csStateInsert.setCssPtc((byte) 0);
@@ -153,10 +153,10 @@ public class LogicHelperJt808 {
 
         // TODO:依据车型Can解析
         csStateInsert.setCssEvBattery((byte) 0);
-        csStateInsert.setCssObdMile(0);
-        csStateInsert.setCssSpeed((short) 0);
+        csStateInsert.setCssObdMile(BigDecimal.ZERO);
+        csStateInsert.setCssSpeed(BigDecimal.ZERO);
         csStateInsert.setCssMotor(0);
-        csStateInsert.setCssEndurance("0");
+        csStateInsert.setCssEndurance(BigDecimal.ZERO);
         csStateInsert.setCssCharging((byte) 0);
         csStateInsert.setCssNetType((byte) 0);
         csStateInsert.setCssBaseLac(0);
@@ -281,17 +281,19 @@ public class LogicHelperJt808 {
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
           if (mapping.getState() != null) {
             CsState csState = queryStateService.queryStateByIdFor808(mapping.getState().intValue());
-            if (soc != csState.getCssEvBattery() || obdMiles != csState.getCssObdMile() || speed != csState.getCssSpeed()) {
+            if (soc != csState.getCssEvBattery()
+                    || obdMiles != csState.getCssObdMile().intValue()
+                    || speed != csState.getCssSpeed().intValue()) {
               CsState csStateNew = new CsState();
               csStateNew.setCssId(mapping.getState().intValue());
               if (obdMiles != 0) {
-                csStateNew.setCssObdMile(obdMiles);
+                csStateNew.setCssObdMile(new BigDecimal(obdMiles));
               }
               if (soc != 0) {
                 csStateNew.setCssEvBattery((byte) soc);
               }
-              if (speed != csState.getCssSpeed()) {
-                csStateNew.setCssSpeed((short) speed);
+              if (speed != csState.getCssSpeed().intValue()) {
+                csStateNew.setCssSpeed(new BigDecimal(speed));
               }
               csStateNew.setCssAddTime(new Date());
               csStateNew.setCssCurrentTime(
