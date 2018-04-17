@@ -87,7 +87,7 @@ public class AutopilotInfImpl implements AutopilotInf{
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
                 format("[{\"value\":\"{}\"}]",
-                        voiceIssuedInput.getVoiceNum())
+                        getAllValue(voiceIssuedInput))
                 .getMessage(), java.util.Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
@@ -150,6 +150,11 @@ public class AutopilotInfImpl implements AutopilotInf{
         output = resultHelper.confirmResult(csRemote, siteIssuedInput.getResultType(), output, csMachine);
 
         return output;
+    }
+
+    private int getAllValue(VoiceIssuedInput input){
+        int sum=(input.getVoiceType()*256)+input.getVoiceNum();
+        return sum;
     }
 
 

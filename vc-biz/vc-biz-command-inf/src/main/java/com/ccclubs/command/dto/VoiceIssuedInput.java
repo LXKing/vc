@@ -28,10 +28,11 @@ public class VoiceIssuedInput extends CommonInput implements Serializable {
 
     /**
      * 语音类型
-     * 0x1：追加播放
-     * 0x2：覆盖播放
+     * 0x0：追加播放
+     * 0x80：覆盖播放
      * */
     @NotNull(message = "语音类型不能为空")
+    @InArray(range = {0,128},message = "0:追加播放,128:覆盖播放")
     private Integer voiceType;
 
     public Integer getVoiceType() {
