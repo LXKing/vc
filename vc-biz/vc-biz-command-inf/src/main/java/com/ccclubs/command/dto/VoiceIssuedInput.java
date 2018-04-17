@@ -26,6 +26,11 @@ public class VoiceIssuedInput extends CommonInput implements Serializable {
     @NotNull(message = "语音编号不能为空")
     private Integer voiceNum;
 
+    /**
+     * 语音类型
+     * 0x1：追加播放
+     * 0x2：覆盖播放
+     * */
     @NotNull(message = "语音类型不能为空")
     private Integer voiceType;
 

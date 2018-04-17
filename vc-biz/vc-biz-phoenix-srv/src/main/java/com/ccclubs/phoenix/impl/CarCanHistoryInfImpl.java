@@ -31,22 +31,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
 
-    /*static final String insert_sql="upsert into " +
-            "PHOENIX_CAR_CAN_HISTORY " +
-            "(" +
-            "CS_NUMBER," +
-            "CURRENT_TIME," +
-            "CAN_DATA," +
-            "ADD_TIME " +
-            " " +
-            ") " +
-            "values " +
-            "(" +
-            "?, " + //CS_NUMBER
-            "?, " + //CURRENT_TIME
-            "?, " + //CAN_DATA
-            "? " + //ADD_TIME
-            ")";*/
+
 
     static  final String count_sql = "select " +
             "count(cs_number) as total " +

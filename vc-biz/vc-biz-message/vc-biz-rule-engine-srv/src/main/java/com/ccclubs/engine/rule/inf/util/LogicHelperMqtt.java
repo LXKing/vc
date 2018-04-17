@@ -193,7 +193,6 @@ public class LogicHelperMqtt {
     csState.setCssAddTime(new Date());
     csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
     csState.setCssRfid(mqtt_68_03.getCcclubs_60().getTradeInitCard());
-    //FIXME 数据库字段设计为 Decimal
     csState.setCssSpeed(mqtt_68_03.getSpeed());
     csState.setCssMotor(mqtt_68_03.getRpm());
     csState.setCssPower(mqtt_68_03.getBattery());
@@ -208,14 +207,12 @@ public class LogicHelperMqtt {
     csState.setCssCsq((short) mqtt_68_03.getCsq());
     csState.setCssCurrentTime(new Date(mqtt_68_03.getTime()));
     csState.setCssRfidDte(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
-    //FIXME 数据库字段设计为 Decimal
     // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
-    if(mqtt_68_03.getObdMile().doubleValue()>0);
-    csState.setCssObdMile(mqtt_68_03.getObdMile());
+    if(mqtt_68_03.getObdMile().doubleValue()>0) {
+      csState.setCssObdMile(mqtt_68_03.getObdMile());
+    }
     csState.setCssEngineT(new BigDecimal(mqtt_68_03.getTankTemperature()));
-    //FIXME 数据库字段设计为 Decimal
     csState.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance());
-    //FIXME 数据库字段设计为 Decimal
     csState.setCssOil(mqtt_68_03.getCcclubs_60().getOil());
     csState.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc().byteValue());
     csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
