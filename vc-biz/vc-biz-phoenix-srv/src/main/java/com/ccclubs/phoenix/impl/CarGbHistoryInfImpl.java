@@ -22,30 +22,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
 
-    /*static final String insert_sql="upsert into " +
-            "PHOENIX_CAR_GB_HISTORY " +
-            "(" +
-            "CS_VIN," +
-            "ADD_TIME," +
-            "CURRENT_TIME," +
-            "GB_DATA," +
-            "CS_ACCESS," +
-            "CS_PROTOCOL," +
-            "GB_TYPE," +
-            "CS_VERIFY" +
-            " " +
-            ") " +
-            "values " +
-            "(" +
-            "?, " + //CS_VIN
-            "?, " + //ADD_TIME
-            "?, " + //CURRENT_TIME
-            "?, " + //GB_DATA
-            "?, " + //CS_ACCESS
-            "?, " + //CS_PROTOCOL
-            "?, " + //GB_TYPE
-            "? " + //CS_VERIFY
-            ")";*/
+
 
     static final String count_sql = "select " +
             "count(cs_vin) as total " +
@@ -195,52 +172,5 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
         return carGbHistoryOutput;
     }
 
-   /* @Override
-    public void insertBulid(CarGb carGb,PreparedStatement preparedStatement) throws SQLException {
-        String cs_vin = carGb.getCs_vin();
-        Long add_time = carGb.getAdd_time();
-        Long current_time = carGb.getCurrent_time();
-        String gb_data = carGb.getGb_data();
-        Integer cs_access = carGb.getCs_access();
-        Integer cs_protocol = carGb.getCs_protocol();
-        Integer gb_type = carGb.getGb_type();
-        Integer cs_verify = carGb.getCs_verify();
-        preparedStatement.setString(1,cs_vin);
-        preparedStatement.setLong(2,add_time);
-        //logger.info("国标赋值前判断。");
-        if (current_time == null) {
-            preparedStatement.setNull(3, Types.BIGINT);
-        } else {
-            preparedStatement.setLong(3, current_time);
-        }
-        preparedStatement.setString(4,gb_data);
-        if (cs_access == null){
-            preparedStatement.setNull(5,Types.INTEGER);
-        }else {
-            preparedStatement.setInt(5, cs_access);
-        }
-        if (cs_protocol == null){
-            preparedStatement.setNull(6,Types.INTEGER);
-        }else {
-            preparedStatement.setInt(6, cs_protocol);
-        }
-        if (gb_type == null){
-            preparedStatement.setNull(7,Types.INTEGER);
-        }else {
-            preparedStatement.setInt(7, gb_type);
-        }
-        if (cs_verify == null){
-            preparedStatement.setNull(8,Types.INTEGER);
-        }else {
-            preparedStatement.setInt(8, cs_verify);
-        }
-        //logger.info("国标赋值完。");
-        preparedStatement.addBatch();
-    }
-
-    @Override
-    public void saveOrUpdate(final List<CarGb> records) {
-        baseImpl.saveOrUpdate(records,this,insert_sql,"CarGb");
-    }*/
 
 }

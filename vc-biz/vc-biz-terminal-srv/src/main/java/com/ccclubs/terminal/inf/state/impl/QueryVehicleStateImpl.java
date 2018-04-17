@@ -99,4 +99,5 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
     output.setVehicleStateQryOutputList(vehicleStateQryOutputList);
     return output;
   }
+
 }

@@ -11,7 +11,6 @@ import java.util.Date;
  **/
 public class VehicleStateQryOutput implements java.io.Serializable{
 
-    //TODO Vin码
     private String cssVin;//车架号
 
     private String cssTeNo;//终端序列号
@@ -20,15 +19,15 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private String cssRented;//租赁状态
 
-    private Integer cssObdMile;//OBD里程，单位0.1km todo BigDecimal
+    private BigDecimal cssObdMile;//OBD里程，单位0.1km
 
-    private Integer cssEngineT;//发动机温度，单位℃
+    private BigDecimal cssEngineT;//发动机温度，单位℃
 
-    private Short cssSpeed;//车速，单位km/h
+    private BigDecimal cssSpeed;//车速，单位km/h
 
     private Integer cssMotor;//转速，单位r/min
 
-    private String cssOil;//燃油量，单位L
+    private BigDecimal cssOil;//燃油量，单位L
 
     private Integer cssPower;//蓄电量，单位10mV
 
@@ -36,9 +35,9 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssCharging;//在充电(0：未充电或无效，1：慢充，2：快充)
 
-    private String cssEndurance;//续航里程，单位km
+    private BigDecimal cssEndurance;//续航里程，单位km
 
-    private Short cssTemperature;//车内温度【仅供参考】，单位℃
+    private BigDecimal cssTemperature;//车内温度【仅供参考】，单位℃
 
     private Short cssCsq;//信号强度
 
@@ -76,7 +75,6 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Byte cssGear;//0：空挡；1：1挡；2：2挡；3：3挡；...13：倒挡；14：自动D挡；15：停车P挡
 
     private Byte cssHandbrake;//手刹状态0x0=所有刹车释放；0x1=所有刹车应用；0x2=所有刹车不工作（应用或释放中）；0x3=未知；
-    //FIXME 自动驾驶状态定义与文档可能需要更新
     /**
      * 0x0：默认值
      * 0x1:宾馆门口到车库门自动驾驶
@@ -135,44 +133,12 @@ public class VehicleStateQryOutput implements java.io.Serializable{
         this.cssRented = cssRented;
     }
 
-    public Integer getCssObdMile() {
-        return cssObdMile;
-    }
-
-    public void setCssObdMile(Integer cssObdMile) {
-        this.cssObdMile = cssObdMile;
-    }
-
-    public Integer getCssEngineT() {
-        return cssEngineT;
-    }
-
-    public void setCssEngineT(Integer cssEngineT) {
-        this.cssEngineT = cssEngineT;
-    }
-
-    public Short getCssSpeed() {
-        return cssSpeed;
-    }
-
-    public void setCssSpeed(Short cssSpeed) {
-        this.cssSpeed = cssSpeed;
-    }
-
     public Integer getCssMotor() {
         return cssMotor;
     }
 
     public void setCssMotor(Integer cssMotor) {
         this.cssMotor = cssMotor;
-    }
-
-    public String getCssOil() {
-        return cssOil;
-    }
-
-    public void setCssOil(String cssOil) {
-        this.cssOil = cssOil;
     }
 
     public Integer getCssPower() {
@@ -199,19 +165,51 @@ public class VehicleStateQryOutput implements java.io.Serializable{
         this.cssCharging = cssCharging;
     }
 
-    public String getCssEndurance() {
+    public BigDecimal getCssObdMile() {
+        return cssObdMile;
+    }
+
+    public void setCssObdMile(BigDecimal cssObdMile) {
+        this.cssObdMile = cssObdMile;
+    }
+
+    public BigDecimal getCssEngineT() {
+        return cssEngineT;
+    }
+
+    public void setCssEngineT(BigDecimal cssEngineT) {
+        this.cssEngineT = cssEngineT;
+    }
+
+    public BigDecimal getCssSpeed() {
+        return cssSpeed;
+    }
+
+    public void setCssSpeed(BigDecimal cssSpeed) {
+        this.cssSpeed = cssSpeed;
+    }
+
+    public BigDecimal getCssOil() {
+        return cssOil;
+    }
+
+    public void setCssOil(BigDecimal cssOil) {
+        this.cssOil = cssOil;
+    }
+
+    public BigDecimal getCssEndurance() {
         return cssEndurance;
     }
 
-    public void setCssEndurance(String cssEndurance) {
+    public void setCssEndurance(BigDecimal cssEndurance) {
         this.cssEndurance = cssEndurance;
     }
 
-    public Short getCssTemperature() {
+    public BigDecimal getCssTemperature() {
         return cssTemperature;
     }
 
-    public void setCssTemperature(Short cssTemperature) {
+    public void setCssTemperature(BigDecimal cssTemperature) {
         this.cssTemperature = cssTemperature;
     }
 
