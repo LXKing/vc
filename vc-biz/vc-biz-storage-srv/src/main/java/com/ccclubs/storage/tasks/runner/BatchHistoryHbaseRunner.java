@@ -77,10 +77,11 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
         while (true) {
             logger.debug("BatchHistoryHbaseRunner start. {}");
             List waitList = new ArrayList();
-            try {
+
                 Long startTime = System.currentTimeMillis();
                 //取出队列中所有等待更新的数据
                 Long canListSrcSize = redisTemplate.opsForList().size(key);
+
                 if (canListSrcSize > 0) {
                     long redisListStartTime = System.currentTimeMillis();
                     while (System.currentTimeMillis() - redisListStartTime < batchProperties
@@ -98,14 +99,18 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
                         }
                     }//while
                 } else {
-                    Thread.sleep(1000L);
+                    try {
+                        Thread.sleep(1000L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     continue;
                 }
 
                 // 等待更新的队列
                 logger.debug("size:{},time:{} check from redis list ", waitList.size(),
                         System.currentTimeMillis() - startTime);
-
+            try {
                 if (waitList.size() > 0) {
                     logger.debug("Start storage Hbase:" + key + "\n" + "BatchHistoryHbaseRunner is runned:" + waitList.toString());
                     baseHistoryUtilsInf.saveHistoryDataToHbase(waitList);
@@ -115,7 +120,7 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
+                //ex.printStackTrace();
                 logger.error(ex.getMessage());
                 if (null != waitList && waitList.size() > 0) {
                     logger.error("batch insert current error. error list content : {}",

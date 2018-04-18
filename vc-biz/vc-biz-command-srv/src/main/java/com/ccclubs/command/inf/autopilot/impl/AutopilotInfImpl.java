@@ -153,7 +153,7 @@ public class AutopilotInfImpl implements AutopilotInf{
     }
 
     private int getAllValue(VoiceIssuedInput input){
-        int sum=( input.getVoiceType() << 7 )+input.getVoiceNum();
+        int sum=( input.getVoiceType() * 256 )+input.getVoiceNum();
         return sum;
     }
 
