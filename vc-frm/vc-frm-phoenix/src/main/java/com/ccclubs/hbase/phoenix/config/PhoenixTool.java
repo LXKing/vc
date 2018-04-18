@@ -32,7 +32,6 @@ public class PhoenixTool {
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }catch (ClassNotFoundException e) {
-            e.printStackTrace();
             logger.error(e.getMessage());
         }
 
