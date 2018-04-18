@@ -115,7 +115,11 @@ public abstract class ConvertUtils {
     static Integer convertToInterger(String param){
         Integer result=null;
         try {
-            result=Integer.valueOf(param);
+            if (null!=param&&!param.isEmpty()) {
+                result = Integer.valueOf(param);
+            }else {
+                return result;
+            }
         }catch (NullPointerException e){
             e.printStackTrace();
         }catch (Exception e){
