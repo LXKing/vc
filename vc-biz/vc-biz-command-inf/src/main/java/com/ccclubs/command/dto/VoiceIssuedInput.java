@@ -36,12 +36,7 @@ public class VoiceIssuedInput extends CommonInput implements Serializable {
     private Integer voiceType;
 
     public Integer getVoiceType() {
-
-        if (voiceType==1){
-            return 128;
-        }
         return voiceType;
-
     }
 
     public void setVoiceType(Integer voiceType) {
