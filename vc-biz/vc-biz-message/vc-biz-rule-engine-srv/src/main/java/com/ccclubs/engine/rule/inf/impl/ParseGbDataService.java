@@ -156,7 +156,7 @@ public class ParseGbDataService implements IParseGbDataService {
 
             if (gb_02_01.getMileage() <= 0) {
                 Object obdMileage = redisTemplate.opsForHash()
-                        .get(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin());
+                        .get(RedisConst.REDIS_KEY_RT_STATES_CORRECTION_HASH, message.getVin());
                 if (obdMileage != null) {
                     gb_02_01.setMileage(Integer.parseInt(String.valueOf(obdMileage)));
                     correctionMessage.setPacketDescr(Tools.ToHexString(correctionMessage.WriteToBytes()));
@@ -164,7 +164,7 @@ public class ParseGbDataService implements IParseGbDataService {
             } else {
                 if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType())
                     redisTemplate.opsForHash()
-                            .put(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin(), gb_02_01.getMileage());
+                            .put(RedisConst.REDIS_KEY_RT_STATES_CORRECTION_HASH, message.getVin(), gb_02_01.getMileage());
             }
         }
 
