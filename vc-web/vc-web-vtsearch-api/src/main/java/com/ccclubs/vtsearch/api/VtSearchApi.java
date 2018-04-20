@@ -123,4 +123,19 @@ public class VtSearchApi {
         return new ApiMessage<>(output);
     }
 
+    /**
+     * 车辆在线状态判断
+     *
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value="车辆在线状态判断", notes="根据Vin判断车辆在线状态")
+    @PostMapping("isOnline")
+    public ApiMessage<VehicleOnlineOutput> isOnline(@RequestHeader("appId") String appId, VehicleOnlineInput input) {
+        input.setAppId(appId);
+        VehicleOnlineOutput output = queryVehicleStateInf.isOnline(input);
+        return new ApiMessage<>(output);
+    }
+
 }

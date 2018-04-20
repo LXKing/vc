@@ -1,9 +1,6 @@
 package com.ccclubs.terminal.inf.state;
 
-import com.ccclubs.terminal.dto.VehicleStateQryOutput;
-import com.ccclubs.terminal.dto.VehicleStateQryInput;
-import com.ccclubs.terminal.dto.VehicleStatesQryInput;
-import com.ccclubs.terminal.dto.VehicleStatesQryOutput;
+import com.ccclubs.terminal.dto.*;
 
 /**
  * 车辆状态数据
@@ -14,4 +11,5 @@ import com.ccclubs.terminal.dto.VehicleStatesQryOutput;
 public interface QueryVehicleStateInf {
     VehicleStateQryOutput getRealTimeCarState(VehicleStateQryInput input);
     VehicleStatesQryOutput getRealTimeCarStates(VehicleStatesQryInput input);
+    VehicleOnlineOutput isOnline(VehicleOnlineInput input);
 }

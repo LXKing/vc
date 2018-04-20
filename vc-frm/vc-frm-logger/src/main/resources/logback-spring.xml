@@ -120,7 +120,26 @@
       <appender-ref ref="ERROR_FILE"/>
       <appender-ref ref="STDOUT"/>
     </logger>
-
+    <logger name="org.mongodb" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.http" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.dubbo.remoting.exchange.support.header.HeartBeatTask" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
     <root level="${LOG_LEVEL:-DEBUG}">
       <appender-ref ref="STDOUT"/>
       <appender-ref ref="ALL_FILE"/>
@@ -136,7 +155,26 @@
       <appender-ref ref="ALL_FILE"/>
       <appender-ref ref="ERROR_FILE"/>
     </logger>
-
+    <logger name="org.mongodb" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.http" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.dubbo.remoting.exchange.support.header.HeartBeatTask" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
     <root level="${LOG_LEVEL:-DEBUG}">
       <appender-ref ref="STDOUT"/>
       <appender-ref ref="ALL_FILE"/>
