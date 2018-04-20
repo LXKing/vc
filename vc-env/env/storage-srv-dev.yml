@@ -8,9 +8,18 @@ server:
 spring:
   redis:
     host: 127.0.0.1
-
-  aop:
-    proxyTargetClass: true
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 500
+      enable-auto-commit: true
+      auto-commit-interval: 100
+      auto-offset-reset: latest
+    listener:
+      poll-timeout: 3000
+      concurrency: 5
 
 dubbo:
   scan:
