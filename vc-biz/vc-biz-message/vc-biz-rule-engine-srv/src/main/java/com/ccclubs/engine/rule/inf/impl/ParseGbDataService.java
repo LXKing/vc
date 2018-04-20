@@ -50,8 +50,8 @@ public class ParseGbDataService implements IParseGbDataService {
     @Value("${" + KafkaConst.KAFKA_TOPIC_GB_RT + "}")
     String kafkaTopicGB0x02;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_GB_MESSAGE + "}")
-    String kafkaTopicGBMessage;
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_MESSAGE + "}")
+    String kafkaTopicCsMessage;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -120,7 +120,7 @@ public class ParseGbDataService implements IParseGbDataService {
         //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
         //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
-        kafkaTemplate.send(kafkaTopicGBMessage,csMessage);
+        kafkaTemplate.send(kafkaTopicCsMessage,csMessage);
     }
 
     /**

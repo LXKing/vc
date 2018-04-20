@@ -22,10 +22,13 @@ spring:
 kafka:
   consumer:
     group:
-      storage: cgrp_vc_storage
+      storage:
+        csmessage: cgrp_storage_csmessage
+        cscan: cgrp_storage_cscan
+        csstate: cgrp_storage_csstate
   topic:
     history:
-      gbmessage: topic_gb_message
+      csmessage: topic_cs_message
       cscan: topic_cs_can
       csstate: topic_cs_state
 
