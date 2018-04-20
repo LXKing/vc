@@ -21,7 +21,7 @@ public class KafkaConst {
     public static final String KAFKA_TOPIC_GB_MESSAGE = "kafka.topic.history.gbmessage";
 
     /**
-     * kafka集群CAN历史数据topic配置名称(所有的can报文)
+     * kafka集群CAN历史数据topic配置名称(所有的can报文)s
      * */
     public static final String KAFKA_TOPIC_CS_CAN = "kafka.topic.history.cscan";
 

@@ -44,9 +44,9 @@ public class LogicHelperMqtt {
   private KafkaTemplate kafkaTemplate;
 
   @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
-  String kafkaTopicCanForInsertHbase;
+  String kafkaTopicCsCan;
   @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
-  String kafkaTopicStateForInsertHbase;
+  String kafkaTopicCsState;
 
   @Resource
   private TerminalUtils terminalUtils;
@@ -160,7 +160,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicStateForInsertHbase,csState);
+      kafkaTemplate.send(kafkaTopicCsState,csState);
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
@@ -176,7 +176,7 @@ public class LogicHelperMqtt {
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicStateForInsertHbase,csState);
+      kafkaTemplate.send(kafkaTopicCsState,csState);
     }
   }
 
@@ -272,7 +272,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicStateForInsertHbase,csState);
+      kafkaTemplate.send(kafkaTopicCsState,csState);
       // 处理历史状态
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
@@ -285,7 +285,7 @@ public class LogicHelperMqtt {
       // 写入当前状态
       updateStateService.insert(csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicStateForInsertHbase,csState);
+      kafkaTemplate.send(kafkaTopicCsState,csState);
       // 处理历史状态
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
@@ -330,12 +330,12 @@ public class LogicHelperMqtt {
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
 
       // 处理can历史状态
-      kafkaTemplate.send(kafkaTopicCanForInsertHbase,canData);
+      kafkaTemplate.send(kafkaTopicCsCan,canData);
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     } else {
       updateCanService.insert(canData);
       // 处理can历史状态
-      kafkaTemplate.send(kafkaTopicCanForInsertHbase,canData);
+      kafkaTemplate.send(kafkaTopicCsCan,canData);
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     }

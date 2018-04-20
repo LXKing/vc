@@ -5,7 +5,6 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.KafkaConst;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -53,7 +51,7 @@ public class ParseGbDataService implements IParseGbDataService {
     String kafkaTopicGB0x02;
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_GB_MESSAGE + "}")
-    String kafkaTopicGBForInsertHbase;
+    String kafkaTopicGBMessage;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -122,7 +120,7 @@ public class ParseGbDataService implements IParseGbDataService {
         //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
         //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
-        kafkaTemplate.send(kafkaTopicGBForInsertHbase,csMessage);
+        kafkaTemplate.send(kafkaTopicGBMessage,csMessage);
     }
 
     /**

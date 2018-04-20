@@ -47,9 +47,9 @@ public class LogicHelperJt808 {
   private KafkaTemplate kafkaTemplate;
 
   @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
-  String kafkaTopicCanForInsertHbase;
+  String kafkaTopicCsCan;
   @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
-  String kafkaTopicStateForInsertHbase;
+  String kafkaTopicCsState;
 
   @Resource
   private TerminalUtils terminalUtils;
@@ -125,7 +125,7 @@ public class LogicHelperJt808 {
         // 处理历史状态
 //        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateCurrent);
 // 发送历史状态到kafka
-        kafkaTemplate.send(kafkaTopicStateForInsertHbase,csStateCurrent);
+        kafkaTemplate.send(kafkaTopicCsState,csStateCurrent);
         // 含分时租赁插件的 808 终端，不转发 0x0200 定位数据
         // 终端具备分时租赁功能，则不更新SOC，obd里程，目前按照插件版本>0来判断终端具备分时租赁功能
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
@@ -178,7 +178,7 @@ public class LogicHelperJt808 {
 
         updateStateService.insert(csStateInsert);
         // 发送历史状态到kafka
-        kafkaTemplate.send(kafkaTopicStateForInsertHbase,csStateInsert);
+        kafkaTemplate.send(kafkaTopicCsState,csStateInsert);
         // 处理历史状态
 //        ListOperations opsForList = redisTemplate.opsForList();
 //        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateInsert);
@@ -283,7 +283,7 @@ public class LogicHelperJt808 {
         updateCanService.insert(csCan);
       }
       // 处理can历史状态
-      kafkaTemplate.send(kafkaTopicCanForInsertHbase,csCan);
+      kafkaTemplate.send(kafkaTopicCsCan,csCan);
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
 
@@ -387,7 +387,7 @@ public class LogicHelperJt808 {
         csCanNew.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
         csCanNew.setCscData(hexString);
         // 处理can历史状态
-        kafkaTemplate.send(kafkaTopicCanForInsertHbase,csCanNew);
+        kafkaTemplate.send(kafkaTopicCsCan,csCanNew);
 //        ListOperations opsForList = redisTemplate.opsForList();
 //        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCanNew);
         logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
