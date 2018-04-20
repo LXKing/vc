@@ -46,9 +46,9 @@ public class LogicHelperJt808 {
   @Resource
   private KafkaTemplate kafkaTemplate;
 
-  @Value("${" + KafkaConst.KAFKA_TOPIC_CAN_HBASE + "}")
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
   String kafkaTopicCanForInsertHbase;
-  @Value("${" + KafkaConst.KAFKA_TOPIC_STATE_HBASE + "}")
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
   String kafkaTopicStateForInsertHbase;
 
   @Resource
