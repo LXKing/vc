@@ -21,6 +21,15 @@ spring:
       poll-timeout: 3000
       concurrency: 5
 
+#kafka topic
+kafka:
+  consumer:
+    group:
+      storage: cgrp_vc_storage
+  topic:
+    history:
+      gbmessage: topic_gb_message
+
 dubbo:
   scan:
     annotationPackage: com.ccclubs.storage
