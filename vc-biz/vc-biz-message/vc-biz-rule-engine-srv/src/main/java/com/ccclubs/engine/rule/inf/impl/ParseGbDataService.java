@@ -52,6 +52,9 @@ public class ParseGbDataService implements IParseGbDataService {
     @Value("${" + KafkaConst.KAFKA_TOPIC_GB_RT + "}")
     String kafkaTopicGB0x02;
 
+    @Value("${" + KafkaConst.KAFKA_TOPIC_GB_HBASE + "}")
+    String kafkaTopicGBForInsertHbase;
+
     @Resource
     private RedisTemplate redisTemplate;
 
@@ -115,10 +118,11 @@ public class ParseGbDataService implements IParseGbDataService {
         /**
          * 等待消费
          */
-        ListOperations ops = redisTemplate.opsForList();
+        //ListOperations ops = redisTemplate.opsForList();
         //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
-        ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+        //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+        kafkaTemplate.send(kafkaTopicGBForInsertHbase,csMessage);
     }
 
     /**
@@ -162,9 +166,10 @@ public class ParseGbDataService implements IParseGbDataService {
                     correctionMessage.setPacketDescr(Tools.ToHexString(correctionMessage.WriteToBytes()));
                 }
             } else {
-                if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType())
+                if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType()) {
                     redisTemplate.opsForHash()
                             .put(RedisConst.REDIS_KEY_RT_STATES_CORRECTION_HASH, message.getVin(), gb_02_01.getMileage());
+                }
             }
         }
 
