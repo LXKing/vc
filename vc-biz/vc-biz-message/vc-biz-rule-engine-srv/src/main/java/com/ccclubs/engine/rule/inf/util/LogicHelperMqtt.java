@@ -43,9 +43,9 @@ public class LogicHelperMqtt {
   @Resource
   private KafkaTemplate kafkaTemplate;
 
-  @Value("${" + KafkaConst.KAFKA_TOPIC_CSCAN + "}")
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
   String kafkaTopicCsCan;
-  @Value("${" + KafkaConst.KAFKA_TOPIC_CSSTATE + "}")
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
   String kafkaTopicCsState;
 
   @Resource

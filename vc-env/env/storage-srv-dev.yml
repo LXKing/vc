@@ -32,6 +32,15 @@ kafka:
     gbmessage: topic_gbmessage
 
 
+#kafka topic
+kafka:
+  consumer:
+    group:
+      storage: cgrp_vc_storage
+  topic:
+    history:
+      gbmessage: topic_gb_message
+
 dubbo:
   scan:
     annotationPackage: com.ccclubs.storage
