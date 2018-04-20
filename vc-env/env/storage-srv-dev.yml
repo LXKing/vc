@@ -20,6 +20,17 @@ spring:
     listener:
       poll-timeout: 3000
       concurrency: 5
+kafka:
+  consumer:
+    group:
+      storage: cgrp_vc_storage
+  topic:
+    gb:
+      rt: topic_gb_0x02
+    cscan: topic_cscan
+    csstate: topic_csstate
+    gbmessage: topic_gbmessage
+
 
 dubbo:
   scan:
