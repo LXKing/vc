@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.List;
 
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE;
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GB_MESSAGE;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CS_MESSAGE;
 
 /**
  * GB实时报文存入HBase
@@ -22,9 +22,8 @@ import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GB_MESSAGE;
  * @create 2018-04-20
  **/
 @Component
-public class GbMessageConsumer {
-    private static final Logger logger = LoggerFactory.getLogger(GbMessageConsumer.class);
-    private static final String DRIVER = "org.apache.phoenix.jdbc.PhoenixDriver";
+public class CsMessageConsumer {
+    private static final Logger logger = LoggerFactory.getLogger(CsMessageConsumer.class);
     private static final String SQL = "UPSERT INTO PHOENIX_CAR_GB_HISTORY " +
             "(CS_VIN,ADD_TIME,CURRENT_TIME,GB_DATA,CS_ACCESS,CS_PROTOCOL," +
             "GB_TYPE,CS_VERIFY ) VALUES (" +
@@ -41,43 +40,45 @@ public class GbMessageConsumer {
     @Autowired
     private PhoenixProperties phoenixProperties;
 
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE + "}", topics = "${" + KAFKA_TOPIC_GB_MESSAGE + "}", containerFactory = "batchFactory")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE + "}", topics = "${" + KAFKA_TOPIC_CS_MESSAGE + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
+        logger.debug("Fetch Size:{}", records.size());
+        logger.debug("CsMessageConsumer start process records of CsMessage. StartTime:{}", System.currentTimeMillis());
+        Connection connection;
+        PreparedStatement preparedStatement;
         try {
-            Class.forName(DRIVER);
+            Class.forName("org.apache.phoenix.jdbc.PhoenixDriver");
             connection = DriverManager.getConnection("jdbc:phoenix:" + phoenixProperties.getZk_url());
             preparedStatement = connection.prepareStatement(SQL);
-            try {
-                for (String record : records) {
-                    CsMessage csMessage;
-                    try {
-                        csMessage = JSONObject.parseObject(record, CsMessage.class);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    // 构造SQL
-                    setPreparedStatement(preparedStatement, csMessage);
-                    // 执行，暂不提交
-                    preparedStatement.execute();
-                }
-                // 提交
-                connection.commit();
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
-            } finally {
-                closeAll(connection, preparedStatement);
-            }
         } catch (ClassNotFoundException e) {
             logger.error(e.getMessage(), e);
             return;
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             return;
+        }
+        try {
+            for (String record : records) {
+                CsMessage csMessage;
+                try {
+                    csMessage = JSONObject.parseObject(record, CsMessage.class);
+                } catch (Exception e) {
+                    continue;
+                }
+                // 构造SQL
+                setPreparedStatement(preparedStatement, csMessage);
+                // 执行，暂不提交
+                preparedStatement.execute();
+            }
+            // 提交
+            connection.commit();
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
         } finally {
             closeAll(connection, preparedStatement);
+            logger.debug("CsMessageConsumer end process records of CsMessage. EndTime:{}", System.currentTimeMillis());
         }
+
     }
 
     private void setPreparedStatement(PreparedStatement preparedStatement, CsMessage csMessage) throws SQLException {

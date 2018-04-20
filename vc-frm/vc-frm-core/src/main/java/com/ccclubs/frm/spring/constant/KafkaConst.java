@@ -18,7 +18,7 @@ public class KafkaConst {
     /**
      * kafka集群GB历史数据topic配置名称
      * */
-    public static final String KAFKA_TOPIC_GB_MESSAGE = "kafka.topic.history.gbmessage";
+    public static final String KAFKA_TOPIC_CS_MESSAGE = "kafka.topic.history.csmessage";
 
     /**
      * kafka集群CAN历史数据topic配置名称(所有的can报文)s
@@ -33,5 +33,7 @@ public class KafkaConst {
     /*--------------------*
      * 消费者组
      *--------------------*/
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE = "kafka.consumer.group.storage";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE = "kafka.consumer.group.storage.csmessage";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN = "kafka.consumer.group.storage.cscan";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_STATE = "kafka.consumer.group.storage.csstate";
 }

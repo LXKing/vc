@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_CAN;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CS_CAN;
+
 /**
  * Created with IntelliJ IDEA2017.
  *
@@ -23,7 +26,7 @@ public class CanConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(CanConsumer.class);
 
-    @KafkaListener(id = "${kafka.consumer.group.storage}", topics = "${kafka.topic.cscan}")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CAN + "}", topics = "${" + KAFKA_TOPIC_CS_CAN + "}", containerFactory = "batchFactory")
     public void processCanStorage(List<String> messageList){
         List<CsCan> csCanList=new ArrayList<>();
         for (String message:messageList){

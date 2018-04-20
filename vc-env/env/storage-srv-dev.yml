@@ -15,31 +15,22 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       max-poll-records: 500
       enable-auto-commit: true
-      auto-commit-interval: 100
+      auto-commit-interval: 1000
       auto-offset-reset: latest
-    listener:
-      poll-timeout: 3000
-      concurrency: 5
-kafka:
-  consumer:
-    group:
-      storage: cgrp_vc_storage
-  topic:
-    gb:
-      rt: topic_gb_0x02
-    cscan: topic_cscan
-    csstate: topic_csstate
-    gbmessage: topic_gbmessage
-
 
 #kafka topic
 kafka:
   consumer:
     group:
-      storage: cgrp_vc_storage
+      storage:
+        csmessage: cgrp_storage_csmessage
+        cscan: cgrp_storage_cscan
+        csstate: cgrp_storage_csstate
   topic:
     history:
-      gbmessage: topic_gb_message
+      csmessage: topic_cs_message
+      cscan: topic_cs_can
+      csstate: topic_cs_state
 
 dubbo:
   scan:
