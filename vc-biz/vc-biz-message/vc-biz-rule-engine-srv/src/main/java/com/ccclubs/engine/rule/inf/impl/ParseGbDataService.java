@@ -1,6 +1,7 @@
 package com.ccclubs.engine.rule.inf.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryVehicleService;
@@ -120,7 +121,7 @@ public class ParseGbDataService implements IParseGbDataService {
         //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
         //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
-        kafkaTemplate.send(kafkaTopicCsMessage,csMessage);
+        kafkaTemplate.send(kafkaTopicCsMessage, JSONObject.toJSONString(csMessage));
     }
 
     /**

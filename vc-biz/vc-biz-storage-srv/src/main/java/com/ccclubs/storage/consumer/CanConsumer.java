@@ -1,9 +1,11 @@
-package com.ccclubs.storage.tasks.consumer;
+package com.ccclubs.storage.consumer;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.pub.orm.model.CsCan;
+import com.ccclubs.storage.tasks.processor.HistoryCanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,9 @@ public class CanConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(CanConsumer.class);
 
+    @Autowired
+    HistoryCanUtils historyCanUtils;
+
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CAN + "}", topics = "${" + KAFKA_TOPIC_CS_CAN + "}", containerFactory = "batchFactory")
     public void processCanStorage(List<String> messageList){
         List<CsCan> csCanList=new ArrayList<>();
@@ -35,6 +40,7 @@ public class CanConsumer {
             csCanList.add(csCan);
         }
 
+        historyCanUtils.saveHistoryDataToHbase(csCanList);
 
     }
 
