@@ -17,7 +17,7 @@ public class TerminalStatusUtils {
     // 取高字节
     byte doorMask = (byte) (doorStatus >> 8);
     // 取低字节
-    byte doorValue = (byte) (doorStatus & 0xF);
+    byte doorValue = (byte) (doorStatus & 0x0FF);
 
     StringBuilder stringBuilder = new StringBuilder();
     // Bit0 所有门状态有效位：0-无效，1-有效
@@ -89,7 +89,7 @@ public class TerminalStatusUtils {
     // 取高双字节
     short lightMask = (short) (lightStatus >> 16);
     // 取低双字节
-    short lightValue = (short) (lightStatus & 0xFF);
+    short lightValue = (short) (lightStatus & 0x0FFFF);
 
     StringBuilder stringBuilder = new StringBuilder();
 
