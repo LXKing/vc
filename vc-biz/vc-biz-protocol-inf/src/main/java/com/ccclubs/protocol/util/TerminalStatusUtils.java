@@ -1,4 +1,4 @@
-package com.ccclubs.admin.util;
+package com.ccclubs.protocol.util;
 
 
 /**
@@ -8,6 +8,7 @@ package com.ccclubs.admin.util;
 public class TerminalStatusUtils {
 
   private static final String SEPARATOR = ",";
+  public static final String ALL_OK = "全关";
 
   /**
    * 获取车门详细信息
@@ -27,7 +28,7 @@ public class TerminalStatusUtils {
           return "有车门未关";
         }
       } else {
-        return "全关";
+        return ALL_OK;
       }
     }
 
@@ -77,14 +78,14 @@ public class TerminalStatusUtils {
     if (stringBuilder.length() > 0) {
       return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
     }else {
-      return "全关";
+      return ALL_OK;
     }
   }
 
   /**
    * 获取车灯详细信息
    */
-  private static String getLightString(int lightStatus) {
+  public static String getLightString(int lightStatus) {
     // 取高双字节
     short lightMask = (short) (lightStatus >> 16);
     // 取低双字节
@@ -100,7 +101,7 @@ public class TerminalStatusUtils {
           return "有车灯未关";
         }
       } else {
-        return "全关";
+        return ALL_OK;
       }
     }
 
@@ -164,7 +165,7 @@ public class TerminalStatusUtils {
     if (stringBuilder.length() > 0) {
       return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
     }else {
-      return "全关";
+      return ALL_OK;
     }
 
   }

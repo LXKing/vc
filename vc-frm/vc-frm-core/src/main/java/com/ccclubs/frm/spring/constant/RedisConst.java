@@ -24,5 +24,8 @@ public class RedisConst {
      * 808指令流水号生成器 csrsId
      */
     public static final String REDIS_KEY_808_CSRSID_GEN = "cmd:sidgen";
-
+    /**
+     * 记录终端在线的 redis key
+     */
+    public static final String REDIS_KEY_ONLINE = "online:";
 }
