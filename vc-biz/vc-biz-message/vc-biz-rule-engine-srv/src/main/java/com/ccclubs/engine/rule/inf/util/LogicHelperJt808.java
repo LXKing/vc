@@ -1,10 +1,12 @@
 package com.ccclubs.engine.rule.inf.util;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
+import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
@@ -29,8 +31,10 @@ import java.util.Date;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,6 +44,13 @@ public class LogicHelperJt808 {
 
   @Resource
   private RedisTemplate redisTemplate;
+  @Resource
+  private KafkaTemplate kafkaTemplate;
+
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
+  String kafkaTopicCsCan;
+  @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
+  String kafkaTopicCsState;
 
   @Resource
   private TerminalUtils terminalUtils;
@@ -113,8 +124,9 @@ public class LogicHelperJt808 {
           csStateCurrent.setCssLatitude(csState.getCssLatitude());
         }
         // 处理历史状态
-        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateCurrent);
-
+//        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateCurrent);
+// 发送历史状态到kafka
+        kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csStateCurrent));
         // 含分时租赁插件的 808 终端，不转发 0x0200 定位数据
         // 终端具备分时租赁功能，则不更新SOC，obd里程，目前按照插件版本>0来判断终端具备分时租赁功能
         if (!(csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
@@ -166,9 +178,11 @@ public class LogicHelperJt808 {
         csStateInsert.setCssLatitude(AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001));
 
         updateStateService.insert(csStateInsert);
+        // 发送历史状态到kafka
+        kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csStateInsert));
         // 处理历史状态
-        ListOperations opsForList = redisTemplate.opsForList();
-        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateInsert);
+//        ListOperations opsForList = redisTemplate.opsForList();
+//        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csStateInsert);
         //historyStateUtils.saveHistoryData(csStateInsert);
         return csStateInsert;
       }
@@ -269,8 +283,10 @@ public class LogicHelperJt808 {
       } else {
         updateCanService.insert(csCan);
       }
-      ListOperations opsForList = redisTemplate.opsForList();
-      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
+      // 处理can历史状态
+      kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(csCan));
+//      ListOperations opsForList = redisTemplate.opsForList();
+//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
 
 
       // 众泰E200车型不包含分时租赁插件的终端需要更新obd里程跟SOC
@@ -371,8 +387,10 @@ public class LogicHelperJt808 {
         startTime = System.nanoTime();
         csCanNew.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
         csCanNew.setCscData(hexString);
-        ListOperations opsForList = redisTemplate.opsForList();
-        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCanNew);
+        // 处理can历史状态
+        kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(csCanNew));
+//        ListOperations opsForList = redisTemplate.opsForList();
+//        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCanNew);
         logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
             System.nanoTime() - startTime);
       }

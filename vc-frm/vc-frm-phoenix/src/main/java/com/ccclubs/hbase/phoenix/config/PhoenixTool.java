@@ -1,6 +1,5 @@
 package com.ccclubs.hbase.phoenix.config;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +22,15 @@ public class PhoenixTool {
     private PhoenixProperties phoenixProperties;
 
     //获取Phoenix连接
-    public Connection getConnection(){
+    public Connection getConnection() {
         Connection connection = null;
 
         try {
             Class.forName("org.apache.phoenix.jdbc.PhoenixDriver");
-            connection = DriverManager.getConnection("jdbc:phoenix:"+phoenixProperties.getZk_url());
+            connection = DriverManager.getConnection("jdbc:phoenix:" + phoenixProperties.getZk_url());
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             logger.error(e.getMessage());
         }
 
@@ -41,50 +39,56 @@ public class PhoenixTool {
 
     /**
      * 关闭各类资源
-     * */
+     */
     public void closeResource(Connection connection,
                               PreparedStatement preparedStatement,
                               ResultSet resultSet,
-                              String callerName){
-        boolean preparedStatementFlag=false;
-        boolean resultSetFlag=false;
-        boolean connectionFlag=false;
-        if(preparedStatement!=null){
+                              String callerName) {
+        boolean preparedStatementFlag = false;
+        boolean resultSetFlag = false;
+        boolean connectionFlag = false;
+        if (preparedStatement != null) {
             try {
                 preparedStatement.close();
-                preparedStatementFlag=true;
+                preparedStatementFlag = true;
             } catch (SQLException e) {
                 logger.error(e.getMessage());
             }
         }
 
-        if (null!=resultSet){
+        if (null != resultSet) {
             try {
                 resultSet.close();
-                resultSetFlag=true;
-            }catch (SQLException e) {
+                resultSetFlag = true;
+            } catch (SQLException e) {
                 logger.error(e.getMessage());
             }
-        }else {
-            resultSetFlag=true;
+        } else {
+            resultSetFlag = true;
         }
 
-        if(connection!=null){
+        if (connection != null) {
             try {
                 connection.close();
-                connectionFlag=true;
+                connectionFlag = true;
             } catch (SQLException e) {
                 logger.error(e.getMessage());
             }
         }
 
 
-        if (connectionFlag&&preparedStatementFlag&&resultSetFlag){
+        if (connectionFlag && preparedStatementFlag && resultSetFlag) {
             logger.debug(callerName + "  resource closed.");
-        }else {
-            if (!connectionFlag){logger.error(callerName+" connection release failed");}
-            if (!preparedStatementFlag){logger.error(callerName+" preparedStatement release failed");}
-            if (!resultSetFlag){logger.error(callerName+" resultSet release failed");}
+        } else {
+            if (!connectionFlag) {
+                logger.error(callerName + " connection release failed");
+            }
+            if (!preparedStatementFlag) {
+                logger.error(callerName + " preparedStatement release failed");
+            }
+            if (!resultSetFlag) {
+                logger.error(callerName + " resultSet release failed");
+            }
         }
 
     }

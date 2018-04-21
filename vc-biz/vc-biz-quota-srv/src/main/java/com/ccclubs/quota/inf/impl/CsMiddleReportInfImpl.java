@@ -12,6 +12,7 @@ import com.ccclubs.quota.util.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -32,7 +33,8 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
     @Autowired
     private CsIndexReportMapper csIndexReportMapper;
 
-
+    @Value("${zt.obdMileThreshold}")
+    public  BigDecimal obdMileThreshold;
     /**
      * 根据中间历史表数据及当前最新统计的数据更新cs_middle_report数据
      */
@@ -121,6 +123,11 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                     }
                 }
             }
+            //如果里程大于20万指标不做处理
+            if(mileTemp.compareTo(obdMileThreshold)==1){
+                    continue;
+            }
+
             csIndexReport=new CsIndexReport();
             csIndexReport.setCsVin(csVinTemp);
             csIndexReport.setCsNumber(csNumberTemp);
@@ -440,4 +447,11 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
 //        }
 //    }
 
+    public BigDecimal getObdMileThreshold() {
+        return obdMileThreshold;
+    }
+
+    public void setObdMileThreshold(BigDecimal obdMileThreshold) {
+        this.obdMileThreshold = obdMileThreshold;
+    }
 }

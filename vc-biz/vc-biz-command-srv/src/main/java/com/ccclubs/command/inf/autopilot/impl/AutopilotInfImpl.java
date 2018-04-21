@@ -109,7 +109,7 @@ public class AutopilotInfImpl implements AutopilotInf{
 
     /**
      * 目标站点下发
-     *
+     * 依据协议，语音类型左右 7 位，或  input.getVoiceType() & 0x80 或 input.getVoiceType() * 128
      * @param siteIssuedInput
      */
     @Override
@@ -153,7 +153,12 @@ public class AutopilotInfImpl implements AutopilotInf{
     }
 
     private int getAllValue(VoiceIssuedInput input){
-        int sum=(input.getVoiceType()*256)+input.getVoiceNum();
+        int voicetype=0;
+        if (input.getVoiceType()==1){
+             voicetype=128;
+        }
+
+        int sum=( voicetype * 256 )+input.getVoiceNum();
         return sum;
     }
 
