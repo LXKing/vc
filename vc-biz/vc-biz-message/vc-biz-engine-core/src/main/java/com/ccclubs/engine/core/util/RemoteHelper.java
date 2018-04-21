@@ -10,10 +10,10 @@ import com.ccclubs.protocol.dto.mqtt.RemoteOption;
 import com.ccclubs.protocol.dto.mqtt.RemoteParam;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.StringUtils;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
+import com.ccclubs.protocol.util.TerminalStatusUtils;
 import java.util.Date;
+import javax.annotation.Resource;
+import org.springframework.stereotype.Component;
 
 @Component
 public class RemoteHelper {
@@ -133,7 +133,7 @@ public class RemoteHelper {
                                                          byte[] srcArray,
                                                          short remoteResult) {
         String jsonString = JSON
-                .toJSONString(CommonResult.create(messageId, true, SUCCESS_CODE, "已操作，结果未知"));
+                .toJSONString(CommonResult.create(messageId, false, FAILED_CODE, "已操作，结果未知"));
         if (remoteResult == 0 || remoteResult == 0x00FF) {
             return JSON.toJSONString(CommonResult.create(messageId, true, SUCCESS_CODE, "操作成功"));
         }
@@ -208,7 +208,7 @@ public class RemoteHelper {
                     // 车门{WORD|详见批注} | 车锁{WORD|详见批注} | 控制{WORD|详见批注}
                     byte doorMask = srcArray[20 + 2 + 1];
                     byte doorValue = srcArray[20 + 2 + 2];
-                    // 车门，车锁都关好或无效
+                    // 车门，车锁都关好或无效`
                     StringBuilder stringBuilder = getDoorString(doorValue);
                     if (stringBuilder.length() > 0) {
                         jsonString = JSON.toJSONString(CommonResult.create(messageId, false, FAILED_CODE,
@@ -434,12 +434,9 @@ public class RemoteHelper {
         StringBuilder stringBuilder = new StringBuilder();
         // 有车门未关好
         if ((value & 0x1) == 0x01) {
-          StringBuilder stringBuilderDoor = getDoorString(
-              (byte) (terminalInfo.getTriggerMergeDoorStatusWithMask() & 0x00FF));
-          if (stringBuilderDoor.length() > 0) {
-            stringBuilder
-                .append(
-                    stringBuilderDoor.toString().substring(0, stringBuilderDoor.length() - 1) + "未关");
+            String doorResult = TerminalStatusUtils.getDoorString(terminalInfo.getTriggerMergeDoorStatusWithMask());
+          if (!TerminalStatusUtils.ALL_OK.equals(doorResult)) {
+            stringBuilder.append(doorResult);
             stringBuilder.append(ConstantUtils.SEPARATOR);
           }
         }
@@ -460,13 +457,10 @@ public class RemoteHelper {
         }
         // 有车灯未关
         if (((value >> 6) & 0x1) == 0x01) {
-            StringBuilder stringBuilderLight = getLightString(
-                    terminalInfo.getTriggerLightStatusWithMask());
-            if (stringBuilderLight.length() > 0) {
-                stringBuilder
-                        .append(
-                                stringBuilderLight.toString().substring(0, stringBuilderLight.length() - 1)
-                                        + "未关");
+            String lightResult = TerminalStatusUtils.getLightString(terminalInfo.getTriggerLightStatusWithMask());
+
+            if (!TerminalStatusUtils.ALL_OK.equals(lightResult)) {
+                stringBuilder.append(lightResult);
                 stringBuilder.append(ConstantUtils.SEPARATOR);
             }
         }
