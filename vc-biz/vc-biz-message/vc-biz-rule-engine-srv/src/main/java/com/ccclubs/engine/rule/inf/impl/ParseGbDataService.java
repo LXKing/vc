@@ -5,7 +5,6 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
-import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.KafkaConst;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 
@@ -51,6 +49,9 @@ public class ParseGbDataService implements IParseGbDataService {
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_GB_RT + "}")
     String kafkaTopicGB0x02;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_MESSAGE + "}")
+    String kafkaTopicCsMessage;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -115,10 +116,11 @@ public class ParseGbDataService implements IParseGbDataService {
         /**
          * 等待消费
          */
-        ListOperations ops = redisTemplate.opsForList();
+        //ListOperations ops = redisTemplate.opsForList();
         //分别写进Mongo和Hbase的队列。
 //    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
-        ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+        //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+        kafkaTemplate.send(kafkaTopicCsMessage,csMessage);
     }
 
     /**
@@ -162,9 +164,10 @@ public class ParseGbDataService implements IParseGbDataService {
                     correctionMessage.setPacketDescr(Tools.ToHexString(correctionMessage.WriteToBytes()));
                 }
             } else {
-                if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType())
+                if (GBMessageType.GB_MSG_TYPE_0X02 == message.getMessageType()) {
                     redisTemplate.opsForHash()
                             .put(RedisConst.REDIS_KEY_RT_STATES_CORRECTION_HASH, message.getVin(), gb_02_01.getMileage());
+                }
             }
         }
 
