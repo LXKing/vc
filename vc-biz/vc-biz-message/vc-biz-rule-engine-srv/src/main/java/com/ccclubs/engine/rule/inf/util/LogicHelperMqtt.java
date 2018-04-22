@@ -1,6 +1,7 @@
 package com.ccclubs.engine.rule.inf.util;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.common.aop.Timer;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
@@ -160,7 +161,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicCsState,csState);
+      kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
@@ -176,7 +177,7 @@ public class LogicHelperMqtt {
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicCsState,csState);
+      kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
     }
   }
 
@@ -272,7 +273,7 @@ public class LogicHelperMqtt {
       ListOperations opsForList = redisTemplate.opsForList();
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicCsState,csState);
+      kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
       // 处理历史状态
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
@@ -285,7 +286,7 @@ public class LogicHelperMqtt {
       // 写入当前状态
       updateStateService.insert(csState);
       // 发送历史状态到kafka
-      kafkaTemplate.send(kafkaTopicCsState,csState);
+      kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
       // 处理历史状态
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
@@ -330,12 +331,12 @@ public class LogicHelperMqtt {
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
 
       // 处理can历史状态
-      kafkaTemplate.send(kafkaTopicCsCan,canData);
+      kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     } else {
       updateCanService.insert(canData);
       // 处理can历史状态
-      kafkaTemplate.send(kafkaTopicCsCan,canData);
+      kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
 //      ListOperations opsForList = redisTemplate.opsForList();
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     }
