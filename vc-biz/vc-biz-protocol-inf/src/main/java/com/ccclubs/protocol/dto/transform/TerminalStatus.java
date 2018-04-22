@@ -35,7 +35,11 @@ public class TerminalStatus implements Serializable {
     /**
      * 车辆OBD里程，最小0.1km
      */
-    private Integer cssObdMile;
+    private BigDecimal cssObdMile;
+    /**
+     * 订单里程，最小0.1km
+     */
+    private BigDecimal cssMileage;
     /**
      * 发动机状态，1未熄火，2已熄火，0无效
      */
@@ -51,11 +55,11 @@ public class TerminalStatus implements Serializable {
     /**
      * 发动机温度
      */
-    private Integer cssEngineT;
+    private BigDecimal cssEngineT;
     /**
      * 车速
      */
-    private Integer cssSpeed;
+    private BigDecimal cssSpeed;
     /**
      * 转速
      */
@@ -64,7 +68,7 @@ public class TerminalStatus implements Serializable {
     /**
      * 燃油量
      */
-    private Integer cssOil;
+    private BigDecimal cssOil;
 
     /**
      * 蓄电池电量
@@ -84,11 +88,11 @@ public class TerminalStatus implements Serializable {
     /**
      * 续航里程
      */
-    private Integer cssEndurance;
+    private BigDecimal cssEndurance;
     /**
      * 车内温度
      */
-    private Integer cssTemperature;
+    private BigDecimal cssTemperature;
     /**
      * 信号强度
      */
@@ -105,7 +109,7 @@ public class TerminalStatus implements Serializable {
     /**
      * 航向角
      */
-    private Integer cssDir;
+    private BigDecimal cssDir;
 
     /**
      * 空调状态 mAirConditionerStaus，bit0 循环模式，（0:内循环 1:外循环）
@@ -154,15 +158,6 @@ public class TerminalStatus implements Serializable {
      */
     private Integer cssGPSValid;
 
-    public Integer getCssMileage() {
-        return cssMileage;
-    }
-
-    public void setCssMileage(Integer cssMileage) {
-        this.cssMileage = cssMileage;
-    }
-
-    private Integer cssMileage;
     /**
      * 车辆状态
      */
@@ -273,12 +268,20 @@ public class TerminalStatus implements Serializable {
         this.cssRented = cssRented;
     }
 
-    public Integer getCssObdMile() {
+    public BigDecimal getCssObdMile() {
         return cssObdMile;
     }
 
-    public void setCssObdMile(Integer cssObdMile) {
+    public void setCssObdMile(BigDecimal cssObdMile) {
         this.cssObdMile = cssObdMile;
+    }
+
+    public BigDecimal getCssMileage() {
+        return cssMileage;
+    }
+
+    public void setCssMileage(BigDecimal cssMileage) {
+        this.cssMileage = cssMileage;
     }
 
     public Integer getCssEngine() {
@@ -305,19 +308,19 @@ public class TerminalStatus implements Serializable {
         this.cssLock = cssLock;
     }
 
-    public Integer getCssEngineT() {
+    public BigDecimal getCssEngineT() {
         return cssEngineT;
     }
 
-    public void setCssEngineT(Integer cssEngineT) {
+    public void setCssEngineT(BigDecimal cssEngineT) {
         this.cssEngineT = cssEngineT;
     }
 
-    public Integer getCssSpeed() {
+    public BigDecimal getCssSpeed() {
         return cssSpeed;
     }
 
-    public void setCssSpeed(Integer cssSpeed) {
+    public void setCssSpeed(BigDecimal cssSpeed) {
         this.cssSpeed = cssSpeed;
     }
 
@@ -329,11 +332,11 @@ public class TerminalStatus implements Serializable {
         this.cssMotor = cssMotor;
     }
 
-    public Integer getCssOil() {
+    public BigDecimal getCssOil() {
         return cssOil;
     }
 
-    public void setCssOil(Integer cssOil) {
+    public void setCssOil(BigDecimal cssOil) {
         this.cssOil = cssOil;
     }
 
@@ -361,19 +364,19 @@ public class TerminalStatus implements Serializable {
         this.cssCharging = cssCharging;
     }
 
-    public Integer getCssEndurance() {
+    public BigDecimal getCssEndurance() {
         return cssEndurance;
     }
 
-    public void setCssEndurance(Integer cssEndurance) {
+    public void setCssEndurance(BigDecimal cssEndurance) {
         this.cssEndurance = cssEndurance;
     }
 
-    public Integer getCssTemperature() {
+    public BigDecimal getCssTemperature() {
         return cssTemperature;
     }
 
-    public void setCssTemperature(Integer cssTemperature) {
+    public void setCssTemperature(BigDecimal cssTemperature) {
         this.cssTemperature = cssTemperature;
     }
 
@@ -401,11 +404,11 @@ public class TerminalStatus implements Serializable {
         this.cssLatitude = cssLatitude;
     }
 
-    public Integer getCssDir() {
+    public BigDecimal getCssDir() {
         return cssDir;
     }
 
-    public void setCssDir(Integer cssDir) {
+    public void setCssDir(BigDecimal cssDir) {
         this.cssDir = cssDir;
     }
 
