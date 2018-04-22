@@ -37,17 +37,17 @@ public class TransformUtils {
         terminalStatus.setCssGpsCn(mqtt_66.getCn() & 0xFF);
         terminalStatus.setCssCompres(mqtt_66.getAirConditionerCompres());
         terminalStatus.setCssCsq(mqtt_66.getCsq() & 0xFF);
-        terminalStatus.setCssDir(mqtt_66.getHeading() & 0xFFFF);
+        terminalStatus.setCssDir(new BigDecimal(mqtt_66.getHeading() & 0xFFFF));
         terminalStatus.setCssDoor(mqtt_66.getDoorStatus());
         // TODO:燃油量
         if (MQTT_66.MODEL_STATUS_ELECTRICITY == message.getFucCode()) {
-            terminalStatus.setCssOil(0);
-            terminalStatus.setCssEndurance(mqtt_66.getEndurance() & 0xFFFF);
+            terminalStatus.setCssOil(new BigDecimal(0));
+            terminalStatus.setCssEndurance(new BigDecimal(mqtt_66.getEndurance() & 0xFFFF));
         } else {
-            terminalStatus.setCssOil(mqtt_66.getEndurance() & 0xFFFF);
-            terminalStatus.setCssEndurance(0);
+            terminalStatus.setCssOil(new BigDecimal(mqtt_66.getEndurance() & 0xFFFF));
+            terminalStatus.setCssEndurance(new BigDecimal(0));
         }
-        terminalStatus.setCssEngineT(mqtt_66.getEngineTemperature() & 0xFF);
+        terminalStatus.setCssEngineT(new BigDecimal(mqtt_66.getEngineTemperature() & 0xFF));
         terminalStatus.setCssEvBattery(mqtt_66.getSoc() & 0xFF);
         terminalStatus.setCssFan(mqtt_66.getAirConditionerFan());
 //    terminalStatus.setCssGPSValid((int) mqtt_66.getGpsValid());
@@ -64,8 +64,8 @@ public class TransformUtils {
         terminalStatus.setCssMotor(mqtt_66.getRpm() & 0xFFFF);
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
-        terminalStatus.setCssObdMile(mqtt_66.getObdMiles() & 0x0FFFFFFFF);
-        terminalStatus.setCssMileage(mqtt_66.getMiles() & 0x0FFFFFFFF);
+        terminalStatus.setCssObdMile(new BigDecimal(mqtt_66.getObdMiles() & 0xFFFFFFFF));
+        terminalStatus.setCssMileage(new BigDecimal(mqtt_66.getMiles() & 0xFFFFFFFF));
         terminalStatus.setCssOrder(message.getTransId());
         terminalStatus.setCssPower(mqtt_66.getBattery() & 0xFFFF);
         terminalStatus.setCssPtc(mqtt_66.getAirConditionerPtc());
@@ -73,8 +73,8 @@ public class TransformUtils {
         terminalStatus.setCssGpsCount(mqtt_66.getSatelliteCount() & 0xFF);
         terminalStatus.setCssGpsValid(mqtt_66.getSatelliteEffective() & 0xFF);
         terminalStatus.setCssSaving(mqtt_66.getSavingModel());
-        terminalStatus.setCssSpeed(mqtt_66.getSpeed());
-        terminalStatus.setCssTemperature(mqtt_66.getTemperature() & 0xFF);
+        terminalStatus.setCssSpeed(new BigDecimal(mqtt_66.getSpeed()));
+        terminalStatus.setCssTemperature(new BigDecimal(mqtt_66.getTemperature() & 0xFF));
 //    terminalStatus.setCssVehicleSleepTime(mqtt_66.getVehicleSleepTime() & 0xFFFF);
 //    terminalStatus.setCssVehicleStatus(mqtt_66.getVehicleStartStatus() & 0xFF);
 //    terminalStatus.setCssVehicleStaus(mqtt_66.getVehicleStartStatus() & 0xFF);
@@ -122,13 +122,13 @@ public class TransformUtils {
 
         terminalStatus.setCssCsq(mqtt_68_03.getCsq());
         terminalStatus.setCssGpsCn(mqtt_68_03.getCn());
-        terminalStatus.setCssDir(mqtt_68_03.getHeading());
+        terminalStatus.setCssDir(new BigDecimal(mqtt_68_03.getHeading()));
         terminalStatus.setCssDoor(mqtt_68_03.getDoorStatusWithMask());
         //FIXME 数据库字段设计为 Decimal
-        terminalStatus.setCssOil(mqtt_68_03.getCcclubs_60().getOil() == null ? 0 : mqtt_68_03.getCcclubs_60().getOil().intValue());
+        terminalStatus.setCssOil(mqtt_68_03.getCcclubs_60().getOil());
         //FIXME 数据库字段设计为 Decimal
-        terminalStatus.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance() == null ? 0 :mqtt_68_03.getCcclubs_60().getEndurance().intValue());
-        terminalStatus.setCssEngineT(mqtt_68_03.getTankTemperature());
+        terminalStatus.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance());
+        terminalStatus.setCssEngineT(new BigDecimal(mqtt_68_03.getTankTemperature()));
         terminalStatus.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc());
 
         BigDecimal latitude = AccurateOperationUtils.mul(mqtt_68_03.getLatitude(), 0.000001);
@@ -141,8 +141,8 @@ public class TransformUtils {
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
         //FIXME 数据库字段设计为 Decimal
-        terminalStatus.setCssObdMile(mqtt_68_03.getObdMile() == null ? 0 : mqtt_68_03.getObdMile().intValue());
-        terminalStatus.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles() == null ? 0 : mqtt_68_03.getCcclubs_60().getTradeMiles().intValue());
+        terminalStatus.setCssObdMile(mqtt_68_03.getObdMile());
+        terminalStatus.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles());
         terminalStatus.setCssOrder(message.getTransId());
         terminalStatus.setCssPower(mqtt_68_03.getBattery());
 
@@ -151,8 +151,8 @@ public class TransformUtils {
         terminalStatus.setCssGpsValid(mqtt_68_03.getGpsValid());
         terminalStatus.setCssSaving(mqtt_68_03.getVehicleWorkingStatus());
         //FIXME 数据库字段设计为 Decimal
-        terminalStatus.setCssSpeed(mqtt_68_03.getSpeed() == null ? 0 : mqtt_68_03.getSpeed().intValue());
-        terminalStatus.setCssTemperature(mqtt_68_03.getTerminalTemperature());
+        terminalStatus.setCssSpeed(mqtt_68_03.getSpeed());
+        terminalStatus.setCssTemperature(new BigDecimal(mqtt_68_03.getTerminalTemperature()));
 //    terminalStatus.setCssVehicleSleepTime(mqtt_68_03.getVehicleSleepTime() & 0xFFFF);
 //    terminalStatus.setCssVehicleStatus(mqtt_66.getVehicleStartStatus() & 0xFF);
 //    terminalStatus.setCssVehicleStaus(mqtt_66.getVehicleStartStatus() & 0xFF);
@@ -193,13 +193,12 @@ public class TransformUtils {
         terminalStatus.setCssGpsCn(csState.getCssGpsCn()&0xFFFF);
         terminalStatus.setCssCompres(csState.getCssCompres()&0xFF);
         terminalStatus.setCssCsq(csState.getCssCsq()&0xFFFF);
-        terminalStatus.setCssDir(csState.getCssDir()==null ? 0 : csState.getCssDir().intValue());
+        terminalStatus.setCssDir(csState.getCssDir());
         terminalStatus.setCssDoor(StringUtils.empty(csState.getCssDoor())?0:Integer.parseInt(csState.getCssDoor()));
         // TODO:燃油量
-        terminalStatus.setCssOil(csState.getCssOil()==null ? 0 : csState.getCssOil().intValue());
-        terminalStatus.setCssEndurance(csState.getCssEndurance()==null ? 0 : csState
-            .getCssEndurance().intValue());
-        terminalStatus.setCssEngineT(csState.getCssEngineT()==null ? 0 : csState.getCssEngineT().intValue());
+        terminalStatus.setCssOil(csState.getCssOil());
+        terminalStatus.setCssEndurance(csState.getCssEndurance());
+        terminalStatus.setCssEngineT(csState.getCssEngineT());
         terminalStatus.setCssEvBattery(csState.getCssEvBattery()&0xFF);
         terminalStatus.setCssFan(csState.getCssFan()&0xFF);
 
@@ -208,8 +207,8 @@ public class TransformUtils {
         terminalStatus.setCssMotor(csState.getCssMotor());
         terminalStatus.setCssNumber(StringUtils.empty(csMachine.getCsmTeNo()) ? ""
             : csMachine.getCsmTeNo().trim().toUpperCase());
-        terminalStatus.setCssObdMile(csState.getCssObdMile()==null ? 0 : csState.getCssObdMile().intValue());
-        terminalStatus.setCssMileage(csState.getCssMileage() == null ? 0 : csState.getCssMileage().intValue());
+        terminalStatus.setCssObdMile(csState.getCssObdMile());
+        terminalStatus.setCssMileage(csState.getCssMileage());
         terminalStatus.setCssOrder(csState.getCssOrder());
         terminalStatus.setCssPower(csState.getCssPower());
         terminalStatus.setCssPtc(csState.getCssPtc()&0xFF);
@@ -217,8 +216,8 @@ public class TransformUtils {
         terminalStatus.setCssGpsCount(csState.getCssGpsCount().intValue());
         terminalStatus.setCssGpsValid(csState.getCssGpsValid()&0xFF);
         terminalStatus.setCssSaving(csState.getCssSaving()&0xFF);
-        terminalStatus.setCssSpeed(csState.getCssSpeed().intValue()&0xFF);
-        terminalStatus.setCssTemperature(csState.getCssTemperature().intValue()&0xFF);
+        terminalStatus.setCssSpeed(new BigDecimal(csState.getCssSpeed().intValue()&0xFF));
+        terminalStatus.setCssTemperature(new BigDecimal(csState.getCssTemperature().intValue()&0xFF));
 //    terminalStatus.setCssVehicleSleepTime(0);
 //    terminalStatus.setCssVehicleStatus(mqtt_66.getVehicleStartStatus() & 0xFF);
 //    terminalStatus.setCssVehicleStaus(mqtt_66.getVehicleStartStatus() & 0xFF);
