@@ -212,7 +212,6 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 String csmrVin=map.get("csmrVin").toString();
                 String csmrNumber=map.get("csmrNumber").toString();
                 String csmrCarNo=null;
-                Date cssAddTime=DateTimeUtil.getStringToDate(map.get("cssAddTime").toString(),"yyyy-MM-dd HH:mm:ss");
                 //
                 if(map.get("csmrCarNo")!=null){
                     csmrCarNo =map.get("csmrCarNo").toString();
