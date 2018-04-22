@@ -5,6 +5,7 @@ import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.gb.GB_02;
 import com.ccclubs.protocol.dto.gb.GB_02_01;
 import com.ccclubs.protocol.inf.IRealTimeAdditionalItem;
+import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.quota.orm.model.CsIndexReport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +109,8 @@ public class DBHelperZt {
                     }
                 }
                 if (gb_02_01==null){continue;}
-                int csmrObdMile=gb_02_01.getMileage();
+                BigDecimal csmrObdMile = AccurateOperationUtils.mul(gb_02_01.getMileage(), 0.1);
+                csmrObdMile = csmrObdMile.setScale(1);
                 mapTemp.put("csmrObdMile",csmrObdMile);
                 tempList.add(mapTemp);
             }

@@ -227,16 +227,10 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal oldObdMile=new BigDecimal(0)  ;
                 CsMiddleReport oldVinMap= oldMiddleMap.get(csmrVin);
                 String oldVin=null;
-                String oldNumber=null;
-                Date oldAddTime=null;
                 if(oldVinMap!=null){
                      oldVin=oldVinMap.getCsmrVin();
-                     oldNumber=oldVinMap.getCsmrNumber();
-                     oldAddTime=oldVinMap.getCsmrAddTime();
-                    if(csmrVin.equals(oldVin)){//vim车机号相同
-                        oldObdMile=oldVinMap.getCsmrObdMile();
-                    }
-                    csmrIdOldList.add(oldVin);
+                     oldObdMile=oldVinMap.getCsmrObdMile();
+                     csmrIdOldList.add(oldVin);
                 }
                 /**
                  * 判断插入数据库的obd里程
@@ -244,27 +238,15 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal csmrExceptionMile=null;
                 Short   csmrMileState=2;
 
-                if(csmrVin.equals(oldVin)){//先判断vin码是否相同
-                    if(csmrNumber.equals(oldNumber)){//再判断车机号是否相同
-                        if(csmrObdMile.compareTo(oldObdMile)==-1){
-                            csmrExceptionMile=csmrObdMile;
-                            csmrObdMile=oldObdMile;
-                            csmrMileState=1;
-                        }
-                    }else{//如车机号不同则为更换了的车机号
-                        if(cssAddTime.getTime()>oldAddTime.getTime()){//通过添加的obdMile里程时间区别
-                            if(csmrObdMile.compareTo(oldObdMile)==-1){
-                                csmrExceptionMile=csmrObdMile;
-                                csmrObdMile=oldObdMile;
-                                csmrMileState=1;
-                            }
-                        }else {
-                            csmrObdMile=oldObdMile;
-                        }
+                //若当前里程<数据库里的数据
+                if(csmrObdMile.compareTo(oldObdMile)==-1){
+                    //若数据库里的obdMile>obd阈值
+                    if(oldObdMile.compareTo(obdMileThreshold)==-1){
+                        csmrExceptionMile=csmrObdMile;
+                        csmrObdMile=oldObdMile;
+                        csmrMileState=1;
                     }
-
                 }
-
                 //
                 Short csmrDomain=null;
                 if(map.get("csmrDomain")!=null){
