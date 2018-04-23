@@ -538,9 +538,9 @@ public class ParseDataService implements IParseDataService {
 
   private void transferToMq(SrvHost srvHost, TerminalStatus terminalStatus, MqMessage message) {
     String tag=MqTagProperty.MQ_TERMINAL_STATUS + srvHost.getShId();
-//    if (null!=terminalStatus.getAutopilot()){
-//      tag=MqTagProperty.MQ_TERMINAL_AUTOPILOT+ srvHost.getShId();
-//    }
+    if (null!=terminalStatus.getAutopilot()){
+      tag=MqTagProperty.MQ_TERMINAL_AUTOPILOT+ srvHost.getShId();
+    }
     Message mqMessage = messageFactory
         .getMessage(srvHost.getShTopic().trim(),
                 tag,
