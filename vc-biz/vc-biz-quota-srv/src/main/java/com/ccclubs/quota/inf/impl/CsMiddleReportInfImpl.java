@@ -12,6 +12,7 @@ import com.ccclubs.quota.util.DateTimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -32,7 +33,8 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
     @Autowired
     private CsIndexReportMapper csIndexReportMapper;
 
-
+    @Value("${zt.obdMileThreshold}")
+    public  BigDecimal obdMileThreshold;
     /**
      * 根据中间历史表数据及当前最新统计的数据更新cs_middle_report数据
      */
@@ -121,6 +123,11 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                     }
                 }
             }
+            //如果里程大于20万指标不做处理
+            if(mileTemp.compareTo(obdMileThreshold)==1){
+                    continue;
+            }
+
             csIndexReport=new CsIndexReport();
             csIndexReport.setCsVin(csVinTemp);
             csIndexReport.setCsNumber(csNumberTemp);
@@ -205,7 +212,6 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 String csmrVin=map.get("csmrVin").toString();
                 String csmrNumber=map.get("csmrNumber").toString();
                 String csmrCarNo=null;
-                Date cssAddTime=DateTimeUtil.getStringToDate(map.get("cssAddTime").toString(),"yyyy-MM-dd HH:mm:ss");
                 //
                 if(map.get("csmrCarNo")!=null){
                     csmrCarNo =map.get("csmrCarNo").toString();
@@ -220,16 +226,10 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal oldObdMile=new BigDecimal(0)  ;
                 CsMiddleReport oldVinMap= oldMiddleMap.get(csmrVin);
                 String oldVin=null;
-                String oldNumber=null;
-                Date oldAddTime=null;
                 if(oldVinMap!=null){
                      oldVin=oldVinMap.getCsmrVin();
-                     oldNumber=oldVinMap.getCsmrNumber();
-                     oldAddTime=oldVinMap.getCsmrAddTime();
-                    if(csmrVin.equals(oldVin)){//vim车机号相同
-                        oldObdMile=oldVinMap.getCsmrObdMile();
-                    }
-                    csmrIdOldList.add(oldVin);
+                     oldObdMile=oldVinMap.getCsmrObdMile();
+                     csmrIdOldList.add(oldVin);
                 }
                 /**
                  * 判断插入数据库的obd里程
@@ -237,27 +237,15 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
                 BigDecimal csmrExceptionMile=null;
                 Short   csmrMileState=2;
 
-                if(csmrVin.equals(oldVin)){//先判断vin码是否相同
-                    if(csmrNumber.equals(oldNumber)){//再判断车机号是否相同
-                        if(csmrObdMile.compareTo(oldObdMile)==-1){
-                            csmrExceptionMile=csmrObdMile;
-                            csmrObdMile=oldObdMile;
-                            csmrMileState=1;
-                        }
-                    }else{//如车机号不同则为更换了的车机号
-                        if(cssAddTime.getTime()>oldAddTime.getTime()){//通过添加的obdMile里程时间区别
-                            if(csmrObdMile.compareTo(oldObdMile)==-1){
-                                csmrExceptionMile=csmrObdMile;
-                                csmrObdMile=oldObdMile;
-                                csmrMileState=1;
-                            }
-                        }else {
-                            csmrObdMile=oldObdMile;
-                        }
+                //若当前里程<数据库里的数据
+                if(csmrObdMile.compareTo(oldObdMile)==-1){
+                    //若数据库里的obdMile>obd阈值
+                    if(oldObdMile.compareTo(obdMileThreshold)==-1){
+                        csmrExceptionMile=csmrObdMile;
+                        csmrObdMile=oldObdMile;
+                        csmrMileState=1;
                     }
-
                 }
-
                 //
                 Short csmrDomain=null;
                 if(map.get("csmrDomain")!=null){
@@ -440,4 +428,11 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
 //        }
 //    }
 
+    public BigDecimal getObdMileThreshold() {
+        return obdMileThreshold;
+    }
+
+    public void setObdMileThreshold(BigDecimal obdMileThreshold) {
+        this.obdMileThreshold = obdMileThreshold;
+    }
 }

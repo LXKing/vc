@@ -426,7 +426,7 @@ public class ParseDataService implements IParseDataService {
         //设置超级手机号
         if (!StringUtils.empty(mqtt_6B.getSuperSimNo()) && !mqtt_6B.getSuperSimNo()
             .equals(csMachine.getCsmSuperSim())) {
-          machineUpdate.setCsmSuperSim(mqtt_6B.getSuperSimNo());
+          machineUpdate.setCsmSuperSim(mqtt_6B.getSuperSimNo().trim());
         }
         //设置终端序列号
 //                if (!StringUtils.empty(mqtt_6B.getCfxId()) && !mqtt_6B.getCfxId()
@@ -470,7 +470,7 @@ public class ParseDataService implements IParseDataService {
       CsMachine machine = terminalUtils.setUpdateMapBaseInfo(terminalInfo, numberMachine);
       //设置手机号
       if (!StringUtils.empty(terminalInfo.getSimNo()) && !terminalInfo.getSimNo()
-          .equals("00000000000") && !terminalInfo.getSimNo()
+          .equals("00000000000") && terminalInfo.getSimNo().length() >= 11 && !terminalInfo.getSimNo()
           .equals(numberMachine.getCsmMobile())) {
         machine.setCsmMobile(terminalInfo.getSimNo());
       }
@@ -538,7 +538,7 @@ public class ParseDataService implements IParseDataService {
 
   private void transferToMq(SrvHost srvHost, TerminalStatus terminalStatus, MqMessage message) {
     String tag=MqTagProperty.MQ_TERMINAL_STATUS + srvHost.getShId();
-    if (null==terminalStatus.getAutopilot()){
+    if (null!=terminalStatus.getAutopilot()){
       tag=MqTagProperty.MQ_TERMINAL_AUTOPILOT+ srvHost.getShId();
     }
     Message mqMessage = messageFactory

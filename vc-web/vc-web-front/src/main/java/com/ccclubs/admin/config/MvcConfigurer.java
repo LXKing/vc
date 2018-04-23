@@ -25,7 +25,7 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
 
   @Autowired
   TokenInterceptor tokenInterceptor;
-  @Override
+/*  @Override
   public void addInterceptors(InterceptorRegistry registry) {
     // 多个拦截器组成一个拦截器链
     // addPathPatterns 用于添加拦截规则
@@ -43,7 +43,7 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
             .excludePathPatterns("/report/**");
 
     super.addInterceptors(registry);
-  }
+  }*/
 
   @Override
   public void configurePathMatch(PathMatchConfigurer configurer) {

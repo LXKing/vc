@@ -26,7 +26,7 @@ import java.util.concurrent.*;
  * 这是一个通用的类只要存储服务实现了{@link BaseHbaseStorageInf}接口即可。
  */
 @Component
-public class BatchHistoryHbaseRunner implements CommandLineRunner {
+public class BatchHistoryHbaseRunner  {//implements CommandLineRunner
 
     private static final Logger logger = LoggerFactory.getLogger(BatchHistoryHbaseRunner.class);
 
@@ -56,7 +56,6 @@ public class BatchHistoryHbaseRunner implements CommandLineRunner {
 
     }
 
-    @Override
     public void run(String... strings) throws Exception {
         ExecutorService executorService = createThreadPool();
         Set<String> keySet = insertToHbaseMap.getInstance().keySet();
