@@ -32,7 +32,7 @@ public class RemoteHelper {
      * @param jsonString      备注
      */
     public static CsRemote getRemote(long id, String msgResultString, String jsonString,
-                                     boolean success) {
+        boolean success) {
         CsRemote csRemote = new CsRemote();
         csRemote.setCsrId(id);
         csRemote.setCsrStatus(success ? 1 : 2);
@@ -52,26 +52,26 @@ public class RemoteHelper {
         // 同步时钟有应答就算成功，
         if (isTimeSynchronization(remoteOption)) {
             return getRemote(remoteOption.id, hexString,
-                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
-                    true);
+                RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
+                true);
         }
         // 初始化有应答就算成功
         if (isInitialization(remoteOption)) {
             return getRemote(remoteOption.id, hexString,
-                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
-                    true);
+                RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
+                true);
         }
 
         // 是否是空调控制
         if (isAirCondition(remoteOption)) {
             if (hexString.endsWith("00")) {
                 return getRemote(remoteOption.id, hexString,
-                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
-                        true);
+                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
+                    true);
             } else {
                 return getRemote(remoteOption.id, hexString,
-                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", FAILED_CODE, false),
-                        false);
+                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", FAILED_CODE, false),
+                    false);
             }
         }
 
@@ -83,30 +83,30 @@ public class RemoteHelper {
             if (isAirCondition(remoteOption)) {
                 if (hexString.endsWith("00")) {
                     return getRemote(remoteOption.id, hexString,
-                            RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
-                            true);
+                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
+                        true);
                 } else {
                     return getRemote(remoteOption.id, hexString,
-                            RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", FAILED_CODE, false),
-                            false);
+                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", FAILED_CODE, false),
+                        false);
                 }
             }
 
             // 如果
             if (hexString.equals(csRemote.getCsrCode().toUpperCase()) || hexString
-                    .equals(csRemote.getCsrCode().toUpperCase() + "0000")) {
+                .equals(csRemote.getCsrCode().toUpperCase() + "0000")) {
                 return getRemote(remoteOption.id, hexString,
-                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
-                        true);
+                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作成功", SUCCESS_CODE, true),
+                    true);
             } else {
                 return getRemote(remoteOption.id, hexString,
-                        RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作失败", FAILED_CODE, false),
-                        false);
+                    RemoteHelper.getRemoteJsonMessage(remoteOption.id, "操作失败", FAILED_CODE, false),
+                    false);
             }
         } else {
             return getRemote(remoteOption.id, hexString,
-                    RemoteHelper.getRemoteJsonMessage(remoteOption.id),
-                    true);
+                RemoteHelper.getRemoteJsonMessage(remoteOption.id),
+                true);
         }
     }
 
@@ -118,7 +118,7 @@ public class RemoteHelper {
     }
 
     public static String getRemoteJsonMessage(long messageId, String result, int code,
-                                              boolean success) {
+        boolean success) {
         return JSON.toJSONString(CommonResult.create(messageId, success, code, result));
     }
 
@@ -130,10 +130,10 @@ public class RemoteHelper {
      * @param remoteResult  操作结果位，WORD
      */
     public static String getMultipleOperationJsonMessage(long messageId, int operationCode,
-                                                         byte[] srcArray,
-                                                         short remoteResult) {
+        byte[] srcArray,
+        short remoteResult) {
         String jsonString = JSON
-                .toJSONString(CommonResult.create(messageId, false, FAILED_CODE, "已操作，结果未知"));
+            .toJSONString(CommonResult.create(messageId, false, FAILED_CODE, "已操作，结果未知"));
         if (remoteResult == 0 || remoteResult == 0x00FF) {
             return JSON.toJSONString(CommonResult.create(messageId, true, SUCCESS_CODE, "操作成功"));
         }
@@ -148,14 +148,14 @@ public class RemoteHelper {
                 StringBuilder stringBuilder = getMutipleResult(remoteResult, terminalInfo);
                 if (stringBuilder.length() > 0) {
                     jsonString = JSON.toJSONString(CommonResult.create(messageId, false, FAILED_CODE,
-                            stringBuilder.toString().substring(0, stringBuilder.length() - 1)));
+                        stringBuilder.toString().substring(0, stringBuilder.length() - 1)));
                 }
                 break;
             default:
                 // 开门
                 if (remoteResult == 0 || remoteResult == 0xFF) {
                     jsonString = JSON
-                            .toJSONString(CommonResult.create(messageId, true, SUCCESS_CODE, "操作成功"));
+                        .toJSONString(CommonResult.create(messageId, true, SUCCESS_CODE, "操作成功"));
                 }
                 break;
         }
@@ -212,7 +212,7 @@ public class RemoteHelper {
                     StringBuilder stringBuilder = getDoorString(doorValue);
                     if (stringBuilder.length() > 0) {
                         jsonString = JSON.toJSONString(CommonResult.create(messageId, false, FAILED_CODE,
-                                stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关"));
+                            stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关"));
                     }
                 } else {
                     jsonString = getRemoteJsonMessage(messageId);
@@ -220,7 +220,7 @@ public class RemoteHelper {
                 break;
             case 0x02:
                 jsonString = JSON
-                        .toJSONString(CommonResult.create(messageId, false, FAILED_CODE, "发动机未熄火"));
+                    .toJSONString(CommonResult.create(messageId, false, FAILED_CODE, "发动机未熄火"));
                 break;
             default:
                 jsonString = getRemoteJsonMessage(messageId);
@@ -346,8 +346,8 @@ public class RemoteHelper {
         StringBuilder stringBuilder = getReturnResult(value, srcArray);
         if (stringBuilder.length() > 0) {
             jsonString =
-                    JSON.toJSONString(CommonResult.create(messageId, false, FAILED_CODE,
-                            stringBuilder.toString().substring(0, stringBuilder.length() - 1)));
+                JSON.toJSONString(CommonResult.create(messageId, false, FAILED_CODE,
+                    stringBuilder.toString().substring(0, stringBuilder.length() - 1)));
         }
 
         // 扩展模式
@@ -379,9 +379,9 @@ public class RemoteHelper {
                 StringBuilder stringBuilderLight = getLightString(lightValue);
                 if (stringBuilderLight.length() > 0) {
                     stringBuilder
-                            .append(
-                                    stringBuilderLight.toString().substring(0, stringBuilderLight.length() - 1)
-                                            + "未关");
+                        .append(
+                            stringBuilderLight.toString().substring(0, stringBuilderLight.length() - 1)
+                                + "未关");
                     stringBuilder.append(ConstantUtils.SEPARATOR);
                 }
             } else {
@@ -396,9 +396,9 @@ public class RemoteHelper {
                 StringBuilder stringBuilderLight = getLightString(lightValue);
                 if (stringBuilderLight.length() > 0) {
                     stringBuilder
-                            .append(
-                                    stringBuilderLight.toString().substring(0, stringBuilderLight.length() - 1)
-                                            + "未关");
+                        .append(
+                            stringBuilderLight.toString().substring(0, stringBuilderLight.length() - 1)
+                                + "未关");
                     stringBuilder.append(ConstantUtils.SEPARATOR);
                 }
             }
@@ -410,8 +410,8 @@ public class RemoteHelper {
                 StringBuilder stringBuilderDoor = getDoorString(doorValue);
                 if (stringBuilderDoor.length() > 0) {
                     stringBuilder
-                            .append(
-                                    stringBuilderDoor.toString().substring(0, stringBuilderDoor.length() - 1) + "未关");
+                        .append(
+                            stringBuilderDoor.toString().substring(0, stringBuilderDoor.length() - 1) + "未关");
                     stringBuilder.append(ConstantUtils.SEPARATOR);
                 }
             } else {
@@ -435,10 +435,10 @@ public class RemoteHelper {
         // 有车门未关好
         if ((value & 0x1) == 0x01) {
             String doorResult = TerminalStatusUtils.getDoorString(terminalInfo.getTriggerMergeDoorStatusWithMask());
-          if (!TerminalStatusUtils.ALL_OK.equals(doorResult)) {
-            stringBuilder.append(doorResult);
-            stringBuilder.append(ConstantUtils.SEPARATOR);
-          }
+            if (!TerminalStatusUtils.ALL_OK.equals(doorResult)) {
+                stringBuilder.append(doorResult);
+                stringBuilder.append(ConstantUtils.SEPARATOR);
+            }
         }
         // 未熄火
         if (((value >> 1) & 0x1) == 0x01) {
@@ -452,8 +452,8 @@ public class RemoteHelper {
         }
         // 慢充未启动
         if (((value >> 5) & 0x1) == 0x01) {
-          stringBuilder.append("未充电");
-          stringBuilder.append(ConstantUtils.SEPARATOR);
+            stringBuilder.append("未充电");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         // 有车灯未关
         if (((value >> 6) & 0x1) == 0x01) {
@@ -466,13 +466,13 @@ public class RemoteHelper {
         }
         // 钥匙未插入不允许操作
         if (((value >> 7) & 0x1) == 0x01) {
-          stringBuilder.append("钥匙必须插入");
-          stringBuilder.append(ConstantUtils.SEPARATOR);
+            stringBuilder.append("钥匙必须插入");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         // 参数获取错误
         if (((value >> 8) & 0x1) == 0x01) {
-          stringBuilder.append("参数获取错误");
-          stringBuilder.append(ConstantUtils.SEPARATOR);
+            stringBuilder.append("参数获取错误");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         return stringBuilder;
     }
@@ -483,7 +483,7 @@ public class RemoteHelper {
     public static boolean isTimeSynchronization(RemoteOption remoteOption) {
         boolean result = false;
         if (remoteOption.function == 0x10 && remoteOption.address ==
-                (short) 0xC000 && (remoteOption.value == (short) 0x0002 || remoteOption.value == 0x00)) {
+            (short) 0xC000 && (remoteOption.value == (short) 0x0002 || remoteOption.value == 0x00)) {
             result = true;
         }
         return result;
@@ -495,7 +495,7 @@ public class RemoteHelper {
     public static boolean isAirCondition(RemoteOption remoteOption) {
         boolean result = false;
         if (remoteOption.function == 0x10 && remoteOption.address ==
-                (short) 0x9008 && (remoteOption.value == (short) 0x0001)) {
+            (short) 0x9008 && (remoteOption.value == (short) 0x0001)) {
             result = true;
         }
         return result;
@@ -507,7 +507,7 @@ public class RemoteHelper {
     public static boolean isInitialization(RemoteOption remoteOption) {
         boolean result = false;
         if (remoteOption.function == 0x46 && remoteOption.address ==
-                (short) 0x0000 && remoteOption.value == (short) 0x0000) {
+            (short) 0x0000 && remoteOption.value == (short) 0x0000) {
             result = true;
         }
         return result;
