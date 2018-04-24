@@ -24,6 +24,8 @@
 				 	</button>
 					<ul class="dropdown-menu tableMenu showHideMenu" role="menu">
 				        <li><label><input value="cssId" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >编号</label></li>
+				        <li><label><input value="cssAccessText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接入商</label></li>
+				        <li><label><input value="cssHost"  type="checkbox" onclick='showHideColumn(this, this.value);' >子域</label></li>
 				        <li><label><input value="cssNumberText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车机号</label></li>
 				        <li><label><input value="cssCarText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆</label></li>
 				        <li><label><input value="cssAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >接收时间</label></li>
@@ -37,7 +39,7 @@
 				        <li><label><input value="cssMileage"  type="checkbox" onclick='showHideColumn(this, this.value);' >订单总里程</label></li>
 				        <li><label><input value="cssSpeed" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车速</label></li>
 				        <li><label><input value="cssMotor" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >转速</label></li>
-				        <li><label><input value="cssOil" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >燃油量:</label></li>
+				        <li><label><input value="cssOil" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >燃油量</label></li>
 				        <li><label><input value="cssPower" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >小电瓶电量</label></li>
 				        <li><label><input value="cssEvBattery" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >SOC</label></li>
 				        <li><label><input value="cssChargingText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >充电状态</label></li>
@@ -68,6 +70,9 @@
 				        <li><label><input value="cssBaseCi" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >CI</label></li>
 				        <li><label><input value="cssOrder" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >订单号</label></li>
 				        <li><label><input value="cssMoData" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >报文数据</label></li>
+				        <li><label><input value="cssTeNo" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >终端信息</label></li>
+				        <li><label><input value="cssAutopilot" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >自动驾驶状态</label></li>
+				        <li><label><input value="cssHandbrake" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >手刹状态</label></li>
 					</ul>
 				</div>
 			</div>
@@ -206,16 +211,17 @@
 	var tableId = "TCsState";
 	var clms = [{checkbox: true}
 	  		,{field: "cssId", title: "编号", width: 110, sort:true}
-	  		,{field: "cssNumberText", title: "车机号", width: 140, sort:true}
-	  		,{field: "cssCarText", title: "车辆", width: 180, sort:true}
-	  		,{field: "cssAddTime", title: "接收时间", width: 160, sort:true}
-	  		,{field: "cssCurrentTime", title: "报文时间", width: 160, sort:true}
+	  		,{field: "cssAccessText", title: "接入商", width: 110, sort:true}
+	  		,{field: "cssNumberText", title: "车机号", width: 110, sort:true}
+	  		,{field: "cssCarText", title: "车辆", width: 110, sort:true}
+	  		,{field: "cssAddTime", title: "接收时间", width: 110, sort:true}
+	  		,{field: "cssCurrentTime", title: "报文时间", width: 110, sort:true}
 	  		,{field: "cssWarn", title: "报警码", width: 110, sort:true}
-	  		,{field: "cssObdMile", title: "累计里程", width: 140, sort:true}
+	  		,{field: "cssObdMile", title: "累计里程", width: 110, sort:true}
 	  		,{field: "cssEngineT", title: "发动机温度", width: 110, sort:true}
 	  		,{field: "cssSpeed", title: "车速", width: 110, sort:true}
 	  		,{field: "cssMotor", title: "转速", width: 110, sort:true}
-	  		,{field: "cssOil", title: "燃油量:", width: 110, sort:true}
+	  		,{field: "cssOil", title: "燃油量", width: 110, sort:true}
 	  		,{field: "cssPower", title: "小电瓶电量", width: 110, sort:true}
 	  		,{field: "cssEvBattery", title: "SOC", width: 110, sort:true}
 	  		,{field: "cssChargingText", title: "充电状态", width: 110, sort:true}
@@ -240,7 +246,10 @@
 	  		,{field: "cssBaseCi", title: "CI", width: 110, sort:true}
 	  		,{field: "cssOrder", title: "订单号", width: 110, sort:true}
 	  		,{field: "cssMoData", title: "报文数据", width: 110, sort:true}
-      		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
+	  		,{field: "cssTeNo", title: "终端信息", width: 110, sort:true}
+	  		,{field: "cssAutopilot", title: "自动驾驶状态", width: 110, sort:true}
+	  		,{field: "cssHandbrake", title: "手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；", width: 110, sort:true}
+      		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {

@@ -9,10 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.ccclubs.frm.spring.resolver.Resolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.ccclubs.frm.spring.resolver.Resolver;
 
 /**
  * 车辆实时状态
@@ -20,7 +20,7 @@ import com.ccclubs.frm.spring.resolver.Resolver;
  */
 public class CsState implements java.io.Serializable
 {
-
+	private static final long serialVersionUID =         1L;
 	/**
 	 * [css_id]编号
 	 */
@@ -80,32 +80,32 @@ public class CsState implements java.io.Serializable
 	 * [css_obd_mile]累计里程
 	 */
 	
-	private   Integer cssObdMile;
+	private   Double cssObdMile;
 	/**
 	 * [css_engine_t]发动机温度
 	 */
 	
-	private   Integer cssEngineT;
+	private   Double cssEngineT;
 	/**
 	 * [css_mileage]订单总里程
 	 */
 	
-	private   Integer cssMileage;
+	private   Double cssMileage;
 	/**
 	 * [css_speed]车速
 	 */
 	
-	private   Short cssSpeed;
+	private   Double cssSpeed;
 	/**
 	 * [css_motor]转速
 	 */
 	
 	private   Integer cssMotor;
 	/**
-	 * [css_oil]燃油量:
+	 * [css_oil]燃油量
 	 */
 	
-	private   String cssOil;
+	private   Double cssOil;
 	/**
 	 * [css_power]小电瓶电量
 	 */
@@ -117,7 +117,7 @@ public class CsState implements java.io.Serializable
 	
 	private   Short cssEvBattery;
 	/**
-	 * [css_charging]充电状态0:不充电 1:慢充 2:快充 3:充电完成
+	 * [css_charging]充电状态0:未充电 1:慢充 2:快充 3:充电完成
 	 */
 	
 	private   Short cssCharging;
@@ -125,22 +125,22 @@ public class CsState implements java.io.Serializable
 	 * [css_fuel_mileage]订单油里程
 	 */
 	
-	private   String cssFuelMileage;
+	private   Double cssFuelMileage;
 	/**
 	 * [css_electric_mileage]订单电里程
 	 */
 	
-	private   String cssElectricMileage;
+	private   Double cssElectricMileage;
 	/**
 	 * [css_endurance]续航里程
 	 */
 	
-	private   String cssEndurance;
+	private   Double cssEndurance;
 	/**
 	 * [css_temperature]温度
 	 */
 	
-	private   Short cssTemperature;
+	private   Double cssTemperature;
 	/**
 	 * [css_csq]CSQ
 	 */
@@ -175,7 +175,7 @@ public class CsState implements java.io.Serializable
 	 * [css_dir]方向角
 	 */
 	
-	private   String cssDir;
+	private   Double cssDir;
 	/**
 	 * [css_circular]循环模式0:内循环 1:外循环
 	 */
@@ -207,7 +207,7 @@ public class CsState implements java.io.Serializable
 	
 	private   String cssDoor;
 	/**
-	 * [css_engine]发动机状态0:无效 1:未熄火 2:已熄火 3:ACC
+	 * [css_engine]发动机状态0:无效 1:未熄火 2:已熄火
 	 */
 	
 	private   Short cssEngine;
@@ -250,15 +250,27 @@ public class CsState implements java.io.Serializable
 	 * [css_order]订单号
 	 */
 	
-	private   Integer cssOrder;
+	private   Long cssOrder;
 	/**
 	 * [css_mo_data]报文数据
 	 */
 	
 	private   String cssMoData;
-
-
-	private static final long serialVersionUID =         1L;
+	/**
+	 * [css_te_no]终端信息
+	 */
+	
+	private   String cssTeNo;
+	/**
+	 * [css_autopilot]自动驾驶状态
+	 */
+	
+	private   Integer cssAutopilot;
+	/**
+	 * [css_handbrake]手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；
+	 */
+	
+	private   Integer cssHandbrake;
 	
 	//默认构造函数
 	public CsState(){
@@ -271,16 +283,13 @@ public class CsState implements java.io.Serializable
 	}
 	
 	//设置非空字段
-	public CsState setNotNull(Integer cssId,Short cssAccess,Short cssHost,String cssNumber,Date cssAddTime,Integer cssObdMile,Integer cssEngineT,Integer cssMileage,Short cssSpeed,Integer cssMotor,String cssOil,Integer cssPower,String cssFuelMileage,Short cssGpsValid,Short cssGpsCn,Short cssGpsCount,Short cssEngine,Short cssKey,Short cssGear,Integer cssLight,Integer cssLock){
+	public CsState setNotNull(Integer cssId,Short cssAccess,Short cssHost,String cssNumber,Date cssAddTime,Double cssObdMile,Integer cssMotor,Double cssOil,Integer cssPower,Double cssFuelMileage,Short cssGpsValid,Short cssGpsCn,Short cssGpsCount,Short cssEngine,Short cssKey,Short cssGear,Integer cssLight,Integer cssLock){
 		this.cssId=cssId;
 		this.cssAccess=cssAccess;
 		this.cssHost=cssHost;
 		this.cssNumber=cssNumber;
 		this.cssAddTime=cssAddTime;
 		this.cssObdMile=cssObdMile;
-		this.cssEngineT=cssEngineT;
-		this.cssMileage=cssMileage;
-		this.cssSpeed=cssSpeed;
 		this.cssMotor=cssMotor;
 		this.cssOil=cssOil;
 		this.cssPower=cssPower;
@@ -508,56 +517,56 @@ public class CsState implements java.io.Serializable
 	/**
 	* 累计里程 [非空]      
 	**/
-	public Integer getCssObdMile(){
+	public Double getCssObdMile(){
 		return this.cssObdMile;
 	}
 	
 	/**
 	* 累计里程 [非空]     
 	**/
-	public void setCssObdMile(Integer cssObdMile){
+	public void setCssObdMile(Double cssObdMile){
 		this.cssObdMile = cssObdMile;
 	}
 	/*******************************发动机温度**********************************/	
 	/**
-	* 发动机温度 [非空]      
+	* 发动机温度 [可空]      
 	**/
-	public Integer getCssEngineT(){
+	public Double getCssEngineT(){
 		return this.cssEngineT;
 	}
 	
 	/**
-	* 发动机温度 [非空]     
+	* 发动机温度 [可空]     
 	**/
-	public void setCssEngineT(Integer cssEngineT){
+	public void setCssEngineT(Double cssEngineT){
 		this.cssEngineT = cssEngineT;
 	}
 	/*******************************订单总里程**********************************/	
 	/**
-	* 订单总里程 [非空]      
+	* 订单总里程 [可空]      
 	**/
-	public Integer getCssMileage(){
+	public Double getCssMileage(){
 		return this.cssMileage;
 	}
 	
 	/**
-	* 订单总里程 [非空]     
+	* 订单总里程 [可空]     
 	**/
-	public void setCssMileage(Integer cssMileage){
+	public void setCssMileage(Double cssMileage){
 		this.cssMileage = cssMileage;
 	}
 	/*******************************车速**********************************/	
 	/**
-	* 车速 [非空]      
+	* 车速 [可空]      
 	**/
-	public Short getCssSpeed(){
+	public Double getCssSpeed(){
 		return this.cssSpeed;
 	}
 	
 	/**
-	* 车速 [非空]     
+	* 车速 [可空]     
 	**/
-	public void setCssSpeed(Short cssSpeed){
+	public void setCssSpeed(Double cssSpeed){
 		this.cssSpeed = cssSpeed;
 	}
 	/*******************************转速**********************************/	
@@ -574,18 +583,18 @@ public class CsState implements java.io.Serializable
 	public void setCssMotor(Integer cssMotor){
 		this.cssMotor = cssMotor;
 	}
-	/*******************************燃油量:**********************************/	
+	/*******************************燃油量**********************************/	
 	/**
-	* 燃油量: [非空]      
+	* 燃油量 [非空]      
 	**/
-	public String getCssOil(){
+	public Double getCssOil(){
 		return this.cssOil;
 	}
 	
 	/**
-	* 燃油量: [非空]     
+	* 燃油量 [非空]     
 	**/
-	public void setCssOil(String cssOil){
+	public void setCssOil(Double cssOil){
 		this.cssOil = cssOil;
 	}
 	/*******************************小电瓶电量**********************************/	
@@ -634,56 +643,56 @@ public class CsState implements java.io.Serializable
 	/**
 	* 订单油里程 [非空]      
 	**/
-	public String getCssFuelMileage(){
+	public Double getCssFuelMileage(){
 		return this.cssFuelMileage;
 	}
 	
 	/**
 	* 订单油里程 [非空]     
 	**/
-	public void setCssFuelMileage(String cssFuelMileage){
+	public void setCssFuelMileage(Double cssFuelMileage){
 		this.cssFuelMileage = cssFuelMileage;
 	}
 	/*******************************订单电里程**********************************/	
 	/**
 	* 订单电里程 [可空]      
 	**/
-	public String getCssElectricMileage(){
+	public Double getCssElectricMileage(){
 		return this.cssElectricMileage;
 	}
 	
 	/**
 	* 订单电里程 [可空]     
 	**/
-	public void setCssElectricMileage(String cssElectricMileage){
+	public void setCssElectricMileage(Double cssElectricMileage){
 		this.cssElectricMileage = cssElectricMileage;
 	}
 	/*******************************续航里程**********************************/	
 	/**
 	* 续航里程 [可空]      
 	**/
-	public String getCssEndurance(){
+	public Double getCssEndurance(){
 		return this.cssEndurance;
 	}
 	
 	/**
 	* 续航里程 [可空]     
 	**/
-	public void setCssEndurance(String cssEndurance){
+	public void setCssEndurance(Double cssEndurance){
 		this.cssEndurance = cssEndurance;
 	}
 	/*******************************温度**********************************/	
 	/**
 	* 温度 [可空]      
 	**/
-	public Short getCssTemperature(){
+	public Double getCssTemperature(){
 		return this.cssTemperature;
 	}
 	
 	/**
 	* 温度 [可空]     
 	**/
-	public void setCssTemperature(Short cssTemperature){
+	public void setCssTemperature(Double cssTemperature){
 		this.cssTemperature = cssTemperature;
 	}
 	/*******************************CSQ**********************************/	
@@ -774,14 +783,14 @@ public class CsState implements java.io.Serializable
 	/**
 	* 方向角 [可空]      
 	**/
-	public String getCssDir(){
+	public Double getCssDir(){
 		return this.cssDir;
 	}
 	
 	/**
 	* 方向角 [可空]     
 	**/
-	public void setCssDir(String cssDir){
+	public void setCssDir(Double cssDir){
 		this.cssDir = cssDir;
 	}
 	/*******************************循环模式**********************************/	
@@ -984,14 +993,14 @@ public class CsState implements java.io.Serializable
 	/**
 	* 订单号 [可空]      
 	**/
-	public Integer getCssOrder(){
+	public Long getCssOrder(){
 		return this.cssOrder;
 	}
 	
 	/**
 	* 订单号 [可空]     
 	**/
-	public void setCssOrder(Integer cssOrder){
+	public void setCssOrder(Long cssOrder){
 		this.cssOrder = cssOrder;
 	}
 	/*******************************报文数据**********************************/	
@@ -1007,5 +1016,47 @@ public class CsState implements java.io.Serializable
 	**/
 	public void setCssMoData(String cssMoData){
 		this.cssMoData = cssMoData;
+	}
+	/*******************************终端信息**********************************/	
+	/**
+	* 终端信息 [可空]      
+	**/
+	public String getCssTeNo(){
+		return this.cssTeNo;
+	}
+	
+	/**
+	* 终端信息 [可空]     
+	**/
+	public void setCssTeNo(String cssTeNo){
+		this.cssTeNo = cssTeNo;
+	}
+	/*******************************自动驾驶状态**********************************/	
+	/**
+	* 自动驾驶状态 [可空]      
+	**/
+	public Integer getCssAutopilot(){
+		return this.cssAutopilot;
+	}
+	
+	/**
+	* 自动驾驶状态 [可空]     
+	**/
+	public void setCssAutopilot(Integer cssAutopilot){
+		this.cssAutopilot = cssAutopilot;
+	}
+	/*******************************手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；**********************************/	
+	/**
+	* 手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知； [可空]      
+	**/
+	public Integer getCssHandbrake(){
+		return this.cssHandbrake;
+	}
+	
+	/**
+	* 手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知； [可空]     
+	**/
+	public void setCssHandbrake(Integer cssHandbrake){
+		this.cssHandbrake = cssHandbrake;
 	}
 }
