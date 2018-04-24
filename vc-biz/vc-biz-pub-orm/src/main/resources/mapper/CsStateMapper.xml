@@ -1145,7 +1145,7 @@
           css_mo_data = #{item.cssMoData,jdbcType=VARCHAR},
         </if>
         <if test="item.cssAutopilot!=null">
-          css_autopilot=#{item.cssAutopilot,jdbcType=INTEGER}
+          css_autopilot=#{item.cssAutopilot,jdbcType=INTEGER},
         </if>
         <if test="item.cssHandbrake!=null">
           css_handbrake=#{item.cssHandbrake,jdbcType=INTEGER}
