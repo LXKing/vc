@@ -37,7 +37,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
     /**
      * 每隔一定的时间计算一次状态数据并且存入数据库。
      */
-//    @Scheduled(cron = "0 0/30 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void shortTimeJob() {
         logger.info("执行了一次  30分钟间隔的计算。");
         long unitTime = 30 * 60 * 1000;
@@ -47,7 +47,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
 
     }
 
-//    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void everyDayJob() {
         logger.info("执行了一次  12点定时的计算。");
         long unitTime = 24 * 60 * 60 * 1000;
