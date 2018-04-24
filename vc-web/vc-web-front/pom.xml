@@ -34,6 +34,11 @@
         </dependency>
         <dependency>
             <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-swagger</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-dubbox</artifactId>
             <version>${frm.version}</version>
         </dependency>

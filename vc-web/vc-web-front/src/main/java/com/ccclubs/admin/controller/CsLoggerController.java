@@ -5,6 +5,7 @@ import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.mongo.orm.query.CsLoggerQuery;
 import com.ccclubs.mongo.service.impl.CsLoggerService;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,7 @@ public class CsLoggerController {
      * @param rows
      * @return
      */
+    @ApiOperation(value = "获取日志分页记录",notes = "获取日志分页记录")
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsLogger> list(CsLoggerQuery query,
                                       @RequestParam(defaultValue = "0") Integer page,
