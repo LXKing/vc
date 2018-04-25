@@ -1148,7 +1148,7 @@
           css_autopilot=#{item.cssAutopilot,jdbcType=INTEGER},
         </if>
         <if test="item.cssHandbrake!=null">
-          css_handbrake=#{item.cssHandbrake,jdbcType=INTEGER}
+          css_handbrake=#{item.cssHandbrake,jdbcType=INTEGER},
         </if>
       </set>
       where css_id = #{item.cssId,jdbcType=INTEGER}
