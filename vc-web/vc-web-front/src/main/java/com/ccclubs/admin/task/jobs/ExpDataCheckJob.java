@@ -107,7 +107,7 @@ public class ExpDataCheckJob implements Runnable {
                 invalidData.add(vehicleExp);
             }
         }
-        logger.info("扫描完成. 检测到{}辆异常数据", invalidData.size());
+        logger.info("扫描完成. 检测到 {} 辆异常数据", invalidData.size());
         //批量写入mongo
         if (invalidData.size() > 0) {
             historyMongoTemplate.insert(invalidData, CsVehicleExp.class);
