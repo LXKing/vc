@@ -220,7 +220,7 @@ public class StatisticsExecutor {
                 if (15!=csState.getCssGear()
                         ||1==csState.getCssEngine()
                         ||csState.getCssMotor()>0
-                        ||csState.getCssSpeed()>0){
+                        ||csState.getCssSpeed().doubleValue()>0){
                     redisTemplate.opsForSet().add(Constants.REDIS_KEY_RUNNING_CAR_SET,csState.getCssCar());
                     count++;
                 }
@@ -274,10 +274,10 @@ public class StatisticsExecutor {
      * 方法：所有的OBD里程直接相加。
      * */
     public float calculateTotalMileage(List<CsState> csStateList) {
-        int count=0;
+        float count=0;
         if (null!=csStateList&&csStateList.size()>0){
             for (CsState csState:csStateList){
-                count+=csState.getCssObdMile();
+                count+=csState.getCssObdMile().floatValue();
             }
         }
         return count;
