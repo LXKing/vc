@@ -124,10 +124,12 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         int protocol = null == csMachine.getCsmProtocol() ? -1 : csMachine.getCsmProtocol().intValue();
         boolean isOnline = true;
         switch (protocol) {
+            // MQTT协议使用车机号 -> MqttMessageProcessService.java
             case 1:
                 isOnline = (null != redisTemplate.opsForValue()
                         .get(REDIS_KEY_ONLINE + csMachine.getCsmNumber()));
                 break;
+            // JT808协议使用手机卡号 -> JT808ServerHandler.java
             case 2:
                 isOnline = (null != redisTemplate.opsForValue()
                         .get(REDIS_KEY_ONLINE + csMachine.getCsmMobile()));
