@@ -15,7 +15,7 @@ public class MqTagProperty {
   // 车机端 状态数据 TAG
   public static String MQ_TERMINAL_STATUS = "terminal_status_";
   //车机端 自动驾驶 TAG
-  public static String MQ_TERMINAL_AUTOPILOT = "terminal_ autopilot_";
+  public static String MQ_TERMINAL_AUTOPILOT = "terminal_autopilot_";
   // 车机端 触发状态数据 TAG
   public static String MQ_TERMINAL_TRIGGER = "terminal_trigger_";
   // 车机端 报警数据 TAG
