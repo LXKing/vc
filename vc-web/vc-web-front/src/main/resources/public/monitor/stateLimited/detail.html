@@ -376,9 +376,15 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；：</dt>
+					<dt>手刹状态：</dt>
 					<dd>
-					<input name="cssHandbrake" placeholder="请输入手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；" class="form-control" >
+					<select class="form-control m-b" name="cssHandbrake"  >
+                         <option></option>
+                         <option value="0">所有刹车释放</option>
+                         <option value="1">所有刹车应用</option>
+                         <option value="2">所有刹车不工作（应用或释放中）</option>
+                         <option value="3">未知</option>
+                    </select>
 					</dd>
 				</dl>
 		</div>

@@ -7,7 +7,7 @@ import com.ccclubs.frm.spring.resolver.Resolver;
 public enum CsStateResolver{
 	
 		接入商(new Resolver<CsState>("cssAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
-		private static final long serialVersionUID = 2038864796L;
+		private static final long serialVersionUID = 2038874920L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -21,7 +21,7 @@ public enum CsStateResolver{
 		})
 	,
 		车机号(new Resolver<CsState>("cssNumberText") {
-		private static final long serialVersionUID = 2038879836L;
+		private static final long serialVersionUID = 2038890774L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -33,7 +33,7 @@ public enum CsStateResolver{
 		})
 	,
 		车辆(new Resolver<CsState>("cssCarText", com.ccclubs.admin.metadata.MetaDef.getVehicleVin) {
-		private static final long serialVersionUID = 2038883747L;
+		private static final long serialVersionUID = 203881639L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -47,7 +47,7 @@ public enum CsStateResolver{
 		})
 	,
 		充电状态(new Resolver<CsState>("cssChargingText") {
-		private static final long serialVersionUID = 2038864083L;
+		private static final long serialVersionUID = 2038875246L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -76,7 +76,7 @@ public enum CsStateResolver{
 		})
 	,
 		GPS有效性(new Resolver<CsState>("cssGpsValidText") {
-		private static final long serialVersionUID = 2038837092L;
+		private static final long serialVersionUID = 2038819218L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -99,7 +99,7 @@ public enum CsStateResolver{
 		})
 	,
 		循环模式(new Resolver<CsState>("cssCircularText") {
-		private static final long serialVersionUID = 2038841072L;
+		private static final long serialVersionUID = 2038847474L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -122,7 +122,7 @@ public enum CsStateResolver{
 		})
 	,
 		PTC启停(new Resolver<CsState>("cssPtcText") {
-		private static final long serialVersionUID = 2038810720L;
+		private static final long serialVersionUID = 2038854131L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -145,7 +145,7 @@ public enum CsStateResolver{
 		})
 	,
 		压缩机(new Resolver<CsState>("cssCompresText") {
-		private static final long serialVersionUID = 203884302L;
+		private static final long serialVersionUID = 2038835310L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -168,7 +168,7 @@ public enum CsStateResolver{
 		})
 	,
 		档风量(new Resolver<CsState>("cssFanText") {
-		private static final long serialVersionUID = 2038843689L;
+		private static final long serialVersionUID = 2038847635L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -200,7 +200,7 @@ public enum CsStateResolver{
 		})
 	,
 		功耗模式(new Resolver<CsState>("cssSavingText") {
-		private static final long serialVersionUID = 2038811693L;
+		private static final long serialVersionUID = 2038865496L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -226,7 +226,7 @@ public enum CsStateResolver{
 		})
 	,
 		发动机状态(new Resolver<CsState>("cssEngineText") {
-		private static final long serialVersionUID = 2038832139L;
+		private static final long serialVersionUID = 2038818144L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -252,7 +252,7 @@ public enum CsStateResolver{
 		})
 	,
 		档位(new Resolver<CsState>("cssGearText") {
-		private static final long serialVersionUID = 2038857707L;
+		private static final long serialVersionUID = 2038854506L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -317,7 +317,7 @@ public enum CsStateResolver{
 		})
 	,
 		网络类型(new Resolver<CsState>("cssNetTypeText") {
-		private static final long serialVersionUID = 203888800L;
+		private static final long serialVersionUID = 2038822653L;
 
 		@Override
 		public <T> T execute(CsState record) {
@@ -335,6 +335,35 @@ public enum CsStateResolver{
 				}
 				if(sArr[i].equals("2")){
 					result+=(i==0?"":",")+ "CDMA";
+				}
+			}
+
+				return (T)result;
+				}
+		})
+	,
+		手刹状态(new Resolver<CsState>("cssHandbrakeText") {
+		private static final long serialVersionUID = 2038840112L;
+
+		@Override
+		public <T> T execute(CsState record) {
+				if(record.getCssHandbrake()==null){
+				return null;
+				}
+				String result = "";
+				String[] sArr = record.getCssHandbrake().toString().split(",");
+			for(int i=0;i<sArr.length;i++){
+				if(sArr[i].equals("0")){
+					result+=(i==0?"":",")+ "所有刹车释放";
+				}
+				if(sArr[i].equals("1")){
+					result+=(i==0?"":",")+ "所有刹车应用";
+				}
+				if(sArr[i].equals("2")){
+					result+=(i==0?"":",")+ "所有刹车不工作（应用或释放中）";
+				}
+				if(sArr[i].equals("3")){
+					result+=(i==0?"":",")+ "未知";
 				}
 			}
 

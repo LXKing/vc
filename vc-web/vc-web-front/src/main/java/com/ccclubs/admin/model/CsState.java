@@ -1,17 +1,17 @@
 package com.ccclubs.admin.model;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.ccclubs.frm.spring.resolver.Resolver;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-
-import com.ccclubs.frm.spring.resolver.Resolver;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -80,22 +80,22 @@ public class CsState implements java.io.Serializable
 	 * [css_obd_mile]累计里程
 	 */
 	
-	private   Double cssObdMile;
+	private BigDecimal cssObdMile;
 	/**
 	 * [css_engine_t]发动机温度
 	 */
 	
-	private   Double cssEngineT;
+	private   BigDecimal cssEngineT;
 	/**
 	 * [css_mileage]订单总里程
 	 */
 	
-	private   Double cssMileage;
+	private   BigDecimal cssMileage;
 	/**
 	 * [css_speed]车速
 	 */
 	
-	private   Double cssSpeed;
+	private   BigDecimal cssSpeed;
 	/**
 	 * [css_motor]转速
 	 */
@@ -105,7 +105,7 @@ public class CsState implements java.io.Serializable
 	 * [css_oil]燃油量
 	 */
 	
-	private   Double cssOil;
+	private   BigDecimal cssOil;
 	/**
 	 * [css_power]小电瓶电量
 	 */
@@ -125,22 +125,22 @@ public class CsState implements java.io.Serializable
 	 * [css_fuel_mileage]订单油里程
 	 */
 	
-	private   Double cssFuelMileage;
+	private   BigDecimal cssFuelMileage;
 	/**
 	 * [css_electric_mileage]订单电里程
 	 */
 	
-	private   Double cssElectricMileage;
+	private   BigDecimal cssElectricMileage;
 	/**
 	 * [css_endurance]续航里程
 	 */
 	
-	private   Double cssEndurance;
+	private   BigDecimal cssEndurance;
 	/**
 	 * [css_temperature]温度
 	 */
 	
-	private   Double cssTemperature;
+	private   BigDecimal cssTemperature;
 	/**
 	 * [css_csq]CSQ
 	 */
@@ -150,12 +150,12 @@ public class CsState implements java.io.Serializable
 	 * [css_longitude]经度
 	 */
 	
-	private   Double cssLongitude;
+	private   BigDecimal cssLongitude;
 	/**
 	 * [css_latitude]纬度
 	 */
 	
-	private   Double cssLatitude;
+	private   BigDecimal cssLatitude;
 	/**
 	 * [css_gps_valid]GPS有效性0:无效 1:有效
 	 */
@@ -175,7 +175,7 @@ public class CsState implements java.io.Serializable
 	 * [css_dir]方向角
 	 */
 	
-	private   Double cssDir;
+	private   BigDecimal cssDir;
 	/**
 	 * [css_circular]循环模式0:内循环 1:外循环
 	 */
@@ -267,7 +267,7 @@ public class CsState implements java.io.Serializable
 	
 	private   Integer cssAutopilot;
 	/**
-	 * [css_handbrake]手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；
+	 * [css_handbrake]手刹状态0:所有刹车释放 1:所有刹车应用 2:所有刹车不工作（应用或释放中） 3:未知
 	 */
 	
 	private   Integer cssHandbrake;
@@ -283,7 +283,7 @@ public class CsState implements java.io.Serializable
 	}
 	
 	//设置非空字段
-	public CsState setNotNull(Integer cssId,Short cssAccess,Short cssHost,String cssNumber,Date cssAddTime,Double cssObdMile,Integer cssMotor,Double cssOil,Integer cssPower,Double cssFuelMileage,Short cssGpsValid,Short cssGpsCn,Short cssGpsCount,Short cssEngine,Short cssKey,Short cssGear,Integer cssLight,Integer cssLock){
+	public CsState setNotNull(Integer cssId,Short cssAccess,Short cssHost,String cssNumber,Date cssAddTime,BigDecimal cssObdMile,Integer cssMotor,BigDecimal cssOil,Integer cssPower,BigDecimal cssFuelMileage,Short cssGpsValid,Short cssGpsCn,Short cssGpsCount,Short cssEngine,Short cssKey,Short cssGear,Integer cssLight,Integer cssLock){
 		this.cssId=cssId;
 		this.cssAccess=cssAccess;
 		this.cssHost=cssHost;
@@ -343,6 +343,9 @@ public class CsState implements java.io.Serializable
 	}
 	public Object getCssNetTypeText(){
 		return resolve("cssNetTypeText");
+	}
+	public Object getCssHandbrakeText(){
+		return resolve("cssHandbrakeText");
 	}
 	
 	@Transient
@@ -517,56 +520,56 @@ public class CsState implements java.io.Serializable
 	/**
 	* 累计里程 [非空]      
 	**/
-	public Double getCssObdMile(){
+	public BigDecimal getCssObdMile(){
 		return this.cssObdMile;
 	}
 	
 	/**
 	* 累计里程 [非空]     
 	**/
-	public void setCssObdMile(Double cssObdMile){
+	public void setCssObdMile(BigDecimal cssObdMile){
 		this.cssObdMile = cssObdMile;
 	}
 	/*******************************发动机温度**********************************/	
 	/**
 	* 发动机温度 [可空]      
 	**/
-	public Double getCssEngineT(){
+	public BigDecimal getCssEngineT(){
 		return this.cssEngineT;
 	}
 	
 	/**
 	* 发动机温度 [可空]     
 	**/
-	public void setCssEngineT(Double cssEngineT){
+	public void setCssEngineT(BigDecimal cssEngineT){
 		this.cssEngineT = cssEngineT;
 	}
 	/*******************************订单总里程**********************************/	
 	/**
 	* 订单总里程 [可空]      
 	**/
-	public Double getCssMileage(){
+	public BigDecimal getCssMileage(){
 		return this.cssMileage;
 	}
 	
 	/**
 	* 订单总里程 [可空]     
 	**/
-	public void setCssMileage(Double cssMileage){
+	public void setCssMileage(BigDecimal cssMileage){
 		this.cssMileage = cssMileage;
 	}
 	/*******************************车速**********************************/	
 	/**
 	* 车速 [可空]      
 	**/
-	public Double getCssSpeed(){
+	public BigDecimal getCssSpeed(){
 		return this.cssSpeed;
 	}
 	
 	/**
 	* 车速 [可空]     
 	**/
-	public void setCssSpeed(Double cssSpeed){
+	public void setCssSpeed(BigDecimal cssSpeed){
 		this.cssSpeed = cssSpeed;
 	}
 	/*******************************转速**********************************/	
@@ -587,14 +590,14 @@ public class CsState implements java.io.Serializable
 	/**
 	* 燃油量 [非空]      
 	**/
-	public Double getCssOil(){
+	public BigDecimal getCssOil(){
 		return this.cssOil;
 	}
 	
 	/**
 	* 燃油量 [非空]     
 	**/
-	public void setCssOil(Double cssOil){
+	public void setCssOil(BigDecimal cssOil){
 		this.cssOil = cssOil;
 	}
 	/*******************************小电瓶电量**********************************/	
@@ -643,56 +646,56 @@ public class CsState implements java.io.Serializable
 	/**
 	* 订单油里程 [非空]      
 	**/
-	public Double getCssFuelMileage(){
+	public BigDecimal getCssFuelMileage(){
 		return this.cssFuelMileage;
 	}
 	
 	/**
 	* 订单油里程 [非空]     
 	**/
-	public void setCssFuelMileage(Double cssFuelMileage){
+	public void setCssFuelMileage(BigDecimal cssFuelMileage){
 		this.cssFuelMileage = cssFuelMileage;
 	}
 	/*******************************订单电里程**********************************/	
 	/**
 	* 订单电里程 [可空]      
 	**/
-	public Double getCssElectricMileage(){
+	public BigDecimal getCssElectricMileage(){
 		return this.cssElectricMileage;
 	}
 	
 	/**
 	* 订单电里程 [可空]     
 	**/
-	public void setCssElectricMileage(Double cssElectricMileage){
+	public void setCssElectricMileage(BigDecimal cssElectricMileage){
 		this.cssElectricMileage = cssElectricMileage;
 	}
 	/*******************************续航里程**********************************/	
 	/**
 	* 续航里程 [可空]      
 	**/
-	public Double getCssEndurance(){
+	public BigDecimal getCssEndurance(){
 		return this.cssEndurance;
 	}
 	
 	/**
 	* 续航里程 [可空]     
 	**/
-	public void setCssEndurance(Double cssEndurance){
+	public void setCssEndurance(BigDecimal cssEndurance){
 		this.cssEndurance = cssEndurance;
 	}
 	/*******************************温度**********************************/	
 	/**
 	* 温度 [可空]      
 	**/
-	public Double getCssTemperature(){
+	public BigDecimal getCssTemperature(){
 		return this.cssTemperature;
 	}
 	
 	/**
 	* 温度 [可空]     
 	**/
-	public void setCssTemperature(Double cssTemperature){
+	public void setCssTemperature(BigDecimal cssTemperature){
 		this.cssTemperature = cssTemperature;
 	}
 	/*******************************CSQ**********************************/	
@@ -713,28 +716,28 @@ public class CsState implements java.io.Serializable
 	/**
 	* 经度 [可空]      
 	**/
-	public Double getCssLongitude(){
+	public BigDecimal getCssLongitude(){
 		return this.cssLongitude;
 	}
 	
 	/**
 	* 经度 [可空]     
 	**/
-	public void setCssLongitude(Double cssLongitude){
+	public void setCssLongitude(BigDecimal cssLongitude){
 		this.cssLongitude = cssLongitude;
 	}
 	/*******************************纬度**********************************/	
 	/**
 	* 纬度 [可空]      
 	**/
-	public Double getCssLatitude(){
+	public BigDecimal getCssLatitude(){
 		return this.cssLatitude;
 	}
 	
 	/**
 	* 纬度 [可空]     
 	**/
-	public void setCssLatitude(Double cssLatitude){
+	public void setCssLatitude(BigDecimal cssLatitude){
 		this.cssLatitude = cssLatitude;
 	}
 	/*******************************GPS有效性**********************************/	
@@ -783,14 +786,14 @@ public class CsState implements java.io.Serializable
 	/**
 	* 方向角 [可空]      
 	**/
-	public Double getCssDir(){
+	public BigDecimal getCssDir(){
 		return this.cssDir;
 	}
 	
 	/**
 	* 方向角 [可空]     
 	**/
-	public void setCssDir(Double cssDir){
+	public void setCssDir(BigDecimal cssDir){
 		this.cssDir = cssDir;
 	}
 	/*******************************循环模式**********************************/	
@@ -1045,16 +1048,16 @@ public class CsState implements java.io.Serializable
 	public void setCssAutopilot(Integer cssAutopilot){
 		this.cssAutopilot = cssAutopilot;
 	}
-	/*******************************手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知；**********************************/	
+	/*******************************手刹状态**********************************/	
 	/**
-	* 手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知； [可空]      
+	* 手刹状态 [可空]      
 	**/
 	public Integer getCssHandbrake(){
 		return this.cssHandbrake;
 	}
 	
 	/**
-	* 手刹状态：0=所有刹车释放；1=所有刹车应用；2=所有刹车不工作（应用或释放中）；3=未知； [可空]     
+	* 手刹状态 [可空]     
 	**/
 	public void setCssHandbrake(Integer cssHandbrake){
 		this.cssHandbrake = cssHandbrake;
