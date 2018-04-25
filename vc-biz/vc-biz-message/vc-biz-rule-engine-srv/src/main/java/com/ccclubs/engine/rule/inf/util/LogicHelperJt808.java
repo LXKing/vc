@@ -109,9 +109,9 @@ public class LogicHelperJt808 {
           csState.setCssLatitude(bigDecimalLat.setScale(6, BigDecimal.ROUND_HALF_UP));
         }
 
-        // 需要更新的当前状态加入等待队列
-        ListOperations opsForList = redisTemplate.opsForList();
-        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+        // 需要更新的当前状态加入等待队列 commented by jhy : 不在使用（已迁移到kafka）
+        // ListOperations opsForList = redisTemplate.opsForList();
+        // opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
         // 合并为完整的状态数据，并写入历史数据
         CsState csStateCurrent = queryStateService.queryStateByIdFor808(csState.getCssId());
         csStateCurrent.setCssCsq(csState.getCssCsq());
@@ -277,9 +277,9 @@ public class LogicHelperJt808 {
 
       if (mapping.getCan() != null) {
         csCan.setCscId(mapping.getCan());
-        // 需要更新的当前CAN数据加入等待队列
-        ListOperations opsForList = redisTemplate.opsForList();
-        opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
+        // 需要更新的当前CAN数据加入等待队列 commented by jhy : 不在使用（已迁移到kafka）
+        //ListOperations opsForList = redisTemplate.opsForList();
+        //opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
       } else {
         updateCanService.insert(csCan);
       }
