@@ -211,10 +211,11 @@ function getAllAuth(userid, token) {
     $.ajax({
         type: "POST",
         url: getServUrl("/oauth/getUserLimit"),
-        data: {
+        data: JSON.stringify({
             userid: userid
-        },
+        }),
         dataType: "json",
+        contentType: 'application/json',
         cache: false,
         async:false,
         headers: {'Authorization': 'bearer ' + token},

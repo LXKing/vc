@@ -23,9 +23,9 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
 //    registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 //  }
 
-  @Autowired
-  TokenInterceptor tokenInterceptor;
-/*  @Override
+//  @Autowired
+//  TokenInterceptor tokenInterceptor;
+  /*@Override
   public void addInterceptors(InterceptorRegistry registry) {
     // 多个拦截器组成一个拦截器链
     // addPathPatterns 用于添加拦截规则

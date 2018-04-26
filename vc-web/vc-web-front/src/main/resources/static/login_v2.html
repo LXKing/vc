@@ -2,50 +2,50 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <title>车辆监控后台 - 登录</title>
-  <meta name="keywords" content="车辆监控后台">
-  <meta name="description"
-        content="车辆监控后台">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-  <link href="css/animate.min.css" rel="stylesheet">
-  <link href="css/style.min.css" rel="stylesheet">
-  <link href="css/login.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="layui/css/layui.css?t=1510164124207" media="all">
+    <title>车辆监控后台 - 登录</title>
+    <meta name="keywords" content="车辆监控后台">
+    <meta name="description"
+          content="车辆监控后台">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+    <link href="css/login.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="layui/css/layui.css?t=1510164124207" media="all">
 
-  <!--[if lt IE 8]>
-  <meta http-equiv="refresh" content="0;ie.html"/>
-  <![endif]-->
-  <script>
-    //         if(window.top!==window.self){window.top.location=window.location};
-  </script>
+    <!--[if lt IE 8]>
+    <meta http-equiv="refresh" content="0;ie.html"/>
+    <![endif]-->
+    <script>
+        //         if(window.top!==window.self){window.top.location=window.location};
+    </script>
 
 </head>
 
 <body class="signin">
-  <div class=" signinpanel">
+<div class=" signinpanel">
     <div class="row">
-      <div class="col-sm-7">
-      </div>
-      <div class="col-sm-5">
-        <form>
-          <h4 class="no-margins">登录：</h4>
-          <p class="m-t-md">登录到车辆监控后台</p>
-          <input type="text" id="username" class="form-control uname" placeholder="用户名"/>
-          <input type="password" id="password" class="form-control pword m-b" placeholder="密码"/>
-          <button type="button" id="login" class="btn btn-success btn-block">登录</button>
-        </form>
-      </div>
+        <div class="col-sm-7">
+        </div>
+        <div class="col-sm-5">
+            <form>
+                <h4 class="no-margins">登录：</h4>
+                <p class="m-t-md">登录到车辆监控后台</p>
+                <input type="text" id="username" class="form-control uname" placeholder="用户名"/>
+                <input type="password" id="password" class="form-control pword m-b" placeholder="密码"/>
+                <button type="button" id="login" class="btn btn-success btn-block">登录</button>
+            </form>
+        </div>
     </div>
     <div class="signup-footer">
-      <div class="pull-left">
-        &copy; 2018 All Rights Reserved.
-      </div>
+        <div class="pull-left">
+            &copy; 2018 All Rights Reserved.
+        </div>
     </div>
-  </div>
+</div>
 </body>
 <script src="js/jquery.min.js?v=2.1.4"></script>
 <script src="js/bootstrap.min.js?v=3.3.5"></script>
@@ -54,67 +54,69 @@
 <script src="layui/layui.all.js?t=1510164124207"></script>
 
 <script>
-  //为keyListener方法注册按键事件
-  document.onkeydown=keyListener;
-  function keyListener(e){
-    // 当按下回车键，执行我们的代码
-    if(e.keyCode == 13){
-      doLogin()
+    //为keyListener方法注册按键事件
+    document.onkeydown = keyListener;
+
+    function keyListener(e) {
+        // 当按下回车键，执行我们的代码
+        if (e.keyCode == 13) {
+            doLogin()
+        }
     }
-  }
 
-  $("#login").click(doLogin);
+    $("#login").click(doLogin);
 
-  function doLogin() {
-      var username = $("#username").val();
-      var password = $("#password").val();
-      if (username === "") {
-        layer.msg('请输入账号', {icon: 7, time: 3000});
-        return;
-      }
-      if (password === "") {
-        layer.msg('请输入密码', {icon: 7, time: 3000});
-        return;
-      }
-      var referer = getQueryString("referer");
-      $.ajax({
-        type: "POST",
-        url: getServUrl("user/login"),
-        data: {
-          username: username,
-          password: password
-        },
-        dataType: "json",
-        success: function (data) {
-          if (data.success) {
-            var datas = data.data;
+    function doLogin() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if (username === "") {
+            layer.msg('请输入账号', {icon: 7, time: 3000});
+            return;
+        }
+        if (password === "") {
+            layer.msg('请输入密码', {icon: 7, time: 3000});
+            return;
+        }
+        var referer = getQueryString("referer");
+        $.ajax({
+            type: "POST",
+            url: getServUrl("user/login"),
+            data: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (data) {
+                if (data.success) {
+                    var datas = data.data;
 //            if (referer === "") {
-              window.location.href = authUrl + "/index.html?access_token=" + datas.access_token
-                  + "&userId=" + datas.user_id+ "&userName="+username;
+                    window.location.href = authUrl + "/index.html?access_token=" + datas.access_token
+                        + "&userId=" + datas.user_id + "&userName=" + username;
 //            } else {
 //              window.location.href = referer + "?access_token=" + datas.access_token + "&userId="
 //                  + datas.user_id + "&userName="+username;
 //            }
-          } else {
-            layer.msg(data.message, {icon: 7, time: 3000});
-          }
-        },
-        error: function (jqXHR) {
-          layer.msg("请求失败：" + jqXHR.status, {icon: 7, time: 3000});
-        },
-      });
-  }
-
-  function getQueryString(name) {
-    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-    var r = window.location.search.substr(1).match(reg);
-    var context = "";
-    if (r != null) {
-      context = r[2];
+                } else {
+                    layer.msg(data.message, {icon: 7, time: 3000});
+                }
+            },
+            error: function (jqXHR) {
+                layer.msg("请求失败：" + jqXHR.status, {icon: 7, time: 3000});
+            },
+        });
     }
-    reg = null;
-    r = null;
-    return context == null || context == "" || context == "undefined" ? "" : context;
-  }
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        var context = "";
+        if (r != null) {
+            context = r[2];
+        }
+        reg = null;
+        r = null;
+        return context == null || context == "" || context == "undefined" ? "" : context;
+    }
 </script>
 </html>

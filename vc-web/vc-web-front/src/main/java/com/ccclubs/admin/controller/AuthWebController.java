@@ -11,10 +11,16 @@ import com.ccclubs.admin.service.ISrvLimitedService;
 import com.ccclubs.admin.service.ISrvProjectService;
 import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.vo.Param;
+import com.ccclubs.admin.vo.PermQueryVo;
 import com.ccclubs.admin.vo.ResultCode;
 import com.ccclubs.admin.vo.ResultMsg;
 import com.ccclubs.protocol.util.StringUtils;
-import io.swagger.annotations.ApiOperation;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,11 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -66,12 +67,9 @@ public class AuthWebController {
     /**
      * 获取用户所有菜单
      */
-    @ApiOperation(value = "获取用户菜单", notes = "获取用户所有菜单")
-    @SuppressWarnings(
-            {"rawtypes", "unchecked"})
     @PostMapping("oauth/getUserLimit")
-    public ResultMsg getUserLimit(@RequestParam("userid")
-                                          Long actorid) {
+    public ResultMsg getUserLimit(@RequestBody PermQueryVo queryVo) {
+        Long actorid = queryVo.getUserid();
         Map resultMap;
         if (actorid == null) {
             return new ResultMsg<>(false,
@@ -123,7 +121,6 @@ public class AuthWebController {
      */
     @SuppressWarnings(
             {"rawtypes", "unchecked"})
-    @ApiOperation(value = "获取权限", notes = "获取用户权限")
     @PostMapping("oauth/getSrvlimit")
     public ResultMsg getSrvlimit(@RequestParam("path") String path,
                                  @RequestParam("userid") Long userId) {
@@ -206,7 +203,6 @@ public class AuthWebController {
      * @param params
      * @return
      */
-    @ApiOperation(value = "修改密码", notes = "用户修改自身账户密码")
     @PostMapping("oauth/editPassword")
     public ResultMsg editPassword(@RequestBody Param<String, Object> params) {
         try {
