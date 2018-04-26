@@ -16,7 +16,7 @@ public class SimpleCmdInput extends CommonInput implements java.io.Serializable 
     private String vin;
 
     @NotNull(message = "指令类型必填")
-    @InArray(range = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}, message = "输入的指令类型不支持")
+    @InArray(range = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 101, 102}, message = "输入的指令类型不支持")
     private Integer cmd;
 
     public String getVin() {
