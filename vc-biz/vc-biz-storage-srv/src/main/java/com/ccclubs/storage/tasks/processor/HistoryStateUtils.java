@@ -166,7 +166,7 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     if(null!=csState.getCssFuelMileage()) {
       csStateHistory.setFuel_miles(csState.getCssFuelMileage().floatValue());
     }
-    //if(null!=csState.getCssElectricMileage())
+    if(null!=csState.getCssElectricMileage())
     {
       csStateHistory.setElec_miles(csState.getCssElectricMileage().floatValue());
     }
