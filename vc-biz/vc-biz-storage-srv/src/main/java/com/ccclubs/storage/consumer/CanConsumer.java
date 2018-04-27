@@ -40,7 +40,12 @@ public class CanConsumer {
             csCanList.add(csCan);
         }
 
-        historyCanUtils.saveHistoryDataToHbase(csCanList);
+        try {
+            historyCanUtils.saveHistoryDataToHbase(csCanList);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+
 
     }
 

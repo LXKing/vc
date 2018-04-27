@@ -37,8 +37,12 @@ public class CsStateConsumer {
             if (csState==null){continue;}
             csStateList.add(csState);
         }
+        try {
+            historyStateUtils.saveHistoryDataToHbase(csStateList);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
 
-        historyStateUtils.saveHistoryDataToHbase(csStateList);
 
     }
 
