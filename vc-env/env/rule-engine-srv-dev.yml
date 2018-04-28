@@ -5,6 +5,8 @@ spring:
   redis:
     #host: 127.0.0.1
     host: 118.178.229.234
+    password: WDnlDnt6f7GuYh
+    port: 63791
     database: 7
     pool:
       maxIdle: 10
@@ -38,6 +40,10 @@ kafka:
   topic:
     gb:
       rt: topic_gb_0x02
+    history:
+      csmessage: topic_cs_message
+      cscan: topic_cs_can
+      csstate: topic_cs_state
 
 ccclubs:
   data:

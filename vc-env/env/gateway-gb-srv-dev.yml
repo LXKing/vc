@@ -1,6 +1,13 @@
 server:
   port: 8901
 
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 dubbo:
   scan:
     annotationPackage: com.ccclubs
