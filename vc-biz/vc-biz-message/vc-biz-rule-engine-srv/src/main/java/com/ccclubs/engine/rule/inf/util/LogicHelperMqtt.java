@@ -274,8 +274,6 @@ public class LogicHelperMqtt {
       //opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
       kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
-      // 处理历史状态
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
@@ -287,9 +285,6 @@ public class LogicHelperMqtt {
       updateStateService.insert(csState);
       // 发送历史状态到kafka
       kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
-      // 处理历史状态
-//      ListOperations opsForList = redisTemplate.opsForList();
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     }
   }
 
@@ -332,13 +327,10 @@ public class LogicHelperMqtt {
 
       // 处理can历史状态
       kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     } else {
       updateCanService.insert(canData);
       // 处理can历史状态
       kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
-//      ListOperations opsForList = redisTemplate.opsForList();
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     }
   }
 

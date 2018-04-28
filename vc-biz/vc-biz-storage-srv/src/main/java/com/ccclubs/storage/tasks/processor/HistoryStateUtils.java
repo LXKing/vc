@@ -160,15 +160,40 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     if (null != csState.getCssCurrentTime()) {
       csStateHistory.setCurrent_time(csState.getCssCurrentTime().getTime());
     }
-    csStateHistory.setDirection_angle(csState.getCssDir().floatValue());
-    csStateHistory.setDoor_status(convertToInterger(csState.getCssDoor()));
-    csStateHistory.setElec_miles(csState.getCssElectricMileage().floatValue());
-    csStateHistory.setEndur_miles(csState.getCssEndurance().floatValue());
+    if(null!=csState.getCssDir()) {
+      csStateHistory.setDirection_angle(csState.getCssDir().floatValue());
+    }
+    if(null!=csState.getCssFuelMileage()) {
+      csStateHistory.setFuel_miles(csState.getCssFuelMileage().floatValue());
+    }
+    if(null!=csState.getCssElectricMileage())
+    {
+      csStateHistory.setElec_miles(csState.getCssElectricMileage().floatValue());
+    }
+    if(null!=csState.getCssEndurance()) {
+      csStateHistory.setEndur_miles(csState.getCssEndurance().floatValue());
+    }
+    if(null!=csState.getCssOil()) {
+      csStateHistory.setOil_cost(csState.getCssOil().floatValue());
+    }
+    if(null!=csState.getCssSpeed()) {
+      csStateHistory.setSpeed(csState.getCssSpeed().floatValue());
+    }
+    if(null!=csState.getCssEngineT()) {
+      csStateHistory.setEngine_tempe(csState.getCssEngineT().floatValue());
+    }
+    if(null!=csState.getCssTemperature()) {
+      csStateHistory.setTempe(csState.getCssTemperature().floatValue());
+    }
+    if(null!=csState.getCssMileage()) {
+      csStateHistory.setTotal_miles(csState.getCssMileage().floatValue());
+    }
+
+
     csStateHistory.setGear(convertToInterger(csState.getCssGear()));
     csStateHistory.setEngine_status(convertToInterger(csState.getCssEngine()));
     csStateHistory.setEv_battery(convertToFloat(csState.getCssEvBattery()));
     csStateHistory.setFan_mode(convertToInterger(csState.getCssFan()));
-    csStateHistory.setFuel_miles(csState.getCssFuelMileage().floatValue());
     csStateHistory.setKey_status(convertToInterger(csState.getCssKey()));
     csStateHistory.setLight_status(csState.getCssLight());
     csStateHistory.setLock_status(csState.getCssLock());
@@ -179,21 +204,19 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
     }else {
       csStateHistory.setObd_miles(csState.getCssObdMile().floatValue());
     }
-    csStateHistory.setOil_cost(csState.getCssOil().floatValue());
+    csStateHistory.setDoor_status(convertToInterger(csState.getCssDoor()));
     csStateHistory.setPtc_status(convertToInterger(csState.getCssPtc()));
     csStateHistory.setRent_flg(convertToInterger(csState.getCssRented()));
     csStateHistory.setRfid(csState.getCssRfid());
     csStateHistory.setSaving_mode(convertToInterger(csState.getCssSaving()));
-    csStateHistory.setSpeed(csState.getCssSpeed().floatValue());
+
     csStateHistory.setUser_rfid(csState.getCssRfidDte());
     //csStateHistory.setRelate_car(convertToLong(csState.getCssCar()));
     csStateHistory.setPower_reserve(convertToFloat(csState.getCssPower()));
     csStateHistory.setMotor_speed(convertToFloat(csState.getCssMotor()));
     csStateHistory.setLongitude(convertToDouble(csState.getCssLongitude()));
     csStateHistory.setLatitude(convertToDouble(csState.getCssLatitude()));
-    csStateHistory.setEngine_tempe(csState.getCssEngineT().floatValue());
-    csStateHistory.setTempe(csState.getCssTemperature().floatValue());
-    csStateHistory.setTotal_miles(csState.getCssMileage().floatValue());
+
     csStateHistory.setGps_num(convertToInterger(csState.getCssGpsCount()));
     csStateHistory.setGps_strength(convertToInterger(csState.getCssGpsCn()));
     csStateHistory.setGps_valid(convertToInterger(csState.getCssGpsValid()));
