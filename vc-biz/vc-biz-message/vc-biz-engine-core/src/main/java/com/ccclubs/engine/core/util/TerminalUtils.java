@@ -66,7 +66,7 @@ public class TerminalUtils {
     public MachineMapping getMapping(String keyPart, String keyType) {
         MachineMapping machineMapping = redisHelper.getMappingOld(keyPart);
         if (machineMapping == null) {
-            getMappingByDB(keyPart, keyType);
+            machineMapping = getMappingByDB(keyPart, keyType);
         }
         return machineMapping;
     }
