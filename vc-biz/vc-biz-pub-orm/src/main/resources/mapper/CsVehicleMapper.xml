@@ -1,139 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ccclubs.pub.orm.mapper.CsVehicleMapper">
-  <resultMap id="BaseResultMap" type="com.ccclubs.pub.orm.model.CsVehicle">
-    <id column="csv_id" jdbcType="INTEGER" property="csvId" />
-    <result column="csv_access" jdbcType="INTEGER" property="csvAccess" />
-    <result column="csv_host" jdbcType="INTEGER" property="csvHost" />
-    <result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo" />
-    <result column="csv_vin" jdbcType="VARCHAR" property="csvVin" />
-    <result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo" />
-    <result column="csv_certific" jdbcType="VARCHAR" property="csvCertific" />
-    <result column="csv_color" jdbcType="TINYINT" property="csvColor" />
-    <result column="csv_model" jdbcType="INTEGER" property="csvModel" />
-    <result column="csv_machine" jdbcType="INTEGER" property="csvMachine" />
-    <result column="csv_machines" jdbcType="VARCHAR" property="csvMachines" />
-    <result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode" />
-    <result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode" />
-    <result column="csv_prod_date" jdbcType="DATE" property="csvProdDate" />
-    <result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark" />
-    <result column="csv_domain" jdbcType="TINYINT" property="csvDomain" />
-    <result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull" />
-    <result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple" />
-    <result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode" />
-    <result column="csv_status" jdbcType="TINYINT" property="csvStatus" />
-    <result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime" />
-    <result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime" />
-  </resultMap>
-  <sql id="Example_Where_Clause">
-    <where>
-      <foreach collection="oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+    <resultMap id="BaseResultMap" type="com.ccclubs.pub.orm.model.CsVehicle">
+        <id column="csv_id" jdbcType="INTEGER" property="csvId"/>
+        <result column="csv_access" jdbcType="INTEGER" property="csvAccess"/>
+        <result column="csv_host" jdbcType="INTEGER" property="csvHost"/>
+        <result column="csv_car_no" jdbcType="VARCHAR" property="csvCarNo"/>
+        <result column="csv_vin" jdbcType="VARCHAR" property="csvVin"/>
+        <result column="csv_engine_no" jdbcType="VARCHAR" property="csvEngineNo"/>
+        <result column="csv_certific" jdbcType="VARCHAR" property="csvCertific"/>
+        <result column="csv_color" jdbcType="TINYINT" property="csvColor"/>
+        <result column="csv_model" jdbcType="INTEGER" property="csvModel"/>
+        <result column="csv_machine" jdbcType="INTEGER" property="csvMachine"/>
+        <result column="csv_machines" jdbcType="VARCHAR" property="csvMachines"/>
+        <result column="csv_color_code" jdbcType="TINYINT" property="csvColorCode"/>
+        <result column="csv_bataccu_code" jdbcType="VARCHAR" property="csvBataccuCode"/>
+        <result column="csv_prod_date" jdbcType="DATE" property="csvProdDate"/>
+        <result column="csv_landmark" jdbcType="VARCHAR" property="csvLandmark"/>
+        <result column="csv_domain" jdbcType="TINYINT" property="csvDomain"/>
+        <result column="csv_model_code_full" jdbcType="VARCHAR" property="csvModelCodeFull"/>
+        <result column="csv_model_code_simple" jdbcType="VARCHAR" property="csvModelCodeSimple"/>
+        <result column="csv_interior_color_code" jdbcType="VARCHAR" property="csvInteriorColorCode"/>
+        <result column="csv_status" jdbcType="TINYINT" property="csvStatus"/>
+        <result column="csv_add_time" jdbcType="TIMESTAMP" property="csvAddTime"/>
+        <result column="csv_update_time" jdbcType="TIMESTAMP" property="csvUpdateTime"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Update_By_Example_Where_Clause">
-    <where>
-      <foreach collection="example.oredCriteria" item="criteria" separator="or">
-        <if test="criteria.valid">
-          <trim prefix="(" prefixOverrides="and" suffix=")">
-            <foreach collection="criteria.criteria" item="criterion">
-              <choose>
-                <when test="criterion.noValue">
-                  and ${criterion.condition}
-                </when>
-                <when test="criterion.singleValue">
-                  and ${criterion.condition} #{criterion.value}
-                </when>
-                <when test="criterion.betweenValue">
-                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
-                </when>
-                <when test="criterion.listValue">
-                  and ${criterion.condition}
-                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
-                    #{listItem}
-                  </foreach>
-                </when>
-              </choose>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
             </foreach>
-          </trim>
-        </if>
-      </foreach>
-    </where>
-  </sql>
-  <sql id="Base_Column_List">
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
     csv_id, csv_access, csv_host, csv_car_no, csv_vin, csv_engine_no, csv_certific, csv_color, 
     csv_model, csv_machine, csv_machines, csv_color_code, csv_bataccu_code, csv_prod_date, 
     csv_landmark, csv_domain, csv_model_code_full, csv_model_code_simple, csv_interior_color_code, 
     csv_status, csv_add_time, csv_update_time
   </sql>
 
-  <select id="selectByVinAndTeNo" parameterType="com.ccclubs.pub.orm.vo.VehicleVo" resultType="com.ccclubs.pub.orm.vo.VehicleVo">
-    select
-    v.csv_vin as vin,m.csm_te_no as teNo
-    from cs_vehicle v,cs_machine m
-    where v.csv_machine = m.csm_id
-    <if test="vin != null">
-      and v.csv_vin = #{vin,jdbcType=VARCHAR}
-    </if>
-    <if test="teNo != null">
-      and m.csm_te_no = #{teNo,jdbcType=VARCHAR}
-    </if>
-  </select>
+    <select id="selectByVinAndTeNo" parameterType="com.ccclubs.pub.orm.vo.VehicleVo"
+            resultType="com.ccclubs.pub.orm.vo.VehicleVo">
+        select
+        v.csv_vin as vin,m.csm_te_no as teNo
+        from cs_vehicle v,cs_machine m
+        where v.csv_machine = m.csm_id
+        <if test="vin != null">
+            and v.csv_vin = #{vin,jdbcType=VARCHAR}
+        </if>
+        <if test="teNo != null">
+            and m.csm_te_no = #{teNo,jdbcType=VARCHAR}
+        </if>
+    </select>
 
-  <select id="selectByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample" resultMap="BaseResultMap">
-    select
-    <if test="distinct">
-      distinct
-    </if>
-    <include refid="Base_Column_List" />
-    from cs_vehicle
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-    <if test="orderByClause != null">
-      order by ${orderByClause}
-    </if>
-  </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from cs_vehicle
-    where csv_id = #{csvId,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="selectByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample" resultMap="BaseResultMap">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        <include refid="Base_Column_List"/>
+        from cs_vehicle
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cs_vehicle
+        where csv_id = #{csvId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from cs_vehicle
     where csv_id = #{csvId,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample">
-    delete from cs_vehicle
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </delete>
-  <insert id="insert" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+    <delete id="deleteByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample">
+        delete from cs_vehicle
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
     insert into cs_vehicle (csv_id, csv_access, csv_host, 
       csv_car_no, csv_vin, csv_engine_no, 
       csv_certific, csv_color, csv_model, 
@@ -151,340 +154,347 @@
       #{csvInteriorColorCode,jdbcType=VARCHAR}, #{csvStatus,jdbcType=TINYINT}, #{csvAddTime,jdbcType=TIMESTAMP}, 
       #{csvUpdateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
-    insert into cs_vehicle
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="csvId != null">
-        csv_id,
-      </if>
-      <if test="csvAccess != null">
-        csv_access,
-      </if>
-      <if test="csvHost != null">
-        csv_host,
-      </if>
-      <if test="csvCarNo != null">
-        csv_car_no,
-      </if>
-      <if test="csvVin != null">
-        csv_vin,
-      </if>
-      <if test="csvEngineNo != null">
-        csv_engine_no,
-      </if>
-      <if test="csvCertific != null">
-        csv_certific,
-      </if>
-      <if test="csvColor != null">
-        csv_color,
-      </if>
-      <if test="csvModel != null">
-        csv_model,
-      </if>
-      <if test="csvMachine != null">
-        csv_machine,
-      </if>
-      <if test="csvMachines != null">
-        csv_machines,
-      </if>
-      <if test="csvColorCode != null">
-        csv_color_code,
-      </if>
-      <if test="csvBataccuCode != null">
-        csv_bataccu_code,
-      </if>
-      <if test="csvProdDate != null">
-        csv_prod_date,
-      </if>
-      <if test="csvLandmark != null">
-        csv_landmark,
-      </if>
-      <if test="csvDomain != null">
-        csv_domain,
-      </if>
-      <if test="csvModelCodeFull != null">
-        csv_model_code_full,
-      </if>
-      <if test="csvModelCodeSimple != null">
-        csv_model_code_simple,
-      </if>
-      <if test="csvInteriorColorCode != null">
-        csv_interior_color_code,
-      </if>
-      <if test="csvStatus != null">
-        csv_status,
-      </if>
-      <if test="csvAddTime != null">
-        csv_add_time,
-      </if>
-      <if test="csvUpdateTime != null">
-        csv_update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="csvId != null">
-        #{csvId,jdbcType=INTEGER},
-      </if>
-      <if test="csvAccess != null">
-        #{csvAccess,jdbcType=INTEGER},
-      </if>
-      <if test="csvHost != null">
-        #{csvHost,jdbcType=INTEGER},
-      </if>
-      <if test="csvCarNo != null">
-        #{csvCarNo,jdbcType=VARCHAR},
-      </if>
-      <if test="csvVin != null">
-        #{csvVin,jdbcType=VARCHAR},
-      </if>
-      <if test="csvEngineNo != null">
-        #{csvEngineNo,jdbcType=VARCHAR},
-      </if>
-      <if test="csvCertific != null">
-        #{csvCertific,jdbcType=VARCHAR},
-      </if>
-      <if test="csvColor != null">
-        #{csvColor,jdbcType=TINYINT},
-      </if>
-      <if test="csvModel != null">
-        #{csvModel,jdbcType=INTEGER},
-      </if>
-      <if test="csvMachine != null">
-        #{csvMachine,jdbcType=INTEGER},
-      </if>
-      <if test="csvMachines != null">
-        #{csvMachines,jdbcType=VARCHAR},
-      </if>
-      <if test="csvColorCode != null">
-        #{csvColorCode,jdbcType=TINYINT},
-      </if>
-      <if test="csvBataccuCode != null">
-        #{csvBataccuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="csvProdDate != null">
-        #{csvProdDate,jdbcType=DATE},
-      </if>
-      <if test="csvLandmark != null">
-        #{csvLandmark,jdbcType=VARCHAR},
-      </if>
-      <if test="csvDomain != null">
-        #{csvDomain,jdbcType=TINYINT},
-      </if>
-      <if test="csvModelCodeFull != null">
-        #{csvModelCodeFull,jdbcType=VARCHAR},
-      </if>
-      <if test="csvModelCodeSimple != null">
-        #{csvModelCodeSimple,jdbcType=VARCHAR},
-      </if>
-      <if test="csvInteriorColorCode != null">
-        #{csvInteriorColorCode,jdbcType=VARCHAR},
-      </if>
-      <if test="csvStatus != null">
-        #{csvStatus,jdbcType=TINYINT},
-      </if>
-      <if test="csvAddTime != null">
-        #{csvAddTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="csvUpdateTime != null">
-        #{csvUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <insert id="batchInsert" parameterType="java.util.List">
-    insert into cs_vehicle (csv_access,csv_host,csv_car_no, csv_vin, csv_engine_no,
-    csv_certific, csv_color_code,
-    csv_model, csv_bataccu_code, csv_machine,
-    csv_prod_date, csv_update_time,
-    csv_add_time, csv_status)
-    values
-    <foreach collection="list" item="item" index="index" separator=",">
-      (#{item.csvAccess,jdbcType=INTEGER}, #{item.csvHost,jdbcType=INTEGER},
-      #{item.csvCarNo,jdbcType=VARCHAR}, #{item.csvVin,jdbcType=VARCHAR}, #{item.csvEngineNo,jdbcType=VARCHAR},
-      #{item.csvCertific,jdbcType=VARCHAR}, #{item.csvColorCode,jdbcType=TINYINT},
-      #{item.csvModel,jdbcType=INTEGER}, #{item.csvBataccuCode,jdbcType=VARCHAR}, #{item.csvMachine,jdbcType=INTEGER},
-      #{item.csvProdDate,jdbcType=DATE}, #{item.csvUpdateTime,jdbcType=TIMESTAMP},
-      #{item.csvAddTime,jdbcType=TIMESTAMP}, #{item.csvStatus,jdbcType=TINYINT})
-    </foreach>
-  </insert>
+    <insert id="insertSelective" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+        insert into cs_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="csvId != null">
+                csv_id,
+            </if>
+            <if test="csvAccess != null">
+                csv_access,
+            </if>
+            <if test="csvHost != null">
+                csv_host,
+            </if>
+            <if test="csvCarNo != null">
+                csv_car_no,
+            </if>
+            <if test="csvVin != null">
+                csv_vin,
+            </if>
+            <if test="csvEngineNo != null">
+                csv_engine_no,
+            </if>
+            <if test="csvCertific != null">
+                csv_certific,
+            </if>
+            <if test="csvColor != null">
+                csv_color,
+            </if>
+            <if test="csvModel != null">
+                csv_model,
+            </if>
+            <if test="csvMachine != null">
+                csv_machine,
+            </if>
+            <if test="csvMachines != null">
+                csv_machines,
+            </if>
+            <if test="csvColorCode != null">
+                csv_color_code,
+            </if>
+            <if test="csvBataccuCode != null">
+                csv_bataccu_code,
+            </if>
+            <if test="csvProdDate != null">
+                csv_prod_date,
+            </if>
+            <if test="csvLandmark != null">
+                csv_landmark,
+            </if>
+            <if test="csvDomain != null">
+                csv_domain,
+            </if>
+            <if test="csvModelCodeFull != null">
+                csv_model_code_full,
+            </if>
+            <if test="csvModelCodeSimple != null">
+                csv_model_code_simple,
+            </if>
+            <if test="csvInteriorColorCode != null">
+                csv_interior_color_code,
+            </if>
+            <if test="csvStatus != null">
+                csv_status,
+            </if>
+            <if test="csvAddTime != null">
+                csv_add_time,
+            </if>
+            <if test="csvUpdateTime != null">
+                csv_update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="csvId != null">
+                #{csvId,jdbcType=INTEGER},
+            </if>
+            <if test="csvAccess != null">
+                #{csvAccess,jdbcType=INTEGER},
+            </if>
+            <if test="csvHost != null">
+                #{csvHost,jdbcType=INTEGER},
+            </if>
+            <if test="csvCarNo != null">
+                #{csvCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="csvVin != null">
+                #{csvVin,jdbcType=VARCHAR},
+            </if>
+            <if test="csvEngineNo != null">
+                #{csvEngineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="csvCertific != null">
+                #{csvCertific,jdbcType=VARCHAR},
+            </if>
+            <if test="csvColor != null">
+                #{csvColor,jdbcType=TINYINT},
+            </if>
+            <if test="csvModel != null">
+                #{csvModel,jdbcType=INTEGER},
+            </if>
+            <if test="csvMachine != null">
+                #{csvMachine,jdbcType=INTEGER},
+            </if>
+            <if test="csvMachines != null">
+                #{csvMachines,jdbcType=VARCHAR},
+            </if>
+            <if test="csvColorCode != null">
+                #{csvColorCode,jdbcType=TINYINT},
+            </if>
+            <if test="csvBataccuCode != null">
+                #{csvBataccuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="csvProdDate != null">
+                #{csvProdDate,jdbcType=DATE},
+            </if>
+            <if test="csvLandmark != null">
+                #{csvLandmark,jdbcType=VARCHAR},
+            </if>
+            <if test="csvDomain != null">
+                #{csvDomain,jdbcType=TINYINT},
+            </if>
+            <if test="csvModelCodeFull != null">
+                #{csvModelCodeFull,jdbcType=VARCHAR},
+            </if>
+            <if test="csvModelCodeSimple != null">
+                #{csvModelCodeSimple,jdbcType=VARCHAR},
+            </if>
+            <if test="csvInteriorColorCode != null">
+                #{csvInteriorColorCode,jdbcType=VARCHAR},
+            </if>
+            <if test="csvStatus != null">
+                #{csvStatus,jdbcType=TINYINT},
+            </if>
+            <if test="csvAddTime != null">
+                #{csvAddTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="csvUpdateTime != null">
+                #{csvUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into cs_vehicle (csv_access,csv_host,csv_car_no, csv_vin, csv_engine_no,
+        csv_certific, csv_color_code,
+        csv_model, csv_bataccu_code, csv_machine,
+        csv_prod_date, csv_update_time, csv_add_time, csv_status, csv_domain,
+        csv_model_code_full,csv_model_code_simple,csv_interior_color_code)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.csvAccess,jdbcType=INTEGER}, #{item.csvHost,jdbcType=INTEGER},
+            #{item.csvCarNo,jdbcType=VARCHAR}, #{item.csvVin,jdbcType=VARCHAR}, #{item.csvEngineNo,jdbcType=VARCHAR},
+            #{item.csvCertific,jdbcType=VARCHAR}, #{item.csvColorCode,jdbcType=TINYINT},
+            #{item.csvModel,jdbcType=INTEGER}, #{item.csvBataccuCode,jdbcType=VARCHAR},
+            #{item.csvMachine,jdbcType=INTEGER},
+            #{item.csvProdDate,jdbcType=DATE}, #{item.csvUpdateTime,jdbcType=TIMESTAMP},
+            #{item.csvAddTime,jdbcType=TIMESTAMP},
+            #{item.csvStatus,jdbcType=TINYINT},
+            #{item.csvDomain,jdbcType=TINYINT},
+            #{item.csvModelCodeFull,jdbcType=VARCHAR},
+            #{item.csvModelCodeSimple,jdbcType=VARCHAR},
+            #{item.csvInteriorColorCode,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
 
-  <select id="countByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample" resultType="java.lang.Long">
-    select count(*) from cs_vehicle
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-  <update id="updateByExampleSelective" parameterType="map">
-    update cs_vehicle
-    <set>
-      <if test="record.csvId != null">
-        csv_id = #{record.csvId,jdbcType=INTEGER},
-      </if>
-      <if test="record.csvAccess != null">
+    <select id="countByExample" parameterType="com.ccclubs.pub.orm.model.CsVehicleExample" resultType="java.lang.Long">
+        select count(*) from cs_vehicle
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update cs_vehicle
+        <set>
+            <if test="record.csvId != null">
+                csv_id = #{record.csvId,jdbcType=INTEGER},
+            </if>
+            <if test="record.csvAccess != null">
+                csv_access = #{record.csvAccess,jdbcType=INTEGER},
+            </if>
+            <if test="record.csvHost != null">
+                csv_host = #{record.csvHost,jdbcType=INTEGER},
+            </if>
+            <if test="record.csvCarNo != null">
+                csv_car_no = #{record.csvCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvVin != null">
+                csv_vin = #{record.csvVin,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvEngineNo != null">
+                csv_engine_no = #{record.csvEngineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvCertific != null">
+                csv_certific = #{record.csvCertific,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvColor != null">
+                csv_color = #{record.csvColor,jdbcType=TINYINT},
+            </if>
+            <if test="record.csvModel != null">
+                csv_model = #{record.csvModel,jdbcType=INTEGER},
+            </if>
+            <if test="record.csvMachine != null">
+                csv_machine = #{record.csvMachine,jdbcType=INTEGER},
+            </if>
+            <if test="record.csvMachines != null">
+                csv_machines = #{record.csvMachines,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvColorCode != null">
+                csv_color_code = #{record.csvColorCode,jdbcType=TINYINT},
+            </if>
+            <if test="record.csvBataccuCode != null">
+                csv_bataccu_code = #{record.csvBataccuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvProdDate != null">
+                csv_prod_date = #{record.csvProdDate,jdbcType=DATE},
+            </if>
+            <if test="record.csvLandmark != null">
+                csv_landmark = #{record.csvLandmark,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvDomain != null">
+                csv_domain = #{record.csvDomain,jdbcType=TINYINT},
+            </if>
+            <if test="record.csvModelCodeFull != null">
+                csv_model_code_full = #{record.csvModelCodeFull,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvModelCodeSimple != null">
+                csv_model_code_simple = #{record.csvModelCodeSimple,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvInteriorColorCode != null">
+                csv_interior_color_code = #{record.csvInteriorColorCode,jdbcType=VARCHAR},
+            </if>
+            <if test="record.csvStatus != null">
+                csv_status = #{record.csvStatus,jdbcType=TINYINT},
+            </if>
+            <if test="record.csvAddTime != null">
+                csv_add_time = #{record.csvAddTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.csvUpdateTime != null">
+                csv_update_time = #{record.csvUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update cs_vehicle
+        set csv_id = #{record.csvId,jdbcType=INTEGER},
         csv_access = #{record.csvAccess,jdbcType=INTEGER},
-      </if>
-      <if test="record.csvHost != null">
         csv_host = #{record.csvHost,jdbcType=INTEGER},
-      </if>
-      <if test="record.csvCarNo != null">
         csv_car_no = #{record.csvCarNo,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvVin != null">
         csv_vin = #{record.csvVin,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvEngineNo != null">
         csv_engine_no = #{record.csvEngineNo,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvCertific != null">
         csv_certific = #{record.csvCertific,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvColor != null">
         csv_color = #{record.csvColor,jdbcType=TINYINT},
-      </if>
-      <if test="record.csvModel != null">
         csv_model = #{record.csvModel,jdbcType=INTEGER},
-      </if>
-      <if test="record.csvMachine != null">
         csv_machine = #{record.csvMachine,jdbcType=INTEGER},
-      </if>
-      <if test="record.csvMachines != null">
         csv_machines = #{record.csvMachines,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvColorCode != null">
         csv_color_code = #{record.csvColorCode,jdbcType=TINYINT},
-      </if>
-      <if test="record.csvBataccuCode != null">
         csv_bataccu_code = #{record.csvBataccuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvProdDate != null">
         csv_prod_date = #{record.csvProdDate,jdbcType=DATE},
-      </if>
-      <if test="record.csvLandmark != null">
         csv_landmark = #{record.csvLandmark,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvDomain != null">
         csv_domain = #{record.csvDomain,jdbcType=TINYINT},
-      </if>
-      <if test="record.csvModelCodeFull != null">
         csv_model_code_full = #{record.csvModelCodeFull,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvModelCodeSimple != null">
         csv_model_code_simple = #{record.csvModelCodeSimple,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvInteriorColorCode != null">
         csv_interior_color_code = #{record.csvInteriorColorCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.csvStatus != null">
         csv_status = #{record.csvStatus,jdbcType=TINYINT},
-      </if>
-      <if test="record.csvAddTime != null">
         csv_add_time = #{record.csvAddTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.csvUpdateTime != null">
-        csv_update_time = #{record.csvUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByExample" parameterType="map">
-    update cs_vehicle
-    set csv_id = #{record.csvId,jdbcType=INTEGER},
-      csv_access = #{record.csvAccess,jdbcType=INTEGER},
-      csv_host = #{record.csvHost,jdbcType=INTEGER},
-      csv_car_no = #{record.csvCarNo,jdbcType=VARCHAR},
-      csv_vin = #{record.csvVin,jdbcType=VARCHAR},
-      csv_engine_no = #{record.csvEngineNo,jdbcType=VARCHAR},
-      csv_certific = #{record.csvCertific,jdbcType=VARCHAR},
-      csv_color = #{record.csvColor,jdbcType=TINYINT},
-      csv_model = #{record.csvModel,jdbcType=INTEGER},
-      csv_machine = #{record.csvMachine,jdbcType=INTEGER},
-      csv_machines = #{record.csvMachines,jdbcType=VARCHAR},
-      csv_color_code = #{record.csvColorCode,jdbcType=TINYINT},
-      csv_bataccu_code = #{record.csvBataccuCode,jdbcType=VARCHAR},
-      csv_prod_date = #{record.csvProdDate,jdbcType=DATE},
-      csv_landmark = #{record.csvLandmark,jdbcType=VARCHAR},
-      csv_domain = #{record.csvDomain,jdbcType=TINYINT},
-      csv_model_code_full = #{record.csvModelCodeFull,jdbcType=VARCHAR},
-      csv_model_code_simple = #{record.csvModelCodeSimple,jdbcType=VARCHAR},
-      csv_interior_color_code = #{record.csvInteriorColorCode,jdbcType=VARCHAR},
-      csv_status = #{record.csvStatus,jdbcType=TINYINT},
-      csv_add_time = #{record.csvAddTime,jdbcType=TIMESTAMP},
-      csv_update_time = #{record.csvUpdateTime,jdbcType=TIMESTAMP}
-    <if test="_parameter != null">
-      <include refid="Update_By_Example_Where_Clause" />
-    </if>
-  </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
-    update cs_vehicle
-    <set>
-      <if test="csvAccess != null">
-        csv_access = #{csvAccess,jdbcType=INTEGER},
-      </if>
-      <if test="csvHost != null">
-        csv_host = #{csvHost,jdbcType=INTEGER},
-      </if>
-      <if test="csvCarNo != null">
-        csv_car_no = #{csvCarNo,jdbcType=VARCHAR},
-      </if>
-      <if test="csvVin != null">
-        csv_vin = #{csvVin,jdbcType=VARCHAR},
-      </if>
-      <if test="csvEngineNo != null">
-        csv_engine_no = #{csvEngineNo,jdbcType=VARCHAR},
-      </if>
-      <if test="csvCertific != null">
-        csv_certific = #{csvCertific,jdbcType=VARCHAR},
-      </if>
-      <if test="csvColor != null">
-        csv_color = #{csvColor,jdbcType=TINYINT},
-      </if>
-      <if test="csvModel != null">
-        csv_model = #{csvModel,jdbcType=INTEGER},
-      </if>
-      <if test="csvMachine != null">
-        csv_machine = #{csvMachine,jdbcType=INTEGER},
-      </if>
-      <if test="csvMachines != null">
-        csv_machines = #{csvMachines,jdbcType=VARCHAR},
-      </if>
-      <if test="csvColorCode != null">
-        csv_color_code = #{csvColorCode,jdbcType=TINYINT},
-      </if>
-      <if test="csvBataccuCode != null">
-        csv_bataccu_code = #{csvBataccuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="csvProdDate != null">
-        csv_prod_date = #{csvProdDate,jdbcType=DATE},
-      </if>
-      <if test="csvLandmark != null">
-        csv_landmark = #{csvLandmark,jdbcType=VARCHAR},
-      </if>
-      <if test="csvDomain != null">
-        csv_domain = #{csvDomain,jdbcType=TINYINT},
-      </if>
-      <if test="csvModelCodeFull != null">
-        csv_model_code_full = #{csvModelCodeFull,jdbcType=VARCHAR},
-      </if>
-      <if test="csvModelCodeSimple != null">
-        csv_model_code_simple = #{csvModelCodeSimple,jdbcType=VARCHAR},
-      </if>
-      <if test="csvInteriorColorCode != null">
-        csv_interior_color_code = #{csvInteriorColorCode,jdbcType=VARCHAR},
-      </if>
-      <if test="csvStatus != null">
-        csv_status = #{csvStatus,jdbcType=TINYINT},
-      </if>
-      <if test="csvAddTime != null">
-        csv_add_time = #{csvAddTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="csvUpdateTime != null">
-        csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where csv_id = #{csvId,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+        csv_update_time = #{record.csvUpdateTime,jdbcType=TIMESTAMP}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+        update cs_vehicle
+        <set>
+            <if test="csvAccess != null">
+                csv_access = #{csvAccess,jdbcType=INTEGER},
+            </if>
+            <if test="csvHost != null">
+                csv_host = #{csvHost,jdbcType=INTEGER},
+            </if>
+            <if test="csvCarNo != null">
+                csv_car_no = #{csvCarNo,jdbcType=VARCHAR},
+            </if>
+            <if test="csvVin != null">
+                csv_vin = #{csvVin,jdbcType=VARCHAR},
+            </if>
+            <if test="csvEngineNo != null">
+                csv_engine_no = #{csvEngineNo,jdbcType=VARCHAR},
+            </if>
+            <if test="csvCertific != null">
+                csv_certific = #{csvCertific,jdbcType=VARCHAR},
+            </if>
+            <if test="csvColor != null">
+                csv_color = #{csvColor,jdbcType=TINYINT},
+            </if>
+            <if test="csvModel != null">
+                csv_model = #{csvModel,jdbcType=INTEGER},
+            </if>
+            <if test="csvMachine != null">
+                csv_machine = #{csvMachine,jdbcType=INTEGER},
+            </if>
+            <if test="csvMachines != null">
+                csv_machines = #{csvMachines,jdbcType=VARCHAR},
+            </if>
+            <if test="csvColorCode != null">
+                csv_color_code = #{csvColorCode,jdbcType=TINYINT},
+            </if>
+            <if test="csvBataccuCode != null">
+                csv_bataccu_code = #{csvBataccuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="csvProdDate != null">
+                csv_prod_date = #{csvProdDate,jdbcType=DATE},
+            </if>
+            <if test="csvLandmark != null">
+                csv_landmark = #{csvLandmark,jdbcType=VARCHAR},
+            </if>
+            <if test="csvDomain != null">
+                csv_domain = #{csvDomain,jdbcType=TINYINT},
+            </if>
+            <if test="csvModelCodeFull != null">
+                csv_model_code_full = #{csvModelCodeFull,jdbcType=VARCHAR},
+            </if>
+            <if test="csvModelCodeSimple != null">
+                csv_model_code_simple = #{csvModelCodeSimple,jdbcType=VARCHAR},
+            </if>
+            <if test="csvInteriorColorCode != null">
+                csv_interior_color_code = #{csvInteriorColorCode,jdbcType=VARCHAR},
+            </if>
+            <if test="csvStatus != null">
+                csv_status = #{csvStatus,jdbcType=TINYINT},
+            </if>
+            <if test="csvAddTime != null">
+                csv_add_time = #{csvAddTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="csvUpdateTime != null">
+                csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where csv_id = #{csvId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
     update cs_vehicle
     set csv_access = #{csvAccess,jdbcType=INTEGER},
       csv_host = #{csvHost,jdbcType=INTEGER},
@@ -510,14 +520,14 @@
     where csv_id = #{csvId,jdbcType=INTEGER}
   </update>
 
-  <update id="unbindTbox" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
-    update cs_vehicle
-    <set>
-      csv_machine = NULL,
-      <if test="csvUpdateTime != null">
-        csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where csv_id = #{csvId,jdbcType=INTEGER}
-  </update>
+    <update id="unbindTbox" parameterType="com.ccclubs.pub.orm.model.CsVehicle">
+        update cs_vehicle
+        <set>
+            csv_machine = NULL,
+            <if test="csvUpdateTime != null">
+                csv_update_time = #{csvUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where csv_id = #{csvId,jdbcType=INTEGER}
+    </update>
 </mapper>

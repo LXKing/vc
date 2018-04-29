@@ -6,9 +6,12 @@ import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.terminal.dto.*;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import com.ccclubs.terminal.inf.state.QueryVehicleStateInf;
+import com.ccclubs.vehicle.dto.CarLifeInput;
+import com.ccclubs.vehicle.dto.CarLifeOutput;
 import com.ccclubs.vehicle.dto.VehicleBaseInput;
 import com.ccclubs.vehicle.dto.VehicleBaseOutput;
 import com.ccclubs.vehicle.inf.base.QueryVehicleBaseInf;
+import com.ccclubs.vehicle.inf.binding.BindHistoryInf;
 import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
@@ -37,6 +40,9 @@ public class VtSearchApi {
 
     @Reference(version = VehicleServiceVersion.V1)
     private QueryVehicleStateInf queryVehicleStateInf;
+
+    @Reference(version = VehicleServiceVersion.V1)
+    private BindHistoryInf bindHistoryInf;
 
     /**
      * 1.获取车辆出厂日期及车辆的颜色
@@ -135,6 +141,18 @@ public class VtSearchApi {
     public ApiMessage<VehicleOnlineOutput> isOnline(@RequestHeader("appId") String appId, VehicleOnlineInput input) {
         input.setAppId(appId);
         VehicleOnlineOutput output = queryVehicleStateInf.isOnline(input);
+        return new ApiMessage<>(output);
+    }
+
+    /**
+     *
+     * */
+    @ApiSecurity
+    @ApiOperation(value="车辆绑定车机生命周期获取", notes="通过车架号获取车机生命周期信息")
+    @PostMapping("searchCarLifeInfo")
+    public ApiMessage<List<CarLifeOutput>> searchCarLifeInfo(@RequestHeader("appId") String appId,CarLifeInput input) {
+        input.setAppId(appId);
+        List<CarLifeOutput> output = bindHistoryInf.getBindHistoryByVin(input);
         return new ApiMessage<>(output);
     }
 

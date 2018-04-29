@@ -26,6 +26,18 @@
 					</dd>
 				</dl>
 				<dl  >
+					<dt>接入商：</dt>
+					<dd>
+					<input name="cssAccess" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/base/access/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>子域：</dt>
+					<dd>
+					<input name="cssHost" placeholder="请输入子域" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
 					<dt>车机号：</dt>
 					<dd>
 					<input name="cssNumber" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/machine/search">
@@ -104,9 +116,9 @@
 					</dd>
 				</dl>
 				<dl  >
-					<dt>燃油量:：</dt>
+					<dt>燃油量：</dt>
 					<dd>
-					<input name="cssOil" placeholder="请输入燃油量:" class="form-control" >
+					<input name="cssOil" placeholder="请输入燃油量" class="form-control" >
 					</dd>
 				</dl>
 				<dl  >
@@ -126,10 +138,10 @@
 					<dd>
 					<select class="form-control m-b" name="cssCharging"  >
                          <option></option>
-                         <option value="3">充电完成</option>
-                         <option value="2">快充</option>
+                         <option value="0">未充电</option>
                          <option value="1">慢充</option>
-                         <option value="0">不充电</option>
+                         <option value="2">快充</option>
+                         <option value="3">充电完成</option>
                     </select>
 					</dd>
 				</dl>
@@ -180,8 +192,8 @@
 					<dd>
 					<select class="form-control m-b" name="cssGpsValid"  >
                          <option></option>
-                         <option value="1">有效</option>
                          <option value="0">无效</option>
+                         <option value="1">有效</option>
                     </select>
 					</dd>
 				</dl>
@@ -208,8 +220,8 @@
 					<dd>
 					<select class="form-control m-b" name="cssCircular"  >
                          <option></option>
-                         <option value="1">外循环</option>
                          <option value="0">内循环</option>
+                         <option value="1">外循环</option>
                     </select>
 					</dd>
 				</dl>
@@ -218,8 +230,8 @@
 					<dd>
 					<select class="form-control m-b" name="cssPtc"  >
                          <option></option>
-                         <option value="1">ON</option>
                          <option value="0">OFF</option>
+                         <option value="1">ON</option>
                     </select>
 					</dd>
 				</dl>
@@ -228,8 +240,8 @@
 					<dd>
 					<select class="form-control m-b" name="cssCompres"  >
                          <option></option>
-                         <option value="1">ON</option>
                          <option value="0">OFF</option>
+                         <option value="1">ON</option>
                     </select>
 					</dd>
 				</dl>
@@ -238,10 +250,10 @@
 					<dd>
 					<select class="form-control m-b" name="cssFan"  >
                          <option></option>
-                         <option value="3">3档</option>
-                         <option value="2">2档</option>
-                         <option value="1">1档</option>
                          <option value="0">OFF</option>
+                         <option value="1">1档</option>
+                         <option value="2">2档</option>
+                         <option value="3">3档</option>
                          <option value="4">4档</option>
                     </select>
 					</dd>
@@ -251,9 +263,9 @@
 					<dd>
 					<select class="form-control m-b" name="cssSaving"  >
                          <option></option>
-                         <option value="2">极度省电</option>
-                         <option value="1">最佳省电</option>
                          <option value="0">标准模式</option>
+                         <option value="1">最佳省电</option>
+                         <option value="2">极度省电</option>
                     </select>
 					</dd>
 				</dl>
@@ -268,9 +280,9 @@
 					<dd>
 					<select class="form-control m-b" name="cssEngine"  >
                          <option></option>
-                         <option value="2">已熄火</option>
-                         <option value="1">未熄火</option>
                          <option value="0">无效</option>
+                         <option value="1">未熄火</option>
+                         <option value="2">已熄火</option>
                     </select>
 					</dd>
 				</dl>
@@ -285,22 +297,22 @@
 					<dd>
 					<select class="form-control m-b" name="cssGear"  >
                          <option></option>
-                         <option value="15">停车P挡</option>
-                         <option value="13">倒挡</option>
-                         <option value="14">自动D挡</option>
                          <option value="11">11挡</option>
                          <option value="12">12挡</option>
-                         <option value="3">3挡</option>
-                         <option value="2">2挡</option>
-                         <option value="10">10挡</option>
-                         <option value="1">1挡</option>
+                         <option value="13">倒挡</option>
+                         <option value="14">自动D挡</option>
+                         <option value="15">停车P挡</option>
                          <option value="0">空挡</option>
-                         <option value="7">7挡</option>
-                         <option value="6">6挡</option>
-                         <option value="5">5挡</option>
+                         <option value="1">1挡</option>
+                         <option value="2">2挡</option>
+                         <option value="3">3挡</option>
                          <option value="4">4挡</option>
-                         <option value="9">9挡</option>
+                         <option value="5">5挡</option>
+                         <option value="6">6挡</option>
+                         <option value="7">7挡</option>
                          <option value="8">8挡</option>
+                         <option value="9">9挡</option>
+                         <option value="10">10挡</option>
                     </select>
 					</dd>
 				</dl>
@@ -321,9 +333,9 @@
 					<dd>
 					<select class="form-control m-b" name="cssNetType"  >
                          <option></option>
-                         <option value="2">CDMA</option>
-                         <option value="1">3G/4G</option>
                          <option value="0">GSM</option>
+                         <option value="1">3G/4G</option>
+                         <option value="2">CDMA</option>
                     </select>
 					</dd>
 				</dl>
@@ -349,6 +361,30 @@
 					<dt>报文数据：</dt>
 					<dd>
 					<input name="cssMoData" placeholder="请输入报文数据" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端信息：</dt>
+					<dd>
+					<input name="cssTeNo" placeholder="请输入终端信息" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>自动驾驶状态：</dt>
+					<dd>
+					<input name="cssAutopilot" placeholder="请输入自动驾驶状态" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>手刹状态：</dt>
+					<dd>
+					<select class="form-control m-b" name="cssHandbrake"  >
+                         <option></option>
+                         <option value="0">所有刹车释放</option>
+                         <option value="1">所有刹车应用</option>
+                         <option value="2">所有刹车不工作（应用或释放中）</option>
+                         <option value="3">未知</option>
+                    </select>
 					</dd>
 				</dl>
 		</div>

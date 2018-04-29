@@ -65,13 +65,13 @@ public class LogicHelperMqtt {
    *
    * @param csState 等待更新的历史数据
    */
-  public void updateStatus(CsState csState) {
+  /*public void updateStatus(CsState csState) {
     if (null != csState && null != csState.getCssId() && csState.getCssId() > 0) {
       ListOperations opsForList = redisTemplate.opsForList();
       // 需要更新的当前状态加入等待队列
       opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
     }
-  }
+  }*/
 
   /**
    * 保存状态数据
@@ -157,9 +157,9 @@ public class LogicHelperMqtt {
             .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
                 BigDecimal.ROUND_HALF_UP));
       }
-      // 需要更新的当前状态加入等待队列
-      ListOperations opsForList = redisTemplate.opsForList();
-      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+      // 需要更新的当前状态加入等待队列 commented by jhy : 不在使用（已迁移到kafka）
+      //ListOperations opsForList = redisTemplate.opsForList();
+      //opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
       kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
 //      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
@@ -269,13 +269,11 @@ public class LogicHelperMqtt {
             .mul(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
         );
       }
-      // 需要更新的当前状态加入等待队列
-      ListOperations opsForList = redisTemplate.opsForList();
-      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
+      // 需要更新的当前状态加入等待队列 commented by jhy : 不在使用（已迁移到kafka）
+      //ListOperations opsForList = redisTemplate.opsForList();
+      //opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
       // 发送历史状态到kafka
       kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
-      // 处理历史状态
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     } else {
       csState.setCssLongitude(AccurateOperationUtils
           .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
@@ -287,9 +285,6 @@ public class LogicHelperMqtt {
       updateStateService.insert(csState);
       // 发送历史状态到kafka
       kafkaTemplate.send(kafkaTopicCsState,JSONObject.toJSONString(csState));
-      // 处理历史状态
-//      ListOperations opsForList = redisTemplate.opsForList();
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
     }
   }
 
@@ -326,19 +321,16 @@ public class LogicHelperMqtt {
 //    canData.setCscFault(errorInfo);
     if (mapping.getCan() != null) {
       canData.setCscId(mapping.getCan());
-      // 需要更新的当前状态加入等待队列
-      ListOperations opsForList = redisTemplate.opsForList();
-      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
+      // 需要更新的当前状态加入等待队列 commented by jhy : 不在使用（已迁移到kafka）
+      //ListOperations opsForList = redisTemplate.opsForList();
+      //opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
 
       // 处理can历史状态
       kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     } else {
       updateCanService.insert(canData);
       // 处理can历史状态
       kafkaTemplate.send(kafkaTopicCsCan,JSONObject.toJSONString(canData));
-//      ListOperations opsForList = redisTemplate.opsForList();
-//      opsForList.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, canData);
     }
   }
 

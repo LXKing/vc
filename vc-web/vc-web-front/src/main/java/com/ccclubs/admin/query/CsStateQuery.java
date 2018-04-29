@@ -3,6 +3,8 @@ package com.ccclubs.admin.query;
 import com.ccclubs.admin.entity.CsStateCrieria;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class CsStateQuery {
@@ -154,57 +156,57 @@ public class CsStateQuery {
 	
 	private String cssRfidDteGreater;
 	
-	private Integer cssObdMileEquals;
-	private Integer[] cssObdMileIn;
+	private BigDecimal cssObdMileEquals;
+	private BigDecimal[] cssObdMileIn;
 	private Boolean cssObdMileIsNull;
 	private Boolean cssObdMileIsNotNull;
 	
-	private Integer cssObdMileStart;
+	private BigDecimal cssObdMileStart;
 	
-	private Integer cssObdMileEnd;
+	private BigDecimal cssObdMileEnd;
 	
-	private Integer cssObdMileLess;
+	private BigDecimal cssObdMileLess;
 	
-	private Integer cssObdMileGreater;
+	private BigDecimal cssObdMileGreater;
 	
-	private Integer cssEngineTEquals;
-	private Integer[] cssEngineTIn;
+	private BigDecimal cssEngineTEquals;
+	private BigDecimal[] cssEngineTIn;
 	private Boolean cssEngineTIsNull;
 	private Boolean cssEngineTIsNotNull;
 	
-	private Integer cssEngineTStart;
+	private BigDecimal cssEngineTStart;
 	
-	private Integer cssEngineTEnd;
+	private BigDecimal cssEngineTEnd;
 	
-	private Integer cssEngineTLess;
+	private BigDecimal cssEngineTLess;
 	
-	private Integer cssEngineTGreater;
+	private BigDecimal cssEngineTGreater;
 	
-	private Integer cssMileageEquals;
-	private Integer[] cssMileageIn;
+	private BigDecimal cssMileageEquals;
+	private BigDecimal[] cssMileageIn;
 	private Boolean cssMileageIsNull;
 	private Boolean cssMileageIsNotNull;
 	
-	private Integer cssMileageStart;
+	private BigDecimal cssMileageStart;
 	
-	private Integer cssMileageEnd;
+	private BigDecimal cssMileageEnd;
 	
-	private Integer cssMileageLess;
+	private BigDecimal cssMileageLess;
 	
-	private Integer cssMileageGreater;
+	private BigDecimal cssMileageGreater;
 	
-	private Short cssSpeedEquals;
-	private Short[] cssSpeedIn;
+	private BigDecimal cssSpeedEquals;
+	private BigDecimal[] cssSpeedIn;
 	private Boolean cssSpeedIsNull;
 	private Boolean cssSpeedIsNotNull;
 	
-	private Short cssSpeedStart;
+	private BigDecimal cssSpeedStart;
 	
-	private Short cssSpeedEnd;
+	private BigDecimal cssSpeedEnd;
 	
-	private Short cssSpeedLess;
+	private BigDecimal cssSpeedLess;
 	
-	private Short cssSpeedGreater;
+	private BigDecimal cssSpeedGreater;
 	
 	private Integer cssMotorEquals;
 	private Integer[] cssMotorIn;
@@ -218,20 +220,19 @@ public class CsStateQuery {
 	private Integer cssMotorLess;
 	
 	private Integer cssMotorGreater;
-	private String cssOilLike;
 	
-	private String cssOilEquals;
-	private String[] cssOilIn;
+	private BigDecimal cssOilEquals;
+	private BigDecimal[] cssOilIn;
 	private Boolean cssOilIsNull;
 	private Boolean cssOilIsNotNull;
 	
-	private String cssOilStart;
+	private BigDecimal cssOilStart;
 	
-	private String cssOilEnd;
+	private BigDecimal cssOilEnd;
 	
-	private String cssOilLess;
+	private BigDecimal cssOilLess;
 	
-	private String cssOilGreater;
+	private BigDecimal cssOilGreater;
 	
 	private Integer cssPowerEquals;
 	private Integer[] cssPowerIn;
@@ -271,61 +272,58 @@ public class CsStateQuery {
 	private Short cssChargingLess;
 	
 	private Short cssChargingGreater;
-	private String cssFuelMileageLike;
 	
-	private String cssFuelMileageEquals;
-	private String[] cssFuelMileageIn;
+	private BigDecimal cssFuelMileageEquals;
+	private BigDecimal[] cssFuelMileageIn;
 	private Boolean cssFuelMileageIsNull;
 	private Boolean cssFuelMileageIsNotNull;
 	
-	private String cssFuelMileageStart;
+	private BigDecimal cssFuelMileageStart;
 	
-	private String cssFuelMileageEnd;
+	private BigDecimal cssFuelMileageEnd;
 	
-	private String cssFuelMileageLess;
+	private BigDecimal cssFuelMileageLess;
 	
-	private String cssFuelMileageGreater;
-	private String cssElectricMileageLike;
+	private BigDecimal cssFuelMileageGreater;
 	
-	private String cssElectricMileageEquals;
-	private String[] cssElectricMileageIn;
+	private BigDecimal cssElectricMileageEquals;
+	private BigDecimal[] cssElectricMileageIn;
 	private Boolean cssElectricMileageIsNull;
 	private Boolean cssElectricMileageIsNotNull;
 	
-	private String cssElectricMileageStart;
+	private BigDecimal cssElectricMileageStart;
 	
-	private String cssElectricMileageEnd;
+	private BigDecimal cssElectricMileageEnd;
 	
-	private String cssElectricMileageLess;
+	private BigDecimal cssElectricMileageLess;
 	
-	private String cssElectricMileageGreater;
-	private String cssEnduranceLike;
+	private BigDecimal cssElectricMileageGreater;
 	
-	private String cssEnduranceEquals;
-	private String[] cssEnduranceIn;
+	private BigDecimal cssEnduranceEquals;
+	private BigDecimal[] cssEnduranceIn;
 	private Boolean cssEnduranceIsNull;
 	private Boolean cssEnduranceIsNotNull;
 	
-	private String cssEnduranceStart;
+	private BigDecimal cssEnduranceStart;
 	
-	private String cssEnduranceEnd;
+	private BigDecimal cssEnduranceEnd;
 	
-	private String cssEnduranceLess;
+	private BigDecimal cssEnduranceLess;
 	
-	private String cssEnduranceGreater;
+	private BigDecimal cssEnduranceGreater;
 	
-	private Short cssTemperatureEquals;
-	private Short[] cssTemperatureIn;
+	private BigDecimal cssTemperatureEquals;
+	private BigDecimal[] cssTemperatureIn;
 	private Boolean cssTemperatureIsNull;
 	private Boolean cssTemperatureIsNotNull;
 	
-	private Short cssTemperatureStart;
+	private BigDecimal cssTemperatureStart;
 	
-	private Short cssTemperatureEnd;
+	private BigDecimal cssTemperatureEnd;
 	
-	private Short cssTemperatureLess;
+	private BigDecimal cssTemperatureLess;
 	
-	private Short cssTemperatureGreater;
+	private BigDecimal cssTemperatureGreater;
 	
 	private Short cssCsqEquals;
 	private Short[] cssCsqIn;
@@ -340,31 +338,31 @@ public class CsStateQuery {
 	
 	private Short cssCsqGreater;
 	
-	private Double cssLongitudeEquals;
-	private Double[] cssLongitudeIn;
+	private BigDecimal cssLongitudeEquals;
+	private BigDecimal[] cssLongitudeIn;
 	private Boolean cssLongitudeIsNull;
 	private Boolean cssLongitudeIsNotNull;
 	
-	private Double cssLongitudeStart;
+	private BigDecimal cssLongitudeStart;
 	
-	private Double cssLongitudeEnd;
+	private BigDecimal cssLongitudeEnd;
 	
-	private Double cssLongitudeLess;
+	private BigDecimal cssLongitudeLess;
 	
-	private Double cssLongitudeGreater;
+	private BigDecimal cssLongitudeGreater;
 	
-	private Double cssLatitudeEquals;
-	private Double[] cssLatitudeIn;
+	private BigDecimal cssLatitudeEquals;
+	private BigDecimal[] cssLatitudeIn;
 	private Boolean cssLatitudeIsNull;
 	private Boolean cssLatitudeIsNotNull;
 	
-	private Double cssLatitudeStart;
+	private BigDecimal cssLatitudeStart;
 	
-	private Double cssLatitudeEnd;
+	private BigDecimal cssLatitudeEnd;
 	
-	private Double cssLatitudeLess;
+	private BigDecimal cssLatitudeLess;
 	
-	private Double cssLatitudeGreater;
+	private BigDecimal cssLatitudeGreater;
 	
 	private Short cssGpsValidEquals;
 	private Short[] cssGpsValidIn;
@@ -404,20 +402,19 @@ public class CsStateQuery {
 	private Short cssGpsCountLess;
 	
 	private Short cssGpsCountGreater;
-	private String cssDirLike;
 	
-	private String cssDirEquals;
-	private String[] cssDirIn;
+	private BigDecimal cssDirEquals;
+	private BigDecimal[] cssDirIn;
 	private Boolean cssDirIsNull;
 	private Boolean cssDirIsNotNull;
 	
-	private String cssDirStart;
+	private BigDecimal cssDirStart;
 	
-	private String cssDirEnd;
+	private BigDecimal cssDirEnd;
 	
-	private String cssDirLess;
+	private BigDecimal cssDirLess;
 	
-	private String cssDirGreater;
+	private BigDecimal cssDirGreater;
 	
 	private Short cssCircularEquals;
 	private Short[] cssCircularIn;
@@ -602,18 +599,18 @@ public class CsStateQuery {
 	
 	private Integer cssBaseCiGreater;
 	
-	private Integer cssOrderEquals;
-	private Integer[] cssOrderIn;
+	private Long cssOrderEquals;
+	private Long[] cssOrderIn;
 	private Boolean cssOrderIsNull;
 	private Boolean cssOrderIsNotNull;
 	
-	private Integer cssOrderStart;
+	private Long cssOrderStart;
 	
-	private Integer cssOrderEnd;
+	private Long cssOrderEnd;
 	
-	private Integer cssOrderLess;
+	private Long cssOrderLess;
 	
-	private Integer cssOrderGreater;
+	private Long cssOrderGreater;
 	private String cssMoDataLike;
 	
 	private String cssMoDataEquals;
@@ -628,6 +625,46 @@ public class CsStateQuery {
 	private String cssMoDataLess;
 	
 	private String cssMoDataGreater;
+	private String cssTeNoLike;
+	
+	private String cssTeNoEquals;
+	private String[] cssTeNoIn;
+	private Boolean cssTeNoIsNull;
+	private Boolean cssTeNoIsNotNull;
+	
+	private String cssTeNoStart;
+	
+	private String cssTeNoEnd;
+	
+	private String cssTeNoLess;
+	
+	private String cssTeNoGreater;
+	
+	private Integer cssAutopilotEquals;
+	private Integer[] cssAutopilotIn;
+	private Boolean cssAutopilotIsNull;
+	private Boolean cssAutopilotIsNotNull;
+	
+	private Integer cssAutopilotStart;
+	
+	private Integer cssAutopilotEnd;
+	
+	private Integer cssAutopilotLess;
+	
+	private Integer cssAutopilotGreater;
+	
+	private Integer cssHandbrakeEquals;
+	private Integer[] cssHandbrakeIn;
+	private Boolean cssHandbrakeIsNull;
+	private Boolean cssHandbrakeIsNotNull;
+	
+	private Integer cssHandbrakeStart;
+	
+	private Integer cssHandbrakeEnd;
+	
+	private Integer cssHandbrakeLess;
+	
+	private Integer cssHandbrakeGreater;
 	private String sidx;
 	private String sord;
 
@@ -1275,18 +1312,18 @@ public class CsStateQuery {
 	public String getCssRfidDteGreater(){
 		return this.cssRfidDteGreater;
 	}
-	public CsStateQuery setCssObdMileEquals(Integer cssObdMileEquals){
+	public CsStateQuery setCssObdMileEquals(BigDecimal cssObdMileEquals){
 		this.cssObdMileEquals = cssObdMileEquals;
 		return this;
 	}
-	public Integer getCssObdMileEquals(){
+	public BigDecimal getCssObdMileEquals(){
 		return this.cssObdMileEquals;
 	}
-	public CsStateQuery setCssObdMileIn(Integer[] cssObdMileIn){
+	public CsStateQuery setCssObdMileIn(BigDecimal[] cssObdMileIn){
 		this.cssObdMileIn = cssObdMileIn;
 		return this;
 	}
-	public Integer[] getCssObdMileIn(){
+	public BigDecimal[] getCssObdMileIn(){
 		return this.cssObdMileIn;
 	}
 	public CsStateQuery setCssObdMileIsNull(Boolean cssObdMileIsNull){
@@ -1303,46 +1340,46 @@ public class CsStateQuery {
 	public Boolean getCssObdMileIsNotNull(){
 		return this.cssObdMileIsNotNull;
 	}
-	public CsStateQuery setCssObdMileStart(Integer cssObdMileStart){
+	public CsStateQuery setCssObdMileStart(BigDecimal cssObdMileStart){
 		this.cssObdMileStart = cssObdMileStart;
 		return this;
 	}
-	public Integer getCssObdMileStart(){
+	public BigDecimal getCssObdMileStart(){
 		return this.cssObdMileStart;
 	}
-	public CsStateQuery setCssObdMileEnd(Integer cssObdMileEnd){
+	public CsStateQuery setCssObdMileEnd(BigDecimal cssObdMileEnd){
 		this.cssObdMileEnd = cssObdMileEnd;
 		return this;
 	}
-	public Integer getCssObdMileEnd(){
+	public BigDecimal getCssObdMileEnd(){
 		return this.cssObdMileEnd;
 	}
-	public CsStateQuery setCssObdMileLess(Integer cssObdMileLess){
+	public CsStateQuery setCssObdMileLess(BigDecimal cssObdMileLess){
 		this.cssObdMileLess = cssObdMileLess;
 		return this;
 	}
-	public Integer getCssObdMileLess(){
+	public BigDecimal getCssObdMileLess(){
 		return this.cssObdMileLess;
 	}
-	public CsStateQuery setCssObdMileGreater(Integer cssObdMileGreater){
+	public CsStateQuery setCssObdMileGreater(BigDecimal cssObdMileGreater){
 		this.cssObdMileGreater = cssObdMileGreater;
 		return this;
 	}
-	public Integer getCssObdMileGreater(){
+	public BigDecimal getCssObdMileGreater(){
 		return this.cssObdMileGreater;
 	}
-	public CsStateQuery setCssEngineTEquals(Integer cssEngineTEquals){
+	public CsStateQuery setCssEngineTEquals(BigDecimal cssEngineTEquals){
 		this.cssEngineTEquals = cssEngineTEquals;
 		return this;
 	}
-	public Integer getCssEngineTEquals(){
+	public BigDecimal getCssEngineTEquals(){
 		return this.cssEngineTEquals;
 	}
-	public CsStateQuery setCssEngineTIn(Integer[] cssEngineTIn){
+	public CsStateQuery setCssEngineTIn(BigDecimal[] cssEngineTIn){
 		this.cssEngineTIn = cssEngineTIn;
 		return this;
 	}
-	public Integer[] getCssEngineTIn(){
+	public BigDecimal[] getCssEngineTIn(){
 		return this.cssEngineTIn;
 	}
 	public CsStateQuery setCssEngineTIsNull(Boolean cssEngineTIsNull){
@@ -1359,46 +1396,46 @@ public class CsStateQuery {
 	public Boolean getCssEngineTIsNotNull(){
 		return this.cssEngineTIsNotNull;
 	}
-	public CsStateQuery setCssEngineTStart(Integer cssEngineTStart){
+	public CsStateQuery setCssEngineTStart(BigDecimal cssEngineTStart){
 		this.cssEngineTStart = cssEngineTStart;
 		return this;
 	}
-	public Integer getCssEngineTStart(){
+	public BigDecimal getCssEngineTStart(){
 		return this.cssEngineTStart;
 	}
-	public CsStateQuery setCssEngineTEnd(Integer cssEngineTEnd){
+	public CsStateQuery setCssEngineTEnd(BigDecimal cssEngineTEnd){
 		this.cssEngineTEnd = cssEngineTEnd;
 		return this;
 	}
-	public Integer getCssEngineTEnd(){
+	public BigDecimal getCssEngineTEnd(){
 		return this.cssEngineTEnd;
 	}
-	public CsStateQuery setCssEngineTLess(Integer cssEngineTLess){
+	public CsStateQuery setCssEngineTLess(BigDecimal cssEngineTLess){
 		this.cssEngineTLess = cssEngineTLess;
 		return this;
 	}
-	public Integer getCssEngineTLess(){
+	public BigDecimal getCssEngineTLess(){
 		return this.cssEngineTLess;
 	}
-	public CsStateQuery setCssEngineTGreater(Integer cssEngineTGreater){
+	public CsStateQuery setCssEngineTGreater(BigDecimal cssEngineTGreater){
 		this.cssEngineTGreater = cssEngineTGreater;
 		return this;
 	}
-	public Integer getCssEngineTGreater(){
+	public BigDecimal getCssEngineTGreater(){
 		return this.cssEngineTGreater;
 	}
-	public CsStateQuery setCssMileageEquals(Integer cssMileageEquals){
+	public CsStateQuery setCssMileageEquals(BigDecimal cssMileageEquals){
 		this.cssMileageEquals = cssMileageEquals;
 		return this;
 	}
-	public Integer getCssMileageEquals(){
+	public BigDecimal getCssMileageEquals(){
 		return this.cssMileageEquals;
 	}
-	public CsStateQuery setCssMileageIn(Integer[] cssMileageIn){
+	public CsStateQuery setCssMileageIn(BigDecimal[] cssMileageIn){
 		this.cssMileageIn = cssMileageIn;
 		return this;
 	}
-	public Integer[] getCssMileageIn(){
+	public BigDecimal[] getCssMileageIn(){
 		return this.cssMileageIn;
 	}
 	public CsStateQuery setCssMileageIsNull(Boolean cssMileageIsNull){
@@ -1415,46 +1452,46 @@ public class CsStateQuery {
 	public Boolean getCssMileageIsNotNull(){
 		return this.cssMileageIsNotNull;
 	}
-	public CsStateQuery setCssMileageStart(Integer cssMileageStart){
+	public CsStateQuery setCssMileageStart(BigDecimal cssMileageStart){
 		this.cssMileageStart = cssMileageStart;
 		return this;
 	}
-	public Integer getCssMileageStart(){
+	public BigDecimal getCssMileageStart(){
 		return this.cssMileageStart;
 	}
-	public CsStateQuery setCssMileageEnd(Integer cssMileageEnd){
+	public CsStateQuery setCssMileageEnd(BigDecimal cssMileageEnd){
 		this.cssMileageEnd = cssMileageEnd;
 		return this;
 	}
-	public Integer getCssMileageEnd(){
+	public BigDecimal getCssMileageEnd(){
 		return this.cssMileageEnd;
 	}
-	public CsStateQuery setCssMileageLess(Integer cssMileageLess){
+	public CsStateQuery setCssMileageLess(BigDecimal cssMileageLess){
 		this.cssMileageLess = cssMileageLess;
 		return this;
 	}
-	public Integer getCssMileageLess(){
+	public BigDecimal getCssMileageLess(){
 		return this.cssMileageLess;
 	}
-	public CsStateQuery setCssMileageGreater(Integer cssMileageGreater){
+	public CsStateQuery setCssMileageGreater(BigDecimal cssMileageGreater){
 		this.cssMileageGreater = cssMileageGreater;
 		return this;
 	}
-	public Integer getCssMileageGreater(){
+	public BigDecimal getCssMileageGreater(){
 		return this.cssMileageGreater;
 	}
-	public CsStateQuery setCssSpeedEquals(Short cssSpeedEquals){
+	public CsStateQuery setCssSpeedEquals(BigDecimal cssSpeedEquals){
 		this.cssSpeedEquals = cssSpeedEquals;
 		return this;
 	}
-	public Short getCssSpeedEquals(){
+	public BigDecimal getCssSpeedEquals(){
 		return this.cssSpeedEquals;
 	}
-	public CsStateQuery setCssSpeedIn(Short[] cssSpeedIn){
+	public CsStateQuery setCssSpeedIn(BigDecimal[] cssSpeedIn){
 		this.cssSpeedIn = cssSpeedIn;
 		return this;
 	}
-	public Short[] getCssSpeedIn(){
+	public BigDecimal[] getCssSpeedIn(){
 		return this.cssSpeedIn;
 	}
 	public CsStateQuery setCssSpeedIsNull(Boolean cssSpeedIsNull){
@@ -1471,32 +1508,32 @@ public class CsStateQuery {
 	public Boolean getCssSpeedIsNotNull(){
 		return this.cssSpeedIsNotNull;
 	}
-	public CsStateQuery setCssSpeedStart(Short cssSpeedStart){
+	public CsStateQuery setCssSpeedStart(BigDecimal cssSpeedStart){
 		this.cssSpeedStart = cssSpeedStart;
 		return this;
 	}
-	public Short getCssSpeedStart(){
+	public BigDecimal getCssSpeedStart(){
 		return this.cssSpeedStart;
 	}
-	public CsStateQuery setCssSpeedEnd(Short cssSpeedEnd){
+	public CsStateQuery setCssSpeedEnd(BigDecimal cssSpeedEnd){
 		this.cssSpeedEnd = cssSpeedEnd;
 		return this;
 	}
-	public Short getCssSpeedEnd(){
+	public BigDecimal getCssSpeedEnd(){
 		return this.cssSpeedEnd;
 	}
-	public CsStateQuery setCssSpeedLess(Short cssSpeedLess){
+	public CsStateQuery setCssSpeedLess(BigDecimal cssSpeedLess){
 		this.cssSpeedLess = cssSpeedLess;
 		return this;
 	}
-	public Short getCssSpeedLess(){
+	public BigDecimal getCssSpeedLess(){
 		return this.cssSpeedLess;
 	}
-	public CsStateQuery setCssSpeedGreater(Short cssSpeedGreater){
+	public CsStateQuery setCssSpeedGreater(BigDecimal cssSpeedGreater){
 		this.cssSpeedGreater = cssSpeedGreater;
 		return this;
 	}
-	public Short getCssSpeedGreater(){
+	public BigDecimal getCssSpeedGreater(){
 		return this.cssSpeedGreater;
 	}
 	public CsStateQuery setCssMotorEquals(Integer cssMotorEquals){
@@ -1555,25 +1592,18 @@ public class CsStateQuery {
 	public Integer getCssMotorGreater(){
 		return this.cssMotorGreater;
 	}
-	public CsStateQuery setCssOilLike(String cssOilLike){
-		this.cssOilLike = cssOilLike;
-		return this;
-	}
-	public String getCssOilLike(){
-		return this.cssOilLike;
-	}
-	public CsStateQuery setCssOilEquals(String cssOilEquals){
+	public CsStateQuery setCssOilEquals(BigDecimal cssOilEquals){
 		this.cssOilEquals = cssOilEquals;
 		return this;
 	}
-	public String getCssOilEquals(){
+	public BigDecimal getCssOilEquals(){
 		return this.cssOilEquals;
 	}
-	public CsStateQuery setCssOilIn(String[] cssOilIn){
+	public CsStateQuery setCssOilIn(BigDecimal[] cssOilIn){
 		this.cssOilIn = cssOilIn;
 		return this;
 	}
-	public String[] getCssOilIn(){
+	public BigDecimal[] getCssOilIn(){
 		return this.cssOilIn;
 	}
 	public CsStateQuery setCssOilIsNull(Boolean cssOilIsNull){
@@ -1590,32 +1620,32 @@ public class CsStateQuery {
 	public Boolean getCssOilIsNotNull(){
 		return this.cssOilIsNotNull;
 	}
-	public CsStateQuery setCssOilStart(String cssOilStart){
+	public CsStateQuery setCssOilStart(BigDecimal cssOilStart){
 		this.cssOilStart = cssOilStart;
 		return this;
 	}
-	public String getCssOilStart(){
+	public BigDecimal getCssOilStart(){
 		return this.cssOilStart;
 	}
-	public CsStateQuery setCssOilEnd(String cssOilEnd){
+	public CsStateQuery setCssOilEnd(BigDecimal cssOilEnd){
 		this.cssOilEnd = cssOilEnd;
 		return this;
 	}
-	public String getCssOilEnd(){
+	public BigDecimal getCssOilEnd(){
 		return this.cssOilEnd;
 	}
-	public CsStateQuery setCssOilLess(String cssOilLess){
+	public CsStateQuery setCssOilLess(BigDecimal cssOilLess){
 		this.cssOilLess = cssOilLess;
 		return this;
 	}
-	public String getCssOilLess(){
+	public BigDecimal getCssOilLess(){
 		return this.cssOilLess;
 	}
-	public CsStateQuery setCssOilGreater(String cssOilGreater){
+	public CsStateQuery setCssOilGreater(BigDecimal cssOilGreater){
 		this.cssOilGreater = cssOilGreater;
 		return this;
 	}
-	public String getCssOilGreater(){
+	public BigDecimal getCssOilGreater(){
 		return this.cssOilGreater;
 	}
 	public CsStateQuery setCssPowerEquals(Integer cssPowerEquals){
@@ -1786,25 +1816,18 @@ public class CsStateQuery {
 	public Short getCssChargingGreater(){
 		return this.cssChargingGreater;
 	}
-	public CsStateQuery setCssFuelMileageLike(String cssFuelMileageLike){
-		this.cssFuelMileageLike = cssFuelMileageLike;
-		return this;
-	}
-	public String getCssFuelMileageLike(){
-		return this.cssFuelMileageLike;
-	}
-	public CsStateQuery setCssFuelMileageEquals(String cssFuelMileageEquals){
+	public CsStateQuery setCssFuelMileageEquals(BigDecimal cssFuelMileageEquals){
 		this.cssFuelMileageEquals = cssFuelMileageEquals;
 		return this;
 	}
-	public String getCssFuelMileageEquals(){
+	public BigDecimal getCssFuelMileageEquals(){
 		return this.cssFuelMileageEquals;
 	}
-	public CsStateQuery setCssFuelMileageIn(String[] cssFuelMileageIn){
+	public CsStateQuery setCssFuelMileageIn(BigDecimal[] cssFuelMileageIn){
 		this.cssFuelMileageIn = cssFuelMileageIn;
 		return this;
 	}
-	public String[] getCssFuelMileageIn(){
+	public BigDecimal[] getCssFuelMileageIn(){
 		return this.cssFuelMileageIn;
 	}
 	public CsStateQuery setCssFuelMileageIsNull(Boolean cssFuelMileageIsNull){
@@ -1821,53 +1844,46 @@ public class CsStateQuery {
 	public Boolean getCssFuelMileageIsNotNull(){
 		return this.cssFuelMileageIsNotNull;
 	}
-	public CsStateQuery setCssFuelMileageStart(String cssFuelMileageStart){
+	public CsStateQuery setCssFuelMileageStart(BigDecimal cssFuelMileageStart){
 		this.cssFuelMileageStart = cssFuelMileageStart;
 		return this;
 	}
-	public String getCssFuelMileageStart(){
+	public BigDecimal getCssFuelMileageStart(){
 		return this.cssFuelMileageStart;
 	}
-	public CsStateQuery setCssFuelMileageEnd(String cssFuelMileageEnd){
+	public CsStateQuery setCssFuelMileageEnd(BigDecimal cssFuelMileageEnd){
 		this.cssFuelMileageEnd = cssFuelMileageEnd;
 		return this;
 	}
-	public String getCssFuelMileageEnd(){
+	public BigDecimal getCssFuelMileageEnd(){
 		return this.cssFuelMileageEnd;
 	}
-	public CsStateQuery setCssFuelMileageLess(String cssFuelMileageLess){
+	public CsStateQuery setCssFuelMileageLess(BigDecimal cssFuelMileageLess){
 		this.cssFuelMileageLess = cssFuelMileageLess;
 		return this;
 	}
-	public String getCssFuelMileageLess(){
+	public BigDecimal getCssFuelMileageLess(){
 		return this.cssFuelMileageLess;
 	}
-	public CsStateQuery setCssFuelMileageGreater(String cssFuelMileageGreater){
+	public CsStateQuery setCssFuelMileageGreater(BigDecimal cssFuelMileageGreater){
 		this.cssFuelMileageGreater = cssFuelMileageGreater;
 		return this;
 	}
-	public String getCssFuelMileageGreater(){
+	public BigDecimal getCssFuelMileageGreater(){
 		return this.cssFuelMileageGreater;
 	}
-	public CsStateQuery setCssElectricMileageLike(String cssElectricMileageLike){
-		this.cssElectricMileageLike = cssElectricMileageLike;
-		return this;
-	}
-	public String getCssElectricMileageLike(){
-		return this.cssElectricMileageLike;
-	}
-	public CsStateQuery setCssElectricMileageEquals(String cssElectricMileageEquals){
+	public CsStateQuery setCssElectricMileageEquals(BigDecimal cssElectricMileageEquals){
 		this.cssElectricMileageEquals = cssElectricMileageEquals;
 		return this;
 	}
-	public String getCssElectricMileageEquals(){
+	public BigDecimal getCssElectricMileageEquals(){
 		return this.cssElectricMileageEquals;
 	}
-	public CsStateQuery setCssElectricMileageIn(String[] cssElectricMileageIn){
+	public CsStateQuery setCssElectricMileageIn(BigDecimal[] cssElectricMileageIn){
 		this.cssElectricMileageIn = cssElectricMileageIn;
 		return this;
 	}
-	public String[] getCssElectricMileageIn(){
+	public BigDecimal[] getCssElectricMileageIn(){
 		return this.cssElectricMileageIn;
 	}
 	public CsStateQuery setCssElectricMileageIsNull(Boolean cssElectricMileageIsNull){
@@ -1884,53 +1900,46 @@ public class CsStateQuery {
 	public Boolean getCssElectricMileageIsNotNull(){
 		return this.cssElectricMileageIsNotNull;
 	}
-	public CsStateQuery setCssElectricMileageStart(String cssElectricMileageStart){
+	public CsStateQuery setCssElectricMileageStart(BigDecimal cssElectricMileageStart){
 		this.cssElectricMileageStart = cssElectricMileageStart;
 		return this;
 	}
-	public String getCssElectricMileageStart(){
+	public BigDecimal getCssElectricMileageStart(){
 		return this.cssElectricMileageStart;
 	}
-	public CsStateQuery setCssElectricMileageEnd(String cssElectricMileageEnd){
+	public CsStateQuery setCssElectricMileageEnd(BigDecimal cssElectricMileageEnd){
 		this.cssElectricMileageEnd = cssElectricMileageEnd;
 		return this;
 	}
-	public String getCssElectricMileageEnd(){
+	public BigDecimal getCssElectricMileageEnd(){
 		return this.cssElectricMileageEnd;
 	}
-	public CsStateQuery setCssElectricMileageLess(String cssElectricMileageLess){
+	public CsStateQuery setCssElectricMileageLess(BigDecimal cssElectricMileageLess){
 		this.cssElectricMileageLess = cssElectricMileageLess;
 		return this;
 	}
-	public String getCssElectricMileageLess(){
+	public BigDecimal getCssElectricMileageLess(){
 		return this.cssElectricMileageLess;
 	}
-	public CsStateQuery setCssElectricMileageGreater(String cssElectricMileageGreater){
+	public CsStateQuery setCssElectricMileageGreater(BigDecimal cssElectricMileageGreater){
 		this.cssElectricMileageGreater = cssElectricMileageGreater;
 		return this;
 	}
-	public String getCssElectricMileageGreater(){
+	public BigDecimal getCssElectricMileageGreater(){
 		return this.cssElectricMileageGreater;
 	}
-	public CsStateQuery setCssEnduranceLike(String cssEnduranceLike){
-		this.cssEnduranceLike = cssEnduranceLike;
-		return this;
-	}
-	public String getCssEnduranceLike(){
-		return this.cssEnduranceLike;
-	}
-	public CsStateQuery setCssEnduranceEquals(String cssEnduranceEquals){
+	public CsStateQuery setCssEnduranceEquals(BigDecimal cssEnduranceEquals){
 		this.cssEnduranceEquals = cssEnduranceEquals;
 		return this;
 	}
-	public String getCssEnduranceEquals(){
+	public BigDecimal getCssEnduranceEquals(){
 		return this.cssEnduranceEquals;
 	}
-	public CsStateQuery setCssEnduranceIn(String[] cssEnduranceIn){
+	public CsStateQuery setCssEnduranceIn(BigDecimal[] cssEnduranceIn){
 		this.cssEnduranceIn = cssEnduranceIn;
 		return this;
 	}
-	public String[] getCssEnduranceIn(){
+	public BigDecimal[] getCssEnduranceIn(){
 		return this.cssEnduranceIn;
 	}
 	public CsStateQuery setCssEnduranceIsNull(Boolean cssEnduranceIsNull){
@@ -1947,46 +1956,46 @@ public class CsStateQuery {
 	public Boolean getCssEnduranceIsNotNull(){
 		return this.cssEnduranceIsNotNull;
 	}
-	public CsStateQuery setCssEnduranceStart(String cssEnduranceStart){
+	public CsStateQuery setCssEnduranceStart(BigDecimal cssEnduranceStart){
 		this.cssEnduranceStart = cssEnduranceStart;
 		return this;
 	}
-	public String getCssEnduranceStart(){
+	public BigDecimal getCssEnduranceStart(){
 		return this.cssEnduranceStart;
 	}
-	public CsStateQuery setCssEnduranceEnd(String cssEnduranceEnd){
+	public CsStateQuery setCssEnduranceEnd(BigDecimal cssEnduranceEnd){
 		this.cssEnduranceEnd = cssEnduranceEnd;
 		return this;
 	}
-	public String getCssEnduranceEnd(){
+	public BigDecimal getCssEnduranceEnd(){
 		return this.cssEnduranceEnd;
 	}
-	public CsStateQuery setCssEnduranceLess(String cssEnduranceLess){
+	public CsStateQuery setCssEnduranceLess(BigDecimal cssEnduranceLess){
 		this.cssEnduranceLess = cssEnduranceLess;
 		return this;
 	}
-	public String getCssEnduranceLess(){
+	public BigDecimal getCssEnduranceLess(){
 		return this.cssEnduranceLess;
 	}
-	public CsStateQuery setCssEnduranceGreater(String cssEnduranceGreater){
+	public CsStateQuery setCssEnduranceGreater(BigDecimal cssEnduranceGreater){
 		this.cssEnduranceGreater = cssEnduranceGreater;
 		return this;
 	}
-	public String getCssEnduranceGreater(){
+	public BigDecimal getCssEnduranceGreater(){
 		return this.cssEnduranceGreater;
 	}
-	public CsStateQuery setCssTemperatureEquals(Short cssTemperatureEquals){
+	public CsStateQuery setCssTemperatureEquals(BigDecimal cssTemperatureEquals){
 		this.cssTemperatureEquals = cssTemperatureEquals;
 		return this;
 	}
-	public Short getCssTemperatureEquals(){
+	public BigDecimal getCssTemperatureEquals(){
 		return this.cssTemperatureEquals;
 	}
-	public CsStateQuery setCssTemperatureIn(Short[] cssTemperatureIn){
+	public CsStateQuery setCssTemperatureIn(BigDecimal[] cssTemperatureIn){
 		this.cssTemperatureIn = cssTemperatureIn;
 		return this;
 	}
-	public Short[] getCssTemperatureIn(){
+	public BigDecimal[] getCssTemperatureIn(){
 		return this.cssTemperatureIn;
 	}
 	public CsStateQuery setCssTemperatureIsNull(Boolean cssTemperatureIsNull){
@@ -2003,32 +2012,32 @@ public class CsStateQuery {
 	public Boolean getCssTemperatureIsNotNull(){
 		return this.cssTemperatureIsNotNull;
 	}
-	public CsStateQuery setCssTemperatureStart(Short cssTemperatureStart){
+	public CsStateQuery setCssTemperatureStart(BigDecimal cssTemperatureStart){
 		this.cssTemperatureStart = cssTemperatureStart;
 		return this;
 	}
-	public Short getCssTemperatureStart(){
+	public BigDecimal getCssTemperatureStart(){
 		return this.cssTemperatureStart;
 	}
-	public CsStateQuery setCssTemperatureEnd(Short cssTemperatureEnd){
+	public CsStateQuery setCssTemperatureEnd(BigDecimal cssTemperatureEnd){
 		this.cssTemperatureEnd = cssTemperatureEnd;
 		return this;
 	}
-	public Short getCssTemperatureEnd(){
+	public BigDecimal getCssTemperatureEnd(){
 		return this.cssTemperatureEnd;
 	}
-	public CsStateQuery setCssTemperatureLess(Short cssTemperatureLess){
+	public CsStateQuery setCssTemperatureLess(BigDecimal cssTemperatureLess){
 		this.cssTemperatureLess = cssTemperatureLess;
 		return this;
 	}
-	public Short getCssTemperatureLess(){
+	public BigDecimal getCssTemperatureLess(){
 		return this.cssTemperatureLess;
 	}
-	public CsStateQuery setCssTemperatureGreater(Short cssTemperatureGreater){
+	public CsStateQuery setCssTemperatureGreater(BigDecimal cssTemperatureGreater){
 		this.cssTemperatureGreater = cssTemperatureGreater;
 		return this;
 	}
-	public Short getCssTemperatureGreater(){
+	public BigDecimal getCssTemperatureGreater(){
 		return this.cssTemperatureGreater;
 	}
 	public CsStateQuery setCssCsqEquals(Short cssCsqEquals){
@@ -2087,18 +2096,18 @@ public class CsStateQuery {
 	public Short getCssCsqGreater(){
 		return this.cssCsqGreater;
 	}
-	public CsStateQuery setCssLongitudeEquals(Double cssLongitudeEquals){
+	public CsStateQuery setCssLongitudeEquals(BigDecimal cssLongitudeEquals){
 		this.cssLongitudeEquals = cssLongitudeEquals;
 		return this;
 	}
-	public Double getCssLongitudeEquals(){
+	public BigDecimal getCssLongitudeEquals(){
 		return this.cssLongitudeEquals;
 	}
-	public CsStateQuery setCssLongitudeIn(Double[] cssLongitudeIn){
+	public CsStateQuery setCssLongitudeIn(BigDecimal[] cssLongitudeIn){
 		this.cssLongitudeIn = cssLongitudeIn;
 		return this;
 	}
-	public Double[] getCssLongitudeIn(){
+	public BigDecimal[] getCssLongitudeIn(){
 		return this.cssLongitudeIn;
 	}
 	public CsStateQuery setCssLongitudeIsNull(Boolean cssLongitudeIsNull){
@@ -2115,46 +2124,46 @@ public class CsStateQuery {
 	public Boolean getCssLongitudeIsNotNull(){
 		return this.cssLongitudeIsNotNull;
 	}
-	public CsStateQuery setCssLongitudeStart(Double cssLongitudeStart){
+	public CsStateQuery setCssLongitudeStart(BigDecimal cssLongitudeStart){
 		this.cssLongitudeStart = cssLongitudeStart;
 		return this;
 	}
-	public Double getCssLongitudeStart(){
+	public BigDecimal getCssLongitudeStart(){
 		return this.cssLongitudeStart;
 	}
-	public CsStateQuery setCssLongitudeEnd(Double cssLongitudeEnd){
+	public CsStateQuery setCssLongitudeEnd(BigDecimal cssLongitudeEnd){
 		this.cssLongitudeEnd = cssLongitudeEnd;
 		return this;
 	}
-	public Double getCssLongitudeEnd(){
+	public BigDecimal getCssLongitudeEnd(){
 		return this.cssLongitudeEnd;
 	}
-	public CsStateQuery setCssLongitudeLess(Double cssLongitudeLess){
+	public CsStateQuery setCssLongitudeLess(BigDecimal cssLongitudeLess){
 		this.cssLongitudeLess = cssLongitudeLess;
 		return this;
 	}
-	public Double getCssLongitudeLess(){
+	public BigDecimal getCssLongitudeLess(){
 		return this.cssLongitudeLess;
 	}
-	public CsStateQuery setCssLongitudeGreater(Double cssLongitudeGreater){
+	public CsStateQuery setCssLongitudeGreater(BigDecimal cssLongitudeGreater){
 		this.cssLongitudeGreater = cssLongitudeGreater;
 		return this;
 	}
-	public Double getCssLongitudeGreater(){
+	public BigDecimal getCssLongitudeGreater(){
 		return this.cssLongitudeGreater;
 	}
-	public CsStateQuery setCssLatitudeEquals(Double cssLatitudeEquals){
+	public CsStateQuery setCssLatitudeEquals(BigDecimal cssLatitudeEquals){
 		this.cssLatitudeEquals = cssLatitudeEquals;
 		return this;
 	}
-	public Double getCssLatitudeEquals(){
+	public BigDecimal getCssLatitudeEquals(){
 		return this.cssLatitudeEquals;
 	}
-	public CsStateQuery setCssLatitudeIn(Double[] cssLatitudeIn){
+	public CsStateQuery setCssLatitudeIn(BigDecimal[] cssLatitudeIn){
 		this.cssLatitudeIn = cssLatitudeIn;
 		return this;
 	}
-	public Double[] getCssLatitudeIn(){
+	public BigDecimal[] getCssLatitudeIn(){
 		return this.cssLatitudeIn;
 	}
 	public CsStateQuery setCssLatitudeIsNull(Boolean cssLatitudeIsNull){
@@ -2171,32 +2180,32 @@ public class CsStateQuery {
 	public Boolean getCssLatitudeIsNotNull(){
 		return this.cssLatitudeIsNotNull;
 	}
-	public CsStateQuery setCssLatitudeStart(Double cssLatitudeStart){
+	public CsStateQuery setCssLatitudeStart(BigDecimal cssLatitudeStart){
 		this.cssLatitudeStart = cssLatitudeStart;
 		return this;
 	}
-	public Double getCssLatitudeStart(){
+	public BigDecimal getCssLatitudeStart(){
 		return this.cssLatitudeStart;
 	}
-	public CsStateQuery setCssLatitudeEnd(Double cssLatitudeEnd){
+	public CsStateQuery setCssLatitudeEnd(BigDecimal cssLatitudeEnd){
 		this.cssLatitudeEnd = cssLatitudeEnd;
 		return this;
 	}
-	public Double getCssLatitudeEnd(){
+	public BigDecimal getCssLatitudeEnd(){
 		return this.cssLatitudeEnd;
 	}
-	public CsStateQuery setCssLatitudeLess(Double cssLatitudeLess){
+	public CsStateQuery setCssLatitudeLess(BigDecimal cssLatitudeLess){
 		this.cssLatitudeLess = cssLatitudeLess;
 		return this;
 	}
-	public Double getCssLatitudeLess(){
+	public BigDecimal getCssLatitudeLess(){
 		return this.cssLatitudeLess;
 	}
-	public CsStateQuery setCssLatitudeGreater(Double cssLatitudeGreater){
+	public CsStateQuery setCssLatitudeGreater(BigDecimal cssLatitudeGreater){
 		this.cssLatitudeGreater = cssLatitudeGreater;
 		return this;
 	}
-	public Double getCssLatitudeGreater(){
+	public BigDecimal getCssLatitudeGreater(){
 		return this.cssLatitudeGreater;
 	}
 	public CsStateQuery setCssGpsValidEquals(Short cssGpsValidEquals){
@@ -2367,25 +2376,18 @@ public class CsStateQuery {
 	public Short getCssGpsCountGreater(){
 		return this.cssGpsCountGreater;
 	}
-	public CsStateQuery setCssDirLike(String cssDirLike){
-		this.cssDirLike = cssDirLike;
-		return this;
-	}
-	public String getCssDirLike(){
-		return this.cssDirLike;
-	}
-	public CsStateQuery setCssDirEquals(String cssDirEquals){
+	public CsStateQuery setCssDirEquals(BigDecimal cssDirEquals){
 		this.cssDirEquals = cssDirEquals;
 		return this;
 	}
-	public String getCssDirEquals(){
+	public BigDecimal getCssDirEquals(){
 		return this.cssDirEquals;
 	}
-	public CsStateQuery setCssDirIn(String[] cssDirIn){
+	public CsStateQuery setCssDirIn(BigDecimal[] cssDirIn){
 		this.cssDirIn = cssDirIn;
 		return this;
 	}
-	public String[] getCssDirIn(){
+	public BigDecimal[] getCssDirIn(){
 		return this.cssDirIn;
 	}
 	public CsStateQuery setCssDirIsNull(Boolean cssDirIsNull){
@@ -2402,32 +2404,32 @@ public class CsStateQuery {
 	public Boolean getCssDirIsNotNull(){
 		return this.cssDirIsNotNull;
 	}
-	public CsStateQuery setCssDirStart(String cssDirStart){
+	public CsStateQuery setCssDirStart(BigDecimal cssDirStart){
 		this.cssDirStart = cssDirStart;
 		return this;
 	}
-	public String getCssDirStart(){
+	public BigDecimal getCssDirStart(){
 		return this.cssDirStart;
 	}
-	public CsStateQuery setCssDirEnd(String cssDirEnd){
+	public CsStateQuery setCssDirEnd(BigDecimal cssDirEnd){
 		this.cssDirEnd = cssDirEnd;
 		return this;
 	}
-	public String getCssDirEnd(){
+	public BigDecimal getCssDirEnd(){
 		return this.cssDirEnd;
 	}
-	public CsStateQuery setCssDirLess(String cssDirLess){
+	public CsStateQuery setCssDirLess(BigDecimal cssDirLess){
 		this.cssDirLess = cssDirLess;
 		return this;
 	}
-	public String getCssDirLess(){
+	public BigDecimal getCssDirLess(){
 		return this.cssDirLess;
 	}
-	public CsStateQuery setCssDirGreater(String cssDirGreater){
+	public CsStateQuery setCssDirGreater(BigDecimal cssDirGreater){
 		this.cssDirGreater = cssDirGreater;
 		return this;
 	}
-	public String getCssDirGreater(){
+	public BigDecimal getCssDirGreater(){
 		return this.cssDirGreater;
 	}
 	public CsStateQuery setCssCircularEquals(Short cssCircularEquals){
@@ -3221,18 +3223,18 @@ public class CsStateQuery {
 	public Integer getCssBaseCiGreater(){
 		return this.cssBaseCiGreater;
 	}
-	public CsStateQuery setCssOrderEquals(Integer cssOrderEquals){
+	public CsStateQuery setCssOrderEquals(Long cssOrderEquals){
 		this.cssOrderEquals = cssOrderEquals;
 		return this;
 	}
-	public Integer getCssOrderEquals(){
+	public Long getCssOrderEquals(){
 		return this.cssOrderEquals;
 	}
-	public CsStateQuery setCssOrderIn(Integer[] cssOrderIn){
+	public CsStateQuery setCssOrderIn(Long[] cssOrderIn){
 		this.cssOrderIn = cssOrderIn;
 		return this;
 	}
-	public Integer[] getCssOrderIn(){
+	public Long[] getCssOrderIn(){
 		return this.cssOrderIn;
 	}
 	public CsStateQuery setCssOrderIsNull(Boolean cssOrderIsNull){
@@ -3249,32 +3251,32 @@ public class CsStateQuery {
 	public Boolean getCssOrderIsNotNull(){
 		return this.cssOrderIsNotNull;
 	}
-	public CsStateQuery setCssOrderStart(Integer cssOrderStart){
+	public CsStateQuery setCssOrderStart(Long cssOrderStart){
 		this.cssOrderStart = cssOrderStart;
 		return this;
 	}
-	public Integer getCssOrderStart(){
+	public Long getCssOrderStart(){
 		return this.cssOrderStart;
 	}
-	public CsStateQuery setCssOrderEnd(Integer cssOrderEnd){
+	public CsStateQuery setCssOrderEnd(Long cssOrderEnd){
 		this.cssOrderEnd = cssOrderEnd;
 		return this;
 	}
-	public Integer getCssOrderEnd(){
+	public Long getCssOrderEnd(){
 		return this.cssOrderEnd;
 	}
-	public CsStateQuery setCssOrderLess(Integer cssOrderLess){
+	public CsStateQuery setCssOrderLess(Long cssOrderLess){
 		this.cssOrderLess = cssOrderLess;
 		return this;
 	}
-	public Integer getCssOrderLess(){
+	public Long getCssOrderLess(){
 		return this.cssOrderLess;
 	}
-	public CsStateQuery setCssOrderGreater(Integer cssOrderGreater){
+	public CsStateQuery setCssOrderGreater(Long cssOrderGreater){
 		this.cssOrderGreater = cssOrderGreater;
 		return this;
 	}
-	public Integer getCssOrderGreater(){
+	public Long getCssOrderGreater(){
 		return this.cssOrderGreater;
 	}
 	public CsStateQuery setCssMoDataLike(String cssMoDataLike){
@@ -3339,6 +3341,181 @@ public class CsStateQuery {
 	}
 	public String getCssMoDataGreater(){
 		return this.cssMoDataGreater;
+	}
+	public CsStateQuery setCssTeNoLike(String cssTeNoLike){
+		this.cssTeNoLike = cssTeNoLike;
+		return this;
+	}
+	public String getCssTeNoLike(){
+		return this.cssTeNoLike;
+	}
+	public CsStateQuery setCssTeNoEquals(String cssTeNoEquals){
+		this.cssTeNoEquals = cssTeNoEquals;
+		return this;
+	}
+	public String getCssTeNoEquals(){
+		return this.cssTeNoEquals;
+	}
+	public CsStateQuery setCssTeNoIn(String[] cssTeNoIn){
+		this.cssTeNoIn = cssTeNoIn;
+		return this;
+	}
+	public String[] getCssTeNoIn(){
+		return this.cssTeNoIn;
+	}
+	public CsStateQuery setCssTeNoIsNull(Boolean cssTeNoIsNull){
+		this.cssTeNoIsNull = cssTeNoIsNull;
+		return this;
+	}
+	public Boolean getCssTeNoIsNull(){
+		return this.cssTeNoIsNull;
+	}
+	public CsStateQuery setCssTeNoIsNotNull(Boolean cssTeNoIsNotNull){
+		this.cssTeNoIsNotNull = cssTeNoIsNotNull;
+		return this;
+	}
+	public Boolean getCssTeNoIsNotNull(){
+		return this.cssTeNoIsNotNull;
+	}
+	public CsStateQuery setCssTeNoStart(String cssTeNoStart){
+		this.cssTeNoStart = cssTeNoStart;
+		return this;
+	}
+	public String getCssTeNoStart(){
+		return this.cssTeNoStart;
+	}
+	public CsStateQuery setCssTeNoEnd(String cssTeNoEnd){
+		this.cssTeNoEnd = cssTeNoEnd;
+		return this;
+	}
+	public String getCssTeNoEnd(){
+		return this.cssTeNoEnd;
+	}
+	public CsStateQuery setCssTeNoLess(String cssTeNoLess){
+		this.cssTeNoLess = cssTeNoLess;
+		return this;
+	}
+	public String getCssTeNoLess(){
+		return this.cssTeNoLess;
+	}
+	public CsStateQuery setCssTeNoGreater(String cssTeNoGreater){
+		this.cssTeNoGreater = cssTeNoGreater;
+		return this;
+	}
+	public String getCssTeNoGreater(){
+		return this.cssTeNoGreater;
+	}
+	public CsStateQuery setCssAutopilotEquals(Integer cssAutopilotEquals){
+		this.cssAutopilotEquals = cssAutopilotEquals;
+		return this;
+	}
+	public Integer getCssAutopilotEquals(){
+		return this.cssAutopilotEquals;
+	}
+	public CsStateQuery setCssAutopilotIn(Integer[] cssAutopilotIn){
+		this.cssAutopilotIn = cssAutopilotIn;
+		return this;
+	}
+	public Integer[] getCssAutopilotIn(){
+		return this.cssAutopilotIn;
+	}
+	public CsStateQuery setCssAutopilotIsNull(Boolean cssAutopilotIsNull){
+		this.cssAutopilotIsNull = cssAutopilotIsNull;
+		return this;
+	}
+	public Boolean getCssAutopilotIsNull(){
+		return this.cssAutopilotIsNull;
+	}
+	public CsStateQuery setCssAutopilotIsNotNull(Boolean cssAutopilotIsNotNull){
+		this.cssAutopilotIsNotNull = cssAutopilotIsNotNull;
+		return this;
+	}
+	public Boolean getCssAutopilotIsNotNull(){
+		return this.cssAutopilotIsNotNull;
+	}
+	public CsStateQuery setCssAutopilotStart(Integer cssAutopilotStart){
+		this.cssAutopilotStart = cssAutopilotStart;
+		return this;
+	}
+	public Integer getCssAutopilotStart(){
+		return this.cssAutopilotStart;
+	}
+	public CsStateQuery setCssAutopilotEnd(Integer cssAutopilotEnd){
+		this.cssAutopilotEnd = cssAutopilotEnd;
+		return this;
+	}
+	public Integer getCssAutopilotEnd(){
+		return this.cssAutopilotEnd;
+	}
+	public CsStateQuery setCssAutopilotLess(Integer cssAutopilotLess){
+		this.cssAutopilotLess = cssAutopilotLess;
+		return this;
+	}
+	public Integer getCssAutopilotLess(){
+		return this.cssAutopilotLess;
+	}
+	public CsStateQuery setCssAutopilotGreater(Integer cssAutopilotGreater){
+		this.cssAutopilotGreater = cssAutopilotGreater;
+		return this;
+	}
+	public Integer getCssAutopilotGreater(){
+		return this.cssAutopilotGreater;
+	}
+	public CsStateQuery setCssHandbrakeEquals(Integer cssHandbrakeEquals){
+		this.cssHandbrakeEquals = cssHandbrakeEquals;
+		return this;
+	}
+	public Integer getCssHandbrakeEquals(){
+		return this.cssHandbrakeEquals;
+	}
+	public CsStateQuery setCssHandbrakeIn(Integer[] cssHandbrakeIn){
+		this.cssHandbrakeIn = cssHandbrakeIn;
+		return this;
+	}
+	public Integer[] getCssHandbrakeIn(){
+		return this.cssHandbrakeIn;
+	}
+	public CsStateQuery setCssHandbrakeIsNull(Boolean cssHandbrakeIsNull){
+		this.cssHandbrakeIsNull = cssHandbrakeIsNull;
+		return this;
+	}
+	public Boolean getCssHandbrakeIsNull(){
+		return this.cssHandbrakeIsNull;
+	}
+	public CsStateQuery setCssHandbrakeIsNotNull(Boolean cssHandbrakeIsNotNull){
+		this.cssHandbrakeIsNotNull = cssHandbrakeIsNotNull;
+		return this;
+	}
+	public Boolean getCssHandbrakeIsNotNull(){
+		return this.cssHandbrakeIsNotNull;
+	}
+	public CsStateQuery setCssHandbrakeStart(Integer cssHandbrakeStart){
+		this.cssHandbrakeStart = cssHandbrakeStart;
+		return this;
+	}
+	public Integer getCssHandbrakeStart(){
+		return this.cssHandbrakeStart;
+	}
+	public CsStateQuery setCssHandbrakeEnd(Integer cssHandbrakeEnd){
+		this.cssHandbrakeEnd = cssHandbrakeEnd;
+		return this;
+	}
+	public Integer getCssHandbrakeEnd(){
+		return this.cssHandbrakeEnd;
+	}
+	public CsStateQuery setCssHandbrakeLess(Integer cssHandbrakeLess){
+		this.cssHandbrakeLess = cssHandbrakeLess;
+		return this;
+	}
+	public Integer getCssHandbrakeLess(){
+		return this.cssHandbrakeLess;
+	}
+	public CsStateQuery setCssHandbrakeGreater(Integer cssHandbrakeGreater){
+		this.cssHandbrakeGreater = cssHandbrakeGreater;
+		return this;
+	}
+	public Integer getCssHandbrakeGreater(){
+		return this.cssHandbrakeGreater;
 	}
 	public void setSidx(String sidx){
 		this.sidx = sidx;
@@ -3487,6 +3664,15 @@ public class CsStateQuery {
 		}
 		else if(this.sidx.equals("cssMoData")){
 			return "css_mo_data";
+		}
+		else if(this.sidx.equals("cssTeNo")){
+			return "css_te_no";
+		}
+		else if(this.sidx.equals("cssAutopilot")){
+			return "css_autopilot";
+		}
+		else if(this.sidx.equals("cssHandbrake")){
+			return "css_handbrake";
 		}
 		return this.sidx;
 	}
@@ -3755,8 +3941,6 @@ public class CsStateQuery {
 			c.andcssOilIsNull();
 		}else if(this.getCssOilIsNotNull()!=null && this.getCssOilIsNotNull()){
 			c.andcssOilIsNotNull();
-		}else if(this.getCssOilLike()!=null){
-			c.andcssOilLike(this.getCssOilLike());
 		}else if(this.getCssOilIn()!=null){
 			c.andcssOilIn(java.util.Arrays.asList(this.getCssOilIn()));
 		}else if(this.getCssOilStart()!=null && this.getCssOilEnd()!=null){
@@ -3817,8 +4001,6 @@ public class CsStateQuery {
 			c.andcssFuelMileageIsNull();
 		}else if(this.getCssFuelMileageIsNotNull()!=null && this.getCssFuelMileageIsNotNull()){
 			c.andcssFuelMileageIsNotNull();
-		}else if(this.getCssFuelMileageLike()!=null){
-			c.andcssFuelMileageLike(this.getCssFuelMileageLike());
 		}else if(this.getCssFuelMileageIn()!=null){
 			c.andcssFuelMileageIn(java.util.Arrays.asList(this.getCssFuelMileageIn()));
 		}else if(this.getCssFuelMileageStart()!=null && this.getCssFuelMileageEnd()!=null){
@@ -3834,8 +4016,6 @@ public class CsStateQuery {
 			c.andcssElectricMileageIsNull();
 		}else if(this.getCssElectricMileageIsNotNull()!=null && this.getCssElectricMileageIsNotNull()){
 			c.andcssElectricMileageIsNotNull();
-		}else if(this.getCssElectricMileageLike()!=null){
-			c.andcssElectricMileageLike(this.getCssElectricMileageLike());
 		}else if(this.getCssElectricMileageIn()!=null){
 			c.andcssElectricMileageIn(java.util.Arrays.asList(this.getCssElectricMileageIn()));
 		}else if(this.getCssElectricMileageStart()!=null && this.getCssElectricMileageEnd()!=null){
@@ -3851,8 +4031,6 @@ public class CsStateQuery {
 			c.andcssEnduranceIsNull();
 		}else if(this.getCssEnduranceIsNotNull()!=null && this.getCssEnduranceIsNotNull()){
 			c.andcssEnduranceIsNotNull();
-		}else if(this.getCssEnduranceLike()!=null){
-			c.andcssEnduranceLike(this.getCssEnduranceLike());
 		}else if(this.getCssEnduranceIn()!=null){
 			c.andcssEnduranceIn(java.util.Arrays.asList(this.getCssEnduranceIn()));
 		}else if(this.getCssEnduranceStart()!=null && this.getCssEnduranceEnd()!=null){
@@ -3973,8 +4151,6 @@ public class CsStateQuery {
 			c.andcssDirIsNull();
 		}else if(this.getCssDirIsNotNull()!=null && this.getCssDirIsNotNull()){
 			c.andcssDirIsNotNull();
-		}else if(this.getCssDirLike()!=null){
-			c.andcssDirLike(this.getCssDirLike());
 		}else if(this.getCssDirIn()!=null){
 			c.andcssDirIn(java.util.Arrays.asList(this.getCssDirIn()));
 		}else if(this.getCssDirStart()!=null && this.getCssDirEnd()!=null){
@@ -4227,6 +4403,53 @@ public class CsStateQuery {
 			c.andcssMoDataGreaterThan(this.getCssMoDataGreater());
 		}else if(this.getCssMoDataLess()!=null){
 			c.andcssMoDataLessThan(this.getCssMoDataLess());
+		}
+		if(this.getCssTeNoEquals()!=null){
+			c.andcssTeNoEqualTo(this.getCssTeNoEquals());
+		}else if(this.getCssTeNoIsNull()!=null && this.getCssTeNoIsNull()){
+			c.andcssTeNoIsNull();
+		}else if(this.getCssTeNoIsNotNull()!=null && this.getCssTeNoIsNotNull()){
+			c.andcssTeNoIsNotNull();
+		}else if(this.getCssTeNoLike()!=null){
+			c.andcssTeNoLike(this.getCssTeNoLike());
+		}else if(this.getCssTeNoIn()!=null){
+			c.andcssTeNoIn(java.util.Arrays.asList(this.getCssTeNoIn()));
+		}else if(this.getCssTeNoStart()!=null && this.getCssTeNoEnd()!=null){
+			c.andcssTeNoBetween(this.getCssTeNoStart(), this.getCssTeNoEnd());
+		}else if(this.getCssTeNoGreater()!=null){
+			c.andcssTeNoGreaterThan(this.getCssTeNoGreater());
+		}else if(this.getCssTeNoLess()!=null){
+			c.andcssTeNoLessThan(this.getCssTeNoLess());
+		}
+		if(this.getCssAutopilotEquals()!=null){
+			c.andcssAutopilotEqualTo(this.getCssAutopilotEquals());
+		}else if(this.getCssAutopilotIsNull()!=null && this.getCssAutopilotIsNull()){
+			c.andcssAutopilotIsNull();
+		}else if(this.getCssAutopilotIsNotNull()!=null && this.getCssAutopilotIsNotNull()){
+			c.andcssAutopilotIsNotNull();
+		}else if(this.getCssAutopilotIn()!=null){
+			c.andcssAutopilotIn(java.util.Arrays.asList(this.getCssAutopilotIn()));
+		}else if(this.getCssAutopilotStart()!=null && this.getCssAutopilotEnd()!=null){
+			c.andcssAutopilotBetween(this.getCssAutopilotStart(), this.getCssAutopilotEnd());
+		}else if(this.getCssAutopilotGreater()!=null){
+			c.andcssAutopilotGreaterThan(this.getCssAutopilotGreater());
+		}else if(this.getCssAutopilotLess()!=null){
+			c.andcssAutopilotLessThan(this.getCssAutopilotLess());
+		}
+		if(this.getCssHandbrakeEquals()!=null){
+			c.andcssHandbrakeEqualTo(this.getCssHandbrakeEquals());
+		}else if(this.getCssHandbrakeIsNull()!=null && this.getCssHandbrakeIsNull()){
+			c.andcssHandbrakeIsNull();
+		}else if(this.getCssHandbrakeIsNotNull()!=null && this.getCssHandbrakeIsNotNull()){
+			c.andcssHandbrakeIsNotNull();
+		}else if(this.getCssHandbrakeIn()!=null){
+			c.andcssHandbrakeIn(java.util.Arrays.asList(this.getCssHandbrakeIn()));
+		}else if(this.getCssHandbrakeStart()!=null && this.getCssHandbrakeEnd()!=null){
+			c.andcssHandbrakeBetween(this.getCssHandbrakeStart(), this.getCssHandbrakeEnd());
+		}else if(this.getCssHandbrakeGreater()!=null){
+			c.andcssHandbrakeGreaterThan(this.getCssHandbrakeGreater());
+		}else if(this.getCssHandbrakeLess()!=null){
+			c.andcssHandbrakeLessThan(this.getCssHandbrakeLess());
 		}
 		if((this.getSidx()!=null && !this.getSidx().trim().equals("")) && this.getSord()!=null)
 			q.setOrderByClause(""+ this.getSidx()+" "+this.getSord());

@@ -44,8 +44,8 @@ public class ValidateService {
     public boolean validateAuth(String appId, String vin, String teNo) {
 
         logger.info("validate data auth for appId {} vin {} teNo {} start", appId, vin, teNo);
-
-        SrvHost host = hostService.queryHostByAppid(appId);
+        // 根据appId缓存中获取接入商
+        SrvHost host = hostService.queryHostByAppidFromCache(appId);
         if (null == host) {
             logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
             return false;
@@ -66,7 +66,7 @@ public class ValidateService {
             }
         }
         if (StringUtils.isNotEmpty(teNo)) {
-            CsMachine machine = terminalService.queryCsMachineByTeNo(teNo);
+            CsMachine machine = terminalService.queryCsMachineByTeNoFromCache(teNo);
             if (null != machine) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());

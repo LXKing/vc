@@ -46,6 +46,11 @@ public class VehicleRegisterInput  implements Serializable {
     private Byte csvColorCode;
 
     /**
+     * 内饰颜色
+     */
+    private String csvInteriorColorCode;
+
+    /**
      *   车型
      */
     @NotNull(message = "车型备案型号必填")
@@ -107,6 +112,54 @@ public class VehicleRegisterInput  implements Serializable {
         this.csvProdDate = csvProdDate;
         this.teNo = teNo;
         this.csvBataccuCode = csvBataccuCode;
+    }
+
+    public VehicleRegisterInput(String csvCarNo, String csvVin, String csvEngineNo, String csvCertific, Byte csvColorCode, String csvInteriorColorCode, String csvModel, String csvProdDate, String teNo, String csvBataccuCode, Byte csvDomain, String csvModelCodeFull, String csvModelCodeSimple) {
+        this.csvCarNo = csvCarNo;
+        this.csvVin = csvVin;
+        this.csvEngineNo = csvEngineNo;
+        this.csvCertific = csvCertific;
+        this.csvColorCode = csvColorCode;
+        this.csvInteriorColorCode = csvInteriorColorCode;
+        this.csvModel = csvModel;
+        this.csvProdDate = csvProdDate;
+        this.teNo = teNo;
+        this.csvBataccuCode = csvBataccuCode;
+        this.csvDomain = csvDomain;
+        this.csvModelCodeFull = csvModelCodeFull;
+        this.csvModelCodeSimple = csvModelCodeSimple;
+    }
+
+    public String getCsvInteriorColorCode() {
+        return csvInteriorColorCode;
+    }
+
+    public void setCsvInteriorColorCode(String csvInteriorColorCode) {
+        this.csvInteriorColorCode = csvInteriorColorCode;
+    }
+
+    public Byte getCsvDomain() {
+        return csvDomain;
+    }
+
+    public void setCsvDomain(Byte csvDomain) {
+        this.csvDomain = csvDomain;
+    }
+
+    public String getCsvModelCodeFull() {
+        return csvModelCodeFull;
+    }
+
+    public void setCsvModelCodeFull(String csvModelCodeFull) {
+        this.csvModelCodeFull = csvModelCodeFull;
+    }
+
+    public String getCsvModelCodeSimple() {
+        return csvModelCodeSimple;
+    }
+
+    public void setCsvModelCodeSimple(String csvModelCodeSimple) {
+        this.csvModelCodeSimple = csvModelCodeSimple;
     }
 
     public String getCsvCarNo() {

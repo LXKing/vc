@@ -25,6 +25,7 @@ public class Constants
     public final static String AUTH_WRITE = "authority_center";
     
     /** 请求者 **/
+    public final static String REQ_HEADER_TOKEN = "Authorization";
     public final static String ROLE_ADMIN="tp2017d62d0a7ef521";
 
     /** token标识 **/

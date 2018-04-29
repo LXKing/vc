@@ -42,10 +42,10 @@ public class TestVtsearch {
     public void vehicleRegister() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/operate/vehicleRegister");//114.55.109.165:7001
+        HttpPost httpPost = new HttpPost("http://101.37.226.157/operate/vehicleRegister");//114.55.109.165:7001
         httpPost.setHeader("Content-Type", "application/json");
 //        String ss = "{\"inputs\":[{\"csvColorCode\":\"1\",\"csvModel\":\"A800\",\"teNo\":\"CFXT31603230126\",\"csvBataccuCode\":\"222\",\"csvCarNo\":\"浙A31233\",\"csvProdDate\":\"2017-12-1\",\"csvVin\":\"212334\",\"csvEngineNo\":\"222\"}]}";
-        String ss = "{\"inputs\":[{\"csvColorCode\":0,\"csvModel\":\"S_EADO17H_\",\"csvProdDate\":\"2017-12-03\",\"csvVin\":\"LS5A2AJX1HJ700001\",\"csvCertific\":\"WDV036017154771\",\"csvEngineNo\":\"HD1J000657\"}]}";
+        String ss = "{\"inputs\":[{\"csvColorCode\":0,\"csvModel\":\"S_EADO17H_\",\"csvProdDate\":\"2017-12-03\",\"csvVin\":\"LS5A2AJX1HJ708881\",\"csvCertific\":\"WDV036017154771\",\"csvEngineNo\":\"HD1J0088657\",\"csvDomain\":\"1\",\"csvModelCodeFull\":\"JNJ7000EVK1-JNPMSM320-30\",\"csvModelCodeSimple\":\"JNJ7000EVK1\",\"csvInteriorColorCode\":\"全黑内饰\"}]}";
         String value = DigestUtils.md5Hex(ss);
         String sign = HmacUtils.hmacSha1Hex("fa@sd_n38f2f_3qb", value);
         httpPost.addHeader("sign", sign);
@@ -365,6 +365,46 @@ public class TestVtsearch {
         VehicleStatesQryInput input=new VehicleStatesQryInput();
         String[] vins={"CHEJIZHONGXING006"};//,"LJ8E3C1M8GB007676","HZ60112345678"LS5A2AJX0FA000774
         input.setVins(vins);
+        //LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        String ss = JSON.toJSONString(input);
+        System.err.println(ss);
+        String value = DigestUtils.md5Hex(ss);
+        String sign = HmacUtils.hmacSha1Hex("3c9ec675b63359e884f97cab9b4f6861", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000013");
+        httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+
+                String s2 = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(s2);
+
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
+
+
+    /**
+     * vin码批量查询车辆状态接口测试
+     * */
+    @Test
+    public void getCarLife()throws Exception, Throwable{
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+
+        HttpPost httpPost = new HttpPost("http://116.62.29.30:7003/search/searchCarLifeInfo");
+        httpPost.setHeader("Content-Type", "application/json");
+        CarLifeInput input=new CarLifeInput();
+        String vin="CHEJIZHONGXING006";//,"LJ8E3C1M8GB007676","HZ60112345678"LS5A2AJX0FA000774
+        input.setVin(vin);
         //LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
