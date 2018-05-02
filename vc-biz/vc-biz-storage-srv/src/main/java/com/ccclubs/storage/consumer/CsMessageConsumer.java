@@ -42,8 +42,8 @@ public class CsMessageConsumer {
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE + "}", topics = "${" + KAFKA_TOPIC_CS_MESSAGE + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
-        logger.info("Fetch Size:{}", records.size());
-        logger.info("CsMessageConsumer start process records of CsMessage. StartTime:{}", System.currentTimeMillis());
+        logger.debug("Fetch Size:{}", records.size());
+        logger.debug("CsMessageConsumer start process records of CsMessage. StartTime:{}", System.currentTimeMillis());
         Connection connection;
         PreparedStatement preparedStatement;
         try {
@@ -76,7 +76,7 @@ public class CsMessageConsumer {
             logger.error(e.getMessage(), e);
         } finally {
             closeAll(connection, preparedStatement);
-            logger.info("CsMessageConsumer end process records of CsMessage. EndTime:{}", System.currentTimeMillis());
+            logger.debug("CsMessageConsumer end process records of CsMessage. EndTime:{}", System.currentTimeMillis());
         }
 
     }
