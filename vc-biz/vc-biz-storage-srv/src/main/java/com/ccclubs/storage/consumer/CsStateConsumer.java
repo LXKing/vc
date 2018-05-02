@@ -29,7 +29,7 @@ public class CsStateConsumer {
 
     @Autowired
     HistoryStateUtils historyStateUtils;
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_STATE + "}", topics = "${" + KAFKA_TOPIC_CS_STATE + "}", containerFactory = "batchFactory")
+    //@KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_STATE + "}", topics = "${" + KAFKA_TOPIC_CS_STATE + "}", containerFactory = "batchFactory")
     public void processCanStorage(List<String> messageList){
         List<CsState> csStateList=new ArrayList<>();
         for (String message:messageList){
