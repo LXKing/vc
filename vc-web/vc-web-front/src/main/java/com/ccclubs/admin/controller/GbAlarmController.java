@@ -40,8 +40,10 @@ public class GbAlarmController {
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<EvAlarmRecord> list(EvAlarmRecordQuery query, @RequestParam(defaultValue = "1") Integer page,
-                                            @RequestParam(defaultValue = "15") Integer rows) {
-       PageInfo<EvAlarmRecord> pageInfo = alarmRecordBaseInf.getPageByCond(query);
+                                           @RequestParam(defaultValue = "15") Integer rows) {
+        query.setPageNum(page);
+        query.setPageSize(rows);
+        PageInfo<EvAlarmRecord> pageInfo = alarmRecordBaseInf.getPageByCond(query);
         return new TableResult<>(pageInfo);
     }
 
