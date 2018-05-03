@@ -6,7 +6,7 @@ import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarHistoryDeleteInf;
 import com.ccclubs.phoenix.input.HistoryDeleteParam;
 import com.ccclubs.phoenix.orm.consts.PhoenixConsts;
-import com.ccclubs.phoenix.output.HistoryDeleteOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -53,7 +54,7 @@ public class CarHistoryDeleteInfImpl implements CarHistoryDeleteInf {
      * @param param
      */
     @Override
-    public HistoryDeleteOutput deleteCarCanHistory(HistoryDeleteParam param) {
+    public HistoryNoQueryOutput deleteCarCanHistory(HistoryDeleteParam param) {
         return baseDeleteHistory(param,DELETE_CAN_SQL);
     }
 
@@ -63,8 +64,47 @@ public class CarHistoryDeleteInfImpl implements CarHistoryDeleteInf {
      * @param param
      */
     @Override
-    public HistoryDeleteOutput deleteCarStateHistory(HistoryDeleteParam param) {
+    public HistoryNoQueryOutput deleteCarStateHistory(HistoryDeleteParam param) {
         return baseDeleteHistory(param,DELETE_STATE_SQL);
+    }
+
+    /**
+     * 批量删除历史状态数据
+     *
+     * @param paramList
+     */
+    @Override
+    public HistoryNoQueryOutput deleteCarStateHistory(List<HistoryDeleteParam> paramList) {
+
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+
+        try{
+            Integer count=0;
+            for (HistoryDeleteParam param:paramList
+                 ) {
+                count++;
+                long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
+                preparedStatement = connection.prepareStatement(DELETE_STATE_SQL);
+                preparedStatement.setString(1 , param.getDeleteKey());
+                preparedStatement.setLong(2 , timePointLong);
+                preparedStatement.addBatch();
+                if (count%500==0){
+                    preparedStatement.executeBatch();
+                    connection.commit();
+                }
+            }
+            preparedStatement.executeBatch();
+            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,null,DELETE_STATE_SQL);
+        }
+        return historyNoQueryOutput;
     }
 
     /**
@@ -73,29 +113,29 @@ public class CarHistoryDeleteInfImpl implements CarHistoryDeleteInf {
      * @param param
      */
     @Override
-    public HistoryDeleteOutput deleteCarGbHistory(HistoryDeleteParam param) {
+    public HistoryNoQueryOutput deleteCarGbHistory(HistoryDeleteParam param) {
         return baseDeleteHistory(param,DELETE_GB_SQL);
     }
 
-    private HistoryDeleteOutput baseDeleteHistory(HistoryDeleteParam param,String sql){
+    private HistoryNoQueryOutput baseDeleteHistory(HistoryDeleteParam param, String sql){
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        HistoryDeleteOutput historyDeleteOutput=new HistoryDeleteOutput();
-        ResultSet resultSet=null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+
         try{
             long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1 , param.getDeleteKey());
             preparedStatement.setLong(2 , timePointLong);
             preparedStatement.execute();
-            historyDeleteOutput.setSuccessCount(preparedStatement.getUpdateCount());
+            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
         }catch (SQLException e){
             logger.error(e.getMessage());
         }
         finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,sql);
+                    preparedStatement,null,sql);
         }
-        return historyDeleteOutput;
+        return historyNoQueryOutput;
     }
 }

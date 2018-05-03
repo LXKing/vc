@@ -14,17 +14,17 @@ import java.util.List;
  * @Description: 删除历史数据成功和失败的条数！
  */
 
-public class HistoryDeleteOutput implements Serializable {
+public class HistoryNoQueryOutput implements Serializable {
     private static final long serialVersionUID = -7643219290033330764L;
 
     /**
      * 成功删除的数量
      */
-    private Integer successCount;
+    private Integer successCount=0;
 
     private List<HistoryDeleteParam> fialdsKey;
 
-    private Integer failureCount;
+    private Integer failureCount=0;
 
     public Integer getSuccessCount() {
         return successCount;

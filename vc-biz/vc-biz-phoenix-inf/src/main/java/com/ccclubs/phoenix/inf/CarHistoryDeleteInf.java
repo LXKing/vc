@@ -1,7 +1,9 @@
 package com.ccclubs.phoenix.inf;
 
 import com.ccclubs.phoenix.input.HistoryDeleteParam;
-import com.ccclubs.phoenix.output.HistoryDeleteOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -16,14 +18,20 @@ public interface CarHistoryDeleteInf {
     /**
      * 删除历史can数据
      * */
-    HistoryDeleteOutput deleteCarCanHistory(HistoryDeleteParam param);
+    HistoryNoQueryOutput deleteCarCanHistory(HistoryDeleteParam param);
     /**
      * 删除历史状态数据
      * */
-    HistoryDeleteOutput deleteCarStateHistory(HistoryDeleteParam param);
+    HistoryNoQueryOutput deleteCarStateHistory(HistoryDeleteParam param);
+
+    /**
+     * 批量删除历史状态数据
+     * */
+    HistoryNoQueryOutput deleteCarStateHistory(List<HistoryDeleteParam> paramList);
+
     /**
      * 删除历史国标数据
      * */
-    HistoryDeleteOutput deleteCarGbHistory(HistoryDeleteParam param);
+    HistoryNoQueryOutput deleteCarGbHistory(HistoryDeleteParam param);
 
 }
