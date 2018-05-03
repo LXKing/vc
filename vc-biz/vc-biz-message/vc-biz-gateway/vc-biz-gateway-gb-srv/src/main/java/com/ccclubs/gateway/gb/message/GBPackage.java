@@ -1,0 +1,104 @@
+package com.ccclubs.gateway.gb.message;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+
+/**
+ * @Author: yeanzi
+ * @Date: 2018/3/26
+ * @Time: 15:17
+ * Email:  yeanzhi@ccclubs.com
+ */
+public class GBPackage {
+    /**
+     * 源数据包缓冲区(引用)
+     */
+    private ByteBuf sourceBuff;
+
+    /**
+     * 消息头部
+     */
+    private PacHeader header;
+
+    /**
+     * 消息体
+     */
+    private PacBody body;
+
+    /**
+     * 消息的校正码
+     */
+    private byte validCode;
+
+    /**
+     * 是否为校验异常包
+     */
+    private boolean errorPac;
+
+    public static GBPackage valueOfEmpty() {
+        GBPackage gbPackage = new GBPackage();
+        gbPackage.setHeader(new PacHeader())
+                .setBody(new PacBody())
+                .setValidCode((byte)0x00)
+                .setErrorPac(false);
+        return gbPackage;
+    }
+
+    public String toLogString() {
+        StringBuilder pacSb = new StringBuilder();
+        pacSb
+                .append("车辆(").append(getHeader().getUniqueNo()).append(")")
+                .append("上传")
+                .append("[").append(getHeader().getCommandMark().getDes()).append("]消息.")
+                .append("原始消息[").append(ByteBufUtil.hexDump(getSourceBuff())).append("]");
+        return pacSb.toString();
+    }
+
+    // getter and setter
+    // ---------------------------------------------------------
+    public ByteBuf getSourceBuff() {
+        // 因为处理buffer时，总是希望拿到一个重置了readerIndex的buf
+        this.sourceBuff.resetReaderIndex();
+        return this.sourceBuff;
+    }
+
+    public GBPackage setSourceBuff(ByteBuf sourceBuff) {
+        this.sourceBuff = sourceBuff;
+        return this;
+    }
+
+    public PacHeader getHeader() {
+        return header;
+    }
+
+    public GBPackage setHeader(PacHeader header) {
+        this.header = header;
+        return this;
+    }
+
+    public PacBody getBody() {
+        return body;
+    }
+
+    public GBPackage setBody(PacBody body) {
+        this.body = body;
+        return this;
+    }
+
+    public byte getValidCode() {
+        return validCode;
+    }
+
+    public GBPackage setValidCode(byte validCode) {
+        this.validCode = validCode;
+        return this;
+    }
+
+    public boolean isErrorPac() {
+        return errorPac;
+    }
+
+    public void setErrorPac(boolean errorPac) {
+        this.errorPac = errorPac;
+    }
+}
