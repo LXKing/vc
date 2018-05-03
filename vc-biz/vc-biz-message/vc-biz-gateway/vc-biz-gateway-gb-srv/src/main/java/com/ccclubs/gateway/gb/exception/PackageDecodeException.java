@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.gb.exception;
 
-import com.ccclubs.gateway.gb.enums.PackagePart;
+import com.ccclubs.gateway.gb.constant.PackagePart;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.DecoderException;

@@ -1,10 +1,10 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.gb.beans.DecodeExceptionDTO;
-import com.ccclubs.gateway.gb.enums.AckType;
-import com.ccclubs.gateway.gb.enums.CommandType;
-import com.ccclubs.gateway.gb.enums.EncryType;
-import com.ccclubs.gateway.gb.enums.PackagePart;
+import com.ccclubs.gateway.gb.constant.AckType;
+import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.constant.EncryType;
+import com.ccclubs.gateway.gb.constant.PackagePart;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.PacHeader;
@@ -16,6 +16,8 @@ import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -23,6 +25,8 @@ import org.slf4j.LoggerFactory;
  * @Time: 22:05
  * Email:  yeanzhi@ccclubs.com
  */
+@Component
+@Scope("prototype")
 public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     private static Logger LOG = LoggerFactory.getLogger(GBLengthFieldFrameDecoder.class);
 

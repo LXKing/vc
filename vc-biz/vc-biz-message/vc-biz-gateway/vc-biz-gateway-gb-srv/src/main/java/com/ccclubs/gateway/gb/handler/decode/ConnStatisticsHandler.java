@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.enums.CommandType;
+import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.constant.KafkaProducerKey;
 import com.ccclubs.gateway.gb.exception.ConnStatisticsException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -11,6 +12,10 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -22,9 +27,13 @@ import java.util.Objects;
  * 连接数据统计处理器
  *      该类不可与其他渠道共享
  */
+@Component
+@Scope("prototype")
 public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage> {
-
     private static final Logger LOG = LoggerFactory.getLogger(ConnStatisticsHandler.class);
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     private GBConnection conn;
 
@@ -34,6 +43,9 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
         try {
             if (pac.isErrorPac()) {
                 LOG.info("收到一个校验异常包：{}", pac.toLogString());
+                // TODO kafka
+                kafkaTemplate.send(KafkaProducerKey.MESSAGE_VALIDATE_FAIL, pac.toLogString());
+
                 countErrorPac(channel);
                 // 错误包不进行下发
                 ReferenceCountUtil.release(pac.getSourceBuff());

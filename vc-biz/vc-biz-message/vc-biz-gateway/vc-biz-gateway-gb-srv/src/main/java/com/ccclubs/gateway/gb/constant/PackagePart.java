@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.gb.enums;
+package com.ccclubs.gateway.gb.constant;
 
 public enum PackagePart{
 

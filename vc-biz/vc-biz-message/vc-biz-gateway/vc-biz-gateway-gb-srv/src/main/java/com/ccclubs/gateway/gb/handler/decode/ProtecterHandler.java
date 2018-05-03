@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.gateway.gb.constant.KafkaProducerKey;
 import com.ccclubs.gateway.gb.exception.*;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -11,6 +12,10 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -19,8 +24,13 @@ import org.slf4j.LoggerFactory;
  * Email:  yeanzhi@ccclubs.com
  *      守卫在最后底线的处理器
  */
+@Component
+@Scope("prototype")
 public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(ProtecterHandler.class);
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @Override
     public void channelRead0 (ChannelHandlerContext ctx, GBPackage msg) throws Exception {
@@ -79,32 +89,40 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         if (cause instanceof PackageDecodeException) {
             // 消息解析异常
             LOG.error(cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_DECODE_ERROR, cause.getMessage());
+
         } else if (cause instanceof PacValidateException) {
             // 校验过程异常
             LOG.error("校验过程异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_VALIDATE_FAIL, cause.getMessage());
         } else if (cause instanceof ConnStatisticsException) {
             // 连接数据统计过程异常
             LOG.error("连接数据统计过程异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_CONN_STATISTICS_EXCEPTION, cause.getMessage());
         } else if (cause instanceof DeleverPacException) {
             // 业务处理器异常
             LOG.error("业务处理过程异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_DELIVER_EXCEPTION, cause.getMessage());
         } else if (cause instanceof TooLongFrameException) {
             // 数据包超长异常
             LOG.error("消息处理链出现数据包超长异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_TOOLONG_FRAME_EXCEPTION, cause.getMessage());
             needCloseConn = true;
         } else if (cause instanceof ChannelDisconnException) {
             // 未连接异常
             LOG.error("消息处理链出现未连接异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.CHANNEL_DISCONN_EXCEPTION, cause.getMessage());
             needCloseConn = true;
         } else {
             // 其他异常
             LOG.error("消息处理链出现其他异常：msg={}", cause.getMessage());
+            kafkaTemplate.send(KafkaProducerKey.MESSAGE_PROCESS_OTHER_EXCEPTION, cause.getMessage());
         }
 //        cause.printStackTrace();
 
         if (needCloseConn) {
             // 关闭链接
-            LOG.info("抛出重要异常，服务端主动断开连接");
+            LOG.info("检测到重要异常，服务端将主动断开连接");
             ClientCache.closeWhenInactive((SocketChannel) context.channel());
         }
     }

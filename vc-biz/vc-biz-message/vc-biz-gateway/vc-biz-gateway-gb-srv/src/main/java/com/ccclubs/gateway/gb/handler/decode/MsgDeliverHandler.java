@@ -7,6 +7,8 @@ import com.ccclubs.gateway.gb.message.common.AckMsgBuilder;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -14,6 +16,8 @@ import org.slf4j.LoggerFactory;
  * @Time: 21:41
  * Email:  yeanzhi@ccclubs.com
  */
+@Component
+@Scope("prototype")
 public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MsgDeliverHandler.class);

@@ -8,6 +8,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -16,6 +18,8 @@ import org.slf4j.LoggerFactory;
  * Email:  yeanzhi@ccclubs.com
  *      动态添加的 展现单个通道通信数据的handler
  */
+@Component
+@Scope("prototype")
 public class SingleChannelDetailHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleChannelDetailHandler.class);

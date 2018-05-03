@@ -1,8 +1,8 @@
 package com.ccclubs.gateway.gb.message;
 
-import com.ccclubs.gateway.gb.enums.AckType;
-import com.ccclubs.gateway.gb.enums.CommandType;
-import com.ccclubs.gateway.gb.enums.EncryType;
+import com.ccclubs.gateway.gb.constant.AckType;
+import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.constant.EncryType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**

@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.gb.beans;
 
-import com.ccclubs.gateway.gb.enums.PackagePart;
+import com.ccclubs.gateway.gb.constant.PackagePart;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import org.apache.commons.lang3.StringUtils;

@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.gb.message.common;
 
-import com.ccclubs.gateway.gb.enums.AckType;
+import com.ccclubs.gateway.gb.constant.AckType;
 import com.ccclubs.gateway.gb.utils.ValidUtil;
 import io.netty.buffer.ByteBuf;
 

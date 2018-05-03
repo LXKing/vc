@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.enums.CommandType;
+import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.exception.PacValidateException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -11,6 +11,8 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -19,6 +21,8 @@ import org.slf4j.LoggerFactory;
  * Email:  yeanzhi@ccclubs.com
  * 数据包验证处理器
  */
+@Component
+@Scope("prototype")
 public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(PackageValidateHandler.class);
 
