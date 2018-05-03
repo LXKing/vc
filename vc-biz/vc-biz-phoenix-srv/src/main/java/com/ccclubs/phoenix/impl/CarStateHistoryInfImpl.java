@@ -47,7 +47,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
     private static final String UPDATE_SQL = "UPSERT INTO "
             + PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+
-            " (CS_NUMBER,CURRENT_TIME,,OBD_MILES ) VALUES( ? , ? , ? )";
+            " (CS_NUMBER,CURRENT_TIME,OBD_MILES ) VALUES( ? , ? , ? )";
 
 
     @Autowired
