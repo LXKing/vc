@@ -148,6 +148,7 @@ public class CsVehicleController {
         @RequestMapping(value = "/add", method = RequestMethod.POST)
         public VoResult<?> add (CsVehicle data){
 
+            logger.info("we ge a add CsVehicle request "+data.toString());
             if (null == data.getCsvAddTime()) {
                 data.setCsvAddTime(new Date());
             }
