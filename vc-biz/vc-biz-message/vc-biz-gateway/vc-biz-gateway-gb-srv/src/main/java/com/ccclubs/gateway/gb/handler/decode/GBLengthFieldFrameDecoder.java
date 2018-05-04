@@ -5,6 +5,7 @@ import com.ccclubs.gateway.gb.constant.AckType;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.constant.EncryType;
 import com.ccclubs.gateway.gb.constant.PackagePart;
+import com.ccclubs.gateway.gb.dto.MsgDecodeExceptionDTO;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.PacHeader;
@@ -25,8 +26,8 @@ import org.springframework.stereotype.Component;
  * @Time: 22:05
  * Email:  yeanzhi@ccclubs.com
  */
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     private static Logger LOG = LoggerFactory.getLogger(GBLengthFieldFrameDecoder.class);
 
@@ -72,6 +73,24 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             /**
              * 分别拼装消息的各个部分，最细粒度地定位错误报文异常位置
              */
+            // 先获取vin码
+            frame.readerIndex(PackagePart.UNIQUENO.getStartIndex());
+            String vinNo = DecodeUtil.byte2Str(frame, PackagePart.UNIQUENO.getLen());
+            if (decodeExceptionInfo.isDecodeNotFinished() &&
+                    StringUtils.isNotEmpty(vinNo) &&
+                    vinNo.length() == PackagePart.UNIQUENO.getLen()) {
+                decodeExceptionInfo.setVin(vinNo).next();
+                pacHeader.setUniqueNo(vinNo);
+
+                // 重置回读指针
+                frame.resetReaderIndex();
+            } else {
+                decodeExceptionInfo.fail()
+                        .setExceptionVal(vinNo)
+                        .setExpectedVal("非空的17个字符");
+                throwWhenDecodeError(decodeExceptionInfo);
+            }
+
             // 起始符
             String startSymbol = DecodeUtil.byte2Str(frame, PackagePart.START_SYMBOL.getLen());
             if ("##".equals(startSymbol)) {
@@ -110,19 +129,8 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
                 throwWhenDecodeError(decodeExceptionInfo);
             }
 
-            // vin码
-            String vinNo = DecodeUtil.byte2Str(frame, PackagePart.UNIQUENO.getLen());
-            if (decodeExceptionInfo.isDecodeNotFinished() &&
-                    StringUtils.isNotEmpty(vinNo) &&
-                    vinNo.length() == PackagePart.UNIQUENO.getLen()) {
-                decodeExceptionInfo.next();
-                pacHeader.setUniqueNo(vinNo);
-            } else {
-                decodeExceptionInfo.fail()
-                        .setExceptionVal(vinNo)
-                        .setExpectedVal("非空的17个字符");
-                throwWhenDecodeError(decodeExceptionInfo);
-            }
+            // vin码在第一部分已经读取了，这里只需要跳过vin码部分
+            frame.readerIndex(frame.readerIndex() + PackagePart.UNIQUENO.getLen());
 
             // 加密方式
             Short encryVal = frame.readUnsignedByte();
@@ -178,12 +186,23 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             // 抛出异常后不要忘了释放缓存
             ReferenceCountUtil.release(frame);
             // 根据解析步骤，提示不同的异常信息
-            throw new PackageDecodeException(decodeExceptionInfo.toLogString());
+            MsgDecodeExceptionDTO msgDecodeExceptionDTO = new MsgDecodeExceptionDTO();
+            msgDecodeExceptionDTO.setDecodeMarkIndex(decodeExceptionInfo.getDecodeMarkIndex())
+                    .setExceptionVal(decodeExceptionInfo.getExceptionVal())
+                    .setExpectedVal(decodeExceptionInfo.getExpectedVal())
+                    .setReason(decodeExceptionInfo.getReason());
+            throw new PackageDecodeException(decodeExceptionInfo.toLogString())
+                    .setVin(decodeExceptionInfo.getVin())
+                    .setMsgDecodeExceptionDTO(msgDecodeExceptionDTO);
         }
-
     }
 
     public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo) {
-        throw new PackageDecodeException(decodeExceptionInfo.toLogString());
+        MsgDecodeExceptionDTO msgDecodeExceptionDTO = new MsgDecodeExceptionDTO();
+        msgDecodeExceptionDTO.setDecodeMarkIndex(decodeExceptionInfo.getDecodeMarkIndex())
+                .setExceptionVal(decodeExceptionInfo.getExceptionVal())
+                .setExpectedVal(decodeExceptionInfo.getExpectedVal())
+                .setReason(decodeExceptionInfo.getReason());
+        throw new PackageDecodeException(decodeExceptionInfo.toLogString()).setMsgDecodeExceptionDTO(msgDecodeExceptionDTO);
     }
 }

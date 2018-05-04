@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 缓存终端连接等信息
  */
 public class ClientCache {
+    public static String EMPTY_VIN = "EMPTY_VIN";
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientCache.class);
 
@@ -54,6 +55,15 @@ public class ClientCache {
         return conn;
     }
 
+    public static void addByChannelId(ChannelId channelId) {
+        Objects.requireNonNull(channelId);
+
+        String vin = CHANNELID_CLIENT_MAP.get(channelId);
+        if (StringUtils.isEmpty(vin)) {
+            CHANNELID_CLIENT_MAP.put(channelId, EMPTY_VIN);
+        }
+    }
+
     public static GBConnection checkConnection(String vin, SocketChannel channel) {
         if (StringUtils.isEmpty(vin)) {
             throw new IllegalArgumentException("查询连接时参数vin码为空");
@@ -62,7 +72,8 @@ public class ClientCache {
             throw new ChannelDisconnException(vin);
         }
         GBConnection conn = null;
-        if (StringUtils.isEmpty(CHANNELID_CLIENT_MAP.get(channel.id()))) {
+        String vinInMap = CHANNELID_CLIENT_MAP.get(channel.id());
+        if (EMPTY_VIN.equals(vinInMap)) {
             conn = add(vin, channel);
         } else {
             conn = CLIENT_CONN_MAP.get(vin);
@@ -70,10 +81,13 @@ public class ClientCache {
         return conn;
     }
 
-    public static void closeWhenInactive(SocketChannel channel) {
+    public static boolean closeWhenInactive(SocketChannel channel) {
         String vin = CHANNELID_CLIENT_MAP.get(channel.id());
-        if (StringUtils.isEmpty(vin)) {
-            return;
+        if (StringUtils.isEmpty(vin) || EMPTY_VIN.equals(vin)) {
+            if (EMPTY_VIN.equals(vin)) {
+                CHANNELID_CLIENT_MAP.remove(channel.id());
+            }
+            return false;
         }
         GBConnection conn = CLIENT_CONN_MAP.get(vin);
         if (Objects.nonNull(conn)) {
@@ -81,6 +95,7 @@ public class ClientCache {
         }
         CHANNELID_CLIENT_MAP.remove(channel.id());
         CLIENT_CONN_MAP.remove(vin);
+        return true;
     }
 
     public static boolean isOnline(String vin) {

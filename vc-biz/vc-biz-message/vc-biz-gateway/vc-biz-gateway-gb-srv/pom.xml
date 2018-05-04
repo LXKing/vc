@@ -44,25 +44,23 @@
           <artifactId>spring-boot-starter-undertow</artifactId>
       </dependency>
 
-      <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+      <!--netty-->
       <dependency>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
-          <version>4.1.12.Final</version>
+          <version>${netty.version}</version>
       </dependency>
 
       <!-- https://mvnrepository.com/artifact/javax.persistence/persistence-api -->
-      <dependency>
-          <groupId>javax.persistence</groupId>
-          <artifactId>persistence-api</artifactId>
-          <version>1.0</version>
-      </dependency>
+      <!--<dependency>-->
+          <!--<groupId>javax.persistence</groupId>-->
+          <!--<artifactId>persistence-api</artifactId>-->
+      <!--</dependency>-->
 
       <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
       <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-lang3</artifactId>
-          <version>3.4</version>
       </dependency>
 
       <!--kafka-->
@@ -70,6 +68,12 @@
           <groupId>org.springframework.kafka</groupId>
           <artifactId>spring-kafka</artifactId>
           <version>${kafka.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>www.ccclubs</groupId>
+          <artifactId>vc-frm-spring</artifactId>
+          <version>${frm.version}</version>
       </dependency>
   </dependencies>
 

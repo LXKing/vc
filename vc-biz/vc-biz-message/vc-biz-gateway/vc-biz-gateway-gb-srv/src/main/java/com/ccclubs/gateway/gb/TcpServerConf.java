@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  *
  */
 @Component
-@PropertySource(value = "classpath:/properties/local/nettyserver.properties")
+//@PropertySource(value = "classpath:/properties/local/nettyserver.properties")
 public class TcpServerConf {
     private static final Logger LOG = Logger.getLogger("TcpServer");
 

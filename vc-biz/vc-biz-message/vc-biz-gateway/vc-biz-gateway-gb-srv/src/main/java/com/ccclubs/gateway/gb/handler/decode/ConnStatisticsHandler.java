@@ -1,12 +1,19 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.gateway.gb.constant.CommandType;
-import com.ccclubs.gateway.gb.constant.KafkaProducerKey;
+import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
+import com.ccclubs.gateway.gb.dto.ConnOnlineStatusEvent;
+import com.ccclubs.gateway.gb.dto.ConnStatisticsExceptionDTO;
+import com.ccclubs.gateway.gb.dto.InValideMsgExceptionDTO;
+import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.exception.ConnStatisticsException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
+import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.ReferenceCountUtil;
@@ -27,24 +34,40 @@ import java.util.Objects;
  * 连接数据统计处理器
  *      该类不可与其他渠道共享
  */
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(ConnStatisticsHandler.class);
 
-    @Autowired
+//    @Autowired
     private KafkaTemplate kafkaTemplate;
 
+//    @Autowired
+    private KafkaProperties kafkaProperties;
+
     private GBConnection conn;
+
+    public ConnStatisticsHandler(KafkaTemplate kafkaTemplate, KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
         SocketChannel channel = (SocketChannel)ctx.channel();
         try {
             if (pac.isErrorPac()) {
-                LOG.info("收到一个校验异常包：{}", pac.toLogString());
+                LOG.error("收到一个校验异常包：{}", pac.toLogString());
                 // TODO kafka
-                kafkaTemplate.send(KafkaProducerKey.MESSAGE_VALIDATE_FAIL, pac.toLogString());
+                InValideMsgExceptionDTO inValideMsgExceptionDTO = new InValideMsgExceptionDTO();
+                inValideMsgExceptionDTO.setVin(pac.getHeader().getUniqueNo())
+                        .setSource(ByteBufUtil.hexDump(pac.getSourceBuff()));
+                PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO()
+                        .setCode(PackProcessExceptionCode.INVALID_FAIL.getCode())
+                        .setJson(inValideMsgExceptionDTO);
+
+                kafkaTemplate.send(kafkaProperties.getProcess(),
+                        packProcessExceptionDTO.toJson());
 
                 countErrorPac(channel);
                 // 错误包不进行下发
@@ -89,7 +112,11 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
                 ctx.fireChannelRead(pac);
             }
         } catch (Exception e) {
-            throw new ConnStatisticsException(e.getMessage());
+            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
+            packProcessExceptionDTO.setCode(PackProcessExceptionCode.PROCESS_CONN_STATISTIC_EXCEPTION.getCode())
+                    .setVin(pac.getHeader().getUniqueNo())
+                    .setJson(new ConnStatisticsExceptionDTO().setCauseMsg(e.getMessage()));
+            throw new ConnStatisticsException(pac.toLogString() + "异常：" + e.getMessage()).setPackProcessExceptionDTO(packProcessExceptionDTO);
         }
     }
 
@@ -115,6 +142,16 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
     public GBConnection getConn(String vin, SocketChannel channel) {
         if (Objects.isNull(conn)) {
             conn = ClientCache.checkConnection(vin, channel);
+
+            if (!Objects.isNull(conn)) {
+                ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
+                connOnlineStatusEvent.setVin(vin)
+                        .setOnline(true)
+                        .setTimestamp(System.currentTimeMillis())
+                        .setClientIp(channel.remoteAddress().getHostString())
+                        .setServerIp(channel.localAddress().getHostString());
+                kafkaTemplate.send(kafkaProperties.getOnline(), connOnlineStatusEvent.toJson());
+            }
         }
         return conn;
     }

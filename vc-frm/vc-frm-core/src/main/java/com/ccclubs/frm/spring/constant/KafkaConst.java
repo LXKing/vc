@@ -30,6 +30,19 @@ public class KafkaConst {
      * */
     public static final String KAFKA_TOPIC_CS_STATE = "kafka.topic.history.csstate";
 
+
+    /**
+     * GB网关：
+     * 消息解析错误
+     */
+    public static final String KAFKA_TOPIC_GATEWAY_GB_DECODE_ERROR = "kafka.topic.gateway.gb.error.decode";
+
+    /**
+     * GB网关：
+     * 过程处理的异常
+     */
+    public static final String KAFKA_TOPIC_GATEWAY_GB_PROCESS_ERROR = "kafka.topic.gateway.gb.error.process";
+
     /*--------------------*
      * 消费者组
      *--------------------*/

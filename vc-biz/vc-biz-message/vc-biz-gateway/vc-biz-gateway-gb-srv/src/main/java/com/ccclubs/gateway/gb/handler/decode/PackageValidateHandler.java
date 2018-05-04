@@ -1,6 +1,9 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
+import com.ccclubs.gateway.gb.dto.MsgValidateExceptionDTO;
+import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.exception.PacValidateException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -30,6 +33,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
     protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
         try {
             ByteBuf frame = pac.getSourceBuff();
+
             // 2. 校验消息正确性
             if(!ValidUtil.validePac(frame)) {
                 // 标记为错误包
@@ -49,7 +53,11 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             // 事件下发
             ctx.fireChannelRead(pac);
         } catch (Exception e) {
-            throw new PacValidateException(e.getMessage());
+            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
+            packProcessExceptionDTO.setCode(PackProcessExceptionCode.PROCESS_VALIDATE_EXCEPTION.getCode())
+                    .setVin(pac.getHeader().getUniqueNo())
+                    .setJson(new MsgValidateExceptionDTO().setCauseMsg(e.getMessage()));
+            throw new PacValidateException(pac.toLogString() + "异常：" + e.getMessage()).setPackProcessExceptionDTO(packProcessExceptionDTO);
         }
     }
 

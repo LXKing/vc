@@ -1,26 +1,25 @@
 package com.ccclubs.gateway.gb.constant;
 
 public enum PackagePart{
+    /**
+     * 唯一标识码
+     */
+    UNIQUENO(0, 4, 17, "唯一标识码"),
 
     /**
      * 起始符
      */
-    START_SYMBOL(0, 0, 2, "起始符"),
+    START_SYMBOL(1, 0, 2, "起始符"),
 
     /**
      * 命令标识
      */
-    COMMAND_MARK(1, 2, 1, "命令标识"),
+    COMMAND_MARK(2, 2, 1, "命令标识"),
 
     /**
      * 应答标志
      */
-    ACK_MARK(2, 3, 1, "应答标志"),
-
-    /**
-     * 唯一标识码
-     */
-    UNIQUENO(3, 4, 17, "唯一标识码"),
+    ACK_MARK(3, 3, 1, "应答标志"),
 
     /**
      * 数据单元加密方式

@@ -12,6 +12,21 @@ so:
   backlog: 100
 
 #kafka生产者配置
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+#kafka Topic
+kafka:
+  topic:
+    gateway:
+      gb:
+        error:
+          decode: topic_gb_error_decode
+          process: topic_gb_error_process
+          online: topic_gb_online_status
 
 
 

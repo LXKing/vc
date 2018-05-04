@@ -2,10 +2,13 @@ package com.ccclubs.gateway.gb.handler.process;
 
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
+import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 /**
@@ -17,20 +20,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
-    @Autowired
-    private GBLengthFieldFrameDecoder gbLengthFieldFrameDecoder;
+//    @Autowired
+//    private ApplicationContext context;
 
     @Autowired
-    private PackageValidateHandler packageValidateHandler;
+    private KafkaProperties kafkaProperties;
 
     @Autowired
-    private ConnStatisticsHandler connStatisticsHandler;
-
-    @Autowired
-    private MsgDeliverHandler msgDeliverHandler;
-
-    @Autowired
-    private ProtecterHandler protecterHandler;
+    private KafkaTemplate kafkaTemplate;
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
@@ -39,15 +36,15 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
                 // 解码
-                .addLast("gbDecoder", gbLengthFieldFrameDecoder)
+                .addLast("gbDecoder", new GBLengthFieldFrameDecoder())
                 // 数据包校验
-                .addLast("validateHandler", packageValidateHandler)
+                .addLast("validateHandler", new PackageValidateHandler())
                 // 连接数据统计
-                .addLast("connStatisticsHandler", connStatisticsHandler)
+                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaTemplate, kafkaProperties))
                 // 业务处理
-                .addLast("deliverHandler", msgDeliverHandler)
+                .addLast("deliverHandler", new MsgDeliverHandler())
                 // 过程保障
-                .addLast("protectorHandler", protecterHandler)
+                .addLast("protectorHandler", new ProtecterHandler(kafkaTemplate, kafkaProperties))
 
                 /*outbound*/
                 // 编码器

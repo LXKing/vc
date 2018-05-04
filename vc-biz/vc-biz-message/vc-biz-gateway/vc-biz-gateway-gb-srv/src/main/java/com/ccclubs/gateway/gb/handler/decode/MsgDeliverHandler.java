@@ -1,5 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
+import com.ccclubs.gateway.gb.dto.MsgDeliverExceptionDTO;
+import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.exception.DeleverPacException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -16,8 +19,8 @@ import org.springframework.stereotype.Component;
  * @Time: 21:41
  * Email:  yeanzhi@ccclubs.com
  */
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MsgDeliverHandler.class);
@@ -43,10 +46,17 @@ public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
                     break;
 
             }
+
+
+
             // 事件下发
             ctx.fireChannelRead(pac);
         } catch (Exception e) {
-            throw new DeleverPacException(e.getMessage());
+            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
+            packProcessExceptionDTO.setCode(PackProcessExceptionCode.PROCESS_MSG_DELIVER_EXCEPTION.getCode())
+                    .setVin(pac.getHeader().getUniqueNo())
+                    .setJson(new MsgDeliverExceptionDTO().setCauseMsg(e.getMessage()));
+            throw new DeleverPacException(pac.toLogString() + "异常：" + e.getMessage()).setPackProcessExceptionDTO(packProcessExceptionDTO);
         }
     }
 

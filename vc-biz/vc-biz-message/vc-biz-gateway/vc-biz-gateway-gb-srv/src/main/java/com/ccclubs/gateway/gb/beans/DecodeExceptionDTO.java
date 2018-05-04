@@ -16,6 +16,9 @@ public class DecodeExceptionDTO {
 
     private static final String EXCEPTION_DECRIPTION_PRIFIX= "解析数据包时出现异常: ";
 
+    // vin码
+    private String vin;
+
     // 记录当前解析的位置
     private int decodeMarkIndex;
 
@@ -53,6 +56,9 @@ public class DecodeExceptionDTO {
     public String toLogString() {
         StringBuilder desSb = new StringBuilder(EXCEPTION_DECRIPTION_PRIFIX);
         PackagePart packagePart = PackagePart.getByCode(decodeMarkIndex);
+        if (StringUtils.isNotEmpty(vin)) {
+            desSb.append("车辆[").append(vin).append("]");
+        }
         desSb
                 .append("位置[").append(packagePart.getDes()).append("]")
                 .append("异常值[").append(exceptionVal).append("]");
@@ -120,6 +126,15 @@ public class DecodeExceptionDTO {
 
     public DecodeExceptionDTO setExpectedVal(String expectedVal) {
         this.expectedVal = expectedVal;
+        return this;
+    }
+
+    public String getVin() {
+        return vin;
+    }
+
+    public DecodeExceptionDTO setVin(String vin) {
+        this.vin = vin;
         return this;
     }
 }
