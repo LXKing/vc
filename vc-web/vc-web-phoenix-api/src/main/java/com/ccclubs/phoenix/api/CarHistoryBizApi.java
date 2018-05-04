@@ -7,10 +7,9 @@ import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.inf.CarGbHistoryInf;
+import com.ccclubs.phoenix.inf.CarHistoryDeleteInf;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
-import com.ccclubs.phoenix.input.CarCanHistoryParam;
-import com.ccclubs.phoenix.input.CarGbHistoryParam;
-import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.input.*;
 import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.orm.model.CarState;
@@ -18,6 +17,7 @@ import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 import com.ccclubs.vehicle.inf.base.TransformForBizInf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +45,9 @@ public class CarHistoryBizApi {
 
     @Reference(version = "1.0.0")
     private TransformForBizInf transformForBizService;
+
+    @Reference(version = "1.0.0")
+    private CarHistoryDeleteInf carHistoryDeleteInf;
 
 
     @ApiSecurity
@@ -74,6 +77,21 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carStateHistoryOutput);
     }
 
+    @ApiSecurity
+    @RequestMapping(value = "/delete-obdmiles",method = RequestMethod.POST)
+    public ApiMessage<HistoryNoQueryOutput> deleteCarStateList(@RequestBody List<HistoryDeleteParam> paramList){
+        logger.info("we get a request form delete states:"+paramList.toString());
+        HistoryNoQueryOutput historyNoQueryOutput= carHistoryDeleteInf.deleteCarStateHistory(paramList);
+        return new ApiMessage<>(historyNoQueryOutput);
+    }
+
+    @ApiSecurity
+    @RequestMapping(value = "/update-obdmiles",method = RequestMethod.POST)
+    public ApiMessage<HistoryNoQueryOutput> updateCarStateList(@RequestBody List<CarStateHistoryUpdateParam> paramList){
+        logger.info("we get a request form update states obdmiles:"+paramList.toString());
+        HistoryNoQueryOutput historyNoQueryOutput= carStateHistoryInf.updateCarStateObdMiles(paramList);
+        return new ApiMessage<>(historyNoQueryOutput);
+    }
 
 
     //驾驶阶段数据查询
@@ -111,8 +129,6 @@ public class CarHistoryBizApi {
     }
 
 
-
-
     //车辆GB数据查询
     @RequestMapping(value = "/gbs",method = RequestMethod.GET)
     public ApiMessage<CarGbHistoryOutput> queryCarGbList(CarGbHistoryParam param){
@@ -132,20 +148,6 @@ public class CarHistoryBizApi {
         CarGbHistoryOutput carGbHistoryOutput= carGbHistoryService.queryCarGbListByOutput(param);
         return new ApiMessage<>(carGbHistoryOutput);
     }
-
-    /*//车辆GB数据存储
-    @RequestMapping(value = "/gbs",method = RequestMethod.POST)
-    public ApiMessage<CarGbHistoryOutput> saveCarGbList(@RequestBody List<CarGb> carGbList){
-
-        logger.debug("we receive a gb date list.");
-
-        //logger.warn(carGbList.toString());
-        CarGbHistoryOutput carGbHistoryOutput = new CarGbHistoryOutput();
-        if(carGbList!=null&&carGbList.size()>0) {
-            carGbHistoryService.saveOrUpdate(carGbList);
-        }
-        return new ApiMessage<>(carGbHistoryOutput);
-    }*/
 
 
     //状态查询，内部
@@ -207,21 +209,6 @@ public class CarHistoryBizApi {
     }
 
 
-
-    /*//车辆状态数据存储
-    @RequestMapping(value = "/states",method = RequestMethod.POST)
-    public ApiMessage<CarStateHistoryOutput> saveCarStateList(@RequestBody List<CarState> carStateList){
-        logger.debug("we receive a state date list.");
-        logger.info("****** gear is  :  "+carStateList.get(0).getGear().toString());
-        CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
-        if(carStateList!=null&&carStateList.size()>0) {
-            carStateHistoryInf.saveOrUpdate(carStateList);
-        }
-        return new ApiMessage<>(carStateHistoryOutput);
-    }*/
-
-
-
     //车辆CAN数据查询
     @RequestMapping(value = "/cans",method = RequestMethod.GET)
     public ApiMessage<CarCanHistoryOutput> queryCarCanList(CarCanHistoryParam param){
@@ -241,20 +228,6 @@ public class CarHistoryBizApi {
         CarCanHistoryOutput carCanHistoryOutput= carCanHistoryInf.queryCarCanListByOutput(param);
         return new ApiMessage<>(carCanHistoryOutput);
     }
-
-   /* //车辆CAN数据存储
-    @RequestMapping(value = "/cans",method = RequestMethod.POST)
-    public ApiMessage<CarCanHistoryOutput> saveCarCanList(@RequestBody List<CarCan> carCanList){
-
-        logger.debug("we receive a can date list.");
-        //logger.warn(carCanList.toString());
-        CarCanHistoryOutput carCanHistoryOutput = new CarCanHistoryOutput();
-        if(carCanList!=null&&carCanList.size()>0) {
-            carCanHistoryInf.saveOrUpdate(carCanList);
-        }
-        return new ApiMessage<>(carCanHistoryOutput);
-    }*/
-
 
 
     //充电阶段数据查询

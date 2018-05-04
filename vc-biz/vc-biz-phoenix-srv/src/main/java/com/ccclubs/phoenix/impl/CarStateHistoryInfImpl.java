@@ -7,11 +7,14 @@ import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
+import com.ccclubs.phoenix.orm.consts.PhoenixConsts;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.orm.model.PaceBlock;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 import com.ccclubs.phoenix.util.VehicleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,19 +38,21 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
 
 
-    static final String count_sql = "select " +
+    private static final String count_sql = "select " +
             "count(cs_number) as total " +
             "from phoenix_car_state_history " +
             "where cs_number=? " +
             "and current_time>=? " +
             "and current_time<=? ";
 
+    private static final String UPDATE_SQL = "UPSERT INTO "
+            + PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+
+            " (CS_NUMBER,CURRENT_TIME,OBD_MILES ) VALUES( ? , ? , ? )";
+
 
     @Autowired
     private PhoenixTool phoenixTool;
 
-//    @Autowired
-//    private BaseInfImpl baseImpl;
 
     @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
@@ -130,7 +135,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         return carStateList;
     }
 
-
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
@@ -161,6 +165,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         }
         return total;
     }
+
     @Override
     public CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam) {
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
@@ -178,6 +183,61 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             carStateHistoryOutput.setList(carStateList);
         }
         return carStateHistoryOutput;
+    }
+
+    @Override
+    public HistoryNoQueryOutput updateCarStateObdMiles(CarStateHistoryUpdateParam param) {
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+        try{
+            long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
+            preparedStatement = connection.prepareStatement(UPDATE_SQL);
+            preparedStatement.setString(1 , param.getUpdateKey());
+            preparedStatement.setLong(2 , timePointLong);
+            preparedStatement.setFloat(3,param.getObdMiles());
+            preparedStatement.execute();
+            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,null,UPDATE_SQL);
+        }
+        return historyNoQueryOutput;
+    }
+
+    @Override
+    public HistoryNoQueryOutput updateCarStateObdMiles(List<CarStateHistoryUpdateParam> paramList) {
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+        try{
+            Integer count=0;
+            for (CarStateHistoryUpdateParam param:paramList){
+                count++;
+                long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
+                preparedStatement = connection.prepareStatement(UPDATE_SQL);
+                preparedStatement.setString(1 , param.getUpdateKey());
+                preparedStatement.setLong(2 , timePointLong);
+                preparedStatement.setFloat(3,param.getObdMiles());
+                preparedStatement.addBatch();
+                if (count%500==0){
+                    preparedStatement.executeBatch();
+                    connection.commit();
+                }
+            }
+            preparedStatement.executeBatch();
+            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,null,UPDATE_SQL);
+        }
+        return historyNoQueryOutput;
     }
 
 
