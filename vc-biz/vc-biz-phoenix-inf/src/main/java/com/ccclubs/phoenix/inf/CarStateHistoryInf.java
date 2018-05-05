@@ -2,9 +2,11 @@ package com.ccclubs.phoenix.inf;
 
 
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 
 import java.util.List;
 
@@ -45,6 +47,12 @@ public interface CarStateHistoryInf{
 
     //查询车辆状态信息(封装)
      CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam);
+
+     //更新车辆obd里程
+     HistoryNoQueryOutput updateCarStateObdMiles(CarStateHistoryUpdateParam param);
+
+    //批量更新车辆obd里程
+    HistoryNoQueryOutput updateCarStateObdMiles(List<CarStateHistoryUpdateParam> paramList);
 
 
     //驾驶阶段数据计算
