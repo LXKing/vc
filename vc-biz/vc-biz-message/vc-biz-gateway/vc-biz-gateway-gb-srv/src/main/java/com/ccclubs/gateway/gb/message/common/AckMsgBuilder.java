@@ -17,11 +17,20 @@ import io.netty.buffer.ByteBuf;
  */
 public class AckMsgBuilder {
 
-    private static final Integer CONTENT_AFTER_TIME_IDX = 30;
-
-
     public static ByteBuf ofSuccess(ByteBuf sourceBuff) {
-
+        int commandTypeVal = sourceBuff.getByte(PackagePart.COMMAND_MARK.getStartIndex());
+        CommandType msgType = CommandType.getByCode(commandTypeVal);
+        // 终端校时时，向消息体中添加时间
+        if (CommandType.TIME_CHECK.equals(msgType)) {
+            sourceBuff.resetReaderIndex();
+            // 时间的长度为6
+            sourceBuff.setShort(PackagePart.CONTENT_LENGTH.getStartIndex(), 6);
+            GBDateTime nowDateTime = GBDateTime.readFromTime(System.currentTimeMillis());
+            sourceBuff.writerIndex(PackagePart.CONTENT.getStartIndex());
+            nowDateTime.write2Buf(sourceBuff);
+            // 初始化一个校验码
+            sourceBuff.writeByte(0xFF);
+        }
         return changeMarkAndValidByte(sourceBuff, AckType.ACK_SUCCESS);
     }
 
@@ -75,5 +84,7 @@ public class AckMsgBuilder {
         sourceBuff.resetReaderIndex();
         return sourceBuff;
     }
+
+
 
 }

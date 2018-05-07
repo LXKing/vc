@@ -9,30 +9,80 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Email:  yeanzhi@ccclubs.com
  * kafka发送工具类
  */
-@ConfigurationProperties(prefix = "kafka.topic.gateway.gb.error")
+@ConfigurationProperties(prefix = "kafka.topic.gateway.gb")
 public class KafkaProperties {
 
-    private String decode;
+    private String successLogin;
+    private String successReal;
+    private String successReissue;
+    private String successLogout;
+    private String successHeart;
+    private String successTime;
 
-    private String process;
+    private String error;
 
     private String online;
 
-    public String getDecode() {
-        return decode;
+    public String getSuccessLogin() {
+        return successLogin;
     }
 
-    public KafkaProperties setDecode(String decode) {
-        this.decode = decode;
+    public KafkaProperties setSuccessLogin(String successLogin) {
+        this.successLogin = successLogin;
         return this;
     }
 
-    public String getProcess() {
-        return process;
+    public String getSuccessReal() {
+        return successReal;
     }
 
-    public KafkaProperties setProcess(String process) {
-        this.process = process;
+    public KafkaProperties setSuccessReal(String successReal) {
+        this.successReal = successReal;
+        return this;
+    }
+
+    public String getSuccessReissue() {
+        return successReissue;
+    }
+
+    public KafkaProperties setSuccessReissue(String successReissue) {
+        this.successReissue = successReissue;
+        return this;
+    }
+
+    public String getSuccessLogout() {
+        return successLogout;
+    }
+
+    public KafkaProperties setSuccessLogout(String successLogout) {
+        this.successLogout = successLogout;
+        return this;
+    }
+
+    public String getSuccessHeart() {
+        return successHeart;
+    }
+
+    public KafkaProperties setSuccessHeart(String successHeart) {
+        this.successHeart = successHeart;
+        return this;
+    }
+
+    public String getSuccessTime() {
+        return successTime;
+    }
+
+    public KafkaProperties setSuccessTime(String successTime) {
+        this.successTime = successTime;
+        return this;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public KafkaProperties setError(String error) {
+        this.error = error;
         return this;
     }
 

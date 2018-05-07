@@ -2,7 +2,6 @@ package com.ccclubs.gateway.gb;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.util.ResourceLeakDetector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,9 @@ import java.net.InetSocketAddress;
 public class TcpServerStarter {
     private static final Logger LOG = LoggerFactory.getLogger(TcpServerStarter.class);
 
+    // 是否开启缓存检查（debug时用）
+    private boolean checkBufferLeaker;
+
     @Autowired
     @Qualifier("serverBootstrap")
     private ServerBootstrap serverBootstrap;
@@ -35,9 +37,6 @@ public class TcpServerStarter {
 
     public void start() throws Exception {
         LOG.info("TCP服务器启动");
-
-        // 追踪字节缓存内存泄露，很耗费性能，debug时打开。
-//        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
         this.serverChannel =
                 serverBootstrap
                         .bind(tcpPort).sync()
@@ -66,6 +65,15 @@ public class TcpServerStarter {
 
     public TcpServerStarter setServerChannel(Channel serverChannel) {
         this.serverChannel = serverChannel;
+        return this;
+    }
+
+    public boolean isCheckBufferLeaker() {
+        return checkBufferLeaker;
+    }
+
+    public TcpServerStarter setCheckBufferLeaker(boolean checkBufferLeaker) {
+        this.checkBufferLeaker = checkBufferLeaker;
         return this;
     }
 }

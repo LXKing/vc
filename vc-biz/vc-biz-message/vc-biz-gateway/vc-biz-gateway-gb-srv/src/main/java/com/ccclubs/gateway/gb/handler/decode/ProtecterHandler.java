@@ -1,11 +1,13 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.gb.constant.PacProcessing;
+import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
 import com.ccclubs.gateway.gb.dto.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.gb.dto.OtherProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.ProtecterExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
@@ -53,16 +55,44 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
-        StringBuilder trackSb = new StringBuilder(pac.toLogString());
-        trackSb.append("\n")
-                .append("消息处理各个阶段用时：");
-        int stepIndex = 0;
-        for (HandlerPacTrack ht : pacProcessTrack.getHandlerPacTracks()) {
-            trackSb.append("step-").append(PacProcessing.getByCode(stepIndex ++).getDes())
-                    .append("[").append(ht.getEndTime() - ht.getStartTime()).append("]");
+        // 如果是测试阶段则打印报告日志
+        if (ChildChannelHandler.printPacLog) {
+            StringBuilder trackSb = new StringBuilder(pac.toLogString());
+            trackSb.append("\n")
+                    .append("消息处理各个阶段用时：");
+            int stepIndex = 0;
+            for (HandlerPacTrack ht : pacProcessTrack.getHandlerPacTracks()) {
+                trackSb.append("step-").append(PacProcessing.getByCode(stepIndex ++).getDes())
+                        .append("[").append(ht.getEndTime() - ht.getStartTime()).append("]");
+            }
+            LOG.info(trackSb.toString());
         }
-        LOG.info(trackSb.toString());
 
+        String topic = null;
+        switch (pac.getHeader().getCommandMark()) {
+            case VEHICLE_LOGIN:
+                topic = kafkaProperties.getSuccessLogin();
+                break;
+            case REALTIME_DATA:
+                topic = kafkaProperties.getSuccessReal();
+                break;
+            case REISSUE_DATA:
+                topic = kafkaProperties.getSuccessReissue();
+                break;
+            case VEHICLE_LOGOUT:
+                topic = kafkaProperties.getSuccessLogout();
+                break;
+            case HEARTBEAT:
+                topic = kafkaProperties.getSuccessHeart();
+                break;
+            case TIME_CHECK:
+                topic = kafkaProperties.getSuccessTime();
+                break;
+                default:
+                    break;
+        }
+        // 正常的消息发送至kafka
+        kafkaTemplate.send(topic, pac.getSourceHexStr());
 
 
         /**
@@ -106,7 +136,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
             IdleStateEvent e = (IdleStateEvent) evt;
             if (IdleState.READER_IDLE == e.state()) {
                 // 读空闲
-                LOG.info("连接长时间空闲，将关闭该连接");
+                LOG.warn("连接长时间空闲，将关闭该连接");
                 ctx.close();
                 // 事件触发后，最终会触发ChannelInActive方法
 
@@ -168,7 +198,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         }
 
         // json序列化之后发送到kafka对应Topic
-        kafkaTemplate.send(kafkaProperties.getProcess(),
+        kafkaTemplate.send(kafkaProperties.getError(),
                 packProcessExceptionDTO.toJson());
 
         // 打印异常链
@@ -176,7 +206,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         if (needCloseConn) {
             // 关闭链接
-            LOG.info("检测到重要异常，服务端将主动断开连接");
+            LOG.error("检测到重要异常，服务端将主动断开连接");
             ClientCache.closeWhenInactive((SocketChannel) context.channel());
         }
     }

@@ -8,8 +8,10 @@ package com.ccclubs.gateway.gb.constant;
  * 消息处理异常码
  */
 public enum PackProcessExceptionCode {
-    /*校验失败*/
-    INVALID_FAIL(1),
+    /**
+     * 消息处理成功
+     */
+    PROCESS_SUCCESS(1000),
 
     /*校验处理过程中出现异常*/
     PROCESS_VALIDATE_EXCEPTION(1001),
@@ -25,6 +27,9 @@ public enum PackProcessExceptionCode {
     PROCESS_CONN_DISCONN_EXCEPTION(1005),
     /*其他异常*/
     PROCESS_OTHER_EXCEPTION(1006),
+
+    /*校验失败*/
+    INVALID_FAIL(1007),
 
     /*消息解码异常*/
     MESSAGE_DECODE_ERROR(1099);

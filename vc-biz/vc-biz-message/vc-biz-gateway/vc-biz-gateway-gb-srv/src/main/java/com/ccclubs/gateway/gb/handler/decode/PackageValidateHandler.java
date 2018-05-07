@@ -1,9 +1,9 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.constant.AckType;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.dto.MsgValidateExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.common.AckMsgBuilder;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
@@ -49,7 +49,8 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
 
         // 空消息时，预警
         if (pac.getHeader().getContentLength() == 0 &&
-                CommandType.HEARTBEAT != pac.getHeader().getCommandMark()) {
+                CommandType.HEARTBEAT != pac.getHeader().getCommandMark() && // 心跳包体为空
+                CommandType.TIME_CHECK != pac.getHeader().getCommandMark()) {// 校时包体为空
             LOG.warn("收到一个包体为空的数据包：{}", pac.toLogString());
         }
 
@@ -76,7 +77,9 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                 // TODO 心跳校验失败不知道是否应答失败(理论上不用回复)
 //            case HEARTBEAT:
                 ByteBuf destBuf = AckMsgBuilder.ofFail(pac.getSourceBuff().copy());
-                LOG.info("服务器下发异常错误应答>>>" + ByteBufUtil.hexDump(destBuf));
+                if (ChildChannelHandler.printPacLog) {
+                    LOG.info("服务器下发异常错误应答>>>" + ByteBufUtil.hexDump(destBuf));
+                }
                 ctx.writeAndFlush(destBuf);
                 break;
             // 其他类型的消息不做应答
@@ -90,7 +93,9 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             // 需要应答
             ByteBuf destBuf = AckMsgBuilder.ofSuccess(pac.getSourceBuff().copy());
             if (Objects.nonNull(destBuf)) {
-                LOG.info("服务器下发成功应答>>>" + ByteBufUtil.hexDump(destBuf));
+                if (ChildChannelHandler.printPacLog) {
+                    LOG.info("服务器下发成功应答>>>" + ByteBufUtil.hexDump(destBuf));
+                }
                 ctx.writeAndFlush(destBuf.resetReaderIndex());
             }
         }

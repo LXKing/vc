@@ -12,7 +12,6 @@ import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.ReferenceCountUtil;
@@ -54,15 +53,16 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
         SocketChannel channel = (SocketChannel)ctx.channel();
         if (pac.isErrorPac()) {
             LOG.error("收到一个校验异常包：{}", pac.toLogString());
-            // TODO kafka
+
+            // 目前校验异常dto中为空
             InValideMsgExceptionDTO inValideMsgExceptionDTO = new InValideMsgExceptionDTO();
-            inValideMsgExceptionDTO.setVin(pac.getHeader().getUniqueNo())
-                    .setSource(ByteBufUtil.hexDump(pac.getSourceBuff()));
             PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO()
+                    .setVin(pac.getHeader().getUniqueNo())
+                    .setSourceHex(pac.getSourceHexStr())
                     .setCode(PackProcessExceptionCode.INVALID_FAIL.getCode())
                     .setJson(inValideMsgExceptionDTO);
 
-            kafkaTemplate.send(kafkaProperties.getProcess(),
+            kafkaTemplate.send(kafkaProperties.getError(),
                     packProcessExceptionDTO.toJson());
 
             countErrorPac(channel);
@@ -77,7 +77,6 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
             if (pac.getHeader().getCommandMark().equals(CommandType.REALTIME_DATA)) {
                 conn.increPositionPackageNum();// 位置包（实时信息包）数
             }
-
 
             /**
              * 测试动态添加/删除Handler

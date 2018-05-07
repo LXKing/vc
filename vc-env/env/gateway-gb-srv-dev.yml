@@ -23,10 +23,20 @@ kafka:
   topic:
     gateway:
       gb:
-        error:
-          decode: topic_gb_error_decode
-          process: topic_gb_error_process
-          online: topic_gb_online_status
+        error: topic_gb_error
+        success-login: topic_gb_0x01
+        success-real: topic_gb_0x02
+        success-reissue: topic_gb_0x03
+        success-logout: topic_gb_0x04
+        success-heart: topic_gb_0x07
+        success-time: topic_gb_0x08
+        online: topic_gb_online_status
+
+pac:
+  log:
+    debug: true    #是否开启消息日志打印
+  buffer:
+    check: true    #是否打开buffer缓存检查（测试时开启）
 
 
 

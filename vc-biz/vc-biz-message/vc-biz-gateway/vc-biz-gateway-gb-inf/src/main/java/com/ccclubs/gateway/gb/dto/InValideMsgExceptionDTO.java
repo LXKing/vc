@@ -12,30 +12,8 @@ import com.ccclubs.gateway.gb.inf.IExceptionDtoJsonParse;
  */
 public class InValideMsgExceptionDTO implements IExceptionDtoJsonParse {
 
-    private String vin;
-
-    private String source;
-
     @Override
     public String toJson() {
         return JSON.toJSONString(this);
-    }
-
-    public String getVin() {
-        return vin;
-    }
-
-    public InValideMsgExceptionDTO setVin(String vin) {
-        this.vin = vin;
-        return this;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public InValideMsgExceptionDTO setSource(String source) {
-        this.source = source;
-        return this;
     }
 }

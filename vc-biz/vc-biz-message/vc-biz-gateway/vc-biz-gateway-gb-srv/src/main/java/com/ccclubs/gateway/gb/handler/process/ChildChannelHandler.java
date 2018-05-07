@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
+    public static boolean printPacLog;
+
 //    @Autowired
 //    private ApplicationContext context;
 
