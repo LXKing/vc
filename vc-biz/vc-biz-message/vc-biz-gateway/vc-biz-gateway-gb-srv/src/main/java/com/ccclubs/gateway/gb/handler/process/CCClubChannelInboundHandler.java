@@ -1,5 +1,9 @@
 package com.ccclubs.gateway.gb.handler.process;
 
+import com.ccclubs.gateway.gb.inf.IExceptionDtoJsonParse;
+import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
+import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
+import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.internal.TypeParameterMatcher;
@@ -38,6 +42,21 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 //            System.out.println("release --");
 //            ReferenceCountUtil.release(msg);
         }
+
+    }
+
+    protected PacProcessTrack beforeProcess(ChannelHandlerContext ctx, IExceptionDtoJsonParse exceptionDtoJsonParse) {
+        // 数据包处理轨迹
+        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
+        // 数据包在当前处理器中的轨迹信息
+        HandlerPacTrack currentHandlerTracker = pacProcessTrack.getCurrentHandlerTracker()
+                .setStartTime(System.nanoTime());
+
+        currentHandlerTracker.setExceptionDtoJsonParse(exceptionDtoJsonParse);
+        return pacProcessTrack;
+    }
+
+    private void afterProcesss() {
 
     }
 

@@ -8,9 +8,9 @@ import com.ccclubs.gateway.gb.inf.IExceptionDtoJsonParse;
  * @Date: 2018/5/3
  * @Time: 19:14
  * Email:  yeanzhi@ccclubs.com
- * 消息业务处理异常dto
+ * 守卫者处理异常dto
  */
-public class MsgValidateExceptionDTO implements IExceptionDtoJsonParse {
+public class ProtecterExceptionDTO implements IExceptionDtoJsonParse {
 
     private String causeMsg;
 
@@ -25,9 +25,8 @@ public class MsgValidateExceptionDTO implements IExceptionDtoJsonParse {
         return causeMsg;
     }
 
-    public MsgValidateExceptionDTO setCauseMsg(String causeMsg) {
+    public ProtecterExceptionDTO setCauseMsg(String causeMsg) {
         this.causeMsg = causeMsg;
         return this;
     }
-
 }

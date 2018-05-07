@@ -9,7 +9,7 @@ package com.ccclubs.gateway.gb.constant;
  */
 public enum PackProcessExceptionCode {
     /*校验失败*/
-    INVALID_FAIL(1000),
+    INVALID_FAIL(1),
 
     /*校验处理过程中出现异常*/
     PROCESS_VALIDATE_EXCEPTION(1001),

@@ -1,6 +1,9 @@
 package com.ccclubs.gateway.gb.beans;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.gateway.gb.constant.PackagePart;
+import com.ccclubs.gateway.gb.dto.ExceptionBaseDTO;
+import com.ccclubs.gateway.gb.inf.IExceptionDtoJsonParse;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
  * Email:  yeanzhi@ccclubs.com
  * 包装解析异常信息
  */
-public class DecodeExceptionDTO {
+public class DecodeExceptionDTO implements IExceptionDtoJsonParse {
 
     private static final String EXCEPTION_DECRIPTION_PRIFIX= "解析数据包时出现异常: ";
 
@@ -31,16 +34,21 @@ public class DecodeExceptionDTO {
     // 异常原因
     private String reason;
 
-    // 是否解析未结束
-    private boolean decodeNotFinished;
+    // 16进制源数据包
+    private String source;
 
-    // 源数据包
-    private ByteBuf source;
+    @Override
+    public String toJson() {
+        JSONObject json = new JSONObject();
+        json.put("decodeMarkIndex", decodeMarkIndex);
+        json.put("exceptionVal", exceptionVal);
+        json.put("expectedVal", expectedVal);
+        json.put("reason", reason);
+        return null;
+    }
 
-    public DecodeExceptionDTO(ByteBuf source) {
+    public DecodeExceptionDTO(String source) {
         this.source = source;
-        this.decodeNotFinished = true;
-        source.resetReaderIndex();
     }
 
     public DecodeExceptionDTO next() {
@@ -49,7 +57,6 @@ public class DecodeExceptionDTO {
     }
 
     public DecodeExceptionDTO fail() {
-        this.decodeNotFinished = false;
         return this;
     }
 
@@ -69,7 +76,7 @@ public class DecodeExceptionDTO {
             desSb.append("异常原因[").append(reason).append("]");
         }
 
-        desSb.append("原始消息[").append(ByteBufUtil.hexDump(source.resetReaderIndex())).append("]");
+        desSb.append("原始消息[").append(source).append("]");
         return desSb.toString();
     }
 
@@ -102,20 +109,11 @@ public class DecodeExceptionDTO {
         return this;
     }
 
-    public boolean isDecodeNotFinished() {
-        return decodeNotFinished;
-    }
-
-    public DecodeExceptionDTO setDecodeNotFinished(boolean decodeNotFinished) {
-        this.decodeNotFinished = decodeNotFinished;
-        return this;
-    }
-
-    public ByteBuf getSource() {
+    public String getSource() {
         return source;
     }
 
-    public DecodeExceptionDTO setSource(ByteBuf source) {
+    public DecodeExceptionDTO setSource(String source) {
         this.source = source;
         return this;
     }

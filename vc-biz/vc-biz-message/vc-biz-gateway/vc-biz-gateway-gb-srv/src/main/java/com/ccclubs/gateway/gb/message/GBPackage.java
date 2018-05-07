@@ -2,6 +2,9 @@ package com.ccclubs.gateway.gb.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -14,6 +17,11 @@ public class GBPackage {
      * 源数据包缓冲区(引用)
      */
     private ByteBuf sourceBuff;
+
+    /**
+     * 原始消息对应的16进制字符串
+     */
+    private String sourceHexStr;
 
     /**
      * 消息头部
@@ -50,7 +58,7 @@ public class GBPackage {
                 .append("车辆(").append(getHeader().getUniqueNo()).append(")")
                 .append("上传")
                 .append("[").append(getHeader().getCommandMark().getDes()).append("]消息.")
-                .append("原始消息[").append(ByteBufUtil.hexDump(getSourceBuff())).append("]");
+                .append("原始消息[").append(getSourceHexStr()).append("]");
         return pacSb.toString();
     }
 
@@ -58,12 +66,19 @@ public class GBPackage {
     // ---------------------------------------------------------
     public ByteBuf getSourceBuff() {
         // 因为处理buffer时，总是希望拿到一个重置了readerIndex的buf
-        this.sourceBuff.resetReaderIndex();
+        if (Objects.nonNull(this.sourceBuff)) {
+            this.sourceBuff.resetReaderIndex();
+        }
         return this.sourceBuff;
     }
 
     public GBPackage setSourceBuff(ByteBuf sourceBuff) {
         this.sourceBuff = sourceBuff;
+        if (StringUtils.isEmpty(this.sourceHexStr)) {
+            this.sourceBuff.resetReaderIndex();
+            this.sourceHexStr = ByteBufUtil.hexDump(this.sourceBuff);
+            this.sourceBuff.resetReaderIndex();
+        }
         return this;
     }
 
@@ -98,7 +113,17 @@ public class GBPackage {
         return errorPac;
     }
 
-    public void setErrorPac(boolean errorPac) {
+    public GBPackage setErrorPac(boolean errorPac) {
         this.errorPac = errorPac;
+        return this;
+    }
+
+    public String getSourceHexStr() {
+        return sourceHexStr;
+    }
+
+    public GBPackage setSourceHexStr(String sourceHexStr) {
+        this.sourceHexStr = sourceHexStr;
+        return this;
     }
 }

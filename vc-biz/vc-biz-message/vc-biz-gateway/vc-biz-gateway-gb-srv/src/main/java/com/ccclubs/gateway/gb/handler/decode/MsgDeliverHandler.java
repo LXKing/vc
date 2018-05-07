@@ -1,17 +1,13 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
 import com.ccclubs.gateway.gb.dto.MsgDeliverExceptionDTO;
-import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
-import com.ccclubs.gateway.gb.exception.DeleverPacException;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.message.common.AckMsgBuilder;
+import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -19,8 +15,7 @@ import org.springframework.stereotype.Component;
  * @Time: 21:41
  * Email:  yeanzhi@ccclubs.com
  */
-//@Component
-//@Scope("prototype")
+@ChannelHandler.Sharable
 public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MsgDeliverHandler.class);
@@ -31,33 +26,16 @@ public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
-        try {
-            LOG.info(pac.toLogString());
-            ctx.writeAndFlush(AckMsgBuilder.ofSuccess(pac.getSourceBuff().copy()));
-            // 2. 消息分类处理
-            switch (pac.getHeader().getCommandMark()) {
-                case REALTIME_DATA:
-                    break;
-                case VEHICLE_LOGIN:
-                    break;
-                case HEARTBEAT:
-//                context.writeAndFlush(AckMsgBuilder.ofSuccess(pac.getSourceBuff()));
-                default:
-                    break;
+        MsgDeliverExceptionDTO msgDeliverExceptionDTO = new MsgDeliverExceptionDTO();
+        PacProcessTrack pacProcessTrack = beforeProcess(ctx, msgDeliverExceptionDTO);
 
-            }
+        // 业务处理(暂时没有业务处理)
+//        LOG.info(pac.toLogString());
 
+        pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
-
-            // 事件下发
-            ctx.fireChannelRead(pac);
-        } catch (Exception e) {
-            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-            packProcessExceptionDTO.setCode(PackProcessExceptionCode.PROCESS_MSG_DELIVER_EXCEPTION.getCode())
-                    .setVin(pac.getHeader().getUniqueNo())
-                    .setJson(new MsgDeliverExceptionDTO().setCauseMsg(e.getMessage()));
-            throw new DeleverPacException(pac.toLogString() + "异常：" + e.getMessage()).setPackProcessExceptionDTO(packProcessExceptionDTO);
-        }
+        // 事件下发
+        ctx.fireChannelRead(pac);
     }
 
 }

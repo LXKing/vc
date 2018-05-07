@@ -16,6 +16,8 @@ public class PackProcessExceptionDTO {
 
     private String vin;
 
+    private String sourceHex;
+
     private Integer code;
 
     private IExceptionDtoJsonParse json;
@@ -29,6 +31,7 @@ public class PackProcessExceptionDTO {
         } else {
             result.put("json", json.toJson());
         }
+        result.put("sourceHex", sourceHex);
         return result.toJSONString();
     }
 
@@ -56,6 +59,15 @@ public class PackProcessExceptionDTO {
 
     public PackProcessExceptionDTO setVin(String vin) {
         this.vin = vin;
+        return this;
+    }
+
+    public String getSourceHex() {
+        return sourceHex;
+    }
+
+    public PackProcessExceptionDTO setSourceHex(String sourceHex) {
+        this.sourceHex = sourceHex;
         return this;
     }
 }

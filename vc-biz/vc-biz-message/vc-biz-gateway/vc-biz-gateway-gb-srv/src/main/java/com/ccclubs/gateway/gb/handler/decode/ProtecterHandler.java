@@ -1,27 +1,26 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
+import com.ccclubs.gateway.gb.constant.PacProcessing;
 import com.ccclubs.gateway.gb.dto.ConnOnlineStatusEvent;
-import com.ccclubs.gateway.gb.dto.MsgDecodeExceptionDTO;
 import com.ccclubs.gateway.gb.dto.OtherProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
-import com.ccclubs.gateway.gb.exception.*;
+import com.ccclubs.gateway.gb.dto.ProtecterExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
+import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
+import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
+import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -32,8 +31,6 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  *      守卫在最后底线的处理器
  */
-//@Component
-//@Scope("prototype")
 public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(ProtecterHandler.class);
 
@@ -49,13 +46,30 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     }
 
     @Override
-    public void channelRead0 (ChannelHandlerContext ctx, GBPackage msg) throws Exception {
+    public void channelRead0 (ChannelHandlerContext ctx, GBPackage pac) throws Exception {
+        // 输出消息处理轨迹信息
+        ProtecterExceptionDTO protecterExceptionDTO = new ProtecterExceptionDTO();
+        PacProcessTrack pacProcessTrack = beforeProcess(ctx, protecterExceptionDTO);
+
+        pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
+
+        StringBuilder trackSb = new StringBuilder(pac.toLogString());
+        trackSb.append("\n")
+                .append("消息处理各个阶段用时：");
+        int stepIndex = 0;
+        for (HandlerPacTrack ht : pacProcessTrack.getHandlerPacTracks()) {
+            trackSb.append("step-").append(PacProcessing.getByCode(stepIndex ++).getDes())
+                    .append("[").append(ht.getEndTime() - ht.getStartTime()).append("]");
+        }
+        LOG.info(trackSb.toString());
+
+
 
         /**
-         *  一定要将字节对象传递到下一个处理器（tailHandler）
-         *  它会释放字节缓存，不要自己处理
+         *  最终处理消息，不需要继续向下传递消息
+         *      1.释放字节缓存
          */
-        ctx.fireChannelRead(msg.getSourceBuff());
+        ReferenceCountUtil.release(pac.getSourceBuff());
     }
 
     @Override
@@ -94,20 +108,18 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
                 // 读空闲
                 LOG.info("连接长时间空闲，将关闭该连接");
                 ctx.close();
-
                 // 事件触发后，最终会触发ChannelInActive方法
-
 
             } else if (IdleState.WRITER_IDLE == e.state()) {
                 // 写空闲
-
             } else if (IdleState.ALL_IDLE == e.state()) {
                 // 读写都异常
-
             }
         } else {
 
         }
+
+        // 事件下传
 //        ctx.fireUserEventTriggered(evt);
     }
 
@@ -121,68 +133,45 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         // 部分异常可能需要服务端主动释放连接
         boolean needCloseConn = false;
-        // 消息处理过程中发生的异常
-        if (cause instanceof PackageDecodeException) {
-            // 消息解析异常
-            LOG.error(cause.getMessage());
 
-            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-            PackageDecodeException packageDecodeException = (PackageDecodeException) cause;
+        /**
+         * 处理链路出现异常后
+         *  1.获取异常链路中的轨迹信息
+         *  2.按照异常轨迹判断
+         *      如果是链路上主动抛出的异常：获取对应的异常dto信息
+         *      如果是链路上非主动抛出：组装其他异常dto
+         *  3.发送至kafka
+         */
+        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(context.channel());
+        HandlerPacTrack[] handlerPacTracks = pacProcessTrack.getHandlerPacTracks();
 
-            packProcessExceptionDTO.setCode(PackProcessExceptionCode.MESSAGE_DECODE_ERROR.getCode())
-                    .setJson(packageDecodeException.getMsgDecodeExceptionDTO())
-                    .setVin(packageDecodeException.getVin());
-            kafkaTemplate.send(kafkaProperties.getDecode(), packProcessExceptionDTO.toJson());
-
-        } else if (cause instanceof PacValidateException) {
-            // 校验过程异常
-            LOG.error("校验过程异常：msg={}", cause.getMessage());
-            PacValidateException pacValidateException = (PacValidateException) cause;
-            kafkaTemplate.send(kafkaProperties.getProcess(),
-                    pacValidateException.getPackProcessExceptionDTO().toJson());
-        } else if (cause instanceof ConnStatisticsException) {
-            // 连接数据统计过程异常
-            LOG.error("连接数据统计过程异常：msg={}", cause.getMessage());
-            ConnStatisticsException connStatisticsException = (ConnStatisticsException) cause;
-            kafkaTemplate.send(kafkaProperties.getProcess(),
-                    connStatisticsException.getPackProcessExceptionDTO().toJson());
-        } else if (cause instanceof DeleverPacException) {
-            // 业务处理器异常
-            LOG.error("业务处理过程异常：msg={}", cause.getMessage());
-            DeleverPacException deleverPacException = (DeleverPacException) cause;
-            kafkaTemplate.send(kafkaProperties.getProcess(),
-                    deleverPacException.getPackProcessExceptionDTO().toJson());
-        } else if (cause instanceof TooLongFrameException) {
-            // 数据包超长异常
-            LOG.error("消息处理链出现数据包超长异常：msg={}", cause.getMessage());
-            // TODO 应该不会进入该条件运行
-//            OtherProcessExceptionDTO otherProcessExceptionDTO = new OtherProcessExceptionDTO();
-//            otherProcessExceptionDTO.setCauseMsg(cause.getMessage());
-//            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-//            packProcessExceptionDTO.setCode(PackProcessExceptionCode.)
-//                    .setJson(otherProcessExceptionDTO);
-//            kafkaTemplate.send(KafkaConst.KAFKA_TOPIC_GATEWAY_GB_PROCESS_ERROR,
-//                    packProcessExceptionDTO.toJson());
-            needCloseConn = true;
-        } else if (cause instanceof ChannelDisconnException) {
-            // 未连接异常
-            LOG.error("消息处理链出现未连接异常：msg={}", cause.getMessage());
-            // TODO 应该不会进入该条件运行
-//            kafkaTemplate.send(KafkaProducerKey.CHANNEL_DISCONN_EXCEPTION, cause.getMessage());
-            needCloseConn = true;
+        PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
+        if (Objects.nonNull(pacProcessing)) {
+            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
         } else {
-            // 其他异常
-            LOG.error("消息处理链出现其他异常：msg={}", cause.getMessage());
+            LOG.error("exception throwed but step invalid step={}", pacProcessTrack.getStep());
+        }
 
+        PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
+        packProcessExceptionDTO.setCode(pacProcessTrack.getStep())
+                .setVin(pacProcessTrack.getVin())
+                .setSourceHex(pacProcessTrack.getSourceHex());
+        HandlerPacTrack ht = handlerPacTracks[pacProcessTrack.getStep()];
+
+        if (ht.isErrorOccur()) {
+            packProcessExceptionDTO.setJson(ht.getExceptionDtoJsonParse());
+        } else {
+            // 其他非自定义的异常
             OtherProcessExceptionDTO otherProcessExceptionDTO = new OtherProcessExceptionDTO();
             otherProcessExceptionDTO.setCauseMsg(cause.getMessage());
-            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-            packProcessExceptionDTO.setCode(PackProcessExceptionCode.PROCESS_OTHER_EXCEPTION.getCode())
-                    .setJson(otherProcessExceptionDTO);
-
-            kafkaTemplate.send(kafkaProperties.getProcess(),
-                    packProcessExceptionDTO.toJson());
+            packProcessExceptionDTO.setJson(otherProcessExceptionDTO);
         }
+
+        // json序列化之后发送到kafka对应Topic
+        kafkaTemplate.send(kafkaProperties.getProcess(),
+                packProcessExceptionDTO.toJson());
+
+        // 打印异常链
 //        cause.printStackTrace();
 
         if (needCloseConn) {
