@@ -1,5 +1,8 @@
 package com.ccclubs.gateway.gb.utils;
 
+import com.ccclubs.gateway.gb.constant.AckType;
+import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.message.GBPackage;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -70,16 +73,31 @@ public class ValidUtil {
     }
 
     /**
-     *  命令的主动发起方应答标志为0xFE，标识此包为命令包；当应答标志不是0xFE时，被动接收方应不应答。
-     *  当命令的被动接收方应答标志不是0xFE，此包为应答包
-     * @param ackType
+     * 服务器是否需要应答
+     * @param pac
      * @return
      */
-    public static boolean isNeedAck(int ackType) {
-        if(0xFE == ackType) {
-            return true;
+    public static boolean isNeedAck(GBPackage pac) {
+
+        /**
+         * 命令的主动发起方应答标志为0xFE，标识此包为命令包；当应答标志不是0xFE时，被动接收方应不应答。
+         *      当命令的被动接收方应答标志不是0xFE，此包为应答包
+         */
+        if (!AckType.ACK_COMMAND.equals(pac.getHeader().getAckMark())) {
+            return false;
         }
-        return false;
+
+        // 实时数据不需要应答
+        if (CommandType.REALTIME_DATA.equals(pac.getHeader().getCommandMark())) {
+            return false;
+        }
+
+        // 实时数据历史数据不需要应答
+        if (CommandType.REISSUE_DATA.equals(pac.getHeader().getCommandMark())) {
+            return false;
+        }
+
+        return true;
     }
 
 }

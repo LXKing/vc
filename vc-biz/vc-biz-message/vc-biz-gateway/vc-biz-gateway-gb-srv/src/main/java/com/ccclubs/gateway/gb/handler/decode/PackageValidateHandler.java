@@ -15,6 +15,8 @@ import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/4/27
@@ -84,13 +86,13 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
     }
 
     private void processSuccessAck(ChannelHandlerContext ctx, GBPackage pac) {
-        AckType ackType = pac.getHeader().getAckMark();
-        if (AckType.ACK_COMMAND.equals(ackType)) {
+        if (ValidUtil.isNeedAck(pac)) {
             // 需要应答
-
             ByteBuf destBuf = AckMsgBuilder.ofSuccess(pac.getSourceBuff().copy());
-            LOG.info("服务器下发成功应答>>>" + ByteBufUtil.hexDump(destBuf));
-            ctx.writeAndFlush(destBuf.resetReaderIndex());
+            if (Objects.nonNull(destBuf)) {
+                LOG.info("服务器下发成功应答>>>" + ByteBufUtil.hexDump(destBuf));
+                ctx.writeAndFlush(destBuf.resetReaderIndex());
+            }
         }
     }
 }

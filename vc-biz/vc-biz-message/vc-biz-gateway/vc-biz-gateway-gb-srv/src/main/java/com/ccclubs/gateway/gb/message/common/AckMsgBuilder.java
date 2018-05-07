@@ -42,27 +42,29 @@ public class AckMsgBuilder {
         sourceBuff.setByte(PackagePart.ACK_MARK.getStartIndex(), ackType.getCode());
 
         // 2.保留应答报文时间, 删除其余报文内容
-        int commandTypeVal = sourceBuff.getByte(PackagePart.COMMAND_MARK.getStartIndex());
-        CommandType msgType = CommandType.getByCode(commandTypeVal);
-        switch (msgType) {
-            case VEHICLE_LOGIN:
-            case VEHICLE_LOGOUT:
-            case PLATE_LOGIN:
-            case PLATE_LOGOUT:
-            case REALTIME_DATA:
-                // 修改报文的长度字节(固定为6)
-                sourceBuff.setShort(PackagePart.CONTENT_LENGTH.getStartIndex(), 6);
-                // 保留报文时间，删除其他报文
-                sourceBuff.writerIndex(CONTENT_AFTER_TIME_IDX);
-                // 初始化一个校验码
-                sourceBuff.writeByte(0xFF);
-                sourceBuff.discardReadBytes();
-                break;
-
-            default:
-                // 其他类型的消息无报文时间
-                break;
-        }
+//        int commandTypeVal = sourceBuff.getByte(PackagePart.COMMAND_MARK.getStartIndex());
+//        CommandType msgType = CommandType.getByCode(commandTypeVal);
+//        switch (msgType) {
+//            case REALTIME_DATA:
+//                // 实时数据不做应答
+//                return null;
+//            case VEHICLE_LOGIN:
+//            case VEHICLE_LOGOUT:
+//            case PLATE_LOGIN:
+//            case PLATE_LOGOUT:
+//                // 修改报文的长度字节(固定为6)
+//                sourceBuff.setShort(PackagePart.CONTENT_LENGTH.getStartIndex(), 6);
+//                // 保留报文时间，删除其他报文
+//                sourceBuff.writerIndex(CONTENT_AFTER_TIME_IDX);
+//                // 初始化一个校验码
+//                sourceBuff.writeByte(0xFF);
+//                sourceBuff.discardReadBytes();
+//                break;
+//
+//            default:
+//                // 其他类型的消息无报文时间
+//                break;
+//        }
 
         byte newValidByte = ValidUtil.caculateValidByteFromBuff(sourceBuff);
         int readableBytes = sourceBuff.readableBytes();
