@@ -12,68 +12,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "kafka.topic.gateway.gb")
 public class KafkaProperties {
 
-    private String successLogin;
-    private String successReal;
-    private String successReissue;
-    private String successLogout;
-    private String successHeart;
-    private String successTime;
+    private String success;
 
     private String error;
 
     private String conn;
 
-    public String getSuccessLogin() {
-        return successLogin;
+    public String getSuccess() {
+        return success;
     }
 
-    public KafkaProperties setSuccessLogin(String successLogin) {
-        this.successLogin = successLogin;
-        return this;
-    }
-
-    public String getSuccessReal() {
-        return successReal;
-    }
-
-    public KafkaProperties setSuccessReal(String successReal) {
-        this.successReal = successReal;
-        return this;
-    }
-
-    public String getSuccessReissue() {
-        return successReissue;
-    }
-
-    public KafkaProperties setSuccessReissue(String successReissue) {
-        this.successReissue = successReissue;
-        return this;
-    }
-
-    public String getSuccessLogout() {
-        return successLogout;
-    }
-
-    public KafkaProperties setSuccessLogout(String successLogout) {
-        this.successLogout = successLogout;
-        return this;
-    }
-
-    public String getSuccessHeart() {
-        return successHeart;
-    }
-
-    public KafkaProperties setSuccessHeart(String successHeart) {
-        this.successHeart = successHeart;
-        return this;
-    }
-
-    public String getSuccessTime() {
-        return successTime;
-    }
-
-    public KafkaProperties setSuccessTime(String successTime) {
-        this.successTime = successTime;
+    public KafkaProperties setSuccess(String success) {
+        this.success = success;
         return this;
     }
 

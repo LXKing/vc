@@ -24,12 +24,7 @@ kafka:
     gateway:
       gb:
         error: topic_gb_error
-        success-login: topic_gb_0x01
-        success-real: topic_gb_0x02
-        success-reissue: topic_gb_0x03
-        success-logout: topic_gb_0x04
-        success-heart: topic_gb_0x07
-        success-time: topic_gb_0x08
+        success: topic_gb_success
         conn: topic_gb_online_status
 
 pac:

@@ -67,31 +67,14 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
             LOG.info(trackSb.toString());
         }
 
-        String topic = null;
-        switch (pac.getHeader().getCommandMark()) {
-            case VEHICLE_LOGIN:
-                topic = kafkaProperties.getSuccessLogin();
-                break;
-            case REALTIME_DATA:
-                topic = kafkaProperties.getSuccessReal();
-                break;
-            case REISSUE_DATA:
-                topic = kafkaProperties.getSuccessReissue();
-                break;
-            case VEHICLE_LOGOUT:
-                topic = kafkaProperties.getSuccessLogout();
-                break;
-            case HEARTBEAT:
-                topic = kafkaProperties.getSuccessHeart();
-                break;
-            case TIME_CHECK:
-                topic = kafkaProperties.getSuccessTime();
-                break;
-                default:
-                    break;
-        }
+        String topic = kafkaProperties.getSuccess();
+        PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
+        packProcessExceptionDTO.setCode(pac.getHeader().getCommandMark().getCode())
+                .setVin(pac.getHeader().getUniqueNo())
+                .setSourceHex(pac.getSourceHexStr());
         // 正常的消息发送至kafka
-        kafkaTemplate.send(topic, pac.getSourceHexStr());
+        kafkaTemplate.send(topic, packProcessExceptionDTO.toJson());
+
 
 
         /**

@@ -33,18 +33,7 @@ public class KafkaConst {
     /**
      * 国标网关正常消息topic
      */
-    // 车辆登入
-    public static final String KAFKA_TOPIC_GATEWAY_GB_LOGIN = "kafka.topic.gateway.gb.success-login";
-    // 车辆实时数据
-    public static final String KAFKA_TOPIC_GATEWAY_GB_REAL = "kafka.topic.gateway.gb.success-real";
-    // 车辆历史数据上传
-    public static final String KAFKA_TOPIC_GATEWAY_GB_REISSUE = "kafka.topic.gateway.gb.success-reissue";
-    // 车辆登出
-    public static final String KAFKA_TOPIC_GATEWAY_GB_LOGOUT = "kafka.topic.gateway.gb.success-logout";
-    // 心跳
-    public static final String KAFKA_TOPIC_GATEWAY_GB_HEART = "kafka.topic.gateway.gb.success-heart";
-    // 终端校时
-    public static final String KAFKA_TOPIC_GATEWAY_GB_TIME = "kafka.topic.gateway.gb.success-time";
+    public static final String KAFKA_TOPIC_GATEWAY_GB_SUCCESS= "kafka.topic.gateway.gb.success";
     /**
      * 国标网关处理过程中出现的所有异常topic
      */
