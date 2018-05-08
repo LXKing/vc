@@ -138,9 +138,9 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 JT_0704 rd = (JT_0704) msgFromTerminal.getMessageContents();
                 List<JT_0200> packetList = rd.getPositionReportList();
                 // 定位补传数据暂时不入库 2017-10-11
-//        for (JT_0200 jvi : packetList) {
-//          logicHelperJt808.saveStatusData(msgFromTerminal, jvi);
-//        }
+                //  for (JT_0200 jvi : packetList) {
+                //    logicHelperJt808.saveStatusData(msgFromTerminal, jvi);
+                //  }
             } else if (headerType == 0x0900) {
                 // 终端对平台的上行透传
                 JT_0900 ack = (JT_0900) msgFromTerminal.getMessageContents();
@@ -198,7 +198,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
             MqMessage mqMessage = new MqMessage();
             mqMessage.ReadFromBytes(srcByteArray);
 
-            mapping = terminalUtils.getMapping(mqMessage.getCarNumber(),MACHINEMAPPING_CARNUMBER);
+            mapping = terminalUtils.getMapping(mqMessage.getCarNumber(), MACHINEMAPPING_CARNUMBER);
             if (mapping == null || mapping.getMachine() == null || StringUtils
                     .empty(mapping.getNumber())) {
                 loggerBusiness.info(JSON.toJSONString(

@@ -34,13 +34,41 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 500
+      enable-auto-commit: true
+      auto-commit-interval: 500
+      auto-offset-reset: latest
 
 #kafka GB实时数据 topic
 kafka:
+  consumer:
+    group:
+      rule:
+        conn: cgrp_rule_conn
+        gb:
+          error: cgrp_rule_gb_error
+          success: cgrp_rule_gb_success
+        stream:
+          jump-soc: cgrp_rule_jump_soc
   topic:
-    gb:
-      rt: topic_gb_0x02
-    history:
+    gateway: #IN 接收网关的数据
+      conn: topic_conn_status
+      gb:
+        error: topic_gb_error
+        success: topic_gb_success
+    stream: #IN 接收实时计算（Flink）的数据
+      jump-soc: topic_stream_jump_soc
+    gb: #OUT 发送到下游
+      success-login: topic_gb_0x01
+      success-real: topic_gb_0x02
+      success-reissue: topic_gb_0x03
+      success-logout: topic_gb_0x04
+      success-heart: topic_gb_0x07
+      success-time: topic_gb_0x08
+    history: #OUT 发送到下游
       csmessage: topic_cs_message
       cscan: topic_cs_can
       csstate: topic_cs_state

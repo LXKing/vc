@@ -67,6 +67,7 @@ public class TerminalUtils {
         MachineMapping machineMapping = redisHelper.getMappingOld(keyPart);
         if (machineMapping == null) {
             machineMapping = getMappingByDB(keyPart, keyType);
+            redisHelper.setMappingOld(keyPart, machineMapping);
         }
         return machineMapping;
     }
@@ -107,12 +108,16 @@ public class TerminalUtils {
             return null;
         }
         MachineMapping machineMapping = new MachineMapping();
+        machineMapping.setVin(csVehicle.getCsvVin());
+        machineMapping.setNumber(csMachine.getCsmNumber());
+        machineMapping.setTeno(csMachine.getCsmTeNo());
         machineMapping.setAccess(csVehicle.getCsvAccess().longValue());
         machineMapping.setCar(csVehicle.getCsvId().longValue());
         machineMapping.setCan(csCan.getCscId());
+        machineMapping.setState(csState.getCssId().longValue());
         machineMapping.setHost(csVehicle.getCsvHost().longValue());
         machineMapping.setMachine(csMachine.getCsmId().longValue());
-        // todo 手机号可以为null ？
+        // TODO 手机号可以为null ？
         machineMapping.setMobile(csMachine.getCsmMobile() == null ? "" : csMachine.getCsmMobile());
         return machineMapping;
     }
