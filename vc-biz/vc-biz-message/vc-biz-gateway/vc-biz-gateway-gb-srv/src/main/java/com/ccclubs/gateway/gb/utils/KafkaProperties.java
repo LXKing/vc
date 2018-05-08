@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Email:  yeanzhi@ccclubs.com
  * kafka发送工具类
  */
-@ConfigurationProperties(prefix = "kafka.topic.gateway.gb")
+@ConfigurationProperties(prefix = "kafka.topic.gateway")
 public class KafkaProperties {
 
     private String success;

@@ -22,16 +22,15 @@ spring:
 kafka:
   topic:
     gateway:
-      gb:
-        error: topic_gb_error
-        success: topic_gb_success
-        conn: topic_gb_online_status
+      error: topic_gb_error
+      success: topic_gb_success
+      conn: topic_conn_status
 
 pac:
   log:
     debug: true    #是否开启消息日志打印
   buffer:
-    check: false    #是否打开buffer缓存检查（测试时开启）
+    check: false   #是否打开buffer缓存检查（测试时开启）
 
 
 

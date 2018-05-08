@@ -31,17 +31,17 @@ public class KafkaConst {
     public static final String KAFKA_TOPIC_CS_STATE = "kafka.topic.history.csstate";
 
     /**
-     * 国标网关正常消息topic
+     * 网关正常消息topic
      */
-    public static final String KAFKA_TOPIC_GATEWAY_GB_SUCCESS= "kafka.topic.gateway.gb.success";
+    public static final String KAFKA_TOPIC_GATEWAY_SUCCESS= "kafka.topic.gateway.success";
     /**
-     * 国标网关处理过程中出现的所有异常topic
+     * 网关处理过程中出现的所有异常topic
      */
-    public static final String KAFKA_TOPIC_GATEWAY_GB_ERROR = "kafka.topic.gateway.gb.error";
+    public static final String KAFKA_TOPIC_GATEWAY_ERROR = "kafka.topic.gateway.error";
     /**
-     * 国标网关中终端上线/下线通知topic
+     * 网关中终端上线/下线通知topic
      */
-    public static final String KAFKA_TOPIC_GATEWAY_GB_CONN = "kafka.topic.gateway.gb.conn";
+    public static final String KAFKA_TOPIC_GATEWAY_CONN = "kafka.topic.gateway.conn";
 
     /*--------------------*
      * 消费者组
