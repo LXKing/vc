@@ -52,7 +52,7 @@ public class KafkaConst {
     /**
      * 国标网关中终端上线/下线通知topic
      */
-    public static final String KAFKA_TOPIC_GATEWAY_GB_ONLINE = "kafka.topic.gateway.gb.online";
+    public static final String KAFKA_TOPIC_GATEWAY_GB_CONN = "kafka.topic.gateway.gb.conn";
 
     /*--------------------*
      * 消费者组

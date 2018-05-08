@@ -139,7 +139,7 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
                         .setTimestamp(System.currentTimeMillis())
                         .setClientIp(channel.remoteAddress().getHostString())
                         .setServerIp(channel.localAddress().getHostString());
-                kafkaTemplate.send(kafkaProperties.getOnline(), connOnlineStatusEvent.toJson());
+                kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
             }
         }
         return conn;

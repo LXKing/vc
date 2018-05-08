@@ -1,7 +1,6 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.gb.constant.PacProcessing;
-import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
 import com.ccclubs.gateway.gb.dto.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.gb.dto.OtherProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
@@ -125,7 +124,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
         if (connClosedSuccess) {
-            kafkaTemplate.send(kafkaProperties.getOnline(), connOnlineStatusEvent.toJson());
+            kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
         }
     }
 

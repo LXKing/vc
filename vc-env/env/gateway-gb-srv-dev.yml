@@ -30,13 +30,13 @@ kafka:
         success-logout: topic_gb_0x04
         success-heart: topic_gb_0x07
         success-time: topic_gb_0x08
-        online: topic_gb_online_status
+        conn: topic_gb_online_status
 
 pac:
   log:
     debug: true    #是否开启消息日志打印
   buffer:
-    check: true    #是否打开buffer缓存检查（测试时开启）
+    check: false    #是否打开buffer缓存检查（测试时开启）
 
 
 

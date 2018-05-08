@@ -21,7 +21,7 @@ public class KafkaProperties {
 
     private String error;
 
-    private String online;
+    private String conn;
 
     public String getSuccessLogin() {
         return successLogin;
@@ -86,12 +86,12 @@ public class KafkaProperties {
         return this;
     }
 
-    public String getOnline() {
-        return online;
+    public String getConn() {
+        return conn;
     }
 
-    public KafkaProperties setOnline(String online) {
-        this.online = online;
+    public KafkaProperties setConn(String conn) {
+        this.conn = conn;
         return this;
     }
 }
