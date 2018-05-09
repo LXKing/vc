@@ -41,8 +41,15 @@ public class LogicHelperMqtt {
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
     String kafkaTopicCsCan;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN_EXP + "}")
+    String kafkaTopicCsCanExp;
+
     @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
     String kafkaTopicCsState;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE_EXP + "}")
+    String kafkaTopicCsStateExp;
 
     @Resource
     private TerminalUtils terminalUtils;
@@ -75,6 +82,9 @@ public class LogicHelperMqtt {
         final CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
         // 加入Vin add by jhy 2018.5.8
         csState.setCssVin(mapping.getVin());
+        csState.setIccid(mapping.getIccid());
+        csState.setMobile(mapping.getMobile());
+        csState.setCssTeNo(mapping.getTeno());
         csState.setCssNumber(message.getCarNumber());
         csState.setCssAddTime(new Date());
         csState.setCssRented(String.valueOf(mqtt_66.getCarStatus() & 0xFF));
@@ -141,7 +151,12 @@ public class LogicHelperMqtt {
                                 BigDecimal.ROUND_HALF_UP));
             }
             // 发送历史状态到kafka
-            kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            if (mapping.getVin() == null) {
+                kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
+            } else {
+                kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            }
+
         } else {
             csState.setCssLongitude(AccurateOperationUtils
                     .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
@@ -153,7 +168,11 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            if (mapping.getVin() == null) {
+                kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
+            } else {
+                kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            }
         }
     }
 
@@ -181,6 +200,9 @@ public class LogicHelperMqtt {
         final CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
         // 加入Vin add by jhy 2018.5.8
         csState.setCssVin(mapping.getVin());
+        csState.setIccid(mapping.getIccid());
+        csState.setMobile(mapping.getMobile());
+        csState.setCssTeNo(mapping.getTeno());
         csState.setCssNumber(message.getCarNumber());
         csState.setCssAddTime(new Date());
         csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
@@ -248,7 +270,12 @@ public class LogicHelperMqtt {
                 );
             }
             // 发送历史状态到kafka
-            kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            if (mapping.getVin() == null) {
+                kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
+            } else {
+                kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            }
+
         } else {
             csState.setCssLongitude(AccurateOperationUtils
                     .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
@@ -259,7 +286,11 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            if (mapping.getVin() == null) {
+                kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
+            } else {
+                kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
+            }
         }
     }
 
@@ -284,6 +315,9 @@ public class LogicHelperMqtt {
         CsCan canData = terminalUtils.setCsCan(csVehicle, csMachine);
         // 加入Vin add by jhy 2018.5.8
         canData.setCscVin(mapping.getVin());
+        canData.setIccid(mapping.getIccid());
+        canData.setMobile(mapping.getMobile());
+        canData.setTeNo(mapping.getTeno());
         canData.setCscAddTime(new Date());
         canData.setCscNumber(mqMessage.getCarNumber());
         canData.setCscData(mqMessage.getHexString());
@@ -297,11 +331,13 @@ public class LogicHelperMqtt {
         // canData.setCscFault(errorInfo);
         if (mapping.getCan() != null) {
             canData.setCscId(mapping.getCan());
-            // 处理can历史状态
-            kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));
         } else {
             updateCanService.insert(canData);
-            // 处理can历史状态
+        }
+        // 发送kafka处理can历史状态
+        if (mapping.getVin() == null) {
+            kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(canData));
+        }else{
             kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));
         }
     }

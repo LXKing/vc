@@ -64,7 +64,9 @@ public class CsCan implements Serializable {
      * @mbg.generated
      */
     private String cscVin;
-
+    private String iccid;
+    private String mobile;
+    private String teNo;
     /**
      * Database Column Remarks:
      *   CARID:
@@ -318,6 +320,30 @@ public class CsCan implements Serializable {
      */
     public void setCscNumber(String cscNumber) {
         this.cscNumber = cscNumber == null ? null : cscNumber.trim();
+    }
+
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getTeNo() {
+        return teNo;
+    }
+
+    public void setTeNo(String teNo) {
+        this.teNo = teNo;
     }
 
     /**

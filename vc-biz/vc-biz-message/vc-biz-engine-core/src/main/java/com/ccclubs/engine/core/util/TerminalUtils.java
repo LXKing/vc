@@ -111,11 +111,12 @@ public class TerminalUtils {
         machineMapping.setVin(csVehicle.getCsvVin());
         machineMapping.setNumber(csMachine.getCsmNumber());
         machineMapping.setTeno(csMachine.getCsmTeNo());
-        machineMapping.setAccess(csVehicle.getCsvAccess().longValue());
+        machineMapping.setIccid(csMachine.getCsmIccid());
+        machineMapping.setAccess(csMachine.getCsmAccess().longValue());
         machineMapping.setCar(csVehicle.getCsvId().longValue());
         machineMapping.setCan(csCan.getCscId());
         machineMapping.setState(csState.getCssId().longValue());
-        machineMapping.setHost(csVehicle.getCsvHost().longValue());
+        machineMapping.setHost(csMachine.getCsmHost().longValue());
         machineMapping.setMachine(csMachine.getCsmId().longValue());
         // TODO 手机号可以为null ？
         machineMapping.setMobile(csMachine.getCsmMobile() == null ? "" : csMachine.getCsmMobile());

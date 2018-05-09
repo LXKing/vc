@@ -25,12 +25,22 @@ kafka:
       storage:
         csmessage: cgrp_storage_csmessage
         cscan: cgrp_storage_cscan
+        cscan-exp: cgrp_storage_cscan_exp
         csstate: cgrp_storage_csstate
+        csstate-exp: cgrp_storage_csstate_exp
+        jt808:
+          position: cgrp_storage_jt_position
+          position-exp: cgrp_storage_jt_position_exp
   topic:
     history:
       csmessage: topic_cs_message
       cscan: topic_cs_can
+      cscan-exp: topic_cs_can_exp
       csstate: topic_cs_state
+      csstate-exp: topic_cs_state_exp
+      jt808:
+        position: topic_jt_position
+        position-exp: topic_jt_position_exp
 
 dubbo:
   scan:

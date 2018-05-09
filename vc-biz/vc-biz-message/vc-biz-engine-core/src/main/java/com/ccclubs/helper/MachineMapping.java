@@ -14,12 +14,21 @@ public class MachineMapping implements Serializable{
     String mobile;
     String teno;
     String vin;
+    String iccid;
     Long machine;
     Long access;
     Long host;
     Long car;
     Long can;
     Long state;
+
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid;
+    }
 
     public String getNumber() {
         return number;

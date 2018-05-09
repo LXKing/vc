@@ -71,7 +71,12 @@ kafka:
     history: #OUT 发送到下游
       csmessage: topic_cs_message
       cscan: topic_cs_can
+      cscan-exp: topic_cs_can_exp
       csstate: topic_cs_state
+      csstate-exp: topic_cs_state_exp
+      jt808:
+        position: topic_jt_position
+        position-exp: topic_jt_position_exp
 
 ccclubs:
   data:
