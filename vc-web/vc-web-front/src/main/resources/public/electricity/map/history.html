@@ -423,14 +423,19 @@
                   currendMiles = vehicleData.mileageString;
                   currendSoc = vehicleData.socString;
                 }
-                if (typeof(gpsData.longitude) !== 'undefined' && typeof(gpsData.latitude) !== 'undefined'
-                    && gpsData.longitude !== null && gpsData.latitude !== null && gpsData.longitude > 0
+                if (typeof(gpsData.longitude) !== 'undefined' && typeof(gpsData.latitude)
+                    !== 'undefined'
+                    && gpsData.longitude !== null && gpsData.latitude !== null && gpsData.longitude
+                    > 0
                     && gpsData.latitude > 0) {
-                  var posArray = coordtransform.wgs84togcj02(parseGps(gpsData.longitude), parseGps(gpsData.latitude));
+                  var posArray = coordtransform.wgs84togcj02(parseGps(gpsData.longitude),
+                      parseGps(gpsData.latitude));
                   if (isInChina(posArray)) {
                     pathRoutes.push(posArray);
                   }
-                  trackData.push([vehicleData.speedString, getGBMessageTime(item), vehicleData.mileageString, vehicleData.socString]);
+                  trackData.push(
+                      [vehicleData.speedString, getGBMessageTime(item), vehicleData.mileageString,
+                        vehicleData.socString]);
                 }
               }
 
@@ -492,45 +497,67 @@
                   return;
                 }
 
-                var cursor = navg.getCursor().clone(), //保存巡航器的位置
-                    status = navg.getNaviStatus();
-                pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
-                pathSimplifierIns.setData(pathObjectArray); //延展路径
-                //重新建立一个巡航器
-                navg = pathSimplifierIns.createPathNavigator(0, {
-                  //loop: true, //循环播放
-                  // speed: 1000,//巡航速度，单位千米/小时
-                  speed: parseInt($('.speedRange').val(), 10),
-                  pathNavigatorStyle: {
-                    width: 16,
-                    height: 32,
-                    content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
-                        onerror),
-                    strokeStyle: null,
-                    fillStyle: null,
-                  }
-                });
-                if (status !== "stop") {
-                  navg.start();
+                if (navg == null) {
+                  //设置path数组
+                  pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+                  pathSimplifierIns.setData(pathObjectArray);
 
-                  $('.speed').html(currentSpeed);
-                  $('.time').html(currendTime);
-                  $('.mile').html(currendMiles);
-                  $('.soc').html(currendSoc);
-
-                  navg.on("move", function (event) {
-                    if (event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
-                      $('.speed').html(trackData[event.target.cursor.idx][0]);
-                      $('.time').html(moment(trackData[event.target.cursor.idx][1]).format(
-                          "YYYY-MM-DD HH:mm:ss"));
-                      $('.mile').html(trackData[event.target.cursor.idx][2]);
-                      $('.soc').html(trackData[event.target.cursor.idx][3]);
+                  navg = pathSimplifierIns.createPathNavigator(0, {
+                    //loop: true,
+                    // speed: 1000,
+                    speed: parseInt($('.speedRange').val(), 10),
+                    pathNavigatorStyle: {
+                      width: 16,
+                      height: 32,
+                      content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
+                          onerror),
+                      strokeStyle: null,
+                      fillStyle: null,
                     }
                   });
-                }
-                //恢复巡航器的位置
-                if (cursor.idx >= 0) {
-                  navg.moveToPoint(cursor.idx, cursor.tail);
+                  navg.start();
+                } else {
+
+                  var cursor = navg.getCursor().clone(), //保存巡航器的位置
+                      status = navg.getNaviStatus();
+                  pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+                  pathSimplifierIns.setData(pathObjectArray); //延展路径
+                  //重新建立一个巡航器
+                  navg = pathSimplifierIns.createPathNavigator(0, {
+                    //loop: true, //循环播放
+                    // speed: 1000,//巡航速度，单位千米/小时
+                    speed: parseInt($('.speedRange').val(), 10),
+                    pathNavigatorStyle: {
+                      width: 16,
+                      height: 32,
+                      content: PathSimplifier.Render.Canvas.getImageContent('/img/car.png', onload,
+                          onerror),
+                      strokeStyle: null,
+                      fillStyle: null,
+                    }
+                  });
+                  if (status !== "stop") {
+                    navg.start();
+
+                    $('.speed').html(currentSpeed);
+                    $('.time').html(currendTime);
+                    $('.mile').html(currendMiles);
+                    $('.soc').html(currendSoc);
+
+                    navg.on("move", function (event) {
+                      if (event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
+                        $('.speed').html(trackData[event.target.cursor.idx][0]);
+                        $('.time').html(moment(trackData[event.target.cursor.idx][1]).format(
+                            "YYYY-MM-DD HH:mm:ss"));
+                        $('.mile').html(trackData[event.target.cursor.idx][2]);
+                        $('.soc').html(trackData[event.target.cursor.idx][3]);
+                      }
+                    });
+                  }
+                  //恢复巡航器的位置
+                  if (cursor.idx >= 0) {
+                    navg.moveToPoint(cursor.idx, cursor.tail);
+                  }
                 }
               }
             });
@@ -574,7 +601,7 @@
     }
 
     function parseGps(value) {
-      return parseFloat(value*0.000001);
+      return parseFloat(value * 0.000001);
     }
   });
 </script>
