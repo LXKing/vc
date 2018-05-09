@@ -971,7 +971,8 @@ public class CsVehicleController {
                 if (sheet == null) {
                     continue;
                 }
-                int rows = sheet.getPhysicalNumberOfRows();
+//                int rows = sheet.getPhysicalNumberOfRows();
+                int rows = sheet.getLastRowNum();
                 int columns = sheet.getRow(1).getPhysicalNumberOfCells();//从第二行开始算
                 // 循环行Row
                 for (int rowNum = 1; rowNum < rows; rowNum++) {
@@ -980,6 +981,9 @@ public class CsVehicleController {
                         //遍历列
                         //状态默认值
                         Cell cell = row.getCell(0);
+                        if (cell == null) {
+                            continue;
+                        }
                         externalList.add(cell.getStringCellValue());
                     }
                 }
