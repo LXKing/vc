@@ -55,12 +55,10 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
             LOG.error("收到一个校验异常包：{}", pac.toLogString());
 
             // 目前校验异常dto中为空
-            InValideMsgExceptionDTO inValideMsgExceptionDTO = new InValideMsgExceptionDTO();
             PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO()
                     .setVin(pac.getHeader().getUniqueNo())
                     .setSourceHex(pac.getSourceHexStr())
-                    .setCode(PackProcessExceptionCode.INVALID_FAIL.getCode())
-                    .setJson(inValideMsgExceptionDTO);
+                    .setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
 
             kafkaTemplate.send(kafkaProperties.getError(),
                     packProcessExceptionDTO.toJson());

@@ -26,9 +26,7 @@ public class PackProcessExceptionDTO {
         JSONObject result = new JSONObject();
         result.put("vin", vin);
         result.put("code", code);
-        if (Objects.isNull(json)) {
-            result.put("json", new JSONObject());
-        } else {
+        if (Objects.nonNull(json)) {
             result.put("json", json.toJson());
         }
         result.put("sourceHex", sourceHex);
