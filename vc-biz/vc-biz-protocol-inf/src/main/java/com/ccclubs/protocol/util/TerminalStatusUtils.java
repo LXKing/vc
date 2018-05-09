@@ -179,9 +179,9 @@ public class TerminalStatusUtils {
     // 取低双字节
     short autopilotValue = (short) (autopilotState & 0x0FFFF);
 
-    byte autopilotSite=(byte)(autopilotValue>>8);
+    short autopilotSite=(byte)(autopilotValue>>8);
 
-    byte autopilotStateByte=(byte)(autopilotValue&0x0FF);
+    short autopilotStateByte=(byte)(autopilotValue&0x0FF);
 
     byte currentSite=(byte)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
     byte targetSite=(byte)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
