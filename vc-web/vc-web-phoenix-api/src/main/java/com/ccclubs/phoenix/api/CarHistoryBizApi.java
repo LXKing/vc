@@ -14,10 +14,7 @@ import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
-import com.ccclubs.phoenix.output.CarCanHistoryOutput;
-import com.ccclubs.phoenix.output.CarGbHistoryOutput;
-import com.ccclubs.phoenix.output.CarStateHistoryOutput;
-import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
+import com.ccclubs.phoenix.output.*;
 import com.ccclubs.vehicle.inf.base.TransformForBizInf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +72,26 @@ public class CarHistoryBizApi {
         }
         CarStateHistoryOutput carStateHistoryOutput= carStateHistoryInf.queryCarStateListByOutput(param);
         return new ApiMessage<>(carStateHistoryOutput);
+    }
+
+    @RequestMapping(value = "/getVehicleStatesByLimit",method = RequestMethod.POST)
+    public ApiMessage<StateHistoryOutput> queryCarStateListByLimit(@RequestBody StateHistoryParam param) {
+        logger.info("we get a request form states:"+param.toString());
+
+        if (null!=param.getVin()&&!param.getVin().isEmpty()){
+            param.setTeNumber(transformForBizService.getCsNumberByCsVin(param.getVin()));
+        }
+        if (null==param.getTeNumber()
+                ||param.getTeNumber().isEmpty()
+                ||param.getTimePoint()==null||
+                param.getTimePoint().isEmpty()
+                ){
+            logger.info("we find a PARAMS_VALID_FAILED at states.");
+            return new ApiMessage<>(100003, ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        logger.debug("we receive a state get request."+param.toString());
+        StateHistoryOutput stateHistoryOutput= carStateHistoryInf.queryCarStateListWithLimit(param);
+        return new ApiMessage<>(stateHistoryOutput);
     }
 
     @ApiSecurity

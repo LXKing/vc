@@ -8,13 +8,13 @@ import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
+import com.ccclubs.phoenix.input.StateHistoryParam;
 import com.ccclubs.phoenix.orm.consts.PhoenixConsts;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
-import com.ccclubs.phoenix.orm.model.CarState;
-import com.ccclubs.phoenix.orm.model.Pace;
-import com.ccclubs.phoenix.orm.model.PaceBlock;
+import com.ccclubs.phoenix.orm.model.*;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
+import com.ccclubs.phoenix.output.StateHistoryOutput;
 import com.ccclubs.phoenix.util.VehicleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +55,77 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
 
     @Override
+    public StateHistoryOutput queryCarStateListWithLimit(final StateHistoryParam stateHistoryParam) {
+        final String queryFields = stateHistoryParam.getQueryFields();
+        String querySqlDesc = "select " +
+                queryFields + " " +
+                "from "+PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+" " +
+                "where cs_number=? " +
+                "and current_time<=? " +
+                "order by current_time desc limit ? ";
+        String querySqlAsc = "select " +
+                queryFields + " " +
+                "from "+PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+" " +
+                "where cs_number=? " +
+                "and current_time>? " +
+                "order by current_time asc limit ? ";
+
+        List<CarState> carStateDescList = new ArrayList<CarState>();
+        List<CarState> carStateAscList = new ArrayList<CarState>();
+        String csNumber = stateHistoryParam.getTeNumber();
+        long startTime = DateTimeUtil.date2UnixFormat(stateHistoryParam.getTimePoint(), DateTimeUtil.UNIX_FORMAT);
+        int limit=stateHistoryParam.getLimit();
+        Connection connectionDesc = phoenixTool.getConnection();
+        Connection connectionAsc = phoenixTool.getConnection();
+        PreparedStatement preparedStatementDesc = null;
+        PreparedStatement preparedStatementAsc = null;
+        ResultSet resultSetDesc=null;
+        ResultSet resultSetAsc=null;
+        try {
+
+            preparedStatementDesc = connectionDesc.prepareStatement(querySqlDesc);
+            preparedStatementAsc = connectionAsc.prepareStatement(querySqlAsc);
+
+
+            preparedStatementDesc.setString(1, csNumber);
+            preparedStatementDesc.setLong(2, startTime);
+            preparedStatementDesc.setInt(3,limit);
+            resultSetDesc = preparedStatementDesc.executeQuery();
+            JSONArray jsonArrayDesc = BaseQueryInfImpl.queryRecords(resultSetDesc);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayDesc,queryFields,carStateDescList,CarState.class);
+
+            preparedStatementAsc.setString(1, csNumber);
+            preparedStatementAsc.setLong(2, startTime);
+            preparedStatementAsc.setInt(3,limit);
+            resultSetAsc = preparedStatementAsc.executeQuery();
+            JSONArray jsonArrayAsc = BaseQueryInfImpl.queryRecords(resultSetAsc);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayAsc,queryFields,carStateAscList,CarState.class);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connectionAsc,
+                    preparedStatementAsc,resultSetAsc,"carState queryCarStateListNoPage");
+            phoenixTool.closeResource(connectionDesc,
+                    preparedStatementDesc,resultSetDesc,"carState queryCarStateListNoPage");
+        }
+        StateHistoryOutput stateHistoryOutput=new StateHistoryOutput();
+        List<VehicleState> beforeList=new ArrayList<>();
+        List<VehicleState> afterList=new ArrayList<>();
+        for (CarState carState:carStateAscList
+             ) {
+            afterList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
+        }
+        for (CarState carState:carStateDescList
+                ) {
+            beforeList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
+        }
+        stateHistoryOutput.setAfterList(afterList);
+        stateHistoryOutput.setBeforeList(beforeList);
+        return stateHistoryOutput;
+    }
+
+    @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
         final String queryFields = carStateHistoryParam.getQuery_fields();
         String query_sql = "select " +
@@ -93,6 +164,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
 
     }
+
     @Override
     public List<CarState> queryCarStateListWithPage(final CarStateHistoryParam carStateHistoryParam) {
         Integer page_size = carStateHistoryParam.getPage_size();
@@ -241,7 +313,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         }
         return historyNoQueryOutput;
     }
-
 
     @Override
     //驾驶阶段数据计算

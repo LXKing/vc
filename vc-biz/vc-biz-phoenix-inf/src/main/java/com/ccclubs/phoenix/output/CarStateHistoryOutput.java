@@ -66,6 +66,4 @@ public class CarStateHistoryOutput implements Serializable {
         this.list = list;
     }
 
-
-
 }
