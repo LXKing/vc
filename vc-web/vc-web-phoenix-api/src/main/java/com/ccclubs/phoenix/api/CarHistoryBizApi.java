@@ -75,6 +75,7 @@ public class CarHistoryBizApi {
         return new ApiMessage<>(carStateHistoryOutput);
     }
 
+    @ApiSecurity
     @RequestMapping(value = "/getVehicleStatesByLimit",method = RequestMethod.POST)
     public ApiMessage<StateHistoryOutput> queryCarStateListByLimit(@RequestBody StateHistoryParam param) {
         logger.info("we get a request form states:"+param.toString());
