@@ -1,30 +1,26 @@
-// document.write("<script src='/js/url.js'><\/script>");
+function getServUrl(path) {
+    // if (path.indexOf("crback/") != -1) {
+    //     servUrl = "http://118.178.230.105:7004";
+    // }
+    // else if (path.indexOf("/base/") != -1) {
+    //     servUrl = "http://118.178.230.105:8085";
+    // } else if (path.indexOf("/user/") != -1) {
+    //     servUrl = "http://118.178.230.105:8081";
+    // } else if (path.indexOf("/vehicle/") != -1) {
+    //     servUrl = "http://118.178.230.105:8082";
+    // } else if (path.indexOf("/carshare/") != -1) {
+    //     servUrl = "http://118.178.230.105:8086";
+    //     servUrl = "http://localhost:8086";
+    // }
+    if(!path.startsWith("/")){
+        path = "/" + path;
+    }
+    return servUrl + path ;//+ "?oauth=" + cookieUtil.get("token");
+}
 
-import { getServUrl, toLogin } from '/js/url.js';
-
-// function getServUrl(path) {
-//     // if (path.indexOf("crback/") != -1) {
-//     //     servUrl = "http://118.178.230.105:7004";
-//     // }
-//     // else if (path.indexOf("/base/") != -1) {
-//     //     servUrl = "http://118.178.230.105:8085";
-//     // } else if (path.indexOf("/user/") != -1) {
-//     //     servUrl = "http://118.178.230.105:8081";
-//     // } else if (path.indexOf("/vehicle/") != -1) {
-//     //     servUrl = "http://118.178.230.105:8082";
-//     // } else if (path.indexOf("/carshare/") != -1) {
-//     //     servUrl = "http://118.178.230.105:8086";
-//     //     servUrl = "http://localhost:8086";
-//     // }
-//     if(!path.startsWith("/")){
-//         path = "/" + path;
-//     }
-//     return servUrl + path ;//+ "?oauth=" + cookieUtil.get("token");
-// }
-
-// function toLogin() {
-//     top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
-// }
+function toLogin() {
+    top.window.location.href = authUrl + "/login_v2.html?referer=" + top.window.location.href;
+}
 
 /**
  * cookie存储
