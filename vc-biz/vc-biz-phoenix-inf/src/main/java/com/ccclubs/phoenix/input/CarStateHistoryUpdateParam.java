@@ -23,7 +23,7 @@ public class CarStateHistoryUpdateParam  implements Serializable{
     /**
      * 要删除的数据的时间点
      */
-    private String timePoint;
+    private Long timePoint;
 
     private Float obdMiles;
 
@@ -35,11 +35,11 @@ public class CarStateHistoryUpdateParam  implements Serializable{
         this.updateKey = updateKey;
     }
 
-    public String getTimePoint() {
+    public Long getTimePoint() {
         return timePoint;
     }
 
-    public void setTimePoint(String timePoint) {
+    public void setTimePoint(Long timePoint) {
         this.timePoint = timePoint;
     }
 

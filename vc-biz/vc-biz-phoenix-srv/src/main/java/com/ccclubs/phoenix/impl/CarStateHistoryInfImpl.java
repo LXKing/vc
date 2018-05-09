@@ -47,7 +47,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
     private static final String UPDATE_SQL = "UPSERT INTO "
             + PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+
-            " (CS_NUMBER,CURRENT_TIME,OBD_MILES ) VALUES( ? , ? , ? )";
+            " ( CS_NUMBER, CURRENT_TIME , OBD_MILES ) VALUES ( ?, ?, ? )";
 
 
     @Autowired
@@ -191,12 +191,13 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         PreparedStatement preparedStatement = null;
         HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
         try{
-            long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
+            long timePointLong= param.getTimePoint();
             preparedStatement = connection.prepareStatement(UPDATE_SQL);
             preparedStatement.setString(1 , param.getUpdateKey());
             preparedStatement.setLong(2 , timePointLong);
             preparedStatement.setFloat(3,param.getObdMiles());
             preparedStatement.execute();
+            connection.commit();
             historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -215,10 +216,10 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
         try{
             Integer count=0;
+            preparedStatement = connection.prepareStatement(UPDATE_SQL);
             for (CarStateHistoryUpdateParam param:paramList){
                 count++;
-                long timePointLong= DateTimeUtil.date2UnixFormat(param.getTimePoint(),DateTimeUtil.UNIX_FORMAT);
-                preparedStatement = connection.prepareStatement(UPDATE_SQL);
+                long timePointLong= param.getTimePoint();
                 preparedStatement.setString(1 , param.getUpdateKey());
                 preparedStatement.setLong(2 , timePointLong);
                 preparedStatement.setFloat(3,param.getObdMiles());
@@ -229,7 +230,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }
             }
             preparedStatement.executeBatch();
-            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+            connection.commit();
+            //historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
         }catch (SQLException e){
             logger.error(e.getMessage());
         }

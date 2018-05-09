@@ -58,4 +58,7 @@ public class PhoenixConsts {
     public static final String PHOENIX_CAR_CAN_HISTORY = "phoenix_car_can_history";
     public static final String PHOENIX_CAR_GB_HISTORY = "phoenix_car_gb_history";
 
+    public static final String PHOENIX_CAR_STATE_HISTORY_NIU = "phoenix_car_state_history_niu";
+//    public static final String PHOENIX_CAR_STATE_HISTORY =PHOENIX_CAR_STATE_HISTORY_NIU;
+
 }
