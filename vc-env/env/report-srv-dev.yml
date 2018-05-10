@@ -1,0 +1,19 @@
+#规则引擎kafka消费端
+kafka:
+  consumer:
+    keySerializer: org.apache.kafka.common.serialization.StringDeserializer
+    valueSerializer: org.apache.kafka.common.serialization.StringDeserializer
+    bootstrapServers: 127.0.0.1:9092
+    topic: foo # topic_gb_0x02
+    groupId: hello
+#上报服务器配置    
+report:
+  server:
+    tianjin: #上报服务器名称
+      hostname: 127.0.0.1 #上报服务器主机地址
+      port: 19000 #上报服务器端口
+      username: ykjd88888888 #服务器验证用户
+      password: ykjd8888888888888888 #服务器验证密码
+      maxConnections: 3 # 最大 连接数
+      loginCheckPeriod: 30000 #登录检查周期
+      logPrint: 1
