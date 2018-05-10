@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.rule.inf.IParseGbDataService;
@@ -21,6 +22,7 @@ import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.dto.CsMessage;
+import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -35,9 +38,11 @@ import java.util.Date;
 /**
  * 处理国标信息 Created by qsxiaogang on 2017/3/7.
  */
+@Component
 public class ParseGbDataService implements IParseGbDataService {
 
-    private static Logger logger = LoggerFactory.getLogger(ParseGbDataService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ParseGbDataService.class);
+    private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
 
     @Resource(name = "producer")
     private Producer client;
@@ -48,9 +53,6 @@ public class ParseGbDataService implements IParseGbDataService {
     @Value("${" + ConstantUtils.MQ_TOPIC + "}")
     String topic;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_GB_RT + "}")
-    String kafkaTopicGB0x02;
-
     @Value("${" + KafkaConst.KAFKA_TOPIC_CS_MESSAGE + "}")
     String kafkaTopicCsMessage;
 
@@ -60,18 +62,33 @@ public class ParseGbDataService implements IParseGbDataService {
     @Resource
     private KafkaTemplate kafkaTemplate;
 
-    @Autowired
+    @Resource
     QueryVehicleService queryVehicleService;
 
-    private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
+    @Resource
+    QueryTerminalService queryTerminalService;
+
+    // 只转发到“15: 终端符合性对接”
+    private static final int ACCESS_TO_TRANSFER_ONS = 15;
 
     // TODO:V10车型，2017年生产的车辆
     private int V10_MODEL = 22;
     private Date V10_MAX_PROD_DATE = new Date(1514736000000L);
 
     @Override
-    public void processMessage(GBMessage message, byte[] srcByteArray) {
+    public void processRtMessage(GBMessage message) {
+        // GB实时状态数据存入redis
+        if (message.getMessageType() == GBMessageType.GB_MSG_TYPE_0X02) {
+            redisTemplate.opsForHash()
+                    .put(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin(), message.getPacketDescr());
+            redisTemplate.opsForZSet().add(RedisConst.REDIS_KEY_RT_STATES_ZSET, message.getVin(),
+                    DateTimeUtil
+                            .date2UnixFormat(message.getMessageContents().getTime(), DateTimeUtil.UNIX_FORMAT));
+        }
+    }
 
+    @Override
+    public void processAllMessage(GBMessage message) {
         CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(message.getVin());
 
         if (null == csVehicle) {
@@ -81,25 +98,19 @@ public class ParseGbDataService implements IParseGbDataService {
                                     message.getPacketDescr())));
             return;
         }
-
+        CsMachine csMachine = queryTerminalService.queryCsMachineByIdFromCache(csVehicle.getCsvMachine());
         // add at 2018-03-06 ，V10车型，2017年生产的车辆，累计里程在充电时，存在跳变，实时数据为0时，平台需要矫正，加入最后一次最新里程，详情见V10车型产品王杰邮件
         message = correctionObdMiles(message, csVehicle);
 
+        // 转发ONS
         transferToMq(message, csVehicle);
-
-        // GB实时状态数据存入redis
-        if (message.getMessageType() == GBMessageType.GB_MSG_TYPE_0X02) {
-            redisTemplate.opsForHash()
-                    .put(RedisConst.REDIS_KEY_RT_STATES_HASH, message.getVin(), message.getPacketDescr());
-            redisTemplate.opsForZSet().add(RedisConst.REDIS_KEY_RT_STATES_ZSET, message.getVin(),
-                    DateTimeUtil
-                            .date2UnixFormat(message.getMessageContents().getTime(), DateTimeUtil.UNIX_FORMAT));
-        }
 
         CsMessage csMessage = new CsMessage();
         csMessage.setCsmAccess(csVehicle.getCsvAccess());
         csMessage.setCsmCar(csVehicle.getCsvId().longValue());
         csMessage.setCsmVin(message.getVin());
+        // 加入车机号 add by jhy 2018.5.8
+        csMessage.setCsmNumber(csMachine == null ? null : csMachine.getCsmNumber());
         csMessage.setCsmProtocol((short) 0);
         csMessage.setCsmType((short) message.getMessageType());
         csMessage.setCsmVerify(StringUtils.empty(message.getErrorMessage()) ? (short) 1 : 0);
@@ -112,15 +123,7 @@ public class ParseGbDataService implements IParseGbDataService {
         csMessage.setCsmAddTime(System.currentTimeMillis());
         csMessage.setCsmData(message.getPacketDescr());
         csMessage.setCsmStatus((short) 1);
-
-        //将 csMessage 放如 redis 队列
-        /**
-         * 等待消费
-         */
-        //ListOperations ops = redisTemplate.opsForList();
-        //分别写进Mongo和Hbase的队列。
-//    ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_MONGO_QUEUE, csMessage);
-        //ops.leftPush(RuleEngineConstant.REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE, csMessage);
+        // TODO 车机号不存在，转到kafka异常数据通道
         kafkaTemplate.send(kafkaTopicCsMessage, JSONObject.toJSONString(csMessage));
     }
 
@@ -176,25 +179,22 @@ public class ParseGbDataService implements IParseGbDataService {
     }
 
     /**
-     * 转发到MQ，topic：terminal，tag：terminal_gb_
+     * 只转发到“15: 终端符合性对接”转发到MQ，topic：terminal，tag：terminal_gb_
      */
     private void transferToMq(GBMessage message, CsVehicle csVehicle) {
-        try {
-            Message mqMessage = messageFactory
-                    .getMessage(topic, MqTagProperty.MQ_TERMINAL_GB, message);
-            if (mqMessage != null) {
-                client.send(mqMessage);
-                // 转发新能源GB实时数据 by jhy 2018-03-30
-                if (message.getMessageType() == GBMessageType.GB_MSG_TYPE_0X02) {
-                    // 此处基于key的单车消息被同一个consumer消费（分区数不变的情况下）
-                    kafkaTemplate.send(kafkaTopicGB0x02, message.getVin(), message.getPacketDescr());
+        if (csVehicle.getCsvAccess() == ACCESS_TO_TRANSFER_ONS) {
+            try {
+                Message mqMessage = messageFactory
+                        .getMessage(topic, MqTagProperty.MQ_TERMINAL_GB, message);
+                if (mqMessage != null) {
+                    client.send(mqMessage);
+                } else {
+                    logger.error(message.getVin() + " 未授权给应用");
                 }
-            } else {
-                logger.error(message.getVin() + " 未授权给应用");
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            e.printStackTrace();
         }
     }
 
