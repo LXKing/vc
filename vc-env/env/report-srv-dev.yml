@@ -1,11 +1,22 @@
 #规则引擎kafka消费端
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 500
+      enable-auto-commit: true
+      auto-commit-interval: 500
+      auto-offset-reset: latest
+
+#TOPIC配置
 kafka:
-  consumer:
-    keySerializer: org.apache.kafka.common.serialization.StringDeserializer
-    valueSerializer: org.apache.kafka.common.serialization.StringDeserializer
-    bootstrapServers: 127.0.0.1:9092
-    topic: foo # topic_gb_0x02
-    groupId: hello
+  topic:
+    gateway: #IN 接收网关的数据
+      gb:
+        success: topic_gb_success
+
 #上报服务器配置    
 report:
   server:
