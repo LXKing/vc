@@ -26,7 +26,6 @@ import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -37,6 +36,7 @@ import java.util.Date;
 
 /**
  * 处理国标信息 Created by qsxiaogang on 2017/3/7.
+ * modify by jhy on 2018.5.9
  */
 @Component
 public class ParseGbDataService implements IParseGbDataService {
@@ -197,7 +197,6 @@ public class ParseGbDataService implements IParseGbDataService {
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                e.printStackTrace();
             }
         }
     }

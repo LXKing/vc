@@ -2,6 +2,8 @@ package com.ccclubs.frm.spring.gateway;
 
 import com.alibaba.fastjson.JSON;
 
+import java.io.Serializable;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/5/3
@@ -9,7 +11,7 @@ import com.alibaba.fastjson.JSON;
  * Email:  yeanzhi@ccclubs.com
  * 车辆上线下线状态通知
  */
-public class ConnOnlineStatusEvent {
+public class ConnOnlineStatusEvent implements Serializable {
 
     /**
      * 车辆vin码
