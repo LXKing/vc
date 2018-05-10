@@ -3,13 +3,14 @@ package com.ccclubs.phoenix.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
 import com.ccclubs.phoenix.input.StateHistoryParam;
-import com.ccclubs.phoenix.orm.consts.PhoenixConsts;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
 import com.ccclubs.phoenix.orm.model.*;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
@@ -46,7 +47,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             "and current_time<=? ";
 
     private static final String UPDATE_SQL = "UPSERT INTO "
-            + PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+
+            + PhoenixConst.PHOENIX_CAR_STATE_HISTORY+
             " ( CS_NUMBER, CURRENT_TIME , OBD_MILES ) VALUES ( ?, ?, ? )";
 
 
@@ -59,13 +60,13 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         final String queryFields = stateHistoryParam.getQueryFields();
         String querySqlDesc = "select " +
                 queryFields + " " +
-                "from "+PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+" " +
+                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
                 "where cs_number=? " +
                 "and current_time<=? " +
                 "order by current_time desc limit ? ";
         String querySqlAsc = "select " +
                 queryFields + " " +
-                "from "+PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+" " +
+                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
                 "where cs_number=? " +
                 "and current_time>? " +
                 "order by current_time asc limit ? ";

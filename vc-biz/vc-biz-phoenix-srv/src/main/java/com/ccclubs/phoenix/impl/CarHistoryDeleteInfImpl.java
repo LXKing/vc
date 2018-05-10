@@ -1,11 +1,12 @@
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarHistoryDeleteInf;
 import com.ccclubs.phoenix.input.HistoryDeleteParam;
-import com.ccclubs.phoenix.orm.consts.PhoenixConsts;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,15 +33,15 @@ public class CarHistoryDeleteInfImpl implements CarHistoryDeleteInf {
     static  final Logger logger= LoggerFactory.getLogger(CarHistoryDeleteInfImpl.class);
 
     private static final String DELETE_CAN_SQL="DELETE FROM " +
-            PhoenixConsts.PHOENIX_CAR_CAN_HISTORY+" " +
+            PhoenixConst.PHOENIX_CAR_CAN_HISTORY+" " +
             "WHERE CS_NUMBER=? " +
             "AND CURRENT_TIME=? ";
     private static final String DELETE_GB_SQL="DELETE FROM " +
-            PhoenixConsts.PHOENIX_CAR_GB_HISTORY+" " +
+            PhoenixConst.PHOENIX_CAR_GB_HISTORY+" " +
             "WHERE CS_VIN=? " +
             "AND ADD_TIME=? ";
     private static final String DELETE_STATE_SQL="DELETE FROM " +
-            PhoenixConsts.PHOENIX_CAR_STATE_HISTORY+" " +
+            PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
             "WHERE CS_NUMBER=? " +
             "AND CURRENT_TIME=? ";
 

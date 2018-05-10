@@ -1,0 +1,35 @@
+#规则引擎kafka消费端
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 500
+      enable-auto-commit: true
+      auto-commit-interval: 500
+      auto-offset-reset: latest
+
+#TOPIC配置
+kafka:
+  consumer:
+    group:
+      report: 
+        gb:
+          tianjing: cgrp_report_tianjing
+  topic:
+    gateway: #IN 接收网关的数据
+      gb:
+        success: topic_gb_success
+
+#上报服务器配置    
+report:
+  server:
+    tianjin: #上报服务器名称
+      hostname: 127.0.0.1 #上报服务器主机地址
+      port: 19000 #上报服务器端口
+      username: ykjd88888888 #服务器验证用户
+      password: ykjd8888888888888888 #服务器验证密码
+      maxConnections: 3 # 最大 连接数
+      loginCheckPeriod: 30000 #登录检查周期
+      logPrint: 1

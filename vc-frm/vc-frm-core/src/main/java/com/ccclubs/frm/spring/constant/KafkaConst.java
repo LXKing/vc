@@ -74,10 +74,15 @@ public class KafkaConst {
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION = "kafka.consumer.group.storage.jt808.position";
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION_EXP = "kafka.consumer.group.storage.jt808.position-exp";
 
+    /*GB网关上报数据*/
     public static final String KAFKA_CONSUMER_GROUP_RULE_GB_ERROR = "kafka.consumer.group.rule.gb.error";
     public static final String KAFKA_CONSUMER_GROUP_RULE_GB_SUCCESS = "kafka.consumer.group.rule.gb.success";
     public static final String KAFKA_CONSUMER_GROUP_RULE_CONN = "kafka.consumer.group.rule.conn";
 
+    /*大数据实时计算*/
     public static final String KAFKA_CONSUMER_GROUP_RULE_STREAM_JUMP_SOC = "kafka.consumer.group.rule.stream.jump-soc";
+
+    /*地标平台*/
+    public static final String KAFKA_CONSUMER_GROUP_REPORT_GB_TIANJING = "kafka.consumer.group.report.gb.tianjing";
 
 }

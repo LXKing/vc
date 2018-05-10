@@ -15,7 +15,7 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-phoenix-inf</artifactId>
-            <version>1.0.0</version>
+            <version>${biz.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -24,6 +24,11 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-frm-dubbox</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-core</artifactId>
             <version>${frm.version}</version>
         </dependency>
 

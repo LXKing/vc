@@ -142,10 +142,11 @@ public class HistoryGbServiceImpl implements IHistoryGbService{
     }
 
     private static List<GBMessage> dealCarGbToGbMessageAll(List<CarGb> carGbList){
-        GBMessage gbMessage = new GBMessage();
+        GBMessage gbMessage;
         if (null!=carGbList&&carGbList.size() > 0){
             List<GBMessage> historyGbList=new ArrayList<>();
             for (CarGb carGb :carGbList){
+                gbMessage = new GBMessage();
                 gbMessage.ReadFromBytes(Tools.HexString2Bytes(carGb.getGb_data()));
                 historyGbList.add(gbMessage);
             }
