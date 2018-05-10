@@ -44,7 +44,7 @@ public class DecodeExceptionDTO implements IExceptionDtoJsonParse {
         json.put("exceptionVal", exceptionVal);
         json.put("expectedVal", expectedVal);
         json.put("reason", reason);
-        return null;
+        return json.toJSONString();
     }
 
     public DecodeExceptionDTO(String source) {

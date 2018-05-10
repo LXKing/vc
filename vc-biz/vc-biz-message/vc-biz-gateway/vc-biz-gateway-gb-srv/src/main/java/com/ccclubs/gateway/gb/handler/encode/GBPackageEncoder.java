@@ -5,6 +5,8 @@ import com.ccclubs.gateway.gb.utils.ValidUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 
@@ -16,9 +18,11 @@ import java.nio.charset.Charset;
  */
 public class GBPackageEncoder extends MessageToByteEncoder<Object> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GBPackageEncoder.class);
+
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        System.out.println("out: msg\n" + msg);
+
         if (msg instanceof ByteBuf) {
             out.writeBytes((ByteBuf)msg);
         } else if(msg instanceof GBPackage) {

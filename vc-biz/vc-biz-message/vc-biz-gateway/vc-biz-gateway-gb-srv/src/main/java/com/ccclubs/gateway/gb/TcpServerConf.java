@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -25,7 +24,6 @@ import java.util.logging.Logger;
  *
  */
 @Component
-//@PropertySource(value = "classpath:/properties/local/nettyserver.properties")
 public class TcpServerConf {
     private static final Logger LOG = Logger.getLogger("TcpServer");
 
@@ -85,7 +83,7 @@ public class TcpServerConf {
 
         if (enableBufferCheck) {
             // 追踪字节缓存内存泄露，很耗费性能，debug时打开。
-            System.out.println("启动缓存检查");
+            LOG.warning("启动缓存检查");
             ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
         }
         return b;
