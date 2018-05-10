@@ -129,7 +129,9 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 if (jvi == null) {
                     return;
                 }
-
+                // 组装808实时状态数据并更新cs_state
+                logicHelperJt808.saveStatusData(mapping, msgFromTerminal, jvi);
+                // 保存808位置历史数据
                 logicHelperJt808.saveGeoData(mapping, msgFromTerminal, jvi);
                 // 不再转发808数据(分时租赁协议会转发) modify by jhy 2018.5.9
                 // transferToMq(mapping, csState);

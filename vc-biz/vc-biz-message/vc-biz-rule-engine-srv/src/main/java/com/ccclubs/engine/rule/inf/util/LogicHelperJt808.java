@@ -68,6 +68,104 @@ public class LogicHelperJt808 {
     QueryStateService queryStateService;
 
     /**
+     * 保存状态数据
+     *
+     * @param message 上传
+     * @param jvi     0x0200数据
+     */
+    @Timer
+    public void saveStatusData(final MachineMapping mapping, final T808Message message,
+                                  final JT_0200 jvi) {
+        try {
+            CsMachine csMachine = new CsMachine();
+            csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+            csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
+            csMachine.setCsmNumber(mapping.getNumber());
+
+            CsVehicle csVehicle = new CsVehicle();
+            if (mapping.getCar() == null) {
+                csVehicle = null;
+            } else {
+                csVehicle.setCsvId(mapping.getCar().intValue());
+            }
+
+            if (mapping.getState() != null) {
+                CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
+                // 设置 CAR
+                // 加入Vin add by jhy 2018.5.8
+                csState.setCssVin(mapping.getVin());
+                csState.setCssCar(mapping.getCar() == null ? 0 : mapping.getCar().intValue());
+                csState.setCssCsq(jvi.getCsq());
+                csState.setCssCurrentTime(StringUtils.date(jvi.getTime(), ConstantUtils.TIME_FORMAT));
+                csState.setCssAddTime(new Date());
+                csState.setCssGpsValid(jvi.isValid() ? (byte) 1 : (byte) 0);
+                // 保存的 消息体
+                csState.setCssMoData(message.getPacketDescr());
+
+                csState.setCssId(mapping.getState().intValue());
+                if (ProtocolTools.isValid(jvi.getLongitude(), jvi.getLatitude())) {
+                    BigDecimal bigDecimalLong = AccurateOperationUtils.mul(jvi.getLongitude(), 0.000001);
+                    csState.setCssLongitude(bigDecimalLong.setScale(6, BigDecimal.ROUND_HALF_UP));
+                    BigDecimal bigDecimalLat = AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001);
+                    csState.setCssLatitude(bigDecimalLat.setScale(6, BigDecimal.ROUND_HALF_UP));
+                }
+
+                // 更新808车辆数据状态
+                updateStateService.update(csState);
+
+            } else {
+                // 808 原始0200数据，以下业务数据不做更新
+                CsState csStateInsert = terminalUtils.setCsStatus(csVehicle, csMachine);
+                csStateInsert.setCssVin(mapping.getVin());
+                csStateInsert.setCssNumber(mapping.getNumber());
+                csStateInsert.setCssCsq(jvi.getCsq());
+                csStateInsert.setCssCurrentTime(StringUtils.date(jvi.getTime(), ConstantUtils.TIME_FORMAT));
+                csStateInsert.setCssAddTime(new Date());
+                csStateInsert.setCssGpsValid(jvi.isValid() ? (byte) 1 : (byte) 0);
+                // 保存的 消息体
+                csStateInsert.setCssMoData(message.getPacketDescr());
+                csStateInsert.setCssOrder(0L);
+                csStateInsert.setCssWarn(0);
+                csStateInsert.setCssPower(0);
+                csStateInsert.setCssMileage(BigDecimal.ZERO);
+                csStateInsert.setCssTemperature(BigDecimal.ZERO);
+                csStateInsert.setCssEngineT(BigDecimal.ZERO);
+                csStateInsert.setCssOil(BigDecimal.ZERO);
+                csStateInsert.setCssRented("0");
+                csStateInsert.setCssPower(0);
+                csStateInsert.setCssFuelMileage(BigDecimal.ZERO);
+                csStateInsert.setCssElectricMileage(BigDecimal.ZERO);
+
+                csStateInsert.setCssCircular((byte) 0);
+                csStateInsert.setCssPtc((byte) 0);
+                csStateInsert.setCssCompres((byte) 0);
+                csStateInsert.setCssFan((byte) 0);
+                csStateInsert.setCssSaving((byte) 0);
+                csStateInsert.setCssDoor("0");
+
+                // TODO:依据车型Can解析
+                csStateInsert.setCssEvBattery((byte) 0);
+                csStateInsert.setCssObdMile(BigDecimal.ZERO);
+                csStateInsert.setCssSpeed(BigDecimal.ZERO);
+                csStateInsert.setCssMotor(0);
+                csStateInsert.setCssEndurance(BigDecimal.ZERO);
+                csStateInsert.setCssCharging((byte) 0);
+                csStateInsert.setCssNetType((byte) 0);
+                csStateInsert.setCssBaseLac(0);
+                csStateInsert.setCssBaseCi(0);
+
+                csStateInsert.setCssLongitude(AccurateOperationUtils.mul(jvi.getLongitude(), 0.000001));
+                csStateInsert.setCssLatitude(AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001));
+
+                updateStateService.insert(csStateInsert);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 保存Geo数据
      *
      * @param message 上传
