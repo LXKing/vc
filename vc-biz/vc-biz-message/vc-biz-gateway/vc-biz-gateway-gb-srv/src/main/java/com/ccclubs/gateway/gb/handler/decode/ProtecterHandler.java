@@ -1,7 +1,7 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
-import com.ccclubs.gateway.gb.dto.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.gb.dto.OtherProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.ProtecterExceptionDTO;

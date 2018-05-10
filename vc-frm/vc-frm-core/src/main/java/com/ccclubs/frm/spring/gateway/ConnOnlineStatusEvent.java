@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.gb.dto;
+package com.ccclubs.frm.spring.gateway;
 
 import com.alibaba.fastjson.JSON;
 
