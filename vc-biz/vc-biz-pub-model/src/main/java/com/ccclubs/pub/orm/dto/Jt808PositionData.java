@@ -27,7 +27,7 @@ public class Jt808PositionData implements Serializable {
     // 方向
     BigDecimal course;
     // 速度
-    BigDecimal speed;
+    BigDecimal gpsSpeed;
     // 纬度
     BigDecimal latitude;
     // 经度
@@ -46,6 +46,14 @@ public class Jt808PositionData implements Serializable {
     Integer gpsValid;
     // 原始报文
     String sourceHex;
+
+    public BigDecimal getGpsSpeed() {
+        return gpsSpeed;
+    }
+
+    public void setGpsSpeed(BigDecimal gpsSpeed) {
+        this.gpsSpeed = gpsSpeed;
+    }
 
     public String getVin() {
         return vin;
@@ -101,14 +109,6 @@ public class Jt808PositionData implements Serializable {
 
     public void setCourse(BigDecimal course) {
         this.course = course;
-    }
-
-    public BigDecimal getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(BigDecimal speed) {
-        this.speed = speed;
     }
 
     public BigDecimal getLatitude() {
