@@ -5,6 +5,7 @@ import com.ccclubs.engine.rule.inf.IParseGbDataService;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.protocol.dto.gb.GBMessage;
 import com.ccclubs.protocol.dto.gb.GBMessageType;
+import com.ccclubs.protocol.util.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,13 +72,13 @@ public class GbUpDataConsumer {
 
     private void processGbRtMsg(String sourceHex) {
         GBMessage gbMessage = new GBMessage();
-        gbMessage.ReadFromBytes(sourceHex.getBytes());
+        gbMessage.ReadFromBytes(Tools.HexString2Bytes(sourceHex));
         parseGbDataService.processRtMessage(gbMessage);
     }
 
     private void processGbAllMsg(String sourceHex) {
         GBMessage gbMessage = new GBMessage();
-        gbMessage.ReadFromBytes(sourceHex.getBytes());
+        gbMessage.ReadFromBytes(Tools.HexString2Bytes(sourceHex));
         parseGbDataService.processAllMessage(gbMessage);
     }
 }

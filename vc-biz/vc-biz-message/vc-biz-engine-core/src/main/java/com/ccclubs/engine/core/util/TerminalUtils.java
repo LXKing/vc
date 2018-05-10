@@ -65,10 +65,12 @@ public class TerminalUtils {
      */
     public MachineMapping getMapping(String keyPart, String keyType) {
         MachineMapping machineMapping = redisHelper.getMappingOld(keyPart);
-        if (machineMapping == null) {
+        /*if (machineMapping == null) {
             machineMapping = getMappingByDB(keyPart, keyType);
-            redisHelper.setMappingOld(keyPart, machineMapping);
-        }
+            if (machineMapping != null) {
+                redisHelper.setMappingOld(keyPart, machineMapping);
+            }
+        }*/
         return machineMapping;
     }
 

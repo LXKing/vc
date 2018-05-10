@@ -14,6 +14,7 @@ import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -151,7 +152,7 @@ public class LogicHelperMqtt {
                                 BigDecimal.ROUND_HALF_UP));
             }
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -168,7 +169,7 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -270,7 +271,7 @@ public class LogicHelperMqtt {
                 );
             }
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -286,7 +287,7 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -335,7 +336,7 @@ public class LogicHelperMqtt {
             updateCanService.insert(canData);
         }
         // 发送kafka处理can历史状态
-        if (mapping.getVin() == null) {
+        if (StringUtils.empty(mapping.getVin())) {
             kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(canData));
         }else{
             kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));

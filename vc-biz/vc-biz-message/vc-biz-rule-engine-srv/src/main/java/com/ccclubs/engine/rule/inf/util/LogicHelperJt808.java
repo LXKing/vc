@@ -205,7 +205,7 @@ public class LogicHelperJt808 {
             jt808PositionData.setGpsSpeed(new BigDecimal(jvi.getSpeed()));
             jt808PositionData.setStatus(jvi.getStatus());
             // 发送808历史位置数据到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicJt808PositionExp, JSONObject.toJSONString(jt808PositionData));
             } else {
                 kafkaTemplate.send(kafkaTopicJt808Position, JSONObject.toJSONString(jt808PositionData));
@@ -308,7 +308,7 @@ public class LogicHelperJt808 {
             }
 
             // kafka发送can历史状态
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(csCan));
             } else {
                 kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(csCan));
@@ -414,7 +414,7 @@ public class LogicHelperJt808 {
                 csCanNew.setCscUploadTime(StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
                 csCanNew.setCscData(hexString);
                 // 处理can历史状态
-                if (mapping.getVin() == null) {
+                if (StringUtils.empty(mapping.getVin())) {
                     kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(csCanNew));
                 } else {
                     kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(csCanNew));
