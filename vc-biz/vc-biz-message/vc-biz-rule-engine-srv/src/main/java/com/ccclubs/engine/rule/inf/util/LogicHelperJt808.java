@@ -202,7 +202,7 @@ public class LogicHelperJt808 {
             }
             jt808PositionData.setNetStrength(jvi.getCsq());
             jt808PositionData.setSourceHex(message.getPacketDescr());
-            jt808PositionData.setSpeed(new BigDecimal(jvi.getSpeed()));
+            jt808PositionData.setGpsSpeed(new BigDecimal(jvi.getSpeed()));
             jt808PositionData.setStatus(jvi.getStatus());
             // 发送808历史位置数据到kafka
             if (mapping.getVin() == null) {

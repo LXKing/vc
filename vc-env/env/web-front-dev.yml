@@ -41,12 +41,6 @@ kafka:
     gateway:
       conn: topic_conn_status
 
-#阿里云 MQ 配置
-ons:
-  producerId: PID_terminal_ser
-  accessKey: M6dHCyKyKYUCNbW4
-  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
-
 dubbo:
   scan:
     annotationPackage: com.ccclubs

@@ -59,52 +59,56 @@ public class JT808OnlineCheckJob implements Runnable {
     public void run() {
         CsStateQuery query = new CsStateQuery();
         query.setCssAccessEquals(ACCESS.shortValue());
+        query.setCssCarGreater(0);
         List<CsState> list = stateService.getAllByParam(query.getCrieria());
         LOGGER.info("开始处理(ACCESS={}),CS_STATE状态数据 {} 条", ACCESS, list.size());
         for (CsState state : list) {
-            long between = System.currentTimeMillis() - state.getCssCurrentTime().getTime();
-            //之前的状态(默认online)
-            int preStatus = PRE_STATUS_ONLINE;
-            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_OFFLINE, state.getCssCar().toString())) {
-                preStatus = PRE_STATUS_OFFLINE;
-            }
-            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, state.getCssCar().toString())) {
-                preStatus = PRE_STATUS_ONLINE;
-            }
-            //当前是离线
-            if (between >= OFFLINE_MILLIS_THRESHOLD) {
-                switch (preStatus) {
-                    //之前离线
-                    case 0:
-                        break;
-                    //之前在线
-                    case 1:
-                        sendOffLineEvent(state);
-                        break;
-                    default:
-                        break;
+            CsVehicle vehicle = vehicleService.selectByPrimaryKey(state.getCssCar());
+            if (vehicle != null) {
+                long between = System.currentTimeMillis() - state.getCssCurrentTime().getTime();
+                //之前的状态(默认online)
+                int preStatus = PRE_STATUS_ONLINE;
+                if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_OFFLINE, vehicle.getCsvVin())) {
+                    preStatus = PRE_STATUS_OFFLINE;
                 }
-            }
-            //当前是在线
-            else {
-                switch (preStatus) {
-                    //之前离线
-                    case 0:
-                        sendOnLineEvent(state);
-                        break;
-                    //之前在线
-                    case 1:
-                        break;
-                    default:
-                        break;
+                if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, vehicle.getCsvVin())) {
+                    preStatus = PRE_STATUS_ONLINE;
+                }
+                //当前是离线
+                if (between >= OFFLINE_MILLIS_THRESHOLD) {
+                    switch (preStatus) {
+                        //之前离线
+                        case 0:
+                            break;
+                        //之前在线
+                        case 1:
+                            sendOffLineEvent(state, vehicle);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //当前是在线
+                else {
+                    switch (preStatus) {
+                        //之前离线
+                        case 0:
+                            sendOnLineEvent(state, vehicle);
+                            break;
+                        //之前在线
+                        case 1:
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         }
     }
 
     //上线
-    private void sendOnLineEvent(CsState state) {
-        CsVehicle vehicle = vehicleService.selectByPrimaryKey(state.getCssCar());
+    private void sendOnLineEvent(CsState state, CsVehicle vehicle) {
+        LOGGER.info("上线啦");
         ConnOnlineStatusEvent event = new ConnOnlineStatusEvent();
         event.setVin(vehicle.getCsvVin());
         event.setOnline(true);
@@ -115,8 +119,7 @@ public class JT808OnlineCheckJob implements Runnable {
     }
 
     //离线
-    private void sendOffLineEvent(CsState state) {
-        CsVehicle vehicle = vehicleService.selectByPrimaryKey(state.getCssCar());
+    private void sendOffLineEvent(CsState state, CsVehicle vehicle) {
         ConnOnlineStatusEvent event = new ConnOnlineStatusEvent();
         event.setVin(vehicle.getCsvVin());
         event.setOnline(false);
