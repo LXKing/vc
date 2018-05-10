@@ -29,35 +29,38 @@ public class CanStorageImpl implements BaseHistoryInf<CsCan> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseCanUpsertSql = "UPSERT INTO ? (" +
+    private static String baseCanUpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR+" (" +
             "VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME" +
             " ) values (" +
-            "?, ?, ?, ?, ?, ?, ?, ? )";//2-9
+            "?, ?, ?, ?, ?, ?, ?, ? )";//1-8
+    private static String baseCanUpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP+" (" +
+            "VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME" +
+            " ) values (" +
+            "?, ?, ?, ?, ?, ?, ?, ? )";//1-8
 
     @Override
-    public void insertBulid(CsCan historyDate, PreparedStatement preparedStatement, String tableName) throws SQLException {
-        preparedStatement.setString(1, tableName);
+    public void insertBulid(CsCan historyDate, PreparedStatement preparedStatement) throws SQLException {
 
-        //2-9  VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME
+        //1-8  VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME
         String vin = historyDate.getCscVin();
-        preparedStatement.setString(2, vin);
+        preparedStatement.setString(1, vin);
         Long currentTime = historyDate.getCscUploadTime().getTime();
-        preparedStatement.setLong(3, currentTime);
+        preparedStatement.setLong(2, currentTime);
         String teNumber = historyDate.getCscNumber();
-        preparedStatement.setString(4, teNumber);
+        preparedStatement.setString(3, teNumber);
         String teNo = historyDate.getTeNo();
-        preparedStatement.setString(5, teNo);
+        preparedStatement.setString(4, teNo);
         String iccid = historyDate.getIccid();
-        preparedStatement.setString(6, iccid);
+        preparedStatement.setString(5, iccid);
         String mobile = historyDate.getMobile();
-        preparedStatement.setString(7, mobile);
+        preparedStatement.setString(6, mobile);
         String sourceHex = historyDate.getCscData();
-        preparedStatement.setString(8, sourceHex);
+        preparedStatement.setString(7, sourceHex);
         Long addTime = historyDate.getCscAddTime().getTime();
         if (null == addTime) {
             addTime = System.currentTimeMillis();
         }
-        preparedStatement.setLong(9, addTime);
+        preparedStatement.setLong(8, addTime);
 
         preparedStatement.addBatch();
     }
@@ -69,11 +72,11 @@ public class CanStorageImpl implements BaseHistoryInf<CsCan> {
         }
         if (!StringUtils.isEmpty(records.get(0).getCscVin())) {
             baseImpl.saveOrUpdate(records, this,
-                    baseCanUpsertSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR);
+                    baseCanUpsertNorSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR);
             logger.debug("Save nor can end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
-                    baseCanUpsertSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP);
+                    baseCanUpsertExpSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP);
             logger.debug("Save exp can end."+records.size());
         }
     }
