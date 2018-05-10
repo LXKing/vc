@@ -31,66 +31,66 @@ public class GbMessageStorageImpl implements BaseHistoryInf<CsMessage> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseGbMessageUpsertSql = "UPSERT INTO ? (" +
+    private static String baseGbMessageUpsertSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY+" (" +
             "VIN,ADD_TIME,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS," +
             "PROTOCOL,MESSAGE_TYPE,VERIFY,SOURCE_HEX ) values (" +
-            "?, ?, ?, ?, ?, ?, ?, ?, " +//2-9
-            "?, ?, ?, ? )";//10-13
+            "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
+            "?, ?, ?, ? )";//9-12
 
     @Override
-    public void insertBulid(CsMessage historyDate, PreparedStatement preparedStatement, String tableName) throws SQLException {
-        preparedStatement.setString(1, tableName);
-        //2-9  VIN,ADD_TIME,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS
+    public void insertBulid(CsMessage historyDate, PreparedStatement preparedStatement) throws SQLException {
+
+        //1-8  VIN,ADD_TIME,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS
 
         String vin = historyDate.getCsmVin();
-        preparedStatement.setString(2, vin);
+        preparedStatement.setString(1, vin);
         Long addTime = historyDate.getCsmAddTime();
         if (null == addTime) {
             addTime = System.currentTimeMillis();
         }
-        preparedStatement.setLong(3, addTime);
+        preparedStatement.setLong(2, addTime);
         Long currentTime = historyDate.getCsmMsgTime();
         if (null == currentTime) {
-            preparedStatement.setNull(4, Types.BIGINT);
+            preparedStatement.setNull(3, Types.BIGINT);
         } else {
-            preparedStatement.setLong(4, currentTime);
+            preparedStatement.setLong(3, currentTime);
         }
         String teNumber = historyDate.getCsmNumber();
-        preparedStatement.setString(5, teNumber);
+        preparedStatement.setString(4, teNumber);
         String teNo = historyDate.getTeNo();
-        preparedStatement.setString(6, teNo);
+        preparedStatement.setString(5, teNo);
         String iccid = historyDate.getIccid();
-        preparedStatement.setString(7, iccid);
+        preparedStatement.setString(6, iccid);
         String mobile = historyDate.getMobile();
-        preparedStatement.setString(8, mobile);
+        preparedStatement.setString(7, mobile);
         Integer access = historyDate.getCsmAccess();
         if (null == access) {
-            preparedStatement.setNull(9, Types.INTEGER);
+            preparedStatement.setNull(8, Types.INTEGER);
         } else {
-            preparedStatement.setInt(9, access);
+            preparedStatement.setInt(8, access);
         }
 
-        //10-13  PROTOCOL,MESSAGE_TYPE,VERIFY,SOURCE_HEX
+        //9-12  PROTOCOL,MESSAGE_TYPE,VERIFY,SOURCE_HEX
         Integer protocol = convertToInterger(historyDate.getCsmProtocol());
         if (null == protocol) {
-            preparedStatement.setNull(10, Types.INTEGER);
+            preparedStatement.setNull(9, Types.INTEGER);
         } else {
-            preparedStatement.setInt(10, protocol);
+            preparedStatement.setInt(9, protocol);
         }
         Integer messageType = convertToInterger(historyDate.getCsmType());
         if (null == messageType) {
-            preparedStatement.setNull(11, Types.INTEGER);
+            preparedStatement.setNull(10, Types.INTEGER);
         } else {
-            preparedStatement.setInt(11, messageType);
+            preparedStatement.setInt(10, messageType);
         }
         Integer verify = convertToInterger(historyDate.getCsmVerify());
         if (null == verify) {
-            preparedStatement.setNull(12, Types.INTEGER);
+            preparedStatement.setNull(11, Types.INTEGER);
         } else {
-            preparedStatement.setInt(12, verify);
+            preparedStatement.setInt(11, verify);
         }
         String sourceHex = historyDate.getCsmData();
-        preparedStatement.setString(13, sourceHex);
+        preparedStatement.setString(12, sourceHex);
 
         preparedStatement.addBatch();
     }

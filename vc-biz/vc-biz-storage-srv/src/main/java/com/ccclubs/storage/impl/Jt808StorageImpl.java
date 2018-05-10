@@ -31,111 +31,118 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseJt808UpsertSql = "UPSERT INTO ? (" +
+    private static String baseJt808UpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY+" (" +
             "TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG," +
             "STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH," +
             "GPS_VALID,SOURCE_HEX ) values (" +
-            "?, ?, ?, ?, ?, ?, ?, ?, " +//2-9
-            "?, ?, ?, ?, ?, ?, ?, " +//10-16
-            "?, ? )";//17-18
+            "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
+            "?, ?, ?, ?, ?, ?, ?, " +//9-15
+            "?, ? )";//16-17
+
+    private static String baseJt808UpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP+" (" +
+            "TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG," +
+            "STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH," +
+            "GPS_VALID,SOURCE_HEX ) values (" +
+            "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
+            "?, ?, ?, ?, ?, ?, ?, " +//9-15
+            "?, ? )";//16-17
 
     @Override
-    public void insertBulid(Jt808PositionData historyDate, PreparedStatement preparedStatement, String tableName) throws SQLException {
-        preparedStatement.setString(1, tableName);
-        //2-9  TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG
+    public void insertBulid(Jt808PositionData historyDate, PreparedStatement preparedStatement) throws SQLException {
+        //1-8  TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG
         String teNumber = historyDate.getTeNumber();
-        preparedStatement.setString(2, teNumber);
+        preparedStatement.setString(1, teNumber);
         Long currentTime = historyDate.getCurrentTime();
-        preparedStatement.setLong(3, currentTime);
+        preparedStatement.setLong(2, currentTime);
         String vin = historyDate.getVin();
-        preparedStatement.setString(4, vin);
+        preparedStatement.setString(3, vin);
         String teNo = historyDate.getTeNo();
-        preparedStatement.setString(5, teNo);
+        preparedStatement.setString(4, teNo);
         String iccid = historyDate.getIccid();
-        preparedStatement.setString(6, iccid);
+        preparedStatement.setString(5, iccid);
         Long addTime = historyDate.getAddTime();
         if (addTime == null) {
             addTime = System.currentTimeMillis();
         }
-        preparedStatement.setLong(7, addTime);
+        preparedStatement.setLong(6, addTime);
         String mobile = historyDate.getMobile();
-        preparedStatement.setString(8, mobile);
+        preparedStatement.setString(7, mobile);
         Integer alarmFlag = historyDate.getAlarmFlag();
         if (null == alarmFlag) {
-            preparedStatement.setNull(9, Types.INTEGER);
+            preparedStatement.setNull(8, Types.INTEGER);
         } else {
-            preparedStatement.setInt(9, alarmFlag);
+            preparedStatement.setInt(8, alarmFlag);
         }
 
-        //10-16  STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH
+        //9-15  STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH
 
         Integer status = historyDate.getStatus();
         if (null == status) {
-            preparedStatement.setNull(10, Types.INTEGER);
+            preparedStatement.setNull(9, Types.INTEGER);
         } else {
-            preparedStatement.setInt(10, status);
+            preparedStatement.setInt(9, status);
         }
         Double longitude = null;
         if (null != historyDate.getLongitude()) {
             longitude = historyDate.getLongitude().doubleValue();
         }
         if (null == longitude) {
-            preparedStatement.setNull(11, Types.DOUBLE);
+            preparedStatement.setNull(10, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(11, longitude);
+            preparedStatement.setDouble(10, longitude);
         }
         Double latitude = null;
         if (null != historyDate.getLatitude()) {
             latitude = historyDate.getLatitude().doubleValue();
         }
         if (null == latitude) {
-            preparedStatement.setNull(12, Types.DOUBLE);
+            preparedStatement.setNull(11, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(12, latitude);
+            preparedStatement.setDouble(11, latitude);
         }
         Double altitude = null;
         if (null != historyDate.getAltitude()) {
             altitude = historyDate.getAltitude().doubleValue();
         }
         if (null == altitude) {
-            preparedStatement.setNull(13, Types.DOUBLE);
+            preparedStatement.setNull(12, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(13, altitude);
+            preparedStatement.setDouble(12, altitude);
         }
         Float gpsSpeed = null;
         if (null != historyDate.getGpsSpeed()) {
             gpsSpeed = historyDate.getGpsSpeed().floatValue();
         }
         if (null == gpsSpeed) {
-            preparedStatement.setNull(14, Types.FLOAT);
+            preparedStatement.setNull(13, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(14, gpsSpeed);
+            preparedStatement.setFloat(13, gpsSpeed);
         }
         Double course = null;
         if (null != historyDate.getCourse()) {
             course = historyDate.getCourse().doubleValue();
         }
         if (null == course) {
-            preparedStatement.setNull(15, Types.DOUBLE);
+            preparedStatement.setNull(14, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(15, course);
+            preparedStatement.setDouble(14, course);
         }
         Integer netStrength = convertToInterger(historyDate.getNetStrength());
         if (null == netStrength) {
-            preparedStatement.setNull(16, Types.INTEGER);
+            preparedStatement.setNull(15, Types.INTEGER);
         } else {
-            preparedStatement.setInt(16, netStrength);
+            preparedStatement.setInt(15, netStrength);
         }
 
         //17-18  GPS_VALID,SOURCE_HEX
         Integer gpsValid = historyDate.getGpsValid();
         if (null == gpsValid) {
-            preparedStatement.setNull(17, Types.INTEGER);
+            preparedStatement.setNull(16, Types.INTEGER);
         } else {
-            preparedStatement.setInt(17, gpsValid);
+            preparedStatement.setInt(16, gpsValid);
         }
         String sourceHex = historyDate.getSourceHex();
-        preparedStatement.setString(18, sourceHex);
+        preparedStatement.setString(17, sourceHex);
         preparedStatement.addBatch();
     }
 
@@ -147,11 +154,11 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
         }
         if (!StringUtils.isEmpty(records.get(0).getVin())) {
             baseImpl.saveOrUpdate(records, this,
-                    baseJt808UpsertSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY);
+                    baseJt808UpsertNorSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY);
             logger.debug("Save nor jt808 end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
-                    baseJt808UpsertSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP);
+                    baseJt808UpsertExpSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP);
             logger.debug("Save exp jt808 end."+records.size());
         }
 

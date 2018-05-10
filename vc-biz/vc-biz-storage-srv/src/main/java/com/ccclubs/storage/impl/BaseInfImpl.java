@@ -37,7 +37,7 @@ public class BaseInfImpl {
             Long count = 0L;
             for (T historyDate : records) {
                 count++;
-                baseHistoryInf.insertBulid(historyDate, preparedStatement, tableName);
+                baseHistoryInf.insertBulid(historyDate, preparedStatement);
                 if (count % 500 == 0) {
 
                     preparedStatement.executeBatch();

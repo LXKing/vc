@@ -31,7 +31,7 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseMqttStateUpsertSql = "UPSERT INTO ? " +
+    private static String baseMqttStateUpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR+" " +
             "(VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME," +
             "RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES," +
             "SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS," +
@@ -40,41 +40,58 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             "COMPRE_STATUS,FAN_MODE,SAVING_MODE,DOOR_STATUS,ENGINE_STATUS,KEY_STATUS," +
             "LIGHT_STATUS,LOCK_STATUS,NET_TYPE,BASE_LAC,BASE_CI,CUR_ORDER,GEAR," +
             "AUTOPILOT_STATUS,HANDBRAKE_STATUS,SOURCE_HEX ) values ( " +
-            "?, ?, ?, ?, ?, ?, ?, ?, " +//2-9
-            "?, ?, ?, ?, ?, ?, ?, " +//10-16
-            "?, ?, ?, ?, ?, ?, " +//17-22
-            "?, ?, ?, ?, ?, ?, ?, " +//23-29
-            "?, ?, ?, ?, ?, ?, " +//30-35
-            "?, ?, ?, ?, ?, ?, " +//36-41
-            "?, ?, ?, ?, ?, ?, ?, " +//42-48
-            "?, ?, ? )";//49-51
+            "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
+            "?, ?, ?, ?, ?, ?, ?, " +//9-15
+            "?, ?, ?, ?, ?, ?, " +//16-21
+            "?, ?, ?, ?, ?, ?, ?, " +//22-28
+            "?, ?, ?, ?, ?, ?, " +//29-34
+            "?, ?, ?, ?, ?, ?, " +//35-40
+            "?, ?, ?, ?, ?, ?, ?, " +//41-47
+            "?, ?, ? )";//48-50
+
+
+    private static String baseMqttStateUpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP+" " +
+            "(VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME," +
+            "RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES," +
+            "SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS," +
+            "FUEL_MILES,ELEC_MILES,ENDUR_MILES,TEMPE,GPS_NUM,GPS_STRENGTH,GPS_VALID," +
+            "NET_STRENGTH,LONGITUDE,LATITUDE,DIRECTION_ANGLE,CIRCULAR_MODE,PTC_STATUS," +
+            "COMPRE_STATUS,FAN_MODE,SAVING_MODE,DOOR_STATUS,ENGINE_STATUS,KEY_STATUS," +
+            "LIGHT_STATUS,LOCK_STATUS,NET_TYPE,BASE_LAC,BASE_CI,CUR_ORDER,GEAR," +
+            "AUTOPILOT_STATUS,HANDBRAKE_STATUS,SOURCE_HEX ) values ( " +
+            "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
+            "?, ?, ?, ?, ?, ?, ?, " +//9-15
+            "?, ?, ?, ?, ?, ?, " +//16-21
+            "?, ?, ?, ?, ?, ?, ?, " +//22-28
+            "?, ?, ?, ?, ?, ?, " +//29-34
+            "?, ?, ?, ?, ?, ?, " +//35-40
+            "?, ?, ?, ?, ?, ?, ?, " +//41-47
+            "?, ?, ? )";//48-50
 
     @Override
-    public void insertBulid(CsState historyDate, PreparedStatement preparedStatement, String tableName) throws SQLException {
+    public void insertBulid(CsState historyDate, PreparedStatement preparedStatement) throws SQLException {
 
-        preparedStatement.setString(1, tableName);
-
-        //2-9  VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME
+        //1-8  VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME
         String vin = historyDate.getCssVin();
-        preparedStatement.setString(2, vin);
+        preparedStatement.setString(1, vin);
         Long currentTime = historyDate.getCssCurrentTime().getTime();
-        preparedStatement.setLong(3, currentTime);
+        preparedStatement.setLong(2, currentTime);
         String teNumber = historyDate.getCssNumber();
-        preparedStatement.setString(4, teNumber);
+        preparedStatement.setString(3, teNumber);
         String teNo = historyDate.getCssTeNo();
-        preparedStatement.setString(5, teNo);
+        preparedStatement.setString(4, teNo);
         String icccid = historyDate.getIccid();
-        preparedStatement.setString(6, icccid);
+        preparedStatement.setString(5, icccid);
         String mobile = historyDate.getMobile();
-        preparedStatement.setString(7, mobile);
+        preparedStatement.setString(6, mobile);
         Integer access = null;
         if (null != historyDate.getCssAccess()) {
             access = Integer.valueOf(historyDate.getCssAccess());
         }
         if (null == access) {
-            preparedStatement.setNull(8, Types.INTEGER);
+            preparedStatement.setNull(7, Types.INTEGER);
         } else {
-            preparedStatement.setInt(8, access);
+            preparedStatement.setInt(7, access);
         }
         Long addTime;
         if (null == historyDate.getCssAddTime()) {
@@ -83,25 +100,25 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             addTime = historyDate.getCssAddTime().getTime();
         }
         if (null == addTime) {
-            preparedStatement.setNull(9, Types.BIGINT);
+            preparedStatement.setNull(8, Types.BIGINT);
         } else {
-            preparedStatement.setLong(9, addTime);
+            preparedStatement.setLong(8, addTime);
         }
 
-        //10-16  RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES
+        //9-15  RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES
         Integer rentFlg = convertToInterger(historyDate.getCssRented());
         if (null == rentFlg) {
-            preparedStatement.setNull(10, Types.INTEGER);
+            preparedStatement.setNull(9, Types.INTEGER);
         } else {
-            preparedStatement.setInt(10, rentFlg);
+            preparedStatement.setInt(9, rentFlg);
         }
 
         String warnCode = convertToString(historyDate.getCssWarn());
-        preparedStatement.setString(11, warnCode);
+        preparedStatement.setString(10, warnCode);
         String rfid = historyDate.getCssRfid();
-        preparedStatement.setString(12, rfid);
+        preparedStatement.setString(11, rfid);
         String userRfid = historyDate.getCssRfidDte();
-        preparedStatement.setString(13, userRfid);
+        preparedStatement.setString(12, userRfid);
         Float obdMiles;
         if (historyDate.getCssObdMile() == null) {
             obdMiles = 0F;
@@ -109,9 +126,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             obdMiles = historyDate.getCssObdMile().floatValue();
         }
         if (null == obdMiles) {
-            preparedStatement.setNull(14, Types.FLOAT);
+            preparedStatement.setNull(13, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(14, obdMiles);
+            preparedStatement.setFloat(13, obdMiles);
         }
 
         Float engineTempe = null;
@@ -119,9 +136,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             engineTempe = historyDate.getCssEngineT().floatValue();
         }
         if (null == engineTempe) {
-            preparedStatement.setNull(15, Types.FLOAT);
+            preparedStatement.setNull(14, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(15, engineTempe);
+            preparedStatement.setFloat(14, engineTempe);
         }
 
         Float totalMiles = null;
@@ -129,28 +146,28 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             totalMiles = historyDate.getCssMileage().floatValue();
         }
         if (null == totalMiles) {
-            preparedStatement.setNull(16, Types.FLOAT);
+            preparedStatement.setNull(15, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(16, totalMiles);
+            preparedStatement.setFloat(15, totalMiles);
         }
 
 
-        //17-22  SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS
+        //16-21  SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS
         Float speed = null;
         if (null != historyDate.getCssSpeed()) {
             speed = historyDate.getCssSpeed().floatValue();
         }
         if (null == speed) {
-            preparedStatement.setNull(17, Types.FLOAT);
+            preparedStatement.setNull(16, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(17, speed);
+            preparedStatement.setFloat(16, speed);
         }
 
         Float motorSpeed = convertToFloat(historyDate.getCssMotor());
         if (null == motorSpeed) {
-            preparedStatement.setNull(18, Types.FLOAT);
+            preparedStatement.setNull(17, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(18, motorSpeed);
+            preparedStatement.setFloat(17, motorSpeed);
 
         }
 
@@ -159,44 +176,44 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             oilCost = historyDate.getCssOil().floatValue();
         }
         if (null == oilCost) {
-            preparedStatement.setNull(19, Types.FLOAT);
+            preparedStatement.setNull(18, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(19, oilCost);
+            preparedStatement.setFloat(18, oilCost);
         }
 
         Float powerReserve = convertToFloat(historyDate.getCssPower());
         if (null == powerReserve) {
-            preparedStatement.setNull(20, Types.FLOAT);
+            preparedStatement.setNull(19, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(20, powerReserve);
+            preparedStatement.setFloat(19, powerReserve);
         }
 
 
         Float evBattery = convertToFloat(historyDate.getCssEvBattery());
         if (null == evBattery) {
-            preparedStatement.setNull(21, Types.FLOAT);
+            preparedStatement.setNull(20, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(21, evBattery);
+            preparedStatement.setFloat(20, evBattery);
         }
 
 
         Integer chargingStatus = convertToInterger(historyDate.getCssCharging());
         if (null == chargingStatus) {
-            preparedStatement.setNull(22, Types.INTEGER);
+            preparedStatement.setNull(21, Types.INTEGER);
         } else {
-            preparedStatement.setInt(22, chargingStatus);
+            preparedStatement.setInt(21, chargingStatus);
         }
 
 
-        //23-29  FUEL_MILES,ELEC_MILES,ENDUR_MILES,TEMPE,GPS_NUM,GPS_STRENGTH,GPS_VALID
+        //22-28  FUEL_MILES,ELEC_MILES,ENDUR_MILES,TEMPE,GPS_NUM,GPS_STRENGTH,GPS_VALID
         Float fuelMiles = null;
         if (null != historyDate.getCssFuelMileage()) {
             fuelMiles = historyDate.getCssFuelMileage().floatValue();
         }
         if (null == fuelMiles) {
-            preparedStatement.setNull(23, Types.FLOAT);
+            preparedStatement.setNull(22, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(23, fuelMiles);
+            preparedStatement.setFloat(22, fuelMiles);
         }
 
 
@@ -205,9 +222,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             elecMiles = historyDate.getCssElectricMileage().floatValue();
         }
         if (null == elecMiles) {
-            preparedStatement.setNull(24, Types.FLOAT);
+            preparedStatement.setNull(23, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(24, elecMiles);
+            preparedStatement.setFloat(23, elecMiles);
         }
 
 
@@ -216,9 +233,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             endurMiles = historyDate.getCssEndurance().floatValue();
         }
         if (null == endurMiles) {
-            preparedStatement.setNull(25, Types.FLOAT);
+            preparedStatement.setNull(24, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(25, endurMiles);
+            preparedStatement.setFloat(24, endurMiles);
         }
 
         Float tempe = null;
@@ -226,40 +243,40 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             tempe = historyDate.getCssTemperature().floatValue();
         }
         if (null == tempe) {
-            preparedStatement.setNull(26, Types.FLOAT);
+            preparedStatement.setNull(25, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(26, tempe);
+            preparedStatement.setFloat(25, tempe);
         }
 
         Integer gpsNum = convertToInterger(historyDate.getCssGpsCount());
         if (null == gpsNum) {
-            preparedStatement.setNull(27, Types.INTEGER);
+            preparedStatement.setNull(26, Types.INTEGER);
         } else {
-            preparedStatement.setInt(27, gpsNum);
+            preparedStatement.setInt(26, gpsNum);
         }
 
 
         Integer gpsStrength = convertToInterger(historyDate.getCssGpsCn());
         if (null == gpsStrength) {
-            preparedStatement.setNull(28, Types.INTEGER);
+            preparedStatement.setNull(27, Types.INTEGER);
         } else {
-            preparedStatement.setInt(28, gpsStrength);
+            preparedStatement.setInt(27, gpsStrength);
         }
 
         Integer gpsValid = convertToInterger(historyDate.getCssGpsValid());
         if (null == gpsValid) {
-            preparedStatement.setNull(29, Types.INTEGER);
+            preparedStatement.setNull(28, Types.INTEGER);
         } else {
-            preparedStatement.setInt(29, gpsValid);
+            preparedStatement.setInt(28, gpsValid);
         }
 
 
-        //30-35  NET_STRENGTH,LONGITUDE,LATITUDE,DIRECTION_ANGLE,CIRCULAR_MODE,PTC_STATUS
+        //29-34  NET_STRENGTH,LONGITUDE,LATITUDE,DIRECTION_ANGLE,CIRCULAR_MODE,PTC_STATUS
         Integer netStrength = convertToInterger(historyDate.getCssCsq());
         if (null == netStrength) {
-            preparedStatement.setNull(30, Types.INTEGER);
+            preparedStatement.setNull(29, Types.INTEGER);
         } else {
-            preparedStatement.setInt(30, netStrength);
+            preparedStatement.setInt(29, netStrength);
         }
 
         Double longitude = null;
@@ -267,9 +284,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             longitude = historyDate.getCssLongitude().doubleValue();
         }
         if (null == longitude) {
-            preparedStatement.setNull(31, Types.DOUBLE);
+            preparedStatement.setNull(30, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(31, longitude);
+            preparedStatement.setDouble(30, longitude);
         }
 
         Double latitude = null;
@@ -277,9 +294,9 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             latitude = historyDate.getCssLatitude().doubleValue();
         }
         if (null == latitude) {
-            preparedStatement.setNull(32, Types.DOUBLE);
+            preparedStatement.setNull(31, Types.DOUBLE);
         } else {
-            preparedStatement.setDouble(32, latitude);
+            preparedStatement.setDouble(31, latitude);
         }
 
         Float directionAngle = null;
@@ -287,120 +304,120 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             directionAngle = historyDate.getCssDir().floatValue();
         }
         if (null == directionAngle) {
-            preparedStatement.setNull(33, Types.FLOAT);
+            preparedStatement.setNull(32, Types.FLOAT);
         } else {
-            preparedStatement.setFloat(33, directionAngle);
+            preparedStatement.setFloat(32, directionAngle);
         }
 
         Integer circularMode = convertToInterger(historyDate.getCssCircular());
         if (null == circularMode) {
-            preparedStatement.setNull(34, Types.INTEGER);
+            preparedStatement.setNull(33, Types.INTEGER);
         } else {
-            preparedStatement.setInt(34, circularMode);
+            preparedStatement.setInt(33, circularMode);
         }
 
         Integer ptcStatus = convertToInterger(historyDate.getCssPtc());
         if (null == ptcStatus) {
-            preparedStatement.setNull(35, Types.INTEGER);
+            preparedStatement.setNull(34, Types.INTEGER);
         } else {
-            preparedStatement.setInt(35, ptcStatus);
+            preparedStatement.setInt(34, ptcStatus);
         }
 
 
         //36-41  COMPRE_STATUS,FAN_MODE,SAVING_MODE,DOOR_STATUS,ENGINE_STATUS,KEY_STATUS
         Integer compreStatus = convertToInterger(historyDate.getCssCompres());
         if (null == compreStatus) {
-            preparedStatement.setNull(36, Types.INTEGER);
+            preparedStatement.setNull(35, Types.INTEGER);
         } else {
-            preparedStatement.setInt(36, compreStatus);
+            preparedStatement.setInt(35, compreStatus);
         }
 
         Integer fanMode = convertToInterger(historyDate.getCssFan());
         if (null == fanMode) {
-            preparedStatement.setNull(37, Types.INTEGER);
+            preparedStatement.setNull(36, Types.INTEGER);
         } else {
-            preparedStatement.setInt(37, fanMode);
+            preparedStatement.setInt(36, fanMode);
         }
 
         Integer savingMode = convertToInterger(historyDate.getCssSaving());
         if (null == savingMode) {
-            preparedStatement.setNull(38, Types.INTEGER);
+            preparedStatement.setNull(37, Types.INTEGER);
         } else {
-            preparedStatement.setInt(38, savingMode);
+            preparedStatement.setInt(37, savingMode);
         }
 
         Integer doorStatus = convertToInterger(historyDate.getCssDoor());
         if (null == doorStatus) {
-            preparedStatement.setNull(39, Types.INTEGER);
+            preparedStatement.setNull(38, Types.INTEGER);
         } else {
-            preparedStatement.setInt(39, doorStatus);
+            preparedStatement.setInt(38, doorStatus);
         }
 
         Integer engineStatus = convertToInterger(historyDate.getCssEngine());
         if (null == engineStatus) {
-            preparedStatement.setNull(40, Types.INTEGER);
+            preparedStatement.setNull(39, Types.INTEGER);
         } else {
-            preparedStatement.setInt(40, engineStatus);
+            preparedStatement.setInt(39, engineStatus);
         }
 
 
         Integer keyStatus = convertToInterger(historyDate.getCssKey());
         if (null == keyStatus) {
-            preparedStatement.setNull(41, Types.INTEGER);
+            preparedStatement.setNull(40, Types.INTEGER);
         } else {
-            preparedStatement.setInt(41, keyStatus);
+            preparedStatement.setInt(40, keyStatus);
         }
 
-        //42-48  LIGHT_STATUS,LOCK_STATUS,NET_TYPE,BASE_LAC,BASE_CI,CUR_ORDER,GEAR
+        //41-47  LIGHT_STATUS,LOCK_STATUS,NET_TYPE,BASE_LAC,BASE_CI,CUR_ORDER,GEAR
 
         Integer lightStatus = historyDate.getCssLight();
         if (null == lightStatus) {
-            preparedStatement.setNull(42, Types.INTEGER);
+            preparedStatement.setNull(41, Types.INTEGER);
         } else {
-            preparedStatement.setInt(42, lightStatus);
+            preparedStatement.setInt(41, lightStatus);
         }
 
         Integer lockStatus = historyDate.getCssLock();
         if (null == lockStatus) {
-            preparedStatement.setNull(43, Types.INTEGER);
+            preparedStatement.setNull(42, Types.INTEGER);
         } else {
-            preparedStatement.setInt(43, lockStatus);
+            preparedStatement.setInt(42, lockStatus);
         }
 
         String netType = convertToString(historyDate.getCssNetType());
-        preparedStatement.setString(44, netType);
+        preparedStatement.setString(43, netType);
         String baseLac = convertToString(historyDate.getCssBaseLac());
-        preparedStatement.setString(45, baseLac);
+        preparedStatement.setString(44, baseLac);
         String baseCi = convertToString(historyDate.getCssBaseCi());
-        preparedStatement.setString(46, baseCi);
+        preparedStatement.setString(45, baseCi);
         String curOrder = convertToString(historyDate.getCssOrder());
-        preparedStatement.setString(47, curOrder);
+        preparedStatement.setString(46, curOrder);
         Integer gear = convertToInterger(historyDate.getCssGear());
         if (null == gear) {
-            preparedStatement.setNull(48, Types.INTEGER);
+            preparedStatement.setNull(47, Types.INTEGER);
         } else {
-            preparedStatement.setInt(48, gear);
+            preparedStatement.setInt(47, gear);
         }
 
 
-        //49-51  AUTOPILOT_STATUS,HANDBRAKE_STATUS,SOURCE_HEX
+        //48-50  AUTOPILOT_STATUS,HANDBRAKE_STATUS,SOURCE_HEX
 
         Integer autopilotStatus = historyDate.getCssAutopilot();
         if (null == autopilotStatus) {
-            preparedStatement.setNull(49, Types.INTEGER);
+            preparedStatement.setNull(48, Types.INTEGER);
         } else {
-            preparedStatement.setInt(49, autopilotStatus);
+            preparedStatement.setInt(48, autopilotStatus);
         }
 
         Integer handbrakeStatus = historyDate.getCssHandbrake();
         if (null == handbrakeStatus) {
-            preparedStatement.setNull(50, Types.INTEGER);
+            preparedStatement.setNull(49, Types.INTEGER);
         } else {
-            preparedStatement.setInt(50, handbrakeStatus);
+            preparedStatement.setInt(49, handbrakeStatus);
         }
 
         String sourceHex = historyDate.getCssMoData();
-        preparedStatement.setString(51, sourceHex);
+        preparedStatement.setString(50, sourceHex);
 
 
         preparedStatement.addBatch();
@@ -417,11 +434,11 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
         }
         if (!StringUtils.isEmpty(records.get(0).getCssVin())) {
             baseImpl.saveOrUpdate(records, this,
-                    baseMqttStateUpsertSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR);
+                    baseMqttStateUpsertNorSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR);
             logger.debug("Save nor mqtt end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
-                    baseMqttStateUpsertSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
+                    baseMqttStateUpsertExpSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
             logger.debug("Save nor mqtt end."+records.size());
         }
 
