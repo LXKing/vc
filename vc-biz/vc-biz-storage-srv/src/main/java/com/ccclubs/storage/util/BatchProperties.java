@@ -1,4 +1,4 @@
-package com.ccclubs.storage.tasks.util;
+package com.ccclubs.storage.util;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

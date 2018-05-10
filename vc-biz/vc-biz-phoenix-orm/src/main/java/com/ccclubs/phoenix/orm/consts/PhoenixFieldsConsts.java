@@ -9,7 +9,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
-public class PhoenixConsts {
+public class PhoenixFieldsConsts {
     //车辆状态分页查询默认字段列表
     public static final List<String> carStatePageDefaultFields = ImmutableList.of("cs_number", "current_time", "add_time", "obd_miles", "speed", "ev_battery", "saving_mode", "cur_order");
     //车辆状态所有字段列表
@@ -43,22 +43,5 @@ public class PhoenixConsts {
             "cs_protocol", "gb_type", "cs_verify");
 
 
-    /**
-     * 以下三个字段是TableStore表名
-     */
-    public static final String TBL_NAME_CAR_STATE_HISTORY = "TBS_CAR_STATE_HISTORY";
-    public static final String TBL_NAME_CAR_CAN_HISTORY = "TBS_CAR_CAN_HISTORY";
-    public static final String TBL_NAME_CAR_GB_HISTORY = "TBS_CAR_GB_HISTORY";
-
-
-    /**
-     * HBASE的Phoenix表名
-     */
-    public static final String PHOENIX_CAR_STATE_HISTORY = "phoenix_car_state_history";
-    public static final String PHOENIX_CAR_CAN_HISTORY = "phoenix_car_can_history";
-    public static final String PHOENIX_CAR_GB_HISTORY = "phoenix_car_gb_history";
-
-    public static final String PHOENIX_CAR_STATE_HISTORY_NIU = "phoenix_car_state_history_niu";
-//    public static final String PHOENIX_CAR_STATE_HISTORY =PHOENIX_CAR_STATE_HISTORY_NIU;
 
 }
