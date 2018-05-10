@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: report-srv
+  profiles:
+    active: ${profiles.active}
+  cloud:
+    config:
+      name: report-srv
+      uri: ${spring.cloud.config.uri}
+security:
+  basic:
+    enabled: false

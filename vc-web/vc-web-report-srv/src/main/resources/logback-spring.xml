@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!-- 配置上下文名称 -->
+  <springProperty scope="context" name="LOG_CONTEXT_NAME" source="spring.application.name"/>
+  <!-- 配置日志路径 -->
+  <springProperty scope="context" name="LOG_PATH" source="log.path"/>
+  <property scope="context" name="DEF_PATH" value="/var/logs/vc/"/>
+  <property scope="context" name="BUSINESS_DIR" value="/business"/>
+  <!-- 配置根日志级别 -->
+  <springProperty scope="context" name="ENV_ACTIVE" source="spring.profiles.active"/>
+
+  <if condition='p("ENV_ACTIVE").equals("dev")'>
+    <then>
+      <property scope="context" name="LOG_LEVEL" value="DEBUG"/>
+    </then>
+  </if>
+  <if condition='p("ENV_ACTIVE").equals("prod")'>
+    <then>
+      <property scope="context" name="LOG_LEVEL" value="INFO"/>
+    </then>
+  </if>
+  <if condition='p("ENV_ACTIVE").equals("test")'>
+    <then>
+      <property scope="context" name="LOG_LEVEL" value="INFO"/>
+    </then>
+  </if>
+  <if condition='p("LOG_PATH").equals("")'>
+    <then>
+      <property scope="context" name="LOG_PATH" value="${DEF_PATH}${LOG_CONTEXT_NAME}"/>
+    </then>
+  </if>
+  <!-- 用于ELK搜集的业务日志存放路径 -->
+  <property scope="context" name="BUSINESS_PATH"
+    value="${DEF_PATH}${LOG_CONTEXT_NAME}${BUSINESS_DIR}"/>
+
+  <!-- 配置日志输出 -->
+  <conversionRule conversionWord="clr"
+    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+  <conversionRule conversionWord="wex"
+    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+  <conversionRule conversionWord="wEx"
+    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+  <property name="CONSOLE_LOG_PATTERN"
+    value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(Line:%-3L) %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+  <appender name="ALL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.main.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.main.log</FileNamePattern>
+      <maxFileSize>512MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} Line:%-3L - %msg%n</pattern>
+    </encoder>
+    <!-- 此日志文件不记录error级别的 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>error</level>
+      <onMatch>DENY</onMatch>
+      <onMismatch>ACCEPT</onMismatch>
+    </filter>
+  </appender>
+
+  <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_PATH}/${LOG_CONTEXT_NAME}.error.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${LOG_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.error.log</FileNamePattern>
+      <maxFileSize>512MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} Line:%-3L - %msg%n</pattern>
+    </encoder>
+    <!-- 此日志文件只记录error级别的 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>error</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <appender name="BUSINESS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.business.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <FileNamePattern>${BUSINESS_PATH}/${LOG_CONTEXT_NAME}.%d{yyyy-MM-dd}_%i.business.log
+      </FileNamePattern>
+      <maxFileSize>512MB</maxFileSize>
+      <maxHistory>30</maxHistory>
+      <totalSizeCap>30GB</totalSizeCap>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <!-- 格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+      <pattern>%msg%n</pattern>
+    </encoder>
+    <!-- 此日志文件只记录info级别的 -->
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>info</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+  </appender>
+
+  <!-- 开发环境 -->
+  <springProfile name="dev">
+    <logger name="com.ccclubs.frm.logger.VehicleControlLogger" level="INFO" additivity="false">
+      <appender-ref ref="BUSINESS_FILE"/>
+    </logger>
+    <!-- additivity="false" 不向上一次打印日志 -->
+    <logger name="com.ccclubs" level="DEBUG" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+      <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.mongodb" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.http" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.dubbo.remoting.exchange.support.header.HeartBeatTask" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <root level="${LOG_LEVEL:-DEBUG}">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="ALL_FILE"/>
+    </root>
+  </springProfile>
+  <!-- 测试环境 -->
+  <springProfile name="test">
+    <logger name="com.ccclubs.frm.logger.VehicleControlLogger" level="INFO" additivity="false">
+      <appender-ref ref="BUSINESS_FILE"/>
+    </logger>
+    <!-- additivity="false" 不向上一次打印日志 -->
+    <logger name="com.ccclubs" level="INFO" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.mongodb" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.zookeeper" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.apache.http" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.druid.pool.DruidDataSourceStatLoggerImpl" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.dubbo.remoting.exchange.support.header.HeartBeatTask" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <root level="${LOG_LEVEL:-DEBUG}">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="ALL_FILE"/>
+    </root>
+  </springProfile>
+  <!-- 生产环境 -->
+  <springProfile name="prod">
+    <appender name="ASYNC_ALL_FILE" class="ch.qos.logback.classic.AsyncAppender">
+      <appender-ref ref="ALL_FILE"/>
+    </appender>
+
+    <logger name="com.ccclubs.frm.logger.VehicleControlLogger" level="INFO" additivity="false">
+      <appender-ref ref="BUSINESS_FILE"/>
+    </logger>
+    <!-- additivity="false" 不向上一次打印日志 -->
+    <logger name="com.ccclubs" level="INFO" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="com.alibaba.druid" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+    <logger name="org.springframework.cloud.config" level="WARN" additivity="false">
+      <appender-ref ref="ALL_FILE"/>
+      <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <root level="${LOG_LEVEL:-DEBUG}">
+      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="ASYNC_ALL_FILE"/>
+    </root>
+  </springProfile>
+
+</configuration>
