@@ -93,7 +93,7 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
         } else {
             preparedStatement.setInt(7, access);
         }
-        Long addTime;
+        Long addTime=null;
         if (null == historyDate.getCssAddTime()) {
             addTime = System.currentTimeMillis();
         } else {
