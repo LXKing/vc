@@ -25,7 +25,7 @@ import java.util.Properties;
  * @create 2017-09-15
  **/
 @SpringBootApplication(scanBasePackages = "com.ccclubs")
-@Import({RedisAutoConfiguration.class, OssAutoConfiguration.class})
+@Import({RedisAutoConfiguration.class, OssAutoConfiguration.class, OnsProperties.class})
 public class AdminFrontApp extends SpringBootServletInitializer {
 
     /**
