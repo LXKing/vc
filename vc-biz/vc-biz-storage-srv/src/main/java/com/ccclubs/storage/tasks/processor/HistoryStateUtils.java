@@ -2,10 +2,9 @@ package com.ccclubs.storage.tasks.processor;
 
 
 import com.ccclubs.phoenix.orm.model.CarState;
+import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.storage.impl.PhoenixStorageService;
 import com.ccclubs.storage.inf.BaseHbaseStorageInf;
-import com.ccclubs.storage.tasks.model.CsHistoryState;
-import com.ccclubs.pub.orm.model.CsState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,65 +38,6 @@ public class HistoryStateUtils extends ConvertUtils implements BaseHbaseStorageI
 
   private static final Logger logger = LoggerFactory.getLogger(HistoryStateUtils.class);
 
-  //private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
-
-  @Override
-  public void saveHistoryData(CsState csState) {
-
-
-    CsHistoryState historyState = new CsHistoryState();
-
-    historyState.setCshsAccess(csState.getCssAccess().intValue());
-    historyState.setCshsHost(csState.getCssHost().intValue());
-    historyState.setCshsCar(csState.getCssCar());
-    historyState.setCshsGear(csState.getCssGear().intValue());
-    historyState.setCshsNumber(csState.getCssNumber());
-    historyState.setCshsWarn(csState.getCssWarn());
-    historyState.setCshsPower(csState.getCssPower());
-    historyState.setCshsLongitude(csState.getCssLongitude());
-    historyState.setCshsLatitude(csState.getCssLatitude());
-    historyState.setCshsCsq(csState.getCssCsq());
-    historyState.setCshsCurrentTime(csState.getCssCurrentTime().getTime());
-    historyState.setCshsDir(csState.getCssDir().toString());
-    historyState.setCshsAddTime(System.currentTimeMillis());
-    historyState.setCshsMileage(csState.getCssMileage().intValue());
-    historyState.setCshsOrder(csState.getCssOrder());
-    historyState.setCshsTemperature(csState.getCssTemperature().shortValue());
-    historyState.setCshsEngineT(csState.getCssEngineT().intValue());
-    historyState.setCshsOil(csState.getCssOil().toString());
-    historyState.setCshsRented(csState.getCssRented());
-    historyState.setCshsPower(csState.getCssPower());
-    historyState.setCshsFuelMileage(csState.getCssFuelMileage().toString());
-    historyState.setCshsElectricMileage(csState.getCssElectricMileage().toString());
-
-    historyState.setCshsCircular(csState.getCssCircular());
-    historyState.setCshsPtc(csState.getCssPtc());
-    historyState.setCshsCompres(csState.getCssCompres());
-    historyState.setCshsFan(csState.getCssFan());
-    historyState.setCshsSaving(csState.getCssSaving());
-    historyState.setCshsDoor(String.valueOf(csState.getCssDoor()));
-
-    historyState.setCshsEngine(csState.getCssEngine());
-    historyState.setCshsKey(csState.getCssKey());
-    historyState.setCshsLight(csState.getCssLight());
-    historyState.setCshsLock(csState.getCssLock());
-
-    historyState.setCshsObdMile(csState.getCssObdMile().intValue());
-    historyState.setCshsSpeed(csState.getCssSpeed().shortValue());
-    historyState.setCshsEndurance(csState.getCssEndurance().toString());
-    historyState.setCshsMotor(csState.getCssMotor());
-    historyState.setCshsEvBattery(csState.getCssEvBattery());
-    historyState.setCshsCharging(csState.getCssCharging());
-    historyState.setCshsMoData(csState.getCssMoData());
-
-    historyState.setCshsGpsValid(csState.getCssGpsValid());
-    historyState.setCshsGpsCn(csState.getCssGpsCn());
-    historyState.setCshsGpsCount(csState.getCssGpsCount());
-
-    // 需要更新的当前状态加入等待队列
-//    ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_STATE_BATCH_INSERT_QUEUE, csState);
-  }
 
 
   @Override

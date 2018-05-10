@@ -32,9 +32,9 @@ public class RedisConst {
     /**
      * 网关记录终端在线的 redis key 前缀
      */
-    public static final String REDIS_KEY_TCP_ONLINE = "tcp:online";
+    public static final String REDIS_KEY_TCP_ONLINE = "TCP:ONLINE";
     /**
      * 网关记录终端离线的 redis key 前缀
      */
-    public static final String REDIS_KEY_TCP_OFFLINE = "tcp:offline";
+    public static final String REDIS_KEY_TCP_OFFLINE = "TCP:OFFLINE";
 }

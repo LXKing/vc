@@ -10,6 +10,8 @@ import java.math.BigDecimal;
  * @create 2018-05-09
  **/
 public class Jt808PositionData implements Serializable {
+
+    private static final long serialVersionUID = 7495821073984888521L;
     // 车架号
     String vin;
     // 车机号
@@ -32,6 +34,8 @@ public class Jt808PositionData implements Serializable {
     BigDecimal longitude;
     // 下位机时间
     Long currentTime;
+    // 平台处理时间
+    Long addTime;
     // 报警标志
     Integer alarmFlag;
     // 状态
@@ -172,4 +176,11 @@ public class Jt808PositionData implements Serializable {
     }
 
 
+    public Long getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Long addTime) {
+        this.addTime = addTime;
+    }
 }
