@@ -183,4 +183,27 @@ public class Jt808PositionData implements Serializable {
     public void setAddTime(Long addTime) {
         this.addTime = addTime;
     }
+
+    @Override
+    public String toString() {
+        return "Jt808PositionData{" +
+                "vin='" + vin + '\'' +
+                ", teNumber='" + teNumber + '\'' +
+                ", teNo='" + teNo + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", altitude=" + altitude +
+                ", course=" + course +
+                ", gpsSpeed=" + gpsSpeed +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", currentTime=" + currentTime +
+                ", addTime=" + addTime +
+                ", alarmFlag=" + alarmFlag +
+                ", status=" + status +
+                ", netStrength=" + netStrength +
+                ", gpsValid=" + gpsValid +
+                ", sourceHex='" + sourceHex + '\'' +
+                '}';
+    }
 }
