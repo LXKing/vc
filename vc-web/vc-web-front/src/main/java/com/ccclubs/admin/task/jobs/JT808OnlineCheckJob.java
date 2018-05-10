@@ -108,7 +108,6 @@ public class JT808OnlineCheckJob implements Runnable {
 
     //上线
     private void sendOnLineEvent(CsState state, CsVehicle vehicle) {
-        LOGGER.info("上线啦");
         ConnOnlineStatusEvent event = new ConnOnlineStatusEvent();
         event.setVin(vehicle.getCsvVin());
         event.setOnline(true);
