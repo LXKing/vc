@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * Time: 14:45
  * Email:fengjun@ccclubs.com
  */
-public abstract class ConvertUtils {
+public class ConvertUtils {
     public static Long convertToLong(Short param) {
         Long result = null;
         try {

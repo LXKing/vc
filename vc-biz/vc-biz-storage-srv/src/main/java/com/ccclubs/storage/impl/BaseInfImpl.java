@@ -45,10 +45,15 @@ public class BaseInfImpl {
 
                 }
             }
-            preparedStatement.executeBatch();
-            connection.commit();
-        } catch (Exception e) {
-            logger.info(tableName + " phoenix throw a error" + e.getMessage());
+            if (count%500==0){
+
+            }else {
+                preparedStatement.executeBatch();
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            logger.info(tableName + " phoenix throw a error :" + e.getMessage());
+            logger.info(tableName + "异常数据："+records.toString());
             e.printStackTrace();
         } finally {
             phoenixTool.closeResource(connection, preparedStatement, null, tableName + " saveOrUpdate ");

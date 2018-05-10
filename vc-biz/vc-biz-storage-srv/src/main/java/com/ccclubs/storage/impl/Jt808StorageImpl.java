@@ -127,6 +127,7 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
         } else {
             preparedStatement.setDouble(14, course);
         }
+
         Integer netStrength = convertToInterger(historyDate.getNetStrength());
         if (null == netStrength) {
             preparedStatement.setNull(15, Types.INTEGER);
@@ -134,7 +135,7 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
             preparedStatement.setInt(15, netStrength);
         }
 
-        //17-18  GPS_VALID,SOURCE_HEX
+        //16-17  GPS_VALID,SOURCE_HEX
         Integer gpsValid = historyDate.getGpsValid();
         if (null == gpsValid) {
             preparedStatement.setNull(16, Types.INTEGER);
@@ -143,7 +144,9 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
         }
         String sourceHex = historyDate.getSourceHex();
         preparedStatement.setString(17, sourceHex);
+
         preparedStatement.addBatch();
+
     }
 
     @Override
