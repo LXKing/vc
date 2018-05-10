@@ -1,15 +1,15 @@
 package com.ccclubs.storage.consumer;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.hbase.phoenix.config.PhoenixProperties;
 import com.ccclubs.pub.orm.dto.CsMessage;
+import com.ccclubs.storage.impl.GbMessageStorageImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE;
@@ -22,9 +22,32 @@ import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GB_MESSAGE;
  * @create 2018-04-20
  **/
 @Component
-public class CsMessageConsumer {
-    private static final Logger logger = LoggerFactory.getLogger(CsMessageConsumer.class);
-    private static final String SQL = "UPSERT INTO PHOENIX_CAR_GB_HISTORY " +
+public class GbMessageConsumer {
+
+    private static final Logger logger = LoggerFactory.getLogger(GbMessageConsumer.class);
+
+    @Autowired
+    GbMessageStorageImpl gbMessageStorage;
+
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE + "}", topics = "${" + KAFKA_TOPIC_GB_MESSAGE + "}", containerFactory = "batchFactory")
+    public void processNor(List<String> messageList) {
+        List<CsMessage> csMessageList = new ArrayList<>();
+        for (String message : messageList) {
+            CsMessage csMessage = JSONObject.parseObject(message, CsMessage.class);
+            if (csMessage == null) {
+                continue;
+            }
+            csMessageList.add(csMessage);
+        }
+        try {
+            gbMessageStorage.saveOrUpdate(csMessageList);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+
+    /*private static final String SQL = "UPSERT INTO PHOENIX_CAR_GB_HISTORY " +
             "(CS_VIN,ADD_TIME,CURRENT_TIME,GB_DATA,CS_ACCESS,CS_PROTOCOL," +
             "GB_TYPE,CS_VERIFY ) VALUES (" +
             "?, " + //CS_VIN
@@ -138,5 +161,5 @@ public class CsMessageConsumer {
                 logger.error(e.getMessage(), e);
             }
         }
-    }
+    }*/
 }
