@@ -177,14 +177,14 @@ public class TerminalStatusUtils {
     StringBuilder stringBuilder = new StringBuilder();
     //高字节无数据直接舍弃
     // 取低双字节
-    short autopilotValue = (short) (autopilotState & 0x0FFFF);
+    int autopilotValue = (int) (autopilotState & 0x0FFFF);
 
-    byte autopilotSite=(byte)(autopilotValue>>8);
+    int autopilotSite=(int)(autopilotValue>>8);
 
-    byte autopilotStateByte=(byte)(autopilotValue&0x0FF);
+    short autopilotStateByte=(short)(autopilotValue&0x0FF);
 
-    byte currentSite=(byte)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
-    byte targetSite=(byte)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
+    short currentSite=(short)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
+    short targetSite=(short)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
 
 
     if (targetSite==0x0){
@@ -218,8 +218,8 @@ public class TerminalStatusUtils {
     }
 
 
-    byte stopState=(byte)(autopilotStateByte>>6);// 0x0=默认值；0x1 =站点停靠; 0x2=区间停靠;0x3=非停靠状态;
-    byte autopilotRunState=(byte)(autopilotStateByte&0x03F);//0x0：默认值;0x1:  车辆Ready;  0x2：自动驾驶Active;  0x3:自动驾驶故障
+    short stopState=(short)(autopilotStateByte>>6);// 0x0=默认值；0x1 =站点停靠; 0x2=区间停靠;0x3=非停靠状态;
+    short autopilotRunState=(short)(autopilotStateByte&0x03F);//0x0：默认值;0x1:  车辆Ready;  0x2：自动驾驶Active;  0x3:自动驾驶故障
 
     if (stopState==0x0){
       stringBuilder.append("停靠状态为默认值");
@@ -266,6 +266,13 @@ public class TerminalStatusUtils {
 
 
     return stringBuilder.toString();
+  }
+
+  public static void main(String[] args){
+    int value=59267;
+    String result=getAutopilotString(value);
+    System.out.println(result);
+
   }
 
 

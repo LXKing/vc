@@ -15,7 +15,7 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       max-poll-records: 500
       enable-auto-commit: true
-      auto-commit-interval: 100
+      auto-commit-interval: 500
       auto-offset-reset: latest
 
 #kafka topic
@@ -23,14 +23,28 @@ kafka:
   consumer:
     group:
       storage:
-        csmessage: cgrp_storage_csmessage
-        cscan: cgrp_storage_cscan
-        csstate: cgrp_storage_csstate
+        gb:
+          message: cgrp_storage_gb_message
+        can: cgrp_storage_can
+        can-exp: cgrp_storage_can_exp
+        mqtt:
+          state: cgrp_storage_mqtt_state
+          state-exp: cgrp_storage_mqtt_state_exp
+        jt808:
+          position: cgrp_storage_jt_position
+          position-exp: cgrp_storage_jt_position_exp
   topic:
     history:
-      csmessage: topic_cs_message
-      cscan: topic_cs_can
-      csstate: topic_cs_state
+      gb:
+        message: topic_gb_message
+      can: topic_can
+      can-exp: topic_can_exp
+      mqtt:
+        state: topic_mqtt_state
+        state-exp: topic_mqtt_state_exp
+      jt808:
+        position: topic_jt_position
+        position-exp: topic_jt_position_exp
 
 dubbo:
   scan:

@@ -1,7 +1,6 @@
 String.prototype.Trim = function () {
     return this.replace(/^\s+/g, "").replace(/\s+$/g, "");
 }
-var authUrl = "http://116.62.31.211:8081";
 
 var storage = window.localStorage;
 var cookieUtil = {

@@ -22,7 +22,8 @@
 		<module>vc-web-phoenix-srv</module>
 		<!--<module>vc-web-test-app</module>-->
         <module>vc-web-storage-srv</module>
-    </modules>
+        <module>vc-web-report-srv</module>
+	</modules>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

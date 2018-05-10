@@ -29,6 +29,17 @@ spring:
         password: zkj2017
         database: vc_remote
         authenticationDatabase: vc_remote
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+#kafka 车辆上线离线 topic
+kafka:
+  topic:
+    gateway:
+      conn: topic_conn_status
 
 dubbo:
   scan:
@@ -77,3 +88,4 @@ email:
 
 filedisk:
   path: /opt/vc_folder/
+

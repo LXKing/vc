@@ -1,7 +1,7 @@
 package com.ccclubs.storage;
 
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
-import com.ccclubs.storage.tasks.util.BatchProperties;
+import com.ccclubs.storage.util.BatchProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

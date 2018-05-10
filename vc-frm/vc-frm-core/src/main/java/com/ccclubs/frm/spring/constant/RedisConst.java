@@ -25,7 +25,16 @@ public class RedisConst {
      */
     public static final String REDIS_KEY_808_CSRSID_GEN = "cmd:sidgen";
     /**
-     * 记录终端在线的 redis key
+     * 记录终端在线的 redis key 前缀
      */
     public static final String REDIS_KEY_ONLINE = "online:";
+
+    /**
+     * 网关记录终端在线的 redis key 前缀
+     */
+    public static final String REDIS_KEY_TCP_ONLINE = "TCP:ONLINE";
+    /**
+     * 网关记录终端离线的 redis key 前缀
+     */
+    public static final String REDIS_KEY_TCP_OFFLINE = "TCP:OFFLINE";
 }

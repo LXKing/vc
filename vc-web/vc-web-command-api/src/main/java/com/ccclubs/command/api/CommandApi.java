@@ -22,6 +22,8 @@ import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,6 +45,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("command")
 @RestController
 public class CommandApi {
+
+    private static final Logger logger = LoggerFactory.getLogger(CommandApi.class);
 
     @Reference(version = CommandServiceVersion.V1)
     TerminalUpgradeInf upgradeCmd;
@@ -90,6 +94,7 @@ public class CommandApi {
     @ApiOperation(value = "一键升级", notes = "根据车辆vin码升级该车终端")
     @PostMapping("oneKeyUpgrade")
     public ApiMessage<UpgradeOutput> oneKeyUpgrade(@RequestHeader("appId") String appId, UpgradeInput input) {
+        logger.info("API事件:一键升级,APPID:{},车架号:{},升级程序包:{}", input.getAppId(), input.getVin(), input.getFilename());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -120,6 +125,7 @@ public class CommandApi {
     @ApiOperation(value = "简单指令下发", notes = "传入车辆Vin码和指令类型，进行简单指令下发")
     @PostMapping("sendSimpleCmd")
     public ApiMessage<SimpleCmdOutput> sendSimpleCmd(@RequestHeader("appId") String appId, SimpleCmdInput input) {
+        logger.info("API事件:简单指令下发,APPID:{},车架号:{},指令:{}", input.getAppId(), input.getVin(), input.getCmd());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -138,6 +144,8 @@ public class CommandApi {
     @ApiOperation(value = "省电模式切换", notes = "省电模式切换")
     @PostMapping("powerModeSwitch")
     public ApiMessage<PowerModeOutput> powerModeSwitch(@RequestHeader("appId") String appId, PowerModeInput input) {
+        logger.info("API事件:省电模式切换,APPID:{},车架号:{},功耗模式:{},休眠秒数:{}", input.getAppId(), input.getVin(),
+                input.getType(), input.getSecond());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -156,6 +164,7 @@ public class CommandApi {
     @ApiOperation(value = "终端校时", notes = "终端校时")
     @PostMapping("timeSynchronization")
     public ApiMessage<TimeSyncOutput> timeSynchronization(@RequestHeader("appId") String appId, TimeSyncInput input) {
+        logger.info("API事件:终端校时,APPID:{},车架号:{},校对时间:{}", input.getAppId(), input.getVin(), input.getTime());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -174,6 +183,8 @@ public class CommandApi {
     @ApiOperation(value = "空调控制-单个控制项", notes = "空调控制-单个控制项")
     @PostMapping("airConditionerMonoCtrl")
     public ApiMessage<AirMonoOutput> airConditionerMonoCtrl(@RequestHeader("appId") String appId, AirMonoInput input) {
+        logger.info("API事件:终端校时,APPID:{},车架号:{},控制项:{},控制项:{},控制项值:{}", input.getAppId(), input.getVin(),
+                input.getItem(), input.getValue());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -192,6 +203,8 @@ public class CommandApi {
     @ApiOperation(value = "空调控制-全部控制项", notes = "空调控制-全部控制项")
     @PostMapping("airConditionerAllCtrl")
     public ApiMessage<AirAllOutput> airConditionerAllCtrl(@RequestHeader("appId") String appId, AirAllInput input) {
+        logger.info("API事件:终端校时,APPID:{},车架号:{},内外循环模式:{},PTC启停:{},压缩机启停:{},风量:{}", input.getAppId(),
+                input.getVin(), input.getCircular(), input.getPtc(), input.getCompress(), input.getFan());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -210,6 +223,9 @@ public class CommandApi {
     @ApiOperation(value = "订单数据下发", notes = "订单数据下发")
     @PostMapping("issueOrderData")
     public ApiMessage<IssueOrderOutput> issueOrderData(@RequestHeader("appId") String appId, IssueOrderInput input) {
+        logger.info("API事件:终端校时,APPID:{},车架号:{},订单号:{},订单开始时间:{},订单结束时间:{},真实姓名:{},手机号:{},性别:{}",
+                input.getAppId(), input.getVin(), input.getOrderId(), input.getStartTime(), input.getEndTime(),
+                input.getRealName(), input.getMobile(), input.getGender());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -288,6 +304,8 @@ public class CommandApi {
     @ApiOperation(value = "下发订单数据--需要授权信息", notes = "下发订单数据--需要授权信息")
     @PostMapping("issueAuthOrderData")
     public ApiMessage<IssueAuthOrderOutput> issueAuthOrderData(@RequestHeader("appId") String appId, IssueAuthOrderInput input) {
+        logger.info("API事件:终端校时,APPID:{},车架号:{},订单号:{},订单开始时间:{},订单结束时间:{},RFID号:{},授权码:{}", input.getAppId(),
+                input.getVin(), input.getOrderId(), input.getStartTime(), input.getEndTime(), input.getRfid(), input.getAuthCode());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -306,6 +324,8 @@ public class CommandApi {
     @ApiOperation(value = "设置DVD车载APP最新版本", notes = "设置DVD车载APP最新版本（仅设置版本号）")
     @PostMapping("setDvdVersion")
     public ApiMessage<DvdVersionOutput> setDvdVersion(@RequestHeader("appId") String appId, DvdVersionIntput input) {
+        logger.info("API事件:设置DVD车载APP最新版本,APPID:{},车架号:{},最新版本号:{}", input.getAppId(), input.getVin(),
+                input.getLatestVersion());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -324,6 +344,7 @@ public class CommandApi {
     @ApiOperation(value = "设置充电还车配置", notes = "配置还车时是否校验充电状态0：还车时，终端不校验车辆充电；1：还车时，终端需要校验车辆充电，不充电不允许还车。")
     @PostMapping("setReturn")
     public ApiMessage<ReturnCheckOutput> setReturn(@RequestHeader("appId") String appId, ReturnCheckInput input) {
+        logger.info("API事件:设置充电还车配置,APPID:{},车架号:{},充电检查配置项值:{}", input.getAppId(), input.getVin(), input.getValue());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -342,6 +363,7 @@ public class CommandApi {
     @ApiOperation(value = "车门落锁-带控制参数", notes = "车门落锁-带控制参数")
     @PostMapping("lockDoorWithCtrl")
     public ApiMessage<LockDoorOutput> lockDoorWithCtrl(@RequestHeader("appId") String appId, LockDoorInput input) {
+        logger.info("API事件:车门落锁-带控制参数,APPID:{},车架号:{},控制参数:{}", input.getAppId(), input.getVin(), input.getCode());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
@@ -374,6 +396,8 @@ public class CommandApi {
     @ApiOperation(value = "语音指令下发", notes = "自动驾驶-下发语音编号指令")
     @PostMapping("voice")
     public ApiMessage voiceCommand(@RequestHeader("appId") String appId, VoiceIssuedInput input) {
+        logger.info("API事件:语音指令下发,APPID:{},车架号:{},语音编号:{},语音类型:{}", input.getAppId(), input.getVin(),
+                input.getVoiceNum(), input.getVoiceType());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
@@ -393,6 +417,7 @@ public class CommandApi {
     @ApiOperation(value = "站点编号下发", notes = "自动驾驶-站点编号下发")
     @PostMapping("site")
     public ApiMessage siteCommand(@RequestHeader("appId") String appId, SiteIssuedInput input) {
+        logger.info("API事件:站点编号下发,APPID:{},车架号:{},站点编号:{}", input.getAppId(), input.getVin(), input.getSiteNum());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);

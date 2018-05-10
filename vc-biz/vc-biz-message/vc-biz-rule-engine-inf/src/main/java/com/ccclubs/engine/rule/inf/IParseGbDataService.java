@@ -5,6 +5,7 @@ import com.ccclubs.protocol.dto.gb.GBMessage;
 
 public interface IParseGbDataService {
 
-  void processMessage(GBMessage message, byte[] srcByteArray);
+  void processRtMessage(GBMessage message);
+  void processAllMessage(GBMessage message);
 
 }

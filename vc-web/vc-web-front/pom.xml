@@ -131,12 +131,16 @@
             <artifactId>easypoi-base</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!--kafka-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
         <!--<dependency>
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-web</artifactId>
             <version>3.1.0</version>
         </dependency>-->
-
     </dependencies>
 
     <build>

@@ -1,5 +1,3 @@
-document.write("<script src='/js/url.js'><\/script>");
-
 function getServUrl(path) {
     // if (path.indexOf("crback/") != -1) {
     //     servUrl = "http://118.178.230.105:7004";
