@@ -12,7 +12,7 @@ public class CarState implements Serializable{
     private static final long serialVersionUID = -4920229013098094437L;
     //车机号
     private String cs_number;
-    //private String cs_vin;
+    private String cs_vin;
 
     //授权系统
     private Integer cs_access;
@@ -173,6 +173,14 @@ public class CarState implements Serializable{
 
     public Float getObd_miles() {
         return obd_miles;
+    }
+
+    public String getCs_vin() {
+        return cs_vin;
+    }
+
+    public void setCs_vin(String cs_vin) {
+        this.cs_vin = cs_vin;
     }
 
     public void setObd_miles(Float obd_miles) {

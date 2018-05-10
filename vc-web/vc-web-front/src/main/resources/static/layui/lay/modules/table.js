@@ -279,6 +279,10 @@ layui.define(['laytpl', 'laypage', 'layer', 'form'], function(exports){
         ,url: options.url
         ,data: $.extend(params, options.where)
         ,dataType: 'json'
+        ,beforeSend: function (xhr) {
+            var token = cookieUtil.get("token");
+            xhr.setRequestHeader("Authorization", token);
+        }
         ,success: function(res){
           if(res[response.statusName] != response.statusCode){
             that.renderForm();

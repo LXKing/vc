@@ -52,6 +52,11 @@
             <artifactId>vc-frm-spring</artifactId>
             <version>${frm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-frm-ons</artifactId>
+            <version>${frm.version}</version>
+        </dependency>
         <!-- biz -->
         <dependency>
             <groupId>www.ccclubs</groupId>
@@ -131,6 +136,12 @@
             <artifactId>easypoi-base</artifactId>
             <version>3.1.0</version>
         </dependency>
+        <!--kafka-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!--<dependency>
             <groupId>cn.afterturn</groupId>
             <artifactId>easypoi-web</artifactId>

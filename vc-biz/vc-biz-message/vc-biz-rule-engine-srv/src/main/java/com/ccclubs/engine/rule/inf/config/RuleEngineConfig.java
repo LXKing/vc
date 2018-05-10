@@ -32,6 +32,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import javax.annotation.Resource;
+
 /**
  * 规则引擎配置
  *
@@ -41,13 +43,13 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class RuleEngineConfig {
 
-  @Autowired
+  @Resource
   private MqttAliyunProperties mqttAliyunProperties;
 
-  @Autowired
+  @Resource
   private MqttOwnProperties mqttOwnProperties;
 
-  @Autowired
+  @Resource
   private OnsProperties onsProperties;
 
   /**
@@ -102,11 +104,6 @@ public class RuleEngineConfig {
     return parseDataService;
   }
 
-  @Bean(name = "parseGbDataService")
-  public IParseGbDataService parseGbDataService() {
-    ParseGbDataService parseGbDataService = new ParseGbDataService();
-    return parseGbDataService;
-  }
 
   @Bean(name = "mqMessageProcessService")
   public IMqMessageProcessService mqMessageProcessService() {
@@ -114,7 +111,6 @@ public class RuleEngineConfig {
     mqMessageProcessService.setClient(producer());
     mqMessageProcessService.setMqAckService(ackService());
     mqMessageProcessService.setParseDataService(parseDataService());
-    mqMessageProcessService.setParseGbDataService(parseGbDataService());
     return mqMessageProcessService;
   }
 

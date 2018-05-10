@@ -29,7 +29,7 @@ import java.io.IOException;
  **/
 @SpringBootApplication
 @Import({MybatisConfig.class})
-@ImportAutoConfiguration({RedisAutoConfiguration.class,OnsProperties.class,
+@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class,
         MqttAliyunProperties.class, MqttOwnProperties.class, RuleEngineConfig.class, MultipleMongoConfig.class,
     BatchProperties.class})
 @EnableScheduling

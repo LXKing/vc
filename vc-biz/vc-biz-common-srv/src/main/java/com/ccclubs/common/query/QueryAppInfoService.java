@@ -56,4 +56,16 @@ public class QueryAppInfoService {
   public SrvHost queryHostById(Integer id) {
     return dao.selectByPrimaryKey(id);
   }
+
+
+
+
+
+
+
+
+
+
+
+
 }

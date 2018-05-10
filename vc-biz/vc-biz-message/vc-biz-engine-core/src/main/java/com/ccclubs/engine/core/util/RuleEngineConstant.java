@@ -39,5 +39,12 @@ public class RuleEngineConstant {
   /*历史国标数据等待写入队列 hbase*/
   public static final String REDIS_KEY_HISTORY_MESSAGE_BATCH_INSERT_HBASE_QUEUE = "message:batchInsert";
 
+  /**
+   * MachineMapping 的查询参数类型
+   */
+  public static final String MACHINEMAPPING_SIMNO = "SIMNO";
+  public static final String MACHINEMAPPING_CARNUMBER = "CARNUMBER";
+  public static final String MACHINEMAPPING_VIN = "VIN";
+
 
 }

@@ -15,7 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//@Component
+@Component
 public class TokenInterceptor  implements HandlerInterceptor {
 
     Logger logger= LoggerFactory.getLogger(TokenInterceptor.class);
