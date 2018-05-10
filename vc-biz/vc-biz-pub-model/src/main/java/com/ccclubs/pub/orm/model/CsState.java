@@ -1990,63 +1990,61 @@ public class CsState implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", cssId=").append(cssId);
-        sb.append(", cssAccess=").append(cssAccess);
-        sb.append(", cssHost=").append(cssHost);
-        sb.append(", cssNumber=").append(cssNumber);
-        sb.append(", cssCar=").append(cssCar);
-        sb.append(", cssAddTime=").append(cssAddTime);
-        sb.append(", cssCurrentTime=").append(cssCurrentTime);
-        sb.append(", cssRented=").append(cssRented);
-        sb.append(", cssWarn=").append(cssWarn);
-        sb.append(", cssRfid=").append(cssRfid);
-        sb.append(", cssRfidDte=").append(cssRfidDte);
-        sb.append(", cssObdMile=").append(cssObdMile);
-        sb.append(", cssEngineT=").append(cssEngineT);
-        sb.append(", cssMileage=").append(cssMileage);
-        sb.append(", cssSpeed=").append(cssSpeed);
-        sb.append(", cssMotor=").append(cssMotor);
-        sb.append(", cssOil=").append(cssOil);
-        sb.append(", cssPower=").append(cssPower);
-        sb.append(", cssEvBattery=").append(cssEvBattery);
-        sb.append(", cssCharging=").append(cssCharging);
-        sb.append(", cssFuelMileage=").append(cssFuelMileage);
-        sb.append(", cssElectricMileage=").append(cssElectricMileage);
-        sb.append(", cssEndurance=").append(cssEndurance);
-        sb.append(", cssTemperature=").append(cssTemperature);
-        sb.append(", cssCsq=").append(cssCsq);
-        sb.append(", cssPowerConsumption=").append(cssPowerConsumption);
-        sb.append(", cssLongitude=").append(cssLongitude);
-        sb.append(", cssLatitude=").append(cssLatitude);
-        sb.append(", cssGpsValid=").append(cssGpsValid);
-        sb.append(", cssGpsCn=").append(cssGpsCn);
-        sb.append(", cssGpsCount=").append(cssGpsCount);
-        sb.append(", cssDir=").append(cssDir);
-        sb.append(", cssCircular=").append(cssCircular);
-        sb.append(", cssPtc=").append(cssPtc);
-        sb.append(", cssCompres=").append(cssCompres);
-        sb.append(", cssFan=").append(cssFan);
-        sb.append(", cssSaving=").append(cssSaving);
-        sb.append(", cssDoor=").append(cssDoor);
-        sb.append(", cssEngine=").append(cssEngine);
-        sb.append(", cssKey=").append(cssKey);
-        sb.append(", cssGear=").append(cssGear);
-        sb.append(", cssLight=").append(cssLight);
-        sb.append(", cssLock=").append(cssLock);
-        sb.append(", cssNetType=").append(cssNetType);
-        sb.append(", cssBaseLac=").append(cssBaseLac);
-        sb.append(", cssBaseCi=").append(cssBaseCi);
-        sb.append(", cssOrder=").append(cssOrder);
-        sb.append(", cssMoData=").append(cssMoData);
-        sb.append(", cssTeNo=").append(cssTeNo);
-        sb.append(", cssAutopilot=").append(cssAutopilot);
-        sb.append(", cssHandbrake=").append(cssHandbrake);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "CsState{" +
+                "cssId=" + cssId +
+                ", cssAccess=" + cssAccess +
+                ", cssHost=" + cssHost +
+                ", cssNumber='" + cssNumber + '\'' +
+                ", cssTeNo='" + cssTeNo + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", cssVin='" + cssVin + '\'' +
+                ", cssCar=" + cssCar +
+                ", cssAddTime=" + cssAddTime +
+                ", cssCurrentTime=" + cssCurrentTime +
+                ", cssRented='" + cssRented + '\'' +
+                ", cssWarn=" + cssWarn +
+                ", cssRfid='" + cssRfid + '\'' +
+                ", cssRfidDte='" + cssRfidDte + '\'' +
+                ", cssObdMile=" + cssObdMile +
+                ", cssEngineT=" + cssEngineT +
+                ", cssMileage=" + cssMileage +
+                ", cssSpeed=" + cssSpeed +
+                ", cssMotor=" + cssMotor +
+                ", cssOil=" + cssOil +
+                ", cssPower=" + cssPower +
+                ", cssEvBattery=" + cssEvBattery +
+                ", cssCharging=" + cssCharging +
+                ", cssFuelMileage=" + cssFuelMileage +
+                ", cssElectricMileage=" + cssElectricMileage +
+                ", cssEndurance=" + cssEndurance +
+                ", cssTemperature=" + cssTemperature +
+                ", cssCsq=" + cssCsq +
+                ", cssPowerConsumption='" + cssPowerConsumption + '\'' +
+                ", cssLongitude=" + cssLongitude +
+                ", cssLatitude=" + cssLatitude +
+                ", cssGpsValid=" + cssGpsValid +
+                ", cssGpsCn=" + cssGpsCn +
+                ", cssGpsCount=" + cssGpsCount +
+                ", cssDir=" + cssDir +
+                ", cssCircular=" + cssCircular +
+                ", cssPtc=" + cssPtc +
+                ", cssCompres=" + cssCompres +
+                ", cssFan=" + cssFan +
+                ", cssSaving=" + cssSaving +
+                ", cssDoor='" + cssDoor + '\'' +
+                ", cssEngine=" + cssEngine +
+                ", cssKey=" + cssKey +
+                ", cssGear=" + cssGear +
+                ", cssLight=" + cssLight +
+                ", cssLock=" + cssLock +
+                ", cssNetType=" + cssNetType +
+                ", cssBaseLac=" + cssBaseLac +
+                ", cssBaseCi=" + cssBaseCi +
+                ", cssOrder=" + cssOrder +
+                ", cssMoData='" + cssMoData + '\'' +
+                ", cssAutopilot=" + cssAutopilot +
+                ", cssHandbrake=" + cssHandbrake +
+                '}';
     }
 }

@@ -160,4 +160,25 @@ public class CsMessage implements Serializable {
     public void setCsmStatus(Short csmStatus) {
         this.csmStatus = csmStatus;
     }
+
+    @Override
+    public String toString() {
+        return "CsMessage{" +
+                "csmId=" + csmId +
+                ", csmAccess=" + csmAccess +
+                ", csmNumber='" + csmNumber + '\'' +
+                ", teNo='" + teNo + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", csmCar=" + csmCar +
+                ", csmVin='" + csmVin + '\'' +
+                ", csmProtocol=" + csmProtocol +
+                ", csmType=" + csmType +
+                ", csmVerify=" + csmVerify +
+                ", csmMsgTime=" + csmMsgTime +
+                ", csmAddTime=" + csmAddTime +
+                ", csmData='" + csmData + '\'' +
+                ", csmStatus=" + csmStatus +
+                '}';
+    }
 }

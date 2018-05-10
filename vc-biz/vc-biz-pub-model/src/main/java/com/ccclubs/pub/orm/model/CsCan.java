@@ -733,29 +733,28 @@ public class CsCan implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", cscId=").append(cscId);
-        sb.append(", cscAccess=").append(cscAccess);
-        sb.append(", cscHost=").append(cscHost);
-        sb.append(", cscNumber=").append(cscNumber);
-        sb.append(", cscCar=").append(cscCar);
-        sb.append(", cscModel=").append(cscModel);
-        sb.append(", cscType=").append(cscType);
-        sb.append(", cscOrder=").append(cscOrder);
-        sb.append(", cscData=").append(cscData);
-        sb.append(", cscFault=").append(cscFault);
-        sb.append(", cscUploadTime=").append(cscUploadTime);
-        sb.append(", cscAddTime=").append(cscAddTime);
-        sb.append(", cscLarum=").append(cscLarum);
-        sb.append(", cscPrompt=").append(cscPrompt);
-        sb.append(", cscDealDesc=").append(cscDealDesc);
-        sb.append(", cscDealTime=").append(cscDealTime);
-        sb.append(", cscStatus=").append(cscStatus);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "CsCan{" +
+                "cscId=" + cscId +
+                ", cscAccess=" + cscAccess +
+                ", cscHost=" + cscHost +
+                ", cscNumber='" + cscNumber + '\'' +
+                ", cscVin='" + cscVin + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", teNo='" + teNo + '\'' +
+                ", cscCar=" + cscCar +
+                ", cscModel=" + cscModel +
+                ", cscType=" + cscType +
+                ", cscOrder=" + cscOrder +
+                ", cscData='" + cscData + '\'' +
+                ", cscFault='" + cscFault + '\'' +
+                ", cscUploadTime=" + cscUploadTime +
+                ", cscAddTime=" + cscAddTime +
+                ", cscLarum='" + cscLarum + '\'' +
+                ", cscPrompt='" + cscPrompt + '\'' +
+                ", cscDealDesc='" + cscDealDesc + '\'' +
+                ", cscDealTime=" + cscDealTime +
+                ", cscStatus=" + cscStatus +
+                '}';
     }
 }
