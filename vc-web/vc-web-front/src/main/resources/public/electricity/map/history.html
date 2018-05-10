@@ -277,7 +277,7 @@
       var params = {
         csVinEquals: '',
         page: 1,
-        rows: 500,
+        rows: 400,
         addTimeStart: '',
         addTimeEnd: '',
         isResolve: false,
@@ -497,11 +497,10 @@
                   return;
                 }
 
+                pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
+                pathSimplifierIns.setData(pathObjectArray);
                 if (navg == null) {
                   //设置path数组
-                  pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
-                  pathSimplifierIns.setData(pathObjectArray);
-
                   navg = pathSimplifierIns.createPathNavigator(0, {
                     //loop: true,
                     // speed: 1000,
@@ -520,8 +519,6 @@
 
                   var cursor = navg.getCursor().clone(), //保存巡航器的位置
                       status = navg.getNaviStatus();
-                  pathObjectArray[0].path = pathObjectArray[0].path.concat(pathRoutes);
-                  pathSimplifierIns.setData(pathObjectArray); //延展路径
                   //重新建立一个巡航器
                   navg = pathSimplifierIns.createPathNavigator(0, {
                     //loop: true, //循环播放
