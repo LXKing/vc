@@ -39,16 +39,16 @@ public class LogicHelperMqtt {
     @Resource
     private KafkaTemplate kafkaTemplate;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CAN + "}")
     String kafkaTopicCsCan;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN_EXP + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CAN_EXP + "}")
     String kafkaTopicCsCanExp;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_MQTT_STATE + "}")
     String kafkaTopicCsState;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_STATE_EXP + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_MQTT_STATE_EXP + "}")
     String kafkaTopicCsStateExp;
 
     @Resource

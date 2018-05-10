@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_STATE;
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CS_STATE;
+import static com.ccclubs.frm.spring.constant.KafkaConst.*;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -29,7 +28,7 @@ public class CsStateConsumer {
 
     @Autowired
     HistoryStateUtils historyStateUtils;
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_STATE + "}", topics = "${" + KAFKA_TOPIC_CS_STATE + "}", containerFactory = "batchFactory")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_MQTT_STATE + "}", topics = "${" + KAFKA_TOPIC_MQTT_STATE + "}", containerFactory = "batchFactory")
     public void processCanStorage(List<String> messageList){
         List<CsState> csStateList=new ArrayList<>();
         for (String message:messageList){

@@ -40,10 +40,10 @@ public class LogicHelperJt808 {
     @Resource
     private KafkaTemplate kafkaTemplate;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CAN + "}")
     String kafkaTopicCsCan;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_CAN_EXP + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CAN_EXP + "}")
     String kafkaTopicCsCanExp;
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_JT_POSITION + "}")

@@ -23,19 +23,19 @@ public class KafkaConst {
     /**
      * kafka集群GB历史数据topic配置名称
      */
-    public static final String KAFKA_TOPIC_CS_MESSAGE = "kafka.topic.history.csmessage";
+    public static final String KAFKA_TOPIC_GB_MESSAGE = "kafka.topic.history.gb.message";
 
     /**
      * kafka集群CAN历史数据topic配置名称(所有的can报文)s
      */
-    public static final String KAFKA_TOPIC_CS_CAN = "kafka.topic.history.cscan";
-    public static final String KAFKA_TOPIC_CS_CAN_EXP = "kafka.topic.history.cscan-exp";
+    public static final String KAFKA_TOPIC_CAN = "kafka.topic.history.can";
+    public static final String KAFKA_TOPIC_CAN_EXP = "kafka.topic.history.can-exp";
 
     /**
      * kafka集群STATE历史数据topic配置名称(分时租赁实时状态)
      */
-    public static final String KAFKA_TOPIC_CS_STATE = "kafka.topic.history.csstate";
-    public static final String KAFKA_TOPIC_CS_STATE_EXP = "kafka.topic.history.csstate-exp";
+    public static final String KAFKA_TOPIC_MQTT_STATE = "kafka.topic.history.mqtt.state";
+    public static final String KAFKA_TOPIC_MQTT_STATE_EXP = "kafka.topic.history.mqtt.state-exp";
 
     /**
      * kafka集群JT808位置历史数据topic配置名称
@@ -66,11 +66,11 @@ public class KafkaConst {
     /*--------------------*
      * 消费者组
      *--------------------*/
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE = "kafka.consumer.group.storage.csmessage";
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN = "kafka.consumer.group.storage.cscan";
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN_EXP = "kafka.consumer.group.storage.cscan-exp";
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_STATE = "kafka.consumer.group.storage.csstate";
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_STATE_EXP = "kafka.consumer.group.storage.csstate-exp";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE = "kafka.consumer.group.storage.gb.message";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN = "kafka.consumer.group.storage.can";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN_EXP = "kafka.consumer.group.storage.can-exp";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_MQTT_STATE = "kafka.consumer.group.storage.mqtt.state";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_MQTT_STATE_EXP = "kafka.consumer.group.storage.mqtt.state-exp";
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION = "kafka.consumer.group.storage.jt808.position";
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION_EXP = "kafka.consumer.group.storage.jt808.position-exp";
 
@@ -79,4 +79,5 @@ public class KafkaConst {
     public static final String KAFKA_CONSUMER_GROUP_RULE_CONN = "kafka.consumer.group.rule.conn";
 
     public static final String KAFKA_CONSUMER_GROUP_RULE_STREAM_JUMP_SOC = "kafka.consumer.group.rule.stream.jump-soc";
+
 }

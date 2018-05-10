@@ -53,7 +53,7 @@ public class ParseGbDataService implements IParseGbDataService {
     @Value("${" + ConstantUtils.MQ_TOPIC + "}")
     String topic;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_CS_MESSAGE + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_GB_MESSAGE + "}")
     String kafkaTopicCsMessage;
 
     @Resource
