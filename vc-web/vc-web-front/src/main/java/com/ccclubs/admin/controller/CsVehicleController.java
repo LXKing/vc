@@ -775,7 +775,13 @@ public class CsVehicleController {
                         //状态默认值
                         for (int columnNum = 1; columnNum < columns; columnNum++) {
                             Cell cell = row.getCell(columnNum);
+                            if (cell == null) {
+                                continue;
+                            }
                             getExternalData(csVehicle, cell, columnNum);
+                        }
+                        if (csVehicle.getCsvVin() == null) {
+                            continue;
                         }
                         //接入商
                         if (csVehicleTemp.getCsvAccess() != null) {
