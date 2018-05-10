@@ -111,6 +111,10 @@ public class ParseGbDataService implements IParseGbDataService {
         csMessage.setCsmVin(message.getVin());
         // 加入车机号 add by jhy 2018.5.8
         csMessage.setCsmNumber(csMachine == null ? null : csMachine.getCsmNumber());
+        csMessage.setTeNo(csMachine == null ? null : csMachine.getCsmTeNo());
+        csMessage.setIccid(csMachine == null ? null : csMachine.getCsmIccid());
+        csMessage.setMobile(csMachine == null ? null : csMachine.getCsmMobile());
+        csMessage.setCsmNumber(csMachine == null ? null : csMachine.getCsmNumber());
         csMessage.setCsmProtocol((short) 0);
         csMessage.setCsmType((short) message.getMessageType());
         csMessage.setCsmVerify(StringUtils.empty(message.getErrorMessage()) ? (short) 1 : 0);

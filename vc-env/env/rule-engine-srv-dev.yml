@@ -69,11 +69,13 @@ kafka:
       success-heart: topic_gb_0x07
       success-time: topic_gb_0x08
     history: #OUT 发送到下游
-      csmessage: topic_cs_message
-      cscan: topic_cs_can
-      cscan-exp: topic_cs_can_exp
-      csstate: topic_cs_state
-      csstate-exp: topic_cs_state_exp
+      gb:
+        message: topic_gb_message
+      can: topic_can
+      can-exp: topic_can_exp
+      mqtt:
+        state: topic_mqtt_state
+        state-exp: topic_mqtt_state_exp
       jt808:
         position: topic_jt_position
         position-exp: topic_jt_position_exp

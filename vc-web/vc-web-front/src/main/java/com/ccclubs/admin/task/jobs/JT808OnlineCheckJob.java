@@ -77,12 +77,12 @@ public class JT808OnlineCheckJob implements Runnable {
         List<CsState> list = stateService.getAllByParam(query.getCrieria());
         for (CsState state : list) {
             long between = System.currentTimeMillis() - state.getCssCurrentTime().getTime();
-            //之前的状态
-            int preStatus = PRE_STATUS_OFFLINE;
+            //之前的状态(默认online)
+            int preStatus = PRE_STATUS_ONLINE;
             if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_OFFLINE, state.getCssCar().toString())) {
                 preStatus = PRE_STATUS_OFFLINE;
             }
-            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, state.getCssCar())) {
+            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, state.getCssCar().toString())) {
                 preStatus = PRE_STATUS_ONLINE;
             }
             //当前是离线
@@ -93,8 +93,8 @@ public class JT808OnlineCheckJob implements Runnable {
                         break;
                     //之前在线
                     case 1:
-                        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, state.getCssCar(), state.getCssCurrentTime());
-                        redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, state.getCssCar(), state.getCssCurrentTime());
+                        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, state.getCssCar().toString(), state.getCssCurrentTime());
+                        redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, state.getCssCar().toString(), state.getCssCurrentTime());
                         sendOffLineEvent(state);
                         break;
                     default:
@@ -106,8 +106,8 @@ public class JT808OnlineCheckJob implements Runnable {
                 switch (preStatus) {
                     //之前离线
                     case 0:
-                        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, state.getCssCar(), state.getCssCurrentTime());
-                        redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, state.getCssCar(), state.getCssCurrentTime());
+                        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, state.getCssCar().toString(), state.getCssCurrentTime());
+                        redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, state.getCssCar().toString(), state.getCssCurrentTime());
                         sendOnLineEvent(state);
                         break;
                     //之前在线
