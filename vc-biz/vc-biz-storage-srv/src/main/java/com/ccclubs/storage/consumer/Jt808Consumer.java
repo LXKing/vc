@@ -45,11 +45,13 @@ public class Jt808Consumer {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        logger.debug("Save nor jt808 data done:"+messageList.size());
     }
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION_EXP + "}", topics = "${" + KAFKA_TOPIC_JT_POSITION_EXP + "}", containerFactory = "batchFactory")
     public void processExp(List<String> messageList) {
         this.processNor(messageList);
+        logger.debug("Save exp jt808 data done:"+messageList.size());
     }
 
 }

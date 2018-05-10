@@ -70,9 +70,11 @@ public class CanStorageImpl implements BaseHistoryInf<CsCan> {
         if (!StringUtils.isEmpty(records.get(0).getCscVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseCanUpsertSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR);
+            logger.debug("Save nor can end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseCanUpsertSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP);
+            logger.debug("Save exp can end."+records.size());
         }
     }
 }

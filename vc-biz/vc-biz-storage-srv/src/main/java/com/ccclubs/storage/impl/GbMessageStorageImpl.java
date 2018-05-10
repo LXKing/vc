@@ -103,6 +103,7 @@ public class GbMessageStorageImpl implements BaseHistoryInf<CsMessage> {
         }
         baseImpl.saveOrUpdate(records, this,
                 baseGbMessageUpsertSql, PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY);
+        logger.debug("Save nor gb end."+records.size());
     }
 
 

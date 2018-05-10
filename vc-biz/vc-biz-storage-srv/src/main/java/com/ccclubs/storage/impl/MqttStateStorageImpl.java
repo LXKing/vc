@@ -418,9 +418,11 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
         if (!StringUtils.isEmpty(records.get(0).getCssVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseMqttStateUpsertSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR);
+            logger.debug("Save nor mqtt end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseMqttStateUpsertSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
+            logger.debug("Save nor mqtt end."+records.size());
         }
 
     }

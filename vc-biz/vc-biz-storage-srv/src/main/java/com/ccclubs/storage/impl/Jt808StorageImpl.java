@@ -103,8 +103,8 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
             preparedStatement.setDouble(13, altitude);
         }
         Float gpsSpeed = null;
-        if (null != historyDate.getSpeed()) {
-            gpsSpeed = historyDate.getSpeed().floatValue();
+        if (null != historyDate.getGpsSpeed()) {
+            gpsSpeed = historyDate.getGpsSpeed().floatValue();
         }
         if (null == gpsSpeed) {
             preparedStatement.setNull(14, Types.FLOAT);
@@ -148,9 +148,11 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
         if (!StringUtils.isEmpty(records.get(0).getVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseJt808UpsertSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY);
+            logger.debug("Save nor jt808 end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseJt808UpsertSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP);
+            logger.debug("Save exp jt808 end."+records.size());
         }
 
     }
