@@ -4,7 +4,6 @@ import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.storage.impl.PhoenixStorageService;
 import com.ccclubs.storage.inf.BaseHbaseStorageInf;
-import com.ccclubs.storage.tasks.model.CsHistoryCan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,27 +25,6 @@ public class HistoryCanUtils extends ConvertUtils implements BaseHbaseStorageInf
   private PhoenixStorageService phoenixStorageService;
 
 
-  @Override
-  public void saveHistoryData(CsCan csCan) {
-
-    CsHistoryCan canHistoryData = new CsHistoryCan();
-
-    canHistoryData.setCshcAccess(csCan.getCscAccess());
-    canHistoryData.setCshcHost(csCan.getCscHost());
-    canHistoryData.setCshcCar(csCan.getCscCar());
-    canHistoryData.setCshcAddTime(System.currentTimeMillis());
-    canHistoryData.setCshcNumber(csCan.getCscNumber());
-    canHistoryData.setCshcData(csCan.getCscData());
-    canHistoryData.setCshcModel(csCan.getCscModel());
-    canHistoryData.setCshcType(csCan.getCscType());
-    // new Date(carStatus.mTime * 1000l + SYSTEM.MACHINE_TIME)
-    canHistoryData.setCshcUploadTime(csCan.getCscUploadTime().getTime());
-    canHistoryData.setCshcOrder(csCan.getCscOrder());
-    canHistoryData.setCshcFault(csCan.getCscFault());
-
-//    ListOperations opsForList = redisTemplate.opsForList();
-//    opsForList.leftPush(RedisConstant.REDIS_KEY_HISTORY_CAN_BATCH_INSERT_QUEUE, csCan);
-  }
 
   @Override
   public void saveHistoryDataToHbase(CsCan csCan){
