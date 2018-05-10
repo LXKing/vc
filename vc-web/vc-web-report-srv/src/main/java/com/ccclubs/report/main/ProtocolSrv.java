@@ -1,6 +1,7 @@
 package com.ccclubs.report.main;
 
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -11,14 +12,14 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-import com.ccclubs.report.main.config.KafkaConfig;
+import com.ccclubs.report.main.config.KafkaConsumerConfig;
 import com.ccclubs.report.main.config.NettyConfig;
 import com.ccclubs.report.main.config.TaskConfig;
 import com.ccclubs.report.spring.WebConfiguration;
 
 @SpringBootApplication
 @ComponentScan("com.ccclubs.report.api,com.ccclubs.report.service")
-@Import({WebConfiguration.class, NettyConfig.class, TaskConfig.class, KafkaConfig.class})
+@Import({WebConfiguration.class, NettyConfig.class, TaskConfig.class, KafkaConsumerConfig.class})
 public class ProtocolSrv extends SpringBootServletInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ProtocolSrv.class);
 

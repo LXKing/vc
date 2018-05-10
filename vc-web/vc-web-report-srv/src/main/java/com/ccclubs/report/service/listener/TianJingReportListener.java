@@ -1,5 +1,8 @@
 package com.ccclubs.report.service.listener;
 
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_REPORT_GB_TIANJING;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_GB_SUCCESS;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.joda.time.DateTime;
@@ -10,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.report.constant.LoginType;
@@ -19,6 +23,7 @@ import com.ccclubs.sdk.protocol.gb.entity.GBMessage;
 import com.ccclubs.sdk.protocol.gb.entity.GBMessageType;
 import com.ccclubs.sdk.protocol.gb.util.Tools;
 
+@Component
 public class TianJingReportListener {
     private Logger log = LoggerFactory.getLogger(getClass());
     private static final DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
@@ -29,7 +34,8 @@ public class TianJingReportListener {
     private ReportAgency dInf;
     private ConcurrentLinkedQueue<KafkaMq> queue = new ConcurrentLinkedQueue<>();
 
-    @KafkaListener(topics = "${kafka.consumer.topic}")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_REPORT_GB_TIANJING + "}", topics = "${"
+            + KAFKA_TOPIC_GATEWAY_GB_SUCCESS + "}", containerFactory = "batchFactory")
     public void receive(String payload) {
         log.debug("kafka receive $$$$$$$$$$$$");
         KafkaMq mq = JSONObject.parseObject(payload, KafkaMq.class);

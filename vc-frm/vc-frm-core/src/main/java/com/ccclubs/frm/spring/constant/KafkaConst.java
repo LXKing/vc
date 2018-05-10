@@ -83,6 +83,6 @@ public class KafkaConst {
     public static final String KAFKA_CONSUMER_GROUP_RULE_STREAM_JUMP_SOC = "kafka.consumer.group.rule.stream.jump-soc";
 
     /*地标平台*/
-    public static final String KAFKA_CONSUMER_GROUP_REPORT_GB_SUCCESS = "kafka.consumer.group.report.gb.success";
+    public static final String KAFKA_CONSUMER_GROUP_REPORT_GB_TIANJING = "kafka.consumer.group.report.gb.tianjing";
 
 }

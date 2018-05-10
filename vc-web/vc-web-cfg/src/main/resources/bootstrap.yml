@@ -12,12 +12,12 @@ spring:
           #是否暴露加解密接口
           enabled: true
         git:
-          uri: file://G:/workspace/others/chelizi/vc_netty_new #F:/3.gitlab/vc #http://120.26.220.241/BurningGroup/vc.git
+          uri: file://E:/workspace-vc/vc #http://120.26.220.241/BurningGroup/vc.git
           searchPaths:  vc-env/env
           username: zhangkejiang
           password: ss123456
           #取分支 默认master
-          default-label: feature-gb-gateway-new
+          default-label: develop
 
 
 encrypt:

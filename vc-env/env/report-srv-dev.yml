@@ -12,6 +12,11 @@ spring:
 
 #TOPIC配置
 kafka:
+  consumer:
+    group:
+      report: 
+        gb:
+          tianjing: cgrp_report_tianjing
   topic:
     gateway: #IN 接收网关的数据
       gb:

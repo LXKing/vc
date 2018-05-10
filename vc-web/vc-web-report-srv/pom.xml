@@ -8,77 +8,7 @@
 		<version>1.0.0</version>
 	</parent>
 	<artifactId>vc-web-report-srv</artifactId>
-	<properties>
-		<!-- biz -->
-		<frm.version>1.1.0</frm.version>
-		<ev.frm.version>1.0.0</ev.frm.version>
-		<biz.version>1.0.0</biz.version>
-		<!--SDK -->
-		<sdk.version>1.0.0</sdk.version>
-		<!-- system -->
-		<project.encoding>UTF-8</project.encoding>
-		<jdk.version>1.8</jdk.version>
-		<!-- spring -->
-		<springboot.version>1.4.5.RELEASE</springboot.version>
-		<spring.cloud.version>Camden.SR7</spring.cloud.version>
-		<spring.version>4.3.8.RELEASE</spring.version>
-		<!-- mybatis -->
-		<mybatis.version>3.4.4</mybatis.version>
-		<springboot.mybatis.version>1.1.1</springboot.mybatis.version>
-		<pagehelper.version>5.1.0</pagehelper.version>
-		<jsqlparser.version>0.9.5</jsqlparser.version>
-		<dubbox.version>2.8.4</dubbox.version>
-		<!-- ali -->
-		<druid.version>1.0.18</druid.version>
-		<fastjson.version>1.2.33</fastjson.version>
-		<oss.version>2.8.1</oss.version>
-		<!-- database -->
-		<mysql.version>5.1.42</mysql.version>
-		<!-- apache commons -->
-		<commons-lang.version>2.6</commons-lang.version>
-		<commons-lang3.version>3.5</commons-lang3.version>
-		<commons-io.version>2.5</commons-io.version>
-		<commons-codec.version>1.10</commons-codec.version>
-		<commons-math3.version>3.6.1</commons-math3.version>
-		<!-- others -->
-		<zookeeper.version>3.4.6</zookeeper.version>
-		<zkclient.version>0.7</zkclient.version>
-		<org.javassist.version>3.22.0-GA</org.javassist.version>
-		<!--javax.validation(JSR-303) -->
-		<validation-api.version>1.1.0.Final</validation-api.version>
-		<hibernate-validator.version>5.1.0.Final</hibernate-validator.version>
-		<!-- log -->
-		<logback.version>1.1.11</logback.version>
-		<logstash.logback.version>4.10</logstash.logback.version>
-		<!-- swagger2 -->
-		<springfox.version>2.7.0</springfox.version>
-		<swagger-ui-layer.version>0.0.4</swagger-ui-layer.version>
-		<gson.version>2.8.1</gson.version>
-		<mybatis.tk.version>3.4.0</mybatis.tk.version>
-		<mybatis.generator.core.version>1.3.5</mybatis.generator.core.version>
-		<!-- command -->
-		<mqttv3.version>1.1.0</mqttv3.version>
-		<mina.core.version>2.0.16</mina.core.version>
-		<ons.version>1.2.7.Final</ons.version>
-		<guava.version>18.0</guava.version>
-		<jackson.version>2.8.7</jackson.version>
-		<janino.version>3.0.6</janino.version>
-		<!-- JWT -->
-		<jjwt.version>0.9.0</jjwt.version>
-		<!-- autoload-cache -->
-		<autoload-cache.version>6.6</autoload-cache.version>
-		<hessian.version>4.0.38</hessian.version>
-		<!-- Prometheus -->
-		<prometheus.springboot.version>1.0.0</prometheus.springboot.version>
-		<!-- poi -->
-		<poi.version>3.15</poi.version>
-		<!-- date -->
-		<joda-time.version>2.9.9</joda-time.version>
-		<!--kafka -->
-		<kafka.version>1.3.0.RELEASE</kafka.version>
-		<!--netty -->
-		<netty.version>4.1.24.Final</netty.version>
-	</properties>
+ 
 	<build>
 		<plugins>
 			<plugin>
@@ -147,18 +77,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
-
-
-		<dependency>
-			<groupId>jadaw</groupId>
-			<artifactId>jadaw</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.aliyun.openservices</groupId>
-			<artifactId>ons-client</artifactId>
-			<version>1.7.0.Final</version>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
@@ -170,7 +88,7 @@
 		<dependency>
 			<groupId>www.ccclubs</groupId>
 			<artifactId>vc-protocol-sdk-gb</artifactId>
-			<version>1.0.0</version>
+			<version>${frm.version}</version>
 		</dependency>
 
 		<dependency>
@@ -180,6 +98,11 @@
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>www.ccclubs</groupId>
+			<artifactId>vc-frm-core</artifactId>
+			<version>${frm.version}</version>
 		</dependency>
 	</dependencies>
 </project>
