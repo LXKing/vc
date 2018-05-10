@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_CAN;
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CS_CAN;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CAN;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -31,7 +31,7 @@ public class CanConsumer {
     @Autowired
     HistoryCanUtils historyCanUtils;
 
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CAN + "}", topics = "${" + KAFKA_TOPIC_CS_CAN + "}", containerFactory = "batchFactory")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CAN + "}", topics = "${" + KAFKA_TOPIC_CAN + "}", containerFactory = "batchFactory")
     public void processCanStorage(List<String> messageList){
         List<CsCan> csCanList=new ArrayList<>();
         for (String message:messageList){

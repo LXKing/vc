@@ -170,4 +170,6 @@ public class Jt808PositionData implements Serializable {
     public void setSourceHex(String sourceHex) {
         this.sourceHex = sourceHex;
     }
+
+
 }

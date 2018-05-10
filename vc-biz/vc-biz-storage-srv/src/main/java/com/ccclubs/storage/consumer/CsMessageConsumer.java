@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 import java.util.List;
 
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE;
-import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_CS_MESSAGE;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE;
+import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GB_MESSAGE;
 
 /**
  * GB实时报文存入HBase
@@ -40,7 +40,7 @@ public class CsMessageConsumer {
     @Autowired
     private PhoenixProperties phoenixProperties;
 
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CSMESSAGE + "}", topics = "${" + KAFKA_TOPIC_CS_MESSAGE + "}", containerFactory = "batchFactory")
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE + "}", topics = "${" + KAFKA_TOPIC_GB_MESSAGE + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
         logger.debug("Fetch Size:{}", records.size());
         logger.debug("CsMessageConsumer start process records of CsMessage. StartTime:{}", System.currentTimeMillis());
