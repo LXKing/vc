@@ -79,7 +79,7 @@ public class JT808OnlineCheckJob implements Runnable {
             long between = System.currentTimeMillis() - state.getCssCurrentTime().getTime();
             //之前的状态
             int preStatus = PRE_STATUS_OFFLINE;
-            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_OFFLINE, state.getCssCar())) {
+            if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_OFFLINE, state.getCssCar().toString())) {
                 preStatus = PRE_STATUS_OFFLINE;
             }
             if (redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, state.getCssCar())) {
@@ -128,7 +128,7 @@ public class JT808OnlineCheckJob implements Runnable {
         jsonObject.put("timestamp", state.getCssCurrentTime());
         jsonObject.put("online", true);
         // 发送到kafka
-        kafkaTemplate.send(connStatusTopic, jsonObject.toJSONString());
+        //kafkaTemplate.send(connStatusTopic, jsonObject.toJSONString());
         // 发送到ONS（长安业务组平台）
         Message onsMessage = OnsMessageFactory.getProtocolMessage(srvHost.getShTopic().trim(),
                 OnsConst.ONS_TAG_PREFIX_CONN_STATE + ACCESS,
@@ -148,7 +148,7 @@ public class JT808OnlineCheckJob implements Runnable {
         jsonObject.put("timestamp", state.getCssCurrentTime());
         jsonObject.put("online", false);
         // 发送到kafka
-        kafkaTemplate.send(connStatusTopic, jsonObject.toJSONString());
+        //kafkaTemplate.send(connStatusTopic, jsonObject.toJSONString());
         // 发送到ONS（长安业务组平台）
         Message onsMessage = OnsMessageFactory.getProtocolMessage(srvHost.getShTopic().trim(),
                 OnsConst.ONS_TAG_PREFIX_CONN_STATE + ACCESS,
