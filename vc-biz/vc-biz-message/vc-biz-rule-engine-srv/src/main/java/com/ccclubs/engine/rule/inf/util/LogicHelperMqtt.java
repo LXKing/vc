@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
+import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
@@ -14,6 +15,7 @@ import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -21,6 +23,8 @@ import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +39,9 @@ import java.util.Date;
 public class LogicHelperMqtt {
 
     private static Logger logger = LoggerFactory.getLogger(LogicHelperMqtt.class);
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Resource
     private KafkaTemplate kafkaTemplate;
@@ -150,8 +157,11 @@ public class LogicHelperMqtt {
                         .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
                                 BigDecimal.ROUND_HALF_UP));
             }
+            // 需要更新的当前状态加入等待队列
+            ListOperations opsForList = redisTemplate.opsForList();
+            opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -168,7 +178,7 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -269,8 +279,11 @@ public class LogicHelperMqtt {
                         .mul(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
                 );
             }
+            // 需要更新的当前状态加入等待队列
+            ListOperations opsForList = redisTemplate.opsForList();
+            opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -286,7 +299,7 @@ public class LogicHelperMqtt {
             // 写入当前状态
             updateStateService.insert(csState);
             // 发送历史状态到kafka
-            if (mapping.getVin() == null) {
+            if (StringUtils.empty(mapping.getVin())) {
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
@@ -331,11 +344,14 @@ public class LogicHelperMqtt {
         // canData.setCscFault(errorInfo);
         if (mapping.getCan() != null) {
             canData.setCscId(mapping.getCan());
+            // 需要更新的当前状态加入等待队列
+            ListOperations opsForList = redisTemplate.opsForList();
+            opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, canData);
         } else {
             updateCanService.insert(canData);
         }
         // 发送kafka处理can历史状态
-        if (mapping.getVin() == null) {
+        if (StringUtils.empty(mapping.getVin())) {
             kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(canData));
         }else{
             kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));

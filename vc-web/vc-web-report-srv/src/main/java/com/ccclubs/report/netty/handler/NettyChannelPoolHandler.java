@@ -23,17 +23,17 @@ public class NettyChannelPoolHandler implements ChannelPoolHandler {
 
     @Override
     public void channelReleased(Channel ch) throws Exception {
-        log.debug("Pool Released. Channel ID: " + ch);
+        log.debug("Pool Released. Channel ID: {}", ch);
     }
 
     @Override
     public void channelAcquired(Channel ch) throws Exception {
-        log.debug("Pool Acquired. Channel ID: " + ch);
+        log.debug("Pool Acquired. Channel ID: {}", ch);
     }
 
     @Override
     public void channelCreated(Channel ch) throws Exception {
-        log.debug("Pool Created. Channel ID: " + ch);
+        log.debug("Pool Created. Channel ID: {}", ch);
         // ByteBuf delimiter = Unpooled.copiedBuffer("$_".getBytes());
         SocketChannel channel = (SocketChannel) ch;
         channel.config().setKeepAlive(true);

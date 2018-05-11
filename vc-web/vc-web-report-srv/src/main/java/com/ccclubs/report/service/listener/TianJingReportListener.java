@@ -5,6 +5,7 @@ import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_GB_
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -61,12 +62,14 @@ public class TianJingReportListener {
         if (mq.getCode() == GBMessageType.GB_MSG_REAL_TIME_TYPE_0X02) {
             GBMessage gb = new GBMessage();
             gb.ReadFromBytes(b);
-            String time = gb.getMessageContents().getTime();
-            // 大于10秒后，置为补发
-            DateTime dateTime = DateTime.parse(time, format).plusSeconds(10);
-            if (dateTime.getMillis() < System.currentTimeMillis()) {
-                gb.getHeader().setMessageType(GBMessageType.GB_MSG_REAL_TIME_TYPE_0X03);
-                b = gb.WriteToBytes();
+            if (StringUtils.isEmpty(gb.getErrorMessage())) {
+                String time = gb.getMessageContents().getTime();
+                // 大于10秒后，置为补发
+                DateTime dateTime = DateTime.parse(time, format).plusSeconds(10);
+                if (dateTime.getMillis() < System.currentTimeMillis()) {
+                    gb.getHeader().setMessageType(GBMessageType.GB_MSG_REAL_TIME_TYPE_0X03);
+                    b = gb.WriteToBytes();
+                }
             }
         }
         dInf.send(bInf, b);
