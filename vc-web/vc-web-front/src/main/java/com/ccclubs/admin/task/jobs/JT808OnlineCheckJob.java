@@ -115,6 +115,7 @@ public class JT808OnlineCheckJob implements Runnable {
         event.setGatewayType("808");
         // 发送到kafka
         kafkaTemplate.send(connStatusTopic, JSONObject.toJSONString(event));
+        LOGGER.info("TCP:ONLINE:808" + event.toJson());
     }
 
     //离线
@@ -126,5 +127,6 @@ public class JT808OnlineCheckJob implements Runnable {
         event.setGatewayType("808");
         // 发送到kafka
         kafkaTemplate.send(connStatusTopic, JSONObject.toJSONString(event));
+        LOGGER.info("TCP:OFFLINE:808" + event.toJson());
     }
 }
