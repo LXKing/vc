@@ -61,10 +61,22 @@ public class GbUpDataConsumer {
             JSONObject gbMessage = JSONObject.parseObject(record);
             Integer dataType = (Integer) gbMessage.get("code");
             String vin = (String) gbMessage.get("vin");
-            if (dataType == GBMessageType.GB_MSG_TYPE_0X02) {
-                kafkaTemplate.send(topicGBReal, vin, record);
-                // write redis
-                processGbRtMsg(gbMessage.get("sourceHex").toString());
+            switch (dataType) {
+                case GBMessageType.GB_MSG_TYPE_0X01:
+                    break;
+                case GBMessageType.GB_MSG_TYPE_0X02:
+                    kafkaTemplate.send(topicGBReal, vin, record);
+                    // write redis
+                    processGbRtMsg(gbMessage.get("sourceHex").toString());
+                    break;
+                case GBMessageType.GB_MSG_TYPE_0X03:
+                    break;
+                case GBMessageType.GB_MSG_TYPE_0X04:
+                    break;
+                case GBMessageType.GB_MSG_TYPE_0X07:
+                    break;
+                case GBMessageType.GB_MSG_TYPE_0X08:
+                    break;
             }
             processGbAllMsg(gbMessage.get("sourceHex").toString());
         }
