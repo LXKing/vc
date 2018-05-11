@@ -173,18 +173,22 @@ public class TerminalStatusUtils {
   /**
    * 获取自动驾驶状态详细信息
    * */
-  public static String getAutopilotString(int autopilotState){
+  public static String getAutopilotString(long autopilotState){
     StringBuilder stringBuilder = new StringBuilder();
     //高字节无数据直接舍弃
-    // 取低双字节
-    int autopilotValue = (int) (autopilotState & 0x0FFFF);
+    // 取4低字节
+    long autopilotValue = (long) (autopilotState & 0x0FFFFFFFF);
 
-    int autopilotSite=(int)(autopilotValue>>8);
+    //取byte[0] 目标站点
+    int currentSite=((int)(autopilotValue>>24))&0x0FF;
+    //取byte[1] 当前站点
+    int targetSite=((int)(autopilotValue>>16))&0x0FF;
+    //int autopilotSite=(int)(autopilotValue>>8);
 
-    short autopilotStateByte=(short)(autopilotValue&0x0FF);
+    //short autopilotStateByte=(short)(autopilotValue&0x0FF);
 
-    short currentSite=(short)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
-    short targetSite=(short)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
+    //short currentSite=(short)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
+    //short targetSite=(short)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
 
 
     if (targetSite==0x0){
@@ -202,6 +206,9 @@ public class TerminalStatusUtils {
     else if (targetSite==0xF){
       stringBuilder.append("目标站点为维保站点");
       stringBuilder.append(SEPARATOR);
+    }else {
+      stringBuilder.append("目标站点为未知的异常值").append(targetSite);
+      stringBuilder.append(SEPARATOR);
     }
 
     if (currentSite==0x0){
@@ -215,30 +222,61 @@ public class TerminalStatusUtils {
     else if (currentSite==0xE||currentSite==0xF){
       stringBuilder.append("当前站点为Reserved");
       stringBuilder.append(SEPARATOR);
+    }else {
+      stringBuilder.append("当前站点为未知的异常值").append(currentSite);
+      stringBuilder.append(SEPARATOR);
     }
 
+    //取byte[2]
+    int stopState=((int)(autopilotValue>>8))&0x0FF;
+    //停靠状态
+    short stopStatus=(short) (stopState&0x0F);
+    //站点握手状态
+    short shakeHandsState=(short) ((stopState>>4)&0x0F);
+    //取byte[3] 自动驾驶状态
+    int autopilotRunState=(int)(autopilotValue&0x0FF);
+    //short stopState=(short)(autopilotStateByte>>6);// 0x0=默认值；0x1 =站点停靠; 0x2=区间停靠;0x3=非停靠状态;
+    //short autopilotRunState=(short)(autopilotStateByte&0x03F);//0x0：默认值;0x1:  车辆Ready;  0x2：自动驾驶Active;  0x3:自动驾驶故障
 
-    short stopState=(short)(autopilotStateByte>>6);// 0x0=默认值；0x1 =站点停靠; 0x2=区间停靠;0x3=非停靠状态;
-    short autopilotRunState=(short)(autopilotStateByte&0x03F);//0x0：默认值;0x1:  车辆Ready;  0x2：自动驾驶Active;  0x3:自动驾驶故障
-
-    if (stopState==0x0){
+    if (stopStatus==0x0){
       stringBuilder.append("停靠状态为默认值");
       stringBuilder.append(SEPARATOR);
     }
-    else if (stopState==0x1){
+    else if (stopStatus==0x1){
       stringBuilder.append("停靠状态为站点停靠");
       stringBuilder.append(SEPARATOR);
     }
-    else if (stopState==0x2){
+    else if (stopStatus==0x2){
       stringBuilder.append("停靠状态为区间停靠");
       stringBuilder.append(SEPARATOR);
     }
-    else if (stopState==0x3){
+    else if (stopStatus==0x3){
       stringBuilder.append("停靠状态为非停靠状态");
       stringBuilder.append(SEPARATOR);
     }
     else {
-      stringBuilder.append("停靠状态为未知的异常值"+stopState);
+      stringBuilder.append("停靠状态为未知的异常值").append(stopStatus);
+      stringBuilder.append(SEPARATOR);
+    }
+
+    if (shakeHandsState==0x0){
+      stringBuilder.append("握手状态为默认值");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (shakeHandsState==0x1){
+      stringBuilder.append("握手状态为即将到站");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (shakeHandsState==0x2){
+      stringBuilder.append("握手状态为站点停靠");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (shakeHandsState==0x3){
+      stringBuilder.append("握手状态为站点经过");
+      stringBuilder.append(SEPARATOR);
+    }
+    else {
+      stringBuilder.append("握手状态为未知的异常值").append(shakeHandsState);
       stringBuilder.append(SEPARATOR);
     }
 
@@ -260,8 +298,13 @@ public class TerminalStatusUtils {
       stringBuilder.append(SEPARATOR);
     }
     else {
-      stringBuilder.append("自动驾驶状态为未知的异常值");
+      stringBuilder.append("自动驾驶状态为未知的异常值").append(autopilotRunState);
       stringBuilder.append(SEPARATOR);
+    }
+
+
+    if (autopilotValue==0){
+      return "车辆维保中";
     }
 
 
@@ -269,7 +312,7 @@ public class TerminalStatusUtils {
   }
 
   public static void main(String[] args){
-    int value=59267;
+    long value=Long.MAX_VALUE;
     String result=getAutopilotString(value);
     System.out.println(result);
 
