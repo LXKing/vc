@@ -6,7 +6,7 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
-import com.ccclubs.common.query.QueryTerminalService;
+import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
@@ -25,6 +25,8 @@ import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -37,8 +39,10 @@ public class LogicHelperJt808 {
 
     private static Logger logger = LoggerFactory.getLogger(LogicHelperJt808.class);
 
-    @Resource
-    private KafkaTemplate kafkaTemplate;
+  @Resource
+  private RedisTemplate redisTemplate;
+  @Resource
+  private KafkaTemplate kafkaTemplate;
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_CAN + "}")
     String kafkaTopicCsCan;
@@ -110,8 +114,9 @@ public class LogicHelperJt808 {
                     csState.setCssLatitude(bigDecimalLat.setScale(6, BigDecimal.ROUND_HALF_UP));
                 }
 
-                // 更新808车辆数据状态
-                updateStateService.update(csState);
+                // 需要更新的当前状态加入等待队列
+                ListOperations opsForList = redisTemplate.opsForList();
+                opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
 
             } else {
                 // 808 原始0200数据，以下业务数据不做更新
@@ -303,6 +308,9 @@ public class LogicHelperJt808 {
 
             if (mapping.getCan() != null) {
                 csCan.setCscId(mapping.getCan());
+                // 需要更新的当前CAN数据加入等待队列
+                ListOperations opsForList = redisTemplate.opsForList();
+                opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
             } else {
                 updateCanService.insert(csCan);
             }
