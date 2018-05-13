@@ -16,6 +16,7 @@ import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
@@ -51,7 +52,6 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         // 输出消息处理轨迹信息
         ProtecterExceptionDTO protecterExceptionDTO = new ProtecterExceptionDTO();
         PacProcessTrack pacProcessTrack = beforeProcess(ctx, protecterExceptionDTO);
-
         pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
         // 如果是测试阶段则打印报告日志
@@ -86,14 +86,14 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     @Override
     public void channelActive(ChannelHandlerContext context) {
-        LOG.info("新链接建立");
+        LOG.info("new channel active");
         SocketChannel channel = (SocketChannel)context.channel();
         ClientCache.addByChannelId(channel.id());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) {
-        LOG.info("连接被释放");
+        LOG.info("channel become inactive and is closing");
         SocketChannel channel = (SocketChannel)context.channel();
         GBConnection conn = ClientCache.getByChannelId(channel.id());
         ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
@@ -185,11 +185,15 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         // 打印异常链
 //        cause.printStackTrace();
+        if (cause instanceof TooLongFrameException) {
+            // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
+            needCloseConn = true;
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", pacProcessTrack.getVin());
+        }
 
         if (needCloseConn) {
             // 关闭链接
-            LOG.error("检测到重要异常，服务端将主动断开连接");
-            ClientCache.closeWhenInactive((SocketChannel) context.channel());
+            context.channel().close();
         }
     }
 

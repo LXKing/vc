@@ -4,6 +4,7 @@ import com.ccclubs.gateway.gb.dto.MsgDeliverExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -29,8 +30,17 @@ public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
         MsgDeliverExceptionDTO msgDeliverExceptionDTO = new MsgDeliverExceptionDTO();
         PacProcessTrack pacProcessTrack = beforeProcess(ctx, msgDeliverExceptionDTO);
 
-        // 业务处理(暂时没有业务处理)
-//        LOG.info(pac.toLogString());
+        // 过滤不能解析的报文
+//        ByteBuf contentBuffer = pac.getSourceBuff();
+//        switch (pac.getHeader().getCommandMark()) {
+//            case REALTIME_DATA:
+//            case REISSUE_DATA:
+//                // 实时数据和历史数据检查缺省内容
+//
+//                break;
+//                default:
+//                    break;
+//        }
 
         pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
