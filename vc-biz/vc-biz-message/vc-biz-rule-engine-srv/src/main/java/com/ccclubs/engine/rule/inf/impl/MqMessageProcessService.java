@@ -129,18 +129,20 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 if (jvi == null) {
                     return;
                 }
-
-                CsState csState = logicHelperJt808.saveStatusData(mapping, msgFromTerminal, jvi);
-
-                transferToMq(mapping, csState);
+                // 组装808实时状态数据并更新cs_state
+                logicHelperJt808.saveStatusData(mapping, msgFromTerminal, jvi);
+                // 保存808位置历史数据
+                logicHelperJt808.saveGeoData(mapping, msgFromTerminal, jvi);
+                // 不再转发808数据(分时租赁协议会转发) modify by jhy 2018.5.9
+                // transferToMq(mapping, csState);
             } else if (headerType == 0x0704) {
                 // 定位补报，需要将补报的定位信息批量入库
                 JT_0704 rd = (JT_0704) msgFromTerminal.getMessageContents();
                 List<JT_0200> packetList = rd.getPositionReportList();
-                // 定位补传数据暂时不入库 2017-10-11
-//        for (JT_0200 jvi : packetList) {
-//          logicHelperJt808.saveStatusData(msgFromTerminal, jvi);
-//        }
+                // 定位补传数据
+                for (JT_0200 jvi : packetList) {
+                    logicHelperJt808.saveGeoData(mapping, msgFromTerminal, jvi);
+                }
             } else if (headerType == 0x0900) {
                 // 终端对平台的上行透传
                 JT_0900 ack = (JT_0900) msgFromTerminal.getMessageContents();
@@ -166,6 +168,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
             } else if (headerType == 0x01F0) {
                 JT_01F0 updateData = (JT_01F0) msgFromTerminal.getMessageContents();
                 if (updateData != null) {
+                    // 写日志
                     updateLoggerService.save(msgFromTerminal.getSimNo(),
                             "FTP升级指令-" + updateData.getResultString(),
                             msgFromTerminal.getPacketDescr(), 0L);
@@ -180,7 +183,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
         }
 
         // 国标协议
-        if (tag.startsWith(MqTagUtils.PROTOCOL_GB)) {
+        /*if (tag.startsWith(MqTagUtils.PROTOCOL_GB)) {
             GBMessage gbMessage = new GBMessage();
             gbMessage.ReadFromBytes(srcByteArray);
 
@@ -189,16 +192,16 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 return;
             }
 
-            getParseGbDataService().processMessage(gbMessage, srcByteArray);
+            getParseGbDataService().processMessage(gbMessage);
             return;
-        }
+        }*/
 
         // MQTT 分时租赁 协议
         if (tag.startsWith(MqTagUtils.PROTOCOL_MQTT)) {
             MqMessage mqMessage = new MqMessage();
             mqMessage.ReadFromBytes(srcByteArray);
 
-            mapping = terminalUtils.getMapping(mqMessage.getCarNumber(),MACHINEMAPPING_CARNUMBER);
+            mapping = terminalUtils.getMapping(mqMessage.getCarNumber(), MACHINEMAPPING_CARNUMBER);
             if (mapping == null || mapping.getMachine() == null || StringUtils
                     .empty(mapping.getNumber())) {
                 loggerBusiness.info(JSON.toJSONString(
@@ -255,7 +258,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
     }
 
     /**
-     * 转发到MQ，已有绑定关系，不具备分时租赁功能的808协议的0200定位数据
+     * 转发到业务端MQ，已有绑定关系，不具备分时租赁功能的808协议的0200定位数据
      */
     private void transferToMq(MachineMapping mapping, CsState csState) {
         try {

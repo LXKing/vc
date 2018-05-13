@@ -1,10 +1,7 @@
 package com.ccclubs.admin.task.schedulers;
 
 
-import com.ccclubs.admin.task.jobs.ExpDataCheckJob;
-import com.ccclubs.admin.task.jobs.ExpDataCleanJob;
-import com.ccclubs.admin.task.jobs.ExpDataExportJob;
-import com.ccclubs.admin.task.jobs.StatisticsJob;
+import com.ccclubs.admin.task.jobs.*;
 import com.ccclubs.admin.util.EvManageContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +53,15 @@ public class StatisticsScheduler implements ApplicationContextAware {
         EvManageContext.getThreadPool().execute(statisticsJob);
     }
 
+
+    @Resource
+    JT808OnlineCheckJob jt808OnlineCheckJob;
+
+    @Scheduled(cron = "0 0/5 * * * ?")
+    public void jt808OnlineCheckJob() {
+        logger.info("执行了一次 808车辆在线情况检查。");
+        jt808OnlineCheckJob.run();
+    }
 
     @Resource
     ExpDataCheckJob expDataCheckJob;

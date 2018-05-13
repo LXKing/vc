@@ -31,7 +31,14 @@ public class GBMessageType {
      * 0x06:平台登出(上报)
      */
     public static final int GB_MSG_TYPE_0X06 = 0x06;
-
+    /**
+     * 0x07:心跳(上报)
+     */
+    public static final int GB_MSG_TYPE_0X07 = 0x07;
+    /**
+     * 0x08:终端校时(上报)
+     */
+    public static final int GB_MSG_TYPE_0X08 = 0x08;
     /**
      * 实时信息：0x01:整车数据
      */

@@ -65,9 +65,12 @@ public class TerminalUtils {
      */
     public MachineMapping getMapping(String keyPart, String keyType) {
         MachineMapping machineMapping = redisHelper.getMappingOld(keyPart);
-        if (machineMapping == null) {
+        /*if (machineMapping == null) {
             machineMapping = getMappingByDB(keyPart, keyType);
-        }
+            if (machineMapping != null) {
+                redisHelper.setMappingOld(keyPart, machineMapping);
+            }
+        }*/
         return machineMapping;
     }
 
@@ -107,12 +110,17 @@ public class TerminalUtils {
             return null;
         }
         MachineMapping machineMapping = new MachineMapping();
-        machineMapping.setAccess(csVehicle.getCsvAccess().longValue());
+        machineMapping.setVin(csVehicle.getCsvVin());
+        machineMapping.setNumber(csMachine.getCsmNumber());
+        machineMapping.setTeno(csMachine.getCsmTeNo());
+        machineMapping.setIccid(csMachine.getCsmIccid());
+        machineMapping.setAccess(csMachine.getCsmAccess().longValue());
         machineMapping.setCar(csVehicle.getCsvId().longValue());
         machineMapping.setCan(csCan.getCscId());
-        machineMapping.setHost(csVehicle.getCsvHost().longValue());
+        machineMapping.setState(csState.getCssId().longValue());
+        machineMapping.setHost(csMachine.getCsmHost().longValue());
         machineMapping.setMachine(csMachine.getCsmId().longValue());
-        // todo 手机号可以为null ？
+        // TODO 手机号可以为null ？
         machineMapping.setMobile(csMachine.getCsmMobile() == null ? "" : csMachine.getCsmMobile());
         return machineMapping;
     }

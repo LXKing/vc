@@ -67,9 +67,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
 
             preparedStatement = connection.prepareStatement(query_sql);
-            preparedStatement.setString(1,cs_number);
-            preparedStatement.setLong(2,start_time);
-            preparedStatement.setLong(3,end_time);
+            preparedStatement.setString(1 , cs_number);
+            preparedStatement.setLong(2 , start_time);
+            preparedStatement.setLong(3 , end_time);
             resultSet= preparedStatement.executeQuery();
             JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
 

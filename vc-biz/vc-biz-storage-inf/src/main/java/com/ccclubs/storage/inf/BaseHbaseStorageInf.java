@@ -14,11 +14,6 @@ import java.util.List;
  */
 public interface BaseHbaseStorageInf<T> {
     /**
-     * 存储T类型的历史数据到mongoDB，此方法现在已经废弃。
-     * */
-    @Deprecated
-    void saveHistoryData(T data);
-    /**
      * 存储T类型的历史数据到HBASE。
      * */
     void saveHistoryDataToHbase(T data);

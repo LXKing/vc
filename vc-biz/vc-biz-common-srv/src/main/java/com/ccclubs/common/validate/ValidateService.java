@@ -59,6 +59,7 @@ public class ValidateService {
             if (null != vehicle) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
+                //校验车辆数据权限
                 if (host.getShId().intValue() != vehicle.getCsvAccess()) {
                     logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;
@@ -66,10 +67,11 @@ public class ValidateService {
             }
         }
         if (StringUtils.isNotEmpty(teNo)) {
-            CsMachine machine = terminalService.queryCsMachineByTeNoFromCache(teNo);
+            CsMachine machine = terminalService.queryCsMachineByTeNo(teNo);
             if (null != machine) {
                 //E+当做长安出行处理 TODO
                 host.setShId(host.getShId() == 11 ? 3 : host.getShId());
+                //校验终端数据权限
                 if (host.getShId() != machine.getCsmAccess()) {
                     logger.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
                     return false;

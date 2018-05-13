@@ -3,15 +3,19 @@ package com.ccclubs.phoenix.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
+import com.ccclubs.phoenix.input.StateHistoryParam;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
-import com.ccclubs.phoenix.orm.model.CarState;
-import com.ccclubs.phoenix.orm.model.Pace;
-import com.ccclubs.phoenix.orm.model.PaceBlock;
+import com.ccclubs.phoenix.orm.model.*;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
+import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
+import com.ccclubs.phoenix.output.StateHistoryOutput;
 import com.ccclubs.phoenix.util.VehicleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,19 +39,92 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
 
 
-    static final String count_sql = "select " +
+    private static final String count_sql = "select " +
             "count(cs_number) as total " +
             "from phoenix_car_state_history " +
             "where cs_number=? " +
             "and current_time>=? " +
             "and current_time<=? ";
 
+    private static final String UPDATE_SQL = "UPSERT INTO "
+            + PhoenixConst.PHOENIX_CAR_STATE_HISTORY+
+            " ( CS_NUMBER, CURRENT_TIME , OBD_MILES ) VALUES ( ?, ?, ? )";
+
 
     @Autowired
     private PhoenixTool phoenixTool;
 
-//    @Autowired
-//    private BaseInfImpl baseImpl;
+
+    @Override
+    public StateHistoryOutput queryCarStateListWithLimit(final StateHistoryParam stateHistoryParam) {
+        final String queryFields = stateHistoryParam.getQueryFields();
+        String querySqlDesc = "select " +
+                queryFields + " " +
+                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
+                "where cs_number=? " +
+                "and current_time<=? " +
+                "order by current_time desc limit ? ";
+        String querySqlAsc = "select " +
+                queryFields + " " +
+                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
+                "where cs_number=? " +
+                "and current_time>? " +
+                "order by current_time asc limit ? ";
+
+        List<CarState> carStateDescList = new ArrayList<CarState>();
+        List<CarState> carStateAscList = new ArrayList<CarState>();
+        String csNumber = stateHistoryParam.getTeNumber();
+        long startTime = DateTimeUtil.date2UnixFormat(stateHistoryParam.getTimePoint(), DateTimeUtil.UNIX_FORMAT);
+        int limit=stateHistoryParam.getLimit();
+        Connection connectionDesc = phoenixTool.getConnection();
+        Connection connectionAsc = phoenixTool.getConnection();
+        PreparedStatement preparedStatementDesc = null;
+        PreparedStatement preparedStatementAsc = null;
+        ResultSet resultSetDesc=null;
+        ResultSet resultSetAsc=null;
+        try {
+
+            preparedStatementDesc = connectionDesc.prepareStatement(querySqlDesc);
+            preparedStatementAsc = connectionAsc.prepareStatement(querySqlAsc);
+
+
+            preparedStatementDesc.setString(1, csNumber);
+            preparedStatementDesc.setLong(2, startTime);
+            preparedStatementDesc.setInt(3,limit);
+            resultSetDesc = preparedStatementDesc.executeQuery();
+            JSONArray jsonArrayDesc = BaseQueryInfImpl.queryRecords(resultSetDesc);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayDesc,queryFields,carStateDescList,CarState.class);
+
+            preparedStatementAsc.setString(1, csNumber);
+            preparedStatementAsc.setLong(2, startTime);
+            preparedStatementAsc.setInt(3,limit);
+            resultSetAsc = preparedStatementAsc.executeQuery();
+            JSONArray jsonArrayAsc = BaseQueryInfImpl.queryRecords(resultSetAsc);
+            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayAsc,queryFields,carStateAscList,CarState.class);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connectionAsc,
+                    preparedStatementAsc,resultSetAsc,"carState queryCarStateListNoPage");
+            phoenixTool.closeResource(connectionDesc,
+                    preparedStatementDesc,resultSetDesc,"carState queryCarStateListNoPage");
+        }
+        StateHistoryOutput stateHistoryOutput=new StateHistoryOutput();
+        List<VehicleState> beforeList=new ArrayList<>();
+        List<VehicleState> afterList=new ArrayList<>();
+        for (CarState carState:carStateAscList
+             ) {
+            afterList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
+        }
+        for (CarState carState:carStateDescList
+                ) {
+            beforeList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
+        }
+        stateHistoryOutput.setAfterList(afterList);
+        stateHistoryOutput.setBeforeList(beforeList);
+        return stateHistoryOutput;
+    }
 
     @Override
     public List<CarState> queryCarStateListNoPage(final CarStateHistoryParam carStateHistoryParam) {
@@ -88,6 +165,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
 
     }
+
     @Override
     public List<CarState> queryCarStateListWithPage(final CarStateHistoryParam carStateHistoryParam) {
         Integer page_size = carStateHistoryParam.getPage_size();
@@ -130,7 +208,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         return carStateList;
     }
 
-
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
@@ -161,6 +238,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         }
         return total;
     }
+
     @Override
     public CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam) {
         CarStateHistoryOutput carStateHistoryOutput = new CarStateHistoryOutput();
@@ -180,6 +258,62 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         return carStateHistoryOutput;
     }
 
+    @Override
+    public HistoryNoQueryOutput updateCarStateObdMiles(CarStateHistoryUpdateParam param) {
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+        try{
+            long timePointLong= param.getTimePoint();
+            preparedStatement = connection.prepareStatement(UPDATE_SQL);
+            preparedStatement.setString(1 , param.getUpdateKey());
+            preparedStatement.setLong(2 , timePointLong);
+            preparedStatement.setFloat(3,param.getObdMiles());
+            preparedStatement.execute();
+            connection.commit();
+            historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,null,UPDATE_SQL);
+        }
+        return historyNoQueryOutput;
+    }
+
+    @Override
+    public HistoryNoQueryOutput updateCarStateObdMiles(List<CarStateHistoryUpdateParam> paramList) {
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
+        try{
+            Integer count=0;
+            preparedStatement = connection.prepareStatement(UPDATE_SQL);
+            for (CarStateHistoryUpdateParam param:paramList){
+                count++;
+                long timePointLong= param.getTimePoint();
+                preparedStatement.setString(1 , param.getUpdateKey());
+                preparedStatement.setLong(2 , timePointLong);
+                preparedStatement.setFloat(3,param.getObdMiles());
+                preparedStatement.addBatch();
+                if (count%500==0){
+                    preparedStatement.executeBatch();
+                    connection.commit();
+                }
+            }
+            preparedStatement.executeBatch();
+            connection.commit();
+            //historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,null,UPDATE_SQL);
+        }
+        return historyNoQueryOutput;
+    }
 
     @Override
     //驾驶阶段数据计算

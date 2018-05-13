@@ -23,14 +23,28 @@ kafka:
   consumer:
     group:
       storage:
-        csmessage: cgrp_storage_csmessage
-        cscan: cgrp_storage_cscan
-        csstate: cgrp_storage_csstate
+        gb:
+          message: cgrp_storage_gb_message                #GB网关上报正常数据 消费者组
+        can: cgrp_storage_can                             #GB网关上报正常数据 消费者组
+        can-exp: cgrp_storage_can_exp                     #GB网关上报正常数据 消费者组
+        mqtt:
+          state: cgrp_storage_mqtt_state                  #GB网关上报正常数据 消费者组
+          state-exp: cgrp_storage_mqtt_state_exp          #GB网关上报正常数据 消费者组
+        jt808:
+          position: cgrp_storage_jt_position              #GB网关上报正常数据 消费者组
+          position-exp: cgrp_storage_jt_position_exp      #GB网关上报正常数据 消费者组
   topic:
     history:
-      csmessage: topic_cs_message
-      cscan: topic_cs_can
-      csstate: topic_cs_state
+      gb:
+        message: topic_gb_message
+      can: topic_can
+      can-exp: topic_can_exp
+      mqtt:
+        state: topic_mqtt_state
+        state-exp: topic_mqtt_state_exp
+      jt808:
+        position: topic_jt_position
+        position-exp: topic_jt_position_exp
 
 dubbo:
   scan:

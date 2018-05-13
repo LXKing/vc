@@ -1,5 +1,8 @@
 import com.alibaba.fastjson.JSON;
+import com.ccclubs.phoenix.input.CarCanHistoryParam;
+import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
+import com.ccclubs.phoenix.input.StateHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarState;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.codec.digest.HmacUtils;
@@ -162,7 +165,7 @@ public class CarHistoryBizApiTest {
     }
 
 
-    /*@Test
+    @Test
     public void testQueryCarGbList() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
         HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/states");
@@ -182,12 +185,12 @@ public class CarHistoryBizApiTest {
         httpPost.setEntity(new StringEntity(s, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
         this.checkResponse(response);
-    }*/
+    }
 
 
 
 
-    //@Test
+    @Test
     public void testQueryDrivePaces() throws Exception {
 
 
@@ -211,7 +214,7 @@ public class CarHistoryBizApiTest {
     }
 
 
-   /* @Test
+    @Test
     public void testQueryCarCanList() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
         HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/cans");
@@ -243,7 +246,7 @@ public class CarHistoryBizApiTest {
             response.close();
         }
     }
-*/
+
 
 
     @Test
@@ -252,7 +255,7 @@ public class CarHistoryBizApiTest {
 
 
 
-   /* public void testSaveState() throws IOException {
+    public void testSaveState() throws IOException {
 
         CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
         HttpPost httpPost = new HttpPost("http://116.62.29.30:7007/history/states");
@@ -263,7 +266,7 @@ public class CarHistoryBizApiTest {
         CloseableHttpResponse response = httpclient.execute(httpPost);
         this.checkResponse(response);
 
-    }*/
+    }
 
 
 
@@ -336,6 +339,43 @@ public class CarHistoryBizApiTest {
                 HttpEntity entity = response.getEntity();
                 String result = IOUtils.toString(entity.getContent(), "UTF-8");
                 System.out.println(result);
+                EntityUtils.consume(entity);
+            }
+
+        } finally {
+            response.close();
+        }
+    }
+
+    @Test
+    public void searchTerminalInfo() throws Exception, Throwable {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        //114.55.109.165:7001
+        HttpPost httpPost = new HttpPost("http://101.37.178.63/history/getVehicleStatesByLimit");
+        httpPost.setHeader("Content-Type", "application/json");
+        StateHistoryParam input = new StateHistoryParam();
+        input.setTeNumber("T6390052");
+        input.setTimePoint("2018-05-02 00:00:00");
+        input.setLimit(15);
+
+        String ss = JSON.toJSONString(input);
+        System.err.println(ss);
+        String value = DigestUtils.md5Hex(ss);
+        String sign = HmacUtils.hmacSha1Hex("lfj@qew#ofj_gq", value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", "1000003");
+        httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+
+                String s2 = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(s2);
+
                 EntityUtils.consume(entity);
             }
 

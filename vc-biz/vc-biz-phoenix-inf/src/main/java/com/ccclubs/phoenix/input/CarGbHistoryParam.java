@@ -1,6 +1,6 @@
 package com.ccclubs.phoenix.input;
 
-import com.ccclubs.phoenix.orm.consts.Consts;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -49,10 +49,10 @@ public class CarGbHistoryParam extends Page implements Serializable{
     public String getQuery_fields() {
         query_fields= StringUtils.deleteWhitespace(query_fields);
         if("*".equals(query_fields)){
-            query_fields= StringUtils.join(Consts.carGbAllFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carGbAllFields,",");
         }
         else if(StringUtils.isEmpty(query_fields)){
-            query_fields= StringUtils.join(Consts.carGbPageDefaultFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carGbPageDefaultFields,",");
         }
         return query_fields;
     }

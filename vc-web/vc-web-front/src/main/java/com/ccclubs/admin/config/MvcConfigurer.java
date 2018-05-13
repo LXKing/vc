@@ -23,9 +23,9 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
 //    registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
 //  }
 
-//  @Autowired
-//  TokenInterceptor tokenInterceptor;
-  /*@Override
+  @Autowired
+  TokenInterceptor tokenInterceptor;
+  @Override
   public void addInterceptors(InterceptorRegistry registry) {
     // 多个拦截器组成一个拦截器链
     // addPathPatterns 用于添加拦截规则
@@ -36,14 +36,13 @@ public class MvcConfigurer extends WebMvcConfigurerAdapter {
             //.excludePathPatterns("/oauth/**")
             .excludePathPatterns("/user/**")
             .excludePathPatterns("/monitor/gbState/set")
-            .excludePathPatterns("/monitor/gbState/getAllGBRTData")
             .excludePathPatterns("/monitor/expVehicle/trigger/**")
             .excludePathPatterns("/protocol/**")
             .excludePathPatterns("/monitor/gbState/detail/**")
             .excludePathPatterns("/report/**");
 
     super.addInterceptors(registry);
-  }*/
+  }
 
   @Override
   public void configurePathMatch(PathMatchConfigurer configurer) {

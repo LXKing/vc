@@ -169,4 +169,111 @@ public class TerminalStatusUtils {
     }
 
   }
+
+  /**
+   * 获取自动驾驶状态详细信息
+   * */
+  public static String getAutopilotString(int autopilotState){
+    StringBuilder stringBuilder = new StringBuilder();
+    //高字节无数据直接舍弃
+    // 取低双字节
+    int autopilotValue = (int) (autopilotState & 0x0FFFF);
+
+    int autopilotSite=(int)(autopilotValue>>8);
+
+    short autopilotStateByte=(short)(autopilotValue&0x0FF);
+
+    short currentSite=(short)(autopilotSite&0x0F);//0x0=默认值；0x1~0xD=1-13;0xE~0xF=Reserved
+    short targetSite=(short)(autopilotSite>>4);//0x0=默认值；0x1~0xD=1-13;0xE=循环行驶;0xF=维保站点；
+
+
+    if (targetSite==0x0){
+      stringBuilder.append("目标站点为默认值");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (targetSite>=0x1&&targetSite<=0xD){
+      stringBuilder.append("目标站点为"+targetSite);
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (targetSite==0xE){
+      stringBuilder.append("目标站点为循环行驶");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (targetSite==0xF){
+      stringBuilder.append("目标站点为维保站点");
+      stringBuilder.append(SEPARATOR);
+    }
+
+    if (currentSite==0x0){
+      stringBuilder.append("当前站点为默认值");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (currentSite>=0x1&&currentSite<=0xD){
+      stringBuilder.append("当前站点为"+currentSite);
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (currentSite==0xE||currentSite==0xF){
+      stringBuilder.append("当前站点为Reserved");
+      stringBuilder.append(SEPARATOR);
+    }
+
+
+    short stopState=(short)(autopilotStateByte>>6);// 0x0=默认值；0x1 =站点停靠; 0x2=区间停靠;0x3=非停靠状态;
+    short autopilotRunState=(short)(autopilotStateByte&0x03F);//0x0：默认值;0x1:  车辆Ready;  0x2：自动驾驶Active;  0x3:自动驾驶故障
+
+    if (stopState==0x0){
+      stringBuilder.append("停靠状态为默认值");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (stopState==0x1){
+      stringBuilder.append("停靠状态为站点停靠");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (stopState==0x2){
+      stringBuilder.append("停靠状态为区间停靠");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (stopState==0x3){
+      stringBuilder.append("停靠状态为非停靠状态");
+      stringBuilder.append(SEPARATOR);
+    }
+    else {
+      stringBuilder.append("停靠状态为未知的异常值"+stopState);
+      stringBuilder.append(SEPARATOR);
+    }
+
+
+    if (autopilotRunState==0x0){
+      stringBuilder.append("自动驾驶状态为默认值");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (autopilotRunState==0x1){
+      stringBuilder.append("自动驾驶状态为车辆Ready");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (autopilotRunState==0x2){
+      stringBuilder.append("自动驾驶状态为自动驾驶Active");
+      stringBuilder.append(SEPARATOR);
+    }
+    else if (autopilotRunState==0x3){
+      stringBuilder.append("自动驾驶状态为自动驾驶故障");
+      stringBuilder.append(SEPARATOR);
+    }
+    else {
+      stringBuilder.append("自动驾驶状态为未知的异常值");
+      stringBuilder.append(SEPARATOR);
+    }
+
+
+    return stringBuilder.toString();
+  }
+
+  public static void main(String[] args){
+    int value=59267;
+    String result=getAutopilotString(value);
+    System.out.println(result);
+
+  }
+
+
 }

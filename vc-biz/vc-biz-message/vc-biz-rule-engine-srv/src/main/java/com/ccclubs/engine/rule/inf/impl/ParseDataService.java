@@ -138,7 +138,7 @@ public class ParseDataService implements IParseDataService {
             MQTT_66 mqtt_66 = new MQTT_66();
             mqtt_66.ReadFromBytes(message.getMsgBody());
             // 如果未绑定车辆，则不转发到业务平台
-            if (null != mapping.getVin()) {
+            if (StringUtils.notEmpty(mapping.getVin())) {
                 transferToMq(srvHost,
                         TransformUtils
                                 .transform2TerminalStatus(csMachine, mapping.getVin(), mqtt_66, message),

@@ -15,6 +15,9 @@ public class CsMessage implements Serializable {
     private Integer csmAccess;
     //@caption("车机号")
     private String csmNumber;
+    private String teNo;
+    private String iccid;
+    private String mobile;
     //@caption("关联车辆")
     private Long csmCar;
     //@caption("VIN码")
@@ -37,6 +40,30 @@ public class CsMessage implements Serializable {
     //@caption("状态")
     //@note(" 1:成功 0:失败  ")
     private Short csmStatus;
+
+    public String getTeNo() {
+        return teNo;
+    }
+
+    public void setTeNo(String teNo) {
+        this.teNo = teNo;
+    }
+
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
 
     public Long getCsmId() {
         return csmId;
@@ -132,5 +159,26 @@ public class CsMessage implements Serializable {
 
     public void setCsmStatus(Short csmStatus) {
         this.csmStatus = csmStatus;
+    }
+
+    @Override
+    public String toString() {
+        return "CsMessage{" +
+                "csmId=" + csmId +
+                ", csmAccess=" + csmAccess +
+                ", csmNumber='" + csmNumber + '\'' +
+                ", teNo='" + teNo + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", csmCar=" + csmCar +
+                ", csmVin='" + csmVin + '\'' +
+                ", csmProtocol=" + csmProtocol +
+                ", csmType=" + csmType +
+                ", csmVerify=" + csmVerify +
+                ", csmMsgTime=" + csmMsgTime +
+                ", csmAddTime=" + csmAddTime +
+                ", csmData='" + csmData + '\'' +
+                ", csmStatus=" + csmStatus +
+                '}';
     }
 }

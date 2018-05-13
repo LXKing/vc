@@ -1,6 +1,6 @@
 package com.ccclubs.phoenix.input;
 
-import com.ccclubs.phoenix.orm.consts.Consts;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -71,13 +71,13 @@ public class CarStateHistoryParam extends Page implements Serializable{
     public String getQuery_fields() {
         query_fields= StringUtils.deleteWhitespace(query_fields);
         if("*".equals(query_fields)){
-            query_fields= StringUtils.join(Consts.carStateAllFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carStateAllFields,",");
         }
         else if(StringUtils.isEmpty(query_fields)){
-            query_fields= StringUtils.join(Consts.carStatePageDefaultFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carStatePageDefaultFields,",");
         }
         else if ("PACE".equals(query_fields)){
-            query_fields=StringUtils.join(Consts.carPaceFields,",");
+            query_fields=StringUtils.join(PhoenixFieldsConsts.carPaceFields,",");
         }
         return query_fields;
     }

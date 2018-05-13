@@ -1,30 +1,11 @@
 package com.ccclubs.phoenix.input;
 
-import com.ccclubs.phoenix.orm.consts.Consts;
+import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
 
 /**
- * ━━━━━━神兽出没━━━━━━
- * 　　　┏┓　　┏┓
- * 　　┏┛┻━━━┛┻┓
- * 　　┃　　　　 ┃
- * 　　┃　　 ━　 ┃
- * 　　┃　┳┛ ┗┳　┃
- * 　　┃　　　　  ┃
- * 　　┃　  ┻　   ┃
- * 　　┃　　　　　 ┃
- * 　　┗━┓　　　┏━┛
- * 　　　　┃　　　┃神兽保佑, 永无BUG!
- * 　　　　 ┃　　　┃Code is far away from bug with the animal protecting
- * 　　　　┃　　　┗━━━┓
- * 　　　　┃　　　　　 ┣┓
- * 　　　　┃　　　　　 ┏┛
- * 　　　　┗┓┓┏━┳┓┏┛
- * 　　　　　┃┫┫　┃┫┫
- * 　　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
  * Module Desc:
  * User: taosm
  * DateTime: 2017/11/27 0027
@@ -91,10 +72,10 @@ public class CarCanHistoryParam extends Page  implements Serializable{
     public String getQuery_fields() {
         query_fields= StringUtils.deleteWhitespace(query_fields);
         if("*".equals(query_fields)){
-            query_fields= StringUtils.join(Consts.carCanAllFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carCanAllFields,",");
         }
         else if(StringUtils.isEmpty(query_fields)){
-            query_fields= StringUtils.join(Consts.carCanPageDefaultFields,",");
+            query_fields= StringUtils.join(PhoenixFieldsConsts.carCanPageDefaultFields,",");
         }
         return query_fields;
     }

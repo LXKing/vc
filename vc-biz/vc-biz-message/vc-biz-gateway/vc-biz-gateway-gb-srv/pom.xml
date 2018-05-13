@@ -27,6 +27,54 @@
       <artifactId>vc-frm-mqtt</artifactId>
       <version>1.0.0</version>
     </dependency>
+
+      <!--引入SpringBoot基础依赖-->
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-web</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-test</artifactId>
+          <scope>test</scope>
+      </dependency>
+      <!-- servlet 容器 -->
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-undertow</artifactId>
+      </dependency>
+
+      <!--netty-->
+      <dependency>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+          <version>${netty.version}</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/javax.persistence/persistence-api -->
+      <!--<dependency>-->
+          <!--<groupId>javax.persistence</groupId>-->
+          <!--<artifactId>persistence-api</artifactId>-->
+      <!--</dependency>-->
+
+      <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+      <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+      </dependency>
+
+      <!--kafka-->
+      <dependency>
+          <groupId>org.springframework.kafka</groupId>
+          <artifactId>spring-kafka</artifactId>
+          <version>${kafka.version}</version>
+      </dependency>
+
+      <dependency>
+          <groupId>www.ccclubs</groupId>
+          <artifactId>vc-frm-spring</artifactId>
+          <version>${frm.version}</version>
+      </dependency>
   </dependencies>
 
 </project>
