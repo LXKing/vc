@@ -1,6 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.gb.constant.CommandType;
+import com.ccclubs.gateway.gb.constant.PacErrorType;
+import com.ccclubs.gateway.gb.constant.RealtimeDataType;
 import com.ccclubs.gateway.gb.dto.MsgValidateExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
@@ -38,13 +40,174 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
 
 
         if(!ValidUtil.validePac(frame)) {
+            LOG.error("收到一个校验异常包：{}", pac.toLogString());
             // 标记为错误包
             pac.setErrorPac(true);
+            pac.setPacErrorType(PacErrorType.PAC_VALID_ERROR);
             // 根据消息类型的不同，做不同的应答处理
             processFailAckByMsgType(ctx, pac);
         } else {
             // TODO 校验成功：发送成功应答
             processSuccessAck(ctx, pac);
+
+            // ----------------------------------
+            // 校验报文长度
+            ByteBuf contentBuffer = pac.getBody().getContent().discardReadBytes();
+            boolean lengthError = false;
+            int pacContentLength = contentBuffer.readableBytes();
+            switch (pac.getHeader().getCommandMark()) {
+                case REALTIME_DATA:
+                case REISSUE_DATA:
+                    // 实时数据和历史数据检查缺省内容
+                    if (pacContentLength > 6) {
+                        boolean end = false;
+                        int expectedLengthIndex = 5;
+                        int currentloopCount = 1;
+                        int lackBytesIndex = 0;
+                        /**
+                         * 加try-catch是想处理包体字节数超过协议规定的长度
+                         */
+                        try {
+                            while (!end) {
+                                // 最多循环9次
+                                if (currentloopCount > 9) {
+                                    break;
+                                } else {
+                                    currentloopCount ++;
+                                }
+                                // 少字节时break;
+                                if (pacContentLength < expectedLengthIndex + 1 + 1) {
+                                    break;
+                                }
+                                int dataType = contentBuffer.getByte(++ expectedLengthIndex);
+                                lackBytesIndex = dataType;
+                                switch (dataType) {
+                                    case 1:// 整车数据
+                                        expectedLengthIndex += 20;
+                                        break;
+                                    case 2:// 驱动电机数据
+                                        int qdNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        for (int i = 0; i < qdNum; i ++) {
+                                            expectedLengthIndex += 12;
+                                        }
+                                        break;
+                                    case 3:// 燃料电池数据
+                                        expectedLengthIndex += 6;
+                                        // 温度探针个数
+                                        int temProbNum = contentBuffer.getUnsignedShort(expectedLengthIndex);
+                                        expectedLengthIndex += 2 + temProbNum + 10;
+                                        break;
+                                    case 4:// 发动电机数据
+                                        expectedLengthIndex += 5;
+                                        break;
+                                    case 5:// 车辆位置数据
+                                        expectedLengthIndex += 9;
+                                        break;
+                                    case 6:// 极值数据
+                                        expectedLengthIndex += 14;
+                                        break;
+                                    case 7:// 报警数据
+                                        expectedLengthIndex += 5;
+                                        // 可充能装置故障个数
+                                        int chargeableBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        expectedLengthIndex += 4 * chargeableBrokenNum;
+                                        // 驱动电机故障个数
+                                        int qdBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        expectedLengthIndex += 4 * qdBrokenNum;
+                                        // 发动机故障个数
+                                        int motorBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        expectedLengthIndex += 4 * motorBrokenNum;
+                                        // 其他故障
+                                        int otherBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        expectedLengthIndex += 4 * otherBrokenNum;
+
+                                        break;
+                                    case 8:// 电压
+                                        int dyNum = contentBuffer.getByte(++ expectedLengthIndex);
+                                        for (int i = 0; i < dyNum; i++) {
+                                            expectedLengthIndex += 10;
+                                            int singleDY = contentBuffer.getByte(expectedLengthIndex);
+                                            expectedLengthIndex += singleDY * 2;
+                                        }
+                                        break;
+                                    case 9:// 温度
+                                        int temNum = contentBuffer.getByte(++ expectedLengthIndex);
+                                        for (int i = 0; i < temNum; i++) {
+                                            expectedLengthIndex += 2;
+                                            int singleTem = contentBuffer.getUnsignedShort(expectedLengthIndex);
+                                            expectedLengthIndex += 1;
+                                            expectedLengthIndex += singleTem;
+                                        }
+                                        break;
+                                    default:
+                                        end = true;
+                                        break;
+                                }
+                            }
+                            if (pacContentLength != expectedLengthIndex + 1) {
+                                lengthError = true;
+                                int lackedBytes = (expectedLengthIndex + 1) - pacContentLength;
+                                RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(lackBytesIndex);
+                                validateExceptionDTO
+                                        .setDataType(realtimeDataType.getCode())
+                                        .setCauseMsg("[" + realtimeDataType.getDes() + "]缺少[" + lackedBytes + "]字节");
+                                LOG.error("车机({})实时数据中[{}]部位缺失[{}]字节, 原始数据[{}]",
+                                        pac.getHeader().getUniqueNo(),
+                                        realtimeDataType.getDes(),
+                                        lackedBytes,
+                                        pac.getSourceHexStr());
+                            }
+                            break;
+                        } catch (IndexOutOfBoundsException e) {
+                            lengthError = true;
+                            validateExceptionDTO
+                                    .setDataType(lackBytesIndex)
+                                    .setCauseMsg(e.getMessage());
+                            LOG.error("车机({})实时数据中[{}]部位读取字节失败, 原始数据[{}]",
+                                    pac.getHeader().getUniqueNo(),
+                                    lackBytesIndex,
+                                    pac.getSourceHexStr());
+                        }
+                    }
+                    break;
+                case VEHICLE_LOGIN:
+                    if (pacContentLength < 30) {
+                        lengthError = true;
+                        break;
+                    }
+                    int loginM = contentBuffer.getByte(28);
+                    int loginN = contentBuffer.getByte(29);
+                    if ((loginM * loginN + 30) != pacContentLength) {
+                        lengthError = true;
+                        break;
+                    }
+                    break;
+                case VEHICLE_LOGOUT:
+                    if (pacContentLength != 8) {
+                        lengthError = true;
+                        break;
+                    }
+                    break;
+                case TIME_CHECK:
+                    if (pacContentLength > 0) {
+                        lengthError = true;
+                        break;
+                    }
+                    break;
+                case HEARTBEAT:
+                    if (pacContentLength > 0) {
+                        lengthError = true;
+                        break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            if (lengthError) {
+                pac.setErrorPac(true);
+                pac.setPacErrorType(PacErrorType.PAC_LENGTH_ERROR);
+            }
+            // ----------------------------------
         }
 
         // 空消息时，预警

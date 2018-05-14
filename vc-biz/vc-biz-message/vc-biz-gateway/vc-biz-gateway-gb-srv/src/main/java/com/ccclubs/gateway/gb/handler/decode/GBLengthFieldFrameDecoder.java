@@ -13,6 +13,7 @@ import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.DecodeUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.apache.commons.lang3.StringUtils;
@@ -248,7 +249,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     }
 
     private int indexOfStartMark(ByteBuf inputBuffer) {
-        int length = inputBuffer.readableBytes();
+        int length = inputBuffer.writerIndex();
         // 报文长度至少大于2
         if (length < 2) {
             return -1;

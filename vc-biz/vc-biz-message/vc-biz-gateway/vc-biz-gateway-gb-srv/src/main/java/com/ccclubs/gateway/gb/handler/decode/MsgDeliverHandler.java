@@ -30,17 +30,7 @@ public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
         MsgDeliverExceptionDTO msgDeliverExceptionDTO = new MsgDeliverExceptionDTO();
         PacProcessTrack pacProcessTrack = beforeProcess(ctx, msgDeliverExceptionDTO);
 
-        // 过滤不能解析的报文
-//        ByteBuf contentBuffer = pac.getSourceBuff();
-//        switch (pac.getHeader().getCommandMark()) {
-//            case REALTIME_DATA:
-//            case REISSUE_DATA:
-//                // 实时数据和历史数据检查缺省内容
-//
-//                break;
-//                default:
-//                    break;
-//        }
+
 
         pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
