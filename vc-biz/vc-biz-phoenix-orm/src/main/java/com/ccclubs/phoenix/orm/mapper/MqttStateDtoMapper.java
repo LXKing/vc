@@ -8,16 +8,29 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-public class CarGbMapper implements RowMapper<JSONObject> {
-    public JSONObject mapRow(ResultSet rs, int index) throws SQLException {
-        ResultSetMetaData metaData=rs.getMetaData();
+*/
+/**
+ * Created with IntelliJ IDEA2017.
+ *
+ * @Author: Alban
+ * @Date: 2018/5/14
+ * @Time: 10:52
+ * @Description: 请填写描述！
+ *//*
+
+
+public class MqttStateDtoMapper implements RowMapper<JSONObject> {
+    @Override
+    public JSONObject mapRow(ResultSet resultSet, int index) throws SQLException {
+        ResultSetMetaData metaData=resultSet.getMetaData();
         JSONObject jsonObject = new JSONObject();
         for(int i=1;i<=metaData.getColumnCount();i++){
             String columnName = metaData.getColumnName(i);
-            Object columnValue = rs.getObject(columnName);
+            Object columnValue = resultSet.getObject(columnName);
             jsonObject.put(columnName,columnValue);
         }
         return jsonObject;
     }
+
 }
 */

@@ -1,3 +1,4 @@
+/*
 package com.ccclubs.phoenix.orm.mapper;
 
 import com.alibaba.fastjson.JSONObject;
@@ -7,31 +8,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+*/
 /**
- * ━━━━━━神兽出没━━━━━━
- * 　　　┏┓　　　┏┓
- * 　　┏┛┻━━━┛┻┓
- * 　　┃　　　　　　　┃
- * 　　┃　　　━　　　┃
- * 　　┃　┳┛　┗┳　┃
- * 　　┃　　　　　　　┃
- * 　　┃　　　┻　　　┃
- * 　　┃　　　　　　　┃
- * 　　┗━┓　　　┏━┛
- * 　　　　┃　　　┃神兽保佑, 永无BUG!
- * 　　　　 ┃　　　┃Code is far away from bug with the animal protecting
- * 　　　　┃　　　┗━━━┓
- * 　　　　┃　　　　　　　┣┓
- * 　　　　┃　　　　　　　┏┛
- * 　　　　┗┓┓┏━┳┓┏┛
- * 　　　　　┃┫┫　┃┫┫
- * 　　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
  * Module Desc:
  * User: taosm
  * DateTime: 2017/11/28 0028
- */
+ *//*
+
 public class CarCanMapper implements RowMapper<JSONObject> {
+
     public JSONObject mapRow(ResultSet rs, int index) throws SQLException {
         ResultSetMetaData metaData=rs.getMetaData();
         JSONObject jsonObject = new JSONObject();
@@ -42,4 +27,6 @@ public class CarCanMapper implements RowMapper<JSONObject> {
         }
         return jsonObject;
     }
+
 }
+*/
