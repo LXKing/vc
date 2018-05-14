@@ -2,7 +2,6 @@ package com.ccclubs.phoenix.input;
 
 import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import org.apache.commons.lang.StringUtils;
-import sun.plugin2.message.Serializer;
 
 import java.io.Serializable;
 
