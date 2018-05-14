@@ -33,7 +33,7 @@ import java.util.Set;
  * @version 1.0
  * @since <pre>ʮ���� 9, 2017</pre>
  */
-public class CarHistoryBizApiTest {
+public class CarHistoryApiTest {
 
 
 

@@ -211,12 +211,11 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
-        Connection connection = null;
         PreparedStatement pst = null;
         String cs_number = carStateHistoryParam.getCs_number();
         long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
         long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-        connection= phoenixTool.getConnection();
+        Connection connection= phoenixTool.getConnection();
         ResultSet resultSet =null;
         try {
             pst = connection.prepareStatement(count_sql);
@@ -420,7 +419,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         paceList= paceService.getPaceList();
         return paceList;
     }
-
 
 
 }

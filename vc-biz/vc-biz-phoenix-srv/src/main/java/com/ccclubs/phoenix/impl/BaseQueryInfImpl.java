@@ -64,6 +64,59 @@ public class BaseQueryInfImpl {
     }
 
 
+
+    /**
+     * 将查询记录转化为 JSONArray,并且转换字段的下划线命名为驼峰命名。
+     * */
+    public static JSONArray resultSetToJSONArray(ResultSet resultSet){
+        JSONArray jsonArray = new JSONArray();
+        ResultSetMetaData metaData=null;
+        try{
+            JSONObject jsonObject = null;
+            metaData = resultSet.getMetaData();
+            while(resultSet.next()){
+                jsonObject = new JSONObject();
+                for(int i=1;i<=metaData.getColumnCount();i++){
+                    String columnName = metaData.getColumnName(i);
+                    columnName=trimBar(columnName);
+                    Object columnValue = resultSet.getObject(columnName);
+                    jsonObject.put(columnName,columnValue);
+                }
+                jsonArray.add(jsonObject);
+            }
+        }
+        catch (SQLException e){
+            logger.error(e.getMessage());
+        }
+        finally {
+            if (resultSet!=null){
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    logger.error(e.getMessage());
+                }
+            }
+        }
+        return jsonArray;
+    }
+
+
+    private static String trimBar(String column) {
+        String stringArray[] = column.split("_");
+        StringBuffer buf = new StringBuffer();
+        boolean first = true;
+        for (String subColumn : stringArray) {
+            if (first) {
+                first = false;
+                buf.append(subColumn);
+            } else {
+                buf.append(subColumn.replaceFirst(subColumn.substring(0, 1), subColumn.substring(0, 1).toUpperCase()));
+            }
+        }
+        return buf.toString();
+    }
+
+
     /**
      * 将jsonarray转化为对应类的实例列表并由参数@resultList带出
      * @param clazz 要接受数据的类类型  此方法中的泛型即为与此参数相同的类型。
@@ -79,13 +132,10 @@ public class BaseQueryInfImpl {
             try {
                 tObject=clazz.newInstance();
             } catch (InstantiationException e) {
-                e.printStackTrace();
                 logger.error(e.getMessage());
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
                 logger.error(e.getMessage());
             }
-
             String[] fields = queryFields.split(",");
             for(String field:fields){
                 try{
