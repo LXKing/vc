@@ -83,39 +83,34 @@ public class PhoenixFieldsConsts {
 
     //车辆GbMessage国标数据全部字段列表
     public static final List<String>  GBMESSAGE_ALL_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "VIN","MOBILE","ACCESS","ICCID", "ADD_TIME",
+            "CURRENT_TIME","TE_NUMBER","TE_NO",
+            "PROTOCOL","MESSAGE_TYPE","VERIFY","SOURCE_HEX"
     );
     //车辆GbMessage国标数据默认字段列表
     public static final List<String>  GBMESSAGE_DEFAULT_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "VIN", "ADD_TIME", "CURRENT_TIME","SOURCE_HEX"
     );
     //车辆JT808位置数据全部字段列表
     public static final List<String>  JT808_POSITION_ALL_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "TE_NUMBER","CURRENT_TIME","VIN","TE_NO","ICCID","ADD_TIME","MOBILE","ALARM_FLAG",
+            "STATUS","LONGITUDE","LATITUDE","ALTITUDE","GPS_SPEED","NET_STRENGTH","COURSE",
+            "GPS_VALID","SOURCE_HEX"
     );
     //车辆JT808位置数据默认字段列表
     public static final List<String>  JT808_POSITION_DEFAULT_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "TE_NUMBER","VIN","CURRENT_TIME","ADD_TIME",
+            "LONGITUDE","LATITUDE","ALTITUDE","NET_STRENGTH"
+
     );
     //车辆CAN总线数据全部字段列表
     public static final List<String>  CAN_ALL_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "VIN", "CURRENT_TIME","TE_NUMBER","TE_NO","ICCID","MOBILE","SOURCE_HEX","ADD_TIME"
     );
     //车辆CAN总线数据默认字段列表
     public static final List<String>  CAN_DEFAULT_FIELDS=ImmutableList.of(
-            "","","","","","","","",
-            "","","","","","","","",
-            "","","","","","","","","",""
+            "VIN", "CURRENT_TIME","TE_NUMBER",
+            "SOURCE_HEX","ADD_TIME"
     );
 
 

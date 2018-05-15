@@ -85,8 +85,9 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
                 preparedStatement.setInt(5, offset);
             }
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.resultSetToJSONArray(resultSet);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,mqttStateDtoList,MqttStateDto.class);
+            //JSONArray jsonArray = BaseQueryInfImpl.resultSetToJSONArray(resultSet);
+            mqttStateDtoList=BaseQueryInfImpl.resultSetToObjectList(resultSet,MqttStateDto.class);
+            //BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,mqttStateDtoList,MqttStateDto.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }

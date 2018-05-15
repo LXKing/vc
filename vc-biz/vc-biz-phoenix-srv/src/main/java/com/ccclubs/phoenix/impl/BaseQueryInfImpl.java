@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,27 +70,32 @@ public class BaseQueryInfImpl {
     /**
      * 将查询记录转化为 JSONArray,并且转换字段的下划线命名为驼峰命名。
      * */
-    public static JSONArray resultSetToJSONArray(ResultSet resultSet){
-        JSONArray jsonArray = new JSONArray();
+    public static <T> List<T> resultSetToObjectList(ResultSet resultSet,Class<T> clazz){
+        List<T> resultList=new ArrayList<>();
         ResultSetMetaData metaData=null;
         try{
-            JSONObject jsonObject = null;
             metaData = resultSet.getMetaData();
             while(resultSet.next()){
-                jsonObject = new JSONObject();
+                T result=clazz.newInstance();
                 for(int i=1;i<=metaData.getColumnCount();i++){
                     String columnName = metaData.getColumnName(i);
-                    columnName=trimBar(columnName);
                     Object columnValue = resultSet.getObject(columnName);
-                    jsonObject.put(columnName,columnValue);
+                    columnName=columnName.toLowerCase();
+                    columnName=trimBar(columnName);
+                    BeanUtils.setProperty(result,columnName,columnValue);
                 }
-                jsonArray.add(jsonObject);
+                resultList.add(result);
             }
         }
         catch (SQLException e){
             logger.error(e.getMessage());
-        }
-        finally {
+        } catch (IllegalAccessException e) {
+            logger.error(e.getMessage());
+        } catch (InstantiationException e) {
+            logger.error(e.getMessage());
+        } catch (InvocationTargetException e) {
+            logger.error(e.getMessage());
+        } finally {
             if (resultSet!=null){
                 try {
                     resultSet.close();
@@ -97,7 +104,7 @@ public class BaseQueryInfImpl {
                 }
             }
         }
-        return jsonArray;
+        return resultList;
     }
 
 
@@ -115,6 +122,8 @@ public class BaseQueryInfImpl {
         }
         return buf.toString();
     }
+
+
 
 
     /**
@@ -148,5 +157,6 @@ public class BaseQueryInfImpl {
             resultList.add(tObject);
         }
     }
+
 
 }
