@@ -1,3 +1,7 @@
+server:
+  port: 12003
+
+
 tcp:
   port: 27700
 boss:
@@ -28,7 +32,7 @@ kafka:
 
 pac:
   log:
-    debug: true    #是否开启消息日志打印
+    debug: false    #是否开启消息日志打印
   buffer:
     check: false   #是否打开buffer缓存检查（测试时开启）
 
