@@ -91,9 +91,9 @@ public class PhoenixHistoryApi {
     private boolean paramCheck(String pointQueryKey,String startTime,String endTime,Integer pageNo,Integer pageSize){
         if (null==pointQueryKey||null==endTime||null==startTime){return false;}
         if (pointQueryKey.isEmpty()||endTime.isEmpty()||startTime.isEmpty()){return false;}
-        if (pageNo<-1||pageNo==0){return false;}
-        if (pageSize<=0){return false;}
-        if (pageSize>5000){return false;}
+        //if (pageNo<-1||pageNo==0){return false;}
+        //if (pageSize<=0){return false;}
+        //if (pageSize>5000){return false;}
         try {
             DateTimeUtil.date2UnixFormat(startTime,DateTimeUtil.UNIX_FORMAT);
             DateTimeUtil.date2UnixFormat(endTime,DateTimeUtil.UNIX_FORMAT);
