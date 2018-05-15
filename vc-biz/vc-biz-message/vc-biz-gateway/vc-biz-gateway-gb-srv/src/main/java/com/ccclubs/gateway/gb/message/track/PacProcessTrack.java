@@ -60,6 +60,13 @@ public class PacProcessTrack {
         }
         return handlerPacTracks[step];
     }
+
+    public HandlerPacTrack getPreHandlerTracker() {
+        if (step - 1 < 0 || step > handlerPacTracks.length) {
+            throw new IllegalArgumentException("get current handlerTracker failed for the invalid value step: " + step);
+        }
+        return handlerPacTracks[step - 1];
+    }
     // ------------------------------------------------------------------------
     public String getVin() {
         return vin;
