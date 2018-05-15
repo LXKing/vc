@@ -148,7 +148,7 @@ public class TianJingReportImpl implements ReportInf {
             registry.stop();
             log.debug("kafka stop$$$$$$$$$");
         }
-        this.loginType = LoginType.LOGIN_IN_SUCCESS;
+        //this.loginType = LoginType.LOGIN_IN_SUCCESS;
         // 需要打印日志，控制日志输出
         if (this.getReportServer().isLogPrint()) {
             log.info("{} loginInReceived:{}",this.loginType, Tools.ToHexString((byte[]) msg));
