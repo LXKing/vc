@@ -20,6 +20,7 @@ import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -145,6 +146,8 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         // 部分异常可能需要服务端主动释放连接
         boolean needCloseConn = false;
+        // 是否发送至kafka
+        boolean needSendKafka = true;
 
         /**
          * 处理链路出现异常后
@@ -177,11 +180,18 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
             OtherProcessExceptionDTO otherProcessExceptionDTO = new OtherProcessExceptionDTO();
             otherProcessExceptionDTO.setCauseMsg(cause.getMessage());
             packProcessExceptionDTO.setJson(otherProcessExceptionDTO);
+
+            // 其他非自定义异常如果获取不到vin码则不发送到kafka
+            if (StringUtils.isEmpty(pacProcessTrack.getVin())) {
+                needSendKafka = false;
+            }
         }
 
         // json序列化之后发送到kafka对应Topic
-        kafkaTemplate.send(kafkaProperties.getError(),
-                packProcessExceptionDTO.toJson());
+        if (needSendKafka) {
+            kafkaTemplate.send(kafkaProperties.getError(),
+                    packProcessExceptionDTO.toJson());
+        }
 
         // 打印异常链
 //        cause.printStackTrace();
