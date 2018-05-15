@@ -53,16 +53,22 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             // ----------------------------------
             // 校验报文长度
             ByteBuf contentBuffer = pac.getBody().getContent().discardReadBytes();
+            // 是否发生包长度校验异常
             boolean lengthError = false;
+            // 包体内容长度
             int pacContentLength = contentBuffer.readableBytes();
             switch (pac.getHeader().getCommandMark()) {
                 case REALTIME_DATA:
                 case REISSUE_DATA:
                     // 实时数据和历史数据检查缺省内容
                     if (pacContentLength > 6) {
+                        // 标识实时数据的数据类型循环是否结束
                         boolean end = false;
+                        // 按照协议的预期消息体长度
                         int expectedLengthIndex = 5;
+                        // 当前循环计数
                         int currentloopCount = 1;
+                        // 实时数据中缺少字节的数据类型索引
                         int lackBytesIndex = 0;
                         /**
                          * 加try-catch是想处理包体字节数超过协议规定的长度
@@ -81,56 +87,57 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                                 }
                                 int dataType = contentBuffer.getByte(++ expectedLengthIndex);
                                 lackBytesIndex = dataType;
-                                switch (dataType) {
-                                    case 1:// 整车数据
+                                RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(dataType);
+                                switch (realtimeDataType) {
+                                    case ALL:// 整车数据
                                         expectedLengthIndex += 20;
                                         break;
-                                    case 2:// 驱动电机数据
-                                        int qdNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
-                                        for (int i = 0; i < qdNum; i ++) {
+                                    case MOTOR:// 驱动电机数据
+                                        int moterNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        for (int i = 0; i < moterNum; i ++) {
                                             expectedLengthIndex += 12;
                                         }
                                         break;
-                                    case 3:// 燃料电池数据
+                                    case FUEL_CELL:// 燃料电池数据
                                         expectedLengthIndex += 6;
                                         // 温度探针个数
                                         int temProbNum = contentBuffer.getUnsignedShort(expectedLengthIndex);
                                         expectedLengthIndex += 2 + temProbNum + 10;
                                         break;
-                                    case 4:// 发动电机数据
+                                    case ENGINE:// 发动电机数据
                                         expectedLengthIndex += 5;
                                         break;
-                                    case 5:// 车辆位置数据
+                                    case POSITION:// 车辆位置数据
                                         expectedLengthIndex += 9;
                                         break;
-                                    case 6:// 极值数据
+                                    case EXTREMUM:// 极值数据
                                         expectedLengthIndex += 14;
                                         break;
-                                    case 7:// 报警数据
+                                    case ALARM:// 报警数据
                                         expectedLengthIndex += 5;
                                         // 可充能装置故障个数
                                         int chargeableBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
                                         expectedLengthIndex += 4 * chargeableBrokenNum;
                                         // 驱动电机故障个数
-                                        int qdBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
-                                        expectedLengthIndex += 4 * qdBrokenNum;
-                                        // 发动机故障个数
                                         int motorBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
                                         expectedLengthIndex += 4 * motorBrokenNum;
+                                        // 发动机故障个数
+                                        int engineBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
+                                        expectedLengthIndex += 4 * engineBrokenNum;
                                         // 其他故障
                                         int otherBrokenNum = contentBuffer.getUnsignedByte(++ expectedLengthIndex);
                                         expectedLengthIndex += 4 * otherBrokenNum;
 
                                         break;
-                                    case 8:// 电压
-                                        int dyNum = contentBuffer.getByte(++ expectedLengthIndex);
-                                        for (int i = 0; i < dyNum; i++) {
+                                    case RECHARGEABLE_ENERGY_STORAGE_DEVICE_VOLTAGE:// 电压
+                                        int voltageNum = contentBuffer.getByte(++ expectedLengthIndex);
+                                        for (int i = 0; i < voltageNum; i++) {
                                             expectedLengthIndex += 10;
                                             int singleDY = contentBuffer.getByte(expectedLengthIndex);
                                             expectedLengthIndex += singleDY * 2;
                                         }
                                         break;
-                                    case 9:// 温度
+                                    case RECHARGEABLE_ENERGY_STORAGE_TEMPERATURE:// 温度
                                         int temNum = contentBuffer.getByte(++ expectedLengthIndex);
                                         for (int i = 0; i < temNum; i++) {
                                             expectedLengthIndex += 2;
@@ -175,9 +182,11 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                         lengthError = true;
                         break;
                     }
-                    int loginM = contentBuffer.getByte(28);
-                    int loginN = contentBuffer.getByte(29);
-                    if ((loginM * loginN + 30) != pacContentLength) {
+                    // 可充能子系统个数
+                    int chargeableChildSysNum = contentBuffer.getByte(28);
+                    // 可充能系统编码长度
+                    int chargeableCodeLen = contentBuffer.getByte(29);
+                    if ((chargeableChildSysNum * chargeableCodeLen + 30) != pacContentLength) {
                         lengthError = true;
                         break;
                     }

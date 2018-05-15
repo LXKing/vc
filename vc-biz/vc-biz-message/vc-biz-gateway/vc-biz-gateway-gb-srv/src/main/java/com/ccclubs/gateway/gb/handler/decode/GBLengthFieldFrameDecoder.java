@@ -89,7 +89,6 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         } else {
             isComplete = false;
-//            in.discardReadBytes();
         }
 
         /**

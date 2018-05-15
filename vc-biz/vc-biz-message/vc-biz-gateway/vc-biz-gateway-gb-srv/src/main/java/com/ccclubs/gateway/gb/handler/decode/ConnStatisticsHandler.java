@@ -2,7 +2,6 @@ package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.gb.constant.CommandType;
-import com.ccclubs.gateway.gb.constant.PacErrorType;
 import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
 import com.ccclubs.gateway.gb.dto.ConnStatisticsExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
