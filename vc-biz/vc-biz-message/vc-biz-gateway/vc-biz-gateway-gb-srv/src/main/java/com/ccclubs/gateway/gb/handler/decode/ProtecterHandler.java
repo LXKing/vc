@@ -74,7 +74,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
                 .setVin(pac.getHeader().getUniqueNo())
                 .setSourceHex(pac.getSourceHexStr());
         // 正常的消息发送至kafka
-        kafkaTemplate.send(topic, packProcessExceptionDTO.toJson());
+        kafkaTemplate.send(topic,
+                pacProcessTrack.getVin(),
+                packProcessExceptionDTO.toJson());
 
 
 
@@ -108,7 +110,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
         if (connClosedSuccess) {
-            kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
+            kafkaTemplate.send(kafkaProperties.getConn(),
+                    connOnlineStatusEvent.getVin(),
+                    connOnlineStatusEvent.toJson());
         }
     }
 
@@ -190,6 +194,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
             kafkaTemplate.send(kafkaProperties.getError(),
+                    pacProcessTrack.getVin(),
                     packProcessExceptionDTO.toJson());
         }
 
