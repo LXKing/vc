@@ -73,6 +73,7 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
 
 
             kafkaTemplate.send(kafkaProperties.getError(),
+                    pacProcessTrack.getVin(),
                     packProcessExceptionDTO.toJson());
 
             countErrorPac(channel);
@@ -149,7 +150,9 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
                         .setTimestamp(System.currentTimeMillis())
                         .setClientIp(channel.remoteAddress().getHostString())
                         .setServerIp(channel.localAddress().getHostString());
-                kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
+                kafkaTemplate.send(kafkaProperties.getConn(),
+                        vin,
+                        connOnlineStatusEvent.toJson());
             }
         }
         return conn;
