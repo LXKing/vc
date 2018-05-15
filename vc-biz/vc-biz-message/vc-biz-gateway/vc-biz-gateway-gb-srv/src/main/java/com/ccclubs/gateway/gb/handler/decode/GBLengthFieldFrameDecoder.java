@@ -13,6 +13,7 @@ import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.DecodeUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +29,12 @@ import org.slf4j.LoggerFactory;
 public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     private static Logger LOG = LoggerFactory.getLogger(GBLengthFieldFrameDecoder.class);
 
+    private boolean isComplete = false;
+
+    private Integer specifiedMaxFrameLength = 4042;
+
     public GBLengthFieldFrameDecoder() {
-        this(4024, 22, 2);
+        this(4042, 22, 2);
     }
 
     public GBLengthFieldFrameDecoder(
@@ -39,12 +44,51 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength, 1, 0);
     }
 
+    private boolean reorganizedPac(ChannelHandlerContext ctx, ByteBuf in) {
+        // 超长报文处理：防止超长报文导致的内存爆炸
+//        int frameLength = in.readableBytes();
+//        if (frameLength > specifiedMaxFrameLength) {
+//            // TODO 单次发送长度超长则直接丢弃
+//            in.skipBytes(frameLength);
+//        }
+        int startMarkIndex = indexOfStartMark(in);
+        if (-1 == startMarkIndex) {
+            return false;
+        }
+        if (0 == startMarkIndex) {
+            isComplete = true;
+        } else {
+            if (isComplete) {
+
+            } else {
+                in.readerIndex(startMarkIndex);
+                in.discardReadBytes();
+                isComplete = true;
+            }
+        }
+
+        if (isComplete) {
+
+        } else {
+            in.discardReadBytes();
+            return false;
+        }
+        return true;
+    }
+
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+        boolean reorganized = reorganizedPac(ctx, in);
+        if (!reorganized) {
+            return null;
+        }
         ByteBuf frame = (ByteBuf) super.decode(ctx, in);
         // 过滤半包
         if (null == frame) {
+            isComplete = true;
             return null;
+        } else {
+            isComplete = false;
         }
 
         /**
@@ -201,5 +245,25 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, HandlerPacTrack currentHandlerTracker) {
         currentHandlerTracker.setErrorOccur(true);
         throw new PackageDecodeException(decodeExceptionInfo.toLogString());
+    }
+
+    private int indexOfStartMark(ByteBuf inputBuffer) {
+        int length = inputBuffer.writerIndex();
+        // 报文长度至少大于2
+        if (length < 2) {
+            return -1;
+        }
+        int rederIndex = inputBuffer.readerIndex();
+        for(int i = rederIndex; i < length - 1; i ++) {
+            byte b1 = inputBuffer.getByte(i);
+            // "#" = b1
+            if (0x23 == b1) {
+                // "#" = b2
+                if (i + 1 <= length && 0x23 == inputBuffer.getByte(i + 1)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

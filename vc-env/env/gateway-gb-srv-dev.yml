@@ -9,7 +9,7 @@ worker:
 #true: 连接复用；false：每次新建一个连接
 so:
   keepalive: false
-  backlog: 100
+  backlog: 1024
 
 #kafka生产者配置
 spring:

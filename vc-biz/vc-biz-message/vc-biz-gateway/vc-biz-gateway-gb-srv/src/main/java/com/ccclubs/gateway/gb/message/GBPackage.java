@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.gb.message;
 
+import com.ccclubs.gateway.gb.constant.PacErrorType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,8 @@ public class GBPackage {
      * 是否为校验异常包
      */
     private boolean errorPac;
+
+    private PacErrorType pacErrorType;
 
     public static GBPackage valueOfEmpty() {
         GBPackage gbPackage = new GBPackage();
@@ -124,6 +127,15 @@ public class GBPackage {
 
     public GBPackage setSourceHexStr(String sourceHexStr) {
         this.sourceHexStr = sourceHexStr;
+        return this;
+    }
+
+    public PacErrorType getPacErrorType() {
+        return pacErrorType;
+    }
+
+    public GBPackage setPacErrorType(PacErrorType pacErrorType) {
+        this.pacErrorType = pacErrorType;
         return this;
     }
 }
