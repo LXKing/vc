@@ -16,9 +16,11 @@ import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -51,7 +53,6 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         // 输出消息处理轨迹信息
         ProtecterExceptionDTO protecterExceptionDTO = new ProtecterExceptionDTO();
         PacProcessTrack pacProcessTrack = beforeProcess(ctx, protecterExceptionDTO);
-
         pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
 
         // 如果是测试阶段则打印报告日志
@@ -73,7 +74,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
                 .setVin(pac.getHeader().getUniqueNo())
                 .setSourceHex(pac.getSourceHexStr());
         // 正常的消息发送至kafka
-        kafkaTemplate.send(topic, packProcessExceptionDTO.toJson());
+        kafkaTemplate.send(topic,
+                pacProcessTrack.getVin(),
+                packProcessExceptionDTO.toJson());
 
 
 
@@ -86,14 +89,14 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     @Override
     public void channelActive(ChannelHandlerContext context) {
-        LOG.info("新链接建立");
+        LOG.info("new channel active");
         SocketChannel channel = (SocketChannel)context.channel();
         ClientCache.addByChannelId(channel.id());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) {
-        LOG.info("连接被释放");
+        LOG.info("channel become inactive and is closing");
         SocketChannel channel = (SocketChannel)context.channel();
         GBConnection conn = ClientCache.getByChannelId(channel.id());
         ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
@@ -107,7 +110,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
         boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
         if (connClosedSuccess) {
-            kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
+            kafkaTemplate.send(kafkaProperties.getConn(),
+                    connOnlineStatusEvent.getVin(),
+                    connOnlineStatusEvent.toJson());
         }
     }
 
@@ -145,6 +150,8 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         // 部分异常可能需要服务端主动释放连接
         boolean needCloseConn = false;
+        // 是否发送至kafka
+        boolean needSendKafka = true;
 
         /**
          * 处理链路出现异常后
@@ -177,19 +184,31 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
             OtherProcessExceptionDTO otherProcessExceptionDTO = new OtherProcessExceptionDTO();
             otherProcessExceptionDTO.setCauseMsg(cause.getMessage());
             packProcessExceptionDTO.setJson(otherProcessExceptionDTO);
+
+            // 其他非自定义异常如果获取不到vin码则不发送到kafka
+            if (StringUtils.isEmpty(pacProcessTrack.getVin())) {
+                needSendKafka = false;
+            }
         }
 
         // json序列化之后发送到kafka对应Topic
-        kafkaTemplate.send(kafkaProperties.getError(),
-                packProcessExceptionDTO.toJson());
+        if (needSendKafka) {
+            kafkaTemplate.send(kafkaProperties.getError(),
+                    pacProcessTrack.getVin(),
+                    packProcessExceptionDTO.toJson());
+        }
 
         // 打印异常链
 //        cause.printStackTrace();
+        if (cause instanceof TooLongFrameException) {
+            // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
+            needCloseConn = true;
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", pacProcessTrack.getVin());
+        }
 
         if (needCloseConn) {
             // 关闭链接
-            LOG.error("检测到重要异常，服务端将主动断开连接");
-            ClientCache.closeWhenInactive((SocketChannel) context.channel());
+            context.channel().close();
         }
     }
 

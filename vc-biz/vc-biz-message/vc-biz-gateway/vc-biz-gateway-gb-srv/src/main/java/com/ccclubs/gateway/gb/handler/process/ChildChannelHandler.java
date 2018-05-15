@@ -6,8 +6,11 @@ import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,13 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
+        ByteBuf delimiter = Unpooled.copiedBuffer("##".getBytes());
         // 组装处理链路
         channel.pipeline()
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
+//                .addLast("framTooLongHandler", new FrameReorganizeDecoder())
                 // 解码
                 .addLast("gbDecoder", new GBLengthFieldFrameDecoder())
                 // 数据包校验

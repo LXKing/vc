@@ -24,15 +24,15 @@ kafka:
     group:
       storage:
         gb:
-          message: cgrp_storage_gb_message
-        can: cgrp_storage_can
-        can-exp: cgrp_storage_can_exp
+          message: cgrp_storage_gb_message                #GB网关上报正常数据 消费者组
+        can: cgrp_storage_can                             #GB网关上报正常数据 消费者组
+        can-exp: cgrp_storage_can_exp                     #GB网关上报正常数据 消费者组
         mqtt:
-          state: cgrp_storage_mqtt_state
-          state-exp: cgrp_storage_mqtt_state_exp
+          state: cgrp_storage_mqtt_state                  #GB网关上报正常数据 消费者组
+          state-exp: cgrp_storage_mqtt_state_exp          #GB网关上报正常数据 消费者组
         jt808:
-          position: cgrp_storage_jt_position
-          position-exp: cgrp_storage_jt_position_exp
+          position: cgrp_storage_jt_position              #GB网关上报正常数据 消费者组
+          position-exp: cgrp_storage_jt_position_exp      #GB网关上报正常数据 消费者组
   topic:
     history:
       gb:

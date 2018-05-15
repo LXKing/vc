@@ -30,6 +30,8 @@ public enum PackProcessExceptionCode {
 
     /*校验失败*/
     INVALID_FAIL(1007),
+    /*校验失败*/
+    LACK_LENGTH_FAIL(1008),
 
     /*消息解码异常*/
     MESSAGE_DECODE_ERROR(1099);

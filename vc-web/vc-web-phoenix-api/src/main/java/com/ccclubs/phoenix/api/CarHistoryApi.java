@@ -10,8 +10,6 @@ import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.inf.CarHistoryDeleteInf;
 import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.*;
-import com.ccclubs.phoenix.orm.model.CarCan;
-import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.orm.model.Pace;
 import com.ccclubs.phoenix.output.*;
@@ -26,9 +24,9 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("history")
-public class CarHistoryBizApi {
+public class CarHistoryApi {
 
-    private static final Logger logger= LoggerFactory.getLogger(CarHistoryBizApi.class);
+    private static final Logger logger= LoggerFactory.getLogger(CarHistoryApi.class);
     private static final long ONE_MOUTH=2592000000L;
     private static final long ONE_WEEK=604800000L;
 

@@ -51,15 +51,29 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
 
         SocketChannel channel = (SocketChannel)ctx.channel();
         if (pac.isErrorPac()) {
-            LOG.error("收到一个校验异常包：{}", pac.toLogString());
 
-            // 目前校验异常dto中为空
+            // 目前校验异常dto中json为空
             PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO()
                     .setVin(pac.getHeader().getUniqueNo())
-                    .setSourceHex(pac.getSourceHexStr())
-                    .setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
+                    .setSourceHex(pac.getSourceHexStr());
+            // 依据不同的校验异常类型，写入不同的错误码
+            switch (pac.getPacErrorType()) {
+                case PAC_VALID_ERROR:
+                    packProcessExceptionDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
+                    break;
+                case PAC_LENGTH_ERROR:
+                    packProcessExceptionDTO
+                            .setCode(PackProcessExceptionCode.LACK_LENGTH_FAIL.getCode())
+                            .setJson(pacProcessTrack.getPreHandlerTracker().getExceptionDtoJsonParse());
+                    break;
+                    default:
+                        break;
+            }
+
+
 
             kafkaTemplate.send(kafkaProperties.getError(),
+                    pacProcessTrack.getVin(),
                     packProcessExceptionDTO.toJson());
 
             countErrorPac(channel);
@@ -136,7 +150,9 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
                         .setTimestamp(System.currentTimeMillis())
                         .setClientIp(channel.remoteAddress().getHostString())
                         .setServerIp(channel.localAddress().getHostString());
-                kafkaTemplate.send(kafkaProperties.getConn(), connOnlineStatusEvent.toJson());
+                kafkaTemplate.send(kafkaProperties.getConn(),
+                        vin,
+                        connOnlineStatusEvent.toJson());
             }
         }
         return conn;
