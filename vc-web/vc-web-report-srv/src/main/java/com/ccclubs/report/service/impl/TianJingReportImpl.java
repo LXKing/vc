@@ -88,7 +88,7 @@ public class TianJingReportImpl implements ReportInf {
             byte[] b = (byte[]) msg;
             GBMessage gb = new GBMessage();
             gb.ReadFromBytes(b);
-            log.info("send success:{},vin:{},msg:{},hex:{}", loginType, gb.getVin(), getMessageTypeString(gb), Tools.ToHexString(b));
+            log.info("国标(天津数据中心)[{}]数据({})上传{}", getMessageTypeString(gb), gb.getVin(), Tools.ToHexString(b));
         }
         if(this.loginType.equals(LoginType.LOGIN_IN)) {
             registry.stop();
