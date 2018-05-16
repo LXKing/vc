@@ -132,8 +132,8 @@
     var currPage = 1, currSize = 15;
 
     function checkParams() {
-        if ($("input[name='csNumberEquals']").val() === '' || typeof($("input[name='csNumberEquals']").val()) === 'undefined') {
-            layer.msg('请选择一个车机号', {icon: 7, time: 1600});
+        if ($("input[name='csVinEquals']").val() === '' || typeof($("input[name='csVinEquals']").val()) === 'undefined') {
+            layer.msg('请选择一个车架号', {icon: 7, time: 1600});
             return false;
         }
 
