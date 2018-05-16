@@ -66,6 +66,7 @@ public class HistoryStateController {
      */
     void registResolvers(HistoryState data, Boolean isResolve) {
         if (data != null && isResolve) {
+            data.registResolver(HistoryStateResolver.接入商.getResolver());
             data.registResolver(HistoryStateResolver.下位机时间.getResolver());
             data.registResolver(HistoryStateResolver.添加时间.getResolver());
             data.registResolver(HistoryStateResolver.充电状态.getResolver());
