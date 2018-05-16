@@ -58,15 +58,18 @@ public class HistoryGbController {
                                                      @RequestParam(defaultValue = "desc") String order,
                                                      HistoryGbQuery query) {
         TableResult<HistoryGb> tableResult = new TableResult<>();
+        if (StringUtils.isEmpty(query.getCsVinEquals())) {
+            tableResult.setPage(new Page(page, rows, 0));
+            return tableResult;
+        }
+
         GbMessageParam param = new GbMessageParam();
         String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
         String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
         if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
-        if (StringUtils.isEmpty(query.getCsVinEquals())) {
-            return tableResult;
-        }
+
         logger.debug("请求参数：" + param.toString());
         param.setVin(query.getCsVinEquals());
         param.setStartTime(startTime);
@@ -147,15 +150,18 @@ public class HistoryGbController {
                                                 @RequestParam(defaultValue = "15") Integer rows,
                                                 @RequestParam(defaultValue = "desc") String order) {
         TableResult<GBMessage> tableResult = new TableResult<>();
+        if (StringUtils.isEmpty(query.getCsVinEquals())) {
+            tableResult.setPage(new Page(page, rows, 0));
+            return tableResult;
+        }
+
         GbMessageParam param = new GbMessageParam();
         String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
         String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
         if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
-        if (StringUtils.isEmpty(query.getCsVinEquals())) {
-            return tableResult;
-        }
+
         logger.debug("请求参数：" + param.toString());
         param.setVin(query.getCsVinEquals());
         param.setStartTime(startTime);
