@@ -198,6 +198,7 @@ public class HistoryGbController {
      */
     void registResolvers(HistoryGb data) {
         if (data != null) {
+            data.registResolver(com.ccclubs.admin.resolver.HistoryGbResolver.接入商.getResolver());
             data.registResolver(com.ccclubs.admin.resolver.HistoryGbResolver.协议类型.getResolver());
             data.registResolver(com.ccclubs.admin.resolver.HistoryGbResolver.报文类型.getResolver());
             data.registResolver(com.ccclubs.admin.resolver.HistoryGbResolver.校验结果.getResolver());

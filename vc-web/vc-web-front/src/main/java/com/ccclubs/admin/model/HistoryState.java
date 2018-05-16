@@ -264,6 +264,9 @@ public class HistoryState implements java.io.Serializable
 		return this;
 	}
 
+	public Object getCsAccessText(){
+		return resolve("csAccessText");
+	}
 	public Object getCurrentTimeText(){
 		return resolve("currentTimeText");
 	}
