@@ -52,7 +52,7 @@ public class HistoryGbController {
     @Reference(version = "1.0.0")
     GbMessageHistoryInf gbMessageHistoryInf;
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public TableResult<HistoryGb> queryGbMessageList(@RequestParam(defaultValue = "0") Integer page,
                                                      @RequestParam(defaultValue = "10") Integer rows,
                                                      @RequestParam(defaultValue = "desc") String order,
