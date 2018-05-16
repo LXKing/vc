@@ -37,8 +37,6 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
     static  final Logger logger= LoggerFactory.getLogger(MqttStateHistoryInfImpl.class);
 
     @Autowired
-    private PhoenixTool phoenixTool;
-    @Autowired
     private BaseQueryImpl baseQuery;
 
 
@@ -46,43 +44,7 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
     public List<MqttStateDto> queryMqttStateDtoList(MqttStateParam param) {
         return baseQuery.queryDtoList(param,PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
                 PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP,MqttStateDto.class);
-        /*SqlAssembly sqlAssembly=new SqlAssembly(param,
-                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
-                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
 
-        String pointKeyValue=sqlAssembly.getPointValue();
-
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
-        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-
-        String  QUERY_SQL = sqlAssembly.getQuerySql();
-
-        List<MqttStateDto> mqttStateDtoList = new ArrayList<MqttStateDto>();
-        Connection connection = phoenixTool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
-        try {
-
-            preparedStatement = connection.prepareStatement(QUERY_SQL);
-            preparedStatement.setString(1, pointKeyValue);
-            preparedStatement.setLong(2, startTime);
-            preparedStatement.setLong(3, endTime);
-            if (sqlAssembly.isPageQuery()){
-                Integer limit = param.getPageSize();
-                Integer offset = (param.getPageNum() - 1) * limit;
-                preparedStatement.setInt(4, limit);
-                preparedStatement.setInt(5, offset);
-            }
-            resultSet = preparedStatement.executeQuery();
-            mqttStateDtoList= BaseTransformTool.resultSetToObjectList(resultSet,MqttStateDto.class);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-        }
-        finally {
-            phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"queryMqttStateDtoList");
-        }
-        return mqttStateDtoList;*/
     }
 
     @Override
@@ -90,38 +52,6 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
 
         return baseQuery.queryListCount(param,PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
                 PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
-
-        /*SqlAssembly sqlAssembly=new SqlAssembly(param,
-                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
-                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
-
-        String pointKeyValue=sqlAssembly.getPointValue();
-        String COUNT_SQL = sqlAssembly.getCountSql();
-        long total = 0L;
-        PreparedStatement pst = null;
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
-        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-        Connection connection= phoenixTool.getConnection();
-        ResultSet resultSet =null;
-        try {
-            pst = connection.prepareStatement(COUNT_SQL);
-            pst.setString(1, pointKeyValue);
-            pst.setLong(2, startTime);
-            pst.setLong(3, endTime);
-            resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            if(jsonArray!=null&&jsonArray.size()>0){
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                total=jsonObject.getLong("TOTAL");
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-        }
-        finally {
-            phoenixTool.closeResource(connection,
-                    pst,resultSet,"queryMqttStateListCount");
-        }
-        return total;*/
     }
 
     @Override
