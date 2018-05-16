@@ -97,6 +97,7 @@ public class HistoryGbController {
             historyGb.setCurrentTime(new Date(dto.getCurrentTime()));
             historyGb.setGbData(dto.getSourceHex());
             historyGb.setGbType(dto.getMessageType());
+            historyGbList.add(historyGb);
         }
 
         for (HistoryGb data : historyGbList) {
