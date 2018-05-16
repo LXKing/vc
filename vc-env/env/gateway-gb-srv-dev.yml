@@ -29,10 +29,11 @@ kafka:
       error: topic_gb_error
       success: topic_gb_success
       conn: topic_conn_status
+      test: topic_gb_test
 
 pac:
   log:
-    debug: false    #是否开启消息日志打印
+    debug: true    #是否开启消息日志打印
   buffer:
     check: false   #是否打开buffer缓存检查（测试时开启）
 

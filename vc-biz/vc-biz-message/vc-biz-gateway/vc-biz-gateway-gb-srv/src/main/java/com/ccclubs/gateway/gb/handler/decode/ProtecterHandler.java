@@ -177,7 +177,6 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
 
         if (Objects.nonNull(pacProcessing)) {
             LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
-            cause.printStackTrace();
             if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
                 // 自定义抛出的处理异常
             } else {
@@ -224,17 +223,11 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
             tooLongSb.append("发送帧长度异常，服务端将主动断开连接");
             LOG.error(tooLongSb.toString());
             needCloseConn = true;
-<<<<<<< HEAD
-            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接, 原始消息[{}]",
-                    pacProcessTrack.getVin(),
-                    pacProcessTrack.getSourceHex());
-=======
         }
 
         // 打印异常链
         if (cause.getCause() != null) {
             cause.printStackTrace();
->>>>>>> b66870c98a6844b882a976aa06066a24103f533d
         }
 
         if (needCloseConn) {
