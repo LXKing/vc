@@ -9,6 +9,7 @@ import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
+@Deprecated
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
@@ -71,9 +73,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setLong(2 , start_time);
             preparedStatement.setLong(3 , end_time);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
 
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -119,9 +121,9 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setInt(4,limit);
             preparedStatement.setInt(5,offset);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
 
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -150,7 +152,7 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");

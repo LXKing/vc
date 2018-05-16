@@ -20,7 +20,7 @@ import java.util.List;
  * @Description: 分时租赁协议历史状态接口！
  */
 public interface MqttStateHistoryInf {
-    //查询车辆状态信息(非分页)
+    //查询车辆状态信息
     List<MqttStateDto> queryMqttStateDtoList(MqttStateParam carStateHistoryParam);
 
     //查询车辆状态信息记录总数
