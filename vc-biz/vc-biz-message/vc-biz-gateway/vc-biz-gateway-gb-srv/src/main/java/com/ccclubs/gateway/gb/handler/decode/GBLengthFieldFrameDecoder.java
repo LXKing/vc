@@ -8,12 +8,10 @@ import com.ccclubs.gateway.gb.constant.PackagePart;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.PacHeader;
-import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.DecodeUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import org.apache.commons.lang3.StringUtils;
@@ -29,18 +27,19 @@ import org.slf4j.LoggerFactory;
 public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     private static Logger LOG = LoggerFactory.getLogger(GBLengthFieldFrameDecoder.class);
 
+    // 记录当前渠道粘包处理状态
     private boolean isComplete = false;
 
-    private Integer specifiedMaxFrameLength = 4042;
+    private Integer specifiedMaxFrameLength = 4048;
 
     public GBLengthFieldFrameDecoder() {
-        this(4042, 22, 2);
+        this(4048, 22, 2);
     }
 
     public GBLengthFieldFrameDecoder(
             int maxFrameLength,
             int lengthFieldOffset, int lengthFieldLength) {
-        //   2M                  22                 2                       1
+        //   2K                  22                 2                       1
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength, 1, 0);
     }
 
@@ -51,7 +50,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
 //            // TODO 单次发送长度超长则直接丢弃
 //            in.skipBytes(frameLength);
 //        }
-        int startMarkIndex = indexOfStartMark(in);
+        int startMarkIndex = DecodeUtil.indexOfStartMark(in);
         if (-1 == startMarkIndex) {
             return false;
         }
@@ -103,19 +102,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
         pacProcessTrack.setSourceHex(pac.getSourceHexStr());
 
-//        Long startTime = System.nanoTime();
-        // 记录消息解码开始时间
-        HandlerPacTrack currentHandlerTracker = pacProcessTrack.getCurrentHandlerTracker()
-                .setStartTime(System.nanoTime());
-
         // 消息组装
-        composeMsgPac(pac, currentHandlerTracker, pacProcessTrack);
+        composeMsgPac(pac, pacProcessTrack);
 
-        // 如果无异常，则记录处理完成时间
-        currentHandlerTracker.setEndTime(System.nanoTime());
-
-//        Long endTime = System.nanoTime();
-//        System.out.println("--decode--：" + (endTime -startTime));
         return pac;
     }
 
@@ -123,11 +112,13 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
      * 将ByteBuf包装为GBPackage
      * @param pac
      */
-    private GBPackage composeMsgPac(GBPackage pac, HandlerPacTrack currentHandlerTracker, PacProcessTrack pacProcessTrack) {
+    private GBPackage composeMsgPac(GBPackage pac, PacProcessTrack pacProcessTrack) {
+        // 记录解析报文用时
+        Long startTime = System.nanoTime();
+
         ByteBuf frame = pac.getSourceBuff();
         // 初始化解析异常dto，记录异常详细信息
         DecodeExceptionDTO decodeExceptionInfo = new DecodeExceptionDTO(pac.getSourceHexStr());
-        currentHandlerTracker.setExceptionDtoJsonParse(decodeExceptionInfo);
         PacHeader pacHeader = pac.getHeader();
 
         /**
@@ -147,8 +138,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal(vinNo)
                     .setExpectedVal("非空的17个字符");
-
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 起始符
@@ -160,7 +150,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal(startSymbol)
                     .setExpectedVal("##");
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 命令标识
@@ -173,7 +163,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("" + commandVal)
                     .setExpectedVal(CommandType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 应答标志
@@ -186,7 +176,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("" + ackVal)
                     .setExpectedVal(AckType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // vin码在第一部分已经读取了，这里只需要跳过vin码部分
@@ -202,7 +192,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("" + encryVal)
                     .setExpectedVal(EncryType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 包体长度
@@ -214,7 +204,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("" + contentLength)
                     .setExpectedVal("大于或者等于0");
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 包体
@@ -226,7 +216,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("空")
                     .setExpectedVal("消息体中可读字节不能为负数");
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 校验码
@@ -237,33 +227,26 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setExceptionVal("" + valideByte).setReason("包长度超长，实际长度为：" + frame.readableBytes() + 1)
                     .setExpectedVal("字节长度等于1");
-            throwWhenDecodeError(decodeExceptionInfo, currentHandlerTracker);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
+
+        // 初始化异常信息
+        pacProcessTrack.getExpMessageDTO()
+                .setSourceHex(pac.getSourceHexStr())
+                .setVin(pacProcessTrack.getVin());
+        Long endTime = System.nanoTime();
+        pacProcessTrack.getCurrentHandlerTracker().setUsedTime(endTime - startTime);
         return pac;
     }
 
-    public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, HandlerPacTrack currentHandlerTracker) {
-        currentHandlerTracker.setErrorOccur(true);
+    public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack) {
+        pacProcessTrack.getCurrentHandlerTracker().setErrorOccur(true);
+        pacProcessTrack.getExpMessageDTO()
+                .setSourceHex(decodeExceptionInfo.getSource())
+                .setVin(decodeExceptionInfo.getVin())
+                .setIndex(decodeExceptionInfo.getDecodeMarkIndex())
+                .setReason(decodeExceptionInfo.toLogString())
+                .setCode(pacProcessTrack.getStep() + "");
         throw new PackageDecodeException(decodeExceptionInfo.toLogString());
-    }
-
-    private int indexOfStartMark(ByteBuf inputBuffer) {
-        int length = inputBuffer.writerIndex();
-        // 报文长度至少大于2
-        if (length < 2) {
-            return -1;
-        }
-        int rederIndex = inputBuffer.readerIndex();
-        for(int i = rederIndex; i < length - 1; i ++) {
-            byte b1 = inputBuffer.getByte(i);
-            // "#" = b1
-            if (0x23 == b1) {
-                // "#" = b2
-                if (i + 1 <= length && 0x23 == inputBuffer.getByte(i + 1)) {
-                    return i;
-                }
-            }
-        }
-        return -1;
     }
 }
