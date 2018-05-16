@@ -9,13 +9,14 @@ import java.io.Serializable;
  * Created with IntelliJ IDEA2017.
  *
  * @Author: Alban
- * @Date: 2018/5/14
- * @Time: 14:46
+ * @Date: 2018/5/15
+ * @Time: 15:48
  * @Description: 请填写描述！
  */
 
-public class MqttStateParam extends CommonQuery implements Serializable,BaseParamInf {
-    private static final long serialVersionUID = 4373790686901859115L;
+public class Jt808PositionParam extends CommonQuery implements Serializable,BaseParamInf {
+
+    private static final long serialVersionUID = -3287951624270869572L;
 
     private String vin;
 
@@ -26,7 +27,6 @@ public class MqttStateParam extends CommonQuery implements Serializable,BasePara
     private String endTime;
 
     private String queryFields="";
-
 
     @Override
     public String getVin() {
@@ -48,26 +48,6 @@ public class MqttStateParam extends CommonQuery implements Serializable,BasePara
         this.teNumber = teNumber;
     }
 
-    @Override
-    public String getQueryFields() {
-        queryFields= StringUtils.deleteWhitespace(queryFields);
-        if("*".equals(queryFields)){
-            queryFields= StringUtils.join(PhoenixFieldsConsts.MQTT_STATE_ALL_FIELDS,",");
-        }
-        else if(StringUtils.isEmpty(queryFields)){
-            queryFields= StringUtils.join(PhoenixFieldsConsts.MQTT_STATE_DEFAULT_FIELDS,",");
-        }
-        else if ("PACE".equals(queryFields)){
-            queryFields=StringUtils.join(PhoenixFieldsConsts.MQTT_STATE_PACE_FIELDS,",");
-        }
-        return queryFields;
-    }
-
-    @Override
-    public void setQueryFields(String queryFields) {
-        this.queryFields = queryFields;
-    }
-
     public String getStartTime() {
         return startTime;
     }
@@ -84,5 +64,20 @@ public class MqttStateParam extends CommonQuery implements Serializable,BasePara
         this.endTime = endTime;
     }
 
+    @Override
+    public String getQueryFields() {
+        queryFields= StringUtils.deleteWhitespace(queryFields);
+        if("*".equals(queryFields)){
+            queryFields= StringUtils.join(PhoenixFieldsConsts.JT808_POSITION_ALL_FIELDS,",");
+        }
+        else if(StringUtils.isEmpty(queryFields)){
+            queryFields= StringUtils.join(PhoenixFieldsConsts.JT808_POSITION_DEFAULT_FIELDS,",");
+        }
+        return queryFields;
+    }
 
+    @Override
+    public void setQueryFields(String queryFields) {
+        this.queryFields = queryFields;
+    }
 }

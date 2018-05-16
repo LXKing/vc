@@ -13,6 +13,7 @@ import java.util.List;
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
+@Deprecated
 public class CarStateHistoryOutput implements Serializable {
 
 

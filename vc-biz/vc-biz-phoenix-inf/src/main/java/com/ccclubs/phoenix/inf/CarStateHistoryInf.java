@@ -19,15 +19,19 @@ import java.util.List;
  */
 // extends BaseHistoryInf<CarState>
 public interface CarStateHistoryInf{
+    @Deprecated
     //查询车辆状态信息(非分页)
      List<CarState> queryCarStateListNoPage(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息(分页)
      List<CarState> queryCarStateListWithPage(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息记录总数
      Long queryCarStateListCount(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息(封装)
      CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam);
 

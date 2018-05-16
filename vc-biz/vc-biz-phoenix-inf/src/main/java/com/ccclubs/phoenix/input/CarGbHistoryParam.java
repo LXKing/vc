@@ -4,7 +4,7 @@ import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-
+@Deprecated
 public class CarGbHistoryParam extends Page implements Serializable{
 
 

@@ -10,6 +10,7 @@ import com.ccclubs.phoenix.inf.MqttStateHistoryInf;
 import com.ccclubs.phoenix.input.MqttStateParam;
 import com.ccclubs.phoenix.orm.dto.MqttStateDto;
 import com.ccclubs.phoenix.output.MqttStateHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,36 +38,24 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
 
     @Autowired
     private PhoenixTool phoenixTool;
+    @Autowired
+    private BaseQueryImpl baseQuery;
 
 
     @Override
     public List<MqttStateDto> queryMqttStateDtoList(MqttStateParam param) {
-        String queryFields = param.getQueryFields();
-        String tableName=null;
-        String pointKeyName=null;
-        String pointKeyValue=null;
-        //区分查询何张表
-        if (param.getVin()!=null&&param.getTeNumber()==null){
-            tableName=PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR;
-            pointKeyName="VIN";
-            pointKeyValue= param.getVin();
-        }else if (param.getVin()==null&&param.getTeNumber()!=null){
-            tableName=PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP;
-            pointKeyName="TE_NUMBER";
-            pointKeyValue=param.getTeNumber();
-        }
+        return baseQuery.queryDtoList(param,PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP,MqttStateDto.class);
+        /*SqlAssembly sqlAssembly=new SqlAssembly(param,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
+
+        String pointKeyValue=sqlAssembly.getPointValue();
 
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-        String pageSql="";
-        if (param.getPageNum()>0){
-            pageSql="limit ? offset ? ";
-        }
 
-        String  QUERY_SQL = "select " +
-                queryFields + " from " +tableName+" where " +pointKeyName+
-                "=? and current_time>=? and current_time<=? order by current_time  "
-                + param.getOrder() + " "+pageSql;
+        String  QUERY_SQL = sqlAssembly.getQuerySql();
 
         List<MqttStateDto> mqttStateDtoList = new ArrayList<MqttStateDto>();
         Connection connection = phoenixTool.getConnection();
@@ -78,16 +67,14 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
             preparedStatement.setString(1, pointKeyValue);
             preparedStatement.setLong(2, startTime);
             preparedStatement.setLong(3, endTime);
-            if (!pageSql.equals("")){
+            if (sqlAssembly.isPageQuery()){
                 Integer limit = param.getPageSize();
                 Integer offset = (param.getPageNum() - 1) * limit;
                 preparedStatement.setInt(4, limit);
                 preparedStatement.setInt(5, offset);
             }
             resultSet = preparedStatement.executeQuery();
-            //JSONArray jsonArray = BaseQueryInfImpl.resultSetToJSONArray(resultSet);
-            mqttStateDtoList=BaseQueryInfImpl.resultSetToObjectList(resultSet,MqttStateDto.class);
-            //BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,mqttStateDtoList,MqttStateDto.class);
+            mqttStateDtoList= BaseTransformTool.resultSetToObjectList(resultSet,MqttStateDto.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -95,28 +82,21 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
             phoenixTool.closeResource(connection,
                     preparedStatement,resultSet,"queryMqttStateDtoList");
         }
-        return mqttStateDtoList;
+        return mqttStateDtoList;*/
     }
 
     @Override
     public Long queryListCount(MqttStateParam param) {
 
-        String tableName=null;
-        String pointKeyName=null;
-        String pointKeyValue=null;
-        //区分查询何张表
-        if (param.getVin()!=null&&param.getTeNumber()==null){
-            tableName=PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR;
-            pointKeyName="VIN";
-            pointKeyValue= param.getVin();
-        }else if (param.getVin()==null&&param.getTeNumber()!=null){
-            tableName=PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP;
-            pointKeyName="TE_NUMBER";
-            pointKeyValue=param.getTeNumber();
-        }
-        String COUNT_SQL = "select count(current_time) as total from "
-                +tableName+" where " +pointKeyName+
-                "=? and current_time>=? and current_time<=? ";
+        return baseQuery.queryListCount(param,PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
+
+        /*SqlAssembly sqlAssembly=new SqlAssembly(param,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR,
+                PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
+
+        String pointKeyValue=sqlAssembly.getPointValue();
+        String COUNT_SQL = sqlAssembly.getCountSql();
         long total = 0L;
         PreparedStatement pst = null;
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
@@ -129,7 +109,7 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
             pst.setLong(2, startTime);
             pst.setLong(3, endTime);
             resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -139,9 +119,9 @@ public class MqttStateHistoryInfImpl implements MqttStateHistoryInf {
         }
         finally {
             phoenixTool.closeResource(connection,
-                    pst,resultSet,"queryListCount");
+                    pst,resultSet,"queryMqttStateListCount");
         }
-        return total;
+        return total;*/
     }
 
     @Override
