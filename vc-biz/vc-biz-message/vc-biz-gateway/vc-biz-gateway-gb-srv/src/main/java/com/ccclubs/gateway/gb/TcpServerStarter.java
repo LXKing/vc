@@ -37,11 +37,19 @@ public class TcpServerStarter {
 
     public void start() throws Exception {
         LOG.info("TCP服务器启动");
-        this.serverChannel =
-                serverBootstrap
-                        .bind(tcpPort).sync()
-                        .channel().closeFuture().sync()
-                        .channel();
+        new Thread(() -> {
+            try {
+                this.serverChannel =
+                        serverBootstrap
+                                .bind(tcpPort).sync()
+                                .channel().closeFuture().sync()
+                                .channel();
+            } catch (Exception e) {
+                LOG.error("TCP服务器启动异常：{}", e.getMessage());
+                e.printStackTrace();
+            }
+
+        }).start();
     }
 
     @PreDestroy
