@@ -319,7 +319,6 @@ public enum HistoryStateResolver{
 					result+=(i==0?"":",")+ "10挡";
 				}
 			}
-
 			return (T)result;
 		}
 	})

@@ -45,7 +45,7 @@ public class HistoryStateController {
                                           @RequestParam(defaultValue = "desc") String order,
                                           @RequestParam(defaultValue = "true") Boolean isResolve) {
 
-        if (null == query.getCsNumberEquals()) {
+        if (null == query.getCsVinEquals()) {
             //TODO 需要Phoenix支持只使用时间的查询。
             return new TableResult<HistoryState>();
         }
@@ -88,7 +88,7 @@ public class HistoryStateController {
     public VoResult<String> getReport(@RequestBody ReportParam<HistoryStateQuery> reportParam) {
         reportParam.setAllReport(1);//强行修改状态数据导出为全部导出。
         List<HistoryState> list;
-        if (null == reportParam.getQuery().getCsNumberEquals() ||
+        if (null == reportParam.getQuery().getCsVinEquals() ||
                 null == reportParam.getQuery().getCurrentTimeStart() ||
                 null == reportParam.getQuery().getCurrentTimeEnd()) {
             //TODO 需要Phoenix支持只使用时间的查询。

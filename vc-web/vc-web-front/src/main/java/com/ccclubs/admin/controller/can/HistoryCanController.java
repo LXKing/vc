@@ -48,7 +48,7 @@ public class HistoryCanController {
                                         @RequestParam(defaultValue = "10") Integer rows,
                                         @RequestParam(defaultValue = "desc") String order,
                                         @RequestParam(defaultValue = "true") Boolean isResolve) {
-        if (null == query.getCsNumberEquals()) {
+        if (null == query.getCsVinEquals()) {
             return new TableResult<HistoryCan>();
         }
         TableResult<HistoryCan> pageInfo = historyCanService.getPage(query, page, rows, order);
@@ -75,7 +75,7 @@ public class HistoryCanController {
     @RequestMapping(value = "/report", method = RequestMethod.POST)
     public VoResult<String> getReport(@RequestBody ReportParam<HistoryCanQuery> reportParam) {
         List<HistoryCan> list;
-        if (null == reportParam.getQuery().getCsNumberEquals() ||
+        if (null == reportParam.getQuery().getCsVinEquals() ||
                 null == reportParam.getQuery().getCurrentTimeStart() ||
                 null == reportParam.getQuery().getCurrentTimeEnd()) {
             //TODO 需要Phoenix支持只使用时间的查询。
