@@ -213,7 +213,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         if (cause instanceof TooLongFrameException) {
             // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
             needCloseConn = true;
-            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", pacProcessTrack.getVin());
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接, 原始消息[{}]",
+                    pacProcessTrack.getVin(),
+                    pacProcessTrack.getSourceHex());
         }
 
         if (needCloseConn) {

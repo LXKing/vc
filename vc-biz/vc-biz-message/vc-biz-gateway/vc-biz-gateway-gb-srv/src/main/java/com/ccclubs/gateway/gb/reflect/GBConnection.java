@@ -140,7 +140,7 @@ public class GBConnection implements MsgSender {
                 .append("\n").append("| VIN码：").append(this.getVin())
                 .append("\n").append("| 接收总包数：").append(this.getPackageNum())
                 .append("\n").append("| 接收异常包数：").append(this.getErrorPacketNum())
-                .append("\n").append("| 接收异定位包数：").append(this.getPositionPackageNum())
+                .append("\n").append("| 接收定位包数：").append(this.getPositionPackageNum())
                 .append("\n").append("| 连接断开次数：").append(this.getDisconnectTimes())
                 .append("\n---------------------------------------\n");
         return desSb.toString();

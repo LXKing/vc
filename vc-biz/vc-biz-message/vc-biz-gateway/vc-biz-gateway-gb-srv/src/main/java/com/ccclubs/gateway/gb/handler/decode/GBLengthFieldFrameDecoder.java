@@ -16,6 +16,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.TooLongFrameException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
 //        int frameLength = in.readableBytes();
 //        if (frameLength > specifiedMaxFrameLength) {
 //            // TODO 单次发送长度超长则直接丢弃
-//            in.skipBytes(frameLength);
+//            in.skipBytes(frameLength);throw new TooLongFrameException("Frame too big!");
 //        }
         int startMarkIndex = indexOfStartMark(in);
         if (-1 == startMarkIndex) {
