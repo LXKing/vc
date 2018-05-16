@@ -1,15 +1,16 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.constant.PackProcessExceptionCode;
-import com.ccclubs.gateway.gb.dto.ConnStatisticsExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
+import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -45,26 +46,19 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
-        ConnStatisticsExceptionDTO statisticsExceptionDTO = new ConnStatisticsExceptionDTO();
-        PacProcessTrack pacProcessTrack = beforeProcess(ctx, statisticsExceptionDTO);
-
+    protected boolean channelRead0(ChannelHandlerContext ctx, GBPackage pac, PacProcessTrack pacProcessTrack) throws Exception {
         SocketChannel channel = (SocketChannel)ctx.channel();
         if (pac.isErrorPac()) {
 
-            // 目前校验异常dto中json为空
-            PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO()
-                    .setVin(pac.getHeader().getUniqueNo())
-                    .setSourceHex(pac.getSourceHexStr());
+            ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
             // 依据不同的校验异常类型，写入不同的错误码
             switch (pac.getPacErrorType()) {
                 case PAC_VALID_ERROR:
-                    packProcessExceptionDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
+                    expMessageDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
                     break;
                 case PAC_LENGTH_ERROR:
-                    packProcessExceptionDTO
-                            .setCode(PackProcessExceptionCode.LACK_LENGTH_FAIL.getCode())
-                            .setJson(pacProcessTrack.getPreHandlerTracker().getExceptionDtoJsonParse());
+                    expMessageDTO
+                            .setCode(PackProcessExceptionCode.LACK_LENGTH_FAIL.getCode());
                     break;
                     default:
                         break;
@@ -74,11 +68,12 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
 
             kafkaTemplate.send(kafkaProperties.getError(),
                     pacProcessTrack.getVin(),
-                    packProcessExceptionDTO.toJson());
+                    expMessageDTO.toJson());
 
             countErrorPac(channel);
             // 错误包不进行下发
             ReferenceCountUtil.release(pac.getSourceBuff());
+            return false;
         } else {
             // 因为错误包的数据不准确，所以不在错误包之前初始化连接
             GBConnection conn = getConn(pac.getHeader().getUniqueNo(), channel);
@@ -112,11 +107,8 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
             }
             // -----------------------------------------------------
 
-            // 记录处理结束时间
-            pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
-
             // 事件下发
-            ctx.fireChannelRead(pac);
+            return true;
         }
     }
 

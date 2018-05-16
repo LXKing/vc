@@ -18,6 +18,8 @@ public class KafkaProperties {
 
     private String conn;
 
+    private String test;
+
     public String getSuccess() {
         return success;
     }
@@ -42,6 +44,15 @@ public class KafkaProperties {
 
     public KafkaProperties setConn(String conn) {
         this.conn = conn;
+        return this;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public KafkaProperties setTest(String test) {
+        this.test = test;
         return this;
     }
 }

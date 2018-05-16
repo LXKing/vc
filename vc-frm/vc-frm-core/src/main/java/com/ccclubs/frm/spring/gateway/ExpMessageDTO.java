@@ -1,5 +1,7 @@
 package com.ccclubs.frm.spring.gateway;
 
+import com.alibaba.fastjson.JSON;
+
 import java.io.Serializable;
 
 /**
@@ -24,43 +26,52 @@ public class ExpMessageDTO implements Serializable {
     // 错误原因
     private String reason;
 
+    public String toJson() {
+        return JSON.toJSONString(this);
+    }
+    // -----------------------------------------------------------
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public ExpMessageDTO setCode(String code) {
         this.code = code;
+        return this;
     }
 
     public String getVin() {
         return vin;
     }
 
-    public void setVin(String vin) {
+    public ExpMessageDTO setVin(String vin) {
         this.vin = vin;
+        return this;
     }
 
     public String getSourceHex() {
         return sourceHex;
     }
 
-    public void setSourceHex(String sourceHex) {
+    public ExpMessageDTO setSourceHex(String sourceHex) {
         this.sourceHex = sourceHex;
+        return this;
     }
 
     public Integer getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public ExpMessageDTO setIndex(Integer index) {
         this.index = index;
+        return this;
     }
 
     public String getReason() {
         return reason;
     }
 
-    public void setReason(String reason) {
+    public ExpMessageDTO setReason(String reason) {
         this.reason = reason;
+        return this;
     }
 }

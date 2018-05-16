@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.gb.handler.process;
 
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.gb.constant.ChannelAttrKey;
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
@@ -17,6 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * @Author: yeanzi
@@ -26,6 +32,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
+
+    // 受监视的车辆的vin码
+    public static Set<String> vins = new HashSet<>();
 
     public static boolean printPacLog;
 
@@ -40,13 +49,13 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
-        ByteBuf delimiter = Unpooled.copiedBuffer("##".getBytes());
         // 组装处理链路
         channel.pipeline()
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
-//                .addLast("framTooLongHandler", new FrameReorganizeDecoder())
+                // 记录监视的车辆报文
+                .addLast("preHandler", new PreProcessHandler(kafkaTemplate, kafkaProperties))
                 // 解码
                 .addLast("gbDecoder", new GBLengthFieldFrameDecoder())
                 // 数据包校验
@@ -69,6 +78,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         initPacTrack(channel);
 
 
+
         /**
          * 可以在运行时动态的编排handler顺序和增删新旧handler达到一些控流等功能
          *      如：1.可以依据消息头部，动态的给多种协议的报文组装处理流水线，而不仅仅处理GB协议报文
@@ -79,7 +89,10 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
     private void initPacTrack(SocketChannel channel) {
         Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
         PacProcessTrack newPacProessTrack = new PacProcessTrack();
-        newPacProessTrack.setErrorOccur(false).setStep(0);
+        newPacProessTrack
+                .setErrorOccur(false)
+                .setStep(0)
+                .setExpMessageDTO(new ExpMessageDTO());
         HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[6];
         for (int i = 0; i < handlerPacTracks.length; i ++) {
             handlerPacTracks[i] = new HandlerPacTrack();

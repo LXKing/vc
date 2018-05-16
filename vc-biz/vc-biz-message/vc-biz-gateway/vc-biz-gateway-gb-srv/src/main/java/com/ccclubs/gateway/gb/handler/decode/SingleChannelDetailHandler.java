@@ -5,6 +5,7 @@ import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("prototype")
-public class SingleChannelDetailHandler extends CCClubChannelInboundHandler<GBPackage> {
+public class SingleChannelDetailHandler extends ChannelInboundHandlerAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleChannelDetailHandler.class);
 
@@ -30,7 +31,8 @@ public class SingleChannelDetailHandler extends CCClubChannelInboundHandler<GBPa
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        GBPackage pac = (GBPackage) msg;
         if (null == conn) {
             SocketChannel channel = (SocketChannel)ctx.channel();
             conn = ClientCache.getByChannelId(channel.id());
