@@ -9,6 +9,7 @@ import com.ccclubs.phoenix.inf.CarGbHistoryInf;
 import com.ccclubs.phoenix.input.CarGbHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarGb;
 import com.ccclubs.phoenix.output.CarGbHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 @org.springframework.stereotype.Service
 @Service(version="1.0.0")
+@Deprecated
 public class CarGbHistoryInfImpl implements CarGbHistoryInf {
 
     static Logger logger= LoggerFactory.getLogger(CarGbHistoryInfImpl.class);
@@ -62,8 +64,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -107,8 +109,8 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setInt(4,limit);
             preparedStatement.setInt(5,offset);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carGbList,CarGb.class);
 
         }catch (SQLException e){
             logger.error(e.getMessage());
@@ -136,7 +138,7 @@ public class CarGbHistoryInfImpl implements CarGbHistoryInf {
             preparedStatement.setLong(2,start_time);
             preparedStatement.setLong(3,end_time);
             resultSet = preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");

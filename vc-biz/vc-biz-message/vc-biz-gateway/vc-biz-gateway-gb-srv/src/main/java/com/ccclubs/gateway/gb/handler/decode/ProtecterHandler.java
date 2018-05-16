@@ -89,16 +89,19 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
 
     @Override
     public void channelActive(ChannelHandlerContext context) {
-        LOG.info("new channel active");
         SocketChannel channel = (SocketChannel)context.channel();
+        LOG.info("new channel active: ip={}, port={}",
+                channel.remoteAddress().getHostString(),
+                channel.remoteAddress().getPort());
         ClientCache.addByChannelId(channel.id());
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) {
-        LOG.info("channel become inactive and is closing");
         SocketChannel channel = (SocketChannel)context.channel();
         GBConnection conn = ClientCache.getByChannelId(channel.id());
+
+        String vin = "无";
         ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
         if (Objects.nonNull(conn) && conn.isConnected()) {
             connOnlineStatusEvent.setVin(conn.getVin())
@@ -106,7 +109,12 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
                     .setTimestamp(System.currentTimeMillis())
                     .setClientIp(channel.remoteAddress().getHostString())
                     .setServerIp(channel.localAddress().getHostString());
+            vin = conn.getVin();
         }
+        LOG.info("vehicle({}) become inactive and is closing: ip={}, port={}",
+                vin,
+                channel.remoteAddress().getHostString(),
+                channel.remoteAddress().getPort());
 
         boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
         if (connClosedSuccess) {
@@ -199,7 +207,9 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         }
 
         // 打印异常链
-//        cause.printStackTrace();
+        if (cause.getCause() != null) {
+            LOG.debug(cause.getCause().getMessage());
+        }
         if (cause instanceof TooLongFrameException) {
             // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
             needCloseConn = true;

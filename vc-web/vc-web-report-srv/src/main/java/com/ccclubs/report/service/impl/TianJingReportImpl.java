@@ -50,11 +50,32 @@ public class TianJingReportImpl implements ReportInf {
     public void receivedSuccess(Object msg) {
         // 需要打印日志，控制日志输出
         if (this.getReportServer().isLogPrint()) {
-            log.info("received:{},{}", loginType, Tools.ToHexString((byte[]) msg));
+            byte[] b = (byte[]) msg;
+            log.info("received:{},hex:{}", loginType, Tools.ToHexString(b));
         }
 
     }
-
+    private String getMessageTypeString(GBMessage gb) {
+        switch (gb.getMessageType()) {
+            case 0x01:
+                return "车辆登入";
+            case 0x02:
+                return "实时信息上报";
+            case 0x03:
+                return "补发信息上报";
+            case 0x04:
+                return "车辆登出";
+            case 0x05:
+            case 0x06:
+                return "平台传输数据占用";
+            case 0x07:
+                return "心跳";
+            case 0x08:
+                return "终端校时";
+            default:
+                return "0x" + Tools.ToHexString((byte) gb.getMessageType());
+        }
+    }
     @Override
     public void receivedError(Throwable cause) {
         log.error("receivedError", cause);
@@ -63,7 +84,11 @@ public class TianJingReportImpl implements ReportInf {
     @Override
     public void sendSuccess(Object msg) {
         if (this.getReportServer().isLogPrint()) {
-            log.info("send success:{}", Tools.ToHexString((byte[]) msg));
+            //log.info("send success:{}", Tools.ToHexString((byte[]) msg));
+            byte[] b = (byte[]) msg;
+            GBMessage gb = new GBMessage();
+            gb.ReadFromBytes(b);
+            log.info("国标(天津数据中心)[{}]数据({})上传{}", getMessageTypeString(gb), gb.getVin(), Tools.ToHexString(b));
         }
         if(this.loginType.equals(LoginType.LOGIN_IN)) {
             registry.stop();
@@ -151,7 +176,7 @@ public class TianJingReportImpl implements ReportInf {
         //this.loginType = LoginType.LOGIN_IN_SUCCESS;
         // 需要打印日志，控制日志输出
         if (this.getReportServer().isLogPrint()) {
-            log.info("{} loginInReceived:{}",this.loginType, Tools.ToHexString((byte[]) msg));
+            log.info("{} loginInReceived:{}",this.loginType, Tools.ToHexString(b));
         }
 
     }

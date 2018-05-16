@@ -1,13 +1,11 @@
-package com.ccclubs.phoenix.impl;
+package com.ccclubs.phoenix.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,9 +24,9 @@ import java.util.List;
  * \
  */
 @Service
-public class BaseQueryInfImpl {
+public class BaseTransformTool {
 
-    private static Logger logger= LoggerFactory.getLogger(BaseQueryInfImpl.class);
+    private static Logger logger= LoggerFactory.getLogger(BaseTransformTool.class);
     /**
      * 将查询记录转化为 JSONArray
      * */
@@ -64,8 +62,6 @@ public class BaseQueryInfImpl {
         }
         return jsonArray;
     }
-
-
 
     /**
      * 将查询记录转化为 JSONArray,并且转换字段的下划线命名为驼峰命名。
@@ -124,8 +120,6 @@ public class BaseQueryInfImpl {
     }
 
 
-
-
     /**
      * 将jsonarray转化为对应类的实例列表并由参数@resultList带出
      * @param clazz 要接受数据的类类型  此方法中的泛型即为与此参数相同的类型。
@@ -157,6 +151,5 @@ public class BaseQueryInfImpl {
             resultList.add(tObject);
         }
     }
-
 
 }
