@@ -56,7 +56,7 @@ public class HistoryGbController {
     public TableResult<HistoryGb> queryGbMessageList(@RequestParam(defaultValue = "0") Integer page,
                                                      @RequestParam(defaultValue = "10") Integer rows,
                                                      @RequestParam(defaultValue = "desc") String order,
-                                                     @RequestBody HistoryGbQuery query) {
+                                                     HistoryGbQuery query) {
         GbMessageParam param = new GbMessageParam();
         String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
         String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
@@ -146,7 +146,7 @@ public class HistoryGbController {
      * 获取分页列表数据
      */
     @RequestMapping(value = "listGbMessage", method = RequestMethod.GET)
-    public TableResult<GBMessage> listGbMessage(@RequestBody HistoryGbQuery query, @RequestParam(defaultValue = "0") Integer page,
+    public TableResult<GBMessage> listGbMessage(HistoryGbQuery query, @RequestParam(defaultValue = "0") Integer page,
                                                 @RequestParam(defaultValue = "10") Integer rows,
                                                 @RequestParam(defaultValue = "desc") String order) {
         TableResult<GBMessage> tableResult = new TableResult<>();
