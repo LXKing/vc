@@ -58,14 +58,14 @@ public class HistoryGbController {
                                                      @RequestParam(defaultValue = "desc") String order,
                                                      HistoryGbQuery query) {
         TableResult<HistoryGb> tableResult = new TableResult<>();
-        if (StringUtils.isEmpty(query.getCsVinEquals())) {
+        if (StringUtils.isEmpty(query.getCsVinEquals()) || query.getAddTimeStart() == null || query.getAddTimeEnd() == null) {
             tableResult.setPage(new Page(page, rows, 0));
             return tableResult;
         }
 
         GbMessageParam param = new GbMessageParam();
-        String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
-        String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
+        String startTime = DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
+        String endTime = DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
         if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
@@ -76,8 +76,8 @@ public class HistoryGbController {
         param.setEndTime(endTime);
         param.setPageNum(page);
         param.setPageSize(rows);
-
-        String pointQueryKey  = param.getVin();
+        param.setQueryFields("*");
+        String pointQueryKey = param.getVin();
 
         if (!paramCheck(pointQueryKey, param.getStartTime(), param.getEndTime(), param.getPageNum(), param.getPageSize())) {
             return tableResult;
@@ -151,14 +151,14 @@ public class HistoryGbController {
                                                 @RequestParam(defaultValue = "15") Integer rows,
                                                 @RequestParam(defaultValue = "desc") String order) {
         TableResult<GBMessage> tableResult = new TableResult<>();
-        if (StringUtils.isEmpty(query.getCsVinEquals())) {
+        if (StringUtils.isEmpty(query.getCsVinEquals()) || query.getAddTimeStart() == null || query.getAddTimeEnd() == null) {
             tableResult.setPage(new Page(page, rows, 0));
             return tableResult;
         }
 
         GbMessageParam param = new GbMessageParam();
-        String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
-        String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
+        String startTime = DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
+        String endTime = DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
         if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
@@ -169,8 +169,8 @@ public class HistoryGbController {
         param.setEndTime(endTime);
         param.setPageNum(page);
         param.setPageSize(rows);
-
-        String pointQueryKey  = param.getVin();
+        param.setQueryFields("*");
+        String pointQueryKey = param.getVin();
 
         if (!paramCheck(pointQueryKey, param.getStartTime(), param.getEndTime(), param.getPageNum(), param.getPageSize())) {
             return tableResult;
