@@ -53,8 +53,8 @@ public class HistoryGbController {
     GbMessageHistoryInf gbMessageHistoryInf;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public TableResult<HistoryGb> queryGbMessageList(@RequestParam(defaultValue = "0") Integer page,
-                                                     @RequestParam(defaultValue = "10") Integer rows,
+    public TableResult<HistoryGb> queryGbMessageList(@RequestParam(defaultValue = "1") Integer page,
+                                                     @RequestParam(defaultValue = "15") Integer rows,
                                                      @RequestParam(defaultValue = "desc") String order,
                                                      HistoryGbQuery query) {
         GbMessageParam param = new GbMessageParam();
@@ -146,8 +146,8 @@ public class HistoryGbController {
      * 获取分页列表数据
      */
     @RequestMapping(value = "listGbMessage", method = RequestMethod.GET)
-    public TableResult<GBMessage> listGbMessage(HistoryGbQuery query, @RequestParam(defaultValue = "0") Integer page,
-                                                @RequestParam(defaultValue = "10") Integer rows,
+    public TableResult<GBMessage> listGbMessage(HistoryGbQuery query, @RequestParam(defaultValue = "1") Integer page,
+                                                @RequestParam(defaultValue = "15") Integer rows,
                                                 @RequestParam(defaultValue = "desc") String order) {
         TableResult<GBMessage> tableResult = new TableResult<>();
         GbMessageParam param = new GbMessageParam();
