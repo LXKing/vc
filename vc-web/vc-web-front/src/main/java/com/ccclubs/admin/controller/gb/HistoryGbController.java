@@ -57,27 +57,24 @@ public class HistoryGbController {
                                                      @RequestParam(defaultValue = "15") Integer rows,
                                                      @RequestParam(defaultValue = "desc") String order,
                                                      HistoryGbQuery query) {
+        TableResult<HistoryGb> tableResult = new TableResult<>();
         GbMessageParam param = new GbMessageParam();
         String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
         String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
-        param.setVin(query.getCsVinEquals());
-        param.setStartTime(startTime);
-        param.setEndTime(endTime);
-        TableResult<HistoryGb> tableResult = new TableResult<>();
-        if (this.paramTimeCheck(param.getStartTime(), param.getEndTime())) {
+        if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
-        if (StringUtils.isEmpty(param.getVin())
-                && StringUtils.isEmpty(param.getTeNumber())) {
+        if (StringUtils.isEmpty(query.getCsVinEquals())) {
             return tableResult;
         }
         logger.debug("请求参数：" + param.toString());
-        String pointQueryKey;
-        if (StringUtils.isEmpty(param.getVin())) {
-            pointQueryKey = param.getTeNumber();
-        } else {
-            pointQueryKey = param.getVin();
-        }
+        param.setVin(query.getCsVinEquals());
+        param.setStartTime(startTime);
+        param.setEndTime(endTime);
+        param.setPageNum(page);
+        param.setPageSize(rows);
+
+        String pointQueryKey  = param.getVin();
 
         if (!paramCheck(pointQueryKey, param.getStartTime(), param.getEndTime(), param.getPageNum(), param.getPageSize())) {
             return tableResult;
@@ -153,23 +150,20 @@ public class HistoryGbController {
         GbMessageParam param = new GbMessageParam();
         String startTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeStart().getTime());
         String endTime= DateTimeUtil.getDateTimeByUnixFormat(query.getAddTimeEnd().getTime());
-        param.setVin(query.getCsVinEquals());
-        param.setStartTime(startTime);
-        param.setEndTime(endTime);
-        if (this.paramTimeCheck(param.getStartTime(), param.getEndTime())) {
+        if (this.paramTimeCheck(startTime, endTime)) {
             return tableResult;
         }
-        if (StringUtils.isEmpty(param.getVin())
-                && StringUtils.isEmpty(param.getTeNumber())) {
+        if (StringUtils.isEmpty(query.getCsVinEquals())) {
             return tableResult;
         }
         logger.debug("请求参数：" + param.toString());
-        String pointQueryKey;
-        if (StringUtils.isEmpty(param.getVin())) {
-            pointQueryKey = param.getTeNumber();
-        } else {
-            pointQueryKey = param.getVin();
-        }
+        param.setVin(query.getCsVinEquals());
+        param.setStartTime(startTime);
+        param.setEndTime(endTime);
+        param.setPageNum(page);
+        param.setPageSize(rows);
+
+        String pointQueryKey  = param.getVin();
 
         if (!paramCheck(pointQueryKey, param.getStartTime(), param.getEndTime(), param.getPageNum(), param.getPageSize())) {
             return tableResult;
