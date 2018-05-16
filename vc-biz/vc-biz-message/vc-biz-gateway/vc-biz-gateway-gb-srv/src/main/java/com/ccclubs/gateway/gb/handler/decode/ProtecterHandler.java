@@ -1,11 +1,9 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
-import com.ccclubs.gateway.gb.dto.OtherProcessExceptionDTO;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
-import com.ccclubs.gateway.gb.dto.ProtecterExceptionDTO;
-import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
@@ -15,6 +13,7 @@ import com.ccclubs.gateway.gb.reflect.GBConnection;
 import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.KafkaProperties;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
@@ -34,7 +33,7 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  *      守卫在最后底线的处理器
  */
-public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
+public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtecterHandler.class);
 
 //    @Autowired
@@ -49,12 +48,24 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
     }
 
     @Override
-    public void channelRead0 (ChannelHandlerContext ctx, GBPackage pac) throws Exception {
-        // 输出消息处理轨迹信息
-        ProtecterExceptionDTO protecterExceptionDTO = new ProtecterExceptionDTO();
-        PacProcessTrack pacProcessTrack = beforeProcess(ctx, protecterExceptionDTO);
-        pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
+    public void channelRead (ChannelHandlerContext ctx, Object msg) throws Exception {
+        GBPackage pac = (GBPackage) msg;
+        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
+        // 统计处理器处理用时
+        long startTime = System.nanoTime();
+        long endTime = System.nanoTime();
+        pacProcessTrack.getCurrentHandlerTracker().setUsedTime(endTime -startTime);
 
+        // 真正处理的方法
+        handle(pac, pacProcessTrack);
+        /**
+         *  最终处理消息，不需要继续向下传递消息
+         *      1.释放字节缓存
+         */
+        ReferenceCountUtil.release(pac.getSourceBuff());
+    }
+
+    private void handle(GBPackage pac, PacProcessTrack pacProcessTrack) {
         // 如果是测试阶段则打印报告日志
         if (ChildChannelHandler.printPacLog) {
             StringBuilder trackSb = new StringBuilder(pac.toLogString());
@@ -63,7 +74,7 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
             int stepIndex = 0;
             for (HandlerPacTrack ht : pacProcessTrack.getHandlerPacTracks()) {
                 trackSb.append("step-").append(PacProcessing.getByCode(stepIndex ++).getDes())
-                        .append("[").append(ht.getEndTime() - ht.getStartTime()).append("]");
+                        .append("[").append(ht.getUsedTime()).append("]");
             }
             LOG.info(trackSb.toString());
         }
@@ -77,14 +88,6 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
         kafkaTemplate.send(topic,
                 pacProcessTrack.getVin(),
                 packProcessExceptionDTO.toJson());
-
-
-
-        /**
-         *  最终处理消息，不需要继续向下传递消息
-         *      1.释放字节缓存
-         */
-        ReferenceCountUtil.release(pac.getSourceBuff());
     }
 
     @Override
@@ -170,52 +173,68 @@ public class ProtecterHandler extends CCClubChannelInboundHandler<GBPackage> {
          *  3.发送至kafka
          */
         PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(context.channel());
-        HandlerPacTrack[] handlerPacTracks = pacProcessTrack.getHandlerPacTracks();
-
         PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
+
         if (Objects.nonNull(pacProcessing)) {
             LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
+            cause.printStackTrace();
+            if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
+                // 自定义抛出的处理异常
+            } else {
+                // 其他非自定义的异常
+                ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+                expMessageDTO.setCode(pacProcessTrack.getStep() + "")
+                        .setVin(pacProcessTrack.getVin())
+                        .setSourceHex(pacProcessTrack.getSourceHex())
+                        .setReason(cause.getMessage());
+            }
         } else {
             LOG.error("exception throwed but step invalid step={}", pacProcessTrack.getStep());
+
+            // 其他非自定义的异常
+            ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+            expMessageDTO.setCode(pacProcessTrack.getStep() + "")
+                    .setVin(pacProcessTrack.getVin())
+                    .setSourceHex(pacProcessTrack.getSourceHex())
+                    .setReason(cause.getMessage());
         }
 
-        PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-        packProcessExceptionDTO.setCode(pacProcessTrack.getStep())
-                .setVin(pacProcessTrack.getVin())
-                .setSourceHex(pacProcessTrack.getSourceHex());
-        HandlerPacTrack ht = handlerPacTracks[pacProcessTrack.getStep()];
-
-        if (ht.isErrorOccur()) {
-            packProcessExceptionDTO.setJson(ht.getExceptionDtoJsonParse());
-        } else {
-            // 其他非自定义的异常
-            OtherProcessExceptionDTO otherProcessExceptionDTO = new OtherProcessExceptionDTO();
-            otherProcessExceptionDTO.setCauseMsg(cause.getMessage());
-            packProcessExceptionDTO.setJson(otherProcessExceptionDTO);
-
-            // 其他非自定义异常如果获取不到vin码则不发送到kafka
-            if (StringUtils.isEmpty(pacProcessTrack.getVin())) {
-                needSendKafka = false;
-            }
+        // 其他非自定义异常如果获取不到vin码则不发送到kafka
+        if (StringUtils.isEmpty(pacProcessTrack.getVin())) {
+            needSendKafka = false;
         }
 
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
             kafkaTemplate.send(kafkaProperties.getError(),
                     pacProcessTrack.getVin(),
-                    packProcessExceptionDTO.toJson());
+                    pacProcessTrack.getExpMessageDTO().toJson());
+        }
+
+        // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
+        if (cause instanceof TooLongFrameException) {
+            StringBuilder tooLongSb = new StringBuilder("检测到车机");
+            if (StringUtils.isNotEmpty(pacProcessTrack.getVin())) {
+                tooLongSb.append("[").append(pacProcessTrack.getVin()).append("]");
+            } else {
+                SocketChannel channel = (SocketChannel) context.channel();
+                tooLongSb.append("[ip=").append(channel.remoteAddress().getHostString())
+                        .append(", port=").append(channel.remoteAddress().getPort()).append("]");
+            }
+            tooLongSb.append("发送帧长度异常，服务端将主动断开连接");
+            LOG.error(tooLongSb.toString());
+            needCloseConn = true;
+<<<<<<< HEAD
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接, 原始消息[{}]",
+                    pacProcessTrack.getVin(),
+                    pacProcessTrack.getSourceHex());
+=======
         }
 
         // 打印异常链
         if (cause.getCause() != null) {
-            LOG.debug(cause.getCause().getMessage());
-        }
-        if (cause instanceof TooLongFrameException) {
-            // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
-            needCloseConn = true;
-            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接, 原始消息[{}]",
-                    pacProcessTrack.getVin(),
-                    pacProcessTrack.getSourceHex());
+            cause.printStackTrace();
+>>>>>>> b66870c98a6844b882a976aa06066a24103f533d
         }
 
         if (needCloseConn) {

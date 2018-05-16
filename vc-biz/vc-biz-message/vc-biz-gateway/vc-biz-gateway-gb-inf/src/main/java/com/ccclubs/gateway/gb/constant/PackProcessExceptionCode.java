@@ -8,41 +8,19 @@ package com.ccclubs.gateway.gb.constant;
  * 消息处理异常码
  */
 public enum PackProcessExceptionCode {
-    /**
-     * 消息处理成功
-     */
-    PROCESS_SUCCESS(1000),
 
-    /*校验处理过程中出现异常*/
-    PROCESS_VALIDATE_EXCEPTION(1001),
-    /*渠道数据统计过程中出现异常*/
-    PROCESS_CONN_STATISTIC_EXCEPTION(1002),
-    /*消息业务处理过程中出现异常*/
-    PROCESS_MSG_DELIVER_EXCEPTION(1003),
+    /*校验码校验失败*/
+    INVALID_FAIL("2-1"),
+    /*长度校验失败*/
+    LACK_LENGTH_FAIL("2-2");
 
-    /*消息帧太长*/
-//    process_toolong_frame_exception(1004),
+    private String code;
 
-    /*连接断开异常*/
-    PROCESS_CONN_DISCONN_EXCEPTION(1005),
-    /*其他异常*/
-    PROCESS_OTHER_EXCEPTION(1006),
-
-    /*校验失败*/
-    INVALID_FAIL(1007),
-    /*校验失败*/
-    LACK_LENGTH_FAIL(1008),
-
-    /*消息解码异常*/
-    MESSAGE_DECODE_ERROR(1099);
-
-    private Integer code;
-
-    PackProcessExceptionCode(Integer code) {
+    PackProcessExceptionCode(String code) {
         this.code = code;
     }
 
-    public Integer getCode() {
+    public String getCode() {
         return code;
     }
 }

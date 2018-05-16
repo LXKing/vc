@@ -134,8 +134,9 @@ public class GBConnection implements MsgSender {
     }
 
     public String toLogString() {
-        StringBuilder desSb = new StringBuilder("\n------------channel 渠道报告------------");
+        StringBuilder desSb = new StringBuilder();
         desSb
+                .append("\n------------channel 渠道报告------------")
                 .append("\n").append("| 创建时间：").append(formatter.format(this.getCreateDate()))
                 .append("\n").append("| VIN码：").append(this.getVin())
                 .append("\n").append("| 接收总包数：").append(this.getPackageNum())
