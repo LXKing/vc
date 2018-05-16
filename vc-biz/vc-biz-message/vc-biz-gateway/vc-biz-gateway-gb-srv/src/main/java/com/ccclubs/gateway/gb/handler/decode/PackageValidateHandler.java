@@ -1,9 +1,9 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.constant.PacErrorType;
 import com.ccclubs.gateway.gb.constant.RealtimeDataType;
-import com.ccclubs.gateway.gb.dto.MsgValidateExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -31,13 +31,8 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
     private static final Logger LOG = LoggerFactory.getLogger(PackageValidateHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
+    protected boolean channelRead0(ChannelHandlerContext ctx, GBPackage pac, PacProcessTrack pacProcessTrack) throws Exception {
         ByteBuf frame = pac.getSourceBuff();
-        // 开始处理消息前，获取消息轨迹信息，步进轨迹
-//        Long startTime = System.nanoTime();
-        MsgValidateExceptionDTO validateExceptionDTO = new MsgValidateExceptionDTO();
-        PacProcessTrack pacProcessTrack = beforeProcess(ctx, validateExceptionDTO);
-
 
         if(!ValidUtil.validePac(frame)) {
             LOG.error("收到一个校验异常包：{}", pac.toLogString());
@@ -50,7 +45,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             // TODO 校验成功：发送成功应答
             processSuccessAck(ctx, pac);
 
-            validPacLength(pac, validateExceptionDTO);
+            validPacLength(pac, pacProcessTrack.getExpMessageDTO());
         }
 
         // 空消息时，预警
@@ -61,12 +56,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
         }
 
         // 统计处理时间
-        pacProcessTrack.getCurrentHandlerTracker().setEndTime(System.nanoTime());
-
-//        Long endTime = System.nanoTime();
-//        System.out.println("--valid--：" + (endTime -startTime));
-        // 事件下发
-        ctx.fireChannelRead(pac);
+        return true;
     }
 
     /**
@@ -107,7 +97,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
         }
     }
 
-    public void validPacLength(GBPackage pac, MsgValidateExceptionDTO validateExceptionDTO) {
+    public void validPacLength(GBPackage pac, ExpMessageDTO expMessageDTO) {
         // 校验报文长度
         ByteBuf contentBuffer = pac.getBody().getContent().discardReadBytes();
         // 是否发生包长度校验异常
@@ -212,9 +202,9 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                             lengthError = true;
                             int lackedBytes = (expectedLengthIndex + 1) - pacContentLength;
                             RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(lackBytesIndex);
-                            validateExceptionDTO
-                                    .setDataType(realtimeDataType.getCode())
-                                    .setCauseMsg("[" + realtimeDataType.getDes() + "]缺少[" + lackedBytes + "]字节");
+                            expMessageDTO
+                                    .setIndex(realtimeDataType.getCode())
+                                    .setReason("[" + realtimeDataType.getDes() + "]缺少[" + lackedBytes + "]字节");
                             LOG.error("车机({})实时数据中[{}]部位缺失[{}]字节, 原始数据[{}]",
                                     pac.getHeader().getUniqueNo(),
                                     realtimeDataType.getDes(),
@@ -224,9 +214,9 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                         break;
                     } catch (IndexOutOfBoundsException e) {
                         lengthError = true;
-                        validateExceptionDTO
-                                .setDataType(lackBytesIndex)
-                                .setCauseMsg(e.getMessage());
+                        expMessageDTO
+                                .setIndex(lackBytesIndex)
+                                .setReason(e.getMessage());
                         LOG.error("车机({})实时数据中[{}]部位读取字节失败, 原始数据[{}]",
                                 pac.getHeader().getUniqueNo(),
                                 lackBytesIndex,
