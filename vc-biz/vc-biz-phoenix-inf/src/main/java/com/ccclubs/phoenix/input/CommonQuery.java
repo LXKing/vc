@@ -13,7 +13,7 @@ public class CommonQuery implements Serializable {
      * 页码，从1开始
      */
 
-    private int pageNum = 0;
+    private int pageNum = 1;
     /**
      * 页面大小
      */
