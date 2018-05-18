@@ -10,10 +10,10 @@ public class CommonQuery implements Serializable {
     private String appId;
 
     /**
-     * 页码，从1开始
+     * 页码
      */
 
-    private int pageNum = 0;
+    private int pageNum = -1;
     /**
      * 页面大小
      */
