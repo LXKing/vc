@@ -23,9 +23,16 @@ import org.junit.After;
  *
  * @author <Authors name>
  * @version 1.0
- * @since <pre>���� 14, 2018</pre>
+ * @since <pre>5月, 14日, 2018年</pre>
  */
 public class PhoenixHistoryApiTest {
+
+    //Phoenix node1 正式    ：   118.178.104.94:7007
+    //Phoenix node2 正式    ：   114.55.236.120:7007
+    //本地                  ：   127.0.0.1:12007
+    //SLB 正式              ：   101.37.178.63
+
+    private static final String IP="114.55.236.120:7007";
 
     @Before
     public void before() throws Exception {
@@ -42,7 +49,7 @@ public class PhoenixHistoryApiTest {
     public void testQueryMqttStateList() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:12007/history/getMqttStates");//118.178.104.94:7007
+        HttpPost httpPost = new HttpPost("http://"+IP+"/history/getMqttStates");
         httpPost.setHeader("Content-Type", "application/json");
         MqttStateParam value = new MqttStateParam();
         value.setVin("LJ8E3A1M7GB001128");
@@ -80,7 +87,7 @@ public class PhoenixHistoryApiTest {
     public void testQueryJt808List() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:12007/history/getJt808Position");//118.178.104.94:7007
+        HttpPost httpPost = new HttpPost("http://"+IP+"/history/getJt808Position");//118.178.104.94:7007  101.37.178.63
         httpPost.setHeader("Content-Type", "application/json");
         Jt808PositionParam value = new Jt808PositionParam();
         value.setVin("LJ8E3A1M7GB001128");
@@ -118,7 +125,7 @@ public class PhoenixHistoryApiTest {
     public void testQueryCanList() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:12007/history/getCan");//118.178.104.94:7007
+        HttpPost httpPost = new HttpPost("http://"+IP+"/history/getCan");//118.178.104.94:7007
         httpPost.setHeader("Content-Type", "application/json");
         CanParam value = new CanParam();
         value.setVin("LJ8E3C1M0HD305502");
@@ -156,7 +163,7 @@ public class PhoenixHistoryApiTest {
     public void testQueryGbMessageList() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://127.0.0.1:12007/history/getGbMessage");//118.178.104.94:7007
+        HttpPost httpPost = new HttpPost("http://"+IP+"/history/getGbMessage");//118.178.104.94:7007
         httpPost.setHeader("Content-Type", "application/json");
         GbMessageParam value = new GbMessageParam();
         value.setVin("LJ8E3A1M7GB001128");
@@ -188,42 +195,6 @@ public class PhoenixHistoryApiTest {
         } finally {
             response.close();
         }
-    }
-
-    /**
-     * Method: paramTimeCheck(String startTime, String endTime)
-     */
-    @Test
-    public void testParamTimeCheck() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = PhoenixHistoryApi.getClass().getMethod("paramTimeCheck", String.class, String.class); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
-    }
-
-    /**
-     * Method: paramCheck(String pointQueryKey, String startTime, String endTime, Integer pageNo, Integer pageSize)
-     */
-    @Test
-    public void testParamCheck() throws Exception {
-//TODO: Test goes here... 
-/* 
-try { 
-   Method method = PhoenixHistoryApi.getClass().getMethod("paramCheck", String.class, String.class, String.class, Integer.class, Integer.class); 
-   method.setAccessible(true); 
-   method.invoke(<Object>, <Parameters>); 
-} catch(NoSuchMethodException e) { 
-} catch(IllegalAccessException e) { 
-} catch(InvocationTargetException e) { 
-} 
-*/
     }
 
 } 

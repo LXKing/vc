@@ -2,7 +2,6 @@ package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.frm.spring.constant.PhoenixConst;
-import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.Jt808PositionHistoryInf;
 import com.ccclubs.phoenix.input.Jt808PositionParam;
 import com.ccclubs.phoenix.orm.dto.Jt808Dto;
@@ -33,7 +32,7 @@ public class Jt808HistoryInfImpl implements Jt808PositionHistoryInf {
     public List<Jt808Dto> queryJt808DtoList(Jt808PositionParam param) {
 
         return baseQuery.queryDtoList(param,
-                PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY,
+                PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_NOR,
                 PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP,
                 Jt808Dto.class);
     }
@@ -41,7 +40,7 @@ public class Jt808HistoryInfImpl implements Jt808PositionHistoryInf {
     @Override
     public Long queryListCount(Jt808PositionParam param) {
         return baseQuery.queryListCount(param,
-                PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY,
+                PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_NOR,
                 PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP);
     }
 

@@ -1,6 +1,7 @@
 package com.ccclubs.frm.influxdb;
 
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.frm.spring.entity.StringTool;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
@@ -56,11 +57,11 @@ public class InfluxBoneDao<T> implements Serializable {
             influxDB.write(batchPoints);
 
     }
-
-    /*
-    @List<T> 实体列表
-    * 传入的实体中字段必须有缺省值,否则对应列不会写入到数据库
-    * */
+    
+    /**
+     * @param points  实体列表
+     * 传入的实体中字段必须有缺省值,否则对应列不会写入到数据库
+     * */
     public void save(List<T> points) throws TableNotDefinedExcetion{
 
         //针对不同的表的多次写入,可以用一次写入来提高效率
@@ -145,7 +146,7 @@ public class InfluxBoneDao<T> implements Serializable {
             if(field != null)
              {
 
-                    String columnName = insertBar(field.getName());
+                    String columnName = StringTool.camelToUnderline(field.getName());
                  Boolean present = field.isAnnotationPresent(InfluxTag.class);
                  Boolean isTime=field.isAnnotationPresent(InfluxTime.class);
                  switch (field.getType().getName()) {
@@ -220,43 +221,4 @@ public class InfluxBoneDao<T> implements Serializable {
         return builder.build();
     }
 
-    /**
-     * 将下划线分隔的命名的字段名变换为驼峰命名的字段名
-     * */
-    public String insertBar(String column)
-    {
-        char arr[] = column.toCharArray();
-        StringBuffer buf = new StringBuffer();
-        boolean first = true;
-        for(char ch:arr)
-        {
-            if(Character.isUpperCase(ch))
-            {
-                buf.append('_');
-                buf.append(Character.toLowerCase(ch));
-            }
-            else {
-                buf.append(ch);
-            }
-        }
-        return buf.toString();
-    }
-
-    /**
-     * 将驼峰命名的字段名变换为下划线分隔的命名的字段名
-     * */
-    public String trimBar(String column) {
-        String arr[] = column.split("_");
-        StringBuffer buf = new StringBuffer();
-        boolean first = true;
-        for (String subColumn : arr) {
-            if (first) {
-                first = false;
-                buf.append(subColumn);
-            } else {
-                buf.append(subColumn.replaceFirst(subColumn.substring(0, 1), subColumn.substring(0, 1).toUpperCase()));
-            }
-        }
-        return buf.toString();
-    }
 }
