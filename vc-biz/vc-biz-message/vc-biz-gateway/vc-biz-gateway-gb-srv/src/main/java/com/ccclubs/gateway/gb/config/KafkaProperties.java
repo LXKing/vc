@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.gb.utils;
+package com.ccclubs.gateway.gb.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -18,7 +18,7 @@ public class KafkaProperties {
 
     private String conn;
 
-    private String test;
+    private String oversee;
 
     public String getSuccess() {
         return success;
@@ -47,12 +47,12 @@ public class KafkaProperties {
         return this;
     }
 
-    public String getTest() {
-        return test;
+    public String getOversee() {
+        return oversee;
     }
 
-    public KafkaProperties setTest(String test) {
-        this.test = test;
+    public KafkaProperties setOversee(String oversee) {
+        this.oversee = oversee;
         return this;
     }
 }

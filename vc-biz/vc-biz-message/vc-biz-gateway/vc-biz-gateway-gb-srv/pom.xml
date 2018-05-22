@@ -44,6 +44,12 @@
           <artifactId>spring-boot-starter-undertow</artifactId>
       </dependency>
 
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-configuration-processor</artifactId>
+          <optional>true</optional>
+      </dependency>
+
       <!--netty-->
       <dependency>
           <groupId>io.netty</groupId>

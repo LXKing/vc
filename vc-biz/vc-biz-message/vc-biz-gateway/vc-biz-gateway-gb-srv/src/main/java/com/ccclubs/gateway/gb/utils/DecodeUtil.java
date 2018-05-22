@@ -15,6 +15,8 @@ import java.nio.charset.Charset;
 public final class DecodeUtil {
     private static Charset CHARSET_GBK = Charset.forName("GBK");
 
+    private final static ByteBuf FILTE_BYTES = Unpooled.wrappedBuffer(ByteBufUtil.decodeHexDump("232307fe010000f8"));
+
     private DecodeUtil() {
         throw new AssertionError();
     }
@@ -64,8 +66,22 @@ public final class DecodeUtil {
         return vin;
     }
 
+    public static void filterEmptyVinMsgPart(ByteBuf in) {
+        int filteBytesLen = FILTE_BYTES.readableBytes();
+        if (in.readableBytes() < filteBytesLen) {
+            return;
+        }
+        int readerIndex = in.readerIndex();
+        ByteBuf checkedBuf = in.slice(readerIndex, filteBytesLen);
+        if (FILTE_BYTES.equals(checkedBuf)) {
+            in.skipBytes(filteBytesLen).discardReadBytes();
+            filterEmptyVinMsgPart(in);
+        }
+    }
+
     public static void main(String[] args) {
-        ByteBuf source = Unpooled.wrappedBuffer(ByteBufUtil.decodeHexDump("232301fe4c4a38453343314d36484430303334303101002b110512120d2f00193839383630324235303931363330303439343134010d32303136303932303030313939f9"));
-        System.out.println(getVinFromByteBuf(source));
+        ByteBuf source = Unpooled.wrappedBuffer(ByteBufUtil.decodeHexDump("232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f8232307fe010000f823"));
+        filterEmptyVinMsgPart(source);
+        System.out.println(ByteBufUtil.hexDump(source));
     }
 }

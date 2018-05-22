@@ -2,6 +2,8 @@ package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.gb.beans.KafkaTask;
+import com.ccclubs.gateway.gb.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
@@ -10,8 +12,10 @@ import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
+import com.ccclubs.gateway.gb.service.KafkaService;
+import com.ccclubs.gateway.gb.service.VehicleService;
 import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
-import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.SocketChannel;
@@ -22,7 +26,8 @@ import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -33,19 +38,13 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  *      守卫在最后底线的处理器
  */
+@Component
+@ChannelHandler.Sharable
 public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(ProtecterHandler.class);
 
-//    @Autowired
-    private KafkaProperties kafkaProperties;
-
-//    @Autowired
-    private KafkaTemplate kafkaTemplate;
-
-    public ProtecterHandler(KafkaTemplate kafkaTemplate, KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-        this.kafkaTemplate = kafkaTemplate;
-    }
+    @Autowired
+    private KafkaService kafkaService;
 
     @Override
     public void channelRead (ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -79,15 +78,12 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
             LOG.info(trackSb.toString());
         }
 
-        String topic = kafkaProperties.getSuccess();
         PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
         packProcessExceptionDTO.setCode(pac.getHeader().getCommandMark().getCode())
                 .setVin(pac.getHeader().getUniqueNo())
                 .setSourceHex(pac.getSourceHexStr());
         // 正常的消息发送至kafka
-        kafkaTemplate.send(topic,
-                pacProcessTrack.getVin(),
-                packProcessExceptionDTO.toJson());
+        kafkaService.send(new KafkaTask(KafkaSendTopicType.SUCCESS, pacProcessTrack.getVin(), packProcessExceptionDTO.toJson()));
     }
 
     @Override
@@ -121,9 +117,8 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
 
         boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
         if (connClosedSuccess) {
-            kafkaTemplate.send(kafkaProperties.getConn(),
-                    connOnlineStatusEvent.getVin(),
-                    connOnlineStatusEvent.toJson());
+
+            kafkaService.send(new KafkaTask(KafkaSendTopicType.CONN, connOnlineStatusEvent.getVin(), connOnlineStatusEvent.toJson()));
         }
     }
 
@@ -182,6 +177,7 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
             } else {
                 // 其他非自定义的异常
                 ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+                expMessageDTO.setMsgTime(System.currentTimeMillis());
                 expMessageDTO.setCode(pacProcessTrack.getStep() + "")
                         .setVin(pacProcessTrack.getVin())
                         .setSourceHex(pacProcessTrack.getSourceHex())
@@ -192,6 +188,7 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
 
             // 其他非自定义的异常
             ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+            expMessageDTO.setMsgTime(System.currentTimeMillis());
             expMessageDTO.setCode(pacProcessTrack.getStep() + "")
                     .setVin(pacProcessTrack.getVin())
                     .setSourceHex(pacProcessTrack.getSourceHex())
@@ -205,9 +202,8 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
 
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
-            kafkaTemplate.send(kafkaProperties.getError(),
-                    pacProcessTrack.getVin(),
-                    pacProcessTrack.getExpMessageDTO().toJson());
+
+            kafkaService.send(new KafkaTask(KafkaSendTopicType.ERROR, pacProcessTrack.getVin(), pacProcessTrack.getExpMessageDTO().toJson()));
         }
 
         // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
