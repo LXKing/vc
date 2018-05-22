@@ -28,7 +28,7 @@ public class PhoenixConst {
 
 
     /**
-     * 船新的Phoenix表名
+     * 新的Phoenix表名
      * */
     public static final String PHOENIX_CAR_808_POSITION_HISTORY="PHOENIX_CAR_808_POSITION_HISTORY";
     public static final String PHOENIX_CAR_808_POSITION_HISTORY_EXP="PHOENIX_CAR_808_POSITION_HISTORY_EXP";
@@ -37,6 +37,7 @@ public class PhoenixConst {
     public static final String PHOENIX_CAR_CAN_HISTORY_NOR="PHOENIX_CAR_CAN_HISTORY_NOR";
     public static final String PHOENIX_CAR_CAN_HISTORY_EXP="PHOENIX_CAR_CAN_HISTORY_EXP";
     public static final String PHOENIX_CAR_GB_MESSAGE_HISTORY="PHOENIX_CAR_GB_MESSAGE_HISTORY";
+    public static final String PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY="PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY";
 
 
 }
