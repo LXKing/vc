@@ -17,6 +17,24 @@ public class ExpMessageDTO implements Serializable {
     // 车架号
     private String vin;
 
+    // 授权系统
+    private Integer access;
+
+    // 手机号
+    private String mobile;
+
+    // 车机终端序列号
+    private String teNo;
+
+    // 终端类型 0:车厘子,1:中导,2:慧翰,3:通领
+    private Byte teType;
+
+    // 车机号
+    private String teNumber;
+
+    // ICCID
+    private String iccid;
+
     // 原始报文
     private String sourceHex;
 
@@ -26,10 +44,69 @@ public class ExpMessageDTO implements Serializable {
     // 错误原因
     private String reason;
 
+    // 错误报文时间
+    private Long msgTime;
+
+    public Integer getAccess() {
+        return access;
+    }
+
+    public void setAccess(Integer access) {
+        this.access = access;
+    }
+
+    public Long getMsgTime() {
+        return msgTime;
+    }
+
+    public void setMsgTime(Long msgTime) {
+        this.msgTime = msgTime;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getTeNo() {
+        return teNo;
+    }
+
+    public void setTeNo(String teNo) {
+        this.teNo = teNo;
+    }
+
+    public Byte getTeType() {
+        return teType;
+    }
+
+    public void setTeType(Byte teType) {
+        this.teType = teType;
+    }
+
+    public String getTeNumber() {
+        return teNumber;
+    }
+
+    public void setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
+    }
+
+    public String getIccid() {
+        return iccid;
+    }
+
+    public void setIccid(String iccid) {
+        this.iccid = iccid;
+    }
+
     public String toJson() {
         return JSON.toJSONString(this);
     }
-    // -----------------------------------------------------------
+
     public String getCode() {
         return code;
     }

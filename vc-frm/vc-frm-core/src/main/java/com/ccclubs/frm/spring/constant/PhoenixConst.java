@@ -37,6 +37,6 @@ public class PhoenixConst {
     public static final String PHOENIX_CAR_CAN_HISTORY_NOR="PHOENIX_CAR_CAN_HISTORY_NOR_V1";
     public static final String PHOENIX_CAR_CAN_HISTORY_EXP="PHOENIX_CAR_CAN_HISTORY_EXP_V1";
     public static final String PHOENIX_CAR_GB_MESSAGE_HISTORY="PHOENIX_CAR_GB_MESSAGE_HISTORY_V1";
-
+    public static final String PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY="PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY_V1";
 
 }
