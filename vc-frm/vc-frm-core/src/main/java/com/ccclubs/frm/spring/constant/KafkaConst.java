@@ -26,6 +26,8 @@ public class KafkaConst {
 
     /*Topic: GB历史数据*/
     public static final String KAFKA_TOPIC_GB_MESSAGE = "kafka.topic.history.gb.message";
+    /*Topic: GB错误数据*/
+    public static final String KAFKA_TOPIC_GB_ERROR = "kafka.topic.history.gb.error";
     /*Topic: CAN历史数据*/
     public static final String KAFKA_TOPIC_CAN = "kafka.topic.history.can";
     /*Topic: CAN异常历史数据*/
@@ -76,6 +78,8 @@ public class KafkaConst {
 
     /*storage GB历史数据入库 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE = "kafka.consumer.group.storage.gb.message";
+    /*storage GB错误数据入库 消费者组*/
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_GB_ERROR = "kafka.consumer.group.storage.gb.error";
     /*storage CAN历史数据入库 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN = "kafka.consumer.group.storage.can";
     /*storage CAN异常历史数据入库 消费者组*/

@@ -24,19 +24,21 @@ kafka:
     group:
       storage:
         gb:
-          message: cgrp_storage_gb_message                #GB网关上报正常数据 消费者组
-        can: cgrp_storage_can                             #GB网关上报正常数据 消费者组
-        can-exp: cgrp_storage_can_exp                     #GB网关上报正常数据 消费者组
+          message: cgrp_storage_gb_message                #规则引擎转发GB正常数据     消费者组
+          error: cgrp_storage_gb_err                      #规则引擎转发GB错误数据     消费者组
+        can: cgrp_storage_can                             #规则引擎转发CAN数据       消费者组
+        can-exp: cgrp_storage_can_exp                     #规则引擎转发CAN异常数据    消费者组
         mqtt:
-          state: cgrp_storage_mqtt_state                  #GB网关上报正常数据 消费者组
-          state-exp: cgrp_storage_mqtt_state_exp          #GB网关上报正常数据 消费者组
+          state: cgrp_storage_mqtt_state                  #规则引擎转发MQTT正常数据   消费者组
+          state-exp: cgrp_storage_mqtt_state_exp          #规则引擎转发MQTT异常数据   消费者组
         jt808:
-          position: cgrp_storage_jt_position              #GB网关上报正常数据 消费者组
-          position-exp: cgrp_storage_jt_position_exp      #GB网关上报正常数据 消费者组
+          position: cgrp_storage_jt_position              #规则引擎转发808位置正常数据 消费者组
+          position-exp: cgrp_storage_jt_position_exp      #规则引擎转发808位置异常数据 消费者组
   topic:
     history:
       gb:
         message: topic_gb_message
+        error: topic_gb_message_err
       can: topic_can
       can-exp: topic_can_exp
       mqtt:
