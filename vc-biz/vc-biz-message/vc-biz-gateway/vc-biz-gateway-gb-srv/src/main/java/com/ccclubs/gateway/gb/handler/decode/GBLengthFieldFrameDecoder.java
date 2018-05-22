@@ -31,10 +31,10 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     // 记录当前渠道粘包处理状态
     private boolean isComplete = false;
 
-    private Integer specifiedMaxFrameLength = 4048;
+    private Integer specifiedMaxFrameLength = 4096;
 
     public GBLengthFieldFrameDecoder() {
-        this(4048, 22, 2);
+        this(4096, 22, 2);
     }
 
     public GBLengthFieldFrameDecoder(
@@ -82,6 +82,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         if (!reorganized) {
             return null;
         }
+        // 过滤报文段[232307fe010000f8]
+        DecodeUtil.filterEmptyVinMsgPart(in);
+
         ByteBuf frame = (ByteBuf) super.decode(ctx, in);
         // 过滤半包
         if (null == frame) {
@@ -242,6 +245,8 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
 
     public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack) {
         pacProcessTrack.getCurrentHandlerTracker().setErrorOccur(true);
+        pacProcessTrack.getExpMessageDTO()
+                .setMsgTime(System.currentTimeMillis());
         pacProcessTrack.getExpMessageDTO()
                 .setSourceHex(decodeExceptionInfo.getSource())
                 .setVin(decodeExceptionInfo.getVin())

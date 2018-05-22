@@ -16,6 +16,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
@@ -26,6 +27,7 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  * 数据包验证处理器
  */
+@Component
 @ChannelHandler.Sharable
 public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(PackageValidateHandler.class);

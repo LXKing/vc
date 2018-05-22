@@ -1,17 +1,24 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.gateway.gb.beans.KafkaTask;
+import com.ccclubs.gateway.gb.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
+import com.ccclubs.gateway.gb.service.KafkaService;
+import com.ccclubs.gateway.gb.service.VehicleService;
 import com.ccclubs.gateway.gb.utils.DecodeUtil;
-import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import com.ccclubs.gateway.gb.config.KafkaProperties;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -20,17 +27,16 @@ import org.springframework.kafka.core.KafkaTemplate;
  * Email:  yeanzhi@ccclubs.com
  * 前置处理处理器
  */
+@Component
+@ChannelHandler.Sharable
 public class PreProcessHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(PreProcessHandler.class);
 
-    private KafkaTemplate kafkaTemplate;
+    @Autowired
+    private KafkaService kafkaService;
+    @Autowired
+    private VehicleService vehicleService;
 
-    private KafkaProperties kafkaProperties;
-
-    public PreProcessHandler(KafkaTemplate kafkaTemplate, KafkaProperties kafkaProperties) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.kafkaProperties = kafkaProperties;
-    }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -53,13 +59,14 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
 
         // 记录监控车辆的数据
         if (StringUtils.isNotEmpty(vin)) {
-            if (ChildChannelHandler.vins.contains(vin)) {
+            if (vehicleService.getAll().contains(vin)) {
                 JSONObject json = new JSONObject();
+                json.put("createTime", System.currentTimeMillis());
                 json.put("sourceHex", sourceHex);
                 json.put("usedTime", allEndTime - allStartTime);
-                kafkaTemplate.send(kafkaProperties.getTest(),
+                kafkaService.send(new KafkaTask(KafkaSendTopicType.OVERSEE,
                         vin,
-                        json.toJSONString());
+                        json.toJSONString()));
             }
         }
 

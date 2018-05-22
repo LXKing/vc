@@ -7,6 +7,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author: yeanzi
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
  * @Time: 21:41
  * Email:  yeanzhi@ccclubs.com
  */
+@Component
 @ChannelHandler.Sharable
 public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
 
