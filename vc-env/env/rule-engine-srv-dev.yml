@@ -44,38 +44,39 @@ kafka:
   consumer:
     group:
       rule:
-        conn: cgrp_rule_conn
+        conn: cgrp_rule_conn                   #车辆上下线数据 消费者组
         gb:
-          error: cgrp_rule_gb_error
-          success: cgrp_rule_gb_success
+          error: cgrp_rule_gb_error            #GB网关上报错误数据（协议层面） 消费者组
+          success: cgrp_rule_gb_success        #GB网关上报正常数据 消费者组
         stream:
-          jump-soc: cgrp_rule_jump_soc
+          jump-soc: cgrp_rule_jump_soc         #电池跳变数据（实时计算）消费者组
   topic:
     gateway: #IN 接收网关的数据
-      conn: topic_conn_status
+      conn: topic_conn_status                  #车辆上下线数据
       gb:
-        error: topic_gb_error
-        success: topic_gb_success
+        error: topic_gb_error                  #GB网关错误报文（协议层面）
+        success: topic_gb_success              #GB网关正常报文
     stream: #IN 接收实时计算（Flink）的数据
-      jump-soc: topic_stream_jump_soc
+      jump-soc: topic_stream_jump_soc          #电池跳变数据
     gb: #OUT 发送到下游
-      success-login: topic_gb_0x01
-      success-real: topic_gb_0x02
-      success-reissue: topic_gb_0x03
-      success-logout: topic_gb_0x04
-      success-heart: topic_gb_0x07
-      success-time: topic_gb_0x08
+      success-login: topic_gb_0x01             #GB报文-车辆登入
+      success-real: topic_gb_0x02              #GB报文-实时信息上报
+      success-reissue: topic_gb_0x03           #GB报文-补发信息上报
+      success-logout: topic_gb_0x04            #GB报文-车辆登出
+      success-heart: topic_gb_0x07             #GB报文-心跳
+      success-time: topic_gb_0x08              #GB报文-终端校时
     history: #OUT 发送到下游
       gb:
-        message: topic_gb_message
-      can: topic_can
-      can-exp: topic_can_exp
+        message: topic_gb_message              #GB历史数据
+        error: topic_gb_message_err            #GB错误数据
+      can: topic_can                           #CAN历史数据
+      can-exp: topic_can_exp                   #CAN异常历史数据
       mqtt:
-        state: topic_mqtt_state
-        state-exp: topic_mqtt_state_exp
+        state: topic_mqtt_state                #分时租赁实时状态历史数据
+        state-exp: topic_mqtt_state_exp        #分时租赁实时状态异常历史数据
       jt808:
-        position: topic_jt_position
-        position-exp: topic_jt_position_exp
+        position: topic_jt_position            #808位置历史数据
+        position-exp: topic_jt_position_exp    #808位置异常历史数据
 
 ccclubs:
   data:
