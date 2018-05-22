@@ -75,30 +75,15 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Byte cssGear;//0：空挡；1：1挡；2：2挡；3：3挡；...13：倒挡；14：自动D挡；15：停车P挡
 
     private Byte cssHandbrake;//手刹状态0x0=所有刹车释放；0x1=所有刹车应用；0x2=所有刹车不工作（应用或释放中）；0x3=未知；
-    /**
-     * 0x0：默认值
-     * 0x1:宾馆门口到车库门自动驾驶
-     * 0x2：到达车库门
-     * 0x3:进入停车场；
-     * 0x4: 停车场内自动驾驶寻找车位;
-     * 0x5:在车位旁停下；
-     * 0x6: 泊车入库；
-     * 0x7: 泊车完成
-     * 0x8: 泊车出库
-     * 0x9:自动驾驶驶出停车场
-     * 0xA：到达停车场出库门
-     * 0xB：驶出停车场，自动驾驶到酒店门口
-     * 0xC：到达酒店门口
-     * 0xD：异常情况
-     * **/
-    private Integer cssAutopilotState;
 
-    public Integer getCssAutopilotState() {
-        return cssAutopilotState;
+    private Integer cssAutopilot;
+
+    public Integer getCssAutopilot() {
+        return cssAutopilot;
     }
 
-    public void setCssAutopilotState(Integer cssAutopilotState) {
-        this.cssAutopilotState = cssAutopilotState;
+    public void setCssAutopilot(Integer cssAutopilot) {
+        this.cssAutopilot = cssAutopilot;
     }
 
     public String getCssTeNo() {
