@@ -1107,7 +1107,7 @@ public class CCCLUBS_60 implements IMessageBody {
   public Integer getAutopilot(){
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
-      if ((item.getAdditionalId() & 0xFF) == 154) {
+      if ((item.getAdditionalId() & 0x0FF) == 154) {
         additionalItem = item;
         break;
       }
