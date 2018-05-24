@@ -806,7 +806,10 @@ public class CsVehicleController {
                         } else {
                             csVehicle.setCsvModel(0);
                         }
-
+                        //地标类型
+                        if (csVehicleTemp.getCsvLandmark() != null) {
+                            csVehicle.setCsvLandmark(csVehicleTemp.getCsvLandmark());
+                        }
 
                         csVehicle.setCsvAddTime(new Date());
                         csVehicle.setCsvUpdateTime(new Date());

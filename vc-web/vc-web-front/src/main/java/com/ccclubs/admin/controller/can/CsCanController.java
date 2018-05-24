@@ -1,9 +1,15 @@
 package com.ccclubs.admin.controller.can;
 
+import com.ccclubs.admin.controller.base.BaseController;
 import com.ccclubs.admin.entity.CsCanCrieria;
-import com.ccclubs.admin.model.CsCan;
+import com.ccclubs.admin.entity.CsMappingCrieria;
+import com.ccclubs.admin.model.*;
 import com.ccclubs.admin.query.CsCanQuery;
 import com.ccclubs.admin.service.ICsCanService;
+import com.ccclubs.admin.service.ICsMappingService;
+import com.ccclubs.admin.service.ICsModelMappingService;
+import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
@@ -31,6 +37,17 @@ public class CsCanController {
     @Autowired
     ICsCanService csCanService;
 
+    @Autowired
+    UserAccessUtils userAccessUtils;
+
+    @Autowired
+    ISrvGroupService srvGroupService;
+
+    @Autowired
+    ICsModelMappingService csModelMappingService;
+
+    @Autowired
+    ICsMappingService csMappingService;
     /**
      * 获取分页列表数据
      *
@@ -41,8 +58,21 @@ public class CsCanController {
      */
     @ApiOperation(value = "获取can列表数据", notes = "根据参数查询can报文分页列表数据")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public TableResult<CsCan> list(CsCanQuery query, @RequestParam(defaultValue = "0") Integer page,
+    public TableResult<CsCan> list(@CookieValue("token") String token, CsCanQuery query, @RequestParam(defaultValue = "0") Integer page,
                                    @RequestParam(defaultValue = "10") Integer rows) {
+
+        List<Integer> conditonField = new ArrayList<>();
+        String authority = addQueryConditionsByUser(token, conditonField);
+        if ("factory_user".equals(authority)) {
+            if (conditonField.size() > 0) {
+                Short[] cscModelIn = new Short[conditonField.size()];
+                for (int i = 0; i < conditonField.size(); i++) {
+                    cscModelIn[i] = (short) conditonField.get(i).intValue();
+                }
+                query.setCscModelIn(cscModelIn);
+            }
+
+        }
         PageInfo<CsCan> pageInfo = csCanService.getPage(query.getCrieria(), page, rows);
         List<CsCan> list = pageInfo.getList();
         for (CsCan data : list) {
@@ -53,6 +83,48 @@ public class CsCanController {
         return r;
     }
 
+
+    public String addQueryConditionsByUser(String token, List<Integer> conditonField) {
+
+        SrvUser user = userAccessUtils.getCurrentUser(token);
+        //首先判断用户所在的组。
+        SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+
+        if (srvGroup.getSgFlag().equals("sys_user")) {
+            //系统用户，此种用户可以随意查询（为所欲为）
+            return "sys_user";
+        } else if (srvGroup.getSgFlag().equals("factory_user")) {
+            //车厂 （按照车型进行查询）
+            CsModelMapping csModelMapping = new CsModelMapping();
+            csModelMapping.setUserId(user.getSuId());
+            List<CsModelMapping> csModelMappingList = csModelMappingService.select(csModelMapping);
+            if (null != csModelMappingList && csModelMappingList.size() > 0) {
+                Integer[] csModelIds = new Integer[csModelMappingList.size()];
+                for (int i = 0; i < csModelMappingList.size(); i++) {
+                    csModelIds[i] = csModelMappingList.get(i).getModelId();
+                    //
+                    conditonField.add(csModelMappingList.get(i).getModelId());
+                }
+            }
+            return "factory_user";
+        } else if (srvGroup.getSgFlag().equals("platform_user")) {
+            //小散户（通过mapping进行对应）
+            CsMappingCrieria csMappingCrieria = new CsMappingCrieria();
+            CsMappingCrieria.Criteria criteriaMapping = csMappingCrieria.createCriteria();
+            criteriaMapping.andcsmManageEqualTo(user.getSuId());
+            List<CsMapping> csMappingList = csMappingService.selectByExample(csMappingCrieria);
+            if (null != csMappingList && csMappingList.size() > 0) {
+                Integer[] carIds = new Integer[csMappingList.size()];
+                for (int i = 0; i < csMappingList.size(); i++) {
+                    carIds[i] = csMappingList.get(i).getCsmCar();
+                    //
+                    conditonField.add(csMappingList.get(i).getCsmCar());
+                }
+            }
+            return "platform_user";
+        }
+        return "";
+    }
 
     /**
      * 注册属性内容解析器
