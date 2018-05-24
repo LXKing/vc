@@ -23,7 +23,7 @@ public class GbMessageDto implements Serializable {
     private String mobile;
     private String vin;
     private Integer messageType;
-    private Integer currentTime;
+    private Long currentTime;
     //@note(" 0:国标 1:地标  ")
     private Integer protocol;
     //@note(" 1:成功 0:失败  ")
@@ -88,11 +88,11 @@ public class GbMessageDto implements Serializable {
         this.messageType = messageType;
     }
 
-    public Integer getCurrentTime() {
+    public Long getCurrentTime() {
         return currentTime;
     }
 
-    public void setCurrentTime(Integer currentTime) {
+    public void setCurrentTime(Long currentTime) {
         this.currentTime = currentTime;
     }
 

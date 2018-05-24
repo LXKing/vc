@@ -45,13 +45,13 @@ public class CanConsumer {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        logger.debug("Save nor can data done:"+csCanList.size());
+        logger.debug("Save nor can data done:" + csCanList.size());
     }
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_CAN_EXP + "}", topics = "${" + KAFKA_TOPIC_CAN_EXP + "}", containerFactory = "batchFactory")
     public void processExp(List<String> messageList) {
         this.processNor(messageList);
-        logger.debug("Save exp can data done:"+messageList.size());
+        logger.debug("Save exp can data done:" + messageList.size());
     }
 
 }

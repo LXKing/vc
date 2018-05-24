@@ -48,7 +48,7 @@ public class MachineAdditional_Autopilot implements IMachineAdditionalItem {
 
     @Override
     public byte getAdditionalLength() {
-        return 2;
+        return 4;
     }
 
     @Override
@@ -61,6 +61,6 @@ public class MachineAdditional_Autopilot implements IMachineAdditionalItem {
     @Override
     public void ReadFromBytes(byte[] bytes) {
         MyBuffer buff = new MyBuffer(bytes);
-        setAutopilotState(buff.getShort());
+        setAutopilotState(buff.getInt());
     }
 }

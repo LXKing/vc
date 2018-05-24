@@ -17,6 +17,7 @@ import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_03;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.OrderDownStream;
 import com.ccclubs.protocol.dto.mqtt.OrderUpStream;
@@ -348,6 +349,16 @@ public class ParseOperationService implements IParseDataService {
           terminalPartStatus.setCssLock(terminalInfo.getTriggerDoorLockStatusWithMask());
           terminalPartStatus.setCssLight(terminalInfo.getTriggerLightStatusWithMask());
 
+          // add at 2018-05-24 by qsxiaogang 添加GPS辅助定位
+          MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo.getGpsAssistStatus();
+          if (null !=gpsAssistStatus){
+            terminalPartStatus.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            terminalPartStatus.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            terminalPartStatus.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            terminalPartStatus.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+          }
           CommonResult commonResult = CommonResult
               .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");
           commonResult.setData(terminalPartStatus);

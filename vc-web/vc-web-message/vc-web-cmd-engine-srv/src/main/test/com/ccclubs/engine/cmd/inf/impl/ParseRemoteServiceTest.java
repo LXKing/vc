@@ -8,6 +8,7 @@ import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.transform.TerminalPartStatus;
 import com.ccclubs.protocol.util.MyBuffer;
@@ -36,7 +37,7 @@ public class ParseRemoteServiceTest {
     CsRemote csRemote;
     CommonWriter commonWriter = null;
 //    String hexString = "5436364B3030353100000000072DCBC9061021000000C300FF03140421FC6642CA020000CC020000CE0400000000D002030067010268010069010071080000000000000000720658B00000E9F57404000000007601006C0100880100";
-    String hexString = "543637463437323000000000072F101B0610210000008003140421FF7297CA027E00CC020000CE0401FE0000D002030067010268010069010271080659C6BB01C350557206A3380ADF07A074040000092E7601246C0100880100";
+    String hexString = "54363758303236350000000007852B780603140422994C0FCA020000CC020000CE0400000000D002030167010268010069010071080728CE1601CEB3417206D7080908351874040000916476014F6C01008801009B180728CE1801CEB33F0728CE3401CEB3410728CE1601CEB32D";
 //      String hexString = "5436364B3030353100000000072D588F0610210000100000FF03140421FB7023CA020000CC020000CE0400000000D002030067010268010069010071080000000000000000720658B00000E9F57404000000007601006C0100880100";
 //      String hexString = "5436364B3030353100000000072D2EFD061004FF000000";
     MqMessage tm = new MqMessage();
@@ -194,6 +195,16 @@ public class ParseRemoteServiceTest {
           terminalPartStatus.setCssEngine(terminalInfo.getTriggerEngineStatus());
           terminalPartStatus.setCssLock(terminalInfo.getTriggerDoorLockStatusWithMask());
           terminalPartStatus.setCssLight(terminalInfo.getTriggerLightStatusWithMask());
+
+          MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo.getGpsAssistStatus();
+          if (null !=gpsAssistStatus){
+            terminalPartStatus.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            terminalPartStatus.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            terminalPartStatus.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            terminalPartStatus.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+          }
 
           CommonResult commonResult = CommonResult
               .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");

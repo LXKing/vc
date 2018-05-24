@@ -56,7 +56,7 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
             pageSql = "limit ? offset ? ";
         }
 
-        String QUERY_SQL = "select " +
+        String querySql = "select " +
                 param.getQueryFields() + " from " + tableName + " where VIN=? and add_time>=? and add_time<=? order by add_time  "
                 + param.getOrder() + " " + pageSql;
 
@@ -69,7 +69,7 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         ResultSet resultSet=null;
         try {
 
-            preparedStatement = connection.prepareStatement(QUERY_SQL);
+            preparedStatement = connection.prepareStatement(querySql);
             preparedStatement.setString(1, param.getVin());
             preparedStatement.setLong(2, startTime);
             preparedStatement.setLong(3, endTime);
@@ -97,7 +97,7 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
        /* return baseQuery.queryListCount(param,
                 PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY,
                 null);*/
-        String COUNT_SQL = "select count(add_time) as total from "
+        String countSql = "select count(add_time) as total from "
                 + PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY +
                 " where VIN=? and add_time>=? and add_time<=? ";
         long total = 0L;
@@ -107,7 +107,7 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         Connection connection= phoenixTool.getConnection();
         ResultSet resultSet =null;
         try {
-            pst = connection.prepareStatement(COUNT_SQL);
+            pst = connection.prepareStatement(countSql);
             pst.setString(1, param.getVin());
             pst.setLong(2, startTime);
             pst.setLong(3, endTime);

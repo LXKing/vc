@@ -1,6 +1,7 @@
 package com.ccclubs.frm.influxdb;
 
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
+import com.ccclubs.frm.spring.entity.StringTool;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.slf4j.Logger;
@@ -21,87 +22,68 @@ import java.util.Map;
  */
 @Service
 public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
-    private static Logger logger= LoggerFactory.getLogger(InfluxTermQuery.class);
+    private static Logger logger = LoggerFactory.getLogger(InfluxTermQuery.class);
 
-    public InfluxTermQuery()
-    {
-
+    public InfluxTermQuery() {
     }
+
     /*
     * 每行记录放在一个Map中
     * */
-    public List<Map<String,Object>> query(String sql)
-    {
-        //sql = "SELECT used,free FROM disk order by time desc limit 10";
+    public List<Map<String, Object>> query(String sql) {
         Query query = new Query(sql, dbName);
         QueryResult ret = influxDB.query(query);
-//        System.out.println(">InfluxDB: " + ret);
-        List<Map<String,Object>> rlst = new ArrayList<Map<String,Object>>();
-        for(QueryResult.Result result : ret.getResults()) {
+        List<Map<String, Object>> rlst = new ArrayList<Map<String, Object>>();
+        for (QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
             for (List<Object> values : result.getSeries().get(0).getValues()) {
-                Map<String,Object> row = new HashMap<String,Object>();
-                for(int idx = 0;idx<values.size();idx++) {
+                Map<String, Object> row = new HashMap<String, Object>();
+                for (int idx = 0; idx < values.size(); idx++) {
                     row.put(columns.get(idx), values.get(idx));
                 }
                 rlst.add(row);
             }
-
         }
-//        System.out.println("rlst: ");
-//        System.out.println(rlst);
-//        System.out.println("rlst end---------------");
         return rlst;
     }
 
     /*
     * entity为查询结果的facade
     * */
-    public List<T> query(Class entity,String sql)
-    {
-        //System.out.println(sql);
+    public List<T> query(Class entity, String sql) {
         Query query = new Query(sql, dbName);
         QueryResult ret = influxDB.query(query);
-        //System.out.println(ret);
-        //System.out.println("---end---");
         List<T> rlst = new ArrayList<T>();
-        for(QueryResult.Result result : ret.getResults()) {
+        for (QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-            //System.out.println(columns);
-            T row  = null;
+
+            T row = null;
             try {
-                row = (T)entity.newInstance();
+                row = (T) entity.newInstance();
 
-            for (List<Object> values : result.getSeries().get(0).getValues()) {
+                for (List<Object> values : result.getSeries().get(0).getValues()) {
 
-                for(int idx = 0;idx<values.size();idx++)
-                {
-                   String column =  columns.get(idx);
-//                   String methodName = "set"+ column.substring(0,1).toUpperCase()
-//                           +columns.get(idx).substring(1,columns.get(idx).length());
-
-//                    Method method = entity.getMethod(methodName,String.class);
-//
-//                    method.invoke(row,new Object[]{values.get(idx)});
-                    Field field = null;
-                    try {
-                        field = entity.getDeclaredField(column);
-                    } catch (NoSuchFieldException e) {
-                        if(null==field) {
-                            try {
-                                field = entity.getSuperclass().getDeclaredField(column);
-                            } catch (NoSuchFieldException e1) {
-                                e1.printStackTrace();
+                    for (int idx = 0; idx < values.size(); idx++) {
+                        String column = columns.get(idx);
+                        Field field = null;
+                        try {
+                            field = entity.getDeclaredField(column);
+                        } catch (NoSuchFieldException e) {
+                            if (null == field) {
+                                try {
+                                    field = entity.getSuperclass().getDeclaredField(column);
+                                } catch (NoSuchFieldException e1) {
+                                    e1.printStackTrace();
+                                }
                             }
                         }
-                    }
 
-                    field.setAccessible(true);
-                    field.set(row,values.get(idx));
+                        field.setAccessible(true);
+                        field.set(row, values.get(idx));
+                    }
+                    rlst.add(row);
                 }
-                rlst.add(row);
-            }
 
             } catch (InstantiationException e) {
                 e.printStackTrace();
@@ -110,9 +92,6 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
 
         }
-//        System.out.println("rlst: ");
-//        System.out.println(rlst);
-//        System.out.println("rlst end---------------");
         return rlst;
     }
 
@@ -123,39 +102,33 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
     * @whereClause  可选,可以定义 desc limit, order by等
     * */
 
-    public List<T> query(T entity, @NotNull Map<String,Object> params, String ...whereClause)
-    {
-        //String sql = "SELECT used,free FROM disk order by time desc limit 10";
-        //entity.getAnnotation(InfluxTable.class);
+    public List<T> query(T entity, @NotNull Map<String, Object> params, String... whereClause) {
         InfluxTable table = entity.getClass().getAnnotation(InfluxTable.class);
         Field[] fields = entity.getClass().getDeclaredFields();
         StringBuffer sql = new StringBuffer(256);
         sql.append("select ");
-        int i= 0;
-        for(Field field:fields)
-        {
-            sql.append(insertBar(field.getName()));
-            if(++i<fields.length) {
+        int i = 0;
+        for (Field field : fields) {
+            sql.append(StringTool.camelToUnderline(field.getName()));
+            if (++i < fields.length) {
                 sql.append(',');
             }
         }
         sql.append(" from ").append(table.name());
         sql.append(" where ");
         boolean first = true;
-        for(Map.Entry<String,Object> param:params.entrySet())
-        {
-            if(!first)
-            {
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            if (!first) {
                 sql.append(" and ");
             }
-            sql.append(insertBar(param.getKey())).append('=');
+            sql.append(StringTool.camelToUnderline(param.getKey())).append('=');
             Field field = null;
             try {
                 field = entity.getClass().getDeclaredField(param.getKey());
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
-            if("java.lang.String".equals(field.getType().getName())) {
+            if ("java.lang.String".equals(field.getType().getName())) {
                 sql.append('\'').append(param.getValue()).append('\'');
             } else {
                 sql.append(param.getValue());
@@ -163,43 +136,41 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             first = false;
         }
         //FIXME 这里有拼接附加条件的sql语句问题。
-        if (null!=whereClause) {
+        if (null != whereClause) {
             sql.append(' ').append(whereClause);
         }
 
         Query query = new Query(sql.toString(), dbName);
         QueryResult ret = influxDB.query(query);
-        // System.out.println(ret);
         List<T> rlst = new ArrayList<T>();
-        for(QueryResult.Result result : ret.getResults()) {
+        for (QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
 
-            T row  = null;
+            T row = null;
             try {
-                row = (T)entity.getClass().newInstance();
+                row = (T) entity.getClass().newInstance();
 
                 for (List<Object> values : result.getSeries().get(0).getValues()) {
 
-                    for(int idx = 0;idx<values.size();idx++)
-                    {
-                        String column =  trimBar(columns.get(idx));
+                    for (int idx = 0; idx < values.size(); idx++) {
+                        String column = StringTool.underlineToCamel(columns.get(idx));
                         Field field = null;
-                        Boolean needSearchField=true;
-                        if ("time".equals(column)){
-                            for (Field f:fields){
-                                if(f.isAnnotationPresent(InfluxTime.class)){
-                                    field=f;
-                                    needSearchField=false;
+                        Boolean needSearchField = true;
+                        if ("time".equals(column)) {
+                            for (Field f : fields) {
+                                if (f.isAnnotationPresent(InfluxTime.class)) {
+                                    field = f;
+                                    needSearchField = false;
                                     break;
                                 }
                             }
                         }
-                        if (needSearchField){
+                        if (needSearchField) {
                             try {
                                 field = entity.getClass().getDeclaredField(column);
                             } catch (NoSuchFieldException e) {
                                 //如果找不到,到父类中找
-                                if(null==field) {
+                                if (null == field) {
                                     try {
                                         field = entity.getClass().getSuperclass().getDeclaredField(column);
                                     } catch (NoSuchFieldException e1) {
@@ -209,50 +180,49 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
                             }
                         }
 
-                        if (!needSearchField){
+                        if (!needSearchField) {
                             field.setAccessible(true);
                             field.set(row,
                                     DateTimeUtil.date2UnixFormat((String) values.get(idx),
-                                    DateTimeUtil.GMT_LONG_FORMAT)+8*60*60*1000);
-                        }
-                        else {
+                                            DateTimeUtil.GMT_LONG_FORMAT) + 8 * 60 * 60 * 1000);
+                        } else {
                             field.setAccessible(true);
-                            Double doubleValue=null;
-                            if (null==values.get(idx)){
-                                field.set(row,null);
-                            }else {
+                            Double doubleValue = null;
+                            if (null == values.get(idx)) {
+                                field.set(row, null);
+                            } else {
                                 //TODO 用switch判断如何转换数值类型
-                                switch (field.getType().getName()){
+                                switch (field.getType().getName()) {
                                     case "java.lang.Float":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue.floatValue());
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue.floatValue());
                                         break;
                                     case "java.lang.Integer":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue.intValue());
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue.intValue());
                                         break;
                                     case "java.lang.Short":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue.shortValue());
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue.shortValue());
                                         break;
                                     case "java.lang.Double":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue);
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue);
                                         break;
                                     case "java.lang.Long":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue.longValue());
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue.longValue());
                                         break;
                                     case "java.lang.Number":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue);
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue);
                                         break;
                                     case "java.lang.Byte":
-                                        doubleValue=(Double) values.get(idx);
-                                        field.set(row,doubleValue.byteValue());
+                                        doubleValue = (Double) values.get(idx);
+                                        field.set(row, doubleValue.byteValue());
                                         break;
                                     default:
-                                        field.set(row,values.get(idx));
+                                        field.set(row, values.get(idx));
                                         break;
                                 }
 
@@ -270,7 +240,6 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             }
 
         }
-//        System.out.println(rlst);
         return rlst;
     }
 
@@ -280,42 +249,38 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
     * @params 查询参数,名字-value 对
     * @whereClause  可选,可以定义 desc limit, order by等
     * */
-    public T queryLast(Class entity,Map<String,Object> params,String ...whereClause)
-    {
+    public T queryLast(Class entity, Map<String, Object> params, String... whereClause) {
         //String sql = "SELECT used,free FROM disk order by time desc limit 10";
         InfluxTable table = entity.getClass().getAnnotation(InfluxTable.class);
         Field[] fields = entity.getDeclaredFields();
         StringBuffer sql = new StringBuffer(256);
         sql.append("select ");
-        int i= 0;
-        for(Field field:fields)
-        {
+        int i = 0;
+        for (Field field : fields) {
             sql.append("last(");
-            sql.append(insertBar(field.getName()));
+            sql.append(StringTool.camelToUnderline(field.getName()));
             sql.append(") as ");
-            sql.append(insertBar(field.getName()));
+            sql.append(StringTool.camelToUnderline(field.getName()));
 
-            if(i++<fields.length) {
+            if (i++ < fields.length) {
                 sql.append(',');
             }
         }
         sql.append(" from ").append(table.name());
         sql.append(" where ");
         boolean first = true;
-        for(Map.Entry<String,Object> param:params.entrySet())
-        {
-            if(!first)
-            {
+        for (Map.Entry<String, Object> param : params.entrySet()) {
+            if (!first) {
                 sql.append(" and ");
             }
-            sql.append(insertBar(param.getKey())).append('=');
+            sql.append(StringTool.camelToUnderline(param.getKey())).append('=');
             Field field = null;
             try {
                 field = entity.getDeclaredField(param.getKey());
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             }
-            if("java.lang.String".equals(field.getType().getName())) {
+            if ("java.lang.String".equals(field.getType().getName())) {
                 sql.append('\'').append(param.getValue()).append('\'');
             } else {
                 sql.append(param.getValue());
@@ -323,31 +288,24 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
             first = false;
         }
         sql.append(' ').append(whereClause);
-
         Query query = new Query(sql.toString(), dbName);
         QueryResult ret = influxDB.query(query);
-        // System.out.println(ret);
-
-
-        for(QueryResult.Result result : ret.getResults()) {
+        for (QueryResult.Result result : ret.getResults()) {
             List<String> columns = result.getSeries().get(0).getColumns();
-
-//            System.out.println(columns);
-            T row  = null;
+            T row = null;
             try {
-                row = (T)entity.newInstance();
+                row = (T) entity.newInstance();
 
                 for (List<Object> values : result.getSeries().get(0).getValues()) {
 
-                    for(int idx = 0;idx<values.size();idx++)
-                    {
-                        String column =  trimBar(columns.get(idx));
+                    for (int idx = 0; idx < values.size(); idx++) {
+                        String column = StringTool.underlineToCamel(columns.get(idx));
                         Field field = null;
                         try {
                             field = entity.getDeclaredField(column);
                         } catch (NoSuchFieldException e) {
                             //如果找不到,到父类中找
-                            if(null==field) {
+                            if (null == field) {
                                 try {
                                     field = entity.getSuperclass().getDeclaredField(column);
                                 } catch (NoSuchFieldException e1) {
@@ -357,7 +315,7 @@ public class InfluxTermQuery<T> extends InfluxBoneDao<T> {
                         }
 
                         field.setAccessible(true);
-                        field.set(row,values.get(idx));
+                        field.set(row, values.get(idx));
                     }
                     return row;
                 }
