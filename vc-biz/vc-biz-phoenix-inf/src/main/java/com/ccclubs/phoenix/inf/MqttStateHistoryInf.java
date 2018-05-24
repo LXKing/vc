@@ -1,13 +1,8 @@
 package com.ccclubs.phoenix.inf;
 
-import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.input.MqttStateParam;
-import com.ccclubs.phoenix.input.StateHistoryParam;
 import com.ccclubs.phoenix.orm.dto.MqttStateDto;
-import com.ccclubs.phoenix.orm.model.CarState;
-import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import com.ccclubs.phoenix.output.MqttStateHistoryOutput;
-import com.ccclubs.phoenix.output.StateHistoryOutput;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import static com.ccclubs.storage.util.ConvertUtils.*;
+import static com.ccclubs.storage.util.ConvertUtils.convertToInterger;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -31,7 +31,7 @@ public class GbMessageStorageImpl implements BaseHistoryInf<CsMessage> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseGbMessageUpsertSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY+" (" +
+    private static String baseGbMessageUpsertSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY + " (" +
             "VIN,ADD_TIME,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS," +
             "PROTOCOL,MESSAGE_TYPE,VERIFY,SOURCE_HEX ) values (" +
             "?, ?, ?, ?, ?, ?, ?, ?, " +//1-8
@@ -103,7 +103,7 @@ public class GbMessageStorageImpl implements BaseHistoryInf<CsMessage> {
         }
         baseImpl.saveOrUpdate(records, this,
                 baseGbMessageUpsertSql, PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY);
-        logger.debug("Save nor gb end."+records.size());
+        logger.debug("Save nor gb end." + records.size());
     }
 
 

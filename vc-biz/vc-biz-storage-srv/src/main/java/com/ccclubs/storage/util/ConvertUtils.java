@@ -1,5 +1,8 @@
 package com.ccclubs.storage.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 
 /**
@@ -10,14 +13,15 @@ import java.math.BigDecimal;
  * Email:fengjun@ccclubs.com
  */
 public class ConvertUtils {
+    private static Logger logger= LoggerFactory.getLogger(ConvertUtils.class);
     public static Long convertToLong(Short param) {
         Long result = null;
         try {
             result = param.longValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -27,9 +31,9 @@ public class ConvertUtils {
         try {
             result = param.longValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -39,9 +43,9 @@ public class ConvertUtils {
         try {
             result = String.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -51,9 +55,9 @@ public class ConvertUtils {
         try {
             result = String.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -63,9 +67,9 @@ public class ConvertUtils {
         try {
             result = String.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -75,9 +79,9 @@ public class ConvertUtils {
         try {
             result = String.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -87,9 +91,9 @@ public class ConvertUtils {
         try {
             result = String.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -99,9 +103,9 @@ public class ConvertUtils {
         try {
             result = param.intValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -111,9 +115,9 @@ public class ConvertUtils {
         try {
             result = param.intValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -127,9 +131,9 @@ public class ConvertUtils {
                 return result;
             }
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -139,9 +143,9 @@ public class ConvertUtils {
         try {
             result = param.floatValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -151,9 +155,9 @@ public class ConvertUtils {
         try {
             result = param.floatValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -163,9 +167,9 @@ public class ConvertUtils {
         try {
             result = Float.valueOf(param);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -176,9 +180,9 @@ public class ConvertUtils {
         try {
             result = param.floatValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }
@@ -189,9 +193,9 @@ public class ConvertUtils {
         try {
             result = param.doubleValue();
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("Storage-模块转换方法值{}异常：{}",param,e.getMessage());
         }
         return result;
     }

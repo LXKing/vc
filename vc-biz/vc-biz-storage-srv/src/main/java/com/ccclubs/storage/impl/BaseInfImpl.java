@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -45,14 +47,14 @@ public class BaseInfImpl {
 
                 }
             }
-            if (!(count%500==0)){
+            if (!(count % 500 == 0)) {
                 preparedStatement.executeBatch();
                 connection.commit();
             }
 
         } catch (SQLException e) {
-            logger.info("{} phoenix throw a error :{}",tableName,e.getMessage());
-            logger.info("{} 异常数据：{} ",tableName,records.toString());
+            logger.info("{} phoenix throw a error :{}", tableName, e.getMessage());
+            logger.info("{} 异常数据：{} ", tableName, records.toString());
             e.printStackTrace();
         } finally {
             phoenixTool.closeResource(connection, preparedStatement, null, tableName + " saveOrUpdate ");

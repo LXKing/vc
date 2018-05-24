@@ -31,7 +31,7 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseMqttStateUpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR+" " +
+    private static String baseMqttStateUpsertNorSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR + " " +
             "(VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME," +
             "RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES," +
             "SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS," +
@@ -50,7 +50,7 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
             "?, ?, ? )";//48-50
 
 
-    private static String baseMqttStateUpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP+" " +
+    private static String baseMqttStateUpsertExpSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP + " " +
             "(VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,ACCESS,ADD_TIME," +
             "RENT_FLG,WARN_CODE,RFID,USER_RFID,OBD_MILES,ENGINE_TEMPE,TOTAL_MILES," +
             "SPEED,MOTOR_SPEED,OIL_COST,POWER_RESERVE,EV_BATTERY,CHARGING_STATUS," +
@@ -93,7 +93,7 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
         } else {
             preparedStatement.setInt(7, access);
         }
-        Long addTime=null;
+        Long addTime = null;
         if (null == historyDate.getCssAddTime()) {
             addTime = System.currentTimeMillis();
         } else {
@@ -435,11 +435,11 @@ public class MqttStateStorageImpl implements BaseHistoryInf<CsState> {
         if (!StringUtils.isEmpty(records.get(0).getCssVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseMqttStateUpsertNorSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR);
-            logger.debug("Save nor mqtt end."+records.size());
+            logger.debug("Save nor mqtt end." + records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseMqttStateUpsertExpSql, PhoenixConst.PHOENIX_CAR_STATE_HISTORY_EXP);
-            logger.debug("Save nor mqtt end."+records.size());
+            logger.debug("Save nor mqtt end." + records.size());
         }
 
     }

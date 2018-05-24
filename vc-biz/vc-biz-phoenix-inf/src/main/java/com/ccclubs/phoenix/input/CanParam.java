@@ -48,18 +48,22 @@ public class CanParam extends CommonQuery implements Serializable,BaseParamInf {
         this.teNumber = teNumber;
     }
 
+    @Override
     public String getStartTime() {
         return startTime;
     }
 
+    @Override
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
+    @Override
     public String getEndTime() {
         return endTime;
     }
 
+    @Override
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
