@@ -1,6 +1,5 @@
 package com.ccclubs.admin.controller.can;
 
-import com.ccclubs.admin.controller.base.BaseController;
 import com.ccclubs.admin.entity.CsCanCrieria;
 import com.ccclubs.admin.entity.CsMappingCrieria;
 import com.ccclubs.admin.model.*;
