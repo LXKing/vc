@@ -311,12 +311,4 @@ public class TerminalStatusUtils {
     return stringBuilder.toString();
   }
 
-  public static void main(String[] args){
-    long value=Long.MAX_VALUE;
-    String result=getAutopilotString(value);
-    System.out.println(result);
-
-  }
-
-
 }

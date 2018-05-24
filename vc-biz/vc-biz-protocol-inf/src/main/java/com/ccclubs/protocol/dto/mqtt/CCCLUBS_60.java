@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CCCLUBS_60 implements IMessageBody {
 
-    private static Logger logger = LoggerFactory.getLogger(CCCLUBS_60.class);
+  private static Logger logger = LoggerFactory.getLogger(CCCLUBS_60.class);
   private static int SUBCODE_02 = 0x02;
   private static int SUBCODE_03 = 0x03;
   private int subFucCode;
@@ -1083,8 +1083,8 @@ public class CCCLUBS_60 implements IMessageBody {
 
   /**
    * 获取手刹手刹状态
-   * */
-  public Integer getHandbrake(){
+   */
+  public Integer getHandbrake() {
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if ((item.getAdditionalId() & 0xFF) == 153) {
@@ -1100,11 +1100,12 @@ public class CCCLUBS_60 implements IMessageBody {
       return 3;
     }
   }
+
   /**
    * 获取自动驾驶状态
-   * */
+   */
 
-  public Integer getAutopilot(){
+  public Integer getAutopilot() {
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if ((item.getAdditionalId() & 0x0FF) == 154) {
@@ -1119,6 +1120,26 @@ public class CCCLUBS_60 implements IMessageBody {
       return null;
     }
   }
+
+  /**
+   * 获取GPS辅助位置数据
+   */
+  public MachineAdditional_GpsAssistStatus getGpsAssistStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0x0FF) == 155) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_GpsAssistStatus machineAdditionalGpsAssistStatus = (MachineAdditional_GpsAssistStatus) additionalItem;
+      return machineAdditionalGpsAssistStatus;
+    } else {
+      return null;
+    }
+  }
+
   /**
    * 获取空调状态
    */
@@ -1351,8 +1372,8 @@ public class CCCLUBS_60 implements IMessageBody {
 
   /**
    * 获取自动配置状态
-   * **/
-  public Boolean getAutoConfigStatusUnlockdoor(){
+   **/
+  public Boolean getAutoConfigStatusUnlockdoor() {
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if ((item.getAdditionalId() & 0xFF) == 152) {
@@ -1362,7 +1383,7 @@ public class CCCLUBS_60 implements IMessageBody {
     }
     if (additionalItem != null) {
       MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
-      return (autoConfigStatus.getAutoConfigStatus()&0x2)!=0x0;//关闭自动锁门
+      return (autoConfigStatus.getAutoConfigStatus() & 0x2) != 0x0;//关闭自动锁门
     } else {
       return null;
     }
@@ -1370,8 +1391,8 @@ public class CCCLUBS_60 implements IMessageBody {
 
   /**
    * 获取自动配置状态
-   * **/
-  public Boolean getAutoConfigStatusCharge(){
+   **/
+  public Boolean getAutoConfigStatusCharge() {
     IMachineAdditionalItem additionalItem = null;
     for (IMachineAdditionalItem item : getAdditionals()) {
       if ((item.getAdditionalId() & 0xFF) == 152) {
@@ -1381,13 +1402,11 @@ public class CCCLUBS_60 implements IMessageBody {
     }
     if (additionalItem != null) {
       MachineAdditional_AutoConfigStatus autoConfigStatus = (MachineAdditional_AutoConfigStatus) additionalItem;
-      return (autoConfigStatus.getAutoConfigStatus()&0x1)!=0x0;//开启自动蓄电
+      return (autoConfigStatus.getAutoConfigStatus() & 0x1) != 0x0;//开启自动蓄电
     } else {
       return null;
     }
   }
-
-
 
 
   @Override
@@ -1424,12 +1443,12 @@ public class CCCLUBS_60 implements IMessageBody {
 //        logger.info("未知的终端基础属性:" + additionalId + ",附加长度:" + additionalLength);
         }
       }
-    }catch (Exception ex){
+    } catch (Exception ex) {
       ex.printStackTrace();
-      logger.error(ex.getMessage(),ex);
+      logger.error(ex.getMessage(), ex);
       if (null != additionalId) {
-        logger.error("messageBodyBytes: "+Tools.ToHexString(messageBodyBytes));
-        logger.error("additionalId: 0x"+Tools.ToHexString(additionalId));
+        logger.error("messageBodyBytes: " + Tools.ToHexString(messageBodyBytes));
+        logger.error("additionalId: 0x" + Tools.ToHexString(additionalId));
       }
     }
   }
