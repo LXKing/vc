@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import static com.ccclubs.storage.util.ConvertUtils.*;
+import static com.ccclubs.storage.util.ConvertUtils.convertToInterger;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -31,7 +31,7 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseJt808UpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_NOR +" (" +
+    private static String baseJt808UpsertNorSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_NOR + " (" +
             "TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG," +
             "STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH," +
             "GPS_VALID,SOURCE_HEX ) values (" +
@@ -39,7 +39,7 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
             "?, ?, ?, ?, ?, ?, ?, " +//9-15
             "?, ? )";//16-17
 
-    private static String baseJt808UpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP+" (" +
+    private static String baseJt808UpsertExpSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP + " (" +
             "TE_NUMBER,CURRENT_TIME,VIN,TE_NO,ICCID,ADD_TIME,MOBILE,ALARM_FLAG," +
             "STATUS,LONGITUDE,LATITUDE,ALTITUDE,GPS_SPEED,COURSE,NET_STRENGTH," +
             "GPS_VALID,SOURCE_HEX ) values (" +
@@ -158,11 +158,11 @@ public class Jt808StorageImpl implements BaseHistoryInf<Jt808PositionData> {
         if (!StringUtils.isEmpty(records.get(0).getVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseJt808UpsertNorSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_NOR);
-            logger.debug("Save nor jt808 end."+records.size());
+            logger.debug("Save nor jt808 end." + records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseJt808UpsertExpSql, PhoenixConst.PHOENIX_CAR_808_POSITION_HISTORY_EXP);
-            logger.debug("Save exp jt808 end."+records.size());
+            logger.debug("Save exp jt808 end." + records.size());
         }
 
     }

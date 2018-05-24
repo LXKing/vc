@@ -44,7 +44,7 @@ public class BaseQueryImpl {
                 expTableName);
 
         String pointKeyValue = sqlAssembly.getPointValue();
-        String COUNT_SQL = sqlAssembly.getCountSql();
+        String countSql = sqlAssembly.getCountSql();
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
         long total = 0L;
@@ -52,7 +52,7 @@ public class BaseQueryImpl {
         Connection connection = phoenixTool.getConnection();
         ResultSet resultSet = null;
         try {
-            pst = connection.prepareStatement(COUNT_SQL);
+            pst = connection.prepareStatement(countSql);
             pst.setString(1, pointKeyValue);
             pst.setLong(2, startTime);
             pst.setLong(3, endTime);
@@ -66,7 +66,7 @@ public class BaseQueryImpl {
             logger.error(e.getMessage());
         } finally {
             phoenixTool.closeResource(connection,
-                    pst, resultSet, "queryListCount" + COUNT_SQL);
+                    pst, resultSet, "queryListCount" + countSql);
         }
         return total;
     }
@@ -84,7 +84,7 @@ public class BaseQueryImpl {
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
 
-        String QUERY_SQL = sqlAssembly.getQuerySql();
+        String querySql = sqlAssembly.getQuerySql();
 
         List<T> dtoList = new ArrayList<>();
         Connection connection = phoenixTool.getConnection();
@@ -92,7 +92,7 @@ public class BaseQueryImpl {
         ResultSet resultSet = null;
         try {
 
-            preparedStatement = connection.prepareStatement(QUERY_SQL);
+            preparedStatement = connection.prepareStatement(querySql);
             preparedStatement.setString(1, pointKeyValue);
             preparedStatement.setLong(2, startTime);
             preparedStatement.setLong(3, endTime);
@@ -108,7 +108,7 @@ public class BaseQueryImpl {
             logger.error(e.getMessage());
         } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement, resultSet, "queryList" + QUERY_SQL);
+                    preparedStatement, resultSet, "queryList" + querySql);
         }
         return dtoList;
     }

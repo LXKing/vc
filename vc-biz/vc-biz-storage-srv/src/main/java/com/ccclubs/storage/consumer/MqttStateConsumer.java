@@ -45,13 +45,13 @@ public class MqttStateConsumer {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        logger.debug("Save nor mqtt data done:"+messageList.size());
+        logger.debug("Save nor mqtt data done:" + messageList.size());
     }
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_MQTT_STATE_EXP + "}", topics = "${" + KAFKA_TOPIC_MQTT_STATE_EXP + "}", containerFactory = "batchFactory")
     public void processExp(List<String> messageList) {
         this.processNor(messageList);
-        logger.debug("Save exp mqtt data done:"+messageList.size());
+        logger.debug("Save exp mqtt data done:" + messageList.size());
     }
 
 }
