@@ -92,6 +92,9 @@ public class HistoryGb implements java.io.Serializable
 		return this;
 	}
 	
+	public Object getCsAccessText(){
+		return resolve("csAccessText");
+	}
 	public Object getCsProtocolText(){
 		return resolve("csProtocolText");
 	}

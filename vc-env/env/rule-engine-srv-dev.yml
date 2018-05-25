@@ -68,6 +68,7 @@ kafka:
     history: #OUT 发送到下游
       gb:
         message: topic_gb_message              #GB历史数据
+        error: topic_gb_message_err            #GB错误数据
       can: topic_can                           #CAN历史数据
       can-exp: topic_can_exp                   #CAN异常历史数据
       mqtt:

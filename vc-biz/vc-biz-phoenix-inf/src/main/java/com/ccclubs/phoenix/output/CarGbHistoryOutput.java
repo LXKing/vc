@@ -5,7 +5,7 @@ import com.ccclubs.phoenix.orm.model.CarGb;
 
 import java.io.Serializable;
 import java.util.List;
-
+@Deprecated
 public class CarGbHistoryOutput implements Serializable{
 
     private static final long serialVersionUID = 6405556016793996382L;

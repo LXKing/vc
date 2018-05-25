@@ -10,12 +10,12 @@ import com.ccclubs.phoenix.inf.CarStateHistoryInf;
 import com.ccclubs.phoenix.input.CarStateHistoryParam;
 import com.ccclubs.phoenix.input.CarStateHistoryUpdateParam;
 import com.ccclubs.phoenix.input.StateHistoryParam;
-import com.ccclubs.phoenix.orm.consts.PhoenixFieldsConsts;
 import com.ccclubs.phoenix.orm.consts.VehicleConsts;
 import com.ccclubs.phoenix.orm.model.*;
 import com.ccclubs.phoenix.output.CarStateHistoryOutput;
 import com.ccclubs.phoenix.output.HistoryNoQueryOutput;
 import com.ccclubs.phoenix.output.StateHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import com.ccclubs.phoenix.util.VehicleUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,15 +92,15 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             preparedStatementDesc.setLong(2, startTime);
             preparedStatementDesc.setInt(3,limit);
             resultSetDesc = preparedStatementDesc.executeQuery();
-            JSONArray jsonArrayDesc = BaseQueryInfImpl.queryRecords(resultSetDesc);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayDesc,queryFields,carStateDescList,CarState.class);
+            JSONArray jsonArrayDesc = BaseTransformTool.queryRecords(resultSetDesc);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArrayDesc,queryFields,carStateDescList,CarState.class);
 
             preparedStatementAsc.setString(1, csNumber);
             preparedStatementAsc.setLong(2, startTime);
             preparedStatementAsc.setInt(3,limit);
             resultSetAsc = preparedStatementAsc.executeQuery();
-            JSONArray jsonArrayAsc = BaseQueryInfImpl.queryRecords(resultSetAsc);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArrayAsc,queryFields,carStateAscList,CarState.class);
+            JSONArray jsonArrayAsc = BaseTransformTool.queryRecords(resultSetAsc);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArrayAsc,queryFields,carStateAscList,CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -152,8 +152,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(2, start_time);
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -197,8 +197,8 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setInt(4, limit);
             pst.setInt(5, offset);
             resultSet= pst.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -211,12 +211,11 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     @Override
     public Long queryCarStateListCount(final CarStateHistoryParam carStateHistoryParam) {
         long total = 0L;
-        Connection connection = null;
         PreparedStatement pst = null;
         String cs_number = carStateHistoryParam.getCs_number();
         long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
         long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-        connection= phoenixTool.getConnection();
+        Connection connection= phoenixTool.getConnection();
         ResultSet resultSet =null;
         try {
             pst = connection.prepareStatement(count_sql);
@@ -224,7 +223,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(2, start_time);
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
             if(jsonArray!=null&&jsonArray.size()>0){
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 total=jsonObject.getLong("TOTAL");
@@ -420,7 +419,6 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         paceList= paceService.getPaceList();
         return paceList;
     }
-
 
 
 }

@@ -6,6 +6,20 @@ import com.ccclubs.frm.spring.entity.DateTimeUtil;
 
 
 public enum HistoryStateResolver{
+	接入商(new Resolver<HistoryState>("csAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
+		private static final long serialVersionUID = 2038857404L;
+
+		@Override
+		public <T> T execute(HistoryState record) {
+			if(record.getCsAccess()==null){
+				return null;
+			}
+			String result = "";
+			result = this.getMetadata().get(record.getCsAccess());
+			return (T)result;
+		}
+	})
+	,
 		下位机时间(new Resolver<HistoryState>("currentTimeText") {
 			@Override
 			public <T> T execute(HistoryState record) {
@@ -319,7 +333,6 @@ public enum HistoryStateResolver{
 					result+=(i==0?"":",")+ "10挡";
 				}
 			}
-
 			return (T)result;
 		}
 	})

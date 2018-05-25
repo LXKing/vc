@@ -14,6 +14,9 @@ public class MsgValidateExceptionDTO implements IExceptionDtoJsonParse {
 
     private String causeMsg;
 
+    // 校验异常出现的位置
+    private int dataType;
+
     @Override
     public String toJson() {
         return JSON.toJSONString(this);
@@ -30,4 +33,12 @@ public class MsgValidateExceptionDTO implements IExceptionDtoJsonParse {
         return this;
     }
 
+    public int getDataType() {
+        return dataType;
+    }
+
+    public MsgValidateExceptionDTO setDataType(int dataType) {
+        this.dataType = dataType;
+        return this;
+    }
 }

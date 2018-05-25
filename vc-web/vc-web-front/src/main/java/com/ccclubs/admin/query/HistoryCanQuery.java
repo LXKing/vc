@@ -8,7 +8,7 @@ import java.util.Date;
 public class HistoryCanQuery {
 	
 
-	private String csNumberEquals;
+	private String csVinEquals;
 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private Date currentTimeStart;
@@ -18,12 +18,12 @@ public class HistoryCanQuery {
 	private String sidx;
 	private String sord;
 
-	public HistoryCanQuery setCsNumberEquals(String csNumberEquals){
-		this.csNumberEquals = csNumberEquals;
+	public HistoryCanQuery setCsVinEquals(String csVinEquals){
+		this.csVinEquals = csVinEquals;
 		return this;
 	}
-	public String getCsNumberEquals(){
-		return this.csNumberEquals;
+	public String getCsVinEquals(){
+		return this.csVinEquals;
 	}
 	public HistoryCanQuery setCurrentTimeStart(Date currentTimeStart){
 		this.currentTimeStart = currentTimeStart;
@@ -49,8 +49,8 @@ public class HistoryCanQuery {
 		else if(this.sidx.equals("carCanHistoryId")){
 			return "car_can_history_id";
 		}
-		else if(this.sidx.equals("csNumber")){
-			return "cs_number";
+		else if(this.sidx.equals("csVin")){
+			return "cs_vin";
 		}
 		else if(this.sidx.equals("canData")){
 			return "can_data";

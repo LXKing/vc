@@ -10,6 +10,7 @@ import java.io.Serializable;
  * User: taosm
  * DateTime: 2017/11/27 0027
  */
+@Deprecated
 public class CarStateHistoryParam extends Page implements Serializable{
 
     private static final long serialVersionUID = -2518526959670695115L;

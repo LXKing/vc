@@ -1,3 +1,7 @@
+server:
+  port: 12003
+
+
 tcp:
   port: 27700
 boss:
@@ -9,7 +13,7 @@ worker:
 #true: 连接复用；false：每次新建一个连接
 so:
   keepalive: false
-  backlog: 100
+  backlog: 1024
 
 #kafka生产者配置
 spring:
@@ -25,6 +29,7 @@ kafka:
       error: topic_gb_error
       success: topic_gb_success
       conn: topic_conn_status
+      test: topic_gb_test
 
 pac:
   log:

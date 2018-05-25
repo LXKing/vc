@@ -13,40 +13,25 @@ import com.ccclubs.phoenix.output.StateHistoryOutput;
 import java.util.List;
 
 /**
- * ━━━━━━神兽出没━━━━━━
- * 　　　┏┓　　　┏┓
- * 　　┏┛┻━━━┛┻┓
- * 　　┃　　　　　　　┃
- * 　　┃　　　━　　　┃
- * 　　┃　┳┛　┗┳　┃
- * 　　┃　　　　　　　┃
- * 　　┃　　　┻　　　┃
- * 　　┃　　　　　　　┃
- * 　　┗━┓　　　┏━┛
- * 　　　　┃　　　┃神兽保佑, 永无BUG!
- * 　　　　 ┃　　　┃Code is far away from bug with the animal protecting
- * 　　　　┃　　　┗━━━┓
- * 　　　　┃　　　　　　　┣┓
- * 　　　　┃　　　　　　　┏┛
- * 　　　　┗┓┓┏━┳┓┏┛
- * 　　　　　┃┫┫　┃┫┫
- * 　　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
  * Module Desc:
  * User: taosm
  * DateTime: 2017/11/28 0028
  */
 // extends BaseHistoryInf<CarState>
 public interface CarStateHistoryInf{
+    @Deprecated
     //查询车辆状态信息(非分页)
      List<CarState> queryCarStateListNoPage(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息(分页)
      List<CarState> queryCarStateListWithPage(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息记录总数
      Long queryCarStateListCount(CarStateHistoryParam carStateHistoryParam);
 
+    @Deprecated
     //查询车辆状态信息(封装)
      CarStateHistoryOutput queryCarStateListByOutput(CarStateHistoryParam carStateHistoryParam);
 

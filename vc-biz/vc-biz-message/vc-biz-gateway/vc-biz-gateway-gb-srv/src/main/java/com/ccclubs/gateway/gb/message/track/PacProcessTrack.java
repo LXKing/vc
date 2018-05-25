@@ -1,5 +1,7 @@
 package com.ccclubs.gateway.gb.message.track;
 
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+
 import java.util.Arrays;
 
 /**
@@ -34,6 +36,11 @@ public class PacProcessTrack {
      */
     private boolean errorOccur;
 
+    /**
+     * 异常信息详情
+     */
+    private ExpMessageDTO expMessageDTO;
+
     private HandlerPacTrack[] handlerPacTracks;
 
     public PacProcessTrack next() {
@@ -46,6 +53,7 @@ public class PacProcessTrack {
         this.errorOccur = false;
         this.step = 0;
         this.sourceHex = null;
+        expMessageDTO = new ExpMessageDTO();
         if (handlerPacTracks !=null && handlerPacTracks.length > 0) {
             Arrays.stream(handlerPacTracks).forEach(ht -> {
                 ht.reset();
@@ -59,6 +67,13 @@ public class PacProcessTrack {
             throw new IllegalArgumentException("get current handlerTracker failed for the invalid value step: " + step);
         }
         return handlerPacTracks[step];
+    }
+
+    public HandlerPacTrack getPreHandlerTracker() {
+        if (step - 1 < 0 || step > handlerPacTracks.length) {
+            throw new IllegalArgumentException("get current handlerTracker failed for the invalid value step: " + step);
+        }
+        return handlerPacTracks[step - 1];
     }
     // ------------------------------------------------------------------------
     public String getVin() {
@@ -103,6 +118,15 @@ public class PacProcessTrack {
 
     public PacProcessTrack setHandlerPacTracks(HandlerPacTrack[] handlerPacTracks) {
         this.handlerPacTracks = handlerPacTracks;
+        return this;
+    }
+
+    public ExpMessageDTO getExpMessageDTO() {
+        return expMessageDTO;
+    }
+
+    public PacProcessTrack setExpMessageDTO(ExpMessageDTO expMessageDTO) {
+        this.expMessageDTO = expMessageDTO;
         return this;
     }
 }
