@@ -180,9 +180,9 @@ public class TerminalStatusUtils {
     long autopilotValue = (long) (autopilotState & 0x0FFFFFFFF);
 
     //取byte[0] 目标站点
-    int currentSite=((int)(autopilotValue>>24))&0x0FF;
+    int targetSite=((int)(autopilotValue>>24))&0x0FF;
     //取byte[1] 当前站点
-    int targetSite=((int)(autopilotValue>>16))&0x0FF;
+    int currentSite=((int)(autopilotValue>>16))&0x0FF;
     //int autopilotSite=(int)(autopilotValue>>8);
 
     //short autopilotStateByte=(short)(autopilotValue&0x0FF);
@@ -309,6 +309,9 @@ public class TerminalStatusUtils {
 
 
     return stringBuilder.toString();
+  }
+  public static void main(String args[]){
+    TerminalStatusUtils.getAutopilotString(33624834L);
   }
 
 }
