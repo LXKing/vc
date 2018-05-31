@@ -7,8 +7,8 @@ import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.process.decoder.BizHandlerFor808;
-import com.ccclubs.gateway.jt808.process.decoder.Package808BaseDecoder;
+import com.ccclubs.gateway.jt808.process.decoder.*;
+import com.ccclubs.gateway.jt808.process.encoder.PackageEncoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -30,25 +30,30 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
         // 组装处理链路
         channel.pipeline()
+
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
                 // 记录监视的车辆报文
 //                .addLast("preHandler", preProcessHandler)
-                // 解码
+                // 数据包解码
                 .addLast("808Decoder", new Package808BaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
-//                .addLast("validateHandler", packageValidateHandler)
-                // 连接数据统计
-//                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
+                .addLast("validateHandler", new ValidatePacHandler())
+                // 连接身份认证
+                .addLast("AuthHandler", new AuthConnectionHandler())
+                // 数据统计
+                .addLast("statisticsHandler", new StatisticsHandler())
                 // 业务处理
-                .addLast("bizHandler", new BizHandlerFor808());
-                // 过程保障
-//                .addLast("protectorHandler", protecterHandler)
+                .addLast("bizHandler", new BizHandlerFor808())
+                // 对外发送处理
+                .addLast("outSendHandler", new SendOutHandler())
+                // 异常拦截处理
+                .addLast("exceptionHandler", new ExceptionHandler())
 
                 /*outbound*/
                 // 编码器
-//                .addLast("GBEncoder", gbPackageEncoder);
+                .addLast("808Encoder", new PackageEncoder());
 
         /**
          * 在追踪处理异常时：

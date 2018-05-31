@@ -12,10 +12,6 @@ import io.netty.buffer.ByteBuf;
 public class Package808 {
 
     /*消息的原始部分*/
-    /**
-     * 消息的起始标识位
-     */
-    private String startSymbol;
 
     /**
      * 消息头部
@@ -31,11 +27,6 @@ public class Package808 {
      * 消息的校正码
      */
     private Byte validCode;
-
-    /**
-     * 消息的结束标志位
-     */
-    private String endSymbol;
 
 
 
@@ -57,18 +48,9 @@ public class Package808 {
 
     public static Package808 ofNew() {
         return new Package808()
+                .setHeader(new PacHeader())
                 .setBody(new PacBody())
-                .setErrorPac(false)
-                .setHeader(new PacHeader());
-    }
-
-    public String getStartSymbol() {
-        return startSymbol;
-    }
-
-    public Package808 setStartSymbol(String startSymbol) {
-        this.startSymbol = startSymbol;
-        return this;
+                .setErrorPac(false);
     }
 
     public PacHeader getHeader() {
@@ -95,15 +77,6 @@ public class Package808 {
 
     public Package808 setValidCode(Byte validCode) {
         this.validCode = validCode;
-        return this;
-    }
-
-    public String getEndSymbol() {
-        return endSymbol;
-    }
-
-    public Package808 setEndSymbol(String endSymbol) {
-        this.endSymbol = endSymbol;
         return this;
     }
 

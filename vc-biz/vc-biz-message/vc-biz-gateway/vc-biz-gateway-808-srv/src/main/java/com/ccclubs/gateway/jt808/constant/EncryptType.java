@@ -12,17 +12,17 @@ public enum EncryptType {
     /**
      * 不加密
      */
-    NO(0X00),
+    NO(0X0000),
 
     /**
      * RSA加密
      */
-    RSA(0X02),
+    RSA(0X02000),
 
     /**
      * 其他保留
      */
-    OTHER(0XFE);
+    OTHER(0XF000);
 
     private int code;
 

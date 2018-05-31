@@ -87,7 +87,7 @@ public class Package808BaseDecoder extends DelimiterBasedFrameDecoder {
         pac.getHeader().setPacContentAttr(pacAttr);
 
         // 跳过终端手机号
-        frame.skipBytes(PackagePart.PAC_ID.getLen() + PackagePart.PAC_SERIAL_NO.getLen());
+        frame.skipBytes(PackagePart.TER_MOBILE.getLen());
 
         // 读取消息流水号
         int pacSerialNo = frame.readUnsignedShort();
