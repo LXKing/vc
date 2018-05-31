@@ -31,15 +31,20 @@
       <artifactId>vc-frm-logger</artifactId>
       <version>${frm.version}</version>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>www.ccclubs</groupId>-->
+      <!--<artifactId>vc-biz-common-srv</artifactId>-->
+      <!--<version>${biz.version}</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>www.ccclubs</groupId>-->
+      <!--<artifactId>vc-biz-pub-orm</artifactId>-->
+      <!--<version>${biz.version}</version>-->
+    <!--</dependency>-->
     <dependency>
-      <groupId>www.ccclubs</groupId>
-      <artifactId>vc-biz-common-srv</artifactId>
-      <version>${biz.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>www.ccclubs</groupId>
-      <artifactId>vc-biz-pub-orm</artifactId>
-      <version>${biz.version}</version>
+        <groupId>www.ccclubs</groupId>
+        <artifactId>vc-biz-gateway-common-srv</artifactId>
+        <version>${biz.version}</version>
     </dependency>
   </dependencies>
 

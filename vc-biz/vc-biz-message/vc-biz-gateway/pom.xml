@@ -20,6 +20,8 @@
         <module>vc-biz-gateway-mqtt-inf</module>
         <module>vc-biz-gateway-zotye-inf</module>
         <module>vc-biz-gateway-zotye-srv</module>
+        <module>vc-biz-gateway-common-inf</module>
+        <module>vc-biz-gateway-common-srv</module>
     </modules>
 
 

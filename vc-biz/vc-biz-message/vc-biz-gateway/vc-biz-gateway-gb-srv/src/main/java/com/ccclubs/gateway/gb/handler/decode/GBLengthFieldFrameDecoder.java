@@ -31,10 +31,8 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     // 记录当前渠道粘包处理状态
     private boolean isComplete = false;
 
-    private Integer specifiedMaxFrameLength = 4096;
-
-    public GBLengthFieldFrameDecoder() {
-        this(4096, 22, 2);
+    public GBLengthFieldFrameDecoder(Integer maxFrameLength) {
+        this(maxFrameLength, 22, 2);
     }
 
     public GBLengthFieldFrameDecoder(

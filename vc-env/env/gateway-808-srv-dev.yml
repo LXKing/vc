@@ -1,75 +1,106 @@
 server:
   port: 8905
 
+# netty配置
+netty:
+  tcp-port: 27700
+  boss-count: 1
+  worker-count: 10
+  keep-alive: false
+  backlog: 100
+
+# 网关配置
+gateway:
+  server:
+    log-print: true       # 打印消息日志
+    buffer-check: false   # 开启缓存检查
+
+#kafka生产者配置
 spring:
-  redis:
-    host: 127.0.0.1
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
-dubbo:
-  scan:
-    annotationPackage: com.ccclubs
-  application:
-    name: gateway-808-srv
-  registry:
-    address: zookeeper://127.0.0.1:2181
-    protocol: zookeeper
-    port: 20660
-  protocol:
-    name: dubbo
-    threads: 100
-    #host: 10.0.10.96
-    port: 20660
-  provider:
-    timeout: 120000
-    retries: -1
-  consumer:
-    timeout: 120000
-    check: false
-#  monitor:
-#    protocol: registry
-#jt808网关转发到MQ的topic
-mq:
-  topic: ser
-#jt808网关监听的端口
-jt808Server:
-  port: 26700
-#socket最大空闲时间，单位秒
-  maxOfflineTime: 720
+#kafka Topic
+kafka:
+  topic:
+    gateway:
+      error: topic_gb_error
+      success: topic_gb_success
+      conn: topic_conn_status
+      oversee: topic_gb_oversee # 用于监听特定车辆的报文
 
-#阿里云 MQ 配置
-ons:
-  producerId: PID_terminal_ser
-  accessKey: M6dHCyKyKYUCNbW4
-  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
-
-mqttAliyun:
-  #阿里云 mqtt broker 地址
-  host: tcp://mqtt.cn-hangzhou.aliyuncs.com
-  #阿里云 mqtt broker 端口
-  port: 1883
-  #阿里云 mqClient ID 前缀
-  preId: GID_pro
-  #阿里云用户名
-  userName: M6dHCyKyKYUCNbW4
-  #阿里云密码
-  pwd: 2u0w1llRPSxKeNSZDq95jQAE95c=
-  #订阅主题
-  subTopic: protocol/jt808/#
-  #是否记录上行记录
-  logUpDown: true
-
-druid:
-  driver: com.mysql.jdbc.Driver
-  jdbc:
-    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
-    username: zkj_user
-    password: kANXZYqf2UzghVY7DnjP
-  initialSize: 2
-  maxActive: 4
-  maxIdle: 2
-  minIdle: 1
-  maxWait: 60000
-  timeBetweenEvictionRunsMillis: 3000
-  minEvictableIdleTimeMillis: 300000
-  maxPoolPreparedStatementPerConnectionSize: 20
-  filters:
+#spring:
+#  redis:
+#    host: 127.0.0.1
+#
+#dubbo:
+#  scan:
+#    annotationPackage: com.ccclubs
+#  application:
+#    name: gateway-808-srv
+#  registry:
+#    address: zookeeper://127.0.0.1:2181
+#    protocol: zookeeper
+#    port: 20660
+#  protocol:
+#    name: dubbo
+#    threads: 100
+#    #host: 10.0.10.96
+#    port: 20660
+#  provider:
+#    timeout: 120000
+#    retries: -1
+#  consumer:
+#    timeout: 120000
+#    check: false
+##  monitor:
+##    protocol: registry
+##jt808网关转发到MQ的topic
+#mq:
+#  topic: ser
+##jt808网关监听的端口
+#jt808Server:
+#  port: 26700
+##socket最大空闲时间，单位秒
+#  maxOfflineTime: 720
+#
+##阿里云 MQ 配置
+#ons:
+#  producerId: PID_terminal_ser
+#  accessKey: M6dHCyKyKYUCNbW4
+#  secretKey: k6gOSH3dNJjFYze4CuxbBWS1PWqvVk
+#
+#mqttAliyun:
+#  #阿里云 mqtt broker 地址
+#  host: tcp://mqtt.cn-hangzhou.aliyuncs.com
+#  #阿里云 mqtt broker 端口
+#  port: 1883
+#  #阿里云 mqClient ID 前缀
+#  preId: GID_pro
+#  #阿里云用户名
+#  userName: M6dHCyKyKYUCNbW4
+#  #阿里云密码
+#  pwd: 2u0w1llRPSxKeNSZDq95jQAE95c=
+#  #订阅主题
+#  subTopic: protocol/jt808/#
+#  #是否记录上行记录
+#  logUpDown: true
+#
+#druid:
+#  driver: com.mysql.jdbc.Driver
+#  jdbc:
+#    url: jdbc:mysql://121.199.49.206:3306/ccclubs_data_center?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=PRC&useSSL=false
+#    username: zkj_user
+#    password: kANXZYqf2UzghVY7DnjP
+#  initialSize: 2
+#  maxActive: 4
+#  maxIdle: 2
+#  minIdle: 1
+#  maxWait: 60000
+#  timeBetweenEvictionRunsMillis: 3000
+#  minEvictableIdleTimeMillis: 300000
+#  maxPoolPreparedStatementPerConnectionSize: 20
+#  filters:

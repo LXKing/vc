@@ -1,73 +1,54 @@
-package com.ccclubs.gateway.gb.handler.process;
+package com.ccclubs.gateway.jt808.process;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
-import com.ccclubs.gateway.gb.constant.ChannelAttrKey;
-import com.ccclubs.gateway.gb.handler.decode.*;
-import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
-import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
-import com.ccclubs.gateway.gb.service.KafkaService;
+import com.ccclubs.gateway.common.bean.track.HandlerPacTrack;
+import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.constant.ChannelAttrKey;
+import com.ccclubs.gateway.common.inf.ChildChannelHandler;
+import com.ccclubs.gateway.jt808.constant.PackageCons;
+import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.process.decoder.BizHandlerFor808;
+import com.ccclubs.gateway.jt808.process.decoder.Package808BaseDecoder;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 
 /**
  * @Author: yeanzi
- * @Date: 2018/4/4
- * @Time: 11:10
+ * @Date: 2018/5/30
+ * @Time: 15:52
  * Email:  yeanzhi@ccclubs.com
+ * 808初始化ChildChannelHandler
  */
 @Component
-public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
-    // 是否打印消息日志
-    public static boolean printPacLog;
-
-//    @Autowired
-//    private ApplicationContext context;
-
-    @Autowired
-    private KafkaService kafkaService;
-
-    /*shared handlers*/
-    @Autowired
-    private ProtecterHandler protecterHandler;
-    @Autowired
-    private MsgDeliverHandler msgDeliverHandler;
-    @Autowired
-    private PackageValidateHandler packageValidateHandler;
-    @Autowired
-    private PreProcessHandler preProcessHandler;
-
-    @Autowired
-    private GBPackageEncoder gbPackageEncoder;
+public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel> implements ChildChannelHandler {
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
+
         // 组装处理链路
         channel.pipeline()
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
                 // 记录监视的车辆报文
-                .addLast("preHandler", preProcessHandler)
+//                .addLast("preHandler", preProcessHandler)
                 // 解码
-                .addLast("gbDecoder", new GBLengthFieldFrameDecoder(4096))
+                .addLast("808Decoder", new Package808BaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
-                .addLast("validateHandler", packageValidateHandler)
+//                .addLast("validateHandler", packageValidateHandler)
                 // 连接数据统计
-                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
+//                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
                 // 业务处理
-                .addLast("deliverHandler", msgDeliverHandler)
+                .addLast("bizHandler", new BizHandlerFor808());
                 // 过程保障
-                .addLast("protectorHandler", protecterHandler)
+//                .addLast("protectorHandler", protecterHandler)
 
                 /*outbound*/
                 // 编码器
-                .addLast("GBEncoder", gbPackageEncoder);
+//                .addLast("GBEncoder", gbPackageEncoder);
 
         /**
          * 在追踪处理异常时：
@@ -84,6 +65,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
          */
     }
 
+
     private void initPacTrack(SocketChannel channel) {
         Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
         PacProcessTrack newPacProessTrack = new PacProcessTrack();
@@ -99,4 +81,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
         pacProcessTrackAttribute.setIfAbsent(newPacProessTrack);
     }
+
+
+
 }
