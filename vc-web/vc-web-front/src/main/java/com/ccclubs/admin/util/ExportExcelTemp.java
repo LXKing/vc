@@ -265,7 +265,10 @@ public class ExportExcelTemp<T> implements Serializable {
         while (it.hasNext()) {
             index++;
             row = sheet.createRow(index);
-            T t = it.next();
+            T t = null;
+            while (null==t){
+                t=it.next();
+            }
             if (null == srcfield) {
                 srcfield = new Field[headers.length];
                 try {
