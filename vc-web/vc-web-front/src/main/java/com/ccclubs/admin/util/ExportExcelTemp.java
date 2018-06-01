@@ -337,6 +337,9 @@ public class ExportExcelTemp<T> implements Serializable {
      * 判断要操作的值的类型
      */
     private String dealDataToCellString(Object value) {
+        if (null == value) {
+            return "";
+        }
         String textValue = null;
         // 判断值的类型后进行强制类型转换
         if (value instanceof Date) {
