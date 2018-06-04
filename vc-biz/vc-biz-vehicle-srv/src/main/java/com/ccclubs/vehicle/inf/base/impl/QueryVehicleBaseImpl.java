@@ -3,6 +3,7 @@ package com.ccclubs.vehicle.inf.base.impl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
@@ -14,6 +15,7 @@ import com.ccclubs.vehicle.inf.base.QueryVehicleBaseInf;
 import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,9 +34,9 @@ public class QueryVehicleBaseImpl implements QueryVehicleBaseInf {
 
     @Autowired
     private VehicleProp prop;
-
+    @Resource
+    AuthValidateHelper authValidateHelper;
     @Override
-//    @DataAuth
     public VehicleBaseOutput getProdDateAndCarColor(VehicleBaseInput input) {
 
         //Step1.查询车辆

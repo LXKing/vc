@@ -7,6 +7,7 @@ import com.ccclubs.common.modify.UpdateVehicleService;
 import com.ccclubs.common.query.QueryTboxBindHisService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -20,6 +21,7 @@ import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import sun.util.resources.ga.LocaleNames_ga;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -44,11 +46,15 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
 
     @Autowired
     QueryTboxBindHisService queryTboxBindHisService;
-
+    @Resource
+    AuthValidateHelper authValidateHelper;
     @Override
-    @DataAuth
     public UnBindVehicleOutput unBindVehicle(UnBindVehicleInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         CsMachine machine = queryTerminalService.queryCsMachineByTeNo(input.getTeNo());
 

@@ -1,7 +1,5 @@
 package com.ccclubs.command.util;
 
-import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -11,16 +9,17 @@ import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
-
 import com.ccclubs.pub.orm.model.CsMachine;
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+import static com.ccclubs.command.util.CommandConstants.TIMEOUT;
 
 
 /**
@@ -57,7 +56,7 @@ public class ResultHelper {
     /**
      * 从redis内拿返回结果并设置过期时间10秒，有两个来源1、超时，轮询；2、正常返回，由终端返回 TODO 采用线程锁的方式来处理，开启线程轮询结果
      */
-    private  <T> T confirmResultSync(CsRemote csRemote, T output, CsMachine csMachine) {
+    private <T> T confirmResultSync(CsRemote csRemote, T output, CsMachine csMachine) {
         Long startTime = System.currentTimeMillis();
         String key = AssembleHelper.assembleKey(csRemote.getCsrId());
         try {
@@ -70,11 +69,11 @@ public class ResultHelper {
                     csRemote.setCsrUpdateTime(System.currentTimeMillis());
                     csRemote.setCsrStatus(1);
                     csRemote.setCsrResult(result);
-                    JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
-                    jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
-                    jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
-                    jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
-                    jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+                    JSONObject jsonObject = (JSONObject) JSONObject.toJSON(csRemote);
+                    jsonObject.put("csrTerminalType", csMachine.getCsmTeType());
+                    jsonObject.put("csrTerminalMobile", csMachine.getCsmMobile());
+                    jsonObject.put("csrTerminalPlugin", csMachine.getCsmTlV2());
+                    jsonObject.put("csrTerminalVersion", csMachine.getCsmTlV1());
                     loggerBusiness.info(JSONObject.toJSONString(jsonObject));
                     CommonResult commonResult = JSON.parseObject(result, new TypeReference<CommonResult>() {
                     });
@@ -91,11 +90,11 @@ public class ResultHelper {
             logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());
             csRemote.setCsrStatus(-1);
-            JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
-            jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
-            jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
-            jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
-            jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(csRemote);
+            jsonObject.put("csrTerminalType", csMachine.getCsmTeType());
+            jsonObject.put("csrTerminalMobile", csMachine.getCsmMobile());
+            jsonObject.put("csrTerminalPlugin", csMachine.getCsmTlV2());
+            jsonObject.put("csrTerminalVersion", csMachine.getCsmTlV1());
             loggerBusiness.info(JSONObject.toJSONString(jsonObject));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
         } catch (ApiException ex) {

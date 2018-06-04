@@ -5,7 +5,7 @@ import com.ccclubs.mongo.service.impl.CsRemoteService;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 同步、异步保存指令记录
