@@ -5,6 +5,7 @@ import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -43,10 +44,16 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
   private TerminalProp terminalProp;
   @Resource
   QueryAppInfoService hostService;
+  @Resource
+  AuthValidateHelper authValidateHelper;
 
   @Override
-  @DataAuth
   public TerminalQryOutput getTerminalInfo(TerminalQryInput input) {
+    //数据权限校验
+    boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+    if (!validateResult) {
+      throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+    }
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
     // 未查询到车辆
     if (null == csVehicle) {

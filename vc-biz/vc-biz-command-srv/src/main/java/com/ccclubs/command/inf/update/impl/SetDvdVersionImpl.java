@@ -9,7 +9,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
-import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
@@ -34,7 +34,7 @@ import java.util.Map;
  * @create 2017-08-01
  **/
 @Service(version = CommandServiceVersion.V1)
-public class SetDvdVersionImpl implements SetDvdVersionInf{
+public class SetDvdVersionImpl implements SetDvdVersionInf {
     private static final Logger logger = LoggerFactory.getLogger(SetDvdVersionImpl.class);
 
     @Autowired
@@ -56,10 +56,16 @@ public class SetDvdVersionImpl implements SetDvdVersionInf{
 
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
+    @Resource
+    AuthValidateHelper authValidateHelper;
 
     @Override
-    @DataAuth
     public DvdVersionOutput setDvdVersion(DvdVersionIntput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_DVD.longValue();
         logger.debug("begin process command {} start.", structId);
         // 校验指令码

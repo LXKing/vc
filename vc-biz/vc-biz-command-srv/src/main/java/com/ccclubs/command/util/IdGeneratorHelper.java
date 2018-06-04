@@ -9,7 +9,6 @@ import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-
 import java.util.concurrent.TimeUnit;
 
 import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_808_CSRSID_GEN;
@@ -43,6 +42,7 @@ public class IdGeneratorHelper {
 
     /**
      * 指令记录全局唯一ID
+     *
      * @return
      */
     public Long getNextId() {
@@ -53,6 +53,7 @@ public class IdGeneratorHelper {
 
     /**
      * 808指令-2字节流水号
+     *
      * @param vin 车辆vin码
      * @return
      */

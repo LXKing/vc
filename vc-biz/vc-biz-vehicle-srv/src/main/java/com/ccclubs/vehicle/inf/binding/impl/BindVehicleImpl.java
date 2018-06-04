@@ -6,6 +6,7 @@ import com.ccclubs.common.modify.UpdateTboxBindHisService;
 import com.ccclubs.common.modify.UpdateVehicleService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
@@ -21,6 +22,8 @@ import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 /**
  * 终端绑定车辆
@@ -42,14 +45,18 @@ public class BindVehicleImpl implements BindVehicleInf {
 
     @Autowired
     UpdateTboxBindHisService updateTboxBindHisService;
-
+    @Resource
+    AuthValidateHelper authValidateHelper;
     /**
      * 车机绑定
      */
     @Override
-    @DataAuth
     public BindVehicleOutput bindVehicle(BindVehicleInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         CsMachine machine = queryTerminalService.queryCsMachineByTeNo(input.getTeNo());
 
