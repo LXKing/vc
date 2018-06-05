@@ -26,7 +26,17 @@ public enum PackagePart {
      * 消息包封顶项
      *     如果消息属性中相关标识位确定消息分包处理，则该项有值，否则无值
      */
-    PAC_BOTTOM_MARK(4, 12, 1, "消息包封顶项");
+    PAC_BOTTOM_MARK(4, 12, 1, "消息包封顶项"),
+
+    /**
+     * 数据单元
+     */
+    PAC_BODY(5, 24, -1, "数据单元"),
+
+    /**
+     * 校验码
+     */
+    PAC_VALIDE_CODE(6, -1, 1, "校验码");
 
     // 编码
     private int code;

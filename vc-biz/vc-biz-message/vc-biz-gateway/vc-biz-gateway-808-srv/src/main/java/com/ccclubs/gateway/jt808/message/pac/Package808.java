@@ -1,5 +1,7 @@
 package com.ccclubs.gateway.jt808.message.pac;
 
+import com.ccclubs.gateway.common.constant.PacErrorType;
+import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -43,8 +45,15 @@ public class Package808 {
 
     /**
      * 是否为校验异常包
+     *      true:  校验异常的报文(包含鉴权成功)
+     *      false： 检验正确的报文(包含鉴权失败)
      */
     private Boolean errorPac;
+
+    /**
+     * 消息错误类型
+     */
+    private PacErrorType pacErrorType;
 
     public static Package808 ofNew() {
         return new Package808()
@@ -106,4 +115,28 @@ public class Package808 {
         this.errorPac = errorPac;
         return this;
     }
+
+    public PacErrorType getPacErrorType() {
+        return pacErrorType;
+    }
+
+    public Package808 setPacErrorType(PacErrorType pacErrorType) {
+        this.pacErrorType = pacErrorType;
+        return this;
+    }
+
+    public String printLog() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("车辆(").append(getHeader().getTerMobile()).append(")").append("上传了[");
+        if (getHeader().getPacContentAttr().isMultiPac()) {
+            sb.append("分包(").append(getHeader().getPacSealInfo().getPacNo()).append("/").append(getHeader().getPacSealInfo().getTotalPacCount()).append(")]");
+        } else {
+            sb.append("整包]");
+        }
+        sb.append("-[").append(UpPacType.getByCode(getHeader().getPacId()).getDes()).append("]消息,")
+                .append("流水号[").append(getHeader().getPacSerialNo()).append("],")
+                .append("原始报文[").append(getSourceHexStr()).append("]");
+        return sb.toString();
+    }
+
 }

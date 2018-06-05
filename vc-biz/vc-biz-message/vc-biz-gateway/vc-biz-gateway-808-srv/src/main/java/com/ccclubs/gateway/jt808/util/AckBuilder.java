@@ -1,6 +1,8 @@
 package com.ccclubs.gateway.jt808.util;
 
 import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
+import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
+import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 
 /**
@@ -19,6 +21,25 @@ public final class AckBuilder {
                 .setPacId(pacId)
                 .setTerMobile(mobile)
                 .setPacSerialNo(serialNo)
+                .setPacContentAttr(null)
+                .setPacSealInfo(null);
+
+        // body
+        pac.getBody().setContent(null);
+        return pac;
+    }
+
+    public static Package808 fromSourcePac(Package808 sourcePac) {
+        // 原报文头部
+        PacHeader sourceHeader = sourcePac.getHeader();
+
+        // 应答报文实体
+        Package808 pac = Package808.ofNew();
+        // header
+        pac.getHeader()
+                .setPacId(PacUtil.getAckPacType(sourceHeader.getPacId()).getCode())
+                .setTerMobile(sourceHeader.getTerMobile())
+                .setPacSerialNo(sourceHeader.getPacSerialNo())
                 .setPacContentAttr(null)
                 .setPacSealInfo(null);
 

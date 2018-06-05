@@ -1,9 +1,11 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
+import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,18 @@ import org.slf4j.LoggerFactory;
  */
 public class ExceptionHandler extends ChannelInboundHandlerAdapter {
     public static final Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        Package808 pac = (Package808) msg;
+
+        /*
+         * 只清理引用计数
+         */
+        if (pac.getSourceBuff().refCnt() > 0) {
+            ReferenceCountUtil.release(pac.getSourceBuff());
+        }
+    }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

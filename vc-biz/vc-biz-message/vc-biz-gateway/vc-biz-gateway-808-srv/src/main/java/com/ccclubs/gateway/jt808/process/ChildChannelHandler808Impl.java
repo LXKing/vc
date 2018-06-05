@@ -5,8 +5,8 @@ import com.ccclubs.gateway.common.bean.track.HandlerPacTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
+import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
-import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.decoder.*;
 import com.ccclubs.gateway.jt808.process.encoder.PackageEncoder;
 import io.netty.channel.ChannelInitializer;
@@ -37,15 +37,17 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 // 记录监视的车辆报文
 //                .addLast("preHandler", preProcessHandler)
                 // 数据包解码
-                .addLast("808Decoder", new Package808BaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
+                .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
                 .addLast("validateHandler", new ValidatePacHandler())
                 // 连接身份认证
                 .addLast("AuthHandler", new AuthConnectionHandler())
+                // 应答处理
+                .addLast("ackHandler", new AckHandler())
                 // 数据统计
                 .addLast("statisticsHandler", new StatisticsHandler())
                 // 业务处理
-                .addLast("bizHandler", new BizHandlerFor808())
+                .addLast("bizHandler", new BizHandler())
                 // 对外发送处理
                 .addLast("outSendHandler", new SendOutHandler())
                 // 异常拦截处理
@@ -78,8 +80,9 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 .setErrorOccur(false)
                 .setStep(0)
                 .setExpMessageDTO(new ExpMessageDTO());
-        HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[6];
-        for (int i = 0; i < handlerPacTracks.length; i ++) {
+        int needTrackHandlerCount = PacProcessing.countNeedTrack();
+        HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[needTrackHandlerCount];
+        for (int i = 0; i < needTrackHandlerCount; i ++) {
             handlerPacTracks[i] = new HandlerPacTrack();
         }
         newPacProessTrack.setHandlerPacTracks(handlerPacTracks);

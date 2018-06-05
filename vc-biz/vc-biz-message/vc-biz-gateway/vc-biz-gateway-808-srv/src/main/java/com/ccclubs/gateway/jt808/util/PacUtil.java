@@ -1,11 +1,13 @@
 package com.ccclubs.gateway.jt808.util;
 
-import com.ccclubs.gateway.jt808.constant.EncryptType;
+import com.ccclubs.gateway.jt808.constant.PackageCons;
+import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
+import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
-import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -64,6 +66,21 @@ public final class PacUtil {
         return Unpooled.wrappedBuffer(ByteBufUtil.decodeHexDump(mobileSb.toString()));
     }
 
+    public static boolean needNormalAck(Integer pacId) {
+        DownPacType downPacType = getAckPacType(pacId);
+        if (Objects.nonNull(downPacType)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static DownPacType getAckPacType(Integer pacId) {
+        UpPacType upPacType = UpPacType.getByCode(pacId);
+        Objects.requireNonNull(upPacType);
+        int downPacId = upPacType.getCode() | PackageCons.ACK_PRIFIX_HIGH;
+        return DownPacType.getByCode(downPacId);
+    }
+
     /**
      * 检查数值的最后一字节位是否为1
      *  true:  1
@@ -86,9 +103,7 @@ public final class PacUtil {
                 .append("isMultiPac: ").append(isMultiPac).append("\n")
         .toString());
 
-        System.out.println(new String(ByteBufUtil.decodeHexDump("201d"), Charset.forName("utf-8")));
-
-        System.out.println(ByteBufUtil.hexDump("”".getBytes()));
+        System.out.println(needNormalAck(0x0100));
     }
 
 }

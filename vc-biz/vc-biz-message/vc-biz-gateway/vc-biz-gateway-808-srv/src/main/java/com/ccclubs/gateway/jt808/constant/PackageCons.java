@@ -22,4 +22,13 @@ public class PackageCons {
      */
     public static final ByteBuf PAC_DECODE_DELIMITER = Unpooled.wrappedBuffer(new byte[]{0x7e});
 
+    /**
+     * 用于与消息ID相与，转换成下行消息类型
+     */
+    public static final Integer ACK_PRIFIX_HIGH = 0x8000;
+
+    /**
+     * 终端上行应答前缀
+     */
+    public static final String UP_PAC_ACK_PRIFIX = "ACK";
 }

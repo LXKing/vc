@@ -44,22 +44,22 @@ public final class PackageBuilder {
         return pac;
     }
 
-    class builder {
+    public static class builder {
         private Integer serialNo;
         private Integer pacId;
         private String mobile;
         private AckReaultType reaultType;
         private ByteBuf bodyBuf;
 
-        builder(Integer pacId, Integer serialNo, String mobile) {
+        public builder(Integer pacId, Integer serialNo, String mobile) {
             this(pacId, serialNo, mobile, null, null);
         }
 
-        builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType) {
+        public builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType) {
             this(pacId, serialNo, mobile, reaultType, null);
         }
 
-        builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType, ByteBuf bodyBuf) {
+        public builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType, ByteBuf bodyBuf) {
             this.pacId = pacId;
             this.serialNo = serialNo;
             this.mobile = mobile;

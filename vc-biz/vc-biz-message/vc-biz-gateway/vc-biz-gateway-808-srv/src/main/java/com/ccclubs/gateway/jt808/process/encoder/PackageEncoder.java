@@ -5,8 +5,10 @@ import com.ccclubs.gateway.jt808.constant.EncryptType;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.util.PacTranslateUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
@@ -82,8 +84,13 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
         byte validCode = PacValidUtil.caculateValidByteFromBuff(out, 1, 0);
         out.writeByte(validCode);
 
+        // 消息转义
+        PacTranslateUtil.translateDownPac(out);
+
         // 结束符
         out.writeByte(PackageCons.PAC_START_SYMBOL_BYTE);
+
+        LOG.info("send: {}", ByteBufUtil.hexDump(out));
     }
 
     /**
