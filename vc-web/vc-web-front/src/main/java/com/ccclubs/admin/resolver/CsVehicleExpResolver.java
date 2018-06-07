@@ -1,21 +1,21 @@
 package com.ccclubs.admin.resolver;
 
 
+import com.ccclubs.admin.model.CsVehicleExp;
 import com.ccclubs.frm.spring.resolver.Resolver;
-import com.ccclubs.mongo.orm.model.history.CsVehicleExp;
 
 public enum CsVehicleExpResolver{
-	
-		终端类型(new Resolver<CsVehicleExp>("csmTeTypeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
+
+	终端类型(new Resolver<CsVehicleExp>("csveTeTypeText", com.ccclubs.admin.metadata.MetaDef.getDictLabel) {
 		private static final long serialVersionUID = 2038877203L;
 
 			@Override
 			public <T> T execute(CsVehicleExp record) {
-					if(record.getCsmTeType()==null){
+				if (record.getCsveTeType() == null) {
 					return null;
 					}
 					String result = "";
-					result = this.getDictMetaData().get("csm_te_type",record.getCsmTeType());
+				result = this.getDictMetaData().get("csm_te_type", record.getCsveTeType());
 					return (T)result;
 					}
 		})
