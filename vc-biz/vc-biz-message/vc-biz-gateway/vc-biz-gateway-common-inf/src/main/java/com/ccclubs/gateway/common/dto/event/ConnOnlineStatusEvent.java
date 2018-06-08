@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.common.dto.event;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.gateway.common.constant.GatewayType;
 
 import java.io.Serializable;
@@ -47,7 +48,9 @@ public class ConnOnlineStatusEvent implements Serializable {
     private GatewayType gatewayType;
 
     public String toJson() {
-        return JSON.toJSONString(this);
+        JSONObject json = (JSONObject) JSON.toJSON(this);
+        json.put("gatewayType", gatewayType.getDes());
+        return json.toJSONString();
     }
 
     // ---------------------------------------------------------------------------
