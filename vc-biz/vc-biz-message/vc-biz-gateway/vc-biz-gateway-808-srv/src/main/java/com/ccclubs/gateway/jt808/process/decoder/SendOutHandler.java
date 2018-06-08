@@ -5,9 +5,11 @@ import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
+import com.ccclubs.gateway.common.dto.OnsTask;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.service.OnsService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
@@ -33,6 +35,9 @@ public class SendOutHandler extends CCClubChannelInboundHandler<Package808> {
     @Autowired
     private KafkaService kafkaService;
 
+    @Autowired
+    private OnsService onsService;
+
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
 
@@ -47,6 +52,8 @@ public class SendOutHandler extends CCClubChannelInboundHandler<Package808> {
             case TASK_KAFKA:
                 kafkaService.send((KafkaTask) innerMsg.getMsg());
                 break;
+            case TASK_ONS:
+                onsService.sendOneway((OnsTask) innerMsg.getMsg());
                 default:
                     break;
         }

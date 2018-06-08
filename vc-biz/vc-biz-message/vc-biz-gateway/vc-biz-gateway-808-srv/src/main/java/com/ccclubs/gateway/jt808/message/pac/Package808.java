@@ -39,7 +39,7 @@ public class Package808 {
     private ByteBuf sourceBuff;
 
     /**
-     * 原始消息对应的16进制字符串
+     * 原始消息对应的16进制字符串(不包含首尾的0x7E)
      */
     private String sourceHexStr;
 

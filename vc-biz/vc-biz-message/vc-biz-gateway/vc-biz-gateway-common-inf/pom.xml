@@ -11,5 +11,13 @@
 
     <artifactId>vc-biz-gateway-common-inf</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+    </dependencies>
+
 
 </project>

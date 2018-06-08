@@ -13,6 +13,9 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -24,6 +27,23 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel> implements ChildChannelHandler {
+    public static final Logger LOG = LoggerFactory.getLogger(ChildChannelHandler808Impl.class);
+
+    /*shared channel handlers*/
+    @Autowired
+    private ValidatePacHandler validatePacHandler;
+    @Autowired
+    private AuthConnectionHandler authConnectionHandler;
+    @Autowired
+    private AckHandler ackHandler;
+    @Autowired
+    private StatisticsHandler statisticsHandler;
+    @Autowired
+    private BizHandler bizHandler;
+    @Autowired
+    private SendOutHandler sendOutHandler;
+    @Autowired
+    private AllExceptionHandler exceptionHandler;
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
@@ -39,19 +59,19 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 // 数据包解码
                 .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
-                .addLast("validateHandler", new ValidatePacHandler())
+                .addLast("validateHandler", validatePacHandler)
                 // 连接身份认证
-                .addLast("AuthHandler", new AuthConnectionHandler())
+                .addLast("AuthHandler", authConnectionHandler)
                 // 应答处理
-                .addLast("ackHandler", new AckHandler())
+                .addLast("ackHandler", ackHandler)
                 // 数据统计
-                .addLast("statisticsHandler", new StatisticsHandler())
+                .addLast("statisticsHandler", statisticsHandler)
                 // 业务处理
-                .addLast("bizHandler", new BizHandler())
+                .addLast("bizHandler", bizHandler)
                 // 对外发送处理
-                .addLast("outSendHandler", new SendOutHandler())
+                .addLast("outSendHandler", sendOutHandler)
                 // 异常拦截处理
-                .addLast("exceptionHandler", new ExceptionHandler())
+                .addLast("exceptionHandler", exceptionHandler)
 
                 /*outbound*/
                 // 编码器

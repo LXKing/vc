@@ -10,5 +10,7 @@ package com.ccclubs.gateway.common.constant;
 public enum InnerMsgType {
     NEW_CHANNEL,
 
-    TASK_KAFKA;
+    TASK_KAFKA,
+
+    TASK_ONS;
 }

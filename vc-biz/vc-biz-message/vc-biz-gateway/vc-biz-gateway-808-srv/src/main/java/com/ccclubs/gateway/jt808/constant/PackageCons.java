@@ -1,7 +1,10 @@
 package com.ccclubs.gateway.jt808.constant;
 
+import com.ccclubs.gateway.jt808.util.PacSerialNo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @Author: yeanzi
@@ -13,9 +16,19 @@ import io.netty.buffer.Unpooled;
 public class PackageCons {
 
     /**
+     * 序列号
+     */
+    public static AtomicReference<PacSerialNo> ACK_SERINALNO = new AtomicReference<>(new PacSerialNo((short)0));
+
+    /**
      * 消息的开始和结束的标识符对应的字节
      */
     public static final Integer PAC_START_SYMBOL_BYTE = 0x7e;
+
+    /**
+     * 消息的开始和结束的标识符对应的字节16进制表示
+     */
+    public static final String PAC_START_SYMBOL_HEX = "7E";
 
     /**
      * 消息解码时分割用的字节
@@ -31,4 +44,6 @@ public class PackageCons {
      * 终端上行应答前缀
      */
     public static final String UP_PAC_ACK_PRIFIX = "ACK";
+    
+    public static final String GLOBAL_AUTH_CODE = "1234567890A";
 }

@@ -1,24 +1,30 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.connection.ClientConnCollection;
 import com.ccclubs.gateway.common.constant.HandleStatus;
+import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
+import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.common.util.DecodeUtil;
+import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
+import com.ccclubs.protocol.util.StringUtils;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -27,6 +33,8 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  * 连接身份认证处理器
  */
+@Component
+@ChannelHandler.Sharable
 public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package808> {
     public static final Logger LOG = LoggerFactory.getLogger(AuthConnectionHandler.class);
 
@@ -51,6 +59,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         if (Objects.isNull(conn)) {
             LOG.error("关闭终端(channelId={})连接时发现连接为空:", channel.id());
         } else {
+            if (StringUtils.notEmpty(conn.getUniqueNo())) {
+
+                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(conn.getUniqueNo(), channel);
+                KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, conn.getUniqueNo(), connOnlineStatusEvent.toJson());
+
+                fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
+            }
             conn.closeWhenDisconnect();
         }
 
@@ -58,26 +73,6 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         ClientConnCollection.channelInactive(channel);
 //        super.channelInactive(ctx);
 
-        String vin = "无";
-        ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
-        if (Objects.nonNull(conn) && conn.isConnected()) {
-            connOnlineStatusEvent.setVin(conn.getVin())
-                    .setOnline(false)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setClientIp(channel.remoteAddress().getHostString())
-                    .setServerIp(channel.localAddress().getHostString());
-            vin = conn.getVin();
-        }
-        LOG.info("vehicle({}) become inactive and is closing: ip={}, port={}",
-                vin,
-                channel.remoteAddress().getHostString(),
-                channel.remoteAddress().getPort());
-
-        boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
-        if (connClosedSuccess) {
-
-            kafkaService.send(new KafkaTask(KafkaSendTopicType.CONN, connOnlineStatusEvent.getVin(), connOnlineStatusEvent.toJson()));
-        }
     }
 
     @Override
@@ -96,7 +91,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 break;
                 // 终端鉴权
             case AUTH:
-                doAuth(pac, (SocketChannel) ctx.channel());
+                doAuth(pac, ctx);
                 break;
             default:
                 break;
@@ -113,18 +108,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
     private void doRegister(String uniqueNo, ChannelHandlerContext ctx) {
         SocketChannel channel = (SocketChannel) ctx.channel();
-        JTClientConn newConn = new JTClientConn();
-        LocalDateTime now = LocalDateTime.now();
-        newConn.setUniqueNo(uniqueNo)
-                .setConnected(true)
-                .setCreateTime(now)
-                .setOnlineDateTime(now)
-                .setPackageNum(1)
-                .setSocketChannel(channel);
+        JTClientConn newConn = JTClientConn.ofNew(uniqueNo, channel);
 
         // 新建连接，连接存在时断开原连接
         ClientConnCollection.add(newConn);
         LOG.info("终端({})注册成功", uniqueNo);
+
+        // TODO 终端注册成功后，应该发送一段包含 终端ID、手机号、终端IP信息的数据给规则引擎
     }
 
     /**
@@ -146,7 +136,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
      *      鉴权失败：应答鉴权失败
      * @param pac
      */
-    private void doAuth(Package808 pac, SocketChannel channel) {
+    private void doAuth(Package808 pac, ChannelHandlerContext ctx) {
+        SocketChannel channel = (SocketChannel) ctx.channel();
         String uniqueNo = pac.getHeader().getTerMobile();
         boolean authSuccess = true;
         if (Objects.isNull(pac.getBody().getContent()) || 0 == pac.getBody().getContent().readableBytes()) {
@@ -156,7 +147,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         } else {
             String authCode = DecodeUtil.byte2Str(pac.getBody().getContent(), pac.getBody().getContent().readableBytes());
             // TODO 目前鉴权码就是sim号码
-            if (!uniqueNo.equals(authCode)) {
+            if (!PackageCons.GLOBAL_AUTH_CODE.equals(authCode)) {
                 authSuccess = false;
             }
         }
@@ -165,19 +156,23 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             pac.setErrorPac(true);
             LOG.error("重连的终端({})鉴权失败, 原始报文[{}]", uniqueNo, pac.getSourceHexStr());
         } else {
-            // 终端重连
-            ClientConnCollection.channelActive(uniqueNo, channel);
+            Optional connOptional = ClientConnCollection.getIfExist(uniqueNo);
+            if (connOptional.isPresent()) {
+                ClientConnCollection.channelActive(uniqueNo, channel);
+                LOG.debug("重连的终端({})鉴权成功", uniqueNo);
+            } else {
+                // 连接第一次连接进系统
+                JTClientConn newConn = JTClientConn.ofNew(uniqueNo, channel);
 
-            ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
-            connOnlineStatusEvent.setVin(uniqueNo)
-                    .setOnline(true)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setClientIp(channel.remoteAddress().getHostString())
-                    .setServerIp(channel.localAddress().getHostString());
+                // 新建连接，连接存在时断开原连接
+                ClientConnCollection.add(newConn);
+                LOG.info("认证时发现终端({})首次连入系统", uniqueNo);
+            }
 
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
             // 发送至kafka
-            channel.pipeline().fireChannelRead(new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson()));
-            LOG.debug("重连的终端({})鉴权成功", uniqueNo);
+            fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         }
     }
 }

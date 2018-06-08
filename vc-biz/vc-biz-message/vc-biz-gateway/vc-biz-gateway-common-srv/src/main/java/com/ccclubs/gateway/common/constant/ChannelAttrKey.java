@@ -12,7 +12,9 @@ import io.netty.util.AttributeKey;
  */
 public class ChannelAttrKey {
 
-
+    /**
+     * 轨迹信息
+     */
     public static AttributeKey<PacProcessTrack> PACTRACK_KEY = AttributeKey.newInstance(ChannelAttrKey.CHANNEL_ATTR_KEY_PAC_TRACK);
 
     private static final String CHANNEL_ATTR_KEY_PAC_TRACK = "channel.attr.pac.track";

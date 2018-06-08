@@ -35,7 +35,7 @@ public class ValidatePacHandler extends CCClubChannelInboundHandler<Package808> 
         pac.setErrorPac(!pacCurrect);
         if (pac.getErrorPac()) {
             pac.setPacErrorType(PacErrorType.PAC_VALID_ERROR);
-            LOG.error("校验异常");
+            LOG.error("校验异常, 原始报文[{}]", pac.getSourceHexStr());
         }
 
         LOG.debug("validate result: {}", pacCurrect);

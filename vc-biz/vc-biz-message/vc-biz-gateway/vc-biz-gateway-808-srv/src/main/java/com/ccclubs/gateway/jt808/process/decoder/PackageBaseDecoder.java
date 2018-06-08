@@ -62,7 +62,6 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
         this.pac = composePac(frame, pacProcessTrack);
 
-        LOG.debug("final pac: {}", pac.printLog());
         return this.pac;
     }
 
@@ -108,6 +107,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         UpPacType upPacType = UpPacType.getByCode(pacId);
         if (Objects.isNull(upPacType)) {
             decodeExceptionInfo.fail()
+                    .setReason("不支持的消息ID")
                     .setExceptionVal(Integer.toHexString(pacId))
                     .setExpectedVal(UpPacType.expectedVals());
             throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);

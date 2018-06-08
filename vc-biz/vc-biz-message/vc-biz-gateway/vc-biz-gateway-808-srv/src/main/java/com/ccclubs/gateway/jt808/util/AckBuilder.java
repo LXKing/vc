@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.util;
 
+import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
@@ -39,7 +40,7 @@ public final class AckBuilder {
         pac.getHeader()
                 .setPacId(PacUtil.getAckPacType(sourceHeader.getPacId()).getCode())
                 .setTerMobile(sourceHeader.getTerMobile())
-                .setPacSerialNo(sourceHeader.getPacSerialNo())
+                .setPacSerialNo(null)
                 .setPacContentAttr(null)
                 .setPacSealInfo(null);
 

@@ -49,12 +49,13 @@ public class KafkaService {
                 topic = kafkaProperties.getOversee();
                 break;
                 default:
-                    LOG.error("无效的topic: [{}]", task.getTopic());
+                    LOG.error("发现无效的topic: [{}]", task.getTopic());
                     break;
         }
-        LOG.debug("[{}]发送kafka[{}]消息完成", task.getKey(), topic);
         // 目前只管发送，没有失败重发
-        return kafkaTemplate.send(topic, task.getKey(), task.getBody());
+        ListenableFuture<SendResult> sendResult = kafkaTemplate.send(topic, task.getKey(), task.getBody());
+        LOG.debug("[{}]发送kafka[{}]消息完成", task.getKey(), topic);
+        return sendResult;
     }
 
 }

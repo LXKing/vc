@@ -2,7 +2,10 @@ package com.ccclubs.gateway.common.process;
 
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
+import com.ccclubs.gateway.common.constant.InnerMsgType;
+import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
+import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -81,5 +84,9 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
     protected abstract HandleStatus handlePackage(ChannelHandlerContext ctx, T pac, PacProcessTrack pacProcessTrack) throws Exception;
 
     protected abstract HandleStatus handleInnerMsg(AbstractChannelInnerMsg innerMsg);
+
+    protected void fireChannelInnerMsg(ChannelHandlerContext ctx, InnerMsgType innerMsgType, Object msg) {
+        ctx.fireChannelRead(new AbstractChannelInnerMsg().setInnerMsgType(innerMsgType).setMsg(msg));
+    }
 
 }

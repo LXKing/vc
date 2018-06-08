@@ -2,6 +2,7 @@ package com.ccclubs.gateway.common.connection;
 
 import com.ccclubs.gateway.common.inf.MsgSender;
 import com.ccclubs.gateway.common.inf.GatewayPackage;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,6 @@ import java.util.Objects;
  */
 public abstract class AbstractClientConn implements MsgSender {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractClientConn.class);
-
     /**
      * 客户端对应的socke连接
      */
@@ -28,6 +28,11 @@ public abstract class AbstractClientConn implements MsgSender {
      * 终端唯一标识
      */
     private String uniqueNo;
+
+    /**
+     * 平台消息序列号
+     */
+    private short serialNo;
 
     /**
      *  车牌号
@@ -94,10 +99,15 @@ public abstract class AbstractClientConn implements MsgSender {
         return this;
     }
 
+    public AbstractClientConn markChannelActive() {
+        this.connected = true;
+        this.onlineDateTime = LocalDateTime.now();
+        return this;
+    }
+
     public AbstractClientConn replace(SocketChannel channel) {
         closeChannelAndPipline();
         this.socketChannel = channel;
-        this.onlineDateTime = LocalDateTime.now();
         return this;
     }
 
@@ -109,6 +119,17 @@ public abstract class AbstractClientConn implements MsgSender {
         }
         // 消息编码测试
         this.socketChannel.writeAndFlush(pac);
+        return true;
+    }
+
+    @Override
+    public boolean send(ByteBuf buf) {
+        if (!isOnline()) {
+            LOG.warn("机车[{}]未在线，发送消息失败", uniqueNo);
+            return false;
+        }
+        // 消息编码测试
+        this.socketChannel.writeAndFlush(buf);
         return true;
     }
 
@@ -149,6 +170,15 @@ public abstract class AbstractClientConn implements MsgSender {
             ++ this.errorPacketNum;
         }
         return this;
+    }
+
+    public short getAndIncreaseSerialNo() {
+        if (this.serialNo == Short.MAX_VALUE) {
+            this.serialNo = 0;
+        } else {
+            this.serialNo ++;
+        }
+        return this.serialNo;
     }
 
     // ------------------------------------------------------------------
@@ -241,6 +271,15 @@ public abstract class AbstractClientConn implements MsgSender {
 
     public AbstractClientConn setConnected(Boolean connected) {
         this.connected = connected;
+        return this;
+    }
+
+    public short getSerialNo() {
+        return serialNo;
+    }
+
+    public AbstractClientConn setSerialNo(short serialNo) {
+        this.serialNo = serialNo;
         return this;
     }
 }

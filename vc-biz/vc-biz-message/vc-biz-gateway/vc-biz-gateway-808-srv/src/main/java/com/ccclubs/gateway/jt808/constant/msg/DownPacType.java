@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.constant.msg;
 
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.util.function.Function;
@@ -27,10 +28,9 @@ public enum DownPacType {
      * 终端注册应答
      */
     ACK_REGISTER(0X8100, "终端注册应答", (authCode) -> {
-        String authCodeStr = (String) authCode;
-        Package808 ackPac = new Package808();
-        ackPac.getBody().setContent(Unpooled.wrappedBuffer(((String) authCode).getBytes()));
-        return ackPac;
+        ByteBuf contentBuf = Unpooled.buffer();
+        contentBuf.writeBytes(((String) authCode).getBytes());
+        return contentBuf;
     }),
 
     /**
@@ -200,13 +200,23 @@ public enum DownPacType {
     SINGLE_MEDIA_SEARCH(0x8805, "单条存储多媒体数据检索上传命令", null),
 
     /**
-     * MQTT下发
+     * 平台透传传输
      */
-    SEND_MQTT(0x8900, "MQTT下发", null);
+    SEND_MQTT(0x8900, "平台透传传输", null),
+
+    /**
+     * 扩展终端参数设置1指令
+     */
+    EXTRA_SET_PARAM(0xFF03, "扩展终端参数设置1指令", null),
+
+    /**
+     * 查询扩展终端参数1指令
+     */
+    EXTRA_SEARCH_PARAM(0xFF04, "查询扩展终端参数1指令", null);
 
     private int code;
     private String des;
-    private Function<Object, Package808> function;
+    private Function<Object, ByteBuf> function;
     DownPacType(int code, String des, Function function) {
         this.code = code;
         this.des = des;
@@ -221,7 +231,7 @@ public enum DownPacType {
         return des;
     }
 
-    public Function<Object, Package808> getFunction() {
+    public Function<Object, ByteBuf> getFunction() {
         return function;
     }
 

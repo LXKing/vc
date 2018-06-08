@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,11 +56,17 @@ public class ClientConnCollection {
             CLIENT_CONN_MAP.put(uniqueNo, abstractClientConn);
             CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
         } else {
-            LOG.warn("创建新连接({})时发现连接已存在：newChannleId={}, oldChannelId={}", uniqueNo, channel.id(), conn.getSocketChannel().id());
-            // 连接已存在，则释放原来的连接，使用新连接
-            CHANNELID_CLIENT_MAP.remove(conn.getSocketChannel().id());
-            conn.replace(channel);
-            CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+            conn.markChannelActive();
+            if (channel.id().equals(conn.getSocketChannel().id())) {
+                // 同一连接时，无操作
+                CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+            } else {
+                LOG.warn("创建新连接({})时发现连接已存在：newChannleId={}, oldChannelId={}", uniqueNo, channel.id(), conn.getSocketChannel().id());
+                // 连接已存在，则释放原来的连接，使用新连接
+                CHANNELID_CLIENT_MAP.remove(conn.getSocketChannel().id());
+                conn.replace(channel);
+                CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+            }
         }
         return conn;
     }
@@ -71,9 +78,16 @@ public class ClientConnCollection {
 
     public static void channelActive(String uniqueNo, SocketChannel channel) {
         AbstractClientConn conn = CLIENT_CONN_MAP.get(uniqueNo);
-        CHANNELID_CLIENT_MAP.remove(conn.getSocketChannel().id());
-        conn.replace(channel);
-        CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+        conn.markChannelActive();
+        if (Objects.nonNull(conn.getSocketChannel().id()) && conn.getSocketChannel().id().equals(channel.id())) {
+            // 同一连接时
+            CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+        } else {
+            // 更新连接
+            CHANNELID_CLIENT_MAP.remove(conn.getSocketChannel().id());
+            conn.replace(channel);
+            CHANNELID_CLIENT_MAP.put(channel.id(), uniqueNo);
+        }
     }
 
     public static boolean logout(String uniqueNo, SocketChannel channel) {
@@ -96,5 +110,15 @@ public class ClientConnCollection {
             return false;
         }
         return true;
+    }
+
+    public static Optional<AbstractClientConn> getIfExist(String uniqueNo) {
+        Optional<AbstractClientConn> connOptional = Optional.empty();
+        AbstractClientConn conn = CLIENT_CONN_MAP.get(uniqueNo);
+        if (Objects.nonNull(conn)) {
+            connOptional = Optional.of(conn);
+        }
+
+        return connOptional;
     }
 }

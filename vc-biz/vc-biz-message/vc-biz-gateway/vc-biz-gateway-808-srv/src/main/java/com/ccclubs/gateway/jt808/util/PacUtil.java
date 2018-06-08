@@ -3,9 +3,13 @@ package com.ccclubs.gateway.jt808.util;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
+import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.protocol.util.MqTagUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -17,8 +21,10 @@ import java.util.Objects;
  * 包工具
  */
 public final class PacUtil {
+    public static final Logger LOG = LoggerFactory.getLogger(PacUtil.class);
 
     public static Integer getContentLen(Short contentAttr) {
+        // 0x03FF = 0000 0011 1111 1111
         return contentAttr & 0x03FF;
     }
 
@@ -79,6 +85,76 @@ public final class PacUtil {
         Objects.requireNonNull(upPacType);
         int downPacId = upPacType.getCode() | PackageCons.ACK_PRIFIX_HIGH;
         return DownPacType.getByCode(downPacId);
+    }
+
+    /**
+     * 给当前报文加上808报文标识7E
+     *      (即 在sourceHex的收尾加上7E)
+     * @param sourceHex
+     * @return
+     */
+    public static String packWithPacSymbol(String sourceHex) {
+        StringBuilder sb = new StringBuilder(PackageCons.PAC_START_SYMBOL_HEX);
+        return sb.append(sourceHex).append(PackageCons.PAC_START_SYMBOL_HEX).toString();
+    }
+
+    /**
+     * 从终端通用应答中获取应答的消息ID
+     * @param pac
+     * @return
+     */
+    public static int getAckPacIdFromNormalAck(Package808 pac) {
+        if (UpPacType.ACK.getCode() != pac.getHeader().getPacId()) {
+            throw new IllegalArgumentException("该消息不是[终端通用应答]，不能获取应答ID");
+        }
+        return pac.getBody().getContent().resetReaderIndex().skipBytes(2).readUnsignedShort();
+    }
+
+
+    /**
+     * 从上行透传消息中获取消息类型
+     * @param pac
+     * @return
+     */
+    public static int getMsgTypeFromPenetrateUpMsg(Package808 pac) {
+        if (UpPacType.PENETRATE_UP.getCode() != pac.getHeader().getPacId()) {
+            throw new IllegalArgumentException("该消息不是[终端上行透传消息]，不能获取消息类型");
+        }
+        return pac.getBody().getContent().resetReaderIndex()
+                // 读取消息类型
+                .readByte() & 0xFF;
+    }
+
+    /**
+     * 从上行透传消息中获取功能码
+     * @param pac
+     * @return
+     */
+    public static int getFuncCodeFromPenetrateUpMsg(Package808 pac) {
+        if (UpPacType.PENETRATE_UP.getCode() != pac.getHeader().getPacId()) {
+            throw new IllegalArgumentException("该消息不是[终端上行透传消息]，不能获取功能码");
+        }
+
+        if (pac.getBody().getContent().resetReaderIndex().readableBytes() < 17) {
+            LOG.error("该上行透传消息体的长度少于17个字节");
+            return -1;
+        }
+        return pac.getBody().getContent().resetReaderIndex()
+                // 跳过功能码字节
+                .skipBytes(1)
+                // 跳过分时租赁协议的车机号（8）和流水号（8）
+                .skipBytes(16)
+                // 读取功能码
+                .readByte() & 0xFF;
+    }
+
+    /**
+     * 获取维护的消息序列号
+     * @return
+     */
+    public static short getAndIncreaseSerialNo() {
+
+        return PackageCons.ACK_SERINALNO.getAndUpdate(PacSerialNo::increase).getValue();
     }
 
     /**
