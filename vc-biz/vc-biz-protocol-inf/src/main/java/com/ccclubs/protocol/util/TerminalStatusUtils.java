@@ -1,6 +1,12 @@
 package com.ccclubs.protocol.util;
 
 
+import com.ccclubs.protocol.dto.jt808.JT_0900;
+import com.ccclubs.protocol.dto.jt808.T808Message;
+import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.transform.TerminalStatus;
+
 /**
  * @author qsxiaogang
  * @create 2017-12-17
@@ -71,6 +77,79 @@ public class TerminalStatusUtils {
         if (((doorMask >> 6) & 0x1) == 0x01) {
             if (((doorValue >> 6) & 0x1) == 0x01) {
                 stringBuilder.append("引擎盖门");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+
+        if (stringBuilder.length() > 0) {
+            return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
+        } else {
+            return ALL_OK;
+        }
+    }
+
+
+    /**
+     * 获取车锁详细信息
+     */
+    public static String getDoorLockString(short doorLockStatus) {
+        // 取高字节
+        byte doorLockMask = (byte) (doorLockStatus >> 8);
+        // 取低字节
+        byte doorLockValue = (byte) (doorLockStatus & 0x0FF);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        // Bit0 所有锁状态有效位：0-无效，1-有效
+        if ((doorLockMask & 0x1) == 0x1) {
+            if ((doorLockValue & 0x1) == 0x01) {
+                // 排除 "所有锁状态" 外，其他所有锁的状态位都为0，那么直接返回有车锁未落下
+                if (((doorLockValue >> 1) & 0xF) == 0) {
+                    return "有车锁未落";
+                }
+            } else {
+                return ALL_OK;
+            }
+        }
+
+        // Bit1 左前门锁有效位：0-无效，1-有效
+        if (((doorLockMask >> 1) & 0x1) == 0x01) {
+            if (((doorLockValue >> 1) & 0x1) == 0x01) {
+                stringBuilder.append("驾驶员门锁");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+        // Bit2 右前门锁有效位：0-无效，1-有效
+        if (((doorLockMask >> 2) & 0x1) == 0x01) {
+            if (((doorLockValue >> 2) & 0x1) == 0x01) {
+                stringBuilder.append("副驾驶员门锁");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+        // Bit3 左后门有效位：0-无效，1-有效
+        if (((doorLockMask >> 3) & 0x1) == 0x01) {
+            if (((doorLockValue >> 3) & 0x1) == 0x01) {
+                stringBuilder.append("驾驶员后门锁");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+        // Bit4 右后门锁有效位：0-无效，1-有效
+        if (((doorLockMask >> 4) & 0x1) == 0x01) {
+            if (((doorLockValue >> 4) & 0x1) == 0x01) {
+                stringBuilder.append("副驾驶员后门锁");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+        // Bit5 行李舱门锁有效位：0-无效，1-有效
+        if (((doorLockMask >> 5) & 0x1) == 0x01) {
+            if (((doorLockValue >> 5) & 0x1) == 0x01) {
+                stringBuilder.append("后备箱锁");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+        // Bit6 前机舱锁有效位：0-无效，1-有效
+        if (((doorLockMask >> 6) & 0x1) == 0x01) {
+            if (((doorLockValue >> 6) & 0x1) == 0x01) {
+                stringBuilder.append("引擎盖锁");
                 stringBuilder.append(SEPARATOR);
             }
         }
@@ -294,7 +373,17 @@ public class TerminalStatusUtils {
     }
 
     public static void main(String args[]) {
-        TerminalStatusUtils.getAutopilotString(33624834L);
+        T808Message t808Message=new T808Message();
+        String hexString="7E090000AA0648067742910001F1543636533335313600000000000000006803001D227236960200000729C40201CCA224000064C800000000000000000016282800000004BA7E02000000000000030200000000000000000000000000000000000000000000000000000000000000000000030107363653333531362901016801007206335500002B0576015F8E04000000009901009A04000223006F020000CA020000CC020000CE0400000000D0020302940400000000A97E";
+        byte[] hexByte=Tools.HexString2Bytes(hexString);
+        t808Message.ReadFromBytes(hexByte);
+        JT_0900 jt0900 = (JT_0900) t808Message.getMessageContents();
+        MqMessage mqMessage = new MqMessage();
+        mqMessage.ReadFromBytes(jt0900.getMessageContent());
+
+//        TerminalStatusUtils.getAutopilotString(33624834L);
     }
+
+
 
 }
