@@ -26,13 +26,13 @@
                 </button>
                 <ul class="dropdown-menu tableMenu showHideMenu" role="menu">
                     <li><label><input value="csveId" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>csve_id</label></li>
+                                      onclick='showHideColumn(this, this.value);'>编号</label></li>
                     <li><label><input value="csveVin" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>车架号</label></li>
                     <li><label><input value="csveTeNo" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>终端编号</label></li>
                     <li><label><input value="csveIccid" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>iccid</label></li>
+                                      onclick='showHideColumn(this, this.value);'>ICCID</label></li>
                     <li><label><input value="csveEngineNo" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>发动机号</label></li>
                     <li><label><input value="csveBataccuCode" checked="checked" type="checkbox"
@@ -40,7 +40,7 @@
                     <li><label><input value="csveModelCodeSimple" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>车型备案型号</label></li>
                     <li><label><input value="csveCarNo" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>真实车牌</label></li>
+                                      onclick='showHideColumn(this, this.value);'>车牌号</label></li>
                     <li><label><input value="csveNumber" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>车机号</label></li>
                     <li><label><input value="csveProdDate" checked="checked" type="checkbox"
@@ -48,10 +48,9 @@
                     <li><label><input value="csveAddTime" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>车辆添加时间</label></li>
                     <li><label><input value="csveTeTypeText" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'> 终端类型:0:车厘子,1:中导,2:慧翰,3:通领;</label>
+                                      onclick='showHideColumn(this, this.value);'> 终端类型</label>
                     </li>
-                    <li><label><input value="csveModelCodeFull" checked="checked" type="checkbox"
-                                      onclick='showHideColumn(this, this.value);'>车型代码</label></li>
+
                     <li><label><input value="csveTeModel" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>终端型号</label></li>
                     <li><label><input value="csveMobile" checked="checked" type="checkbox"
@@ -123,10 +122,10 @@
 
     var tableId = "TCsVehicleExp";
     var clms = [{checkbox: true}
-        , {field: "csveId", title: "csve_id", width: 110, sort: true}
+        , {field: "csveId", title: "编号", width: 110, sort: true}
         , {field: "csveVin", title: "车架号", width: 110, sort: true}
         , {field: "csveTeNo", title: "终端编号", width: 110, sort: true}
-        , {field: "csveIccid", title: "iccid", width: 110, sort: true}
+        , {field: "csveIccid", title: "ICCID", width: 110, sort: true}
         , {field: "csveEngineNo", title: "发动机号", width: 110, sort: true}
         , {field: "csveBataccuCode", title: "可充电储能系统编码", width: 110, sort: true}
         , {field: "csveModelCodeSimple", title: "车型备案型号", width: 110, sort: true}
@@ -135,7 +134,6 @@
         , {field: "csveProdDate", title: "出厂日期", width: 110, sort: true}
         , {field: "csveAddTime", title: "车辆添加时间", width: 110, sort: true}
         , {field: "csveTeTypeText", title: " 终端类型:0:车厘子,1:中导,2:慧翰,3:通领;", width: 110, sort: true}
-        , {field: "csveModelCodeFull", title: "车型代码", width: 110, sort: true}
         , {field: "csveTeModel", title: "终端型号", width: 110, sort: true}
         , {field: "csveMobile", title: "手机号", width: 110, sort: true}
         , {field: 'operate', title: '操作', width: 40, fixed: 'right', toolbar: '#gridToolBar'}
