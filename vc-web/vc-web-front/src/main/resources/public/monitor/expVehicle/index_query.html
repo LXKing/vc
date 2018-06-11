@@ -12,30 +12,51 @@
                 <input name="csveIdEquals" placeholder="请输入数字" class="form-control">
             </dd>
         </dl>
+        <dl cond="csveCarNo">
+            <dt>车牌号：</dt>
+            <dd>
+                <input name="csveCarNoEquals" placeholder="" class="form-control">
+            </dd>
+        </dl>
+
         <dl cond="csveVin">
             <dt>车架号：</dt>
             <dd>
                 <input name="csveVinEquals" placeholder="" class="form-control">
             </dd>
         </dl>
-        <dl cond="csveTeNo">
-            <dt>终端编号：</dt>
-            <dd>
-                <input name="csveTeNoEquals" placeholder="" class="form-control">
-            </dd>
-        </dl>
-        <dl cond="csveIccid">
-            <dt>iccid：</dt>
-            <dd>
-                <input name="csveIccidEquals" placeholder="" class="form-control">
-            </dd>
-        </dl>
+
         <dl cond="csveEngineNo">
             <dt>发动机号：</dt>
             <dd>
                 <input name="csveEngineNoEquals" placeholder="" class="form-control">
             </dd>
         </dl>
+
+        <dl cond="csveTeNo">
+            <dt>终端编号：</dt>
+            <dd>
+                <input name="csveTeNoEquals" placeholder="" class="form-control">
+            </dd>
+        </dl>
+        <dl cond="csveAddTime">
+            <dt>车辆添加时间：</dt>
+            <dd class="timergroup">
+                <input name="csveAddTimeStart" placeholder="开始时间" class="form-control timegroupinput"
+                       onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                <label class="timegrouplabel">-</label>
+                <input name="csveAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput"
+                       onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+            </dd>
+        </dl>
+
+        <dl cond="csveIccid">
+            <dt>ICCID：</dt>
+            <dd>
+                <input name="csveIccidEquals" placeholder="" class="form-control">
+            </dd>
+        </dl>
+
         <dl cond="csveBataccuCode" style="display:none;">
             <dt>可充电储能系统编码：</dt>
             <dd>
@@ -48,12 +69,7 @@
                 <input name="csveModelCodeSimpleEquals" placeholder="" class="form-control">
             </dd>
         </dl>
-        <dl cond="csveCarNo">
-            <dt>真实车牌：</dt>
-            <dd>
-                <input name="csveCarNoEquals" placeholder="" class="form-control">
-            </dd>
-        </dl>
+
         <dl cond="csveNumber" style="display:none;">
             <dt>车机号：</dt>
             <dd>
@@ -67,16 +83,7 @@
                        onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
             </dd>
         </dl>
-        <dl cond="csveAddTime">
-            <dt>车辆添加时间：</dt>
-            <dd class="timergroup">
-                <input name="csveAddTimeStart" placeholder="开始时间" class="form-control timegroupinput"
-                       onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
-                <label class="timegrouplabel">-</label>
-                <input name="csveAddTimeEnd" placeholder="结束时间" class="form-control timegroupinput"
-                       onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
-            </dd>
-        </dl>
+
         <dl cond="csveTeType" style="display:none;">
             <dt> 终端类型：</dt>
             <dd>
