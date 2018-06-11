@@ -209,7 +209,7 @@ public class TerminalStatusUtils {
         }
 
         if (stringBuilder.length() > 0) {
-            return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
+            return stringBuilder.toString().substring(0, stringBuilder.length() - 1);
         } else {
             return "";
         }
