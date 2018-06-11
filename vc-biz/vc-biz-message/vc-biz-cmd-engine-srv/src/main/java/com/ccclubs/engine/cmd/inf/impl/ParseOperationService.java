@@ -348,6 +348,8 @@ public class ParseOperationService implements IParseDataService {
           terminalPartStatus.setCssEngine(terminalInfo.getTriggerEngineStatus());
           terminalPartStatus.setCssLock(terminalInfo.getTriggerDoorLockStatusWithMask());
           terminalPartStatus.setCssLight(terminalInfo.getTriggerLightStatusWithMask());
+          terminalPartStatus.setControlStatus(terminalInfo.getControlStatus());
+
 
           // add at 2018-05-24 by qsxiaogang 添加GPS辅助定位
           MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo.getGpsAssistStatus();

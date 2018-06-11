@@ -162,6 +162,60 @@ public class TerminalStatusUtils {
     }
 
     /**
+     * 获取车辆启动控制状态【长安只用了钥匙启动控制】
+     * */
+    public  static  String getControlStatus(int controlStatus){
+        // 取高字节
+        byte controlStatusMask = (byte) (controlStatus >> 8);
+        // 取低字节
+        byte controlStatusValue = (byte) (controlStatus & 0x0FF);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        // Bit0 钥匙启动控制： 0-禁止钥匙启动，1-允许钥匙启动
+        if (((controlStatusMask >> 0) & 0x1) == 0x01) {
+            if (((controlStatusValue >> 0) & 0x1) == 0x01) {
+                stringBuilder.append("允许钥匙启动");
+                stringBuilder.append(SEPARATOR);
+            }
+            else {
+                stringBuilder.append("禁止钥匙启动");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+
+        // Bit1 按钮启动控制： 0-按钮无效    ，1-按钮有效
+        if (((controlStatusMask >> 1) & 0x1) == 0x01) {
+            if (((controlStatusValue >> 1) & 0x1) == 0x01) {
+                stringBuilder.append("按钮启动有效");
+                stringBuilder.append(SEPARATOR);
+            }
+            else {
+                stringBuilder.append("按钮启动无效");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+
+        // Bit2 蓝牙电源状态： 0-开启        ，1-关闭
+        if (((controlStatusMask >> 2) & 0x1) == 0x01) {
+            if (((controlStatusValue >> 2) & 0x1) == 0x01) {
+                stringBuilder.append("蓝牙电源关闭");
+                stringBuilder.append(SEPARATOR);
+            }
+            else {
+                stringBuilder.append("蓝牙电源开启");
+                stringBuilder.append(SEPARATOR);
+            }
+        }
+
+        if (stringBuilder.length() > 0) {
+            return stringBuilder.toString().substring(0, stringBuilder.length() - 1) + "未关";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * 获取车灯详细信息
      */
     public static String getLightString(int lightStatus) {
