@@ -10,7 +10,9 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
-import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.validate.AuthValidateHelper;
+import com.ccclubs.frm.spring.constant.ApiEnum;
+import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
@@ -54,7 +56,8 @@ public class LockDoorInfImpl implements LockDoorInf {
     IdGeneratorHelper idGen;
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
-
+    @Resource
+    AuthValidateHelper authValidateHelper;
 
     /**
      * 车门落锁-带控制参数
@@ -63,8 +66,12 @@ public class LockDoorInfImpl implements LockDoorInf {
      * @return
      */
     @Override
-    @DataAuth
     public LockDoorOutput lockDoorWithCtrl(LockDoorInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_LOCK.longValue();
         logger.debug("begin process command {} start.", structId);
 
