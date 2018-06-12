@@ -194,8 +194,8 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                     jsonObject.put("csrTerminalPlugin", csMachine.getCsmTlV2());
                     jsonObject.put("csrTerminalVersion", csMachine.getCsmTlV1());
                     loggerBusiness.info(JSONObject.toJSONString(jsonObject));
-                    CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result, new TypeReference<CommonResult<SimpleCmdOutput>>() {
-                    });
+                    CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result,
+                            new TypeReference<CommonResult<SimpleCmdOutput>>() {});
 
                     if (commonResult.isSuccess()) {
                         if (commonResult.getData() == null) {
