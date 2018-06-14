@@ -4,7 +4,9 @@ import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
@@ -43,7 +45,7 @@ public class TcpServerConf {
 
     @Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
     public EventLoopGroup bossGroup() {
-        if (nettyProperties.isUseLinuxEpoll()) {
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
             return new EpollEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
@@ -52,7 +54,7 @@ public class TcpServerConf {
 
     @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
     public EventLoopGroup workerGroup() {
-        if (nettyProperties.isUseLinuxEpoll()) {
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
             return new EpollEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
@@ -63,9 +65,13 @@ public class TcpServerConf {
     public ServerBootstrap bootstrap() {
 
         ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup(), workerGroup())
-                .channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.DEBUG))
+        b.group(bossGroup(), workerGroup());
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
+            b.channel(EpollServerSocketChannel.class);
+        } else {
+            b.channel(NioServerSocketChannel.class);
+        }
+        b.handler(new LoggingHandler(LogLevel.DEBUG))
                 .childHandler(childChannelHandler);
 
         Map<ChannelOption<?>, Object> tcpChannelOptions = tcpChannelOptions();
@@ -97,6 +103,8 @@ public class TcpServerConf {
 
     @Bean(name = "tcpSocketAddress")
     public InetSocketAddress tcpPort() {
-        return new InetSocketAddress(nettyProperties.getTcpPort());
+        int tcpPort = nettyProperties.getTcpPort();
+        tcpPort = tcpPort==0?26700:tcpPort;
+        return new InetSocketAddress(tcpPort);
     }
 }
