@@ -60,8 +60,8 @@ public class Gateway808SrvApp extends SpringBootServletInitializer {
     ctx.getBean(TcpServerStarter.class).start();
   }
 
-  @Bean(name = "aliyunMqttClient", initMethod = "start", destroyMethod = "stop")
-  @Primary
+//  @Bean(name = "aliyunMqttClient", initMethod = "start", destroyMethod = "stop")
+//  @Primary
   IMqClient getAliyunMqttClient() {
     MqMqttClient mqClient = new MqMqttClient();
     mqClient.setHost(mqttAliyunProperties.getHost());

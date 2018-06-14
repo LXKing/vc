@@ -30,6 +30,9 @@ import org.springframework.stereotype.Component;
 public class PreProcessHandler extends ChannelInboundHandlerAdapter {
     private static final Logger LOG = LoggerFactory.getLogger(PreProcessHandler.class);
 
+    /*电话号码最少字节位*/
+    private static final int PAC_HEAD_PHONE_MIN = 11;
+
     @Autowired
     private KafkaService kafkaService;
     @Autowired
@@ -47,6 +50,10 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
             return;
         }
         ByteBuf sourceBuf = (ByteBuf) msg;
+        if (sourceBuf.readableBytes() < PAC_HEAD_PHONE_MIN) {
+            super.channelRead(ctx, msg);
+            return;
+        }
         // 获取包中的mobile码
         String mobile = PacUtil.getMobileFromByteBuf(sourceBuf);
         // 原始报文(包括粘包的整包数据)
@@ -57,9 +64,6 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
         super.channelRead(ctx, msg);
         long allEndTime = System.nanoTime();
 
-        while (sourceBuf.refCnt() > 0) {
-            ReferenceCountUtil.release(sourceBuf);
-        }
         // 记录监控车辆的数据
         if (StringUtils.isNotEmpty(mobile)) {
             if (terClientService.getAll().contains(mobile)) {
