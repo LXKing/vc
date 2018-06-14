@@ -3,6 +3,8 @@ package com.ccclubs.gateway.common.config;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
@@ -25,6 +27,11 @@ import java.util.logging.Logger;
 public class TcpServerConf {
     private static final Logger LOG = Logger.getLogger("TcpServer");
 
+    /**
+     * 是否打开报文打印开关
+     */
+    public static boolean GATEWAY_PRINT_LOG;
+
     @Autowired
     private NettyProperties nettyProperties;
 
@@ -35,13 +42,21 @@ public class TcpServerConf {
     private ChildChannelHandler childChannelHandler;
 
     @Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup bossGroup() {
-        return new NioEventLoopGroup();
+    public EventLoopGroup bossGroup() {
+        if (nettyProperties.isUseLinuxEpoll()) {
+            return new EpollEventLoopGroup();
+        } else {
+            return new NioEventLoopGroup();
+        }
     }
 
     @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
-    public NioEventLoopGroup workerGroup() {
-        return new NioEventLoopGroup();
+    public EventLoopGroup workerGroup() {
+        if (nettyProperties.isUseLinuxEpoll()) {
+            return new EpollEventLoopGroup();
+        } else {
+            return new NioEventLoopGroup();
+        }
     }
 
     @Bean(name = "serverBootstrap")
@@ -62,8 +77,12 @@ public class TcpServerConf {
 
         if (gatewayProperties.isBufferCheck()) {
             // 追踪字节缓存内存泄露，很耗费性能，debug时打开。
-            LOG.warning("启动缓存检查");
+            LOG.warning("缓存检查: 开启");
             ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
+        }
+        if (gatewayProperties.isLogPrint()) {
+            GATEWAY_PRINT_LOG = true;
+            LOG.warning("网关打印输出日志：开启");
         }
         return b;
     }

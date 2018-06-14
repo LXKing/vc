@@ -3,10 +3,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.connection.ClientConnCollection;
-import com.ccclubs.gateway.common.constant.HandleStatus;
-import com.ccclubs.gateway.common.constant.InnerMsgType;
-import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
-import com.ccclubs.gateway.common.constant.PackProcessExceptionCode;
+import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
@@ -46,7 +43,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             conn = dealClientFirstConnect(ctx, pac);
         }
         if (!conn.isOnline()) {
-            ClientConnCollection.channelActive(pac.getHeader().getTerMobile(), (SocketChannel) ctx.channel());
+            ClientConnCollection.doReconnecte(pac.getHeader().getTerMobile(), (SocketChannel) ctx.channel());
         }
 
         conn.increPackageNum();
@@ -80,6 +77,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         return HandleStatus.NEXT;
     }
 
+    @Deprecated
     private JTClientConn dealClientFirstConnect(ChannelHandlerContext ctx, Package808 pac) {
 
         /**
@@ -90,13 +88,13 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         SocketChannel channel = (SocketChannel) ctx.channel();
 
         // 连接第一次连接进系统
-        JTClientConn newConn = JTClientConn.ofNew(uniqueNo, channel);
+        JTClientConn newConn = JTClientConn.ofNew(uniqueNo);
 
         // 新建连接，连接存在时断开原连接
-        ClientConnCollection.add(newConn);
+        ClientConnCollection.addNew(newConn, channel);
         LOG.info("数据统计时发现终端({})首次连入系统", uniqueNo);
 
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel);
+        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel).setGatewayType(GatewayType.GATEWAY_808);
         KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
         // 发送至kafka
         fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);

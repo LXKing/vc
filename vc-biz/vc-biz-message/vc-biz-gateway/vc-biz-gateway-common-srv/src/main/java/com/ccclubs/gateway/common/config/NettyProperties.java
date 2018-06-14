@@ -22,6 +22,11 @@ public class NettyProperties {
 
     private int backlog;
 
+    /**
+     * 如果服务器是linux环境：使用EpollEventLoopGroup
+     */
+    private boolean useLinuxEpoll;
+
     public int getTcpPort() {
         return tcpPort;
     }
@@ -64,6 +69,15 @@ public class NettyProperties {
 
     public NettyProperties setBacklog(int backlog) {
         this.backlog = backlog;
+        return this;
+    }
+
+    public boolean isUseLinuxEpoll() {
+        return useLinuxEpoll;
+    }
+
+    public NettyProperties setUseLinuxEpoll(boolean useLinuxEpoll) {
+        this.useLinuxEpoll = useLinuxEpoll;
         return this;
     }
 }

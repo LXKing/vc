@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
@@ -41,9 +42,11 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
-        LOG.debug("终端建立连接: ip={}, port={}",
-                channel.remoteAddress().getHostString(),
-                channel.remoteAddress().getPort());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("终端建立连接: ip={}, port={}",
+                    channel.remoteAddress().getHostString(),
+                    channel.remoteAddress().getPort());
+        }
         super.channelActive(ctx);
     }
 
@@ -51,28 +54,26 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
         JTClientConn conn = (JTClientConn)ClientConnCollection.getByChannelId(channel.id());
-        LOG.debug("终端({}) 连接关闭: ip={}, port={}",
-                Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
-                channel.remoteAddress().getHostString(),
-                channel.remoteAddress().getPort());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("终端({}) 连接关闭: ip={}, port={}",
+                    Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
+                    channel.remoteAddress().getHostString(),
+                    channel.remoteAddress().getPort());
+        }
         // 关闭终端的连接，但是不删除终端在内存中的数据
         if (Objects.isNull(conn)) {
             LOG.error("关闭终端(channelId={})连接时发现连接为空:", channel.id());
         } else {
             if (StringUtils.notEmpty(conn.getUniqueNo())) {
 
-                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(conn.getUniqueNo(), channel);
+                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(conn.getUniqueNo(), channel).setGatewayType(GatewayType.GATEWAY_808);
                 KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, conn.getUniqueNo(), connOnlineStatusEvent.toJson());
 
                 fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             }
-            conn.closeWhenDisconnect();
         }
 
-        // 删除channelId
-        ClientConnCollection.channelInactive(channel);
-//        super.channelInactive(ctx);
-
+        ClientConnCollection.doDisconnected(channel);
     }
 
     @Override
@@ -107,11 +108,11 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     }
 
     private void doRegister(String uniqueNo, ChannelHandlerContext ctx) {
-        SocketChannel channel = (SocketChannel) ctx.channel();
-        JTClientConn newConn = JTClientConn.ofNew(uniqueNo, channel);
+        SocketChannel newChannel = (SocketChannel) ctx.channel();
+        JTClientConn newConn = JTClientConn.ofNew(uniqueNo);
 
         // 新建连接，连接存在时断开原连接
-        ClientConnCollection.add(newConn);
+        ClientConnCollection.addNew(newConn, newChannel);
         LOG.info("终端({})注册成功", uniqueNo);
 
         // TODO 终端注册成功后，应该发送一段包含 终端ID、手机号、终端IP信息的数据给规则引擎
@@ -158,18 +159,18 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         } else {
             Optional connOptional = ClientConnCollection.getIfExist(uniqueNo);
             if (connOptional.isPresent()) {
-                ClientConnCollection.channelActive(uniqueNo, channel);
+                ClientConnCollection.doReconnecte(uniqueNo, channel);
                 LOG.debug("重连的终端({})鉴权成功", uniqueNo);
             } else {
                 // 连接第一次连接进系统
-                JTClientConn newConn = JTClientConn.ofNew(uniqueNo, channel);
+                JTClientConn newConn = JTClientConn.ofNew(uniqueNo);
 
                 // 新建连接，连接存在时断开原连接
-                ClientConnCollection.add(newConn);
+                ClientConnCollection.addNew(newConn, channel);
                 LOG.info("认证时发现终端({})首次连入系统", uniqueNo);
             }
 
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel);
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel).setGatewayType(GatewayType.GATEWAY_808);
             KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
             // 发送至kafka
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);

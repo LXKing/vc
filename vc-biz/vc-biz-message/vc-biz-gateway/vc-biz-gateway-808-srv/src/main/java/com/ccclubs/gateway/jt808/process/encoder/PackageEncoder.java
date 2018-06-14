@@ -107,7 +107,7 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
         // 结束符
         sendoutBuf.writeByte(PackageCons.PAC_START_SYMBOL_BYTE);
 
-        LOG.info("send: {}", ByteBufUtil.hexDump(sendoutBuf));
+        LOG.info("send: {}", ByteBufUtil.hexDump(sendoutBuf).toUpperCase());
         // 最后写入：防止写入退出时造成部分写入
         out.writeBytes(sendoutBuf);
     }

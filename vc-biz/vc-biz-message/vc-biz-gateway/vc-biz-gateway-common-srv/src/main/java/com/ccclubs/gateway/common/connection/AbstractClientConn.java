@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -19,10 +20,6 @@ import java.util.Objects;
  */
 public abstract class AbstractClientConn implements MsgSender {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractClientConn.class);
-    /**
-     * 客户端对应的socke连接
-     */
-    private SocketChannel socketChannel;
 
     /**
      * 终端唯一标识
@@ -75,19 +72,6 @@ public abstract class AbstractClientConn implements MsgSender {
     private Boolean connected;
 
     // --------------------------------------------------------------------------
-    public AbstractClientConn closeWhenDisconnect() {
-         this.closeChannelAndPipline()
-                 .markChannelClosed();
-        return this;
-    }
-
-    public AbstractClientConn closeChannelAndPipline() {
-        if (this.socketChannel.isOpen()) {
-            this.socketChannel.pipeline().close();
-            this.socketChannel.close();
-        }
-        return this;
-    }
 
     public AbstractClientConn markChannelClosed() {
         this.connected = false;
@@ -99,50 +83,56 @@ public abstract class AbstractClientConn implements MsgSender {
         return this;
     }
 
+    /**
+     * 标记连接活跃
+     * @return
+     */
     public AbstractClientConn markChannelActive() {
         this.connected = true;
         this.onlineDateTime = LocalDateTime.now();
         return this;
     }
 
-    public AbstractClientConn replace(SocketChannel channel) {
-        closeChannelAndPipline();
-        this.socketChannel = channel;
-        return this;
-    }
-
     @Override
-    public boolean send(GatewayPackage pac) {
-        if (!isOnline()) {
-            LOG.warn("机车[{}]未在线，发送消息失败", uniqueNo);
-            return false;
-        }
-        // 消息编码测试
-        this.socketChannel.writeAndFlush(pac);
+    public boolean send(final GatewayPackage pac) {
+        checkExistBeforeSend().ifPresent(channel -> channel.pipeline().writeAndFlush(pac));
         return true;
     }
 
     @Override
-    public boolean send(ByteBuf buf) {
-        if (!isOnline()) {
-            LOG.warn("机车[{}]未在线，发送消息失败", uniqueNo);
-            return false;
-        }
-        // 消息编码测试
-        this.socketChannel.writeAndFlush(buf);
+    public boolean send(final ByteBuf buf) {
+        checkExistBeforeSend().ifPresent(channel -> channel.pipeline().writeAndFlush(buf));
         return true;
     }
 
+    /**
+     * 下发消息时，校验是否终端在线
+     * @return
+     */
+    private Optional<SocketChannel> checkExistBeforeSend() {
+        if (!isOnline()) {
+            LOG.error("机车[{}]未在线，发送消息失败", uniqueNo);
+            return Optional.empty();
+        }
+        // 消息编码测试
+        SocketChannel socketChannel = ClientSocketCollection.get(this.uniqueNo);
+        if (Objects.isNull(socketChannel)) {
+            LOG.error("下发消息时发现：socketChannel为null，uniqueNo={}", uniqueNo);
+            return Optional.empty();
+        }
+        if (ClientSocketCollection.channelInActive(socketChannel)) {
+            LOG.error("下发消息时发现：socketChannel为连接状态异常，uniqueNo={}", uniqueNo);
+            return Optional.empty();
+        }
+        return Optional.of(socketChannel);
+    }
+
+    /**
+     * 终端是否在线
+     * @return
+     */
     public boolean isOnline() {
-        if (!connected) {
-            return false;
-        }
-        if (Objects.isNull(this.socketChannel) || !this.socketChannel.isOpen()) {
-            LOG.error("机车连接缓存存在，但连接未打开.");
-            this.connected = false;
-            return false;
-        }
-        return true;
+        return connected;
     }
 
     public AbstractClientConn increPackageNum() {
@@ -182,16 +172,6 @@ public abstract class AbstractClientConn implements MsgSender {
     }
 
     // ------------------------------------------------------------------
-
-
-    public SocketChannel getSocketChannel() {
-        return socketChannel;
-    }
-
-    public AbstractClientConn setSocketChannel(SocketChannel socketChannel) {
-        this.socketChannel = socketChannel;
-        return this;
-    }
 
     public String getUniqueNo() {
         return uniqueNo;

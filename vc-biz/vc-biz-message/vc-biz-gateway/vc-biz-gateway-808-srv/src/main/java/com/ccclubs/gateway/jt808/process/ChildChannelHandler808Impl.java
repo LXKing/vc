@@ -45,6 +45,13 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
     @Autowired
     private AllExceptionHandler exceptionHandler;
 
+    /**
+     * 用于监控用的处理器
+     *      后面将会删除
+     */
+    @Autowired
+    private PreProcessHandler preProcessHandler;
+
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
 
@@ -55,7 +62,7 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
                 // 记录监视的车辆报文
-//                .addLast("preHandler", preProcessHandler)
+                .addLast("preHandler", preProcessHandler)
                 // 数据包解码
                 .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验

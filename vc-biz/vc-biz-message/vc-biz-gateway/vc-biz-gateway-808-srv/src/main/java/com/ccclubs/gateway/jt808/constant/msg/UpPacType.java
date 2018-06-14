@@ -149,7 +149,6 @@ public enum UpPacType {
      * 终端 RSA 公钥
      */
     TER_RSA_KEY(0x0A00, "终端 RSA 公钥", false),
-
     /**
      * 终端CAN过滤表
      */

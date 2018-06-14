@@ -11,7 +11,7 @@ public enum GatewayType {
     /**
      * 国标网关
      */
-    GATEWAY_GB("GB"),
+    GB("GB"),
     /**
      * 808网关
      */
@@ -19,7 +19,7 @@ public enum GatewayType {
     /**
      * MQTT网关
      */
-    GATEWAY_MQTT("MQTT");
+    MQTT("MQTT");
 
     private String des;
     GatewayType(String des) {

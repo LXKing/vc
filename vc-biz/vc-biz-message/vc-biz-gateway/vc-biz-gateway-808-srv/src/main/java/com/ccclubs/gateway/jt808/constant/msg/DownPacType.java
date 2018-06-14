@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.constant.msg;
 
-import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 

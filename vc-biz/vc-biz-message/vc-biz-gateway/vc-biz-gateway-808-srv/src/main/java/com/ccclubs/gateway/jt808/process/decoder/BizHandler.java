@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
@@ -40,7 +41,9 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
-        LOG.debug(pac.printLog());
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info(pac.printLog());
+        }
 
         // 如果是半包消息，则加到对应包后面
         if (pac.getHeader().getPacContentAttr().isMultiPac()) {
@@ -82,11 +85,16 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
         // 要发送的消息
         String onsMsg = PacUtil.packWithPacSymbol(pac.getSourceHexStr());
 
-        // 上行透传的消息，根据功能号不同发送不同的消息
+        /**
+         * 上行透传的消息，根据功能号不同发送不同的消息
+         *     透传的消息类型：01 | FD 发送到 JT_0900_01 | JT_0900_FD 上
+         *                   F1时，根据功能号发送到MQTT_功能号 上
+         */
         if (UpPacType.PENETRATE_UP.getCode() == pacId) {
             // 透传的消息类型
             int msgTypeCode = PacUtil.getMsgTypeFromPenetrateUpMsg(pac);
 
+            // 私有协议的其他数据
             if (msgTypeCode == MQTTMsgType.OTHER.getCode()) {
                 // 消息体的字节数不满足分时租赁协议最小报文字节数则：该消息异常，不需要发送
                 if (MqMessage.MESSAGE_MIN_LENGTH > pac.getBody().getContent().resetReaderIndex().readableBytes()) {

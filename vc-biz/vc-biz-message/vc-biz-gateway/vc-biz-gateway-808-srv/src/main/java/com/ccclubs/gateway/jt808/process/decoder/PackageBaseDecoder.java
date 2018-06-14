@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
@@ -45,11 +46,15 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
         String sourceHex = ByteBufUtil.hexDump(buffer);
-        LOG.debug("sourceHex={}", sourceHex);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("sourceHex={}", sourceHex);
+        }
         // TODO 校验最小字节数
 
         ByteBuf frame = (ByteBuf) super.decode(ctx, buffer);
-        LOG.debug("after decode: frame={}", frame==null?"null":ByteBufUtil.hexDump(frame));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("after decode: frame={}", frame==null?"null":ByteBufUtil.hexDump(frame));
+        }
 
         if (Objects.isNull(frame) || frame.readableBytes() == 0) {
             return null;
@@ -57,7 +62,9 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
 
         // 消息转义: 还原消息
         PacTranslateUtil.translateUpPac(frame);
-        LOG.debug("after transltated: {}", ByteBufUtil.hexDump(frame));
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info("after transltated: {}", ByteBufUtil.hexDump(frame));
+        }
 
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
         this.pac = composePac(frame, pacProcessTrack);

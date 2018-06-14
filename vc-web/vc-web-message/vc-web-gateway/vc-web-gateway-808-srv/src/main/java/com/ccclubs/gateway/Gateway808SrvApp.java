@@ -60,25 +60,25 @@ public class Gateway808SrvApp extends SpringBootServletInitializer {
     ctx.getBean(TcpServerStarter.class).start();
   }
 
-//  @Bean(name = "aliyunMqttClient", initMethod = "start", destroyMethod = "stop")
-//  @Primary
-//  IMqClient getAliyunMqttClient() {
-//    MqMqttClient mqClient = new MqMqttClient();
-//    mqClient.setHost(mqttAliyunProperties.getHost());
-//    mqClient.setListenPort(mqttAliyunProperties.getPort());
-//    mqClient.setClientIdPre(mqttAliyunProperties.getPreId());
-//    mqClient.setUserName(mqttAliyunProperties.getUserName());
-//    mqClient.setPwd(mqttAliyunProperties.getPwd());
-//    mqClient.setLogUpDown(mqttAliyunProperties.isLogUpDown());
-//    mqClient.setSubTopic(mqttAliyunProperties.getSubTopic());
-//    mqClient.setMqMessageProcessService(getRemoteMessageProcessService());
-//    return mqClient;
-//  }
-//
-//  @Bean(name = "jt808RemoteProcessService")
-//  public IMessageProcessService getRemoteMessageProcessService() {
-//    return new MqttMessageProcessService();
-//  }
+  @Bean(name = "aliyunMqttClient", initMethod = "start", destroyMethod = "stop")
+  @Primary
+  IMqClient getAliyunMqttClient() {
+    MqMqttClient mqClient = new MqMqttClient();
+    mqClient.setHost(mqttAliyunProperties.getHost());
+    mqClient.setListenPort(mqttAliyunProperties.getPort());
+    mqClient.setClientIdPre(mqttAliyunProperties.getPreId());
+    mqClient.setUserName(mqttAliyunProperties.getUserName());
+    mqClient.setPwd(mqttAliyunProperties.getPwd());
+    mqClient.setLogUpDown(mqttAliyunProperties.isLogUpDown());
+    mqClient.setSubTopic(mqttAliyunProperties.getSubTopic());
+    mqClient.setMqMessageProcessService(getRemoteMessageProcessService());
+    return mqClient;
+  }
+
+  @Bean(name = "jt808RemoteProcessService")
+  public IMessageProcessService getRemoteMessageProcessService() {
+    return new MqttMessageProcessService();
+  }
 
 
   @Bean(name = "onsPublishClient", initMethod = "start", destroyMethod = "shutdown")

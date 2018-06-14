@@ -63,12 +63,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
             ctx.pipeline().writeAndFlush(ackPac);
         }
 
-        // 校验异常的报文不需要向下传递
-        if (pac.getErrorPac()) {
-            return HandleStatus.END;
-        } else {
-            return HandleStatus.NEXT;
-        }
+        return HandleStatus.NEXT;
     }
 
     @Override

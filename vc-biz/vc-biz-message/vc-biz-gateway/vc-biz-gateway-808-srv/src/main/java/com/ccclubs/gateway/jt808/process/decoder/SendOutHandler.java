@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
@@ -46,7 +47,9 @@ public class SendOutHandler extends CCClubChannelInboundHandler<Package808> {
 
     @Override
     protected HandleStatus handleInnerMsg(AbstractChannelInnerMsg innerMsg) {
-        LOG.debug("收到一个内部消息: {}", JSON.toJSONString(innerMsg));
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info("收到一个内部消息: {}", JSON.toJSONString(innerMsg));
+        }
 
         switch (innerMsg.getInnerMsgType()) {
             case TASK_KAFKA:

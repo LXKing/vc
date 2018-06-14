@@ -3,6 +3,7 @@ package com.ccclubs.gateway.jt808.service;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.dto.OnsTask;
 import com.ccclubs.protocol.util.ConstantUtils;
 import io.netty.buffer.ByteBufUtil;
@@ -40,8 +41,13 @@ public class OnsService {
                 task.getTag(),
                 ByteBufUtil.decodeHexDump(task.getSourceHex())
         );
-        client.sendOneway(mqMessage);
-        LOG.debug("发送ons消息完成, msg={}", JSON.toJSONString(task));
+
+        // 如果打印开启则为测试环境，不需要真实发送到ons
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info("发送ons消息完成, msg={}", JSON.toJSONString(task));
+        } else {
+            client.sendOneway(mqMessage);
+        }
     }
 
 }

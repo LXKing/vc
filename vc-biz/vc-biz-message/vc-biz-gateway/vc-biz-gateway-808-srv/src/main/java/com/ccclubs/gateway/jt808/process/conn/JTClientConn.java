@@ -21,7 +21,7 @@ public class JTClientConn extends AbstractClientConn {
      */
     private String authCode;
 
-    public static JTClientConn ofNew(String uniqueNo, SocketChannel channel) {
+    public static JTClientConn ofNew(String uniqueNo) {
         JTClientConn newConn = new JTClientConn();
         LocalDateTime now = LocalDateTime.now();
         newConn.setUniqueNo(uniqueNo)
@@ -33,9 +33,7 @@ public class JTClientConn extends AbstractClientConn {
                 .setSerialNo((short)0)
                 .setDisconnectTimes(0)
                 .setErrorPacketNum(0)
-                .setPositionPackageNum(0)
-
-                .setSocketChannel(channel);
+                .setPositionPackageNum(0);
         return newConn;
     }
 

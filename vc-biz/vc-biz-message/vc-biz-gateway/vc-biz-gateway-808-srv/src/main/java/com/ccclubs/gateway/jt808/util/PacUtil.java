@@ -1,10 +1,10 @@
 package com.ccclubs.gateway.jt808.util;
 
 import com.ccclubs.gateway.jt808.constant.PackageCons;
+import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.protocol.util.MqTagUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -95,7 +95,7 @@ public final class PacUtil {
      */
     public static String packWithPacSymbol(String sourceHex) {
         StringBuilder sb = new StringBuilder(PackageCons.PAC_START_SYMBOL_HEX);
-        return sb.append(sourceHex).append(PackageCons.PAC_START_SYMBOL_HEX).toString();
+        return sb.append(sourceHex).append(PackageCons.PAC_START_SYMBOL_HEX).toString().toUpperCase();
     }
 
     /**
@@ -155,6 +155,22 @@ public final class PacUtil {
     public static short getAndIncreaseSerialNo() {
 
         return PackageCons.ACK_SERINALNO.getAndUpdate(PacSerialNo::increase).getValue();
+    }
+
+    public static String getMobileFromByteBuf(ByteBuf completeSourceBuf) {
+        ByteBuf sourceBuf = Unpooled.buffer();
+        sourceBuf.writeBytes(completeSourceBuf.resetReaderIndex());
+        // 消息转义: 还原消息
+        PacTranslateUtil.translateUpPac(sourceBuf);
+
+        // 读取终端手机号
+        int mobileByteIndex = PackagePart.PAC_ID.getLen() + PackagePart.PAC_SERIAL_NO.getLen();
+        // "1" 是： 跳过7E头部
+        sourceBuf.readerIndex(1 + mobileByteIndex);
+        ByteBuf mobileBuf = sourceBuf.readSlice(PackagePart.TER_MOBILE.getLen());
+
+        completeSourceBuf.resetReaderIndex();
+        return ByteBufUtil.hexDump(mobileBuf);
     }
 
     /**

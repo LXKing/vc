@@ -45,6 +45,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          */
         if (pac.getSourceBuff().refCnt() > 0) {
             ReferenceCountUtil.release(pac.getSourceBuff());
+            if (pac.getSourceBuff().refCnt() > 0) {
+                LOG.error("buf 引用计数 release后发现计数仍大于0 refCng={}", pac.getSourceBuff().refCnt());
+                while (ReferenceCountUtil.release(pac.getSourceBuff())) {}
+            }
         }
     }
 
