@@ -45,7 +45,7 @@ public class TcpServerConf {
 
     @Bean(name = "bossGroup", destroyMethod = "shutdownGracefully")
     public EventLoopGroup bossGroup() {
-        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable() && false) {
             return new EpollEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
@@ -54,7 +54,7 @@ public class TcpServerConf {
 
     @Bean(name = "workerGroup", destroyMethod = "shutdownGracefully")
     public EventLoopGroup workerGroup() {
-        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable() && false) {
             return new EpollEventLoopGroup();
         } else {
             return new NioEventLoopGroup();
@@ -66,7 +66,7 @@ public class TcpServerConf {
 
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup(), workerGroup());
-        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
+        if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable() && false) {
             b.channel(EpollServerSocketChannel.class);
         } else {
             b.channel(NioServerSocketChannel.class);
