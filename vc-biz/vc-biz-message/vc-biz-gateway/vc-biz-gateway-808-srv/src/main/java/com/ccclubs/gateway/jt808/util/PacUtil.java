@@ -4,6 +4,7 @@ import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
+import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;

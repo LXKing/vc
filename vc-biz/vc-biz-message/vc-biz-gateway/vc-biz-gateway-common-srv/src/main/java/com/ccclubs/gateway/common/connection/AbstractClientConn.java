@@ -162,7 +162,7 @@ public abstract class AbstractClientConn implements MsgSender {
         return this;
     }
 
-    public short getAndIncreaseSerialNo() {
+    public short afterGetIncreaseSerialNo() {
         if (this.serialNo == Short.MAX_VALUE) {
             this.serialNo = 0;
         } else {

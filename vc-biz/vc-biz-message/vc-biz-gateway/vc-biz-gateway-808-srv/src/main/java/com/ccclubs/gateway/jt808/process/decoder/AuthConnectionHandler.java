@@ -42,11 +42,17 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("终端建立连接: ip={}, port={}",
+        // TODO TOBEDELETE
+        LOG.info("终端建立连接: ip={}, port={}, channelId={}",
                     channel.remoteAddress().getHostString(),
-                    channel.remoteAddress().getPort());
-        }
+                    channel.remoteAddress().getPort(),
+                    channel.id()
+                );
+//        if (LOG.isDebugEnabled()) {
+//            LOG.debug("终端建立连接: ip={}, port={}",
+//                    channel.remoteAddress().getHostString(),
+//                    channel.remoteAddress().getPort());
+//        }
         super.channelActive(ctx);
     }
 
@@ -54,12 +60,19 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
         JTClientConn conn = (JTClientConn)ClientConnCollection.getByChannelId(channel.id());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("终端({}) 连接关闭: ip={}, port={}",
-                    Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
-                    channel.remoteAddress().getHostString(),
-                    channel.remoteAddress().getPort());
-        }
+        // TODO TOBEDELETE
+        LOG.info("终端({}) 连接关闭: ip={}, port={}, channelId={}",
+                Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
+                channel.remoteAddress().getHostString(),
+                channel.remoteAddress().getPort(),
+                channel.id());
+
+//        if (LOG.isDebugEnabled()) {
+//            LOG.debug("终端({}) 连接关闭: ip={}, port={}",
+//                    Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
+//                    channel.remoteAddress().getHostString(),
+//                    channel.remoteAddress().getPort());
+//        }
         // 关闭终端的连接，但是不删除终端在内存中的数据
         if (Objects.isNull(conn)) {
             LOG.error("关闭终端(channelId={})连接时发现连接为空:", channel.id());
@@ -98,7 +111,9 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 break;
         }
 
-        LOG.debug("auth complete");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("auth complete");
+        }
         return HandleStatus.NEXT;
     }
 
@@ -160,7 +175,10 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             Optional connOptional = ClientConnCollection.getIfExist(uniqueNo);
             if (connOptional.isPresent()) {
                 ClientConnCollection.doReconnecte(uniqueNo, channel);
-                LOG.debug("重连的终端({})鉴权成功", uniqueNo);
+                LOG.info("重连的终端({})鉴权成功", uniqueNo);
+//                if (LOG.isDebugEnabled()) {
+//                    LOG.debug("重连的终端({})鉴权成功", uniqueNo);
+//                }
             } else {
                 // 连接第一次连接进系统
                 JTClientConn newConn = JTClientConn.ofNew(uniqueNo);

@@ -1,9 +1,13 @@
 package com.ccclubs.gateway.jt808.process.encoder;
 
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.connection.ClientConnCollection;
 import com.ccclubs.gateway.common.util.PacValidUtil;
 import com.ccclubs.gateway.jt808.constant.EncryptType;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
+import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
+import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
+import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
@@ -80,7 +84,7 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
             // 获取连接中的消息序列号
             JTClientConn conn = (JTClientConn)ClientConnCollection.getByUniqueNo(header.getTerMobile());
             if (Objects.nonNull(conn)) {
-                sendoutBuf.writeShort(conn.getAndIncreaseSerialNo());
+                sendoutBuf.writeShort(conn.afterGetIncreaseSerialNo());
             } else {
                 // 提供一个默认的序列号
                 sendoutBuf.writeShort(0);
@@ -107,7 +111,10 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
         // 结束符
         sendoutBuf.writeByte(PackageCons.PAC_START_SYMBOL_BYTE);
 
-        LOG.info("send: {}", ByteBufUtil.hexDump(sendoutBuf).toUpperCase());
+        pac.setSourceHexStr(ByteBufUtil.hexDump(sendoutBuf).toUpperCase());
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info(buildDownstreamLog(pac));
+        }
         // 最后写入：防止写入退出时造成部分写入
         out.writeBytes(sendoutBuf);
     }
@@ -126,5 +133,30 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
         destInt |= encryptType.getCode();
 
         return (short) destInt;
+    }
+
+    private String buildDownstreamLog(Package808 pac) {
+        StringBuilder logSb = new StringBuilder();
+        DownPacType downPacType = DownPacType.getByCode(pac.getHeader().getPacId());
+        logSb.append("平台对终端(").append(pac.getHeader().getTerMobile()).append(")")
+                .append("下发[").append(downPacType==null?Integer.toHexString(pac.getHeader().getPacId()):downPacType.getDes()).append("]消息");
+        if (Objects.nonNull(downPacType)) {
+            switch (downPacType) {
+                case ACK_NORMAL:
+                    // 打印出应答的消息流水号.
+                    ByteBuf bodyBuf = pac.getBody().getContent().resetReaderIndex();
+                    UpPacType upPacType = null;
+                    int ackSerialNo = bodyBuf.readShort();
+                    int ackPacId = bodyBuf.readShort();
+                    byte result = bodyBuf.readByte();
+                    logSb.append("[应答流水:").append(ackSerialNo)
+                            .append(",应答类型:").append((upPacType=UpPacType.getByCode(ackPacId))==null?Integer.toHexString(ackPacId):upPacType.getDes())
+                            .append(",应答结果:").append(result == 0?"成功":"失败/异常")
+                            .append("]");
+                    break;
+            }
+        }
+        logSb.append(",原始报文[").append(pac.getSourceHexStr()).append("]");
+        return logSb.toString();
     }
 }

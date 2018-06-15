@@ -144,9 +144,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         }
 
         // 打印异常链
-        if (cause.getCause() != null) {
-            cause.printStackTrace();
-        }
+        cause.printStackTrace();
+//        if (cause.getCause() != null) {
+//            cause.printStackTrace();
+//        }
 
         if (needCloseConn) {
             // 关闭链接
