@@ -23,6 +23,7 @@ public class ClientConnCollection {
     /**
      * 渠道ID与终端唯一标识的映射
      *      key=channelId, value=uniqueNo
+     *      TODO 对channelId重复校验，防止由于uniqueNo异常导致前一个连接断开
      */
     private static final ConcurrentHashMap<ChannelId, String> CHANNELID_TO_CLIENT = new ConcurrentHashMap<>(1000);
 

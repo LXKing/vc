@@ -46,8 +46,9 @@ public class OnsService {
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
             LOG.info("发送ons消息完成, msg={}", JSON.toJSONString(task));
         } else {
-            client.sendOneway(mqMessage);
+
         }
+        client.sendOneway(mqMessage);
     }
 
 }

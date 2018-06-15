@@ -146,8 +146,8 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
                     // 打印出应答的消息流水号.
                     ByteBuf bodyBuf = pac.getBody().getContent().resetReaderIndex();
                     UpPacType upPacType = null;
-                    int ackSerialNo = bodyBuf.readShort();
-                    int ackPacId = bodyBuf.readShort();
+                    int ackSerialNo = bodyBuf.readShort() & 0xFFFF;
+                    int ackPacId = bodyBuf.readShort() & 0xFFFF;
                     byte result = bodyBuf.readByte();
                     logSb.append("[应答流水:").append(ackSerialNo)
                             .append(",应答类型:").append((upPacType=UpPacType.getByCode(ackPacId))==null?Integer.toHexString(ackPacId):upPacType.getDes())
