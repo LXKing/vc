@@ -55,7 +55,6 @@ public class BaseInfImpl {
         } catch (SQLException e) {
             logger.info("{} phoenix throw a error :{}", tableName, e.getMessage());
             logger.info("{} 异常数据：{} ", tableName, records.toString());
-            e.printStackTrace();
         } finally {
             phoenixTool.closeResource(connection, preparedStatement, null, tableName + " saveOrUpdate ");
         }
