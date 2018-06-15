@@ -64,10 +64,10 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 // 终端对应连接
                 JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(mobile);
                 if (Objects.nonNull(conn) && conn.isOnline()) {
-                    // 终端在线
-                    conn.send(sourceBuf.resetReaderIndex().copy());
                     // 便于ELK日志分析
-                    LOG.info("DOWN >> {}", ByteBufUtil.hexDump(sourceBuf));
+                    LOG.info("DOWN >> {}", ByteBufUtil.hexDump(sourceBuf.resetReaderIndex()));
+                    // 终端在线
+                    conn.send(sourceBuf.copy());
                 }
             }
         }

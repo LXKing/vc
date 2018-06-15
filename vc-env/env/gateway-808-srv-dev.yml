@@ -57,4 +57,4 @@ mqttAliyun:
   #订阅主题
   subTopic: protocol/jt808/#
   #是否记录上行记录
-  logUpDown: true
+  logUpDown: false
