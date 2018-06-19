@@ -112,6 +112,17 @@
                                       onclick='showHideColumn(this, this.value);'>CI</label></li>
                     <li><label><input value="curOrder" checked="checked" type="checkbox"
                                       onclick='showHideColumn(this, this.value);'>订单号</label></li>
+                    <li><label><input value="vin" checked="checked" type="checkbox"
+                                      onclick='showHideColumn(this, this.value);'>车架号</label></li>
+                    <li><label><input value="teNo" checked="checked" type="checkbox"
+                                      onclick='showHideColumn(this, this.value);'>序列号</label></li>
+                    <li><label><input value="iccid" checked="checked" type="checkbox"
+                                      onclick='showHideColumn(this, this.value);'>ICCID</label></li>
+                    <li><label><input value="mobile" checked="checked" type="checkbox"
+                                      onclick='showHideColumn(this, this.value);'>手机号</label></li>
+                    <li><label><input value="sourceHex" checked="checked" type="checkbox"
+                                      onclick='showHideColumn(this, this.value);'>原始报文</label></li>
+
                 </ul>
             </div>
         </div>
@@ -290,6 +301,13 @@
 
         , {field: "csAccessText", title: "接入商", width: 140}
         , {field: "csNumber", title: "车机号", width: 140}
+
+        , {field: "vin", title: "车架号", width: 140}
+        , {field: "teNo", title: "序列号", width: 140}
+        , {field: "mobile", title: "手机号", width: 140}
+        , {field: "iccid", title: "ICCID", width: 140}
+        , {field: "sourceHex", title: "原始报文", width: 140}
+
         , {field: "addTimeText", title: "接收时间", width: 160}
         , {field: "currentTimeText", title: "报文时间", width: 160}
         , {field: "rentFlg", title: "租赁状态", width: 110}
@@ -386,11 +404,11 @@
         grid.render(option);
     }
 
-    function getTableHeight(){
-      var height = $(window).height() - ($(".queryform").height() + 50);
-      if(height>1000)return 1000;
-      return height;
-  }
+    function getTableHeight() {
+        var height = $(window).height() - ($(".queryform").height() + 50);
+        if (height > 1000) return 1000;
+        return height;
+    }
 
     $(window).resize(function () {
         option["height"] = getTableHeight();

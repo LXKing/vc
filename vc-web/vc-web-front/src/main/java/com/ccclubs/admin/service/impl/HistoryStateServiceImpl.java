@@ -133,6 +133,11 @@ public class HistoryStateServiceImpl implements IHistoryStateService{
             historyState.setUserRfid(mqttState.getUserRfid());
             historyState.setWarnCode(mqttState.getWarnCode());
             historyState.setGear(mqttState.getGear());
+            historyState.setVin(mqttState.getVin());
+            historyState.setTeNo(mqttState.getTeNo());
+            historyState.setMobile(mqttState.getMobile());
+            historyState.setIccid(mqttState.getIccid());
+            historyState.setSourceHex(mqttState.getSourceHex());
             return historyState;
         }
         else {
