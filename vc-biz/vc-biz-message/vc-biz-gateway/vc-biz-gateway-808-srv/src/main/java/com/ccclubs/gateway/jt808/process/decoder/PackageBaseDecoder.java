@@ -63,7 +63,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         // 消息转义: 还原消息
         PacTranslateUtil.translateUpPac(frame);
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.info("after transltated: {}", ByteBufUtil.hexDump(frame));
+            LOG.info("-------------------------------------------------------after transltated: \n{}", ByteBufUtil.hexDump(frame));
         }
 
         PacProcessTrack pacProcessTrack = resetTracks(ctx);

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
@@ -121,13 +120,13 @@ public class ClientSocketCollection {
     public static boolean channelInActive(SocketChannel channel) {
         Objects.requireNonNull(channel);
 
-        return !channel.isOpen() ||
-                !channel.isActive() ||
-                channel.isShutdown();
+        return !channel.isOpen(); // ||
+//                !channel.isActive() ||
+//                channel.isShutdown();
     }
 
     private static ChannelFuture closeChannel(SocketChannel channel) {
-        if (Objects.nonNull(channel) && channel.isOpen()) {
+        if (Objects.nonNull(channel)) {
             return channel.close();
         }
         return null;

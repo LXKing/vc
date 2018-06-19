@@ -76,6 +76,8 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
                         json.toJSONString()));
             }
         }
-        LOG.debug("终端[{}]的报文[{}]处理时间为：{}", mobile, sourceHex, allEndTime - allStartTime);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("终端[{}]的报文[{}]处理时间为：{}", mobile, sourceHex, allEndTime - allStartTime);
+        }
     }
 }
