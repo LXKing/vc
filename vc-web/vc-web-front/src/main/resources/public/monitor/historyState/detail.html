@@ -1,342 +1,371 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title></title>
-		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
-		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
-		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-		<link href="/css/animate.min.css" rel="stylesheet">
-		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
-		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
-		<!-- jqgrid-->
-    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
-    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
-		<link href="/css/cnmain.css" rel="stylesheet">
-	</head>
-<body >
-	<div class="form_content">
-		<form class="form-horizontal" id="addform" style="margin:15px;">
-			<div class="form-group" id="conditionId" style="height:80%;">
-				<dl  >
-					<dt>ID：</dt>
-					<dd>
-					<input name="carStateHistoryId" placeholder="请输入ID" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车机号：</dt>
-					<dd>
-					<input name="csNumber" placeholder="请输入车机号" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>授权系统：</dt>
-					<dd>
-					<input name="csAccess" placeholder="请输入授权系统" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>添加时间：</dt>
-					<dd>
-					<input name="addTime" placeholder="请输入添加时间" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>下位机时间：</dt>
-					<dd>
-					<input name="currentTime" placeholder="请输入下位机时间" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>租赁状态：</dt>
-					<dd>
-					<input name="rentFlg" placeholder="请输入租赁状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>报警代码：</dt>
-					<dd>
-					<input name="warnCode" placeholder="请输入报警代码" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>RFID卡号：</dt>
-					<dd>
-					<input name="rfid" placeholder="请输入RFID卡号" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>用户RFID：</dt>
-					<dd>
-					<input name="userRfid" placeholder="请输入用户RFID" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>OBD里程：</dt>
-					<dd>
-					<input name="obdMiles" placeholder="请输入OBD里程" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>发动机温度：</dt>
-					<dd>
-					<input name="engineTempe" placeholder="请输入发动机温度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>总里程：</dt>
-					<dd>
-					<input name="totalMiles" placeholder="请输入总里程" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车速：</dt>
-					<dd>
-					<input name="speed" placeholder="请输入车速" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>转速：</dt>
-					<dd>
-					<input name="motorSpeed" placeholder="请输入转速" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>燃油量：</dt>
-					<dd>
-					<input name="oilCost" placeholder="请输入燃油量" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>蓄电量：</dt>
-					<dd>
-					<input name="powerReserve" placeholder="请输入蓄电量" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>动力电池电量：</dt>
-					<dd>
-					<input name="evBattery" placeholder="请输入动力电池电量" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>充电状态：</dt>
-					<dd>
-					<input name="chargingStatus" placeholder="请输入充电状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>油里程：</dt>
-					<dd>
-					<input name="fuelMiles" placeholder="请输入油里程" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>电量程：</dt>
-					<dd>
-					<input name="elecMiles" placeholder="请输入电量程" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>续航里程：</dt>
-					<dd>
-					<input name="endurMiles" placeholder="请输入续航里程" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>温度：</dt>
-					<dd>
-					<input name="tempe" placeholder="请输入温度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>卫星数量：</dt>
-					<dd>
-					<input name="gpsNum" placeholder="请输入卫星数量" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>卫星信号强度：</dt>
-					<dd>
-					<input name="gpsStrength" placeholder="请输入卫星信号强度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>gps有效性：</dt>
-					<dd>
-					<input name="gpsValid" placeholder="请输入gps有效性" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>网络信号强度：</dt>
-					<dd>
-					<input name="netStrength" placeholder="请输入网络信号强度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>经度：</dt>
-					<dd>
-					<input name="longitude" placeholder="请输入经度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>纬度：</dt>
-					<dd>
-					<input name="latitude" placeholder="请输入纬度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>方向角度：</dt>
-					<dd>
-					<input name="directionAngle" placeholder="请输入方向角度" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>循环模式：</dt>
-					<dd>
-					<input name="circularMode" placeholder="请输入循环模式" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>PTC启停：</dt>
-					<dd>
-					<input name="ptcStatus" placeholder="请输入PTC启停" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>压缩机状态：</dt>
-					<dd>
-					<input name="compreStatus" placeholder="请输入压缩机状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>档风量：</dt>
-					<dd>
-					<input name="fanMode" placeholder="请输入档风量" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>省电模式：</dt>
-					<dd>
-					<input name="savingMode" placeholder="请输入省电模式" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车门状态：</dt>
-					<dd>
-					<input name="doorStatus" placeholder="请输入车门状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>发动机：</dt>
-					<dd>
-					<input name="engineStatus" placeholder="请输入发动机" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>钥匙状态：</dt>
-					<dd>
-					<input name="keyStatus" placeholder="请输入钥匙状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>灯状态：</dt>
-					<dd>
-					<input name="lightStatus" placeholder="请输入灯状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>锁状态：</dt>
-					<dd>
-					<input name="lockStatus" placeholder="请输入锁状态" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>网络类型：</dt>
-					<dd>
-					<input name="netType" placeholder="请输入网络类型" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>基站LAC：</dt>
-					<dd>
-					<input name="baseLac" placeholder="请输入基站LAC" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>基站CI：</dt>
-					<dd>
-					<input name="baseCi" placeholder="请输入基站CI" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>当前订单：</dt>
-					<dd>
-					<input name="curOrder" placeholder="请输入当前订单" class="form-control" >
-					</dd>
-				</dl>
-		</div>
-		
-		</form>
-	</div>
-	
-	<div class="form_footer"></div>
-	
-	<script src="/js/jquery.min.js?v=2.1.4"></script>
-	<script src="/js/url.js"></script>
-	<script src="/js/tpui-core.js"></script>
-	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
-	<script src="/js/plugins/layer/laydate/laydate.js"></script>
-	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
-	<script src="/js/plugins/iCheck/icheck.min.js"></script>
-	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
-	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
-    <script src="/js/plugins/validate/messages_zh.min.js"></script>
-    <script src="/js/layer/layer.js"></script>
-	
-	<script type="text/javascript">
-		$(function(){
-			/**
-			 * 表单校验规则配置
- 			 */
-			var validateRuleConfig = {
-			};
-			
-			var define = {
-				form:$("#addform"),
-				url:getServUrl("/monitor/historyState/add"),
-				validateRuleConfig:validateRuleConfig,
-				valid:function(){
-					return this.form.validate(this.validateRuleConfig);
-				},
-				init:function(option){
-					var o = $.extend(this, option);
-					$(".searchinput").each(function(){
-						$(this).searchinput({});
-					});
-					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
-					$("#saveBtn").click(function(){
-						if(o.valid().form()) {
-							o.submit(o.form);
-						}else{
-							console.log("validate failure!");
-						}
-					});
-				}
-			};
-			
-			define.init();
-			
-			function init(){
-				var url = getServUrl("/monitor/historyState/detail/")+getQueryString("id");
-				ajaxRequest(url,"GET",{},function(json) {
-					loadFormData(json.value.tbody);
-				});
-			}
-			
-			init();
-		});
-	</script>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/css/animate.min.css" rel="stylesheet">
+    <link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+    <link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <!-- jqgrid-->
+    <link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    <link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+    <link href="/css/cnmain.css" rel="stylesheet">
+</head>
+<body>
+<div class="form_content">
+    <form class="form-horizontal" id="addform" style="margin:15px;">
+        <div class="form-group" id="conditionId" style="height:80%;">
+            <dl>
+                <dt>ID：</dt>
+                <dd>
+                    <input name="carStateHistoryId" placeholder="请输入ID" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>车机号：</dt>
+                <dd>
+                    <input name="csNumber" placeholder="请输入车机号" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>授权系统：</dt>
+                <dd>
+                    <input name="csAccess" placeholder="请输入授权系统" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>添加时间：</dt>
+                <dd>
+                    <input name="addTime" placeholder="请输入添加时间" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>下位机时间：</dt>
+                <dd>
+                    <input name="currentTime" placeholder="请输入下位机时间" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>租赁状态：</dt>
+                <dd>
+                    <input name="rentFlg" placeholder="请输入租赁状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>报警代码：</dt>
+                <dd>
+                    <input name="warnCode" placeholder="请输入报警代码" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>RFID卡号：</dt>
+                <dd>
+                    <input name="rfid" placeholder="请输入RFID卡号" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>用户RFID：</dt>
+                <dd>
+                    <input name="userRfid" placeholder="请输入用户RFID" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>OBD里程：</dt>
+                <dd>
+                    <input name="obdMiles" placeholder="请输入OBD里程" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>发动机温度：</dt>
+                <dd>
+                    <input name="engineTempe" placeholder="请输入发动机温度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>总里程：</dt>
+                <dd>
+                    <input name="totalMiles" placeholder="请输入总里程" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>车速：</dt>
+                <dd>
+                    <input name="speed" placeholder="请输入车速" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>转速：</dt>
+                <dd>
+                    <input name="motorSpeed" placeholder="请输入转速" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>燃油量：</dt>
+                <dd>
+                    <input name="oilCost" placeholder="请输入燃油量" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>蓄电量：</dt>
+                <dd>
+                    <input name="powerReserve" placeholder="请输入蓄电量" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>动力电池电量：</dt>
+                <dd>
+                    <input name="evBattery" placeholder="请输入动力电池电量" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>充电状态：</dt>
+                <dd>
+                    <input name="chargingStatus" placeholder="请输入充电状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>油里程：</dt>
+                <dd>
+                    <input name="fuelMiles" placeholder="请输入油里程" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>电量程：</dt>
+                <dd>
+                    <input name="elecMiles" placeholder="请输入电量程" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>续航里程：</dt>
+                <dd>
+                    <input name="endurMiles" placeholder="请输入续航里程" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>温度：</dt>
+                <dd>
+                    <input name="tempe" placeholder="请输入温度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>卫星数量：</dt>
+                <dd>
+                    <input name="gpsNum" placeholder="请输入卫星数量" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>卫星信号强度：</dt>
+                <dd>
+                    <input name="gpsStrength" placeholder="请输入卫星信号强度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>gps有效性：</dt>
+                <dd>
+                    <input name="gpsValid" placeholder="请输入gps有效性" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>网络信号强度：</dt>
+                <dd>
+                    <input name="netStrength" placeholder="请输入网络信号强度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>经度：</dt>
+                <dd>
+                    <input name="longitude" placeholder="请输入经度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>纬度：</dt>
+                <dd>
+                    <input name="latitude" placeholder="请输入纬度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>方向角度：</dt>
+                <dd>
+                    <input name="directionAngle" placeholder="请输入方向角度" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>循环模式：</dt>
+                <dd>
+                    <input name="circularMode" placeholder="请输入循环模式" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>PTC启停：</dt>
+                <dd>
+                    <input name="ptcStatus" placeholder="请输入PTC启停" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>压缩机状态：</dt>
+                <dd>
+                    <input name="compreStatus" placeholder="请输入压缩机状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>档风量：</dt>
+                <dd>
+                    <input name="fanMode" placeholder="请输入档风量" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>省电模式：</dt>
+                <dd>
+                    <input name="savingMode" placeholder="请输入省电模式" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>车门状态：</dt>
+                <dd>
+                    <input name="doorStatus" placeholder="请输入车门状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>发动机：</dt>
+                <dd>
+                    <input name="engineStatus" placeholder="请输入发动机" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>钥匙状态：</dt>
+                <dd>
+                    <input name="keyStatus" placeholder="请输入钥匙状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>灯状态：</dt>
+                <dd>
+                    <input name="lightStatus" placeholder="请输入灯状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>锁状态：</dt>
+                <dd>
+                    <input name="lockStatus" placeholder="请输入锁状态" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>网络类型：</dt>
+                <dd>
+                    <input name="netType" placeholder="请输入网络类型" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>基站LAC：</dt>
+                <dd>
+                    <input name="baseLac" placeholder="请输入基站LAC" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>基站CI：</dt>
+                <dd>
+                    <input name="baseCi" placeholder="请输入基站CI" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>当前订单：</dt>
+                <dd>
+                    <input name="curOrder" placeholder="请输入当前订单" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>车架号：</dt>
+                <dd>
+                    <input name="vin" placeholder="请输入车架号" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>序列号：</dt>
+                <dd>
+                    <input name="teNo" placeholder="请输入序列号" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>ICCID：</dt>
+                <dd>
+                    <input name="iccid" placeholder="请输入iccid" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>手机号：</dt>
+                <dd>
+                    <input name="mobile" placeholder="请输入手机号" class="form-control">
+                </dd>
+            </dl>
+            <dl>
+                <dt>原始报文：</dt>
+                <dd>
+                    <input name="sourceHex" placeholder="请输入原始报文" class="form-control">
+                </dd>
+            </dl>
+        </div>
+
+    </form>
+</div>
+
+<div class="form_footer"></div>
+
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/url.js"></script>
+<script src="/js/tpui-core.js"></script>
+<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+<script src="/js/plugins/iCheck/icheck.min.js"></script>
+<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/js/plugins/validate/messages_zh.min.js"></script>
+<script src="/js/layer/layer.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        /**
+         * 表单校验规则配置
+         */
+        var validateRuleConfig = {};
+
+        var define = {
+            form: $("#addform"),
+            url: getServUrl("/monitor/historyState/add"),
+            validateRuleConfig: validateRuleConfig,
+            valid: function () {
+                return this.form.validate(this.validateRuleConfig);
+            },
+            init: function (option) {
+                var o = $.extend(this, option);
+                $(".searchinput").each(function () {
+                    $(this).searchinput({});
+                });
+                $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+                $("#saveBtn").click(function () {
+                    if (o.valid().form()) {
+                        o.submit(o.form);
+                    } else {
+                        console.log("validate failure!");
+                    }
+                });
+            }
+        };
+
+        define.init();
+
+        function init() {
+            var url = getServUrl("/monitor/historyState/detail/") + getQueryString("id");
+            ajaxRequest(url, "GET", {}, function (json) {
+                loadFormData(json.value.tbody);
+            });
+        }
+
+        init();
+    });
+</script>
 </body>
