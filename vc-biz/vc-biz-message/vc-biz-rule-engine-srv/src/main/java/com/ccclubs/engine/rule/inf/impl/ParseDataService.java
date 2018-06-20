@@ -1,29 +1,23 @@
 package com.ccclubs.engine.rule.inf.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
+import com.ccclubs.frm.spring.constant.KafkaConst;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
-import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
-import com.ccclubs.protocol.dto.mqtt.CCCLUBS_6C;
-import com.ccclubs.protocol.dto.mqtt.CStruct;
-import com.ccclubs.protocol.dto.mqtt.CarStartAndStop;
-import com.ccclubs.protocol.dto.mqtt.MQTT_43;
-import com.ccclubs.protocol.dto.mqtt.MQTT_66;
-import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
-import com.ccclubs.protocol.dto.mqtt.MQTT_6B;
-import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.mqtt.*;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
@@ -37,14 +31,14 @@ import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
-
-import java.util.Date;
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
 
@@ -70,6 +64,15 @@ public class ParseDataService implements IParseDataService {
 
     @Value("${" + ConstantUtils.MQ_TOPIC + "}")
     String topic;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + "}")
+    String tboxLogTopic;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + "}")
+    String tboxLogTopicExp;
+
+    @Autowired
+    KafkaTemplate kafkaTemplate;
 
     @Resource
     QueryAppInfoService queryHostInfoService;
@@ -394,6 +397,10 @@ public class ParseDataService implements IParseDataService {
         }
     }
 
+    /**
+     * 车机网络日志
+     * @param message
+     */
     @Override
     public void processTerminalLog(MqMessage message) {
         try {
@@ -407,6 +414,8 @@ public class ParseDataService implements IParseDataService {
             csLogger.setCslAddTime(System.currentTimeMillis());
             csLogger.setCslStatus((short) 1);
             loggerDao.save(csLogger);
+            //转发到kafka，存储HBASE
+            kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(csLogger));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);

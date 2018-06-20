@@ -30,6 +30,7 @@ import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
 /**
  * 车辆上下线监听
  * 数据来自Gateway
+ *
  * @author jianghaiyang
  * @create 2018-05-10
  **/
@@ -63,11 +64,11 @@ public class OnlineStatusEventConsumer {
             ConnOnlineStatusEvent event = JSONObject.parseObject(record, ConnOnlineStatusEvent.class);
             // 更新缓存-当前车辆在线情况
             if (event.isOnline()) {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, event.getVin());
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, event.getVin(), event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), event.getVin());
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), event.getVin(), event);
             } else {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, event.getVin());
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, event.getVin(), event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), event.getVin());
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), event.getVin(), event);
             }
             //转发上下线事件到业务平台
             transferToOns(event);

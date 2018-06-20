@@ -45,19 +45,24 @@ kafka:
     group:
       rule:
         conn: cgrp_rule_conn                   #车辆上下线数据 消费者组
+        gateway:
+          error: cgrp_rule_gateway_error       #GB网关上报错误数据（协议层面） 消费者组
         gb:
-          error: cgrp_rule_gb_error            #GB网关上报错误数据（协议层面） 消费者组
           success: cgrp_rule_gb_success        #GB网关上报正常数据 消费者组
         stream:
-          jump-soc: cgrp_rule_jump_soc         #电池跳变数据（实时计算）消费者组
+          energy-jump: cgrp_rule_energy_jump   #跳变数据（实时计算）消费者组
+          activity-pace: cgrp_rule_activity_pace   #跳变数据（实时计算）消费者组
   topic:
     gateway: #IN 接收网关的数据
       conn: topic_conn_status                  #车辆上下线数据
+      error: topic_gateway_error               #网关错误报文（协议层面）
       gb:
-        error: topic_gb_error                  #GB网关错误报文（协议层面）
         success: topic_gb_success              #GB网关正常报文
+      jt808:
+        success: topic_808_success              #808网关正常报文
     stream: #IN 接收实时计算（Flink）的数据
-      jump-soc: topic_stream_jump_soc          #电池跳变数据
+      energy-jump: topic_stream_energy_jump      #跳变数据
+      activity-pace: topic_stream_activity_pace  #行为阶段数据
     gb: #OUT 发送到下游
       success-login: topic_gb_0x01             #GB报文-车辆登入
       success-real: topic_gb_0x02              #GB报文-实时信息上报
@@ -72,11 +77,16 @@ kafka:
       can: topic_can                           #CAN历史数据
       can-exp: topic_can_exp                   #CAN异常历史数据
       mqtt:
+        error: topic_mqtt_message_err          #MQTT网关错误数据
         state: topic_mqtt_state                #分时租赁实时状态历史数据
         state-exp: topic_mqtt_state_exp        #分时租赁实时状态异常历史数据
       jt808:
+        error: topic_808_message_err           #808网关错误数据
         position: topic_jt_position            #808位置历史数据
         position-exp: topic_jt_position_exp    #808位置异常历史数据
+      tbox:
+        log: topic_tbox_log                    #车机网络日志
+        log-exp: topic_tbox_log_exp            #车机网络日志异常数据
 
 ccclubs:
   data:
@@ -145,7 +155,7 @@ ons:
   consumeThreadNums: 30
   topic: ser
   # Tag
-  expression: GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C
+  expression: GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT_0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
 
 mqttAliyun:
   #阿里云 mqtt broker 地址
