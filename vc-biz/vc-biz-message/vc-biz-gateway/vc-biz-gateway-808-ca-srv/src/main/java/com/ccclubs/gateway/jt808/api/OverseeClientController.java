@@ -5,7 +5,7 @@ import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
-import com.ccclubs.protocol.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class OverseeClientController {
 
     @GetMapping("/{sim}/detail")
     public R getTerConnDetail(@PathVariable("sim") String sim) {
-        if (StringUtils.notEmpty(sim)) {
+        if (StringUtils.isNotEmpty(sim)) {
             JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(sim);
             if (Objects.nonNull(conn)) {
                 return OK.Statu.SUCCESS_WITH_DATA.build().addData("conn", conn);

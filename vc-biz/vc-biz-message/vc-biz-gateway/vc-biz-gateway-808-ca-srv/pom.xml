@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>vc-biz-gateway-808-srv</artifactId>
+    <artifactId>vc-biz-gateway-808-ca-srv</artifactId>
     <dependencies>
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-gateway-808-inf</artifactId>
+            <artifactId>vc-biz-gateway-808-ca-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
         <dependency>
@@ -31,16 +31,22 @@
             <artifactId>vc-frm-logger</artifactId>
             <version>${frm.version}</version>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>www.ccclubs</groupId>-->
+        <!--<artifactId>vc-biz-common-srv</artifactId>-->
+        <!--<version>${biz.version}</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+        <!--<groupId>www.ccclubs</groupId>-->
+        <!--<artifactId>vc-biz-pub-orm</artifactId>-->
+        <!--<version>${biz.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-common-srv</artifactId>
-            <version>${biz.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-pub-orm</artifactId>
+            <artifactId>vc-biz-gateway-common-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
     </dependencies>
+
 
 </project>

@@ -22,6 +22,8 @@
         <module>vc-biz-gateway-zotye-srv</module>
         <module>vc-biz-gateway-common-inf</module>
         <module>vc-biz-gateway-common-srv</module>
+        <module>vc-biz-gateway-808-ca-inf</module>
+        <module>vc-biz-gateway-808-ca-srv</module>
     </modules>
 
 

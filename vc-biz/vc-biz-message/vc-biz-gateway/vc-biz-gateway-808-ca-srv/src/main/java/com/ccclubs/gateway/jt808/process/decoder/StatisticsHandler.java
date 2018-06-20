@@ -43,7 +43,14 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             conn = dealClientFirstConnect(ctx, pac);
         }
         if (!conn.isOnline()) {
-            ClientConnCollection.doReconnecte(pac.getHeader().getTerMobile(), (SocketChannel) ctx.channel());
+            String uniqueNo = pac.getHeader().getTerMobile();
+            // 重连
+            LOG.info("数据统计时发现终端({})重新连入系统", uniqueNo);
+            ClientConnCollection.doReconnecte(uniqueNo, (SocketChannel) ctx.channel());
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, (SocketChannel) ctx.channel()).setGatewayType(GatewayType.GATEWAY_808);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+            // 发送至kafka
+            fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         }
 
         conn.increPackageNum();

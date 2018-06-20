@@ -78,6 +78,10 @@ public final class PacUtil {
         if (Objects.nonNull(downPacType)) {
             return false;
         }
+        // TODO 同步VIN码(不做应答)
+        if (UpPacType.REQ_VIN_SYN.getCode() == pacId) {
+            return false;
+        }
         return true;
     }
 
@@ -186,17 +190,17 @@ public final class PacUtil {
     }
 
     public static void main(String[] args) {
-        Short contentAttr = 0x1803;
-        int contentLen = getContentLen(contentAttr);
-        boolean isEncrypt = isEncrypted(contentAttr);
-        boolean isMultiPac = isMultiPac(contentAttr);
-        System.out.println(new StringBuilder()
-                .append("contentLen: ").append(contentLen).append("\n")
-                .append("isEncrypt: ").append(isEncrypt).append("\n")
-                .append("isMultiPac: ").append(isMultiPac).append("\n")
-        .toString());
+//        Short contentAttr = 0x1803;
+//        int contentLen = getContentLen(contentAttr);
+//        boolean isEncrypt = isEncrypted(contentAttr);
+//        boolean isMultiPac = isMultiPac(contentAttr);
+//        System.out.println(new StringBuilder()
+//                .append("contentLen: ").append(contentLen).append("\n")
+//                .append("isEncrypt: ").append(isEncrypt).append("\n")
+//                .append("isMultiPac: ").append(isMultiPac).append("\n")
+//        .toString());
 
-        System.out.println(needNormalAck(0x0100));
+//        System.out.println(needNormalAck(0x0100));
     }
 
 }

@@ -7,18 +7,15 @@ import com.ccclubs.frm.mqtt.MqttAliyunProperties;
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
 import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
-import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.ons.OnsProperties;
-import com.ccclubs.frm.redis.RedisAutoConfiguration;
-import com.ccclubs.gateway.jt808.inf.*;
-import com.ccclubs.gateway.jt808.inf.impl.*;
-import com.ccclubs.gateway.jt808.mina.JT808ServerHandler;
-import com.ccclubs.gateway.jt808.mina.JT808TcpServer;
-import org.apache.mina.core.service.IoHandlerAdapter;
+import com.ccclubs.gateway.common.config.GatewayProperties;
+import com.ccclubs.gateway.common.config.KafkaProperties;
+import com.ccclubs.gateway.common.config.NettyProperties;
+import com.ccclubs.gateway.jt808.TcpServerStarter;
+import com.ccclubs.gateway.jt808.service.MqttMessageProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,7 +23,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 
 import java.io.IOException;
@@ -39,37 +35,29 @@ import java.util.Properties;
  * @create 2017-07-20
  **/
 @SpringBootApplication
-@Import({MybatisConfig.class})
-@ImportAutoConfiguration({OnsProperties.class,MqttAliyunProperties.class, RedisAutoConfiguration.class})
-public class Gateway808SrvApp extends SpringBootServletInitializer {
+@ImportAutoConfiguration({OnsProperties.class, MqttAliyunProperties.class,KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
+public class Gateway808CASrvApp extends SpringBootServletInitializer {
 
-  private static final Logger logger = LoggerFactory.getLogger(Gateway808SrvApp.class);
+  private static final Logger logger = LoggerFactory.getLogger(Gateway808CASrvApp.class);
+
   @Autowired
   private MqttAliyunProperties mqttAliyunProperties;
   @Autowired
   private OnsProperties onsProperties;
 
-  @Value("${jt808Server.maxOfflineTime}")
-  private Integer maxOfflineTime;
-
-  @Value("${jt808Server.port}")
-  private Integer port;
-
-
-  /**
-   * war打包用，相当于web.xml配置
-   */
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-    return application.sources(Gateway808SrvApp.class);
+    return application.sources(Gateway808CASrvApp.class);
   }
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    ConfigurableApplicationContext ctx = SpringApplication.run(Gateway808SrvApp.class, args);
+    ConfigurableApplicationContext ctx = SpringApplication.run(Gateway808CASrvApp.class, args);
     String[] profiles = ctx.getEnvironment().getActiveProfiles();
     for (String p : profiles) {
       logger.info("Env profile:{}", p);
     }
+
+    ctx.getBean(TcpServerStarter.class).start();
   }
 
   @Bean(name = "aliyunMqttClient", initMethod = "start", destroyMethod = "stop")
@@ -106,43 +94,15 @@ public class Gateway808SrvApp extends SpringBootServletInitializer {
     return ONSFactory.createProducer(properties);
   }
 
-  @Bean(name = "jt808TcpServer")
-  public IJT808Server getJT808Server() {
-    JT808TcpServer jt808TcpServer = new JT808TcpServer();
-    jt808TcpServer.setMaxOfflineTime(maxOfflineTime);
-    jt808TcpServer.setPort(port);
-    return jt808TcpServer;
-  }
+  //yaz----------------------------------------
+  /**
+   * 启动Tcp服务器
+   * @return
+   */
+  @Bean(name = "tcpServerStarter", destroyMethod = "stop")
+  public TcpServerStarter getTcpServerStarter() {
 
-  @Bean(name = "jt808ServerHandler")
-  public IoHandlerAdapter getJT808Handler() {
-    return new JT808ServerHandler();
-  }
-
-  @Bean(name = "jt808MessageProcessService")
-  public I808MessageProcessService getMessageProcessService() {
-    return new MessageProcessService();
-  }
-
-  @Bean(name = "jt808GpsDataService")
-  public IGpsDataService getGpsDataService() {
-    return new GpsDataService();
-  }
-
-
-  @Bean(name = "jt808AckService", initMethod = "start")
-  public IAckService getAckService() {
-    AckService ackService = new AckService();
-    ackService.setThreadPool(50);
-    ackService.setCheckRegister(true);
-    ackService.setAck0200PacketDisabled(false);
-    return ackService;
-  }
-
-
-  @Bean(name = "jt808Manager", initMethod = "startServer", destroyMethod = "stopServer")
-  public IT808Manager getJT808Manager() {
-    return new T808Manager();
+    return new TcpServerStarter();
   }
 
 }

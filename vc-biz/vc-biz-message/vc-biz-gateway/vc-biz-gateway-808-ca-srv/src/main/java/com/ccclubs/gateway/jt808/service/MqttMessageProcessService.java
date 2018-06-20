@@ -51,6 +51,10 @@ public class MqttMessageProcessService  implements IMessageProcessService {
 
                 ByteBuf sourceBuf = Unpooled.buffer();
                 sourceBuf.writeBytes(msg.getPayload());
+
+                // 测试代码：
+//                    sourceBuf.writeBytes(ByteBufUtil.decodeHexDump("7E890000160646215611440001F154363731303337390000000007D01A9251061012FF00817E"));
+
                 // 消息转义: 还原消息
                 PacTranslateUtil.translateUpPac(sourceBuf);
 
