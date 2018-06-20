@@ -65,7 +65,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             // 依据不同的校验异常类型，写入不同的错误码
             switch (pac.getPacErrorType()) {
                 case PAC_VALID_ERROR:
-                    expMessageDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode());
+                    expMessageDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode()).setGatewayType(GatewayType.GATEWAY_808.getDes());
                     break;
                 default:
                     break;

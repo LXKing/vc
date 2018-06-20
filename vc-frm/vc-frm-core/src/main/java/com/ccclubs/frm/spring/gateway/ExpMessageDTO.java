@@ -47,6 +47,8 @@ public class ExpMessageDTO implements Serializable {
     // 错误报文时间
     private Long msgTime;
 
+    private String gatewayType;
+
     public Integer getAccess() {
         return access;
     }
@@ -149,6 +151,15 @@ public class ExpMessageDTO implements Serializable {
 
     public ExpMessageDTO setReason(String reason) {
         this.reason = reason;
+        return this;
+    }
+
+    public String getGatewayType() {
+        return gatewayType;
+    }
+
+    public ExpMessageDTO setGatewayType(String gatewayType) {
+        this.gatewayType = gatewayType;
         return this;
     }
 }

@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
@@ -102,6 +103,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 expMessageDTO.setMsgTime(System.currentTimeMillis());
                 expMessageDTO.setCode(pacProcessTrack.getStep() + "")
                         .setVin(pacProcessTrack.getUniqueNo())
+                        .setGatewayType(GatewayType.GATEWAY_808.getDes())
                         .setSourceHex(pacProcessTrack.getSourceHex())
                         .setReason(cause.getMessage());
             }
@@ -113,6 +115,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             expMessageDTO.setMsgTime(System.currentTimeMillis());
             expMessageDTO.setCode(pacProcessTrack.getStep() + "")
                     .setVin(pacProcessTrack.getUniqueNo())
+                    .setGatewayType(GatewayType.GATEWAY_808.getDes())
                     .setSourceHex(pacProcessTrack.getSourceHex())
                     .setReason(cause.getMessage());
         }

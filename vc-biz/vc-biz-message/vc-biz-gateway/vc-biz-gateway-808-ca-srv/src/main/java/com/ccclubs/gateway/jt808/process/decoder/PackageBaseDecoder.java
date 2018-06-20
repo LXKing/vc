@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
@@ -185,6 +186,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         pacProcessTrack.getExpMessageDTO()
                 .setSourceHex(decodeExceptionInfo.getSource())
                 .setVin(decodeExceptionInfo.getUniqueNo())
+                .setGatewayType(GatewayType.GATEWAY_808.getDes())
                 .setIndex(decodeExceptionInfo.getDecodeMarkIndex())
                 .setReason(decodeExceptionInfo.toLogString())
                 .setCode(pacProcessTrack.getStep() + "");
