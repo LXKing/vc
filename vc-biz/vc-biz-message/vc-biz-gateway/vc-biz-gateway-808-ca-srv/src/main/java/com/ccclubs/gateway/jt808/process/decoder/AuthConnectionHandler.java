@@ -16,10 +16,10 @@ import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
-import com.ccclubs.protocol.util.StringUtils;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -77,7 +77,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         if (Objects.isNull(conn)) {
             LOG.error("关闭终端(channelId={})连接时发现连接为空:", channel.id());
         } else {
-            if (StringUtils.notEmpty(conn.getUniqueNo())) {
+            if (StringUtils.isNotEmpty(conn.getUniqueNo())) {
 
                 ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(conn.getUniqueNo(), channel).setGatewayType(GatewayType.GATEWAY_808);
                 KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, conn.getUniqueNo(), connOnlineStatusEvent.toJson());
