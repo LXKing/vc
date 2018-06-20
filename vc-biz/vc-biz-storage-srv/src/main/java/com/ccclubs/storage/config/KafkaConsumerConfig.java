@@ -25,7 +25,7 @@ public class KafkaConsumerConfig {
         ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
-        factory.setConcurrency(10);
+        factory.setConcurrency(2);
         //设置为批量消费
         factory.setBatchListener(true);
         factory.getContainerProperties().setPollTimeout(3000);
