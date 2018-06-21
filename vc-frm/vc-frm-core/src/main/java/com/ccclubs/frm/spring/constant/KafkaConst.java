@@ -29,7 +29,7 @@ public class KafkaConst {
     /*Topic: GB错误数据*/
     public static final String KAFKA_TOPIC_GB_ERROR = "kafka.topic.history.gb.error";
     /*Topic: 808错误数据*/
-    public static final String KAFKA_TOPIC_808_ERROR = "kafka.topic.history.808.error";
+    public static final String KAFKA_TOPIC_808_ERROR = "kafka.topic.history.jt808.error";
     /*Topic: MQTT错误数据*/
     public static final String KAFKA_TOPIC_MQTT_ERROR = "kafka.topic.history.mqtt.error";
     /*Topic: CAN历史数据*/
@@ -44,10 +44,11 @@ public class KafkaConst {
     public static final String KAFKA_TOPIC_JT_POSITION = "kafka.topic.history.jt808.position";
     /*Topic: 808位置异常历史数据*/
     public static final String KAFKA_TOPIC_JT_POSITION_EXP = "kafka.topic.history.jt808.position-exp";
-
-    /*Topic: tbox网络日志异常历史数据*/
+    /*Topic: tbox网络日志历史数据*/
     public static final String KAFKA_TOPIC_TBOX_LOG = "kafka.topic.history.tbox.log";
+    /*Topic: tbox网络日志异常历史数据*/
     public static final String KAFKA_TOPIC_TBOX_LOG_EXP = "kafka.topic.history.tbox.log-exp";
+
     /*--------------------*
      * 网关上行数据 Topic
      *--------------------*/
@@ -57,7 +58,7 @@ public class KafkaConst {
     /*Topic: GB网关正常报文*/
     public static final String KAFKA_TOPIC_GATEWAY_GB_SUCCESS = "kafka.topic.gateway.gb.success";
     /*Topic: 808网关正常报文*/
-    public static final String KAFKA_TOPIC_GATEWAY_808_SUCCESS = "kafka.topic.gateway.808.success";
+    public static final String KAFKA_TOPIC_GATEWAY_808_SUCCESS = "kafka.topic.gateway.jt808.success";
     /*Topic: 车辆上下线数据*/
     public static final String KAFKA_TOPIC_GATEWAY_CONN = "kafka.topic.gateway.conn";
 
@@ -83,19 +84,21 @@ public class KafkaConst {
     public static final String KAFKA_CONSUMER_GROUP_RULE_GB_SUCCESS = "kafka.consumer.group.rule.gb.success";
     /*rule-engine 网关上报错误数据（协议层面） 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_RULE_GATEWAY_ERROR = "kafka.consumer.group.rule.gateway.error";
-    /*rule-engine 808网关上报错误数据（协议层面） 消费者组*/
-    public static final String KAFKA_CONSUMER_GROUP_RULE_808_ERROR = "kafka.consumer.group.rule.808.error";
 
     /*--------------------*
      * 存储服务 消费者组
      *--------------------*/
 
+    /*storage 车机网络日志入库 消费者组*/
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_TBOX_LOG = "kafka.consumer.group.storage.tbox.log";
+    /*storage 车机网络日志入库 消费者组*/
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_TBOX_LOG_EXP = "kafka.consumer.group.storage.tbox.log-exp";
     /*storage GB历史数据入库 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE = "kafka.consumer.group.storage.gb.message";
     /*storage GB错误数据入库 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_GB_ERROR = "kafka.consumer.group.storage.gb.error";
     /*storage 808错误数据入库 消费者组*/
-    public static final String KAFKA_CONSUMER_GROUP_STORAGE_808_ERROR = "kafka.consumer.group.storage.808.error";
+    public static final String KAFKA_CONSUMER_GROUP_STORAGE_808_ERROR = "kafka.consumer.group.storage.jt808.error";
     /*storage CAN历史数据入库 消费者组*/
     public static final String KAFKA_CONSUMER_GROUP_STORAGE_CAN = "kafka.consumer.group.storage.can";
     /*storage CAN异常历史数据入库 消费者组*/

@@ -80,7 +80,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         // add at 2017-11-17 ，兼容长安出行订单下发
         String rfidCode = StringUtils.empty(input.getRfid()) ? "00000000" : input.getRfid();

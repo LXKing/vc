@@ -27,7 +27,7 @@ public class Jt808ErrorMessageStorageImpl implements BaseHistoryInf<ExpMessageDT
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseGbErrorMessageUpsertSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_808_ERROR_MESSAGE_HISTORY
+    private static String base808ErrorMessageUpsertSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_808_ERROR_MESSAGE_HISTORY
             + " (CODE,VIN,ACCESS,MOBILE,TE_NO,TE_TYPE,TE_NUMBER,ICCID,SOURCE_HEX,ERR_INDEX,REASON,MSG_TIME) values (" +
             "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";//1-12
 
@@ -75,8 +75,8 @@ public class Jt808ErrorMessageStorageImpl implements BaseHistoryInf<ExpMessageDT
             return;
         }
         baseImpl.saveOrUpdate(records, this,
-                baseGbErrorMessageUpsertSql, PhoenixConst.PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY);
-        LOGGER.debug("Save gb error end." + records.size());
+                base808ErrorMessageUpsertSql, PhoenixConst.PHOENIX_CAR_808_ERROR_MESSAGE_HISTORY);
+        LOGGER.debug("Save 808 error end." + records.size());
     }
 
 }

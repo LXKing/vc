@@ -3,7 +3,6 @@ package com.ccclubs.storage.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.pub.orm.dto.CsMessage;
 import com.ccclubs.storage.impl.GbMessageStorageImpl;
-import com.ccclubs.storage.util.StorageThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GB_MESSAGE;
  * @create 2018-04-20
  **/
 @Component
-public class GbMessageConsumer{
+public class GbMessageConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(GbMessageConsumer.class);
 
@@ -32,36 +31,136 @@ public class GbMessageConsumer{
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE + "}", topics = "${" + KAFKA_TOPIC_GB_MESSAGE + "}", containerFactory = "batchFactory")
     public void processNor(List<String> messageList) {
-        GbMessageRunner gbMessageRunner=new GbMessageRunner(messageList);
-        StorageThreadPool.getThreadPool().execute(gbMessageRunner);
+        List<CsMessage> csMessageList = new ArrayList<>();
+        for (String message : messageList) {
+            CsMessage csMessage = JSONObject.parseObject(message, CsMessage.class);
+            if (csMessage == null) {
+                continue;
+            }
+            csMessageList.add(csMessage);
+        }
+        try {
+            gbMessageStorage.saveOrUpdate(csMessageList);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        logger.debug("Save nor gbMessage data done:"+messageList.size());
     }
 
 
+    /*private static final String SQL = "UPSERT INTO PHOENIX_CAR_GB_HISTORY " +
+            "(CS_VIN,ADD_TIME,CURRENT_TIME,GB_DATA,CS_ACCESS,CS_PROTOCOL," +
+            "GB_TYPE,CS_VERIFY ) VALUES (" +
+            "?, " + //CS_VIN
+            "?, " + //ADD_TIME
+            "?, " + //CURRENT_TIME
+            "?, " + //GB_DATA
+            "?, " + //CS_ACCESS
+            "?, " + //CS_PROTOCOL
+            "?, " + //GB_TYPE
+            "? " + //CS_VERIFY
+            ")";
 
-    class GbMessageRunner implements Runnable{
-        private List<String> messageList;
+    @Autowired
+    private PhoenixProperties phoenixProperties;
 
-        public GbMessageRunner(List<String> messageList) {
-            this.messageList = messageList;
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_MESSAGE + "}", topics = "${" + KAFKA_TOPIC_GB_MESSAGE + "}", containerFactory = "batchFactory")
+    public void process(List<String> records) {
+        logger.debug("Fetch Size:{}", records.size());
+        logger.debug("CsMessageConsumer start process records of CsMessage. StartTime:{}", System.currentTimeMillis());
+        Connection connection;
+        PreparedStatement preparedStatement;
+        try {
+            Class.forName("org.apache.phoenix.jdbc.PhoenixDriver");
+            connection = DriverManager.getConnection("jdbc:phoenix:" + phoenixProperties.getZk_url());
+            preparedStatement = connection.prepareStatement(SQL);
+        } catch (ClassNotFoundException e) {
+            logger.error(e.getMessage(), e);
+            return;
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            return;
         }
-
-        @Override
-        public void run() {
-            List<CsMessage> csMessageList = new ArrayList<>();
-            for (String message : messageList) {
-                CsMessage csMessage = JSONObject.parseObject(message, CsMessage.class);
-                if (csMessage == null) {
+        try {
+            for (String record : records) {
+                CsMessage csMessage;
+                try {
+                    csMessage = JSONObject.parseObject(record, CsMessage.class);
+                } catch (Exception e) {
                     continue;
                 }
-                csMessageList.add(csMessage);
+                // 构造SQL
+                setPreparedStatement(preparedStatement, csMessage);
+                // 执行，暂不提交
+                preparedStatement.execute();
             }
-            try {
-                gbMessageStorage.saveOrUpdate(csMessageList);
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-            logger.debug("Save nor gbMessage data done:" + messageList.size());
+            // 提交
+            connection.commit();
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            closeAll(connection, preparedStatement);
+            logger.debug("CsMessageConsumer end process records of CsMessage. EndTime:{}", System.currentTimeMillis());
+        }
+
+    }
+
+    private void setPreparedStatement(PreparedStatement preparedStatement, CsMessage csMessage) throws SQLException {
+        preparedStatement.setString(1, csMessage.getCsmVin());
+        preparedStatement.setLong(2, null == csMessage.getCsmAddTime() ? System.currentTimeMillis() : csMessage.getCsmAddTime());
+        if (csMessage.getCsmMsgTime() == null) {
+            preparedStatement.setNull(3, Types.BIGINT);
+        } else {
+            preparedStatement.setLong(3, csMessage.getCsmMsgTime());
+        }
+        preparedStatement.setString(4, csMessage.getCsmData());
+        if (csMessage.getCsmAccess() == null) {
+            preparedStatement.setNull(5, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(5, csMessage.getCsmAccess());
+        }
+        if (convertToInterger(csMessage.getCsmProtocol()) == null) {
+            preparedStatement.setNull(6, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(6, convertToInterger(csMessage.getCsmProtocol()));
+        }
+        if (convertToInterger(csMessage.getCsmType()) == null) {
+            preparedStatement.setNull(7, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(7, convertToInterger(csMessage.getCsmType()));
+        }
+        if (convertToInterger(csMessage.getCsmType()) == null) {
+            preparedStatement.setNull(8, Types.INTEGER);
+        } else {
+            preparedStatement.setInt(8, convertToInterger(csMessage.getCsmType()));
         }
     }
 
+    static Integer convertToInterger(Short param) {
+        Integer result = null;
+        try {
+            result = param.intValue();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public void closeAll(Connection connection,
+                         PreparedStatement preparedStatement) {
+        if (preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }*/
 }

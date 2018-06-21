@@ -86,7 +86,7 @@ kafka:
         position-exp: topic_jt_position_exp    #808位置异常历史数据
       tbox:
         log: topic_tbox_log                    #车机网络日志
-        log-exp: topic_tbox_log_exp            #车机网络日志异常数据
+        log-exp: topic_tbox_log_exp            #车机异常网络日志
 
 ccclubs:
   data:

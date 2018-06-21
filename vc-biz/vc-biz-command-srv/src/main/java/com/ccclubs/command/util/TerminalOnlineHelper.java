@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
+
 /**
  * 下发车辆控制指令前，先检查一下终端是否在线 目前区分808协议 {@link com.ccclubs.protocol.util.ConstantUtils.ONLINE_REDIS_PRE}+SIM卡号，MQTT协议
  * {@link com.ccclubs.protocol.util.ConstantUtils.ONLINE_REDIS_PRE} + 车机号 TODO:后续添加国标协议
@@ -25,7 +27,7 @@ public class TerminalOnlineHelper {
     /**
      * 判断终端是否在线，主要用于控制指令下发
      */
-    public boolean isOnline(CsMachine csMachine) {
+    public boolean isOnline(CsMachine csMachine, String vin) {
         if (null == csMachine) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
@@ -34,12 +36,10 @@ public class TerminalOnlineHelper {
         boolean isOnline = true;
         switch (protocol) {
             case 1:
-                isOnline = (null != redisTemplate.opsForValue()
-                        .get(ConstantUtils.ONLINE_REDIS_PRE + csMachine.getCsmNumber()));
+                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, vin);
                 break;
             case 2:
-                isOnline = (null != redisTemplate.opsForValue()
-                        .get(ConstantUtils.ONLINE_REDIS_PRE + csMachine.getCsmMobile()));
+                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, vin);
                 break;
             default:
                 break;
