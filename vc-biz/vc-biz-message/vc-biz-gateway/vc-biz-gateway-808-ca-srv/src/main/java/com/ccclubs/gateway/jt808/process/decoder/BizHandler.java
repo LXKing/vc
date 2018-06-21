@@ -102,7 +102,7 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
                 } else {
                     // 发送到jt808 的tage上 eg: MQTT_50
                     int functionCode = PacUtil.getFuncCodeFromPenetrateUpMsg(pac);
-                    tag = (-1 == functionCode)?null:MqTagUtils.getTag(MqTagUtils.PROTOCOL_MQTT, functionCode);
+                    tag = (-1 == functionCode)?null:MqTagUtils.getTag(MqTagUtils.PROTOCOL_MQTT, (byte)functionCode);
                     onsMsg = ByteBufUtil.hexDump(pac.getBody().getContent());
                 }
             } else if (Objects.nonNull(MQTTMsgType.getByCode(msgTypeCode))) {
