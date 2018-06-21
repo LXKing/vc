@@ -60,7 +60,7 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
                 /*inbound*/
                 // 空闲处理
-                .addLast("idleHandler", new IdleStateHandler(300,0,0))
+                .addLast("idleHandler", new IdleStateHandler(360,0,0))
                 // 记录监视的车辆报文
                 .addLast("preHandler", preProcessHandler)
                 // 数据包解码
