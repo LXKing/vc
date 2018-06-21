@@ -111,7 +111,11 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
             case ACK_REGISTER:
                 ackPac = AckBuilder.fromSourcePac(pac);
                 // TODO 暂且现在所有终端的鉴权码都是同一个
-                ackPac.getBody().setContent(downPacType.getFunction().apply(PackageCons.GLOBAL_AUTH_CODE));
+                ByteBuf contentBuf = Unpooled.buffer();
+                contentBuf.writeShort(pac.getHeader().getPacSerialNo())
+                        .writeByte(AckReaultType.SUCCESS.ordinal() & 0xFF)
+                        .writeBytes(PackageCons.GLOBAL_AUTH_CODE.getBytes());
+                ackPac.getBody().setContent(contentBuf);
                 break;
                 // TODO 同步VIN码
                 default:
