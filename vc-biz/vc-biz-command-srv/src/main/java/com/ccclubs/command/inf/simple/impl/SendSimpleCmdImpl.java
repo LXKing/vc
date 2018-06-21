@@ -93,7 +93,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         /*****************************************************/
         /******************** 适配（低）终端版本 *****************/

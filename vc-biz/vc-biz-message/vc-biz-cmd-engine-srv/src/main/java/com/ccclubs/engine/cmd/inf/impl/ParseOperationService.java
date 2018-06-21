@@ -679,7 +679,7 @@ public class ParseOperationService implements IParseDataService {
         updateRemoteService.update(csRemote);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       logger.error(e.getMessage(), e);
     }
   }
@@ -701,8 +701,8 @@ public class ParseOperationService implements IParseDataService {
           .equals(srvHost.getShTransformRemote())) {
         return;
       }
-      String transTopic = StringUtils.empty(srvHost.getShTransformRemote()) ? topic
-          : srvHost.getShTransformRemote().trim();
+      String transTopic = StringUtils.empty(srvHost.getShTopic()) ? topic
+          : srvHost.getShTopic().trim();
       // 转发远程控制结果JSON结构
       Message mqMessage = messageFactory.getMessage(transTopic,
           MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
@@ -711,7 +711,7 @@ public class ParseOperationService implements IParseDataService {
         client.sendOneway(mqMessage);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       logger.error(e.getMessage(), e);
     }
   }

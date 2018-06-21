@@ -68,7 +68,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         // 目前仅支持E200车型的升级
         if (E200_MODEL != csVehicle.getCsvModel()) {

@@ -49,7 +49,7 @@ import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_SIM
 /**
  * 处理网关gateway发送出来的消息
  * 订阅Topic：ser
- * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
+ * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT_0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
  * 备注：包括808信息，国标信息，分时租赁信息
  */
 public class MqMessageProcessService implements IMqMessageProcessService {

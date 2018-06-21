@@ -3,7 +3,6 @@ package com.ccclubs.storage.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.pub.orm.dto.Jt808PositionData;
 import com.ccclubs.storage.impl.Jt808StorageImpl;
-import com.ccclubs.storage.util.StorageThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ import static com.ccclubs.frm.spring.constant.KafkaConst.*;
  * @Description: 读取Jt808报文数据通过Phoenix存储到HBASE！
  */
 @Component
-public class Jt808Consumer{
+public class Jt808Consumer {
 
     private static final Logger logger = LoggerFactory.getLogger(Jt808Consumer.class);
 
@@ -33,42 +32,26 @@ public class Jt808Consumer{
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION + "}", topics = "${" + KAFKA_TOPIC_JT_POSITION + "}", containerFactory = "batchFactory")
     public void processNor(List<String> messageList) {
-        Jt808Runner jt808Runner=new Jt808Runner(messageList);
-        StorageThreadPool.getThreadPool().execute(jt808Runner);
+        List<Jt808PositionData> jt808PositionDataList = new ArrayList<>();
+        for (String message : messageList) {
+            Jt808PositionData jt808PositionData = JSONObject.parseObject(message, Jt808PositionData.class);
+            if (jt808PositionData == null) {
+                continue;
+            }
+            jt808PositionDataList.add(jt808PositionData);
+        }
+        try {
+            jt808Storage.saveOrUpdate(jt808PositionDataList);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
+        logger.debug("Save nor jt808 data done:"+messageList.size());
     }
 
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_JT_POSITION_EXP + "}", topics = "${" + KAFKA_TOPIC_JT_POSITION_EXP + "}", containerFactory = "batchFactory")
     public void processExp(List<String> messageList) {
         this.processNor(messageList);
-        logger.debug("Save exp jt808 data done:" + messageList.size());
-    }
-
-
-
-    class Jt808Runner implements Runnable{
-        private List<String> messageList;
-
-        public Jt808Runner(List<String> messageList) {
-            this.messageList = messageList;
-        }
-
-        @Override
-        public void run() {
-            List<Jt808PositionData> jt808PositionDataList = new ArrayList<>();
-            for (String message : messageList) {
-                Jt808PositionData jt808PositionData = JSONObject.parseObject(message, Jt808PositionData.class);
-                if (jt808PositionData == null) {
-                    continue;
-                }
-                jt808PositionDataList.add(jt808PositionData);
-            }
-            try {
-                jt808Storage.saveOrUpdate(jt808PositionDataList);
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
-            logger.debug("Save nor jt808 data done:" + messageList.size());
-        }
+        logger.debug("Save exp jt808 data done:"+messageList.size());
     }
 
 }

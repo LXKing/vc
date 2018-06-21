@@ -5,13 +5,7 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.jt808.inf.IGpsDataService;
-import com.ccclubs.protocol.dto.jt808.JT_0301;
-import com.ccclubs.protocol.dto.jt808.JT_0302;
-import com.ccclubs.protocol.dto.jt808.JT_0303;
-import com.ccclubs.protocol.dto.jt808.JT_0701;
-import com.ccclubs.protocol.dto.jt808.JT_0702;
-import com.ccclubs.protocol.dto.jt808.JT_0900;
-import com.ccclubs.protocol.dto.jt808.T808Message;
+import com.ccclubs.protocol.dto.jt808.*;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
@@ -178,4 +172,6 @@ public class GpsDataService implements IGpsDataService {
       logger.error("未知的处理类型:" + Integer.toHexString(headerType));
     }
   }
+
+
 }

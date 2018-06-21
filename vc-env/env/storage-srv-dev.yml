@@ -34,6 +34,10 @@ kafka:
         jt808:
           position: cgrp_storage_jt_position              #规则引擎转发808位置正常数据 消费者组
           position-exp: cgrp_storage_jt_position_exp      #规则引擎转发808位置异常数据 消费者组
+          error: cgrp_storage_808_err                     #规则引擎转发808错误数据    消费者组
+        tbox:
+          log: cgrp_storage_tbox_log                      #车机网络日志             消费者组
+          log-exp: cgrp_storage_tbox_log_exp              #车机异常网络日志          消费者组
   topic:
     history:
       gb:
@@ -47,6 +51,10 @@ kafka:
       jt808:
         position: topic_jt_position
         position-exp: topic_jt_position_exp
+        error: topic_808_message_err
+      tbox:
+        log: topic_tbox_log
+        log-exp: topic_tbox_log_exp
 
 dubbo:
   scan:

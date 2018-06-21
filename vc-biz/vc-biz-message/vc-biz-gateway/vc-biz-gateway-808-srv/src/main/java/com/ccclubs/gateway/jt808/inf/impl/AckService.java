@@ -259,10 +259,10 @@ public class AckService implements IAckService {
 
       getMessageSender().send808Message(ts);
     } else if (msgType == 0x0001) {
-      // 如果是终端通用应答，就更新数据库的指令状态为已应答
+      // 如果是终端通用应答，就更新数据库的指令状态为已应答(TODO)
       JT_0001 answerData = (JT_0001) msgFromTerminal.getMessageContents();
       // 转发 0001 非 0x8900 的通用应答，0x8900为分时租赁透传ID
-      if ((answerData.getResponseMessageId() & 0xFFFF) == 0x8900) {
+      if ((answerData.getResponseMessageId() & 0xFFFF) != 0x8900) {
         transferToMQ(msgFromTerminal, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, msgType));
       }
     } else if (msgType == 0x01F0) {
@@ -343,7 +343,7 @@ public class AckService implements IAckService {
       // 终端对车门控制的应答
       JT_0500 answerData = (JT_0500) msgFromTerminal.getMessageContents();
       short platformSn = answerData.getResponseMessageSerialNo();
-    } else if (msgType == 0x0104) {
+    } else if (msgType == 0x0104) {//TODO
       // 查询终端参数应答
       JT_8001 echoData = new JT_8001();
       echoData.setResponseMessageSerialNo(msgFromTerminal.getHeader().getMessageSerialNo());

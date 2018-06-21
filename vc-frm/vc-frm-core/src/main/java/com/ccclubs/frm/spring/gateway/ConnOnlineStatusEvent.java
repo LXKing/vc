@@ -19,6 +19,11 @@ public class ConnOnlineStatusEvent implements Serializable {
     private String vin;
 
     /**
+     * tbox
+     */
+    private String simNo;
+
+    /**
      * 服务端IP
      */
     private String serverIp;
@@ -41,7 +46,7 @@ public class ConnOnlineStatusEvent implements Serializable {
     private Long timestamp;
 
     /**
-     * 网关类型：固定为国标
+     * 网关类型：808,GB,MQTT
      */
     private String gatewayType = "GB";
 
@@ -56,6 +61,14 @@ public class ConnOnlineStatusEvent implements Serializable {
     public ConnOnlineStatusEvent setVin(String vin) {
         this.vin = vin;
         return this;
+    }
+
+    public String getSimNo() {
+        return simNo;
+    }
+
+    public void setSimNo(String simNo) {
+        this.simNo = simNo;
     }
 
     public String getServerIp() {
