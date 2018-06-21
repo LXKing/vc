@@ -25,7 +25,7 @@ public class ClientConnCollection {
      *      key=channelId, value=uniqueNo
      *      TODO 对channelId重复校验，防止由于uniqueNo异常导致前一个连接断开
      */
-    private static final ConcurrentHashMap<ChannelId, String> CHANNELID_TO_CLIENT = new ConcurrentHashMap<>(1000);
+    private static final ConcurrentHashMap<ChannelId, String> CHANNELID_TO_UNIQUENO = new ConcurrentHashMap<>(1000);
 
     /**
      * 终端唯一标识与终端连接缓存的映射
@@ -42,7 +42,7 @@ public class ClientConnCollection {
     public static AbstractClientConn getByChannelId(ChannelId id) {
         Objects.requireNonNull(id);
 
-        String uniqueNo = CHANNELID_TO_CLIENT.get(id);
+        String uniqueNo = CHANNELID_TO_UNIQUENO.get(id);
         if (StringUtils.isNotEmpty(uniqueNo)) {
             return UNIQUENO_TO_CLIENT.get(uniqueNo);
         }
@@ -61,12 +61,12 @@ public class ClientConnCollection {
             // 新建一个连接
             ClientSocketCollection.put(uniqueNo, newChannel);
             UNIQUENO_TO_CLIENT.put(uniqueNo, abstractClientConn);
-            CHANNELID_TO_CLIENT.put(newChannel.id(), uniqueNo);
+            CHANNELID_TO_UNIQUENO.put(newChannel.id(), uniqueNo);
         } else {
             conn.markChannelActive();
             if (ClientSocketCollection.existed(uniqueNo, newChannel)) {
                 // 同一连接时
-                CHANNELID_TO_CLIENT.put(newChannel.id(), uniqueNo);
+                CHANNELID_TO_UNIQUENO.put(newChannel.id(), uniqueNo);
             } else {
                 LOG.warn("创建新连接({})时发现连接已存在", uniqueNo);
                 // 1. 移除原连接映射
@@ -75,7 +75,7 @@ public class ClientConnCollection {
 
                 // 2. 连接已存在，则释放原来的连接，使用新连接
                 ClientSocketCollection.updateAndCloseOld(uniqueNo, newChannel);
-                CHANNELID_TO_CLIENT.put(newChannel.id(), uniqueNo);
+                CHANNELID_TO_UNIQUENO.put(newChannel.id(), uniqueNo);
             }
         }
         return conn;
@@ -91,7 +91,7 @@ public class ClientConnCollection {
             // 关闭连接通道
             ClientSocketCollection.delete(conn.getUniqueNo());
         }
-        CHANNELID_TO_CLIENT.remove(channel.id());
+        CHANNELID_TO_UNIQUENO.remove(channel.id());
     }
 
     /**
@@ -107,14 +107,14 @@ public class ClientConnCollection {
 
         if (ClientSocketCollection.existed(uniqueNo, channel)) {
             // 同一连接时
-            CHANNELID_TO_CLIENT.put(channel.id(), uniqueNo);
+            CHANNELID_TO_UNIQUENO.put(channel.id(), uniqueNo);
         } else {
             // 1. 移除原连接映射
             SocketChannel oldChannel = ClientSocketCollection.get(uniqueNo);
             removeChannelId(oldChannel);
             // 连接已存在，则释放原来的连接，使用新连接
             ClientSocketCollection.updateAndCloseOld(uniqueNo, channel);
-            CHANNELID_TO_CLIENT.put(channel.id(), uniqueNo);
+            CHANNELID_TO_UNIQUENO.put(channel.id(), uniqueNo);
         }
     }
 
@@ -126,7 +126,7 @@ public class ClientConnCollection {
             conn.markChannelClosed();
         }
         ClientSocketCollection.delete(uniqueNo);
-        CHANNELID_TO_CLIENT.remove(channel.id());
+        CHANNELID_TO_UNIQUENO.remove(channel.id());
         UNIQUENO_TO_CLIENT.remove(uniqueNo);
         return true;
     }
@@ -154,7 +154,7 @@ public class ClientConnCollection {
 
     private static void removeChannelId(SocketChannel channel) {
         if (Objects.nonNull(channel)) {
-            CHANNELID_TO_CLIENT.remove(channel.id());
+            CHANNELID_TO_UNIQUENO.remove(channel.id());
         }
     }
 
@@ -179,10 +179,10 @@ public class ClientConnCollection {
     @Deprecated
     public static List<String> getAllChannelIdWithEmptyConnList() {
         List<String> simList = new ArrayList<>();
-        Set<ChannelId> channelIds = CHANNELID_TO_CLIENT.keySet();
+        Set<ChannelId> channelIds = CHANNELID_TO_UNIQUENO.keySet();
         for (ChannelId id :
                 channelIds) {
-            String idSim = CHANNELID_TO_CLIENT.get(id);
+            String idSim = CHANNELID_TO_UNIQUENO.get(id);
             boolean isExist = false;
             for (String sim:
             UNIQUENO_TO_CLIENT.keySet()) {
