@@ -9,6 +9,7 @@ import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.frm.spring.constant.OnsConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
+import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
@@ -64,14 +65,29 @@ public class OnlineStatusEventConsumer {
             topics = "${" + KAFKA_TOPIC_GATEWAY_CONN + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
         for (String record : records) {
+
             ConnOnlineStatusEvent event = JSONObject.parseObject(record, ConnOnlineStatusEvent.class);
             // 更新缓存-当前车辆在线情况
+            String eventKey = null;
+            switch (event.getGatewayType()) {
+                case GatewayType.GATEWAY_GB:
+                    eventKey = event.getVin();
+                    break;
+                case GatewayType.GATEWAY_808:
+                    eventKey = event.getSimNo();
+                    break;
+                case GatewayType.GATEWAY_MQTT:
+                    eventKey = event.getTeNumber();
+                    break;
+                    default:
+                        break;
+            }
             if (event.isOnline()) {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), event.getVin());
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), event.getVin(), event);
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, eventKey);
             } else {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), event.getVin());
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), event.getVin(), event);
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, eventKey);
             }
             //转发上下线事件到业务平台
             transferToOns(event);

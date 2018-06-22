@@ -55,7 +55,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 // 记录监视的车辆报文
                 .addLast("preHandler", preProcessHandler)
                 // 解码
-                .addLast("gbDecoder", new GBLengthFieldFrameDecoder())
+                .addLast("gbDecoder", new GBLengthFieldFrameDecoder(4096))
                 // 数据包校验
                 .addLast("validateHandler", packageValidateHandler)
                 // 连接数据统计

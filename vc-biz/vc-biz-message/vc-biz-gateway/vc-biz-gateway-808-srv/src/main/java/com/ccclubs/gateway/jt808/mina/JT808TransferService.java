@@ -2,13 +2,14 @@ package com.ccclubs.gateway.jt808.mina;
 
 import com.ccclubs.gateway.jt808.inf.IJT808Server;
 import com.ccclubs.gateway.jt808.inf.IJT808TransferService;
-import java.util.Collection;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 
 /**

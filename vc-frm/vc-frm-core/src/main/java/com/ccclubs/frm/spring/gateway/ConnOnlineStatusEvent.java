@@ -19,9 +19,14 @@ public class ConnOnlineStatusEvent implements Serializable {
     private String vin;
 
     /**
-     * tbox
+     * SIM 卡号
      */
     private String simNo;
+
+    /**
+     * 车机号
+     */
+    private String teNumber;
 
     /**
      * 服务端IP
@@ -61,14 +66,6 @@ public class ConnOnlineStatusEvent implements Serializable {
     public ConnOnlineStatusEvent setVin(String vin) {
         this.vin = vin;
         return this;
-    }
-
-    public String getSimNo() {
-        return simNo;
-    }
-
-    public void setSimNo(String simNo) {
-        this.simNo = simNo;
     }
 
     public String getServerIp() {
@@ -113,6 +110,24 @@ public class ConnOnlineStatusEvent implements Serializable {
 
     public ConnOnlineStatusEvent setGatewayType(String gatewayType) {
         this.gatewayType = gatewayType;
+        return this;
+    }
+
+    public String getSimNo() {
+        return simNo;
+    }
+
+    public ConnOnlineStatusEvent setSimNo(String simNo) {
+        this.simNo = simNo;
+        return this;
+    }
+
+    public String getTeNumber() {
+        return teNumber;
+    }
+
+    public ConnOnlineStatusEvent setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
         return this;
     }
 }

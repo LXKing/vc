@@ -4,10 +4,11 @@ import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.gateway.jt808.inf.IJT808Server;
 import com.ccclubs.protocol.dto.jt808.SL_Update;
 import com.ccclubs.protocol.dto.jt808.T808Message;
-import javax.annotation.Resource;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
 
 /**
  * 处理远程控制指令，接收mqtt消息，通过0x8900转发成808命令 FIXME：808网关只发送中导升级指令，拼装好的808消息格式（7E打头的数据）

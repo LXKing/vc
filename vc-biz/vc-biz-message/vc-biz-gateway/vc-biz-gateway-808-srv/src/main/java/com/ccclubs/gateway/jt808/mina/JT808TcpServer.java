@@ -3,8 +3,6 @@ package com.ccclubs.gateway.jt808.mina;
 
 import com.ccclubs.gateway.jt808.dto.GpsConnection;
 import com.ccclubs.gateway.jt808.inf.IJT808Server;
-import java.net.InetSocketAddress;
-import java.util.Collection;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.service.IoAcceptor;
 import org.apache.mina.core.session.IdleStatus;
@@ -15,6 +13,8 @@ import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import java.net.InetSocketAddress;
+import java.util.Collection;
 
 /**
  * 基于tcp的808服务器

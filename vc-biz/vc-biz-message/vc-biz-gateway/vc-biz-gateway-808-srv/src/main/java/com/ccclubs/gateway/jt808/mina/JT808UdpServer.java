@@ -3,11 +3,6 @@ package com.ccclubs.gateway.jt808.mina;
 import com.ccclubs.gateway.jt808.dto.GlobalConfig;
 import com.ccclubs.gateway.jt808.dto.GpsConnection;
 import com.ccclubs.gateway.jt808.inf.IJT808Server;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.IoSession;
@@ -17,6 +12,12 @@ import org.apache.mina.transport.socket.DatagramSessionConfig;
 import org.apache.mina.transport.socket.nio.NioDatagramAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 基于udp的808服务器

@@ -2,23 +2,13 @@ package com.ccclubs.gateway.jt808.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IMessageSender;
-import com.ccclubs.common.modify.UpdateTerminalService;
-import com.ccclubs.protocol.dto.jt808.JT_0001;
-import com.ccclubs.protocol.dto.jt808.JT_0100;
-import com.ccclubs.protocol.dto.jt808.JT_0102;
-import com.ccclubs.protocol.dto.jt808.JT_0201;
-import com.ccclubs.protocol.dto.jt808.JT_0500;
-import com.ccclubs.protocol.dto.jt808.JT_8001;
-import com.ccclubs.protocol.dto.jt808.JT_80F4;
-import com.ccclubs.protocol.dto.jt808.JT_8100;
-import com.ccclubs.protocol.dto.jt808.JT_81F4;
-import com.ccclubs.protocol.dto.jt808.T808Message;
-import com.ccclubs.protocol.dto.jt808.T808MessageHeader;
+import com.ccclubs.protocol.dto.jt808.*;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
@@ -26,15 +16,16 @@ import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsTerminal;
 import com.ccclubs.pub.orm.model.CsVehicle;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.annotation.Resource;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 
 /**

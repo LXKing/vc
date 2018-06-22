@@ -1,8 +1,9 @@
 package com.ccclubs.gateway.jt808.inf;
 
 import com.ccclubs.gateway.jt808.dto.GpsConnection;
-import java.util.Collection;
 import org.apache.mina.core.session.IoSession;
+
+import java.util.Collection;
 
 public interface IJT808Server {
 

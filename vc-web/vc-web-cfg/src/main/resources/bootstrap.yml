@@ -17,8 +17,7 @@ spring:
           username: zhangkejiang
           password: ss123456
           #取分支 默认master
-          default-label: feature-jhy
-
+          default-label: develop
 
 encrypt:
   keyStore:
