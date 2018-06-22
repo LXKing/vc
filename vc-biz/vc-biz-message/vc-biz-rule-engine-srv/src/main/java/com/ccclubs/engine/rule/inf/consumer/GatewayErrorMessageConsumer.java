@@ -3,9 +3,9 @@ package com.ccclubs.engine.rule.inf.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
-import com.ccclubs.frm.spring.constant.Gateway;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
@@ -53,13 +53,13 @@ public class GatewayErrorMessageConsumer {
     public void process(String record) {
         ExpMessageDTO dto = JSONObject.parseObject(record, ExpMessageDTO.class);
         switch (dto.getGatewayType()) {
-            case Gateway.GB:
+            case GatewayType.GATEWAY_GB:
                 processGb(dto);
                 break;
-            case Gateway.JT808:
+            case GatewayType.GATEWAY_808:
                 processJt808(dto);
                 break;
-            case Gateway.MQTT:
+            case GatewayType.GATEWAY_MQTT:
                 processMqtt(dto);
                 break;
         }

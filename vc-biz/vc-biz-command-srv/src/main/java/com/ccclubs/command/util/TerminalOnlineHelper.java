@@ -2,7 +2,7 @@ package com.ccclubs.command.util;
 
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.pub.orm.model.CsMachine;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -36,10 +36,10 @@ public class TerminalOnlineHelper {
         boolean isOnline = true;
         switch (protocol) {
             case 1:
-                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, vin);
+                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE + GatewayType.COLON + GatewayType.GATEWAY_MQTT, csMachine.getCsmNumber());
                 break;
             case 2:
-                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE, vin);
+                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE + GatewayType.COLON + GatewayType.GATEWAY_808, csMachine.getCsmMobile());
                 break;
             default:
                 break;
