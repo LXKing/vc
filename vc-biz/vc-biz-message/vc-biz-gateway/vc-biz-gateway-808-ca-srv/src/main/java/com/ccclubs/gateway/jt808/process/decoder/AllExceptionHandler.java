@@ -10,6 +10,7 @@ import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -102,7 +103,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
                 expMessageDTO.setMsgTime(System.currentTimeMillis());
                 expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                        .setVin(pacProcessTrack.getUniqueNo())
+                        .setVin(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()))
                         .setGatewayType(GatewayType.GATEWAY_808.getDes())
                         .setSourceHex(pacProcessTrack.getSourceHex())
                         .setReason(cause.getMessage());
@@ -114,7 +115,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
             expMessageDTO.setMsgTime(System.currentTimeMillis());
             expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                    .setVin(pacProcessTrack.getUniqueNo())
+                    .setVin(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()))
                     .setGatewayType(GatewayType.GATEWAY_808.getDes())
                     .setSourceHex(pacProcessTrack.getSourceHex())
                     .setReason(cause.getMessage());
@@ -127,7 +128,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR, pacProcessTrack.getUniqueNo(), pacProcessTrack.getExpMessageDTO().toJson());
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR, PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()), pacProcessTrack.getExpMessageDTO().toJson());
             context.pipeline().fireChannelRead(new AbstractChannelInnerMsg().setInnerMsgType(InnerMsgType.TASK_KAFKA).setMsg(task));
         }
 

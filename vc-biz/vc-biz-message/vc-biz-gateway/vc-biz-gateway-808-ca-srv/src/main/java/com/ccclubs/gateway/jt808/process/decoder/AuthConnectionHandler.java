@@ -16,6 +16,7 @@ import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -79,8 +80,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         } else {
             if (StringUtils.isNotEmpty(conn.getUniqueNo())) {
 
-                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(conn.getUniqueNo(), channel).setGatewayType(GatewayType.GATEWAY_808);
-                KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, conn.getUniqueNo(), connOnlineStatusEvent.toJson());
+                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(PacUtil.trim0InMobile(conn.getUniqueNo()), channel).setGatewayType(GatewayType.GATEWAY_808);
+                KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, PacUtil.trim0InMobile(conn.getUniqueNo()), connOnlineStatusEvent.toJson());
 
                 fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             }
@@ -188,8 +189,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 LOG.info("认证时发现终端({})首次连入系统", uniqueNo);
             }
 
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel).setGatewayType(GatewayType.GATEWAY_808);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(PacUtil.trim0InMobile(uniqueNo), channel).setGatewayType(GatewayType.GATEWAY_808);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, PacUtil.trim0InMobile(uniqueNo), connOnlineStatusEvent.toJson());
             // 发送至kafka
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         }
