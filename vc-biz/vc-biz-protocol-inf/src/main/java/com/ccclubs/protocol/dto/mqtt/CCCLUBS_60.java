@@ -1409,6 +1409,27 @@ public class CCCLUBS_60 implements IMessageBody {
   }
 
 
+  /**
+   * 获取车辆启动控制状态
+   **/
+  public Integer getControlStatus() {
+    IMachineAdditionalItem additionalItem = null;
+    for (IMachineAdditionalItem item : getAdditionals()) {
+      if ((item.getAdditionalId() & 0xFF) == 208) {
+        additionalItem = item;
+        break;
+      }
+    }
+    if (additionalItem != null) {
+      MachineAdditional_ControlStatusWithMask controlStatusWithMask
+              = (MachineAdditional_ControlStatusWithMask) additionalItem;
+      return ((controlStatusWithMask.getMask()<<8) +controlStatusWithMask.getControlStatus());
+    } else {
+      return null;
+    }
+  }
+
+
   @Override
   public byte[] WriteToBytes() {
     MyBuffer buff = new MyBuffer();

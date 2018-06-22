@@ -31,8 +31,8 @@
 
 		<!--jdbc的数据库连接 -->
 		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
-						connectionURL="jdbc:mysql://121.199.49.206:3306/ccclubs_data_center"
-						userId="zkj_user" password="kANXZYqf2UzghVY7DnjP">
+						connectionURL="jdbc:mysql://121.43.56.25:3322/ccclubs_paycenter"
+						userId="jhy_user" password="jhy@2017">
 		</jdbcConnection>
 
 
@@ -105,7 +105,7 @@
 		</javaClientGenerator>
 
 
-		<table tableName="cs_state" schema="">
+		<table tableName="unionpay_transfer_config" schema="">
 			<!-- <generatedKey column="id" sqlStatement="select  replace(uuid(),'-','')   from dual" identity="false"/> -->
 		</table>
 		<!--<table tableName="cs_his_machine_relation" schema=""></table>

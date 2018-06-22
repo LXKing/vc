@@ -173,4 +173,6 @@ public class GpsDataService implements IGpsDataService {
       logger.error("未知的处理类型:" + Integer.toHexString(headerType));
     }
   }
+
+
 }

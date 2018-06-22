@@ -28,21 +28,18 @@ public class GbErrorMessageConsumer {
     @Autowired
     GbErrorMessageStorageImpl gbErrorMessageStorage;
 
-    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_ERROR + "}", topics = "${" + KAFKA_TOPIC_GB_ERROR + "}", containerFactory = "batchFactory")
-    public void processNor(List<String> messageList) {
+    @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_STORAGE_GB_ERROR + "}", topics = "${" + KAFKA_TOPIC_GB_ERROR + "}")
+    public void processNor(String message) {
         List<ExpMessageDTO> expMessageDTOList = new ArrayList<>();
-        for (String message : messageList) {
             ExpMessageDTO expMessageDTO = JSONObject.parseObject(message, ExpMessageDTO.class);
             if (expMessageDTO == null) {
-                continue;
+                return;
             }
             expMessageDTOList.add(expMessageDTO);
-        }
         try {
             gbErrorMessageStorage.saveOrUpdate(expMessageDTOList);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
-        LOGGER.debug("Save nor gbMessage data done:" + messageList.size());
     }
 }

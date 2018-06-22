@@ -10,6 +10,8 @@ import java.io.Serializable;
  * @create 2018-05-15
  **/
 public class ExpMessageDTO implements Serializable {
+    //网关类型
+    private String gatewayType;
 
     // 错误类型
     private String code;
@@ -46,8 +48,6 @@ public class ExpMessageDTO implements Serializable {
 
     // 错误报文时间
     private Long msgTime;
-
-    private String gatewayType;
 
     public Integer getAccess() {
         return access;

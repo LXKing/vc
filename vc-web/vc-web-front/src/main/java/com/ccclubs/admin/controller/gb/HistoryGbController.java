@@ -94,7 +94,14 @@ public class HistoryGbController {
             historyGb.setCsVin(dto.getVin());
             historyGb.setCsProtocol(dto.getProtocol());
             historyGb.setCsVerify(dto.getVerify());
-            historyGb.setCurrentTime(new Date(dto.getCurrentTime()));
+            //
+            Long current = DateTimeUtil.date2UnixFormat("1970-01-01 08:00:00", DateTimeUtil.UNIX_FORMAT);
+            //
+            if (dto.getCurrentTime() - current <= 0) {
+                historyGb.setCurrentTime(new Date(dto.getAddTime()));
+            } else {
+                historyGb.setCurrentTime(new Date(dto.getCurrentTime()));
+            }
             historyGb.setGbData(dto.getSourceHex());
             historyGb.setGbType(dto.getMessageType());
             historyGbList.add(historyGb);

@@ -14,7 +14,7 @@ import java.util.Collection;
 @Scope("prototype")
 public class ReportThread implements Runnable {
 
-    private static final Logger logger= LoggerFactory.getLogger(ReportThread.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReportThread.class);
 
     private String baseName;
     private Collection list;
@@ -27,7 +27,7 @@ public class ReportThread implements Runnable {
 
     @Override
     public void run() {
-        reportUtil.doReport(baseName,list,reportParam,userUuid);
+        reportUtil.doReport(baseName, list, reportParam, userUuid);
     }
 
     public String getBaseName() {

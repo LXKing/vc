@@ -172,6 +172,8 @@ public class TransformUtils {
         //Alban于2018年4月9日添加了手刹状态与自动驾驶状态
         terminalStatus.setAutopilot(mqtt_68_03.getCcclubs_60().getAutopilot());
         terminalStatus.setHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
+        //Alban 于2018年6月12日添加了钥匙状态
+        terminalStatus.setCssKey(mqtt_68_03.getKeyStatus());
         return terminalStatus;
     }
 

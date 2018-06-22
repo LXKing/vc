@@ -44,7 +44,7 @@ public class GbMessageConsumer {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        logger.debug("Save nor gbMessage data done:" + messageList.size());
+        logger.debug("Save nor gbMessage data done:"+messageList.size());
     }
 
 

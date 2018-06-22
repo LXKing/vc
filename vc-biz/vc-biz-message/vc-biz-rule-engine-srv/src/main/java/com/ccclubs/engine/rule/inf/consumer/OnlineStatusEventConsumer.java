@@ -11,6 +11,8 @@ import com.ccclubs.frm.spring.constant.OnsConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
+import com.ccclubs.protocol.dto.online.OnlineConnection;
+import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_CONN;
@@ -31,6 +34,7 @@ import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
 /**
  * 车辆上下线监听
  * 数据来自Gateway
+ *
  * @author jianghaiyang
  * @create 2018-05-10
  **/
@@ -79,11 +83,11 @@ public class OnlineStatusEventConsumer {
                         break;
             }
             if (event.isOnline()) {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, eventKey);
                 redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, eventKey);
             } else {
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, eventKey);
                 redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, eventKey);
             }
             //转发上下线事件到业务平台
             transferToOns(event);
@@ -103,6 +107,12 @@ public class OnlineStatusEventConsumer {
             jsonObject.put("vin", event.getVin());
             jsonObject.put("timestamp", event.getTimestamp());
             jsonObject.put("online", event.isOnline());
+
+            /*// 记录终端在线情况
+            redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + event.getSimNo(),
+                    new OnlineConnection(event.getSimNo(), event.getClientIp(), event.getServerIp(),
+                            System.currentTimeMillis()),
+                    ConstantUtils.ONLINE_IDE_TIME, TimeUnit.MILLISECONDS);*/
             // 发送到ONS（长安业务组平台）
             try {
                 Message onsMessage = OnsMessageFactory.getProtocolMessage(srvHost.getShTopic().trim(),

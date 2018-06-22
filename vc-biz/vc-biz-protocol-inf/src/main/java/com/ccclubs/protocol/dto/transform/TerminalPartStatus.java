@@ -90,6 +90,20 @@ public class TerminalPartStatus implements Serializable {
    */
   private BigDecimal cssLatitudeMin;
 
+  /**
+   * 控制状态
+   * */
+  private Integer controlStatus;
+
+
+  public Integer getControlStatus() {
+    return controlStatus;
+  }
+
+  public void setControlStatus(Integer controlStatus) {
+    this.controlStatus = controlStatus;
+  }
+
   public Long getCssCurrentTime() {
     return cssCurrentTime;
   }

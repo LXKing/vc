@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 /**
@@ -28,11 +29,11 @@ public class CanStorageImpl implements BaseHistoryInf<CsCan> {
     @Autowired
     private BaseInfImpl baseImpl;
 
-    private static String baseCanUpsertNorSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR + " (" +
+    private static String baseCanUpsertNorSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR+" (" +
             "VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME" +
             " ) values (" +
             "?, ?, ?, ?, ?, ?, ?, ? )";//1-8
-    private static String baseCanUpsertExpSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP + " (" +
+    private static String baseCanUpsertExpSql = "UPSERT INTO "+PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP+" (" +
             "VIN,CURRENT_TIME,TE_NUMBER,TE_NO,ICCID,MOBILE,SOURCE_HEX,ADD_TIME" +
             " ) values (" +
             "?, ?, ?, ?, ?, ?, ?, ? )";//1-8
@@ -72,11 +73,11 @@ public class CanStorageImpl implements BaseHistoryInf<CsCan> {
         if (!StringUtils.isEmpty(records.get(0).getCscVin())) {
             baseImpl.saveOrUpdate(records, this,
                     baseCanUpsertNorSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR);
-            logger.debug("Save nor can end." + records.size());
+            logger.debug("Save nor can end."+records.size());
         } else {
             baseImpl.saveOrUpdate(records, this,
                     baseCanUpsertExpSql, PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP);
-            logger.debug("Save exp can end." + records.size());
+            logger.debug("Save exp can end."+records.size());
         }
     }
 }
