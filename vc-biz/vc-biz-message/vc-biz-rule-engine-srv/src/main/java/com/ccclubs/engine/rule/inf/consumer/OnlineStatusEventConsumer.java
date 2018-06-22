@@ -90,11 +90,11 @@ public class OnlineStatusEventConsumer {
                         break;
             }
             if (event.isOnline()) {
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE, eventKey, event);
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE, eventKey);
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
             } else {
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE, eventKey, event);
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE, eventKey);
+                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey, event);
+                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey);
             }
             //转发上下线事件到业务平台
             transferToOns(event);
