@@ -68,14 +68,6 @@ public class ConnOnlineStatusEvent implements Serializable {
         return this;
     }
 
-    public String getSimNo() {
-        return simNo;
-    }
-
-    public void setSimNo(String simNo) {
-        this.simNo = simNo;
-    }
-
     public String getServerIp() {
         return serverIp;
     }
