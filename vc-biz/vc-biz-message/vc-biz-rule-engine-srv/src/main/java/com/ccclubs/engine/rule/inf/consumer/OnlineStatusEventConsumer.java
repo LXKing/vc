@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryAppInfoService;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.frm.spring.constant.OnsConst;
@@ -13,6 +14,7 @@ import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
 import org.slf4j.Logger;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
@@ -57,6 +60,9 @@ public class OnlineStatusEventConsumer {
 
     @Resource
     QueryVehicleService queryVehicleService;
+
+    @Resource
+    QueryTerminalService queryTerminalService;
 
     @Resource
     EnvironmentUtils environmentUtils;
@@ -100,8 +106,25 @@ public class OnlineStatusEventConsumer {
      * @param event
      */
     private void transferToOns(ConnOnlineStatusEvent event) {
-        CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(event.getVin());
-        if (csVehicle.getCsvAccess() == ACCESS) {
+        CsVehicle csVehicle = null;
+        switch (event.getGatewayType()) {
+            case GatewayType.GATEWAY_GB:
+                csVehicle = queryVehicleService.queryVehicleByVinFromCache(event.getVin());
+                break;
+            case GatewayType.GATEWAY_808:
+                // 根据手机号查询终端信息
+                CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(event.getSimNo());
+                csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                break;
+            case GatewayType.GATEWAY_MQTT:
+                CsMachine csMachineMqtt = queryTerminalService.queryCsMachineByTeNo(event.getTeNumber());
+                csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachineMqtt.getCsmId());
+                break;
+            default:
+                break;
+        }
+        if (Objects.nonNull(csVehicle) && csVehicle.getCsvAccess() == ACCESS) {
+
             SrvHost srvHost = queryHostService.queryHostByIdFromCache(csVehicle.getCsvAccess());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("vin", event.getVin());
