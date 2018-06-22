@@ -178,6 +178,15 @@ public final class PacUtil {
         return ByteBufUtil.hexDump(mobileBuf);
     }
 
+    public static String trim0InMobile(String mobile) {
+        Objects.requireNonNull(mobile);
+
+        while (mobile.startsWith("0")) {
+            mobile = mobile.replaceFirst("0", "");
+        }
+        return mobile;
+    }
+
     /**
      * 检查数值的最后一字节位是否为1
      *  true:  1
@@ -190,17 +199,7 @@ public final class PacUtil {
     }
 
     public static void main(String[] args) {
-//        Short contentAttr = 0x1803;
-//        int contentLen = getContentLen(contentAttr);
-//        boolean isEncrypt = isEncrypted(contentAttr);
-//        boolean isMultiPac = isMultiPac(contentAttr);
-//        System.out.println(new StringBuilder()
-//                .append("contentLen: ").append(contentLen).append("\n")
-//                .append("isEncrypt: ").append(isEncrypt).append("\n")
-//                .append("isMultiPac: ").append(isMultiPac).append("\n")
-//        .toString());
-
-//        System.out.println(needNormalAck(0x0100));
+        System.out.println(trim0InMobile("011001100"));
     }
 
 }

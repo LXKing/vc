@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
@@ -114,11 +115,15 @@ public class OnlineStatusEventConsumer {
             case GatewayType.GATEWAY_808:
                 // 根据手机号查询终端信息
                 CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(event.getSimNo());
-                csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                if (Objects.nonNull(csMachine)) {
+                    csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                }
                 break;
             case GatewayType.GATEWAY_MQTT:
                 CsMachine csMachineMqtt = queryTerminalService.queryCsMachineByTeNo(event.getTeNumber());
-                csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachineMqtt.getCsmId());
+                if (Objects.nonNull(csMachineMqtt)) {
+                    csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachineMqtt.getCsmId());
+                }
                 break;
             default:
                 break;

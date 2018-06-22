@@ -103,8 +103,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             String mobile = ByteBufUtil.hexDump(mobileBuf);
 
             pac.getHeader().setTerMobile(mobile);
-            pacProcessTrack.setUniqueNo(mobile);
-            decodeExceptionInfo.setUniqueNo(mobile).next();
+            pacProcessTrack.setUniqueNo(PacUtil.trim0InMobile(mobile));
+            decodeExceptionInfo.setUniqueNo(PacUtil.trim0InMobile(mobile)).next();
 
             frame.resetReaderIndex();
         }

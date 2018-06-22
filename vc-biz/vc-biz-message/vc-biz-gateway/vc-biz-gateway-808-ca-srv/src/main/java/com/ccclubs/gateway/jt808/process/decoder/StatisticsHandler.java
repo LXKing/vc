@@ -12,6 +12,7 @@ import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,8 +48,8 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             // 重连
             LOG.info("数据统计时发现终端({})重新连入系统", uniqueNo);
             ClientConnCollection.doReconnecte(uniqueNo, (SocketChannel) ctx.channel());
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, (SocketChannel) ctx.channel()).setGatewayType(GatewayType.GATEWAY_808);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(PacUtil.trim0InMobile(uniqueNo), (SocketChannel) ctx.channel()).setGatewayType(GatewayType.GATEWAY_808);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, PacUtil.trim0InMobile(uniqueNo), connOnlineStatusEvent.toJson());
             // 发送至kafka
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         }
@@ -71,7 +72,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
                     break;
             }
             KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR,
-                    pacProcessTrack.getUniqueNo(),
+                    PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()),
                     expMessageDTO.toJson());
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             return HandleStatus.END;
@@ -101,8 +102,8 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         ClientConnCollection.addNew(newConn, channel);
         LOG.info("数据统计时发现终端({})首次连入系统", uniqueNo);
 
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel).setGatewayType(GatewayType.GATEWAY_808);
-        KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(PacUtil.trim0InMobile(uniqueNo), channel).setGatewayType(GatewayType.GATEWAY_808);
+        KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, PacUtil.trim0InMobile(uniqueNo), connOnlineStatusEvent.toJson());
         // 发送至kafka
         fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         return newConn;
