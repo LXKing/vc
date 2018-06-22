@@ -24,4 +24,8 @@ public class GatewayType {
      */
     public static final String GATEWAY_MQTT = "MQTT";
 
+    /**
+     * 冒号
+     */
+    public static final String COLON = ":";
 }
