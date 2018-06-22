@@ -16,9 +16,9 @@ import java.io.Serializable;
 public class ConnOnlineStatusEvent implements Serializable {
 
     /**
-     * 车辆vin码
+     * 车辆sim卡号
      */
-    private String uniqueNo;
+    private String simNo;
 
     /**
      * 服务端IP
@@ -55,12 +55,12 @@ public class ConnOnlineStatusEvent implements Serializable {
 
     // ---------------------------------------------------------------------------
 
-    public String getUniqueNo() {
-        return uniqueNo;
+    public String getSimNo() {
+        return simNo;
     }
 
-    public ConnOnlineStatusEvent setUniqueNo(String uniqueNo) {
-        this.uniqueNo = uniqueNo;
+    public ConnOnlineStatusEvent setSimNo(String simNo) {
+        this.simNo = simNo;
         return this;
     }
 

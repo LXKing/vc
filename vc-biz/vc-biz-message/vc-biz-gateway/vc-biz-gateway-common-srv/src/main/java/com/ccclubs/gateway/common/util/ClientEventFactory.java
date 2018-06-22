@@ -20,7 +20,7 @@ public final class ClientEventFactory {
      */
     public static ConnOnlineStatusEvent ofOnline(String uniqueNo, SocketChannel channel) {
         return new ConnOnlineStatusEvent()
-                .setUniqueNo(uniqueNo)
+                .setSimNo(uniqueNo)
                 .setOnline(true)
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
@@ -35,7 +35,7 @@ public final class ClientEventFactory {
      */
     public static ConnOnlineStatusEvent ofOffline(String uniqueNo, SocketChannel channel) {
         return new ConnOnlineStatusEvent()
-                .setUniqueNo(uniqueNo)
+                .setSimNo(uniqueNo)
                 .setOnline(false)
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())

@@ -69,7 +69,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
 //        if (LOG.isDebugEnabled()) {
 //            LOG.debug("终端({}) 连接关闭: ip={}, port={}",
-//                    Objects.isNull(conn)?"连接无缓存":conn.getUniqueNo(),
+//                    Objects.isNull(conn)?"连接无缓存":conn.getSim(),
 //                    channel.remoteAddress().getHostString(),
 //                    channel.remoteAddress().getPort());
 //        }
