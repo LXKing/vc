@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Description: 车辆CAN总线数据！
  */
 
-public class CanDto implements Serializable{
+public class CanDto implements Serializable {
     private static final long serialVersionUID = 1291016524134493696L;
 
     private String teNumber;

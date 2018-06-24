@@ -21,7 +21,10 @@ public class PhoenixTool {
     @Autowired
     private PhoenixProperties phoenixProperties;
 
-    //获取Phoenix连接
+    /**
+     * 获取Phoenix连接
+     */
+
     public Connection getConnection() {
         Connection connection = null;
 

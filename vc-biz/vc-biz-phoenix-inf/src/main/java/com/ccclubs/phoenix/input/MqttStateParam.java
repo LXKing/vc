@@ -68,18 +68,22 @@ public class MqttStateParam extends CommonQuery implements Serializable,BasePara
         this.queryFields = queryFields;
     }
 
+    @Override
     public String getStartTime() {
         return startTime;
     }
 
+    @Override
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
 
+    @Override
     public String getEndTime() {
         return endTime;
     }
 
+    @Override
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }

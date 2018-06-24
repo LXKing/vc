@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
- * 通过远程控制指令获取的部分车辆状态数据
- * Created by qsxiaogang on 2017/6/3.
+ * 通过远程控制指令获取的部分车辆状态数据 Created by qsxiaogang on 2017/6/3.
  */
 public class TerminalPartStatus implements Serializable {
 
@@ -65,6 +64,45 @@ public class TerminalPartStatus implements Serializable {
    * 基站CI
    */
   private Integer cssBaseCI;
+
+  /**
+   * GPS辅助定位，经度平均值
+   */
+  private BigDecimal cssLongitudeAvg;
+  /**
+   * GPS辅助定位，纬度平均值
+   */
+  private BigDecimal cssLatitudeAvg;
+  /**
+   * GPS辅助定位，经度最大值
+   */
+  private BigDecimal cssLongitudeMax;
+  /**
+   * GPS辅助定位，纬度最大值
+   */
+  private BigDecimal cssLatitudeMax;
+  /**
+   * GPS辅助定位，经度最小值
+   */
+  private BigDecimal cssLongitudeMin;
+  /**
+   * GPS辅助定位，纬度最小值
+   */
+  private BigDecimal cssLatitudeMin;
+
+  /**
+   * 控制状态
+   * */
+  private Integer controlStatus;
+
+
+  public Integer getControlStatus() {
+    return controlStatus;
+  }
+
+  public void setControlStatus(Integer controlStatus) {
+    this.controlStatus = controlStatus;
+  }
 
   public Long getCssCurrentTime() {
     return cssCurrentTime;
@@ -160,5 +198,53 @@ public class TerminalPartStatus implements Serializable {
 
   public void setCssLock(Short cssLock) {
     this.cssLock = cssLock;
+  }
+
+  public BigDecimal getCssLongitudeAvg() {
+    return cssLongitudeAvg;
+  }
+
+  public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
+    this.cssLongitudeAvg = cssLongitudeAvg;
+  }
+
+  public BigDecimal getCssLatitudeAvg() {
+    return cssLatitudeAvg;
+  }
+
+  public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
+    this.cssLatitudeAvg = cssLatitudeAvg;
+  }
+
+  public BigDecimal getCssLongitudeMax() {
+    return cssLongitudeMax;
+  }
+
+  public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
+    this.cssLongitudeMax = cssLongitudeMax;
+  }
+
+  public BigDecimal getCssLatitudeMax() {
+    return cssLatitudeMax;
+  }
+
+  public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
+    this.cssLatitudeMax = cssLatitudeMax;
+  }
+
+  public BigDecimal getCssLongitudeMin() {
+    return cssLongitudeMin;
+  }
+
+  public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
+    this.cssLongitudeMin = cssLongitudeMin;
+  }
+
+  public BigDecimal getCssLatitudeMin() {
+    return cssLatitudeMin;
+  }
+
+  public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
+    this.cssLatitudeMin = cssLatitudeMin;
   }
 }

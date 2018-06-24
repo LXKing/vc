@@ -57,7 +57,7 @@ public class StatisticsScheduler implements ApplicationContextAware {
     @Resource
     JT808OnlineCheckJob jt808OnlineCheckJob;
 
-    @Scheduled(cron = "0 0/5 * * * ?")
+    //@Scheduled(cron = "0 0/5 * * * ?") 废弃
     public void jt808OnlineCheckJob() {
         logger.info("执行了一次 808车辆在线情况检查。");
         jt808OnlineCheckJob.run();

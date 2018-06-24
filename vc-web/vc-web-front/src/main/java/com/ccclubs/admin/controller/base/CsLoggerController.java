@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +40,9 @@ public class CsLoggerController {
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsLogger> list(CsLoggerQuery query,
                                       @RequestParam(defaultValue = "0") Integer page,
-                                      @RequestParam(defaultValue = "10") Integer rows) {
-        PageInfo<CsLogger> pageResult = csLoggerService.getPage(query, new PageRequest(page, rows));
+                                      @RequestParam(defaultValue = "10") Integer rows,
+                                      @RequestParam(defaultValue = "cslAddTime") String order) {
+        PageInfo<CsLogger> pageResult = csLoggerService.getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
         List<CsLogger> list = pageResult.getList();
         for (CsLogger data : list) {
             registResolvers(data);

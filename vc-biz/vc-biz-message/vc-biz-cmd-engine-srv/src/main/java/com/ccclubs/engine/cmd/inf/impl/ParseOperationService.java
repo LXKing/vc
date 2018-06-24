@@ -17,6 +17,7 @@ import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_03;
 import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.CommonWriter;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.OrderDownStream;
 import com.ccclubs.protocol.dto.mqtt.OrderUpStream;
@@ -347,7 +348,19 @@ public class ParseOperationService implements IParseDataService {
           terminalPartStatus.setCssEngine(terminalInfo.getTriggerEngineStatus());
           terminalPartStatus.setCssLock(terminalInfo.getTriggerDoorLockStatusWithMask());
           terminalPartStatus.setCssLight(terminalInfo.getTriggerLightStatusWithMask());
+          terminalPartStatus.setControlStatus(terminalInfo.getControlStatus());
 
+
+          // add at 2018-05-24 by qsxiaogang 添加GPS辅助定位
+          MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo.getGpsAssistStatus();
+          if (null !=gpsAssistStatus){
+            terminalPartStatus.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            terminalPartStatus.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            terminalPartStatus.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            terminalPartStatus.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+          }
           CommonResult commonResult = CommonResult
               .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");
           commonResult.setData(terminalPartStatus);
@@ -666,7 +679,7 @@ public class ParseOperationService implements IParseDataService {
         updateRemoteService.update(csRemote);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       logger.error(e.getMessage(), e);
     }
   }
@@ -688,8 +701,8 @@ public class ParseOperationService implements IParseDataService {
           .equals(srvHost.getShTransformRemote())) {
         return;
       }
-      String transTopic = StringUtils.empty(srvHost.getShTransformRemote()) ? topic
-          : srvHost.getShTransformRemote().trim();
+      String transTopic = StringUtils.empty(srvHost.getShTopic()) ? topic
+          : srvHost.getShTopic().trim();
       // 转发远程控制结果JSON结构
       Message mqMessage = messageFactory.getMessage(transTopic,
           MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
@@ -698,7 +711,7 @@ public class ParseOperationService implements IParseDataService {
         client.sendOneway(mqMessage);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
       logger.error(e.getMessage(), e);
     }
   }

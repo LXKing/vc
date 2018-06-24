@@ -24,7 +24,7 @@ public class StateHistoryParam extends CommonQuery implements Serializable {
 
     private String timePoint;
 
-    private String queryFields="";
+    private String queryFields = "";
 
     private String tableName;
 
@@ -53,15 +53,13 @@ public class StateHistoryParam extends CommonQuery implements Serializable {
     }
 
     public String getQueryFields() {
-        queryFields= StringUtils.deleteWhitespace(queryFields);
-        if("*".equals(queryFields)){
-            queryFields= StringUtils.join(PhoenixFieldsConsts.carStateAllFields,",");
-        }
-        else if(StringUtils.isEmpty(queryFields)){
-            queryFields= StringUtils.join(PhoenixFieldsConsts.carStatePageDefaultFields,",");
-        }
-        else if ("PACE".equals(queryFields)){
-            queryFields=StringUtils.join(PhoenixFieldsConsts.carPaceFields,",");
+        queryFields = StringUtils.deleteWhitespace(queryFields);
+        if ("*".equals(queryFields)) {
+            queryFields = StringUtils.join(PhoenixFieldsConsts.carStateAllFields, ",");
+        } else if (StringUtils.isEmpty(queryFields)) {
+            queryFields = StringUtils.join(PhoenixFieldsConsts.carStatePageDefaultFields, ",");
+        } else if ("PACE".equals(queryFields)) {
+            queryFields = StringUtils.join(PhoenixFieldsConsts.carPaceFields, ",");
         }
         return queryFields;
 

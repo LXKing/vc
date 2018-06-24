@@ -53,64 +53,64 @@ public class PhoenixFieldsConsts {
             "cs_protocol", "gb_type", "cs_verify");
 
     //车辆MqttState分时租赁状态数据全部字段列表
-    public static final List<String>  MQTT_STATE_ALL_FIELDS=ImmutableList.of(
-            "VIN","CURRENT_TIME","TE_NUMBER","TE_NO","ICCID","MOBILE",
-            "ACCESS","ADD_TIME","RENT_FLG","WARN_CODE","RFID",
-            "USER_RFID","OBD_MILES","ENGINE_TEMPE","TOTAL_MILES","SPEED",
-            "MOTOR_SPEED","OIL_COST","POWER_RESERVE","EV_BATTERY",
-            "CHARGING_STATUS","FUEL_MILES","ELEC_MILES","ENDUR_MILES",
-            "TEMPE","GPS_NUM","GPS_STRENGTH","GPS_VALID","NET_STRENGTH",
-            "LONGITUDE","LATITUDE","DIRECTION_ANGLE", "CIRCULAR_MODE",
-            "PTC_STATUS","COMPRE_STATUS","FAN_MODE","SAVING_MODE",
-            "DOOR_STATUS","ENGINE_STATUS","KEY_STATUS", "LIGHT_STATUS",
-            "LOCK_STATUS","NET_TYPE","BASE_LAC","BASE_CI","CUR_ORDER",
-            "GEAR","AUTOPILOT_STATUS","HANDBRAKE_STATUS","SOURCE_HEX"
+    public static final List<String> MQTT_STATE_ALL_FIELDS = ImmutableList.of(
+            "VIN", "CURRENT_TIME", "TE_NUMBER", "TE_NO", "ICCID", "MOBILE",
+            "ACCESS", "ADD_TIME", "RENT_FLG", "WARN_CODE", "RFID",
+            "USER_RFID", "OBD_MILES", "ENGINE_TEMPE", "TOTAL_MILES", "SPEED",
+            "MOTOR_SPEED", "OIL_COST", "POWER_RESERVE", "EV_BATTERY",
+            "CHARGING_STATUS", "FUEL_MILES", "ELEC_MILES", "ENDUR_MILES",
+            "TEMPE", "GPS_NUM", "GPS_STRENGTH", "GPS_VALID", "NET_STRENGTH",
+            "LONGITUDE", "LATITUDE", "DIRECTION_ANGLE", "CIRCULAR_MODE",
+            "PTC_STATUS", "COMPRE_STATUS", "FAN_MODE", "SAVING_MODE",
+            "DOOR_STATUS", "ENGINE_STATUS", "KEY_STATUS", "LIGHT_STATUS",
+            "LOCK_STATUS", "NET_TYPE", "BASE_LAC", "BASE_CI", "CUR_ORDER",
+            "GEAR", "AUTOPILOT_STATUS", "HANDBRAKE_STATUS", "SOURCE_HEX"
     );
     //车辆MqttState分时租赁状态数据默认字段列表
-    public static final List<String>  MQTT_STATE_DEFAULT_FIELDS=ImmutableList.of(
-            "VIN","CURRENT_TIME","TE_NUMBER","TE_NO","ICCID",
-            "MOBILE", "ACCESS","ADD_TIME", "OBD_MILES",
-            "EV_BATTERY", "SPEED","SAVING_MODE","CUR_ORDER"
+    public static final List<String> MQTT_STATE_DEFAULT_FIELDS = ImmutableList.of(
+            "VIN", "CURRENT_TIME", "TE_NUMBER", "TE_NO", "ICCID",
+            "MOBILE", "ACCESS", "ADD_TIME", "OBD_MILES",
+            "EV_BATTERY", "SPEED", "SAVING_MODE", "CUR_ORDER"
     );
 
     //车辆MqttState分时租赁状态数据默认字段列表
-    public static final List<String>  MQTT_STATE_PACE_FIELDS=ImmutableList.of(
-            "VIN","CURRENT_TIME","TE_NUMBER","TE_NO","ICCID",
-            "MOBILE", "ACCESS","ADD_TIME", "OBD_MILES",
-            "EV_BATTERY", "SPEED","SAVING_MODE","CUR_ORDER",
-            "LONGITUDE","LATITUDE","CHARGING_STATUS","ENGINE_STATUS"
+    public static final List<String> MQTT_STATE_PACE_FIELDS = ImmutableList.of(
+            "VIN", "CURRENT_TIME", "TE_NUMBER", "TE_NO", "ICCID",
+            "MOBILE", "ACCESS", "ADD_TIME", "OBD_MILES",
+            "EV_BATTERY", "SPEED", "SAVING_MODE", "CUR_ORDER",
+            "LONGITUDE", "LATITUDE", "CHARGING_STATUS", "ENGINE_STATUS"
     );
 
     //车辆GbMessage国标数据全部字段列表
-    public static final List<String>  GBMESSAGE_ALL_FIELDS=ImmutableList.of(
-            "VIN","MOBILE","ACCESS","ICCID", "ADD_TIME",
-            "CURRENT_TIME","TE_NUMBER","TE_NO",
-            "PROTOCOL","MESSAGE_TYPE","VERIFY","SOURCE_HEX"
+    public static final List<String> GBMESSAGE_ALL_FIELDS = ImmutableList.of(
+            "VIN", "MOBILE", "ACCESS", "ICCID", "ADD_TIME",
+            "CURRENT_TIME", "TE_NUMBER", "TE_NO",
+            "PROTOCOL", "MESSAGE_TYPE", "VERIFY", "SOURCE_HEX"
     );
     //车辆GbMessage国标数据默认字段列表
-    public static final List<String>  GBMESSAGE_DEFAULT_FIELDS=ImmutableList.of(
-            "VIN", "ADD_TIME", "CURRENT_TIME","SOURCE_HEX"
+    public static final List<String> GBMESSAGE_DEFAULT_FIELDS = ImmutableList.of(
+            "VIN", "ADD_TIME", "CURRENT_TIME", "SOURCE_HEX"
     );
     //车辆JT808位置数据全部字段列表
-    public static final List<String>  JT808_POSITION_ALL_FIELDS=ImmutableList.of(
-            "TE_NUMBER","CURRENT_TIME","VIN","TE_NO","ICCID","ADD_TIME","MOBILE","ALARM_FLAG",
-            "STATUS","LONGITUDE","LATITUDE","ALTITUDE","GPS_SPEED","NET_STRENGTH","COURSE",
-            "GPS_VALID","SOURCE_HEX"
+    public static final List<String> JT808_POSITION_ALL_FIELDS = ImmutableList.of(
+            "TE_NUMBER", "CURRENT_TIME", "VIN", "TE_NO", "ICCID", "ADD_TIME", "MOBILE", "ALARM_FLAG",
+            "STATUS", "LONGITUDE", "LATITUDE", "ALTITUDE", "GPS_SPEED", "NET_STRENGTH", "COURSE",
+            "GPS_VALID", "SOURCE_HEX"
     );
     //车辆JT808位置数据默认字段列表
-    public static final List<String>  JT808_POSITION_DEFAULT_FIELDS=ImmutableList.of(
-            "TE_NUMBER","VIN","CURRENT_TIME","ADD_TIME",
-            "LONGITUDE","LATITUDE","ALTITUDE","NET_STRENGTH"
+    public static final List<String> JT808_POSITION_DEFAULT_FIELDS = ImmutableList.of(
+            "TE_NUMBER", "VIN", "CURRENT_TIME", "ADD_TIME",
+            "LONGITUDE", "LATITUDE", "ALTITUDE", "NET_STRENGTH"
 
     );
     //车辆CAN总线数据全部字段列表
-    public static final List<String>  CAN_ALL_FIELDS=ImmutableList.of(
-            "VIN", "CURRENT_TIME","TE_NUMBER","TE_NO","ICCID","MOBILE","SOURCE_HEX","ADD_TIME"
+    public static final List<String> CAN_ALL_FIELDS = ImmutableList.of(
+            "VIN", "CURRENT_TIME", "TE_NUMBER", "TE_NO", "ICCID", "MOBILE", "SOURCE_HEX", "ADD_TIME"
     );
     //车辆CAN总线数据默认字段列表
-    public static final List<String>  CAN_DEFAULT_FIELDS=ImmutableList.of(
-            "VIN", "CURRENT_TIME","TE_NUMBER",
-            "SOURCE_HEX","ADD_TIME"
+    public static final List<String> CAN_DEFAULT_FIELDS = ImmutableList.of(
+            "VIN", "CURRENT_TIME", "TE_NUMBER",
+            "SOURCE_HEX", "ADD_TIME"
     );
 
 

@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;

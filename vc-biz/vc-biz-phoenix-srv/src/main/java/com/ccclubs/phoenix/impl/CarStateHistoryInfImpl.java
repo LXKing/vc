@@ -21,7 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,11 +38,10 @@ import java.util.List;
 @Service(version = "1.0.0")
 public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
-    static  final Logger logger= LoggerFactory.getLogger(CarStateHistoryInfImpl.class);
+    static final Logger logger = LoggerFactory.getLogger(CarStateHistoryInfImpl.class);
 
 
-
-    private static final String count_sql = "select " +
+    private static final String COUNT_SQL = "select " +
             "count(cs_number) as total " +
             "from phoenix_car_state_history " +
             "where cs_number=? " +
@@ -47,7 +49,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             "and current_time<=? ";
 
     private static final String UPDATE_SQL = "UPSERT INTO "
-            + PhoenixConst.PHOENIX_CAR_STATE_HISTORY+
+            + PhoenixConst.PHOENIX_CAR_STATE_HISTORY +
             " ( CS_NUMBER, CURRENT_TIME , OBD_MILES ) VALUES ( ?, ?, ? )";
 
 
@@ -60,13 +62,13 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         final String queryFields = stateHistoryParam.getQueryFields();
         String querySqlDesc = "select " +
                 queryFields + " " +
-                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
+                "from " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY + " " +
                 "where cs_number=? " +
                 "and current_time<=? " +
                 "order by current_time desc limit ? ";
         String querySqlAsc = "select " +
                 queryFields + " " +
-                "from "+ PhoenixConst.PHOENIX_CAR_STATE_HISTORY+" " +
+                "from " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY + " " +
                 "where cs_number=? " +
                 "and current_time>? " +
                 "order by current_time asc limit ? ";
@@ -75,13 +77,13 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         List<CarState> carStateAscList = new ArrayList<CarState>();
         String csNumber = stateHistoryParam.getTeNumber();
         long startTime = DateTimeUtil.date2UnixFormat(stateHistoryParam.getTimePoint(), DateTimeUtil.UNIX_FORMAT);
-        int limit=stateHistoryParam.getLimit();
+        int limit = stateHistoryParam.getLimit();
         Connection connectionDesc = phoenixTool.getConnection();
         Connection connectionAsc = phoenixTool.getConnection();
         PreparedStatement preparedStatementDesc = null;
         PreparedStatement preparedStatementAsc = null;
-        ResultSet resultSetDesc=null;
-        ResultSet resultSetAsc=null;
+        ResultSet resultSetDesc = null;
+        ResultSet resultSetAsc = null;
         try {
 
             preparedStatementDesc = connectionDesc.prepareStatement(querySqlDesc);
@@ -90,34 +92,33 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
             preparedStatementDesc.setString(1, csNumber);
             preparedStatementDesc.setLong(2, startTime);
-            preparedStatementDesc.setInt(3,limit);
+            preparedStatementDesc.setInt(3, limit);
             resultSetDesc = preparedStatementDesc.executeQuery();
             JSONArray jsonArrayDesc = BaseTransformTool.queryRecords(resultSetDesc);
-            BaseTransformTool.parseJosnArrayToObjects(jsonArrayDesc,queryFields,carStateDescList,CarState.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArrayDesc, queryFields, carStateDescList, CarState.class);
 
             preparedStatementAsc.setString(1, csNumber);
             preparedStatementAsc.setLong(2, startTime);
-            preparedStatementAsc.setInt(3,limit);
+            preparedStatementAsc.setInt(3, limit);
             resultSetAsc = preparedStatementAsc.executeQuery();
             JSONArray jsonArrayAsc = BaseTransformTool.queryRecords(resultSetAsc);
-            BaseTransformTool.parseJosnArrayToObjects(jsonArrayAsc,queryFields,carStateAscList,CarState.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArrayAsc, queryFields, carStateAscList, CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connectionAsc,
-                    preparedStatementAsc,resultSetAsc,"carState queryCarStateListNoPage");
+                    preparedStatementAsc, resultSetAsc, "carState queryCarStateListNoPage");
             phoenixTool.closeResource(connectionDesc,
-                    preparedStatementDesc,resultSetDesc,"carState queryCarStateListNoPage");
+                    preparedStatementDesc, resultSetDesc, "carState queryCarStateListNoPage");
         }
-        StateHistoryOutput stateHistoryOutput=new StateHistoryOutput();
-        List<VehicleState> beforeList=new ArrayList<>();
-        List<VehicleState> afterList=new ArrayList<>();
-        for (CarState carState:carStateAscList
-             ) {
+        StateHistoryOutput stateHistoryOutput = new StateHistoryOutput();
+        List<VehicleState> beforeList = new ArrayList<>();
+        List<VehicleState> afterList = new ArrayList<>();
+        for (CarState carState : carStateAscList
+                ) {
             afterList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
         }
-        for (CarState carState:carStateDescList
+        for (CarState carState : carStateDescList
                 ) {
             beforeList.add(TransforCarStateToVehicleState.transforCarStateToVehicleState(carState));
         }
@@ -141,7 +142,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
 
         Connection connection = phoenixTool.getConnection();
         PreparedStatement pst = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             String cs_number = carStateHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
@@ -153,13 +154,12 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
             JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray, queryFields, carStateList, CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    pst,resultSet,"carState queryCarStateListNoPage");
+                    pst, resultSet, "carState queryCarStateListNoPage");
         }
         return carStateList;
 
@@ -184,7 +184,7 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         List<CarState> carStateList = new ArrayList<CarState>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement pst = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             String cs_number = carStateHistoryParam.getCs_number();
             long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
@@ -196,14 +196,13 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             pst.setLong(3, end_time);
             pst.setInt(4, limit);
             pst.setInt(5, offset);
-            resultSet= pst.executeQuery();
+            resultSet = pst.executeQuery();
             JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            BaseTransformTool.parseJosnArrayToObjects(jsonArray,queryFields,carStateList,CarState.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray, queryFields, carStateList, CarState.class);
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
-            phoenixTool.closeResource(connection,pst,resultSet,"carState queryCarStateListWithPage");
+        } finally {
+            phoenixTool.closeResource(connection, pst, resultSet, "carState queryCarStateListWithPage");
         }
         return carStateList;
     }
@@ -215,25 +214,24 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
         String cs_number = carStateHistoryParam.getCs_number();
         long start_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
         long end_time = DateTimeUtil.date2UnixFormat(carStateHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
-        Connection connection= phoenixTool.getConnection();
-        ResultSet resultSet =null;
+        Connection connection = phoenixTool.getConnection();
+        ResultSet resultSet = null;
         try {
-            pst = connection.prepareStatement(count_sql);
+            pst = connection.prepareStatement(COUNT_SQL);
             pst.setString(1, cs_number);
             pst.setLong(2, start_time);
             pst.setLong(3, end_time);
             resultSet = pst.executeQuery();
             JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            if(jsonArray!=null&&jsonArray.size()>0){
+            if (jsonArray != null && jsonArray.size() > 0) {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                total=jsonObject.getLong("TOTAL");
+                total = jsonObject.getLong("TOTAL");
             }
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    pst,resultSet,"carState queryCarStateListCount");
+                    pst, resultSet, "carState queryCarStateListCount");
         }
         return total;
     }
@@ -261,22 +259,21 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     public HistoryNoQueryOutput updateCarStateObdMiles(CarStateHistoryUpdateParam param) {
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
-        try{
-            long timePointLong= param.getTimePoint();
+        HistoryNoQueryOutput historyNoQueryOutput = new HistoryNoQueryOutput();
+        try {
+            long timePointLong = param.getTimePoint();
             preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            preparedStatement.setString(1 , param.getUpdateKey());
-            preparedStatement.setLong(2 , timePointLong);
-            preparedStatement.setFloat(3,param.getObdMiles());
+            preparedStatement.setString(1, param.getUpdateKey());
+            preparedStatement.setLong(2, timePointLong);
+            preparedStatement.setFloat(3, param.getObdMiles());
             preparedStatement.execute();
             connection.commit();
             historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,null,UPDATE_SQL);
+                    preparedStatement, null, UPDATE_SQL);
         }
         return historyNoQueryOutput;
     }
@@ -285,18 +282,18 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
     public HistoryNoQueryOutput updateCarStateObdMiles(List<CarStateHistoryUpdateParam> paramList) {
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        HistoryNoQueryOutput historyNoQueryOutput =new HistoryNoQueryOutput();
-        try{
-            Integer count=0;
+        HistoryNoQueryOutput historyNoQueryOutput = new HistoryNoQueryOutput();
+        try {
+            Integer count = 0;
             preparedStatement = connection.prepareStatement(UPDATE_SQL);
-            for (CarStateHistoryUpdateParam param:paramList){
+            for (CarStateHistoryUpdateParam param : paramList) {
                 count++;
-                long timePointLong= param.getTimePoint();
-                preparedStatement.setString(1 , param.getUpdateKey());
-                preparedStatement.setLong(2 , timePointLong);
-                preparedStatement.setFloat(3,param.getObdMiles());
+                long timePointLong = param.getTimePoint();
+                preparedStatement.setString(1, param.getUpdateKey());
+                preparedStatement.setLong(2, timePointLong);
+                preparedStatement.setFloat(3, param.getObdMiles());
                 preparedStatement.addBatch();
-                if (count%500==0){
+                if (count % 500 == 0) {
                     preparedStatement.executeBatch();
                     connection.commit();
                 }
@@ -304,52 +301,49 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
             preparedStatement.executeBatch();
             connection.commit();
             //historyNoQueryOutput.setSuccessCount(preparedStatement.getUpdateCount());
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,null,UPDATE_SQL);
+                    preparedStatement, null, UPDATE_SQL);
         }
         return historyNoQueryOutput;
     }
 
     @Override
     //驾驶阶段数据计算
-    public List<Pace> calDrivePaceList(List<CarState> carStateList){
+    public List<Pace> calDrivePaceList(List<CarState> carStateList) {
         List<Pace> paceList = null;
         Iterator<CarState> carStateIterator = carStateList.iterator();
         PaceService paceService = new PaceService();
         PaceBlock paceBlock = null;
-        while (carStateIterator.hasNext()){
+        while (carStateIterator.hasNext()) {
             CarState carState = carStateIterator.next();
             long current_time = carState.getCurrent_time();
             long fix_current_time = DateTimeUtil.getTimeMillsFixByInterval(current_time, VehicleConsts.DRIVE_MINUTES_INTERVAL);
-            if(paceBlock==null){
-                paceBlock=new PaceBlock();
+            if (paceBlock == null) {
+                paceBlock = new PaceBlock();
                 long block_start_timemills = fix_current_time;
-                long block_end_timemills = fix_current_time+VehicleConsts.DRIVE_MINUTES_INTERVAL*60*1000;
+                long block_end_timemills = fix_current_time + VehicleConsts.DRIVE_MINUTES_INTERVAL * 60 * 1000;
                 paceBlock.setCs_number(carState.getCs_number());
                 paceBlock.setBlock_start_timemills(block_start_timemills);
                 paceBlock.setBlock_end_timemills(block_end_timemills);
                 List<CarState> recordList = paceBlock.getRecordList();
                 recordList.add(carState);
-            }
-            else{
+            } else {
                 long block_start_timemills = paceBlock.getBlock_start_timemills();
                 long block_end_timemills = paceBlock.getBlock_end_timemills();
-                if(current_time>=block_start_timemills&&current_time<block_end_timemills){
+                if (current_time >= block_start_timemills && current_time < block_end_timemills) {
                     List<CarState> recordList = paceBlock.getRecordList();
                     recordList.add(carState);
-                }
-                else{
-                    paceBlock = VehicleUtil.configPaceBlock(paceBlock,VehicleConsts.CAL_PACE_TYPE_DRIVE);
-                    if(paceBlock!=null) {
+                } else {
+                    paceBlock = VehicleUtil.configPaceBlock(paceBlock, VehicleConsts.CAL_PACE_TYPE_DRIVE);
+                    if (paceBlock != null) {
                         paceService.addDrivePaceBlock(paceBlock);
                     }
-                    paceBlock=new PaceBlock();
+                    paceBlock = new PaceBlock();
                     block_start_timemills = fix_current_time;
-                    block_end_timemills = fix_current_time+VehicleConsts.DRIVE_MINUTES_INTERVAL*60*1000;
+                    block_end_timemills = fix_current_time + VehicleConsts.DRIVE_MINUTES_INTERVAL * 60 * 1000;
                     paceBlock.setCs_number(carState.getCs_number());
                     paceBlock.setBlock_start_timemills(block_start_timemills);
                     paceBlock.setBlock_end_timemills(block_end_timemills);
@@ -358,51 +352,49 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }
             }
         }
-        if(paceBlock!=null){
-            paceBlock=VehicleUtil.configPaceBlock(paceBlock,VehicleConsts.CAL_PACE_TYPE_DRIVE);
+        if (paceBlock != null) {
+            paceBlock = VehicleUtil.configPaceBlock(paceBlock, VehicleConsts.CAL_PACE_TYPE_DRIVE);
             paceService.addDrivePaceBlock(paceBlock);
 
         }
-        paceList= paceService.getPaceList();
+        paceList = paceService.getPaceList();
         return paceList;
     }
 
     @Override
     //充电阶段数据计算
-    public List<Pace> calChargingPaceList(List<CarState> carStateList){
+    public List<Pace> calChargingPaceList(List<CarState> carStateList) {
         List<Pace> paceList = null;
         Iterator<CarState> carStateIterator = carStateList.iterator();
         PaceService paceService = new PaceService();
         PaceBlock paceBlock = null;
-        while (carStateIterator.hasNext()){
+        while (carStateIterator.hasNext()) {
             CarState carState = carStateIterator.next();
             long current_time = carState.getCurrent_time();
             long fix_current_time = DateTimeUtil.getTimeMillsFixByInterval(current_time, VehicleConsts.CHARGING_MINUTES_INTERVAL);
-            if(paceBlock==null){
-                paceBlock=new PaceBlock();
+            if (paceBlock == null) {
+                paceBlock = new PaceBlock();
                 long block_start_timemills = fix_current_time;
-                long block_end_timemills = fix_current_time+VehicleConsts.CHARGING_MINUTES_INTERVAL*60*1000;
+                long block_end_timemills = fix_current_time + VehicleConsts.CHARGING_MINUTES_INTERVAL * 60 * 1000;
                 paceBlock.setCs_number(carState.getCs_number());
                 paceBlock.setBlock_start_timemills(block_start_timemills);
                 paceBlock.setBlock_end_timemills(block_end_timemills);
                 List<CarState> recordList = paceBlock.getRecordList();
                 recordList.add(carState);
-            }
-            else if(paceBlock!=null){
+            } else if (paceBlock != null) {
                 long block_start_timemills = paceBlock.getBlock_start_timemills();
                 long block_end_timemills = paceBlock.getBlock_end_timemills();
-                if(current_time>=block_start_timemills&&current_time<block_end_timemills){
+                if (current_time >= block_start_timemills && current_time < block_end_timemills) {
                     List<CarState> recordList = paceBlock.getRecordList();
                     recordList.add(carState);
-                }
-                else{
-                    paceBlock = VehicleUtil.configPaceBlock(paceBlock,VehicleConsts.CAL_PACE_TYPE_CHARGING);
-                    if(paceBlock!=null) {
+                } else {
+                    paceBlock = VehicleUtil.configPaceBlock(paceBlock, VehicleConsts.CAL_PACE_TYPE_CHARGING);
+                    if (paceBlock != null) {
                         paceService.addChargingPaceBlock(paceBlock);
                     }
-                    paceBlock=new PaceBlock();
+                    paceBlock = new PaceBlock();
                     block_start_timemills = fix_current_time;
-                    block_end_timemills = fix_current_time+VehicleConsts.CHARGING_MINUTES_INTERVAL*60*1000;
+                    block_end_timemills = fix_current_time + VehicleConsts.CHARGING_MINUTES_INTERVAL * 60 * 1000;
                     paceBlock.setCs_number(carState.getCs_number());
                     paceBlock.setBlock_start_timemills(block_start_timemills);
                     paceBlock.setBlock_end_timemills(block_end_timemills);
@@ -411,12 +403,12 @@ public class CarStateHistoryInfImpl implements CarStateHistoryInf {
                 }
             }
         }
-        if(paceBlock!=null){
-            paceBlock= VehicleUtil.configPaceBlock(paceBlock, VehicleConsts.CAL_PACE_TYPE_CHARGING);
+        if (paceBlock != null) {
+            paceBlock = VehicleUtil.configPaceBlock(paceBlock, VehicleConsts.CAL_PACE_TYPE_CHARGING);
             paceService.addChargingPaceBlock(paceBlock);
 
         }
-        paceList= paceService.getPaceList();
+        paceList = paceService.getPaceList();
         return paceList;
     }
 

@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * 需要做lnfluxdb的time属性的字段需要加上此注解
- * */
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface InfluxTime {
-    public String name() default "";
+    String name() default "";
 }

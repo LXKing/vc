@@ -223,6 +223,18 @@ public class TerminalStatus implements Serializable {
      * */
     private Integer autopilot;
 
+    /**
+     * 钥匙状态
+     * */
+    private Integer cssKey;
+
+    public Integer getCssKey() {
+        return cssKey;
+    }
+
+    public void setCssKey(Integer cssKey) {
+        this.cssKey = cssKey;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

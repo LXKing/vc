@@ -10,6 +10,8 @@ import java.io.Serializable;
  * @create 2018-05-15
  **/
 public class ExpMessageDTO implements Serializable {
+    //网关类型
+    private String gatewayType;
 
     // 错误类型
     private String code;
@@ -149,6 +151,15 @@ public class ExpMessageDTO implements Serializable {
 
     public ExpMessageDTO setReason(String reason) {
         this.reason = reason;
+        return this;
+    }
+
+    public String getGatewayType() {
+        return gatewayType;
+    }
+
+    public ExpMessageDTO setGatewayType(String gatewayType) {
+        this.gatewayType = gatewayType;
         return this;
     }
 }

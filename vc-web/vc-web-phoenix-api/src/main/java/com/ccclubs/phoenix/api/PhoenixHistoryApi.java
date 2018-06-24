@@ -13,6 +13,7 @@ import com.ccclubs.phoenix.input.CanParam;
 import com.ccclubs.phoenix.input.GbMessageParam;
 import com.ccclubs.phoenix.input.Jt808PositionParam;
 import com.ccclubs.phoenix.input.MqttStateParam;
+import com.ccclubs.phoenix.orm.dto.MqttStateDto;
 import com.ccclubs.phoenix.output.CanHistoryOutput;
 import com.ccclubs.phoenix.output.GbMessageHistoryOutput;
 import com.ccclubs.phoenix.output.Jt808PositionHistoryOutput;
@@ -21,6 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA2017.
@@ -211,6 +214,56 @@ public class PhoenixHistoryApi {
 
         return new ApiMessage<>(mqttStateHistoryOutput);
 
+    }
+
+    @ApiSecurity
+    @RequestMapping(value = "/getMqttStateLastOne", method = RequestMethod.POST)
+    public ApiMessage<MqttStateDto> queryMqttStateLastOne(
+            @RequestBody MqttStateParam param) {
+        logger.info("we get a request form getMqttStates:" + param.toString());
+        if (this.paramTimeCheck(param.getStartTime(), param.getEndTime())) {
+            logger.info("we find a states request. 查询间隔过长。");
+            return new ApiMessage<>(100003,
+                    ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg() + "查询间隔过长");
+        }
+        if (StringUtils.isEmpty(param.getVin())
+                && StringUtils.isEmpty(param.getTeNumber())) {
+            logger.info("we find a PARAMS_VALID_FAILED at getMqttStates.");
+            return new ApiMessage<>(100003,
+                    ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+        logger.debug("we receive a getMqttStates post request." + param.toString());
+        String pointQueryKey;
+        if (StringUtils.isEmpty(param.getVin())) {
+            pointQueryKey = param.getTeNumber();
+        } else {
+            pointQueryKey = param.getVin();
+        }
+
+
+        if (!paramCheck(pointQueryKey,
+                param.getStartTime(),
+                param.getEndTime(),
+                param.getPageNum(),
+                param.getPageSize())) {
+            return new ApiMessage<>(100003,
+                    ApiEnum.REQUEST_PARAMS_VALID_FAILED.msg());
+        }
+
+        MqttStateHistoryOutput mqttStateHistoryOutput =
+                mqttStateHistoryService.queryListByParam(param);
+        List<MqttStateDto> mqttStateDtoList=mqttStateHistoryOutput.getList();
+
+        MqttStateDto mqttStateDtoOutput=null;
+        if (null!=mqttStateDtoList&&mqttStateDtoList.size()>0){
+            mqttStateDtoOutput=mqttStateDtoList.get(0);
+            for (MqttStateDto mqttStateDto:mqttStateDtoList){
+                if (mqttStateDto.getCurrentTime()<mqttStateDtoOutput.getCurrentTime()){
+                    mqttStateDtoOutput=mqttStateDto;
+                }
+            }
+        }
+        return new ApiMessage<>(mqttStateDtoOutput);
     }
 
     /**

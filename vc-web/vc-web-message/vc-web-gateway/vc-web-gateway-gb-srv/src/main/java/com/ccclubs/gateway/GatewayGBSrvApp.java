@@ -1,14 +1,16 @@
 package com.ccclubs.gateway;
 
 import com.ccclubs.gateway.gb.TcpServerStarter;
-import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import com.ccclubs.gateway.gb.config.GatewayProperties;
+import com.ccclubs.gateway.gb.config.KafkaProperties;
+import com.ccclubs.gateway.gb.config.NettyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -20,7 +22,7 @@ import org.springframework.context.annotation.Import;
  * @create 2017-07-20
  **/
 @SpringBootApplication
-@Import({KafkaProperties.class})
+@EnableConfigurationProperties({KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
 public class GatewayGBSrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(GatewayGBSrvApp.class);
@@ -31,13 +33,15 @@ public class GatewayGBSrvApp extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         ConfigurableApplicationContext ctx = SpringApplication.run(GatewayGBSrvApp.class);
+        // 启动netty服务
+        ctx.getBean(TcpServerStarter.class).start();
     }
 
     /**
      * 启动Tcp服务器
      * @return
      */
-    @Bean(name = "tcpServerStarter", initMethod = "start", destroyMethod = "stop")
+    @Bean(name = "tcpServerStarter", destroyMethod = "stop")
     public TcpServerStarter getTcpServerStarter() {
         return new TcpServerStarter();
     }

@@ -11,7 +11,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
-import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
@@ -38,9 +38,9 @@ import java.util.Map;
  * @Description: 自动驾驶相关指令下发！
  */
 @Service(version = CommandServiceVersion.V1)
-public class AutopilotInfImpl implements AutopilotInf{
+public class AutopilotInfImpl implements AutopilotInf {
 
-    private static final Logger logger= LoggerFactory.getLogger(AutopilotInfImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AutopilotInfImpl.class);
 
     @Autowired
     private CommandProcessInf process;
@@ -62,14 +62,21 @@ public class AutopilotInfImpl implements AutopilotInf{
 
     @Resource
     IdGeneratorHelper idGen;
+    @Resource
+    AuthValidateHelper authValidateHelper;
+
     /**
      * 语音编号下发
      *
      * @param voiceIssuedInput
      */
     @Override
-    @DataAuth
     public VoiceIssuedOutput voiceCommandComply(VoiceIssuedInput voiceIssuedInput) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(voiceIssuedInput.getAppId(), voiceIssuedInput.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_VOICE.longValue();
         logger.debug("begin process command {} start.", structId);
 
@@ -79,7 +86,7 @@ public class AutopilotInfImpl implements AutopilotInf{
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, voiceIssuedInput.getVin());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
@@ -110,11 +117,16 @@ public class AutopilotInfImpl implements AutopilotInf{
     /**
      * 目标站点下发
      * 依据协议，语音类型左右 7 位，或  input.getVoiceType() & 0x80 或 input.getVoiceType() * 128
+     *
      * @param siteIssuedInput
      */
     @Override
-    @DataAuth
     public SiteIssuedOutput siteCommandComply(SiteIssuedInput siteIssuedInput) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(siteIssuedInput.getAppId(), siteIssuedInput.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_SITE.longValue();
         logger.debug("begin process command {} start.", structId);
 
@@ -124,7 +136,7 @@ public class AutopilotInfImpl implements AutopilotInf{
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, siteIssuedInput.getVin());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
@@ -152,13 +164,13 @@ public class AutopilotInfImpl implements AutopilotInf{
         return output;
     }
 
-    private int getAllValue(VoiceIssuedInput input){
-        int voicetype=0;
-        if (input.getVoiceType()==1){
-             voicetype=128;
+    private int getAllValue(VoiceIssuedInput input) {
+        int voicetype = 0;
+        if (input.getVoiceType() == 1) {
+            voicetype = 128;
         }
 
-        int sum=( voicetype * 256 )+input.getVoiceNum();
+        int sum = (voicetype * 256) + input.getVoiceNum();
         return sum;
     }
 

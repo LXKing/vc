@@ -97,7 +97,7 @@ public class CommandApi {
         logger.info("API事件:一键升级,APPID:{},车架号:{},升级程序包:{}", input.getAppId(), input.getVin(), input.getFilename());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "终端升级");
         }
         VersionQryInput qryInput = new VersionQryInput();
         qryInput.setVin(input.getVin());
@@ -128,7 +128,7 @@ public class CommandApi {
         logger.info("API事件:简单指令下发,APPID:{},车架号:{},指令:{}", input.getAppId(), input.getVin(), input.getCmd());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), input.getCmd());
         }
         SimpleCmdOutput output = simpleCmd.sendSimpleCmd(input);
         return new ApiMessage<>(output);
@@ -148,7 +148,7 @@ public class CommandApi {
                 input.getType(), input.getSecond());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "powerModeSwitch");
         }
         PowerModeOutput output = powerModeSwitchCmd.powerModeSwitch(input);
         return new ApiMessage<>(output);
@@ -167,7 +167,7 @@ public class CommandApi {
         logger.info("API事件:终端校时,APPID:{},车架号:{},校对时间:{}", input.getAppId(), input.getVin(), input.getTime());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "timeSynchronization");
         }
         TimeSyncOutput output = timeSyncCmd.timeSynchronization(input);
         return new ApiMessage<>(output);
@@ -187,7 +187,7 @@ public class CommandApi {
                 input.getItem(), input.getValue());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "airConditionerMonoCtrl");
         }
         AirMonoOutput output = airCmd.airConditionerMonoCtrl(input);
         return new ApiMessage<>(output);
@@ -207,7 +207,7 @@ public class CommandApi {
                 input.getVin(), input.getCircular(), input.getPtc(), input.getCompress(), input.getFan());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "airConditionerAllCtrl");
         }
         AirAllOutput output = airCmd.airConditionerAllCtrl(input);
         return new ApiMessage<>(output);
@@ -228,7 +228,7 @@ public class CommandApi {
                 input.getRealName(), input.getMobile(), input.getGender());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "issueOrderData");
         }
         IssueOrderOutput output = orderCmd.issueOrderData(input);
         return new ApiMessage<>(output);
@@ -308,7 +308,7 @@ public class CommandApi {
                 input.getVin(), input.getOrderId(), input.getStartTime(), input.getEndTime(), input.getRfid(), input.getAuthCode());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "issueAuthOrderData");
         }
         IssueAuthOrderOutput output = orderCmd.issueAuthOrderData(input);
         return new ApiMessage<>(output);
@@ -328,7 +328,7 @@ public class CommandApi {
                 input.getLatestVersion());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "setDvdVersion");
         }
         DvdVersionOutput output = setDvdVersionInf.setDvdVersion(input);
         return new ApiMessage<>(output);
@@ -347,7 +347,7 @@ public class CommandApi {
         logger.info("API事件:设置充电还车配置,APPID:{},车架号:{},充电检查配置项值:{}", input.getAppId(), input.getVin(), input.getValue());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "setReturn");
         }
         ReturnCheckOutput output = returnCheckInf.setReturn(input);
         return new ApiMessage<>(output);
@@ -366,7 +366,7 @@ public class CommandApi {
         logger.info("API事件:车门落锁-带控制参数,APPID:{},车架号:{},控制参数:{}", input.getAppId(), input.getVin(), input.getCode());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "lockDoorWithCtrl");
         }
         LockDoorOutput output = lockDoorInf.lockDoorWithCtrl(input);
         return new ApiMessage<>(output);
@@ -400,7 +400,7 @@ public class CommandApi {
                 input.getVoiceNum(), input.getVoiceType());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "voice");
         }
         VoiceIssuedOutput output = autopilotInf.voiceCommandComply(input);
         return new ApiMessage<>(output);
@@ -420,7 +420,7 @@ public class CommandApi {
         logger.info("API事件:站点编号下发,APPID:{},车架号:{},站点编号:{}", input.getAppId(), input.getVin(), input.getSiteNum());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "site");
         }
         SiteIssuedOutput output = autopilotInf.siteCommandComply(input);
         return new ApiMessage<>(output);

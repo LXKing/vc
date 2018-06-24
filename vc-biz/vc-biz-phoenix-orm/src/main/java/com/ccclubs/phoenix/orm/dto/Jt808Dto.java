@@ -1,7 +1,6 @@
 package com.ccclubs.phoenix.orm.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * Created with IntelliJ IDEA2017.

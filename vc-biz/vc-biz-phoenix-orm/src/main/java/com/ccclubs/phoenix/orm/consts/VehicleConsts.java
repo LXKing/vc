@@ -1,7 +1,7 @@
 package com.ccclubs.phoenix.orm.consts;
 
 /**
- * Created by Administrator on 2017/9/29 0029.
+ * Created by taoshangming on 2017/9/29 0029.
  */
 public class VehicleConsts {
     //车辆状态(充电)
@@ -19,7 +19,7 @@ public class VehicleConsts {
     //钥匙状态(插入)
     public static final Integer KEY_STATUS_IN = 1;
     //钥匙状态(拔出)
-    public static final Integer KEY_STATUS_OUT= 2;
+    public static final Integer KEY_STATUS_OUT = 2;
     //发动机状态(无效)
     public static Integer ENGINE_STATUS_INVALID = 0;
     //发动机状态(START)
@@ -37,10 +37,9 @@ public class VehicleConsts {
     //充电数据块时间间隔(单位:分钟)
     public static Integer CHARGING_MINUTES_INTERVAL = 12;
     //计算阶段数据类型(驾驶)
-    public static Integer CAL_PACE_TYPE_DRIVE=1;
+    public static Integer CAL_PACE_TYPE_DRIVE = 1;
     //计算阶段数据类型(充电)
-    public static Integer CAL_PACE_TYPE_CHARGING=2;
-
+    public static Integer CAL_PACE_TYPE_CHARGING = 2;
 
 
 }

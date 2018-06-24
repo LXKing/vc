@@ -7,13 +7,6 @@ import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.StringUtils;
-import java.net.InetSocketAddress;
-import java.util.Collection;
-import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Resource;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -22,6 +15,14 @@ import org.apache.mina.transport.socket.SocketSessionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import javax.annotation.Resource;
+import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * JT808业务处理器

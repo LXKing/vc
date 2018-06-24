@@ -1,10 +1,11 @@
 package com.ccclubs.gateway.jt808.mina;
 
-import java.nio.charset.Charset;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
 import org.apache.mina.filter.codec.ProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolEncoder;
+
+import java.nio.charset.Charset;
 
 /**
  * 用于转发的Mina Client

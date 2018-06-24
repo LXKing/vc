@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.inf;
 
 import com.ccclubs.gateway.jt808.dto.GpsConnection;
 import com.ccclubs.protocol.dto.jt808.T808Message;
+
 import java.util.Collection;
 
 /**

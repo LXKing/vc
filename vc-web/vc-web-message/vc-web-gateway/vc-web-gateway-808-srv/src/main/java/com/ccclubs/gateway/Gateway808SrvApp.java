@@ -10,20 +10,10 @@ import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
 import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.ons.OnsProperties;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
-import com.ccclubs.gateway.jt808.inf.I808MessageProcessService;
-import com.ccclubs.gateway.jt808.inf.IAckService;
-import com.ccclubs.gateway.jt808.inf.IGpsDataService;
-import com.ccclubs.gateway.jt808.inf.IJT808Server;
-import com.ccclubs.gateway.jt808.inf.IT808Manager;
-import com.ccclubs.gateway.jt808.inf.impl.AckService;
-import com.ccclubs.gateway.jt808.inf.impl.GpsDataService;
-import com.ccclubs.gateway.jt808.inf.impl.MessageProcessService;
-import com.ccclubs.gateway.jt808.inf.impl.MqttMessageProcessService;
-import com.ccclubs.gateway.jt808.inf.impl.T808Manager;
+import com.ccclubs.gateway.jt808.inf.*;
+import com.ccclubs.gateway.jt808.inf.impl.*;
 import com.ccclubs.gateway.jt808.mina.JT808ServerHandler;
 import com.ccclubs.gateway.jt808.mina.JT808TcpServer;
-import java.io.IOException;
-import java.util.Properties;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +28,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * 808网关

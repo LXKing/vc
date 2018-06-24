@@ -374,17 +374,22 @@ public class MachineAdditionalFactory {
         additional.ReadFromBytes(bytes);
         break;
       case 152:
-        additional=new MachineAdditional_AutoConfigStatus();
+        additional = new MachineAdditional_AutoConfigStatus();
         additional.ReadFromBytes(bytes);
         break;
       case 153:
-        additional=new MachineAdditional_Handbrake();
+        additional = new MachineAdditional_Handbrake();
         additional.ReadFromBytes(bytes);
         break;
       case 154:
-        additional=new MachineAdditional_Autopilot();
+        additional = new MachineAdditional_Autopilot();
         additional.ReadFromBytes(bytes);
         break;
+      case 155:
+        additional = new MachineAdditional_GpsAssistStatus();
+        additional.ReadFromBytes(bytes);
+        break;
+
       case 202:
         additional = new MachineAdditional_MergeDoorStatusWithMask();
         additional.ReadFromBytes(bytes);
