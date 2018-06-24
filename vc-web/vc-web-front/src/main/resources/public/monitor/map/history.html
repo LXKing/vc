@@ -110,7 +110,8 @@
           <!--<input name="cssCarEquals" placeholder="请输入VIN" class="form-control searchinput"-->
           <!--dataWhere=""-->
           <!--dataUrl="/admin/vehicle/query"></dd>-->
-          <input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/find"></dd>
+          <!--<input name="cssNumberEquals" placeholder="请输入关键字" class="form-control searchinput" dataWhere="" dataUrl="/admin/vehicle/find"></dd>-->
+        <input  name="csVinEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/vehicle/search">
       </dl>
       <dl>
         <dt>轨迹时间</dt>
@@ -264,7 +265,7 @@
 
       var total, hasMore = true, isFirstLoad = true,totalPoint =0;
       var params = {
-        csNumberEquals: '',
+        csVinEquals: '',
         page: 1,
         rows: 300,
         currentTimeStart: '',
@@ -281,14 +282,14 @@
       //当前仅有1条轨迹信息
       pathObjectArray.push(pathObject);
 
-      var $vinId = $("input[name='cssNumberEquals']");
+      var $vinId = $("input[name='csVinEquals']");
       var $startTime = $("input[name='cssCurrentTimeStart']");
       var $endTime = $("input[name='cssCurrentTimeEnd']");
 
       $vinId.on('input', function (e) {
         // 这里可以写你想要的验证代码；
         if ($vinId.val() !== '') {
-          params.csNumberEquals = $vinId.val();
+          params.csVinEquals = $vinId.val();
           // loadData();
         }
       });
@@ -353,7 +354,7 @@
           layer.msg('结束时间应该比开始时间大', {icon: 7, time:1600});
           return false;
         }
-        params.csNumberEquals = $vinId.val();
+        params.csVinEquals = $vinId.val();
         params.currentTimeStart = $startTime.val();
         params.currentTimeEnd = $endTime.val();
         return true;
@@ -483,8 +484,8 @@
                 if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
                   $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
                   $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
-                  $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
-                  $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                  $('.mile').html(typeof(trackData[event.target.cursor.idx][2]) === 'undefined' ? '未知' : (trackData[event.target.cursor.idx][2]+ 'km'));
+                  $('.soc').html(typeof(trackData[event.target.cursor.idx][3]) === 'undefined' ? '未知' : (trackData[event.target.cursor.idx][3]+ '%'));
                 }
               });
             } else {
@@ -517,8 +518,8 @@
                       if(event.target.cursor.idx != null && event.target.cursor.idx != undefined) {
                         $('.speed').html(trackData[event.target.cursor.idx][0] + 'km/h');
                         $('.time').html(moment(trackData[event.target.cursor.idx][1]).format("YYYY-MM-DD HH:mm:ss"));
-                        $('.mile').html(trackData[event.target.cursor.idx][2] + 'km');
-                        $('.soc').html(trackData[event.target.cursor.idx][3] + '%');
+                        $('.mile').html(typeof(trackData[event.target.cursor.idx][2]) === 'undefined' ? '未知' : (trackData[event.target.cursor.idx][2]+ 'km'));
+                        $('.soc').html(typeof(trackData[event.target.cursor.idx][3]) === 'undefined' ? '未知' : (trackData[event.target.cursor.idx][3]+ '%'));
                       }
                     });
                   }
