@@ -191,6 +191,10 @@
   var status;
   var navg,total;
   var targetIndex = 100;
+  var mqttURL = '/monitor/historyState/list';
+  var jt808URL = '/monitor/historyState/listJt808';
+  // 最终请求数据的url
+  var url ;
 
   $('#panel').hide();
   $('.control').hide();
@@ -321,9 +325,15 @@
             return;
         });
         $('.carControl').addClass('carControlPlay').removeClass('carControlPause');
-        // initSpeed();
-        loadData();
-        setTimeout(expandPath,5000);
+        if(existMqttData()){
+          url = mqttURL;
+          loadData();
+          setTimeout(expandPath,5000);
+        }else {
+          url = jt808URL;
+          loadData();
+          setTimeout(expandPath,5000);
+        }
       });
 
       function checkParams() {
@@ -348,10 +358,29 @@
         params.currentTimeEnd = $endTime.val();
         return true;
       }
+      
+      function existMqttData() {
+        $.getJSON(
+            getServUrl(mqttURL),
+            params,
+            function (d) {
+              if (0 !== d.code) {
+                layer.msg('数据请求异常！', {icon: 7, time: 1500});
+                return false;
+              }
+              // 判断是否还有更多数据
+              total = d.count;
+              if (0 === total) {
+                return false;
+              }else {
+                return true;
+              }
+        });
+      }
  
       function loadData() {
         $.getJSON(
-          getServUrl('/monitor/historyState/list'),
+          getServUrl(url),
           params,
           function (d) {
             $('#loadingTip').remove();
