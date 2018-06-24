@@ -43,7 +43,7 @@ public class GbAlarmController {
                                            @RequestParam(defaultValue = "15") Integer rows) {
         query.setPageNum(page);
         query.setPageSize(rows);
-        PageInfo<EvAlarmRecord> pageInfo = alarmRecordBaseInf.getAlarmRecordPage(query,page,rows);
+        PageInfo<EvAlarmRecord> pageInfo = alarmRecordBaseInf.getPageByCond(query);
         return new TableResult<>(pageInfo);
     }
 
@@ -62,7 +62,7 @@ public class GbAlarmController {
      */
     @RequestMapping(value = "report", method = RequestMethod.POST)
     public VoResult<String> getReport(@RequestBody ReportParam<EvAlarmRecordQuery> reportParam) {
-        List<EvAlarmRecord> result = alarmRecordBaseInf.getAllAlarmRecord(reportParam.getQuery());
+        List<EvAlarmRecord> result = alarmRecordBaseInf.getAllByCond(reportParam.getQuery());
 
         String uuid = UUID.randomUUID().toString();
         reportThread.setBaseName("Vehicle_Alarm");
