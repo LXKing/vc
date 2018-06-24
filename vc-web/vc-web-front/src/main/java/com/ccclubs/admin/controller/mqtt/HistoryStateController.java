@@ -62,6 +62,32 @@ public class HistoryStateController {
 
 
     /**
+     * 获取分页列表数据
+     */
+    @RequestMapping(value = "/listJt808", method = RequestMethod.GET)
+    public TableResult<HistoryState> listJt808(HistoryStateQuery query,
+        @RequestParam(defaultValue = "1") Integer page,
+        @RequestParam(defaultValue = "10") Integer rows,
+        @RequestParam(defaultValue = "desc") String order,
+        @RequestParam(defaultValue = "true") Boolean isResolve) {
+
+        if (null == query.getCsVinEquals()) {
+            //TODO 需要Phoenix支持只使用时间的查询。
+            return new TableResult<>();
+        }
+        TableResult<HistoryState> pageInfo = historyStateService.getJt808PositionPage(query, page, rows, order);
+        List<HistoryState> list = pageInfo.getData();
+        if (null != list && list.size() > 0) {
+            for (HistoryState data : list) {
+                registResolvers(data, isResolve);
+            }
+        }
+
+        return pageInfo;
+    }
+
+
+    /**
      * 注册属性内容解析器
      */
     void registResolvers(HistoryState data, Boolean isResolve) {
