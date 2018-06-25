@@ -112,7 +112,9 @@ public final class PacUtil {
         if (UpPacType.ACK.getCode() != pac.getHeader().getPacId()) {
             throw new IllegalArgumentException("该消息不是[终端通用应答]，不能获取应答ID");
         }
-        return pac.getBody().getContent().resetReaderIndex().skipBytes(2).readUnsignedShort();
+        int ackPackId = pac.getBody().getContent().resetReaderIndex().skipBytes(2).readUnsignedShort();
+        pac.getBody().getContent().resetReaderIndex();
+        return ackPackId;
     }
 
 
@@ -125,9 +127,12 @@ public final class PacUtil {
         if (UpPacType.PENETRATE_UP.getCode() != pac.getHeader().getPacId()) {
             throw new IllegalArgumentException("该消息不是[终端上行透传消息]，不能获取消息类型");
         }
-        return pac.getBody().getContent().resetReaderIndex()
+        int msgType = pac.getBody().getContent().resetReaderIndex()
                 // 读取消息类型
                 .readByte() & 0xFF;
+
+        pac.getBody().getContent().resetReaderIndex();
+        return msgType;
     }
 
     /**
@@ -144,13 +149,15 @@ public final class PacUtil {
             LOG.error("该上行透传消息体的长度少于17个字节");
             return -1;
         }
-        return pac.getBody().getContent().resetReaderIndex()
+        int funCode = pac.getBody().getContent().resetReaderIndex()
                 // 跳过功能码字节
                 .skipBytes(1)
                 // 跳过分时租赁协议的车机号（8）和流水号（8）
                 .skipBytes(16)
                 // 读取功能码
                 .readByte() & 0xFF;
+        pac.getBody().getContent().resetReaderIndex();
+        return funCode;
     }
 
     /**
