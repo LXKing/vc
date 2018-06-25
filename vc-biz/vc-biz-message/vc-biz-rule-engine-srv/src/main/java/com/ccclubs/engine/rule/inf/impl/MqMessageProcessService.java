@@ -179,7 +179,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 // 写日志
                 updateLoggerService.save(msgFromTerminal.getSimNo(), "终端CAN过滤表",
                         msgFromTerminal.getPacketDescr(), 0L);
-                
+
             } else if (headerType == 0x0100) {
                 /**
                  * 原终端注册流程
