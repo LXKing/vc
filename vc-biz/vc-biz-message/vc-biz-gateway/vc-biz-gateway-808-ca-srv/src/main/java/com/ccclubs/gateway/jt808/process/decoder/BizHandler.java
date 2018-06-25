@@ -15,6 +15,7 @@ import com.ccclubs.gateway.jt808.util.PacUtil;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -103,7 +104,11 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
                     // 发送到jt808 的tage上 eg: MQTT_50
                     int functionCode = PacUtil.getFuncCodeFromPenetrateUpMsg(pac);
                     tag = (-1 == functionCode)?null:MqTagUtils.getTag(MqTagUtils.PROTOCOL_MQTT, (byte)functionCode);
-                    onsMsg = ByteBufUtil.hexDump(pac.getBody().getContent());
+                    // 发送ons的消息体
+                    ByteBuf onsContentBuf = pac.getBody().getContent()
+                            // 跳过消息类型
+                            .skipBytes(1);
+                    onsMsg = ByteBufUtil.hexDump(onsContentBuf);
                 }
             } else if (Objects.nonNull(MQTTMsgType.getByCode(msgTypeCode))) {
                 // 发送到MQTT 的tag上 eg: JT_0900_FD
