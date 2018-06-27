@@ -84,33 +84,37 @@ public class GatewayErrorMessageConsumer {
 
     private void processJt808(ExpMessageDTO dto) {
         CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(dto.getMobile());
-        CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
-        if (Objects.nonNull(csMachine) && Objects.nonNull(csVehicle)) {
-            dto.setVin(csVehicle.getCsvVin());
-            dto.setAccess(csMachine.getCsmAccess());
-            dto.setTeNo(csMachine.getCsmTeNo());
-            dto.setTeNumber(csMachine.getCsmNumber());
-            dto.setIccid(csMachine.getCsmIccid());
-            dto.setTeType(csMachine.getCsmTeType());
-            kafkaTemplate.send(topic808Error, dto.getVin(), dto.toJson());
+        if (Objects.nonNull(csMachine) && Objects.nonNull(csMachine.getCsmId())) {
+            CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+            if (Objects.nonNull(csVehicle)) {
+                dto.setVin(csVehicle.getCsvVin());
+                dto.setAccess(csMachine.getCsmAccess());
+                dto.setTeNo(csMachine.getCsmTeNo());
+                dto.setTeNumber(csMachine.getCsmNumber());
+                dto.setIccid(csMachine.getCsmIccid());
+                dto.setTeType(csMachine.getCsmTeType());
+                kafkaTemplate.send(topic808Error, dto.getVin(), dto.toJson());
+            }
         } else {
-            LOGGER.error("没有绑定车机,vin={}", dto.getVin());
+            LOGGER.error("没有绑定车机,mobile={}", dto.getMobile());
         }
     }
 
     private void processMqtt(ExpMessageDTO dto) {
         CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(dto.getTeNo());
-        CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
-        if (Objects.nonNull(csVehicle)) {
-            dto.setAccess(csVehicle.getCsvAccess());
-            dto.setTeNo(csMachine.getCsmTeNo());
-            dto.setTeNumber(csMachine.getCsmNumber());
-            dto.setIccid(csMachine.getCsmIccid());
-            dto.setMobile(csMachine.getCsmMobile());
-            dto.setTeType(csMachine.getCsmTeType());
-            kafkaTemplate.send(topicMQttError, dto.getVin(), dto.toJson());
+        if (Objects.nonNull(csMachine)) {
+            CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+            if (Objects.nonNull(csVehicle)) {
+                dto.setAccess(csVehicle.getCsvAccess());
+                dto.setTeNo(csMachine.getCsmTeNo());
+                dto.setTeNumber(csMachine.getCsmNumber());
+                dto.setIccid(csMachine.getCsmIccid());
+                dto.setMobile(csMachine.getCsmMobile());
+                dto.setTeType(csMachine.getCsmTeType());
+                kafkaTemplate.send(topicMQttError, dto.getVin(), dto.toJson());
+            }
         } else {
-            LOGGER.error("没有绑定车机,vin={}", dto.getVin());
+            LOGGER.error("没有绑定终端,teNo={}", dto.getTeNo());
         }
     }
 }
