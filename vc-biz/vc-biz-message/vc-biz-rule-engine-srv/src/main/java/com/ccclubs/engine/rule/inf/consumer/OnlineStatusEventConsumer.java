@@ -90,9 +90,18 @@ public class OnlineStatusEventConsumer {
                         break;
             }
             if (event.isOnline()) {
+                // 众泰网关上线事件
+                redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
+                        new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
+                                System.currentTimeMillis()));
+                // 新网关上线事件
                 redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
                 redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
             } else {
+                // 众泰网关下线事件
+                redisTemplate.delete(ConstantUtils.ONLINE_REDIS_PRE + eventKey);
+
+                // 新网关下线事件
                 redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey, event);
                 redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey);
             }
