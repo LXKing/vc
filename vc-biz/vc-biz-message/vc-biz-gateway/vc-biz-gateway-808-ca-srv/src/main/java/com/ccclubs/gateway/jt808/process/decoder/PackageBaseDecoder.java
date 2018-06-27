@@ -189,7 +189,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
                 .setGatewayType(GatewayType.GATEWAY_808.getDes())
                 .setIndex(decodeExceptionInfo.getDecodeMarkIndex())
                 .setReason(decodeExceptionInfo.toLogString())
-                .setCode(pacProcessTrack.getStep() + "");
+                .setCode(pacProcessTrack.getStep() + "")
+                .setMobile(decodeExceptionInfo.getUniqueNo());
         throw new PackageDecodeException(decodeExceptionInfo.toLogString());
     }
 }
