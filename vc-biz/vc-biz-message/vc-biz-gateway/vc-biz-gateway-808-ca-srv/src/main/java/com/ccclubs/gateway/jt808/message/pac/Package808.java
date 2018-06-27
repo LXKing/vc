@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.message.pac;
 
 import com.ccclubs.gateway.common.constant.PacErrorType;
+import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import io.netty.buffer.ByteBuf;
 
@@ -127,15 +128,15 @@ public class Package808 {
 
     public String printLog() {
         StringBuilder sb = new StringBuilder();
-        sb.append("车辆(").append(getHeader().getTerMobile()).append(")").append("上传了[");
+        sb.append("手机号(").append(getHeader().getTerMobile()).append(")").append("上传了[");
         if (getHeader().getPacContentAttr().isMultiPac()) {
             sb.append("分包(").append(getHeader().getPacSealInfo().getPacNo()).append("/").append(getHeader().getPacSealInfo().getTotalPacCount()).append(")]");
         } else {
             sb.append("整包]");
         }
-        sb.append("-[").append(UpPacType.getByCode(getHeader().getPacId()).getDes()).append("]消息,")
+        sb.append("-[").append(UpPacType.getByCode(getHeader().getPacId()).getDes()).append("],")
                 .append("流水号[").append(getHeader().getPacSerialNo()).append("],")
-                .append("原始报文[").append(getSourceHexStr()).append("]");
+                .append("原始报文[").append(PackageCons.PAC_START_SYMBOL_HEX).append(getSourceHexStr()).append(PackageCons.PAC_START_SYMBOL_HEX).append("]");
         return sb.toString();
     }
 

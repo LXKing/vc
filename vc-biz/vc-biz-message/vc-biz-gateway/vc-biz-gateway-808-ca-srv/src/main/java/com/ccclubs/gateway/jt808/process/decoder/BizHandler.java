@@ -42,9 +42,7 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
-        if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.info(pac.printLog());
-        }
+        LOG.info(pac.printLog());
 
         // 如果是半包消息，则加到对应包后面
         if (pac.getHeader().getPacContentAttr().isMultiPac()) {

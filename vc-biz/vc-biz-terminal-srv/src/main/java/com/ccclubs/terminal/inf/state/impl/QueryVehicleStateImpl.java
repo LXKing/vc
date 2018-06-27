@@ -8,7 +8,6 @@ import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_ONLINE;
-import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
 
 /**
  * 车辆状态数据查询实现
@@ -134,11 +132,13 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         switch (protocol) {
             // MQTT协议使用车机号 -> MqttMessageProcessService.java
             case 1:
-                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE + GatewayType.COLON + GatewayType.GATEWAY_MQTT, csMachine.getCsmNumber());
+                isOnline = (null != redisTemplate.opsForValue()
+                        .get(REDIS_KEY_ONLINE + csMachine.getCsmNumber()));
                 break;
             // JT808协议使用手机卡号 -> JT808ServerHandler.java
             case 2:
-                isOnline = redisTemplate.opsForHash().hasKey(REDIS_KEY_TCP_ONLINE + GatewayType.COLON + GatewayType.GATEWAY_808, csMachine.getCsmMobile());
+                isOnline = (null != redisTemplate.opsForValue()
+                        .get(REDIS_KEY_ONLINE + csMachine.getCsmMobile()));
                 break;
             default:
                 break;
