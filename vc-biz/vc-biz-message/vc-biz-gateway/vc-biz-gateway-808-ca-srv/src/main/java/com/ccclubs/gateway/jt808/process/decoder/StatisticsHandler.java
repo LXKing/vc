@@ -62,12 +62,14 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
 
             // 发送一个kafkaTask给SendoutHandelr
             ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+            expMessageDTO.setSourceHex(pac.getSourceHexStr());
             expMessageDTO.setMsgTime(System.currentTimeMillis());
             expMessageDTO.setMobile(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()));
             // 依据不同的校验异常类型，写入不同的错误码
             switch (pac.getPacErrorType()) {
                 case PAC_VALID_ERROR:
-                    expMessageDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode()).setGatewayType(GatewayType.GATEWAY_808.getDes());
+                    expMessageDTO.setCode(PackProcessExceptionCode.INVALID_FAIL.getCode())
+                            .setGatewayType(GatewayType.GATEWAY_808.getDes());
                     break;
                 default:
                     break;
