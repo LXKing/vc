@@ -103,10 +103,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
                 expMessageDTO.setMsgTime(System.currentTimeMillis());
                 expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                        .setVin(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()))
                         .setGatewayType(GatewayType.GATEWAY_808.getDes())
                         .setSourceHex(pacProcessTrack.getSourceHex())
-                        .setReason(cause.getMessage());
+                        .setReason(cause.getMessage())
+                        .setMobile(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()));
             }
         } else {
             LOG.error("exception throwed but step invalid step={}", pacProcessTrack.getStep());
@@ -115,10 +115,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
             expMessageDTO.setMsgTime(System.currentTimeMillis());
             expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                    .setVin(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()))
                     .setGatewayType(GatewayType.GATEWAY_808.getDes())
                     .setSourceHex(pacProcessTrack.getSourceHex())
-                    .setReason(cause.getMessage());
+                    .setReason(cause.getMessage())
+                    .setMobile(PacUtil.trim0InMobile(pacProcessTrack.getUniqueNo()));
         }
 
         // 其他非自定义异常如果获取不到vin码则不发送到kafka
