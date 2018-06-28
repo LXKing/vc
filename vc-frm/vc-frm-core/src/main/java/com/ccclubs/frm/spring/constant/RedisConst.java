@@ -33,8 +33,24 @@ public class RedisConst {
      * 网关记录终端在线的 redis key 前缀
      */
     public static final String REDIS_KEY_TCP_ONLINE = "TCP:ONLINE";
+
+    /**
+     * redis建的分隔符
+     */
+    public static final String REDIS_KEY_SPLIT = ":";
+
     /**
      * 网关记录终端离线的 redis key 前缀
      */
     public static final String REDIS_KEY_TCP_OFFLINE = "TCP:OFFLINE";
+
+    /**
+     * key:{id} -> key:id
+     * @param key
+     * @param id
+     * @return
+     */
+    public static final String idKey(String key, String id) {
+        return key.replace("{id}", id);
+    }
 }

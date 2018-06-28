@@ -16,6 +16,16 @@ import java.io.Serializable;
 public class ConnOnlineStatusEvent implements Serializable {
 
     /**
+     * 车辆vin码
+     */
+    private String vin;
+
+    /**
+     * 车机号
+     */
+    private String teNumber;
+
+    /**
      * 车辆sim卡号
      */
     private String simNo;
@@ -106,6 +116,24 @@ public class ConnOnlineStatusEvent implements Serializable {
 
     public ConnOnlineStatusEvent setGatewayType(GatewayType gatewayType) {
         this.gatewayType = gatewayType;
+        return this;
+    }
+
+    public String getVin() {
+        return vin;
+    }
+
+    public ConnOnlineStatusEvent setVin(String vin) {
+        this.vin = vin;
+        return this;
+    }
+
+    public String getTeNumber() {
+        return teNumber;
+    }
+
+    public ConnOnlineStatusEvent setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
         return this;
     }
 }

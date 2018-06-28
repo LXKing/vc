@@ -5,7 +5,7 @@ server:
 netty:
   tcp-port: 26700
   boss-count: 1
-  worker-count: 10
+  worker-count: 2
   keep-alive: false
   backlog: 100
   use-linux-epoll: false
@@ -16,8 +16,14 @@ gateway:
     log-print: true       # 打印消息日志
     buffer-check: true    # 开启缓存检查
 
-#kafka生产者配置
 spring:
+  # redis配置
+  redis:
+    host: 118.178.229.234
+    port: 63791
+    password: WDnlDnt6f7GuYh
+    database: 7
+  # kafka生产者配置
   kafka:
     bootstrap-servers: 127.0.0.1:9092
     producer:

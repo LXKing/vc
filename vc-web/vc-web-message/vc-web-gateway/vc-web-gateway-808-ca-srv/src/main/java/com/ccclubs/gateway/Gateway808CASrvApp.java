@@ -8,6 +8,7 @@ import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
 import com.ccclubs.frm.mqtt.inf.IMqClient;
 import com.ccclubs.frm.mqtt.inf.impl.MqMqttClient;
 import com.ccclubs.frm.ons.OnsProperties;
+import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.config.KafkaProperties;
 import com.ccclubs.gateway.common.config.NettyProperties;
@@ -35,7 +36,7 @@ import java.util.Properties;
  * @create 2017-07-20
  **/
 @SpringBootApplication
-@ImportAutoConfiguration({OnsProperties.class, MqttAliyunProperties.class,KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
+@ImportAutoConfiguration({RedisAutoConfiguration.class, OnsProperties.class, MqttAliyunProperties.class,KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
 public class Gateway808CASrvApp extends SpringBootServletInitializer {
 
   private static final Logger logger = LoggerFactory.getLogger(Gateway808CASrvApp.class);
