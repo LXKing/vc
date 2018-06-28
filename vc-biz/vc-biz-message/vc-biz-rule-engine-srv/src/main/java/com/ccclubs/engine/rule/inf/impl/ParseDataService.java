@@ -28,6 +28,7 @@ import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
@@ -407,6 +408,7 @@ public class ParseDataService implements IParseDataService {
     @Override
     public void processTerminalLog(MqMessage message) {
         try {
+            Long addTime = System.currentTimeMillis();
             CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
             logCcclubs_6c.ReadFromBytes(message.getMsgBody());
             CsLogger csLogger = new CsLogger();
@@ -414,19 +416,26 @@ public class ParseDataService implements IParseDataService {
             csLogger.setCslOrder(message.getTransId());
             csLogger.setCslLog(logCcclubs_6c.getmLog());
             csLogger.setCslData(message.getHexString());
-            csLogger.setCslAddTime(System.currentTimeMillis());
+            csLogger.setCslAddTime(addTime);
             csLogger.setCslStatus((short) 1);
             loggerDao.save(csLogger);
             //转发到kafka，存储HBASE
+            TboxLog dto = new TboxLog();
+            dto.setAddTime(addTime);
+            dto.setLogInfo(logCcclubs_6c.getmLog());
+            dto.setOrderNo(message.getTransId());
+            dto.setTeNumber(message.getCarNumber());
+            dto.setSourceHex(message.getHexString());
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
-                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(csLogger));
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             }
             CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
             if (csVehicle == null) {
-                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(csLogger));
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
-                kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(csLogger));
+                dto.setVin(csVehicle.getCsvVin());
+                kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
