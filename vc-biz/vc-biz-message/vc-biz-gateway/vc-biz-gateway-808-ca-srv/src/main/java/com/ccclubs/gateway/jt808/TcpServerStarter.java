@@ -37,7 +37,7 @@ public class TcpServerStarter {
 
     public void start() {
 
-        LOG.info("808-TCP服务器启动");
+        LOG.info("808-TCP服务器启动: port={}", tcpPort);
         try {
             this.serverChannel =
                     serverBootstrap
