@@ -77,8 +77,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                  */
                 if (Objects.nonNull(conn)) {
                     ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(PacUtil.trim0InMobile(conn.getUniqueNo()), GatewayType.GATEWAY_808);
-                    if (Objects.isNull(event) || channel.remoteAddress().getHostString().equals(event.getClientIp())) {
+                    // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
+                    if (Objects.isNull(event) || channel.localAddress().getHostString().equals(event.getServerIp())) {
                         // 需要下发下线事件
+                        conn.setConnected(true);
                     } else {
                         // 不发送下线事件
                         conn.setConnected(false);
