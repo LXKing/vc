@@ -85,7 +85,7 @@ public class OnlineStatusEventConsumer {
                 case GatewayType.GATEWAY_GB:
                     eventKey = event.getVin();
                     final MachineMapping mappingGb = terminalUtils.getMapping(eventKey, MACHINEMAPPING_VIN);
-                    if (mappingGb == null) {
+                    if (mappingGb != null) {
                         event.setSimNo(StringUtils.isEmpty(mappingGb.getMobile()) ? null : mappingGb.getMobile());
                         event.setTeNumber(StringUtils.isEmpty(mappingGb.getNumber()) ? null : mappingGb.getNumber());
                     }
@@ -93,7 +93,7 @@ public class OnlineStatusEventConsumer {
                 case GatewayType.GATEWAY_808:
                     eventKey = event.getSimNo();
                     final MachineMapping mapping808 = terminalUtils.getMapping(eventKey, MACHINEMAPPING_SIMNO);
-                    if (mapping808 == null) {
+                    if (mapping808 != null) {
                         event.setVin(StringUtils.isEmpty(mapping808.getVin()) ? null : mapping808.getVin());
                         event.setTeNumber(StringUtils.isEmpty(mapping808.getNumber()) ? null : mapping808.getNumber());
                     }
@@ -101,7 +101,7 @@ public class OnlineStatusEventConsumer {
                 case GatewayType.GATEWAY_MQTT:
                     eventKey = event.getTeNumber();
                     final MachineMapping mappingMqtt = terminalUtils.getMapping(eventKey, MACHINEMAPPING_CARNUMBER);
-                    if (mappingMqtt == null) {
+                    if (mappingMqtt != null) {
                         event.setVin(StringUtils.isEmpty(mappingMqtt.getVin()) ? null : mappingMqtt.getVin());
                         event.setSimNo(StringUtils.isEmpty(mappingMqtt.getMobile()) ? null : mappingMqtt.getMobile());
                     }
