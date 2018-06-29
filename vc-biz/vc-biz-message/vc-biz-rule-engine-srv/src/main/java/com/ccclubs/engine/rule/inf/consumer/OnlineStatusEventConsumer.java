@@ -7,16 +7,19 @@ import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.frm.spring.constant.OnsConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
+import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +30,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
+import static com.ccclubs.engine.core.util.RuleEngineConstant.*;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_CONN;
 import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_OFFLINE;
@@ -68,6 +70,9 @@ public class OnlineStatusEventConsumer {
     @Resource
     EnvironmentUtils environmentUtils;
 
+    @Resource
+    TerminalUtils terminalUtils;
+
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_RULE_CONN + "}",
             topics = "${" + KAFKA_TOPIC_GATEWAY_CONN + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
@@ -79,15 +84,30 @@ public class OnlineStatusEventConsumer {
             switch (event.getGatewayType()) {
                 case GatewayType.GATEWAY_GB:
                     eventKey = event.getVin();
+                    final MachineMapping mappingGb = terminalUtils.getMapping(eventKey, MACHINEMAPPING_VIN);
+                    if (mappingGb != null) {
+                        event.setSimNo(StringUtils.isEmpty(mappingGb.getMobile()) ? null : mappingGb.getMobile());
+                        event.setTeNumber(StringUtils.isEmpty(mappingGb.getNumber()) ? null : mappingGb.getNumber());
+                    }
                     break;
                 case GatewayType.GATEWAY_808:
                     eventKey = event.getSimNo();
+                    final MachineMapping mapping808 = terminalUtils.getMapping(eventKey, MACHINEMAPPING_SIMNO);
+                    if (mapping808 != null) {
+                        event.setVin(StringUtils.isEmpty(mapping808.getVin()) ? null : mapping808.getVin());
+                        event.setTeNumber(StringUtils.isEmpty(mapping808.getNumber()) ? null : mapping808.getNumber());
+                    }
                     break;
                 case GatewayType.GATEWAY_MQTT:
                     eventKey = event.getTeNumber();
+                    final MachineMapping mappingMqtt = terminalUtils.getMapping(eventKey, MACHINEMAPPING_CARNUMBER);
+                    if (mappingMqtt != null) {
+                        event.setVin(StringUtils.isEmpty(mappingMqtt.getVin()) ? null : mappingMqtt.getVin());
+                        event.setSimNo(StringUtils.isEmpty(mappingMqtt.getMobile()) ? null : mappingMqtt.getMobile());
+                    }
                     break;
-                    default:
-                        break;
+                default:
+                    break;
             }
             if (event.isOnline()) {
                 // 众泰网关上线事件

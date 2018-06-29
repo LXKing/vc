@@ -25,7 +25,7 @@ public class TerminalOnlineHelper {
     /**
      * 判断终端是否在线，主要用于控制指令下发
      */
-    public boolean isOnline(CsMachine csMachine) {
+    public boolean isOnline(CsMachine csMachine,String vin) {
         if (null == csMachine) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
