@@ -2,7 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
@@ -39,7 +39,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
 
-        JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(pac.getHeader().getTerMobile());
+        JTClientConn conn = (JTClientConn) ChannelMappingCollection.getByUniqueNo(pac.getHeader().getTerMobile());
         if (Objects.isNull(conn)) {
             conn = dealClientFirstConnect(ctx, pac);
         }
@@ -47,7 +47,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             String uniqueNo = pac.getHeader().getTerMobile();
             // 重连
             LOG.info("数据统计时发现终端({})重新连入系统", uniqueNo);
-            ClientConnCollection.doReconnecte(uniqueNo, (SocketChannel) ctx.channel());
+            ChannelMappingCollection.doReconnecte(uniqueNo, (SocketChannel) ctx.channel());
             ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(PacUtil.trim0InMobile(uniqueNo), (SocketChannel) ctx.channel()).setGatewayType(GatewayType.GATEWAY_808);
             KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, PacUtil.trim0InMobile(uniqueNo), connOnlineStatusEvent.toJson());
             // 发送至kafka
@@ -102,7 +102,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         JTClientConn newConn = JTClientConn.ofNew(uniqueNo);
 
         // 新建连接，连接存在时断开原连接
-        ClientConnCollection.addNew(newConn, channel);
+        ChannelMappingCollection.addNew(newConn, channel);
         LOG.info("数据统计时发现终端({})首次连入系统", uniqueNo);
 
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(PacUtil.trim0InMobile(uniqueNo), channel).setGatewayType(GatewayType.GATEWAY_808);

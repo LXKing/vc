@@ -3,7 +3,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
@@ -45,6 +45,8 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
     @Autowired
     private RedisConnService redisConnService;
+    @Autowired
+    private ChannelMappingCollection channelMappingCollection;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -70,20 +72,20 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             if (IdleState.READER_IDLE == e.state()) {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
-                JTClientConn conn = (JTClientConn)ClientConnCollection.getByChannelId(channel.id());
-                LOG.warn("连接(sim={})长时间空闲，将关闭该连接", Objects.isNull(conn)?"空":conn.getUniqueNo());
+                String uniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText()).get();
+                LOG.warn("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
                 /**
                  * 先从redis中获取连接信息
                  */
-                if (Objects.nonNull(conn)) {
-                    ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(PacUtil.trim0InMobile(conn.getUniqueNo()), GatewayType.GATEWAY_808);
+                if (StringUtils.isNotEmpty(uniqueNo)) {
+                    ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(PacUtil.trim0InMobile(uniqueNo), GatewayType.GATEWAY_808);
                     // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
                     if (Objects.isNull(event) || channel.localAddress().getHostString().equals(event.getServerIp())) {
                         // 需要下发下线事件
-                        conn.setConnected(true);
+
                     } else {
-                        // 不发送下线事件
-                        conn.setConnected(false);
+                        // 不发送下线事件 TODO 
+
                     }
                 }
 
@@ -174,9 +176,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         // 打印异常链
         cause.printStackTrace();
-//        if (cause.getCause() != null) {
-//            cause.printStackTrace();
-//        }
 
         if (needCloseConn) {
             // 关闭链接

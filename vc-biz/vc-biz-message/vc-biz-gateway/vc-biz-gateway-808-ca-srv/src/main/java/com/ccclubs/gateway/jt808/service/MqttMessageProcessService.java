@@ -1,7 +1,7 @@
 package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.jt808.constant.MsgTopicCon;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
@@ -37,7 +37,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
             // 终端手机号
             String uniqueNo = new String(uniqueNoBytes);
             // 终端对应连接
-            JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(uniqueNo);
+            JTClientConn conn = (JTClientConn) ChannelMappingCollection.getByUniqueNo(uniqueNo);
             if (Objects.nonNull(conn) && conn.isOnline()) {
                 // 终端在线
                 conn.send(payloadBuf.copy());
@@ -66,7 +66,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 String mobile = ByteBufUtil.hexDump(mobileBuf);
 
                 // 终端对应连接
-                JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(mobile);
+                JTClientConn conn = (JTClientConn) ChannelMappingCollection.getByUniqueNo(mobile);
                 if (Objects.nonNull(conn) && conn.isOnline()) {
                     // 便于ELK日志分析
                     LOG.info("DOWN >> {}", ByteBufUtil.hexDump(sourceBuf.resetReaderIndex()));

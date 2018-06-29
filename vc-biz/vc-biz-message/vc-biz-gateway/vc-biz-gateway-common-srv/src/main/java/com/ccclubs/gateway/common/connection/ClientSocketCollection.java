@@ -5,9 +5,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.internal.PlatformDependent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
  * Email:  yeanzhi@ccclubs.com
  * 客户端socke连接容器类
  */
+@Component
 public class ClientSocketCollection {
     public static final Logger LOG = LoggerFactory.getLogger(ClientSocketCollection.class);
 
@@ -27,13 +30,24 @@ public class ClientSocketCollection {
      */
     private static final ConcurrentMap<String, SocketChannel> UNIQUENO_TO_SOCKET = PlatformDependent.newConcurrentHashMap(1000);
 
-    public static SocketChannel get(String uniqueNo) {
+    /**
+     * 根据uniqueNo获取SocketChannel
+     * @param uniqueNo
+     * @return
+     */
+    public Optional<SocketChannel> getByUniqueNo(String uniqueNo) {
         Objects.requireNonNull(uniqueNo);
 
-        return UNIQUENO_TO_SOCKET.get(uniqueNo);
+        return Optional.ofNullable(UNIQUENO_TO_SOCKET.get(uniqueNo));
     }
 
-    public static void updateAndCloseOld(String uniqueNo, SocketChannel newChannel) {
+    /**
+     * 更新socket
+     *     移除已存在的旧连接，新增新连接
+     * @param uniqueNo
+     * @param newChannel
+     */
+    public void updateAndCloseOld(String uniqueNo, SocketChannel newChannel) {
         Objects.requireNonNull(uniqueNo);
         Objects.requireNonNull(newChannel);
 
@@ -45,78 +59,120 @@ public class ClientSocketCollection {
         UNIQUENO_TO_SOCKET.put(uniqueNo, newChannel);
     }
 
-    public static SocketChannel update(String uniqueNo, SocketChannel newChannel) {
+    /**
+     * uniqueNo是否已存在对应socket
+     * @param uniqueNo
+     * @return
+     */
+    public boolean existed(String uniqueNo) {
         Objects.requireNonNull(uniqueNo);
-        Objects.requireNonNull(newChannel);
 
-        if (channelInActive(newChannel)) {
-            throw new IllegalStateException("更新channel时发现：新连接连接状态异常");
-        }
-
-        SocketChannel oldChannel = UNIQUENO_TO_SOCKET.get(uniqueNo);
-        UNIQUENO_TO_SOCKET.put(uniqueNo, newChannel);
-
-        return oldChannel;
+        return UNIQUENO_TO_SOCKET.containsKey(uniqueNo);
     }
 
     /**
-     * 检验连接是否已经缓存
+     * 校验是否内存中存在相同的socket
      * @param uniqueNo
-     * @param checkChannel
+     * @param channel
      * @return
      */
-    public static boolean existed(String uniqueNo, SocketChannel checkChannel) {
+    public boolean sameChannel(String uniqueNo, SocketChannel channel) {
         Objects.requireNonNull(uniqueNo);
-        Objects.requireNonNull(checkChannel);
+        Objects.requireNonNull(channel);
 
-        SocketChannel existedChannel = UNIQUENO_TO_SOCKET.get(uniqueNo);
-        if (Objects.nonNull(existedChannel) && checkChannel.id().equals(existedChannel.id())) {
-            return true;
-        } else {
-            return false;
-        }
+        SocketChannel oldChannel = UNIQUENO_TO_SOCKET.get(uniqueNo);
+        return Objects.nonNull(oldChannel) &&
+                oldChannel.id().equals(channel.id());
     }
 
-    public static void delete(String uniqueNo) {
-        Objects.requireNonNull(uniqueNo);
-
-        SocketChannel deletingChannel = UNIQUENO_TO_SOCKET.get(uniqueNo);
-        if (Objects.isNull(deletingChannel)) {
-            LOG.error("删除连接时发现：连接[uniqueNo={}]不存在", uniqueNo);
-        } else {
-            // 1. 关闭连接
-            closeChannel(deletingChannel);
-            // 2. 移除映射
-            UNIQUENO_TO_SOCKET.remove(uniqueNo);
-        }
-    }
-
-    public static void put(String uniqueNo, SocketChannel newChannel) {
-        Objects.requireNonNull(uniqueNo);
-        Objects.requireNonNull(newChannel);
-
+    /**
+     * 新增一个socket
+     * @param uniqueNo
+     * @param newChannel
+     * @return
+     */
+    public ClientSocketCollection add(String uniqueNo, SocketChannel newChannel) {
         if (channelInActive(newChannel)) {
             LOG.error("新的连接[{}]状态异常", uniqueNo);
-            return;
+            throw new IllegalStateException("新的连接[{" + uniqueNo+ "}]状态异常");
         }
-        UNIQUENO_TO_SOCKET.put(uniqueNo, newChannel);
+        if (existed(uniqueNo)) {
+            LOG.error("client socket existed when add new one: uniqueNo={}", uniqueNo);
+            // 移除旧连接，添加新连接
+            updateAndCloseOld(uniqueNo, newChannel);
+        } else {
+            if (sameChannel(uniqueNo, newChannel)) {
+                LOG.error("same client socket found when add new one: uniqueNo={}", uniqueNo);
+            } else {
+                UNIQUENO_TO_SOCKET.put(uniqueNo, newChannel);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 终端下线时
+     * @param uniqueNo
+     * @param offlineChannel
+     * @return
+     */
+    public ClientSocketCollection offline(String uniqueNo, SocketChannel offlineChannel) {
+        if (existed(uniqueNo)) {
+            if (sameChannel(uniqueNo, offlineChannel)) {
+                closeChannel(offlineChannel);
+            } else {
+                LOG.error("client socket are not same when offline; both socket will be closed!");
+                getByUniqueNo(uniqueNo).ifPresent(socket -> closeChannel(socket));
+                closeChannel(offlineChannel);
+            }
+        } else {
+            LOG.error("client socket not existed when offline: uniqueNo={}", uniqueNo);
+        }
+        return this;
+    }
+
+    /**
+     * 终端上线
+     * @param uniqueNo
+     * @param channel
+     * @return
+     */
+    public ClientSocketCollection online(String uniqueNo, SocketChannel channel) {
+        if (channelInActive(channel)) {
+            LOG.error("socket not active when deal online event: uniqueNo={}", uniqueNo);
+            throw new IllegalStateException("illegal socket state when deal online event: uniqueNo=" + uniqueNo);
+        }
+        if (existed(uniqueNo)) {
+            LOG.error("client socket already existed when deal online event: uniqueNo={}", uniqueNo);
+            // 移除旧连接，添加新连接
+            updateAndCloseOld(uniqueNo, channel);
+        } else {
+            if (sameChannel(uniqueNo, channel)) {
+                LOG.error("a same client socket already existed when deal online event: uniqueNo={}", uniqueNo);
+            } else {
+                UNIQUENO_TO_SOCKET.put(uniqueNo, channel);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * socket注销
+     * @param uniqueNo
+     * @param channel
+     * @return
+     */
+    public ClientSocketCollection logout(String uniqueNo, SocketChannel channel) {
+        offline(uniqueNo, channel);
+        return this;
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * 判断连接是否不活跃
+     * @param channel
+     * @return
+     */
     public static boolean channelInActive(SocketChannel channel) {
         Objects.requireNonNull(channel);
 
@@ -125,12 +181,20 @@ public class ClientSocketCollection {
 //                channel.isShutdown();
     }
 
-    private static ChannelFuture closeChannel(SocketChannel channel) {
+    /**
+     * 关闭socket连接
+     * @param channel
+     * @return
+     */
+    private ChannelFuture closeChannel(SocketChannel channel) {
         if (Objects.nonNull(channel)) {
             return channel.close();
         }
         return null;
     }
+
+
+
 
 
     /**

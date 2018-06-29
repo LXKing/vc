@@ -1,11 +1,10 @@
 package com.ccclubs.gateway.jt808.process.encoder;
 
 import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.util.PacValidUtil;
 import com.ccclubs.gateway.jt808.constant.EncryptType;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
-import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
@@ -82,7 +81,7 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
             sendoutBuf.writeShort(header.getPacSerialNo());
         } else {
             // 获取连接中的消息序列号
-            JTClientConn conn = (JTClientConn)ClientConnCollection.getByUniqueNo(header.getTerMobile());
+            JTClientConn conn = (JTClientConn) ChannelMappingCollection.getByUniqueNo(header.getTerMobile());
             if (Objects.nonNull(conn)) {
                 sendoutBuf.writeShort(conn.afterGetIncreaseSerialNo());
             } else {

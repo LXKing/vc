@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.service.KafkaService;
-import com.ccclubs.gateway.jt808.service.TerClientService;
+import com.ccclubs.gateway.jt808.service.TerOverseeService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
     @Autowired
     private KafkaService kafkaService;
     @Autowired
-    private TerClientService terClientService;
+    private TerOverseeService terOverseeService;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -66,7 +65,7 @@ public class PreProcessHandler extends ChannelInboundHandlerAdapter {
 
         // 记录监控车辆的数据
         if (StringUtils.isNotEmpty(mobile)) {
-            if (terClientService.getAll().contains(mobile)) {
+            if (terOverseeService.getAll().contains(mobile)) {
                 JSONObject json = new JSONObject();
                 json.put("createTime", System.currentTimeMillis());
                 json.put("sourceHex", sourceHex);
