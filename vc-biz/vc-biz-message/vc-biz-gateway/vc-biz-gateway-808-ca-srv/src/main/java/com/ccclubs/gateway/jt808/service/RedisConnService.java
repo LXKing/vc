@@ -68,7 +68,7 @@ public class RedisConnService {
                 .put( "currentServerIp", channel.localAddress().getHostString())
                 .put( "lastOfflineServerIp", null)
                 // 报文统计信息
-                .put( "packageNum", 1)
+                .put( "packageNum", 0)
                 .put( "errorPackageNum", 0)
                 .put( "positionPackageNum", 0)
                 .put( "disconnectTime", 0);
@@ -160,6 +160,7 @@ public class RedisConnService {
     public void updatePac(String uniqueNo, String key, int add, GatewayType gatewayType) {
         if (!isExisted(uniqueNo, gatewayType)) {
             LOG.error("client info not existed in redis when update package info", uniqueNo);
+            throw new IllegalStateException("client info not existed");
         }
 
         String clientKey = getClientKey(uniqueNo, gatewayType);
@@ -210,7 +211,7 @@ public class RedisConnService {
             LOG.error("client info not existed when check online, uniqueNo={}", uniqueNo);
             return false;
         }
-        return Boolean.TRUE.toString().equals(objMap.get("online"));
+        return (boolean) objMap.get("online");
     }
 
     public void addTcpStatusTraceEvent(String uniqueNo, GatewayType gatewayType, com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent event) {

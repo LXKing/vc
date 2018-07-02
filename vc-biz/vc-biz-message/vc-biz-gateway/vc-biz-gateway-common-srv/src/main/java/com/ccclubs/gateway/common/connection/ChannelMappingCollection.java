@@ -1,13 +1,12 @@
 package com.ccclubs.gateway.common.connection;
 
 import io.netty.channel.ChannelId;
-import io.netty.channel.socket.SocketChannel;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -106,47 +105,5 @@ public class ChannelMappingCollection {
         Objects.requireNonNull(channelIdLongText);
 
         return Optional.ofNullable(CHANNELID_TO_UNIQUENO.get(channelIdLongText));
-    }
-
-
-
-
-
-
-    /**以下方法属于连接监控参数查询用，业务操作时请不要调用**/
-    @Deprecated
-    public static Integer getAllConn() {
-        return UNIQUENO_TO_CLIENT.size();
-    }
-
-    @Deprecated
-    public static Set<String> getAllConnSIM() {
-        return UNIQUENO_TO_CLIENT.keySet();
-    }
-
-    /**
-     * 获取在channelIdMap中存在，而连接不存在的sim卡号列表
-     * @return
-     */
-    @Deprecated
-    public static List<String> getAllChannelIdWithEmptyConnList() {
-        List<String> simList = new ArrayList<>();
-        Set<ChannelId> channelIds = CHANNELID_TO_UNIQUENO.keySet();
-        for (ChannelId id :
-                channelIds) {
-            String idSim = CHANNELID_TO_UNIQUENO.get(id);
-            boolean isExist = false;
-            for (String sim:
-            UNIQUENO_TO_CLIENT.keySet()) {
-                if (idSim.equals(sim)) {
-                    isExist = true;
-                    break;
-                }
-            }
-            if (!isExist) {
-                simList.add(idSim);
-            }
-        }
-        return simList;
     }
 }

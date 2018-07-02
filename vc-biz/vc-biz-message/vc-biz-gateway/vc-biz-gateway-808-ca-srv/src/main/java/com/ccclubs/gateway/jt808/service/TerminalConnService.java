@@ -82,7 +82,7 @@ public class TerminalConnService {
             channelMappingCollection.add(uniqueNo, newChannel.id());
             // 3. redis缓存客户端信息
             redisConnService.clientRegister(uniqueNo, newChannel, gatewayType);
-            LOG.info("终端({})注册成功", uniqueNo);
+            LOG.info("client ({}) register success!", uniqueNo);
         }
         return this;
     }
@@ -100,11 +100,13 @@ public class TerminalConnService {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
         Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
-
-        String uniqueNo = uniqueNoOpt.orElseThrow(() -> {
+        String uniqueNo = null;
+        if (uniqueNoOpt.isPresent()) {
+            uniqueNo = uniqueNoOpt.get();
+        } else {
             LOG.error("this channelId ({}) can not mapping to uniquNo when offline!", channel.id().asLongText());
             throw new RuntimeException();
-        });
+        }
         // 1. 清除本地连接缓存
         clientSocketCollection.offline(uniqueNo, channel);
         channelMappingCollection.offline(uniqueNo, channel.id().asLongText());
@@ -121,7 +123,7 @@ public class TerminalConnService {
         // 4. 发送离线轨迹信息用于统计
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
         redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
-
+        LOG.info("client ({}) offline success!", uniqueNo);
         return uniqueNo;
     }
 
@@ -140,7 +142,7 @@ public class TerminalConnService {
         // 1. 判断是否已经在Redis中注册，未注册则先执行注册
         boolean isRegisted = redisConnService.isExisted(uniqueNo, gatewayType);
         if (!isRegisted) {
-            LOG.info("client info not existed when deal online event, do register begin---");
+            LOG.info("client ({}) info not existed when deal online event, do register begin---", uniqueNo);
             boolean socketExisted = clientSocketCollection.existed(uniqueNo);
             boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
             if (socketExisted) {
@@ -157,7 +159,7 @@ public class TerminalConnService {
             }
             // 未注册: 重新注册
             register(uniqueNo, channel, gatewayType);
-            LOG.info("client info not existed when deal online event, do register success---");
+            LOG.info("client ({}) info not existed when deal online event, do register end---", uniqueNo);
         } else {
             // 已注册
             if (redisConnService.isOnline(uniqueNo, gatewayType)) {
@@ -181,6 +183,7 @@ public class TerminalConnService {
         // 5. 发送上线轨迹事件
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
         redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
+        LOG.info("client ({}) online success!", uniqueNo);
     }
 
     /**
@@ -212,6 +215,7 @@ public class TerminalConnService {
         // 5. 发送注销轨迹事件
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
         redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
+        LOG.info("client ({}) logout success!", uniqueNo);
     }
 
 

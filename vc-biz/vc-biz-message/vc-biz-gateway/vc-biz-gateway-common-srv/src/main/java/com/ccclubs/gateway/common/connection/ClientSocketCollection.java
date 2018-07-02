@@ -26,7 +26,7 @@ public class ClientSocketCollection {
 
     /**
      * 终端唯一标识与终端连接缓存的映射
-     *      key=uniqueNo, value=AbstractClientConn
+     *      key=uniqueNo, value=SocketChannel
      */
     private static final ConcurrentMap<String, SocketChannel> UNIQUENO_TO_SOCKET = PlatformDependent.newConcurrentHashMap(1000);
 
@@ -120,10 +120,12 @@ public class ClientSocketCollection {
         if (existed(uniqueNo)) {
             if (sameChannel(uniqueNo, offlineChannel)) {
                 closeChannel(offlineChannel);
+                UNIQUENO_TO_SOCKET.remove(uniqueNo);
             } else {
                 LOG.error("client socket are not same when offline; both socket will be closed!");
                 getByUniqueNo(uniqueNo).ifPresent(socket -> closeChannel(socket));
                 closeChannel(offlineChannel);
+                UNIQUENO_TO_SOCKET.remove(uniqueNo);
             }
         } else {
             LOG.error("client socket not existed when offline: uniqueNo={}", uniqueNo);

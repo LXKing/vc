@@ -42,6 +42,7 @@ public final class ClientEventFactory {
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
                 .setServerIp(channel.localAddress().getHostString())
+                .setGatewayType(gatewayType)
                 .addUniqueNoByGatewayType(uniqueNo, gatewayType);
     }
 }

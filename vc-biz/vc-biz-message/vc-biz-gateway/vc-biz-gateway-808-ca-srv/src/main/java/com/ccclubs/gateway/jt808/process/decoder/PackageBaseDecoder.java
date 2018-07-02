@@ -61,6 +61,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             return null;
         }
 
+        String unTranslatedPacHex = ByteBufUtil.hexDump(frame);
+        System.out.println(unTranslatedPacHex);
         // 消息转义: 还原消息
         PacTranslateUtil.translateUpPac(frame);
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
@@ -68,7 +70,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         }
 
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
-        this.pac = composePac(frame, pacProcessTrack);
+        this.pac = composePac(unTranslatedPacHex, frame, pacProcessTrack);
 
         return this.pac;
     }
@@ -83,8 +85,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
      * @param frame
      * @return
      */
-    public Package808 composePac(ByteBuf frame, PacProcessTrack pacProcessTrack) {
-        String sourceHexStr = ByteBufUtil.hexDump(frame);
+    public Package808 composePac(String sourceHexStr, ByteBuf frame, PacProcessTrack pacProcessTrack) {
         Package808 pac = Package808.ofNew()
                 .setSourceBuff(frame).setSourceHexStr(sourceHexStr);
         pacProcessTrack.setSourceHex(sourceHexStr);
@@ -102,9 +103,10 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             ByteBuf mobileBuf = frame.readSlice(PackagePart.TER_MOBILE.getLen());
             String mobile = ByteBufUtil.hexDump(mobileBuf);
 
-            pac.getHeader().setTerMobile(mobile);
-            pacProcessTrack.setUniqueNo(PacUtil.trim0InMobile(mobile));
-            decodeExceptionInfo.setUniqueNo(PacUtil.trim0InMobile(mobile)).next();
+            String trimdMobile = PacUtil.trim0InMobile(mobile);
+            pac.getHeader().setTerMobile(trimdMobile);
+            pacProcessTrack.setUniqueNo(trimdMobile);
+            decodeExceptionInfo.setUniqueNo(trimdMobile).next();
 
             frame.resetReaderIndex();
         }
@@ -156,9 +158,18 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         decodeExceptionInfo.next();
 
         // 读取包体部分
-        ByteBuf bodyBuf = frame.readSlice(pac.getHeader().getPacContentAttr().getContentLen());
-        pac.getBody().setContent(bodyBuf);
-        decodeExceptionInfo.next();
+        int contentLen = pac.getHeader().getPacContentAttr().getContentLen();
+        if (contentLen > frame.readableBytes()) {
+            decodeExceptionInfo.fail()
+                    .setReason("消息体的长度大于实际可读字节数")
+                    .setExceptionVal(String.valueOf(contentLen))
+                    .setExpectedVal("小于" + String.valueOf(frame.readableBytes()));
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+        } else {
+            ByteBuf bodyBuf = frame.readSlice(pac.getHeader().getPacContentAttr().getContentLen());
+            pac.getBody().setContent(bodyBuf);
+            decodeExceptionInfo.next();
+        }
 
         // 读取校验码
         byte validCode = frame.readByte();

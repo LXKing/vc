@@ -12,7 +12,6 @@ import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
@@ -44,8 +43,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     public static final Logger LOG = LoggerFactory.getLogger(AllExceptionHandler.class);
 
     @Autowired
-    private RedisConnService redisConnService;
-    @Autowired
     private ChannelMappingCollection channelMappingCollection;
 
     @Override
@@ -73,22 +70,13 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
                 String uniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText()).get();
-                LOG.warn("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
+                LOG.error("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
+
                 /**
-                 * 先从redis中获取连接信息
+                 * 区别于正常的断开连接
                  */
-                if (StringUtils.isNotEmpty(uniqueNo)) {
-                    ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(PacUtil.trim0InMobile(uniqueNo), GatewayType.GATEWAY_808);
-                    // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-                    if (Objects.isNull(event) || channel.localAddress().getHostString().equals(event.getServerIp())) {
-                        // 需要下发下线事件
 
-                    } else {
-                        // 不发送下线事件 TODO 
-
-                    }
-                }
-
+                // ctx.channel().close(); TODO
                 ctx.close();
                 // 事件触发后，最终会触发ChannelInActive方法
 
