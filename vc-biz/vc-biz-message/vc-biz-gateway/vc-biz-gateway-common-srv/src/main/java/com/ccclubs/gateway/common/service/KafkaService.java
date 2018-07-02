@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.common.service;
 
+import com.alibaba.fastjson.JSON;
 import com.ccclubs.gateway.common.config.KafkaProperties;
 import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.dto.KafkaTask;
@@ -56,7 +57,7 @@ public class KafkaService {
         // 目前只管发送，没有失败重发
         ListenableFuture<SendResult> sendResult = kafkaTemplate.send(topic, task.getKey(), task.getBody());
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.info("[{}]发送kafka[{}]消息完成", task.getKey(), topic);
+            LOG.info("[{}]发送kafka消息完成,msg=[{}]", task.getKey(), JSON.toJSONString(task));
         }
         return sendResult;
     }
