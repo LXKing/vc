@@ -3,6 +3,7 @@ package com.ccclubs.gateway.jt808.process;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.HandlerPacTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
@@ -52,6 +53,9 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
     @Autowired
     private PreProcessHandler preProcessHandler;
 
+    @Autowired
+    private GatewayProperties gatewayProperties;
+
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
 
@@ -60,11 +64,11 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
                 /*inbound*/
                 // 空闲处理
-                .addLast("idleHandler", new IdleStateHandler(360,0,0))
+                .addLast("idleHandler", new IdleStateHandler(gatewayProperties.getIdleSeconds(),0,0))
                 // 记录监视的车辆报文
-                .addLast("preHandler", preProcessHandler)
+//                .addLast("preHandler", preProcessHandler)
                 // 数据包解码
-                .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
+                .addLast("808Decoder", new PackageBaseDecoder(13,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
                 .addLast("validateHandler", validatePacHandler)
                 // 连接身份认证

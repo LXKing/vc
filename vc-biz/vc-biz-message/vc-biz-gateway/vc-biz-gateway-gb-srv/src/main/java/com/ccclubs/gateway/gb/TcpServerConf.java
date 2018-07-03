@@ -77,6 +77,15 @@ public class TcpServerConf {
         Map<ChannelOption<?>, Object> options = new HashMap<>();
         options.put(ChannelOption.SO_KEEPALIVE, nettyProperties.isKeepAlive());
         options.put(ChannelOption.SO_BACKLOG, nettyProperties.getBacklog());
+
+        /**
+         * 最大发送字节数(256K)
+         */
+        options.put(ChannelOption.SO_SNDBUF, 1024 * 256);
+        /**
+         * 最大接收字节数(2M)
+         */
+        options.put(ChannelOption.SO_RCVBUF, 1024 * 1024 * 2);
         return options;
     }
 

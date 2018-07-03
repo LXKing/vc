@@ -1,9 +1,9 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
@@ -12,8 +12,6 @@ import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -44,7 +42,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     public static final Logger LOG = LoggerFactory.getLogger(AllExceptionHandler.class);
 
     @Autowired
-    private RedisConnService redisConnService;
+    private ChannelMappingCollection channelMappingCollection;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -70,23 +68,14 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             if (IdleState.READER_IDLE == e.state()) {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
-                JTClientConn conn = (JTClientConn)ClientConnCollection.getByChannelId(channel.id());
-                LOG.warn("连接(sim={})长时间空闲，将关闭该连接", Objects.isNull(conn)?"空":conn.getUniqueNo());
-                /**
-                 * 先从redis中获取连接信息
-                 */
-                if (Objects.nonNull(conn)) {
-                    ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(PacUtil.trim0InMobile(conn.getUniqueNo()), GatewayType.GATEWAY_808);
-                    // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-                    if (Objects.isNull(event) || channel.localAddress().getHostString().equals(event.getServerIp())) {
-                        // 需要下发下线事件
-                        conn.setConnected(true);
-                    } else {
-                        // 不发送下线事件
-                        conn.setConnected(false);
-                    }
-                }
+                String uniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText()).get();
+                LOG.error("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
 
+                /**
+                 * 区别于正常的断开连接
+                 */
+
+                // ctx.channel().close(); TODO
                 ctx.close();
                 // 事件触发后，最终会触发ChannelInActive方法
 
@@ -120,7 +109,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
 
         if (Objects.nonNull(pacProcessing)) {
-            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
+            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause);
             if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
                 // 自定义抛出的处理异常
             } else {
@@ -172,15 +161,16 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             needCloseConn = true;
         }
 
-        // 打印异常链
-        cause.printStackTrace();
-//        if (cause.getCause() != null) {
-//            cause.printStackTrace();
-//        }
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.error("不可预料的异常：{}", cause);
+        }
 
         if (needCloseConn) {
             // 关闭链接
             context.channel().close();
         }
+
+        // 最后释放可能存在的缓存
+        ReferenceCountUtil.release(cause);
     }
 }

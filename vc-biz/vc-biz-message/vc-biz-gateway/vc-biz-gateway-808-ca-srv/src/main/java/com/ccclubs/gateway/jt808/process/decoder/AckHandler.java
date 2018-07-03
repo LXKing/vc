@@ -5,7 +5,7 @@ import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
-import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
+import com.ccclubs.gateway.jt808.constant.msg.AckResultType;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
@@ -46,7 +46,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         if (PacUtil.needNormalAck(pac.getHeader().getPacId())) {
             // 平台通用应答
 
-            AckReaultType reaultType = pac.getErrorPac()?AckReaultType.ERROR:AckReaultType.SUCCESS;
+            AckResultType reaultType = pac.getErrorPac()?AckResultType.ERROR:AckResultType.SUCCESS;
             ackPac = normalAck(pac, reaultType);
         } else {
             // 各个消息个性化的应答
@@ -54,7 +54,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
             // 补传分包请求返回通用应答
             if (UpPacType.LOGOUT.getCode() == pac.getHeader().getPacId()) {
                 // 终端注销返回通用应答
-                ackPac = normalAck(pac, AckReaultType.SUCCESS);
+                ackPac = normalAck(pac, AckResultType.SUCCESS);
             } else {
                 ackPac = personallyAck(pac);
             }
@@ -71,7 +71,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         return HandleStatus.NEXT;
     }
 
-    private Package808 normalAck(Package808 pac, AckReaultType reaultType) {
+    private Package808 normalAck(Package808 pac, AckResultType reaultType) {
         Package808 ackPac = Package808.ofNew();
         // header
         ackPac.getHeader()
@@ -105,7 +105,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         switch (downPacType) {
                 // 数据上行透传的应答为通用应答
             case SEND_MQTT:
-                ackPac = normalAck(pac, AckReaultType.SUCCESS);
+                ackPac = normalAck(pac, pac.getErrorPac()?AckResultType.ERROR:AckResultType.SUCCESS);
                 break;
                 // 注册应答
             case ACK_REGISTER:
@@ -113,7 +113,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
                 // TODO 暂且现在所有终端的鉴权码都是同一个
                 ByteBuf contentBuf = Unpooled.buffer();
                 contentBuf.writeShort(pac.getHeader().getPacSerialNo())
-                        .writeByte(AckReaultType.SUCCESS.ordinal() & 0xFF)
+                        .writeByte(AckResultType.SUCCESS.ordinal() & 0xFF)
                         .writeBytes(PackageCons.GLOBAL_AUTH_CODE.getBytes());
                 ackPac.getBody().setContent(contentBuf);
                 break;

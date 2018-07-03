@@ -28,8 +28,6 @@ import java.util.Set;
 public class OverseeSocketChannelController {
     public static final Logger LOG = LoggerFactory.getLogger(OverseeSocketChannelController.class);
 
-
-
     @GetMapping("/count/all")
     public R countAllConnection() {
         int count = ClientSocketCollection.getAll();
@@ -52,12 +50,16 @@ public class OverseeSocketChannelController {
     @GetMapping("/all/sim")
     public R getAllConnSIMSet() {
         Set<String> simSet = ClientSocketCollection.getAllUniqueNo();
-        return OK.Statu.SUCCESS_WITH_DATA.build().addData("sims", simSet);
+        return OK.Statu.SUCCESS_WITH_DATA.build()
+                .addData("total", simSet.size())
+                .addData("sims", simSet);
     }
 
     @GetMapping("/all/disconnected")
     public R getAllDisconnected() {
         Set<String> simSet = ClientSocketCollection.getAllDisConnected();
-        return OK.Statu.SUCCESS_WITH_DATA.build().addData("sims", simSet);
+        return OK.Statu.SUCCESS_WITH_DATA.build()
+                .addData("total", simSet.size())
+                .addData("sims", simSet);
     }
 }

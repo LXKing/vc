@@ -1,8 +1,6 @@
 package com.ccclubs.gateway.jt808.util;
 
-import com.ccclubs.gateway.jt808.constant.PackageCons;
-import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
-import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
+import com.ccclubs.gateway.jt808.constant.msg.AckResultType;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 
@@ -15,7 +13,7 @@ import com.ccclubs.gateway.jt808.message.pac.Package808;
  */
 public final class AckBuilder {
 
-    public static Package808 ofNormal(Integer serialNo, Integer pacId, String mobile, AckReaultType reaultType) {
+    public static Package808 ofNormal(Integer serialNo, Integer pacId, String mobile, AckResultType reaultType) {
         Package808 pac = Package808.ofNew();
         // header
         pac.getHeader()

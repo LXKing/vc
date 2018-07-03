@@ -25,6 +25,12 @@ public class PacSerialNo {
         return this;
     }
 
+    public short getAndIncrease() {
+        short currVal = getValue();
+        increase();
+        return currVal;
+    }
+
     public short getValue() {
         return value;
     }

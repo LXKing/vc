@@ -12,6 +12,7 @@ import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.config.KafkaProperties;
 import com.ccclubs.gateway.common.config.NettyProperties;
+import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.service.MqttMessageProcessService;
 import org.slf4j.Logger;
@@ -46,6 +47,9 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
   @Autowired
   private OnsProperties onsProperties;
 
+  @Autowired
+  private ClientSocketCollection clientSocketCollection;
+
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
     return application.sources(Gateway808CASrvApp.class);
@@ -78,7 +82,7 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
 
   @Bean(name = "jt808RemoteProcessService")
   public IMessageProcessService getRemoteMessageProcessService() {
-    return new MqttMessageProcessService();
+    return new MqttMessageProcessService(clientSocketCollection);
   }
 
 

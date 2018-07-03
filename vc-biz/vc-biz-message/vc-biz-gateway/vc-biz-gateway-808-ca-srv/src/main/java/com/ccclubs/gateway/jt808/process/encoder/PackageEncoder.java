@@ -1,16 +1,15 @@
 package com.ccclubs.gateway.jt808.process.encoder;
 
 import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.util.PacValidUtil;
 import com.ccclubs.gateway.jt808.constant.EncryptType;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
-import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
+import com.ccclubs.gateway.jt808.util.PacSerialNo;
 import com.ccclubs.gateway.jt808.util.PacTranslateUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
@@ -32,6 +31,11 @@ import java.util.Objects;
  */
 public class PackageEncoder extends MessageToByteEncoder<Package808> {
     private static final Logger LOG = LoggerFactory.getLogger(PackageEncoder.class);
+
+    /**
+     * 维护平台下发的流水号
+     */
+    private PacSerialNo pacSerialNo = new PacSerialNo((short)0);
 
     public PackageEncoder() {
         super();
@@ -82,13 +86,7 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
             sendoutBuf.writeShort(header.getPacSerialNo());
         } else {
             // 获取连接中的消息序列号
-            JTClientConn conn = (JTClientConn)ClientConnCollection.getByUniqueNo(header.getTerMobile());
-            if (Objects.nonNull(conn)) {
-                sendoutBuf.writeShort(conn.afterGetIncreaseSerialNo());
-            } else {
-                // 提供一个默认的序列号
-                sendoutBuf.writeShort(0);
-            }
+            sendoutBuf.writeShort(pacSerialNo.getAndIncrease());
         }
 
         // 消息包封装项: 一般下行报文不需要分包发送
@@ -154,6 +152,8 @@ public class PackageEncoder extends MessageToByteEncoder<Package808> {
                             .append(",应答结果:").append(result == 0?"成功":"失败/异常")
                             .append("]");
                     break;
+                    default:
+                        break;
             }
         }
         logSb.append(",原始报文[").append(pac.getSourceHexStr()).append("]");

@@ -12,10 +12,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "gateway.server")
 public class GatewayProperties {
 
-    // 是否开启消息日志打印
+    /**
+     * 是否开启消息日志打印
+     */
     private boolean logPrint;
-    // 是否打开buffer缓存检查（测试时开启）
+
+    /**
+     * 是否打开buffer缓存检查（测试时开启）
+     */
     private boolean bufferCheck;
+
+    /**
+     * socket读空闲断开时长（秒）
+     */
+    private int idleSeconds;
 
     public boolean isLogPrint() {
         return logPrint;
@@ -32,6 +42,15 @@ public class GatewayProperties {
 
     public GatewayProperties setBufferCheck(boolean bufferCheck) {
         this.bufferCheck = bufferCheck;
+        return this;
+    }
+
+    public int getIdleSeconds() {
+        return idleSeconds;
+    }
+
+    public GatewayProperties setIdleSeconds(int idleSeconds) {
+        this.idleSeconds = idleSeconds;
         return this;
     }
 }
