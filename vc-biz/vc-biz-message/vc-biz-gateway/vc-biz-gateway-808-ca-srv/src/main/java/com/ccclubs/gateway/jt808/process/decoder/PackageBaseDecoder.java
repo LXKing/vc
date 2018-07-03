@@ -33,11 +33,11 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
     public static final Logger LOG = LoggerFactory.getLogger(PackageBaseDecoder.class);
 
     /**
-     * 最小报文长度
+     * 最小报文长度(13)
+     *      包头：12
+     *      校验码：1
      */
     private final Integer minFrameLength;
-
-    private Package808 pac;
 
     public PackageBaseDecoder(int minFrameLength, int maxFrameLength, ByteBuf delimiter) {
         super(maxFrameLength, delimiter);
@@ -70,9 +70,9 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         }
 
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
-        this.pac = composePac(unTranslatedPacHex, frame, pacProcessTrack);
+        Package808 pac = composePac(unTranslatedPacHex, frame, pacProcessTrack);
 
-        return this.pac;
+        return pac;
     }
 
     public void skipBytesWhenLessThenMinFrameLength(ByteBuf buff) {
@@ -91,11 +91,21 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         pacProcessTrack.setSourceHex(sourceHexStr);
         DecodeExceptionDTO decodeExceptionInfo = new DecodeExceptionDTO(pac.getSourceHexStr());
 
+        // 最小包校验
+        int currPacLen = frame.readableBytes();
+        if (currPacLen < this.minFrameLength) {
+            decodeExceptionInfo.fail()
+                    .setReason("整包长度小于最小包长")
+                    .setExpectedVal(">=" + this.minFrameLength)
+                    .setExceptionVal("" + currPacLen);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+        }
+
         // 读取终端手机号
         int mobileByteIndex = PackagePart.PAC_ID.getLen() + PackagePart.PAC_SERIAL_NO.getLen();
         if (frame.readableBytes() < mobileByteIndex) {
             decodeExceptionInfo.fail()
-                    .setReason("sim号码字段不满12个")
+                    .setReason("sim号码字段不满12个字符")
                     .setExpectedVal("非空的12个字符");
             throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         } else {
@@ -127,6 +137,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         }
 
         // 读取消息体属性
+
         PacContentAttr pacAttr = new PacContentAttr();
         Short contentAttr = frame.readShort();
         pacAttr.setContentLen(PacUtil.getContentLen(contentAttr))

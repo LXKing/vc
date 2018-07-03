@@ -68,7 +68,7 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 // 记录监视的车辆报文
 //                .addLast("preHandler", preProcessHandler)
                 // 数据包解码
-                .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
+                .addLast("808Decoder", new PackageBaseDecoder(13,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
                 .addLast("validateHandler", validatePacHandler)
                 // 连接身份认证
