@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.config.TcpServerConf;
@@ -11,12 +10,9 @@ import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
-import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
-import com.ccclubs.gateway.jt808.util.TestUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
