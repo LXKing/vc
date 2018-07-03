@@ -3,6 +3,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
@@ -10,10 +11,12 @@ import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
+import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
+import com.ccclubs.gateway.jt808.util.TestUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -110,7 +113,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
 
         if (Objects.nonNull(pacProcessing)) {
-            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
+            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause);
             if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
                 // 自定义抛出的处理异常
             } else {
@@ -162,12 +165,16 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             needCloseConn = true;
         }
 
-        // 打印异常链
-        cause.printStackTrace();
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.error("不可预料的异常：{}", cause);
+        }
 
         if (needCloseConn) {
             // 关闭链接
             context.channel().close();
         }
+
+        // 最后释放可能存在的缓存
+        ReferenceCountUtil.release(cause);
     }
 }
