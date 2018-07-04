@@ -1,10 +1,12 @@
 package com.ccclubs.gateway.jt808.process;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.HandlerPacTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
@@ -94,6 +96,11 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
          */
         initPacTrack(channel);
 
+        /**
+         * 初始化channel生命周期轨迹
+         */
+        initChannelLiveTrack(channel);
+
 
 
         /**
@@ -105,7 +112,7 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
 
     private void initPacTrack(SocketChannel channel) {
-        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
+        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACKAGE_TRACK);
         PacProcessTrack newPacProessTrack = new PacProcessTrack();
         newPacProessTrack
                 .setErrorOccur(false)
@@ -119,6 +126,14 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
         newPacProessTrack.setHandlerPacTracks(handlerPacTracks);
 
         pacProcessTrackAttribute.setIfAbsent(newPacProessTrack);
+    }
+
+    private void initChannelLiveTrack(SocketChannel channel) {
+        Attribute<ChannelLifeCycleTrack> channelLifeCycleTrackAttribute = channel.attr(ChannelAttrKey.CHANNEL_LIFE_CYCLE_TRACK);
+
+        ChannelLifeCycleTrack newChannelLifeCycle = new ChannelLifeCycleTrack();
+        newChannelLifeCycle.setLiveStatus(ChannelLiveStatus.ONLINE_CREATE);
+        channelLifeCycleTrackAttribute.setIfAbsent(newChannelLifeCycle);
     }
 
 

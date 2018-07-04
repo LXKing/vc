@@ -1,10 +1,12 @@
 package com.ccclubs.gateway.common.connection;
 
 import io.netty.channel.ChannelId;
+import io.netty.util.internal.PlatformDependent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +27,7 @@ public class ChannelMappingCollection {
      *      key=channelId.longText, value=uniqueNo
      *      TODO 对channelId重复校验，防止由于uniqueNo异常导致前一个连接断开
      */
-    private static final ConcurrentHashMap<String, String> CHANNELID_TO_UNIQUENO = new ConcurrentHashMap<>(1000);
+    private static final Map<String, String> CHANNELID_TO_UNIQUENO = PlatformDependent.newConcurrentHashMap(1000);
 
     public ChannelMappingCollection add(String uniqueNo, ChannelId channelId) {
         String channelIdText = channelId.asLongText();

@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.common.util;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -10,6 +11,15 @@ import java.time.format.DateTimeFormatter;
  * 日期工具
  */
 public final class DateUtil {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
+    private static final DateTimeFormatter FORMATTER_YYYYMMDDHHMMSS = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH时mm分ss秒");
+
+    public static String getNowStr() {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return FORMATTER_YYYYMMDDHHMMSS.format(localDateTime);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getNowStr());
+    }
 
 }

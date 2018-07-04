@@ -1,7 +1,6 @@
 package com.ccclubs.gateway.jt808.process.encoder;
 
 import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.util.PacValidUtil;
 import com.ccclubs.gateway.jt808.constant.EncryptType;
 import com.ccclubs.gateway.jt808.constant.PackageCons;

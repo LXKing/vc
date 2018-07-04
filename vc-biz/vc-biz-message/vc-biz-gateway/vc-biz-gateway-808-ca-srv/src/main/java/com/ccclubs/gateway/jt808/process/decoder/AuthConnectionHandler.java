@@ -1,22 +1,18 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.HandleStatus;
-import com.ccclubs.gateway.common.constant.InnerMsgType;
-import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
-import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.common.util.ClientEventFactory;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.DecodeUtil;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
-import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -40,9 +36,6 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public static final Logger LOG = LoggerFactory.getLogger(AuthConnectionHandler.class);
 
     @Autowired
-    private RedisConnService redisConnService;
-
-    @Autowired
     private TerminalConnService terminalConnService;
 
     @Override
@@ -54,6 +47,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                     channel.id()
                 );
 
+        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_CONNECT);
         super.channelActive(ctx);
     }
 
@@ -61,20 +55,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
 
-        String uniqueNo = terminalConnService.offline(channel, GatewayType.GATEWAY_808);
-
-        com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
-        // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-        if (Objects.isNull(event) || channel.localAddress().getHostString().equals(event.getServerIp())) {
-            // 需要下发下线事件
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, GatewayType.GATEWAY_808);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-
-            fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
-        } else {
-            // 不发送下线事件 TODO
-
+        ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
+        if (Objects.nonNull(channelLifeCycleTrack) &&
+                !ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
+                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus())) {
+            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_CLIENT_CUT);
         }
+        terminalConnService.offline(channel, GatewayType.GATEWAY_808);
     }
 
     @Override
@@ -113,6 +100,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     private void doRegister(String uniqueNo, ChannelHandlerContext ctx) {
         SocketChannel newChannel = (SocketChannel) ctx.channel();
 
+        ChannelAttrbuteUtil.setChannelLiveStatus(newChannel, ChannelLiveStatus.ONLINE_REGISTER);
         terminalConnService.register(uniqueNo, newChannel, GatewayType.GATEWAY_808);
         // TODO 终端注册成功后，应该发送一段包含 终端ID、手机号、终端IP信息的数据给规则引擎
     }
@@ -155,14 +143,10 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             pac.setErrorPac(true);
             LOG.error("重连的终端({})鉴权失败, 原始报文[{}]", uniqueNo, pac.getSourceHexStr());
         } else {
+            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_AUTH);
             // 终端上线
             terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
             LOG.info("重连的终端({})鉴权成功", uniqueNo);
-
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-            // 发送至kafka
-            fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
         }
     }
 }
