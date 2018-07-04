@@ -9,13 +9,18 @@ import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.ons.OnsMessageFactory;
+import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.frm.spring.constant.OnsConst;
+import com.ccclubs.frm.spring.constant.TboxType;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.frm.spring.gateway.GatewayType;
+import com.ccclubs.frm.spring.util.BeanMapper;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.pub.orm.dto.OnlineStateEventDTO;
+import com.ccclubs.pub.orm.dto.StateDTO;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
@@ -23,8 +28,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -34,8 +41,7 @@ import java.util.Objects;
 import static com.ccclubs.engine.core.util.RuleEngineConstant.*;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_CONN;
-import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_OFFLINE;
-import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
+import static com.ccclubs.frm.spring.constant.RedisConst.*;
 
 /**
  * 车辆上下线监听
@@ -73,11 +79,16 @@ public class OnlineStatusEventConsumer {
     @Resource
     TerminalUtils terminalUtils;
 
+    @Value("${" + KafkaConst.KAFKA_TOPIC_CONN_EVENT + "}")
+    String topicOnlineEvent;
+
+    @Autowired
+    KafkaTemplate kafkaTemplate;
+
     @KafkaListener(id = "${" + KAFKA_CONSUMER_GROUP_RULE_CONN + "}",
             topics = "${" + KAFKA_TOPIC_GATEWAY_CONN + "}", containerFactory = "batchFactory")
     public void process(List<String> records) {
         for (String record : records) {
-
             ConnOnlineStatusEvent event = JSONObject.parseObject(record, ConnOnlineStatusEvent.class);
             // 更新缓存-当前车辆在线情况
             String eventKey = null;
@@ -96,6 +107,29 @@ public class OnlineStatusEventConsumer {
                     if (mapping808 != null) {
                         event.setVin(StringUtils.isEmpty(mapping808.getVin()) ? null : mapping808.getVin());
                         event.setTeNumber(StringUtils.isEmpty(mapping808.getNumber()) ? null : mapping808.getNumber());
+                    }
+                    OnlineStateEventDTO dto = BeanMapper.map(event, OnlineStateEventDTO.class);
+                    CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(eventKey);
+                    //暂时只统计长安的
+                    if (csMachine != null && csMachine.getCsmAccess() == ACCESS) {
+                        dto.setAccess(csMachine.getCsmAccess().shortValue());
+                        dto.setIccid(csMachine.getCsmIccid());
+                        dto.setTeModelNo(csMachine.getCsmTeModel());
+                        dto.setTeNo(csMachine.getCsmTeNo());
+                        dto.setTeType(csMachine.getCsmTeType());
+                        if (csMachine.getCsmTeType() == TboxType.TL.getValue()) {
+                            if (StringUtils.isNotEmpty(csMachine.getCsmTeNo())) {
+                                String batchNo = "201" + csMachine.getCsmTeNo().charAt(1) + "-" + csMachine.getCsmTeNo().charAt(2);
+                                dto.setBatchNo(batchNo);
+                            }
+                        }
+
+                        //前30条状态数据,从redis获取
+                        List<StateDTO> states = redisTemplate.opsForList()
+                                .range(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), 0, -1);
+                        dto.setStates(states);
+                        //转发kafka
+                        kafkaTemplate.send(topicOnlineEvent, dto.getTeNumber(), JSON.toJSONString(dto));
                     }
                     break;
                 case GatewayType.GATEWAY_MQTT:
