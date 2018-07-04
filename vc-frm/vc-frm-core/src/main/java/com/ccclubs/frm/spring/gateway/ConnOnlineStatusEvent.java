@@ -46,6 +46,13 @@ public class ConnOnlineStatusEvent implements Serializable {
     private boolean online;
 
     /**
+     * 车辆下线类型
+     * 1: 服务端主动断开（网关检测到错误）
+     * 2: 超时断开（终端在某时间段内没有和网关交互）
+     */
+    private Integer offlineType;
+
+    /**
      * 发送该通知的时间戳
      */
     private Long timestamp;
@@ -111,6 +118,14 @@ public class ConnOnlineStatusEvent implements Serializable {
     public ConnOnlineStatusEvent setGatewayType(String gatewayType) {
         this.gatewayType = gatewayType;
         return this;
+    }
+
+    public Integer getOfflineType() {
+        return offlineType;
+    }
+
+    public void setOfflineType(Integer offlineType) {
+        this.offlineType = offlineType;
     }
 
     public String getSimNo() {
