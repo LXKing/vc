@@ -242,16 +242,17 @@ public class TestVtsearch {
     public void getTerminal() throws Exception, Throwable {
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
-        HttpPost httpPost = new HttpPost("http://101.37.178.63/search/getTerminalInfo");
+//        HttpPost httpPost = new HttpPost("http://101.37.178.63/search/getTerminalInfo");
+        HttpPost httpPost = new HttpPost("http://127.0.0.1:8081/search/getTerminalInfo");
         httpPost.setHeader("Content-Type", "application/json");
         TerminalQryInput input = new TerminalQryInput();
-        input.setVin("LS5A2AJX0FA000774");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
+        input.setVin("LS5A2AJX3GA002908");//LJ8E3C1M9GB003314 富士康 LJ8E3C1M8GB007676 中导  HZ60112345678 tl
         String ss = JSON.toJSONString(input);
         System.err.println(ss);
         String value = DigestUtils.md5Hex(ss);
-        String sign = HmacUtils.hmacSha1Hex("fa@sd_n38f2f_3qb", value);
+        String sign = HmacUtils.hmacSha1Hex("lfj@qew#ofj_gq", value);
         httpPost.addHeader("sign", sign);
-        httpPost.addHeader("appId", "1000005");
+        httpPost.addHeader("appId", "1000003");
         httpPost.setEntity(new StringEntity(ss, ContentType.APPLICATION_JSON));
         CloseableHttpResponse response = httpclient.execute(httpPost);
 
