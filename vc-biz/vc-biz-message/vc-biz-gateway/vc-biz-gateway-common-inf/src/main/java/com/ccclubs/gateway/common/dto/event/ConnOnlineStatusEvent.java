@@ -48,6 +48,12 @@ public class ConnOnlineStatusEvent implements Serializable {
     private boolean online;
 
     /**
+     * 下线原因
+     *
+     */
+    private Integer offlineType;
+
+    /**
      * 发送该通知的时间戳
      */
     private Long timestamp;
@@ -62,6 +68,30 @@ public class ConnOnlineStatusEvent implements Serializable {
         json.put("gatewayType", gatewayType.getDes());
         return json.toJSONString();
     }
+
+    /**
+     * 根据网关类型不同，设置不同的唯一字段
+     * @param uniqueNo
+     * @param gatewayType
+     * @return
+     */
+    public ConnOnlineStatusEvent addUniqueNoByGatewayType(String uniqueNo, GatewayType gatewayType) {
+        switch (gatewayType) {
+            case GB:
+                this.setVin(uniqueNo);
+                break;
+            case MQTT:
+                this.setTeNumber(uniqueNo);
+                break;
+            case GATEWAY_808:
+                this.setSimNo(uniqueNo);
+                break;
+            default:
+                break;
+        }
+        return this;
+    }
+
 
     // ---------------------------------------------------------------------------
 
@@ -134,6 +164,15 @@ public class ConnOnlineStatusEvent implements Serializable {
 
     public ConnOnlineStatusEvent setTeNumber(String teNumber) {
         this.teNumber = teNumber;
+        return this;
+    }
+
+    public Integer getOfflineType() {
+        return offlineType;
+    }
+
+    public ConnOnlineStatusEvent setOfflineType(Integer offlineType) {
+        this.offlineType = offlineType;
         return this;
     }
 }

@@ -1,7 +1,7 @@
 package com.ccclubs.gateway.jt808.api;
 
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.gateway.jt808.service.TerClientService;
+import com.ccclubs.gateway.jt808.service.TerOverseeService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ public class OverseeTerminalController {
     public static final Logger LOG = LoggerFactory.getLogger(OverseeTerminalController.class);
 
     @Autowired
-    private TerClientService vehicleService;
+    private TerOverseeService vehicleService;
 
     @GetMapping("/add/{sim}")
     public boolean addVin(@PathVariable("sim") String sim) {

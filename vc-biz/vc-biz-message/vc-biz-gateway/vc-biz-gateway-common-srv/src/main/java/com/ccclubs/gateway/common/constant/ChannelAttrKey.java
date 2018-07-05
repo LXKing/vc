@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.common.constant;
 
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import io.netty.util.AttributeKey;
 
@@ -12,11 +13,20 @@ import io.netty.util.AttributeKey;
  */
 public class ChannelAttrKey {
 
-    /**
-     * 轨迹信息
-     */
-    public static AttributeKey<PacProcessTrack> PACTRACK_KEY = AttributeKey.newInstance(ChannelAttrKey.CHANNEL_ATTR_KEY_PAC_TRACK);
+    //***********************************************************************************
+    //  AttributeKey
+    //***********************************************************************************
 
-    private static final String CHANNEL_ATTR_KEY_PAC_TRACK = "channel.attr.pac.track";
+    /**
+     * 报文轨迹信息
+     */
+    public static AttributeKey<PacProcessTrack> PACKAGE_TRACK = AttributeKey.newInstance("channel.attr.pac.track");
+
+    /**
+     * channel生命周期轨迹
+     */
+    public static AttributeKey<ChannelLifeCycleTrack> CHANNEL_LIFE_CYCLE_TRACK = AttributeKey.newInstance("channel.life.cycle.track");
+
+
 
 }

@@ -42,10 +42,10 @@ public class OnsService {
                 ByteBufUtil.decodeHexDump(task.getSourceHex())
         );
 
-        client.sendOneway(mqMessage);
+//        client.sendOneway(mqMessage);
         // 如果打印开启则为测试环境，不需要真实发送到ons
-        if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.info("发送ons消息完成, msg={}", JSON.toJSONString(task));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("发送ons消息完成, msg={}", JSON.toJSONString(task));
         } else {
 
         }

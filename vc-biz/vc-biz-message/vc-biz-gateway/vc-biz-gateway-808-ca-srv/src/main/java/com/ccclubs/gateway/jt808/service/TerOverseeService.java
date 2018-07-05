@@ -15,8 +15,8 @@ import java.util.Set;
  * 终端监控服务类
  */
 @Service
-public class TerClientService {
-    private static final Logger LOG = LoggerFactory.getLogger(TerClientService.class);
+public class TerOverseeService {
+    private static final Logger LOG = LoggerFactory.getLogger(TerOverseeService.class);
 
     private static final Integer MAX_SIZE_VIN = 128;
     // 目标车辆列表

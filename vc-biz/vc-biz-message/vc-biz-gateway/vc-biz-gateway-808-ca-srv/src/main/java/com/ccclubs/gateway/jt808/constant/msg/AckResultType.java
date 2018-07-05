@@ -7,7 +7,7 @@ package com.ccclubs.gateway.jt808.constant.msg;
  * Email:  yeanzhi@ccclubs.com
  * 响应结果类型
  */
-public enum AckReaultType {
+public enum AckResultType {
     /**
      * 成功/确认
      */
