@@ -58,7 +58,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
         if (Objects.nonNull(channelLifeCycleTrack) &&
                 !ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
-                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus())) {
+                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus()) &&
+                !ChannelLiveStatus.OFFLINE_END.equals(channelLifeCycleTrack.getLiveStatus()) ) {
             ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_CLIENT_CUT);
         }
         terminalConnService.offline(channel, GatewayType.GATEWAY_808);

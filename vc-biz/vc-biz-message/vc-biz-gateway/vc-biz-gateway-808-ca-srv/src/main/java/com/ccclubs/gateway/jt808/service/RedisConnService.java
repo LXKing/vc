@@ -42,6 +42,14 @@ public class RedisConnService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Deprecated
+    public void cleanChacheForTheFirstTime() {
+        Set<String> tcpKeys = redisTemplate.keys("tcp*");
+        redisTemplate.delete(tcpKeys);
+        Set<String> TCPKeys = redisTemplate.keys("TCP*");
+        redisTemplate.delete(TCPKeys);
+    }
+
     /**
      * 客户端第一次注册
      * @param uniqueNo

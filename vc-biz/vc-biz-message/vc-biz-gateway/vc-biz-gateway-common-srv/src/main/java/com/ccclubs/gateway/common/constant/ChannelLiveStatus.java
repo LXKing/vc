@@ -50,5 +50,10 @@ public enum ChannelLiveStatus {
     /**
      * 客户端主动断开了连接
      */
-    OFFLINE_CLIENT_CUT
+    OFFLINE_CLIENT_CUT,
+
+    /**
+     * 下线完成
+     */
+    OFFLINE_END;
 }
