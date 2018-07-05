@@ -12,8 +12,8 @@ import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
+import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.util.TestUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -71,15 +72,22 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 SocketChannel channel = (SocketChannel) ctx.channel();
 
                 ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_IDLE);
-                String uniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText()).get();
+                Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
+                String uniqueNo = null;
+                if (!uniqueNoOpt.isPresent()) {
+                    LOG.error("cannot mapping to uniqueNo when deal idle event");
+                    uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
+                } else {
+                    uniqueNo = uniqueNoOpt.get();
+                }
                 LOG.error("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
 
                 /**
                  * 区别于正常的断开连接
                  */
 
-                // ctx.channel().close(); TODO
-                ctx.close();
+//                 ctx.channel().close();
+                ctx.pipeline().fireChannelInactive();
                 // 事件触发后，最终会触发ChannelInActive方法
 
             } else if (IdleState.WRITER_IDLE == e.state()) {
@@ -169,6 +177,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             tooLongSb.append("发送帧长度异常，服务端将主动断开连接");
             LOG.error(tooLongSb.toString());
             needCloseConn = true;
+        } else if (cause instanceof OfflineException) {
+            // 断开连接异常，服务端将强制断开
+            LOG.error("({}) 断开连接异常，服务端将强制断开", uniqueNo);
+            context.channel().unsafe().closeForcibly();
         }
 
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
@@ -178,7 +190,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         if (needCloseConn) {
             ChannelAttrbuteUtil.setChannelLiveStatus((SocketChannel) context.channel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
             // 关闭链接
-            context.close();
+            context.pipeline().fireChannelInactive();
         }
 
         // 最后释放可能存在的缓存
