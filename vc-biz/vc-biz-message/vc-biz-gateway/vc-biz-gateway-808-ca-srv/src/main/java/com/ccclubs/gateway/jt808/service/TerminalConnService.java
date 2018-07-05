@@ -165,7 +165,7 @@ public class TerminalConnService {
         ConnLiveEvent offlineEvent = new ConnLiveEvent()
                 .uniqueNo(uniqueNo)
                 .channel(channel)
-                .online(true)
+                .online(false)
                 .gatewayType(gatewayType);
         if (ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(liveStatus)) {
             // 只有服务端异常时才发送异常报文
