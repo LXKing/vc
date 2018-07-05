@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -181,6 +182,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             // 断开连接异常，服务端将强制断开
             LOG.error("({}) 断开连接异常，服务端将强制断开", uniqueNo);
             context.channel().unsafe().closeForcibly();
+        } else if (cause instanceof IOException) {
+            // Connection reset by peer
+            LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
+            needCloseConn = true;
         }
 
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
