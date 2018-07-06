@@ -1,20 +1,24 @@
 package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
-import com.ccclubs.gateway.common.connection.ClientConnCollection;
+import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
+import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.jt808.constant.MsgTopicCon;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
-import com.ccclubs.gateway.jt808.process.conn.JTClientConn;
 import com.ccclubs.gateway.jt808.util.PacTranslateUtil;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.socket.SocketChannel;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -26,6 +30,12 @@ import java.util.Objects;
 public class MqttMessageProcessService  implements IMessageProcessService {
     public static final Logger LOG = LoggerFactory.getLogger(MqttMessageProcessService.class);
 
+    private ClientSocketCollection clientSocketCollection;
+
+    public MqttMessageProcessService(ClientSocketCollection clientSocketCollection) {
+        this.clientSocketCollection = clientSocketCollection;
+    }
+
     @Override
     public void processMsg(String upTopic, MqttMessage msg, String hexString) {
         // 如果是中岛升级指令
@@ -35,12 +45,12 @@ public class MqttMessageProcessService  implements IMessageProcessService {
             byte[] uniqueNoBytes = new byte[11];
             payloadBuf.readBytes(uniqueNoBytes);
             // 终端手机号
-            String uniqueNo = new String(uniqueNoBytes);
+            String uniqueNo = PacUtil.trim0InMobile(new String(uniqueNoBytes));
             // 终端对应连接
-            JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(uniqueNo);
-            if (Objects.nonNull(conn) && conn.isOnline()) {
+            Optional<SocketChannel> socketOpt = clientSocketCollection.getByUniqueNo(uniqueNo);
+            if (socketOpt.isPresent() && socketOpt.get().isOpen()) {
                 // 终端在线
-                conn.send(payloadBuf.copy());
+                socketOpt.get().writeAndFlush(payloadBuf.copy());
                 // 便于ELK日志分析
                 LOG.info("DOWN >> 7E000000010{}{}7E", uniqueNo, hexString);
             }
@@ -63,15 +73,15 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 // "1" 是： 跳过7E头部
                 sourceBuf.readerIndex(1 + mobileByteIndex);
                 ByteBuf mobileBuf = sourceBuf.readSlice(PackagePart.TER_MOBILE.getLen());
-                String mobile = ByteBufUtil.hexDump(mobileBuf);
+                String mobile = PacUtil.trim0InMobile(ByteBufUtil.hexDump(mobileBuf));
 
                 // 终端对应连接
-                JTClientConn conn = (JTClientConn) ClientConnCollection.getByUniqueNo(mobile);
-                if (Objects.nonNull(conn) && conn.isOnline()) {
+                Optional<SocketChannel> socketOpt = clientSocketCollection.getByUniqueNo(mobile);
+                if (socketOpt.isPresent() && socketOpt.get().isOpen()) {
+                    // 终端在线
+                    socketOpt.get().writeAndFlush(sourceBuf.copy());
                     // 便于ELK日志分析
                     LOG.info("DOWN >> {}", ByteBufUtil.hexDump(sourceBuf.resetReaderIndex()));
-                    // 终端在线
-                    conn.send(sourceBuf.copy());
                 }
             }
         }

@@ -136,7 +136,7 @@ public class Package808 {
         }
         sb.append("-[").append(UpPacType.getByCode(getHeader().getPacId()).getDes()).append("],")
                 .append("流水号[").append(getHeader().getPacSerialNo()).append("],")
-                .append("原始报文[").append(PackageCons.PAC_START_SYMBOL_HEX).append(getSourceHexStr()).append(PackageCons.PAC_START_SYMBOL_HEX).append("]");
+                .append("原始报文[").append(getSourceHexStr()).append("]");
         return sb.toString();
     }
 

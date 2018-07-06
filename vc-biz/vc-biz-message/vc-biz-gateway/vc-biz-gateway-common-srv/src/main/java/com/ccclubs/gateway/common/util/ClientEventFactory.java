@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.common.util;
 
+import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import io.netty.channel.socket.SocketChannel;
 
@@ -18,13 +19,15 @@ public final class ClientEventFactory {
      * @param channel
      * @return
      */
-    public static ConnOnlineStatusEvent ofOnline(String uniqueNo, SocketChannel channel) {
+    public static ConnOnlineStatusEvent ofOnline(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
         return new ConnOnlineStatusEvent()
-                .setSimNo(uniqueNo)
                 .setOnline(true)
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
-                .setServerIp(channel.localAddress().getHostString());
+                .setServerIp(channel.localAddress().getHostString())
+                .setGatewayType(gatewayType)
+                .addUniqueNoByGatewayType(uniqueNo, gatewayType);
+
     }
 
     /**
@@ -33,13 +36,13 @@ public final class ClientEventFactory {
      * @param channel
      * @return
      */
-    public static ConnOnlineStatusEvent ofOffline(String uniqueNo, SocketChannel channel) {
+    public static ConnOnlineStatusEvent ofOffline(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
         return new ConnOnlineStatusEvent()
-                .setSimNo(uniqueNo)
                 .setOnline(false)
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
-                .setServerIp(channel.localAddress().getHostString());
+                .setServerIp(channel.localAddress().getHostString())
+                .setGatewayType(gatewayType)
+                .addUniqueNoByGatewayType(uniqueNo, gatewayType);
     }
-
 }

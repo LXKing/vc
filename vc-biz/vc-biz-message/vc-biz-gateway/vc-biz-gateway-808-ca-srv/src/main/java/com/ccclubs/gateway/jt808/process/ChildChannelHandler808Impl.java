@@ -1,9 +1,12 @@
 package com.ccclubs.gateway.jt808.process;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.HandlerPacTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
@@ -52,6 +55,9 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
     @Autowired
     private PreProcessHandler preProcessHandler;
 
+    @Autowired
+    private GatewayProperties gatewayProperties;
+
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
 
@@ -60,11 +66,11 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
                 /*inbound*/
                 // 空闲处理
-                .addLast("idleHandler", new IdleStateHandler(360,0,0))
+                .addLast("idleHandler", new IdleStateHandler(gatewayProperties.getIdleSeconds(),0,0))
                 // 记录监视的车辆报文
-                .addLast("preHandler", preProcessHandler)
+//                .addLast("preHandler", preProcessHandler)
                 // 数据包解码
-                .addLast("808Decoder", new PackageBaseDecoder(14,4096, PackageCons.PAC_DECODE_DELIMITER))
+                .addLast("808Decoder", new PackageBaseDecoder(13,4096, PackageCons.PAC_DECODE_DELIMITER))
                 // 数据包校验
                 .addLast("validateHandler", validatePacHandler)
                 // 连接身份认证
@@ -90,6 +96,11 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
          */
         initPacTrack(channel);
 
+        /**
+         * 初始化channel生命周期轨迹
+         */
+        initChannelLiveTrack(channel);
+
 
 
         /**
@@ -101,7 +112,7 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
 
 
     private void initPacTrack(SocketChannel channel) {
-        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
+        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACKAGE_TRACK);
         PacProcessTrack newPacProessTrack = new PacProcessTrack();
         newPacProessTrack
                 .setErrorOccur(false)
@@ -115,6 +126,14 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
         newPacProessTrack.setHandlerPacTracks(handlerPacTracks);
 
         pacProcessTrackAttribute.setIfAbsent(newPacProessTrack);
+    }
+
+    private void initChannelLiveTrack(SocketChannel channel) {
+        Attribute<ChannelLifeCycleTrack> channelLifeCycleTrackAttribute = channel.attr(ChannelAttrKey.CHANNEL_LIFE_CYCLE_TRACK);
+
+        ChannelLifeCycleTrack newChannelLifeCycle = new ChannelLifeCycleTrack();
+        newChannelLifeCycle.setLiveStatus(ChannelLiveStatus.ONLINE_CREATE);
+        channelLifeCycleTrackAttribute.setIfAbsent(newChannelLifeCycle);
     }
 
 

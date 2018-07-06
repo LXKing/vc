@@ -12,8 +12,10 @@ import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.config.KafkaProperties;
 import com.ccclubs.gateway.common.config.NettyProperties;
+import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.service.MqttMessageProcessService;
+import com.ccclubs.gateway.jt808.service.RedisConnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,9 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
   @Autowired
   private OnsProperties onsProperties;
 
+  @Autowired
+  private ClientSocketCollection clientSocketCollection;
+
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
     return application.sources(Gateway808CASrvApp.class);
@@ -58,6 +63,10 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
       logger.info("Env profile:{}", p);
     }
 
+    // tcp服务启动前先清理redis缓存
+    RedisConnService redisConnService = ctx.getBean(RedisConnService.class);
+    redisConnService.cleanChacheForTheFirstTime();
+    logger.info("redis online data clean: success");
     ctx.getBean(TcpServerStarter.class).start();
   }
 
@@ -78,7 +87,7 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
 
   @Bean(name = "jt808RemoteProcessService")
   public IMessageProcessService getRemoteMessageProcessService() {
-    return new MqttMessageProcessService();
+    return new MqttMessageProcessService(clientSocketCollection);
   }
 
 

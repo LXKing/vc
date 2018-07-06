@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.jt808.util;
 
-import com.ccclubs.gateway.jt808.constant.msg.AckReaultType;
+import com.ccclubs.gateway.jt808.constant.msg.AckResultType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.buffer.ByteBuf;
 
@@ -16,7 +16,7 @@ public final class PackageBuilder {
     private final Integer serialNo;
     private final Integer pacId;
     private final String mobile;
-    private final AckReaultType reaultType;
+    private final AckResultType reaultType;
     private final ByteBuf bodyBuf;
 
     public PackageBuilder(builder b) {
@@ -48,18 +48,18 @@ public final class PackageBuilder {
         private Integer serialNo;
         private Integer pacId;
         private String mobile;
-        private AckReaultType reaultType;
+        private AckResultType reaultType;
         private ByteBuf bodyBuf;
 
         public builder(Integer pacId, Integer serialNo, String mobile) {
             this(pacId, serialNo, mobile, null, null);
         }
 
-        public builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType) {
+        public builder(Integer pacId, Integer serialNo, String mobile, AckResultType reaultType) {
             this(pacId, serialNo, mobile, reaultType, null);
         }
 
-        public builder(Integer pacId, Integer serialNo, String mobile, AckReaultType reaultType, ByteBuf bodyBuf) {
+        public builder(Integer pacId, Integer serialNo, String mobile, AckResultType reaultType, ByteBuf bodyBuf) {
             this.pacId = pacId;
             this.serialNo = serialNo;
             this.mobile = mobile;
@@ -94,11 +94,11 @@ public final class PackageBuilder {
             return this;
         }
 
-        public AckReaultType getReaultType() {
+        public AckResultType getReaultType() {
             return reaultType;
         }
 
-        public builder setReaultType(AckReaultType reaultType) {
+        public builder setReaultType(AckResultType reaultType) {
             this.reaultType = reaultType;
             return this;
         }

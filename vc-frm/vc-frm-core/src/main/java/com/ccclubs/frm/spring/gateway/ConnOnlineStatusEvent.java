@@ -49,6 +49,7 @@ public class ConnOnlineStatusEvent implements Serializable {
      * 车辆下线类型
      * 1: 服务端主动断开（网关检测到错误）
      * 2: 超时断开（终端在某时间段内没有和网关交互）
+     * 3: 客户端主动断开（网关检测到客户端主动断开事件）
      */
     private Integer offlineType;
 
