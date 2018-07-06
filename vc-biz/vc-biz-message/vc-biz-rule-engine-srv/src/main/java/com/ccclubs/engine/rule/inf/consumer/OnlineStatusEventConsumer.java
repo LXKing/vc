@@ -91,7 +91,7 @@ public class OnlineStatusEventConsumer {
         for (String record : records) {
             ConnOnlineStatusEvent event = JSONObject.parseObject(record, ConnOnlineStatusEvent.class);
             // 更新缓存-当前车辆在线情况
-            String eventKey = null;
+            String eventKey;
             switch (event.getGatewayType()) {
                 case GatewayType.GATEWAY_GB:
                     eventKey = event.getVin();
@@ -111,7 +111,7 @@ public class OnlineStatusEventConsumer {
                     OnlineStateEventDTO dto = BeanMapper.map(event, OnlineStateEventDTO.class);
                     CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(eventKey);
                     //暂时只统计长安的
-                    if (csMachine != null && csMachine.getCsmAccess() == ACCESS) {
+                    if (csMachine != null && (csMachine.getCsmAccess() == 3 || csMachine.getCsmAccess() == 4 || csMachine.getCsmAccess() == 5)) {
                         dto.setAccess(csMachine.getCsmAccess().shortValue());
                         dto.setIccid(csMachine.getCsmIccid());
                         dto.setTeModelNo(csMachine.getCsmTeModel());
@@ -143,22 +143,7 @@ public class OnlineStatusEventConsumer {
                 default:
                     break;
             }
-            if (event.isOnline()) {
-                // 众泰网关上线事件
-                redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
-                        new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
-                                System.currentTimeMillis()));
-                // 新网关上线事件
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
-            } else {
-                // 众泰网关下线事件
-                redisTemplate.delete(ConstantUtils.ONLINE_REDIS_PRE + eventKey);
 
-                // 新网关下线事件
-                redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey, event);
-                redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey);
-            }
             //转发上下线事件到业务平台
             transferToOns(event);
         }
@@ -191,7 +176,7 @@ public class OnlineStatusEventConsumer {
             default:
                 break;
         }
-        if (Objects.nonNull(csVehicle) && csVehicle.getCsvAccess() == ACCESS) {
+        if (Objects.nonNull(csVehicle) && (csVehicle.getCsvAccess() == 3 || csVehicle.getCsvAccess() == 4 || csVehicle.getCsvAccess() == 5)) {
 
             SrvHost srvHost = queryHostService.queryHostByIdFromCache(csVehicle.getCsvAccess());
             JSONObject jsonObject = new JSONObject();
