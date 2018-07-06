@@ -1,11 +1,18 @@
 package com.ccclubs.gateway.jt808.service;
 
+import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
+import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.service.KafkaService;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
+import com.ccclubs.gateway.jt808.exception.OfflineException;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +52,9 @@ public class TerminalConnService {
     @Resource
     private ClientSocketCollection clientSocketCollection;
 
+    /**
+     * kafka发送服务
+     */
     @Autowired
     private KafkaService kafkaService;
 
@@ -99,31 +109,81 @@ public class TerminalConnService {
     public String offline(SocketChannel channel, GatewayType gatewayType) {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
+        ChannelLiveStatus liveStatus = ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
+
+        // 如果已经下线处理过则不重复处理
+        if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
+            return null;
+        }
         Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
         String uniqueNo = null;
         if (uniqueNoOpt.isPresent()) {
             uniqueNo = uniqueNoOpt.get();
         } else {
             LOG.error("this channelId ({}) can not mapping to uniquNo when offline!", channel.id().asLongText());
-            throw new RuntimeException();
+            uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
+        }
+        if (Objects.isNull(uniqueNo)) {
+            throw new OfflineException("cannot mapping to a uniqueNo when deal offline");
         }
         // 1. 清除本地连接缓存
         clientSocketCollection.offline(uniqueNo, channel);
         channelMappingCollection.offline(uniqueNo, channel.id().asLongText());
 
-        // 2. 更新redis在线状态
-        redisConnService.offline(uniqueNo, channel, gatewayType);
+        /**
+         * 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件，不更新redis中的状态
+         */
+        boolean needSend2RedisAndUpdateStatu = true;
+        if (ChannelLiveStatus.OFFLINE_IDLE.equals(liveStatus)) {
+            com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
+            // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
+            if (Objects.nonNull(event) && !channel.localAddress().getHostString().equals(event.getServerIp())) {
+                needSend2RedisAndUpdateStatu = false;
+            }
+        }
 
-        // 3. 发送离线事件
-        // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-//        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
-//        KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-//        kafkaService.send(task);
+        if (needSend2RedisAndUpdateStatu) {
+            // 下发下线事件
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
+            // 增加下线类型（后面添加掉线原因）
+            int offlineType = 0;
+            switch (liveStatus) {
+                case OFFLINE_IDLE:
+                    offlineType = 2;
+                    break;
+                case OFFLINE_SERVER_CUT:
+                    offlineType = 1;
+                    break;
+                case OFFLINE_CLIENT_CUT:
+                    offlineType = 3;
+                    break;
+                    default:
+                        break;
+            }
+            connOnlineStatusEvent.setOfflineType(offlineType);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+            kafkaService.send(task);
+
+            // 2. 更新redis在线状态
+            redisConnService.offline(uniqueNo, channel, gatewayType);
+        }
 
         // 4. 发送离线轨迹信息用于统计
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
+        String exceptionHex = ChannelAttrbuteUtil.getPacTracker(channel).getSourceHex();
+        ConnLiveEvent offlineEvent = new ConnLiveEvent()
+                .uniqueNo(uniqueNo)
+                .channel(channel)
+                .online(false)
+                .gatewayType(gatewayType);
+        if (ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(liveStatus)) {
+            // 只有服务端异常时才发送异常报文
+            offlineEvent.exceptionHex(exceptionHex);
+        }
+        offlineEvent.build();
+
+        redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, offlineEvent);
         LOG.info("client ({}) offline success!", uniqueNo);
+        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
         return uniqueNo;
     }
 
@@ -139,22 +199,23 @@ public class TerminalConnService {
      * @param gatewayType
      */
     public void online(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
+        // 是否需要发送下线事件
+        boolean isNeedSendOnlineEvent = true;
         // 1. 判断是否已经在Redis中注册，未注册则先执行注册
         boolean isRegisted = redisConnService.isExisted(uniqueNo, gatewayType);
         if (!isRegisted) {
             LOG.info("client ({}) info not existed when deal online event, do register begin---", uniqueNo);
             boolean socketExisted = clientSocketCollection.existed(uniqueNo);
             boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
+            if (channelIdMappingExisted) {
+                LOG.error("channelMapping already existed but not register in redis: uniqueNo={}", uniqueNo);
+                // 执行下线 TODO 一般不会发生
+                channelMappingCollection.offline(uniqueNo, channel.id().asLongText());
+            }
             if (socketExisted) {
                 LOG.error("socket already existed but not register in redis: uniqueNo={}", uniqueNo);
                 SocketChannel existedChannel = clientSocketCollection.getByUniqueNo(uniqueNo).get();
-                // 执行下线
-                clientSocketCollection.offline(uniqueNo, existedChannel);
-            }
-            if (channelIdMappingExisted) {
-                LOG.error("channelMapping already existed but not register in redis: uniqueNo={}", uniqueNo);
-                SocketChannel existedChannel = clientSocketCollection.getByUniqueNo(uniqueNo).get();
-                // 执行下线
+                // old socket 执行下线
                 clientSocketCollection.offline(uniqueNo, existedChannel);
             }
             // 未注册: 重新注册
@@ -163,7 +224,31 @@ public class TerminalConnService {
         } else {
             // 已注册
             if (redisConnService.isOnline(uniqueNo, gatewayType)) {
-                LOG.error("client ({}) already online when deal online event!", uniqueNo);
+                // 已经在线（redis在线）
+                LOG.error("client ({}) already online in redis when deal online event!", uniqueNo);
+                boolean socketExisted = clientSocketCollection.existed(uniqueNo);
+                boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
+                if (channelIdMappingExisted) {
+                    LOG.error("channelMapping already existed in local when deal online event : uniqueNo={}", uniqueNo);
+                    String channelIdLongText = channel.id().asLongText();
+                    String existedUniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channelIdLongText).get();
+                    if (!uniqueNo.equals(existedUniqueNo)) {
+                        // 不可能发生事件
+                        LOG.error("!!!channelMapping already existed and not same in local when deal online event : uniqueNo={}", uniqueNo);
+                    }
+                }
+                if (socketExisted) {
+                    LOG.error("socketchannel already existed in local when deal online event : uniqueNo={}", uniqueNo);
+                    boolean isSameSocket = clientSocketCollection.sameChannel(uniqueNo, channel);
+                    if (isSameSocket) {
+                        // socket 相同：不发送上线事件
+                        isNeedSendOnlineEvent = false;
+                    } else {
+                        LOG.error("socketchannel already existed and not the same socket in local when deal online event, we will update to the new channel : uniqueNo={}", uniqueNo);
+                        // socket 不同：更新socket
+                        clientSocketCollection.updateAndCloseOld(uniqueNo, channel);
+                    }
+                }
             } else {
                 /**
                  * 2. 更新本地缓存
@@ -175,19 +260,31 @@ public class TerminalConnService {
                 redisConnService.online(uniqueNo, channel, gatewayType);
             }
         }
+
         /**
          * 对于终端上线，如果终端第一次上线也需要发上线事件，但是终端注册不需要，因为终端注册后会发送鉴权（判定为上线）
          */
-        // 4. 发送上线事件 TODO
+        if (isNeedSendOnlineEvent) {
+            // 4. 发送上线事件
+            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
+            kafkaService.send(task);
 
-        // 5. 发送上线轨迹事件
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
+            // 5. 发送上线轨迹事件
+            ConnLiveEvent onlineEvent = new ConnLiveEvent()
+                    .uniqueNo(uniqueNo)
+                    .channel(channel)
+                    .online(true)
+                    .gatewayType(gatewayType)
+                    .build();
+            redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, onlineEvent);
+        }
+
         LOG.info("client ({}) online success!", uniqueNo);
     }
 
     /**
-     * 终端注销
+     * 终端注销 (终端注销以后，后面会断开连接，仍会发送离线事件)
      *      1. 判断redis中是否注册了该客户端信息
      *      2. 本地缓存注销
      *      3. 清除redis缓存
@@ -212,9 +309,6 @@ public class TerminalConnService {
 
         // 4. 发送注销事件 TODO
 
-        // 5. 发送注销轨迹事件
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, connOnlineStatusEvent);
         LOG.info("client ({}) logout success!", uniqueNo);
     }
 

@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.common.constant.*;
@@ -8,6 +9,7 @@ import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.constant.RedisConnCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
@@ -66,11 +68,9 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             if (!isClientOnlineFromRedis) {
                 // 重连
                 LOG.info("数据统计时发现终端({})重新连入系统", uniqueNo);
+
+                ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_RECONNECT);
                 terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
-                ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
-                KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-                // 发送至kafka
-                fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             }
         }
 
@@ -118,6 +118,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         String uniqueNo = pac.getHeader().getTerMobile();
         SocketChannel channel = (SocketChannel) ctx.channel();
 
+        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_REGISTER);
         terminalConnService.register(uniqueNo, channel, GatewayType.GATEWAY_808);
         // 发送上线通知
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
@@ -125,8 +126,14 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         // 发送至kafka
         fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
 
-        // 4. 发送客户端轨迹信息用于统计
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, GatewayType.GATEWAY_808, connOnlineStatusEvent);
+        // 5. 发送上线轨迹事件
+        ConnLiveEvent onlineEvent = new ConnLiveEvent()
+                .uniqueNo(uniqueNo)
+                .channel(channel)
+                .online(true)
+                .gatewayType(GatewayType.GATEWAY_808)
+                .build();
+        redisConnService.addTcpStatusTraceEvent(uniqueNo, GatewayType.GATEWAY_808, onlineEvent);
     }
 
     @Override

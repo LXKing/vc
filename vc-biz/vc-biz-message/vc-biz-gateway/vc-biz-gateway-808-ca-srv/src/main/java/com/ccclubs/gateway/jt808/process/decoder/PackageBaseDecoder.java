@@ -3,7 +3,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.GatewayType;
-import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.exception.DecodeExceptionDTO;
@@ -50,7 +50,6 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         if (LOG.isDebugEnabled()) {
             LOG.debug("sourceHex={}", sourceHex);
         }
-        // TODO 校验最小字节数
 
         ByteBuf frame = (ByteBuf) super.decode(ctx, buffer);
         if (LOG.isDebugEnabled()) {
@@ -61,8 +60,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             return null;
         }
 
-        String unTranslatedPacHex = ByteBufUtil.hexDump(frame);
-        System.out.println(unTranslatedPacHex);
+        String unTranslatedPacHex = PacUtil.packWithPacSymbol(ByteBufUtil.hexDump(frame));
         // 消息转义: 还原消息
         PacTranslateUtil.translateUpPac(frame);
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
@@ -197,8 +195,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
      */
     private PacProcessTrack resetTracks(ChannelHandlerContext ctx) {
         // 处理链处理新消息前，先清除上一个消息的轨迹信息
-        ChannelPacTrackUtil.refreshPacTrackForNewMsg(ctx.channel());
-        return ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
+        ChannelAttrbuteUtil.refreshPacTrackForNewMsg(ctx.channel());
+        return ChannelAttrbuteUtil.getPacTracker(ctx.channel()).next();
     }
 
     public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack) {

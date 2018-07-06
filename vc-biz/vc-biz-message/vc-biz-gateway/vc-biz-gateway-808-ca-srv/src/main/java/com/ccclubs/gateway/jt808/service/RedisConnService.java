@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
+import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.jt808.util.RedisObjectBuilder;
 import io.netty.channel.socket.SocketChannel;
@@ -40,6 +41,14 @@ public class RedisConnService {
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Deprecated
+    public void cleanChacheForTheFirstTime() {
+        Set<String> tcpKeys = redisTemplate.keys("tcp*");
+        redisTemplate.delete(tcpKeys);
+        Set<String> TCPKeys = redisTemplate.keys("TCP*");
+        redisTemplate.delete(TCPKeys);
+    }
 
     /**
      * 客户端第一次注册
@@ -214,7 +223,7 @@ public class RedisConnService {
         return (boolean) objMap.get("online");
     }
 
-    public void addTcpStatusTraceEvent(String uniqueNo, GatewayType gatewayType, com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent event) {
+    public void addTcpStatusTraceEvent(String uniqueNo, GatewayType gatewayType, ConnLiveEvent event) {
         Objects.requireNonNull(uniqueNo);
         Objects.requireNonNull(gatewayType);
         Objects.requireNonNull(event);

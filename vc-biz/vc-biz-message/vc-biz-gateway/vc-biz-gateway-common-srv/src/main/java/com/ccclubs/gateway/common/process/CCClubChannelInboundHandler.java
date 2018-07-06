@@ -3,10 +3,8 @@ package com.ccclubs.gateway.common.process;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
-import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
-import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.util.ChannelPacTrackUtil;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -29,7 +27,7 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
             AbstractChannelInnerMsg innerMsg = (AbstractChannelInnerMsg) pac;
             handleStatus = handleInnerMsg(innerMsg);
         } else {
-            PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
+            PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(ctx.channel()).next();
             // 统计处理器处理用时
             long startTime = System.nanoTime();
 

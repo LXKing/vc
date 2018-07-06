@@ -48,6 +48,12 @@ public class ConnOnlineStatusEvent implements Serializable {
     private boolean online;
 
     /**
+     * 下线原因
+     *
+     */
+    private Integer offlineType;
+
+    /**
      * 发送该通知的时间戳
      */
     private Long timestamp;
@@ -158,6 +164,15 @@ public class ConnOnlineStatusEvent implements Serializable {
 
     public ConnOnlineStatusEvent setTeNumber(String teNumber) {
         this.teNumber = teNumber;
+        return this;
+    }
+
+    public Integer getOfflineType() {
+        return offlineType;
+    }
+
+    public ConnOnlineStatusEvent setOfflineType(Integer offlineType) {
+        this.offlineType = offlineType;
         return this;
     }
 }

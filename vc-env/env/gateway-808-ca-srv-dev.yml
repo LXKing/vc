@@ -15,6 +15,7 @@ gateway:
   server:
     log-print: true       # 打印消息日志
     buffer-check: true    # 开启缓存检查
+    idle-seconds: 10      # 读空闲断开时间间隔(秒)
 
 spring:
   # redis配置
