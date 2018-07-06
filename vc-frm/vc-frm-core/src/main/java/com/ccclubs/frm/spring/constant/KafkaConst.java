@@ -24,6 +24,8 @@ public class KafkaConst {
     /*Topic: GB报文-终端校时 */
     public static final String KAFKA_TOPIC_GB_TIME = "kafka.topic.gb.success-time";
 
+    /*Topic: 补充信息后的上下线事件*/
+    public static final String KAFKA_TOPIC_CONN_EVENT = "kafka.topic.history.conn";
     /*Topic: GB历史数据*/
     public static final String KAFKA_TOPIC_GB_MESSAGE = "kafka.topic.history.gb.message";
     /*Topic: GB错误数据*/

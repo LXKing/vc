@@ -18,6 +18,7 @@ import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.*;
 import com.ccclubs.pub.orm.dto.Jt808PositionData;
+import com.ccclubs.pub.orm.dto.StateDTO;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -34,15 +35,17 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
+
 @Component
 public class LogicHelperJt808 {
 
     private static Logger logger = LoggerFactory.getLogger(LogicHelperJt808.class);
 
-  @Resource
-  private RedisTemplate redisTemplate;
-  @Resource
-  private KafkaTemplate kafkaTemplate;
+    @Resource
+    private RedisTemplate redisTemplate;
+    @Resource
+    private KafkaTemplate kafkaTemplate;
 
     @Value("${" + KafkaConst.KAFKA_TOPIC_CAN + "}")
     String kafkaTopicCsCan;
@@ -79,7 +82,7 @@ public class LogicHelperJt808 {
      */
     @Timer
     public void saveStatusData(final MachineMapping mapping, final T808Message message,
-                                  final JT_0200 jvi) {
+                               final JT_0200 jvi) {
         try {
             CsMachine csMachine = new CsMachine();
             csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
@@ -216,6 +219,23 @@ public class LogicHelperJt808 {
                 kafkaTemplate.send(kafkaTopicJt808Position, JSONObject.toJSONString(jt808PositionData));
             }
 
+            //保存长安状态历史数据30条至redis
+            if (mapping.getAccess() == 3 || mapping.getAccess() == 4 || mapping.getAccess() == 5) {
+                StateDTO stateDTO = new StateDTO();
+                stateDTO.setCurrentTime(new Date(jt808PositionData.getCurrentTime()));
+                stateDTO.setLatitude(jt808PositionData.getLatitude());
+                stateDTO.setLongitude(jt808PositionData.getLongitude());
+                stateDTO.setCsq(jvi.getCsq());
+                stateDTO.setGpsValid(jt808PositionData.getGpsValid().byteValue());
+                stateDTO.setSpeed(jt808PositionData.getGpsSpeed());
+                redisTemplate.opsForList()
+                        .leftPush(REDIS_KEY_RECENT_STATES + mapping.getNumber(), stateDTO);
+                Long queueSize = redisTemplate.opsForList()
+                        .size(REDIS_KEY_RECENT_STATES + mapping.getNumber());
+                if (queueSize >= 30) {
+                    redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + mapping.getNumber(), 0, 29);
+                }
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

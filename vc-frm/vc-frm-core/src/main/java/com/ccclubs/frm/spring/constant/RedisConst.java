@@ -45,6 +45,11 @@ public class RedisConst {
     public static final String REDIS_KEY_TCP_OFFLINE = "TCP:OFFLINE";
 
     /**
+     * 规则引擎记录最近30条状态数据的 redis key 前缀
+     */
+    public static final String REDIS_KEY_RECENT_STATES = "RECENT_STATES:";
+
+    /**
      * key:{id} -> key:id
      * @param key
      * @param id
