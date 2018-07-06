@@ -44,7 +44,7 @@ public class StateDTO implements Serializable {
     /**
      * 小电瓶电量
      */
-    private BigDecimal power;
+    private Integer power;
 
     /**
      * 动力电池电量
@@ -244,11 +244,11 @@ public class StateDTO implements Serializable {
         this.fuelQuantity = fuelQuantity;
     }
 
-    public BigDecimal getPower() {
+    public Integer getPower() {
         return power;
     }
 
-    public void setPower(BigDecimal power) {
+    public void setPower(Integer power) {
         this.power = power;
     }
 
