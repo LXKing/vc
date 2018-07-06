@@ -4,11 +4,11 @@ import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
-import com.ccclubs.gateway.jt808.message.pac.PacHeader;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,6 +192,17 @@ public final class PacUtil {
             mobile = mobile.replaceFirst("0", "");
         }
         return mobile;
+    }
+
+    public static String getUniqueNoOrHost(String uniqueNo, SocketChannel channel) {
+        if (Objects.nonNull(uniqueNo)) {
+            return uniqueNo;
+        }
+        StringBuilder hostSb = new StringBuilder();
+        hostSb.append(channel.remoteAddress().getHostName())
+                .append(":")
+                .append(channel.remoteAddress().getPort());
+        return hostSb.toString();
     }
 
     /**
