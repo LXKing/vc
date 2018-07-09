@@ -53,6 +53,11 @@ public class OnlineStateEventDTO implements Serializable {
     private String gatewayType;
 
     /**
+     * 车型
+     */
+    private Integer carModel;
+
+    /**
      * 车辆下线类型
      * 1: 网关主动断开（网关检测到错误）
      * 2: 超时断开（终端在某时间段内没有和网关交互）
@@ -93,6 +98,14 @@ public class OnlineStateEventDTO implements Serializable {
      * 状态数据前溯30条
      */
     private List<StateDTO> states;
+
+    public Integer getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(Integer carModel) {
+        this.carModel = carModel;
+    }
 
     public String getVin() {
         return vin;
