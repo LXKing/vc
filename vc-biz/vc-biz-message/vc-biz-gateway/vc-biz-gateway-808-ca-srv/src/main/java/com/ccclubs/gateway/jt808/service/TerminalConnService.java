@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.service;
 
+import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
@@ -7,12 +8,10 @@ import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
-import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +56,12 @@ public class TerminalConnService {
      */
     @Autowired
     private KafkaService kafkaService;
+
+    /**
+     * 事件发送服务
+     */
+    @Autowired
+    private EventService eventService;
 
     /**
      * 终端第一次注册
@@ -111,7 +116,7 @@ public class TerminalConnService {
         Objects.requireNonNull(gatewayType);
         ChannelLiveStatus liveStatus = ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
 
-        // 如果已经下线处理过则不重复处理
+        // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
             return null;
         }
@@ -143,45 +148,13 @@ public class TerminalConnService {
         }
 
         if (needSend2RedisAndUpdateStatu) {
-            // 下发下线事件
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
-            // 增加下线类型（后面添加掉线原因）
-            int offlineType = 0;
-            switch (liveStatus) {
-                case OFFLINE_IDLE:
-                    offlineType = 2;
-                    break;
-                case OFFLINE_SERVER_CUT:
-                    offlineType = 1;
-                    break;
-                case OFFLINE_CLIENT_CUT:
-                    offlineType = 3;
-                    break;
-                    default:
-                        break;
-            }
-            connOnlineStatusEvent.setOfflineType(offlineType);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-            kafkaService.send(task);
-
             // 2. 更新redis在线状态
             redisConnService.offline(uniqueNo, channel, gatewayType);
         }
+        // 发送下线事件
+        eventService.sendOfflineEvent(needSend2RedisAndUpdateStatu,
+                uniqueNo, channel, gatewayType, liveStatus);
 
-        // 4. 发送离线轨迹信息用于统计
-        String exceptionHex = ChannelAttrbuteUtil.getPacTracker(channel).getSourceHex();
-        ConnLiveEvent offlineEvent = new ConnLiveEvent()
-                .uniqueNo(uniqueNo)
-                .channel(channel)
-                .online(false)
-                .gatewayType(gatewayType);
-        if (ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(liveStatus)) {
-            // 只有服务端异常时才发送异常报文
-            offlineEvent.exceptionHex(exceptionHex);
-        }
-        offlineEvent.build();
-
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, offlineEvent);
         LOG.info("client ({}) offline success!", uniqueNo);
         ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
         return uniqueNo;
@@ -266,18 +239,7 @@ public class TerminalConnService {
          */
         if (isNeedSendOnlineEvent) {
             // 4. 发送上线事件
-            ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-            kafkaService.send(task);
-
-            // 5. 发送上线轨迹事件
-            ConnLiveEvent onlineEvent = new ConnLiveEvent()
-                    .uniqueNo(uniqueNo)
-                    .channel(channel)
-                    .online(true)
-                    .gatewayType(gatewayType)
-                    .build();
-            redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, onlineEvent);
+            eventService.sendOnlineEvent(uniqueNo, channel, gatewayType);
         }
 
         LOG.info("client ({}) online success!", uniqueNo);

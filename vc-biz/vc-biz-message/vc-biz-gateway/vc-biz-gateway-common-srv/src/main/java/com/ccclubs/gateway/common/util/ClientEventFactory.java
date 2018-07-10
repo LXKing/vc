@@ -1,7 +1,7 @@
 package com.ccclubs.gateway.common.util;
 
+import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.constant.GatewayType;
-import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import io.netty.channel.socket.SocketChannel;
 
 /**
@@ -25,8 +25,8 @@ public final class ClientEventFactory {
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
                 .setServerIp(channel.localAddress().getHostString())
-                .setGatewayType(gatewayType)
-                .addUniqueNoByGatewayType(uniqueNo, gatewayType);
+                .setGatewayType(gatewayType.getDes())
+                .addUniqueNoByGatewayType(uniqueNo, gatewayType.getDes());
 
     }
 
@@ -42,7 +42,7 @@ public final class ClientEventFactory {
                 .setTimestamp(System.currentTimeMillis())
                 .setClientIp(channel.remoteAddress().getHostString())
                 .setServerIp(channel.localAddress().getHostString())
-                .setGatewayType(gatewayType)
-                .addUniqueNoByGatewayType(uniqueNo, gatewayType);
+                .setGatewayType(gatewayType.getDes())
+                .addUniqueNoByGatewayType(uniqueNo, gatewayType.getDes());
     }
 }

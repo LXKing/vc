@@ -64,6 +64,16 @@ public class TcpServerConf {
     @Bean(name = "serverBootstrap")
     public ServerBootstrap bootstrap() {
 
+        if (gatewayProperties.isBufferCheck()) {
+            // 追踪字节缓存内存泄露，很耗费性能，debug时打开。
+            LOG.warning("缓存检查: 开启");
+            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
+        }
+        if (gatewayProperties.isLogPrint()) {
+            GATEWAY_PRINT_LOG = true;
+            LOG.warning("网关打印输出日志：开启");
+        }
+
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup(), workerGroup());
         if (nettyProperties.isUseLinuxEpoll() && Epoll.isAvailable()) {
@@ -81,15 +91,6 @@ public class TcpServerConf {
             b.option(option, tcpChannelOptions.get(option));
         }
 
-        if (gatewayProperties.isBufferCheck()) {
-            // 追踪字节缓存内存泄露，很耗费性能，debug时打开。
-            LOG.warning("缓存检查: 开启");
-            ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
-        }
-        if (gatewayProperties.isLogPrint()) {
-            GATEWAY_PRINT_LOG = true;
-            LOG.warning("网关打印输出日志：开启");
-        }
         return b;
     }
 

@@ -5,6 +5,8 @@ import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.jt808.util.RedisObjectBuilder;
+import com.ccclubs.protocol.dto.online.OnlineConnection;
+import com.ccclubs.protocol.util.ConstantUtils;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_OFFLINE;
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_TCP_ONLINE;
 
 /**
  * @Author: yeanzi
@@ -45,8 +51,10 @@ public class RedisConnService {
     @Deprecated
     public void cleanChacheForTheFirstTime() {
         Set<String> tcpKeys = redisTemplate.keys("tcp*");
+        tcpKeys = tcpKeys.stream().filter(k -> k.contains(":808")).collect(Collectors.toSet());
         redisTemplate.delete(tcpKeys);
         Set<String> TCPKeys = redisTemplate.keys("TCP*");
+        TCPKeys = TCPKeys.stream().filter(k -> k.contains(":808")).collect(Collectors.toSet());
         redisTemplate.delete(TCPKeys);
     }
 
@@ -133,6 +141,38 @@ public class RedisConnService {
     }
 
     /**
+     * 老系统的上线维护
+     * @param event
+     */
+    public void sendOnlineEventForOld(ConnOnlineStatusEvent event) {
+        String eventKey = event.uniqueNoByGatewayType();
+        // 老网关上线事件
+        redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
+                new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
+                        System.currentTimeMillis()));
+        // 新网关上线事件
+        redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
+        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
+    }
+
+    /**
+     * 老系统下线维护
+     * @param event
+     */
+    public void sendOfflineEventForOld(ConnOnlineStatusEvent event) {
+        /**
+         * 下线维护（原规则引擎迁移到网关做）
+         */
+        String eventKey = event.uniqueNoByGatewayType();
+        // 老网关下线事件
+        redisTemplate.delete(ConstantUtils.ONLINE_REDIS_PRE + eventKey);
+
+        // 新网关下线事件
+        redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey, event);
+        redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey);
+    }
+
+    /**
      * 客户端注销
      * @param uniqueNo
      * @param gatewayType
@@ -144,9 +184,6 @@ public class RedisConnService {
 
         // 清除客户端信息
         String clientKey = getClientKey(uniqueNo, gatewayType);
-//        HashOperations operations = redisTemplate.opsForHash();
-//        Set<String> keySets = operations.keys(clientKey);
-//        operations.delete(clientKey, keySets.toArray());
 
         // 清除客户端轨迹信息
         String traceKey = getTraceKey(uniqueNo, gatewayType);
@@ -184,7 +221,7 @@ public class RedisConnService {
      * @return  null：如果不存在
      */
     public ConnOnlineStatusEvent getOnlineEvent(String key, GatewayType gatewayType) {
-        ConnOnlineStatusEvent conn = (ConnOnlineStatusEvent)redisTemplate.opsForHash().get(RedisConst.REDIS_KEY_TCP_ONLINE + RedisConst.REDIS_KEY_SPLIT + gatewayType.getDes(), key);
+        ConnOnlineStatusEvent conn = (ConnOnlineStatusEvent)redisTemplate.opsForHash().get(REDIS_KEY_TCP_ONLINE + RedisConst.REDIS_KEY_SPLIT + gatewayType.getDes(), key);
         return conn;
     }
 
