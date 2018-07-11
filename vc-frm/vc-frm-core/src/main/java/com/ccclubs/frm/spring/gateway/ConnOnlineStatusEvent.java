@@ -63,6 +63,41 @@ public class ConnOnlineStatusEvent implements Serializable {
      */
     private String gatewayType = "GB";
 
+    /**
+     * 根据网关类型不同，设置不同的唯一字段
+     * @param uniqueNo
+     * @param gatewayType
+     * @return
+     */
+    public ConnOnlineStatusEvent addUniqueNoByGatewayType(String uniqueNo, String gatewayType) {
+        if (GatewayType.GATEWAY_GB.equals(gatewayType)) {
+            this.setVin(uniqueNo);
+        } else if (GatewayType.GATEWAY_MQTT.equals(gatewayType)) {
+            this.setTeNumber(uniqueNo);
+        } else if (GatewayType.GATEWAY_808.equals(gatewayType)) {
+            this.setSimNo(uniqueNo);
+        } else {
+            throw new IllegalArgumentException("illegal param gatewayType: " + gatewayType);
+        }
+        return this;
+    }
+
+    /**
+     * 根据不同网关类型获取对应的唯一标识
+     * @return
+     */
+    public String uniqueNoByGatewayType() {
+        if (GatewayType.GATEWAY_GB.equals(this.gatewayType)) {
+            return this.vin;
+        } else if (GatewayType.GATEWAY_MQTT.equals(this.gatewayType)) {
+            return this.teNumber;
+        } else if (GatewayType.GATEWAY_808.equals(this.gatewayType)) {
+            return this.simNo;
+        } else {
+            throw new IllegalArgumentException("illegal param gatewayType: " + gatewayType);
+        }
+    }
+
     public String toJson() {
         return JSON.toJSONString(this);
     }

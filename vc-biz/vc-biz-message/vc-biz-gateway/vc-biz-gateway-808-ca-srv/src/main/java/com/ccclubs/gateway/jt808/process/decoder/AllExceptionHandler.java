@@ -2,7 +2,6 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
@@ -15,7 +14,6 @@ import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.PacUtil;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -89,7 +87,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                  * 区别于正常的断开连接
                  */
 
-//                 ctx.channel().close();
                 ctx.pipeline().fireChannelInactive();
                 // 事件触发后，最终会触发ChannelInActive方法
 
@@ -182,7 +179,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             LOG.error(tooLongSb.toString());
             needCloseConn = true;
         } else if (cause instanceof OfflineException) {
-            // 断开连接异常，服务端将强制断开
+            // 断开连接异常，服务端将强制断开. 这里已经找不到uniqueNo了，所以也发送不了下线事件给 redis
             LOG.error("({}) 断开连接异常，服务端将强制断开", uniqueNo);
 
             context.channel().unsafe().closeForcibly();

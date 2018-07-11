@@ -1,22 +1,19 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
-import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.dto.event.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
-import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.constant.RedisConnCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.service.EventService;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
-import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,6 +44,9 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
 
     @Autowired
     private ClientSocketCollection clientSocketCollection;
+
+    @Autowired
+    private EventService eventService;
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
@@ -120,20 +120,9 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
 
         ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_REGISTER);
         terminalConnService.register(uniqueNo, channel, GatewayType.GATEWAY_808);
-        // 发送上线通知
-        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
-        KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-        // 发送至kafka
-        fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
 
-        // 5. 发送上线轨迹事件
-        ConnLiveEvent onlineEvent = new ConnLiveEvent()
-                .uniqueNo(uniqueNo)
-                .channel(channel)
-                .online(true)
-                .gatewayType(GatewayType.GATEWAY_808)
-                .build();
-        redisConnService.addTcpStatusTraceEvent(uniqueNo, GatewayType.GATEWAY_808, onlineEvent);
+        // 发送上线通知
+        eventService.sendOnlineEvent(uniqueNo, channel, GatewayType.GATEWAY_808);
     }
 
     @Override
