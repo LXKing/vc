@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: yeanzi
@@ -274,13 +275,18 @@ public class TerminalConnService {
      */
     public void offlineOfAll() {
         Set<String> keysets = clientSocketCollection.getAllKeySet();
+        int allClient = keysets.size();
         keysets.stream().forEach(k ->
             clientSocketCollection.getByUniqueNo(k).ifPresent(channel -> {
                 ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
-                channel.pipeline().fireChannelInactive();
+                try {
+                    channel.close().syncUninterruptibly();
+                } catch (Exception e) {
+                    LOG.error("channel ({}) close failed when server shutdown: {}", k,  e.getCause());
+                }
             })
         );
-        LOG.info("({})个终端下线成功", keysets.size());
+        LOG.info("({})个终端下线成功", allClient);
     }
 
 
