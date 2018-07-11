@@ -45,6 +45,16 @@ public class RedisConnService {
      */
     private static final String REDIS_KEY_TCP_TRACE_PRIFIX = "tcp:trace";
 
+    /**
+     * 所有键过期时间
+     */
+    private static final Integer REDIS_KEY_EXPIRE_SECONDS = -1;
+
+    /**
+     * 上下线轨迹列表维护的容量
+     */
+    private static final Integer REDIS_KEY_TRACE_LIST_SIZE = 10;
+
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -91,10 +101,6 @@ public class RedisConnService {
                 .put( "disconnectTime", 0);
 
         operations.putAll(redisObj.getIdKey(), redisObj);
-
-        // 设置轨迹信息过期时间
-        String traceKey = getTraceKey(uniqueNo, gatewayType);
-        redisTemplate.expire(traceKey, 7 * 24, TimeUnit.HOURS);
     }
 
     /**
@@ -146,11 +152,11 @@ public class RedisConnService {
      */
     public void sendOnlineEventForOld(ConnOnlineStatusEvent event) {
         String eventKey = event.uniqueNoByGatewayType();
-        // 老网关上线事件
+        // 老网关上线事件(设置过期时间)
         redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
                 new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
                         System.currentTimeMillis()));
-        // 新网关上线事件
+        // 新网关上线事件(设置过期时间)
         redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
         redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
     }
@@ -267,6 +273,15 @@ public class RedisConnService {
 
         String traceKey = getTraceKey(uniqueNo, gatewayType);
         redisTemplate.opsForList().leftPush(traceKey, event);
+        redisTemplate.opsForList().trim(traceKey, 0, REDIS_KEY_TRACE_LIST_SIZE - 1);
+    }
+
+    public void setExpireTime(String key) {
+        // 设置过期时间
+        boolean isSuccess = redisTemplate.expire(key, REDIS_KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
+        if (!isSuccess) {
+            LOG.error("expire time set fail: key={}", key);
+        }
     }
 
     private String getClientKey(String uniqueNo, GatewayType gatewayType) {

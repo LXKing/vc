@@ -1,16 +1,10 @@
 package com.ccclubs.gateway.jt808.service;
 
-import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
-import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
-import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
-import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
-import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
@@ -21,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * @Author: yeanzi
@@ -50,12 +45,6 @@ public class TerminalConnService {
      */
     @Resource
     private ClientSocketCollection clientSocketCollection;
-
-    /**
-     * kafka发送服务
-     */
-    @Autowired
-    private KafkaService kafkaService;
 
     /**
      * 事件发送服务
@@ -209,6 +198,9 @@ public class TerminalConnService {
                         // 不可能发生事件
                         LOG.error("!!!channelMapping already existed and not same in local when deal online event : uniqueNo={}", uniqueNo);
                     }
+                } else {
+                    // 修正本地在线缓存
+                    channelMappingCollection.online(uniqueNo, channel.id());
                 }
                 if (socketExisted) {
                     LOG.error("socketchannel already existed in local when deal online event : uniqueNo={}", uniqueNo);
@@ -221,6 +213,9 @@ public class TerminalConnService {
                         // socket 不同：更新socket
                         clientSocketCollection.updateAndCloseOld(uniqueNo, channel);
                     }
+                } else {
+                    // 修正本地在线缓存
+                    clientSocketCollection.online(uniqueNo, channel);
                 }
             } else {
                 /**
@@ -272,6 +267,20 @@ public class TerminalConnService {
         // 4. 发送注销事件 TODO
 
         LOG.info("client ({}) logout success!", uniqueNo);
+    }
+
+    /**
+     * 程序退出时，服务端将所有客户端下线
+     */
+    public void offlineOfAll() {
+        Set<String> keysets = clientSocketCollection.getAllKeySet();
+        keysets.stream().forEach(k ->
+            clientSocketCollection.getByUniqueNo(k).ifPresent(channel -> {
+                ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                channel.pipeline().fireChannelInactive();
+            })
+        );
+        LOG.info("({})个终端下线成功", keysets.size());
     }
 
 
