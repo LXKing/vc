@@ -10,13 +10,14 @@ import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.annotation.Resource;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @Author: yeanzi
@@ -101,7 +102,7 @@ public class TerminalConnService {
      * @param channel
      * @param gatewayType
      */
-    public String offline(SocketChannel channel, GatewayType gatewayType) {
+    public ListenableFuture<SendResult> offline(SocketChannel channel, GatewayType gatewayType) {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
         ChannelLiveStatus liveStatus = ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
@@ -109,6 +110,8 @@ public class TerminalConnService {
         // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
             return null;
+        } else {
+            ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
         }
         Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
         String uniqueNo = null;
@@ -142,12 +145,11 @@ public class TerminalConnService {
             redisConnService.offline(uniqueNo, channel, gatewayType);
         }
         // 发送下线事件
-        eventService.sendOfflineEvent(needSend2RedisAndUpdateStatu,
+        ListenableFuture<SendResult> resultFut = eventService.sendOfflineEvent(needSend2RedisAndUpdateStatu,
                 uniqueNo, channel, gatewayType, liveStatus);
 
         LOG.info("client ({}) offline success!", uniqueNo);
-        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
-        return uniqueNo;
+        return resultFut;
     }
 
     /**
@@ -276,16 +278,29 @@ public class TerminalConnService {
     public void offlineOfAll() {
         Set<String> keysets = clientSocketCollection.getAllKeySet();
         int allClient = keysets.size();
-        keysets.stream().forEach(k ->
+        final List<ListenableFuture<SendResult>> resultFutList = new ArrayList<>();
+        keysets.stream().forEach(k->
             clientSocketCollection.getByUniqueNo(k).ifPresent(channel -> {
                 ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                 try {
-                    channel.close().syncUninterruptibly();
+                    ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
+                    if (Objects.nonNull(resFut)) {
+                        resultFutList.add(resFut);
+                    }
                 } catch (Exception e) {
                     LOG.error("channel ({}) close failed when server shutdown: {}", k,  e.getCause());
                 }
             })
         );
+        int unDoneCount = 1;
+        while (unDoneCount > 0) {
+            unDoneCount = 0;
+            for (ListenableFuture fut: resultFutList) {
+                if (!fut.isDone()) {
+                    ++ unDoneCount;
+                }
+            }
+        }
         LOG.info("({})个终端下线成功", allClient);
     }
 
