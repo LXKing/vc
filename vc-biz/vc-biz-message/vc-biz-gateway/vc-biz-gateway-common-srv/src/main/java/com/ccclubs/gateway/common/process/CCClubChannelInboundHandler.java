@@ -7,6 +7,10 @@ import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -18,12 +22,16 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  *          1. 处理器处理用时统计
  */
 public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandlerAdapter {
+    public static final Logger LOG = LoggerFactory.getLogger(CCClubChannelInboundHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object pac) throws Exception {
         HandleStatus handleStatus = null;
         // 真正处理消息的方法
-        if (pac instanceof AbstractChannelInnerMsg) {
+        if (Objects.isNull(pac)) {
+            // 空消息
+            LOG.error("收到一个空消息 channelIdLongText: {}", ctx.channel().id().asLongText());
+        } else if (pac instanceof AbstractChannelInnerMsg) {
             AbstractChannelInnerMsg innerMsg = (AbstractChannelInnerMsg) pac;
             handleStatus = handleInnerMsg(innerMsg);
         } else {

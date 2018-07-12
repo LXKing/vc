@@ -63,10 +63,6 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
       logger.info("Env profile:{}", p);
     }
 
-    // tcp服务启动前先清理redis缓存
-    RedisConnService redisConnService = ctx.getBean(RedisConnService.class);
-    redisConnService.cleanChacheForTheFirstTime();
-    logger.info("redis online data clean: success");
     ctx.getBean(TcpServerStarter.class).start();
   }
 
