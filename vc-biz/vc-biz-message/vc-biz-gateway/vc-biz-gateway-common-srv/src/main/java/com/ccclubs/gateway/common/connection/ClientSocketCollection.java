@@ -199,9 +199,20 @@ public class ClientSocketCollection {
 
 
 
-    /**
+    /**************************************************************************************************
      * 以下方法不要在业务上调用，仅调试用
+     * ************************************************************************************************
      */
+
+    /**
+     * 获取所有的keyset
+     * @return
+     */
+    @Deprecated
+    public Set getAllKeySet() {
+        return UNIQUENO_TO_SOCKET.keySet();
+    }
+
     @Deprecated
     public static SocketChannel getDetail(String uniqueNo) {
         return UNIQUENO_TO_SOCKET.get(uniqueNo);

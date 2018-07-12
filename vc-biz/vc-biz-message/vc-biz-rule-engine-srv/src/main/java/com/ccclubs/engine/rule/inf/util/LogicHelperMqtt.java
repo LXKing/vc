@@ -16,6 +16,7 @@ import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.pub.orm.dto.StateDTO;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
+
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
 
 /**
  * Created by qsxiaogang on 2017/7/2.
@@ -184,6 +187,9 @@ public class LogicHelperMqtt {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
+
+        //保存长安状态历史数据30条至redis
+        setRentStatesToRedis(csState, csMachine);
     }
 
 
@@ -305,6 +311,9 @@ public class LogicHelperMqtt {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
+
+        //保存长安状态历史数据30条至redis
+        setRentStatesToRedis(csState, csMachine);
     }
 
     /**
@@ -353,9 +362,63 @@ public class LogicHelperMqtt {
         // 发送kafka处理can历史状态
         if (StringUtils.empty(mapping.getVin())) {
             kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(canData));
-        }else{
+        } else {
             kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));
         }
     }
 
+    private void setRentStatesToRedis(CsState csState, CsMachine csMachine) {
+        if (csState.getCssAccess() == 3 || csState.getCssAccess() == 4 || csState.getCssAccess() == 5) {
+            StateDTO stateDTO = getStateDTO(csState);
+            redisTemplate.opsForList()
+                    .leftPush(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), stateDTO);
+            Long queueSize = redisTemplate.opsForList()
+                    .size(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber());
+            if (queueSize >= 30) {
+                redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), 0, 29);
+            }
+        }
+    }
+
+    private StateDTO getStateDTO(CsState csState) {
+        StateDTO stateDTO = new StateDTO();
+        stateDTO.setCurrentTime(csState.getCssCurrentTime());
+        stateDTO.setObdMile(csState.getCssObdMile());
+        stateDTO.setMileage(csState.getCssMileage());
+        stateDTO.setSpeed(csState.getCssSpeed());
+        stateDTO.setRotateSpeed(csState.getCssMotor());
+        stateDTO.setFuelQuantity(csState.getCssOil());
+        stateDTO.setPower(csState.getCssPower());
+        stateDTO.setSoc(csState.getCssEvBattery());
+        stateDTO.setCharging(csState.getCssCharging());
+        stateDTO.setFuelMileage(csState.getCssFuelMileage());
+        stateDTO.setElectricMileage(csState.getCssElectricMileage());
+        stateDTO.setEndurance(csState.getCssEndurance());
+        stateDTO.setTemperature(csState.getCssTemperature());
+        stateDTO.setCsq(csState.getCssCsq());
+        stateDTO.setLongitude(csState.getCssLongitude());
+        stateDTO.setLatitude(csState.getCssLatitude());
+        stateDTO.setGpsValid(csState.getCssGpsValid());
+        stateDTO.setGpsCn(csState.getCssGpsCn());
+        stateDTO.setGpsCount(csState.getCssGpsCount());
+        stateDTO.setDirAngle(csState.getCssDir());
+        stateDTO.setCircular(csState.getCssCircular());
+        stateDTO.setPtc(csState.getCssPtc());
+        stateDTO.setCompress(csState.getCssCompres());
+        stateDTO.setFan(csState.getCssFan());
+        stateDTO.setSaving(csState.getCssSaving());
+        stateDTO.setDoor(csState.getCssDoor());
+        stateDTO.setEngine(csState.getCssEngine());
+        stateDTO.setKey(csState.getCssKey());
+        stateDTO.setGear(csState.getCssGear());
+        stateDTO.setLight(csState.getCssLight());
+        stateDTO.setLock(csState.getCssLock());
+        stateDTO.setNetType(csState.getCssNetType());
+        stateDTO.setBaseLac(csState.getCssBaseLac());
+        stateDTO.setBaseCi(csState.getCssBaseCi());
+        stateDTO.setOrder(csState.getCssOrder());
+        stateDTO.setAutopilot(csState.getCssAutopilot());
+        stateDTO.setHandbrake(csState.getCssHandbrake());
+        return stateDTO;
+    }
 }

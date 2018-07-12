@@ -44,7 +44,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         LOG.info("终端建立连接: ip={}, port={}, channelId={}",
                     channel.remoteAddress().getHostString(),
                     channel.remoteAddress().getPort(),
-                    channel.id()
+                    channel.id().asLongText()
                 );
 
         ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_CONNECT);

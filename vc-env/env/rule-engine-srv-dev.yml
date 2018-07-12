@@ -71,6 +71,7 @@ kafka:
       success-heart: topic_gb_0x07             #GB报文-心跳
       success-time: topic_gb_0x08              #GB报文-终端校时
     history: #OUT 发送到下游
+      conn: topic_online_event
       gb:
         message: topic_gb_message              #GB历史数据
         error: topic_gb_message_err            #GB错误数据

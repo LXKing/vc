@@ -16,7 +16,12 @@ public class Error extends R {
         /**SIM为空**/
         SIM_EMPTY(400101, "SIM为空"),
 
-        PARAM_INCORECT_FORMAT(400105, "参数格式不正确");
+        PARAM_INCORECT_FORMAT(400105, "参数格式不正确"),
+
+        /**
+         * 没有足够的权限进行操作
+         */
+        AUTH_FAILED(400110, "权限不足");
 
         private int code;
         private String msg;

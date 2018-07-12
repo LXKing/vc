@@ -2,7 +2,6 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
@@ -14,6 +13,7 @@ import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -87,7 +87,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                  * 区别于正常的断开连接
                  */
 
-//                 ctx.channel().close();
                 ctx.pipeline().fireChannelInactive();
                 // 事件触发后，最终会触发ChannelInActive方法
 
@@ -104,6 +103,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+        SocketChannel channel = (SocketChannel) context.channel();
         // 部分异常可能需要服务端主动释放连接
         boolean needCloseConn = false;
         // 是否发送至kafka
@@ -117,9 +117,10 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          *      如果是链路上非主动抛出：组装其他异常dto
          *  3.发送至kafka
          */
-        PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(context.channel());
+        PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(channel);
         PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
         String uniqueNo = pacProcessTrack.getUniqueNo();
+        uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);
         /**
          * 导致异常的异常原始报文
          */
@@ -141,8 +142,8 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                         .setMobile(uniqueNo);
             }
         } else {
-            LOG.error("terminal ({})- occured exception when handle sourceHex = [{}], exception throwed but step invalid step={}",
-                    uniqueNo, exceptionPacHex, pacProcessTrack.getStep());
+            LOG.error("terminal ({})- occured exception when handle sourceHex = [{}], exception throwed but step invalid step={}, for reason: {}",
+                    uniqueNo, exceptionPacHex, pacProcessTrack.getStep(), cause);
 
             // 其他非自定义的异常
             ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
@@ -171,7 +172,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             if (StringUtils.isNotEmpty(pacProcessTrack.getUniqueNo())) {
                 tooLongSb.append("[").append(pacProcessTrack.getUniqueNo()).append("]");
             } else {
-                SocketChannel channel = (SocketChannel) context.channel();
                 tooLongSb.append("[ip=").append(channel.remoteAddress().getHostString())
                         .append(", port=").append(channel.remoteAddress().getPort()).append("]");
             }
@@ -179,8 +179,9 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             LOG.error(tooLongSb.toString());
             needCloseConn = true;
         } else if (cause instanceof OfflineException) {
-            // 断开连接异常，服务端将强制断开
+            // 断开连接异常，服务端将强制断开. 这里已经找不到uniqueNo了，所以也发送不了下线事件给 redis
             LOG.error("({}) 断开连接异常，服务端将强制断开", uniqueNo);
+
             context.channel().unsafe().closeForcibly();
         } else if (cause instanceof IOException) {
             // Connection reset by peer
@@ -188,12 +189,8 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             needCloseConn = true;
         }
 
-        if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.error("不可预料的异常：{}", cause);
-        }
-
         if (needCloseConn) {
-            ChannelAttrbuteUtil.setChannelLiveStatus((SocketChannel) context.channel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
             // 关闭链接
             context.pipeline().fireChannelInactive();
         }

@@ -80,7 +80,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
     @Autowired
     UpdateLoggerService updateLoggerService;
 
-    @Autowired
+    @Resource
     QueryTerminalService queryTerminalService;
 
     @Autowired

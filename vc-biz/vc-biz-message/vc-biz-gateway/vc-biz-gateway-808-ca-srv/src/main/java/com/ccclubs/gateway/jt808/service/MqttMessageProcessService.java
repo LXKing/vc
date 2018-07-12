@@ -62,9 +62,6 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 ByteBuf sourceBuf = Unpooled.buffer();
                 sourceBuf.writeBytes(msg.getPayload());
 
-                // 测试代码：
-//                    sourceBuf.writeBytes(ByteBufUtil.decodeHexDump("7E890000160646215611440001F154363731303337390000000007D01A9251061012FF00817E"));
-
                 // 消息转义: 还原消息
                 PacTranslateUtil.translateUpPac(sourceBuf);
 
@@ -79,9 +76,10 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 Optional<SocketChannel> socketOpt = clientSocketCollection.getByUniqueNo(mobile);
                 if (socketOpt.isPresent() && socketOpt.get().isOpen()) {
                     // 终端在线
-                    socketOpt.get().writeAndFlush(sourceBuf.copy());
+                    ByteBuf resetedSourceBuf =  sourceBuf.resetReaderIndex();
+                    socketOpt.get().writeAndFlush(resetedSourceBuf.copy());
                     // 便于ELK日志分析
-                    LOG.info("DOWN >> {}", ByteBufUtil.hexDump(sourceBuf.resetReaderIndex()));
+                    LOG.info("DOWN >> {}", ByteBufUtil.hexDump(resetedSourceBuf));
                 }
             }
         }

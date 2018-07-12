@@ -91,7 +91,7 @@ public class Package808 {
     }
 
     public ByteBuf getSourceBuff() {
-        return sourceBuff;
+        return this.sourceBuff;
     }
 
     public Package808 setSourceBuff(ByteBuf sourceBuff) {

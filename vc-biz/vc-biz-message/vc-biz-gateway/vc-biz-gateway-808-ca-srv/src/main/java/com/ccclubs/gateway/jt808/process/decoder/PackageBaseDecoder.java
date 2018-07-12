@@ -17,6 +17,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
-        String sourceHex = ByteBufUtil.hexDump(buffer);
         if (LOG.isDebugEnabled()) {
+            String sourceHex = ByteBufUtil.hexDump(buffer);
             LOG.debug("sourceHex={}", sourceHex);
         }
 
@@ -57,6 +58,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         }
 
         if (Objects.isNull(frame) || frame.readableBytes() == 0) {
+            dealEmptyPackage(frame);
             return null;
         }
 
@@ -187,6 +189,15 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
 
         frame.resetReaderIndex();
         return pac;
+    }
+
+    /**
+     * 针对808网关处理空包的释放
+     * @param frame
+     */
+    private void dealEmptyPackage(ByteBuf frame) {
+        // 释放空的Direct Buffer（空包）
+        ReferenceCountUtil.release(frame);
     }
 
     /**
