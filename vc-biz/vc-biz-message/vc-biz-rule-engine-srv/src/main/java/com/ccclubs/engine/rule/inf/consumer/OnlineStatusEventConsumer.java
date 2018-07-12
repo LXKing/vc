@@ -17,8 +17,6 @@ import com.ccclubs.frm.spring.gateway.GatewayType;
 import com.ccclubs.frm.spring.util.BeanMapper;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
-import com.ccclubs.protocol.dto.online.OnlineConnection;
-import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.pub.orm.dto.OnlineStateEventDTO;
 import com.ccclubs.pub.orm.dto.StateDTO;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -41,7 +39,7 @@ import java.util.Objects;
 import static com.ccclubs.engine.core.util.RuleEngineConstant.*;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_CONSUMER_GROUP_RULE_CONN;
 import static com.ccclubs.frm.spring.constant.KafkaConst.KAFKA_TOPIC_GATEWAY_CONN;
-import static com.ccclubs.frm.spring.constant.RedisConst.*;
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
 
 /**
  * 车辆上下线监听
@@ -104,11 +102,15 @@ public class OnlineStatusEventConsumer {
                 case GatewayType.GATEWAY_808:
                     eventKey = event.getSimNo();
                     final MachineMapping mapping808 = terminalUtils.getMapping(eventKey, MACHINEMAPPING_SIMNO);
+                    Integer carModel = 0;
                     if (mapping808 != null) {
                         event.setVin(StringUtils.isEmpty(mapping808.getVin()) ? null : mapping808.getVin());
                         event.setTeNumber(StringUtils.isEmpty(mapping808.getNumber()) ? null : mapping808.getNumber());
+                        CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(mapping808.getVin());
+                        carModel = csVehicle.getCsvModel();
                     }
                     OnlineStateEventDTO dto = BeanMapper.map(event, OnlineStateEventDTO.class);
+                    dto.setCarModel(carModel);
                     CsMachine csMachine = queryTerminalService.queryCsMachineBySimNo(eventKey);
                     //暂时只统计长安的
                     if (csMachine != null && (csMachine.getCsmAccess() == 3 || csMachine.getCsmAccess() == 4 || csMachine.getCsmAccess() == 5)) {

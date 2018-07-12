@@ -1,10 +1,12 @@
 package com.ccclubs.engine.core.util;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
@@ -19,6 +21,7 @@ import com.ccclubs.protocol.util.MyBuffer;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
+import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -30,6 +33,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
@@ -59,6 +64,15 @@ public class TerminalUtils {
 
     @Autowired
     CsLoggerDao csLoggerDao;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + "}")
+    String tboxLogTopic;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + "}")
+    String tboxLogTopicExp;
+
+    @Autowired
+    KafkaTemplate kafkaTemplate;
 
     /**
      * 通过车机号，手机号，VIN码 获取 MachineMapping
@@ -570,14 +584,34 @@ public class TerminalUtils {
                                    Long order) {
         try {
 //      logger.info("收到来自 " + carNumber + "的 " + content + " ，原始数据：" + hexString);
+            Long addTime = System.currentTimeMillis();
             CsLogger csLogger = new CsLogger();
             csLogger.setCslNumber(carNumber);
             csLogger.setCslOrder(order);
             csLogger.setCslLog(content);
             csLogger.setCslData(hexString);
-            csLogger.setCslAddTime(new Date().getTime());
+            csLogger.setCslAddTime(addTime);
             csLogger.setCslStatus((short) 1);
             csLoggerDao.save(csLogger);
+
+            //转发到kafka，存储HBASE
+            TboxLog dto = new TboxLog();
+            dto.setAddTime(addTime);
+            dto.setLogInfo(content);
+            dto.setOrderNo(order);
+            dto.setTeNumber(carNumber);
+            dto.setSourceHex(hexString);
+            CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
+            if (csMachine == null) {
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+            }
+            CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+            if (csVehicle == null) {
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+            } else {
+                dto.setVin(csVehicle.getCsvVin());
+                kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
