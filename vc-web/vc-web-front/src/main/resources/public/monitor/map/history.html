@@ -326,15 +326,8 @@
             return;
         });
         $('.carControl').addClass('carControlPlay').removeClass('carControlPause');
-        if(existMqttData()){
-          url = mqttURL;
-          loadData();
-          setTimeout(expandPath,5000);
-        }else {
-          url = jt808URL;
-          loadData();
-          setTimeout(expandPath,5000);
-        }
+
+        existMqttData();
       });
 
       function checkParams() {
@@ -365,16 +358,27 @@
             getServUrl(mqttURL),
             params,
             function (d) {
+              var result = true;
               if (0 !== d.code) {
                 layer.msg('数据请求异常！', {icon: 7, time: 1500});
-                return false;
+                result = false;
               }
               // 判断是否还有更多数据
               total = d.count;
               if (0 === total) {
-                return false;
+                result = false;
               }else {
-                return true;
+                result = true;
+              }
+
+              if(result){
+                url = mqttURL;
+                loadData();
+                setTimeout(expandPath,5000);
+              }else {
+                url = jt808URL;
+                loadData();
+                setTimeout(expandPath,5000);
               }
         });
       }
