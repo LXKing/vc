@@ -83,9 +83,9 @@ public class TerminalConnService {
             // 不存在：新建一个连接
 
             // 1. 本地缓存socket
-            clientSocketCollection.add(uniqueNo, newChannel);
+//            clientSocketCollection.add(uniqueNo, newChannel);
             // 2. 本地缓存channelId -> uniqueNo的映射
-            channelMappingCollection.add(uniqueNo, newChannel.id());
+//            channelMappingCollection.add(uniqueNo, newChannel.id());
             // 3. redis缓存客户端信息
             redisConnService.clientRegister(uniqueNo, newChannel, gatewayType);
             LOG.info("client ({}) register success!", uniqueNo);
@@ -186,50 +186,52 @@ public class TerminalConnService {
             // 未注册: 重新注册
             register(uniqueNo, channel, gatewayType);
             LOG.info("client ({}) info not existed when deal online event, do register end---", uniqueNo);
-        } else {
-            // 已注册
-            if (redisConnService.isOnline(uniqueNo, gatewayType)) {
-                // 已经在线（redis在线）
-                LOG.error("client ({}) already online in redis when deal online event!", uniqueNo);
-                boolean socketExisted = clientSocketCollection.existed(uniqueNo);
-                boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
-                if (channelIdMappingExisted) {
-                    LOG.error("channelMapping already existed in local when deal online event : uniqueNo={}", uniqueNo);
-                    String channelIdLongText = channel.id().asLongText();
-                    String existedUniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channelIdLongText).get();
-                    if (!uniqueNo.equals(existedUniqueNo)) {
-                        // 不可能发生事件
-                        LOG.error("!!!channelMapping already existed and not same in local when deal online event : uniqueNo={}", uniqueNo);
-                    }
-                } else {
-                    // 修正本地在线缓存
-                    channelMappingCollection.online(uniqueNo, channel.id());
-                }
-                if (socketExisted) {
-                    LOG.error("socketchannel already existed in local when deal online event : uniqueNo={}", uniqueNo);
-                    boolean isSameSocket = clientSocketCollection.sameChannel(uniqueNo, channel);
-                    if (isSameSocket) {
-                        // socket 相同：不发送上线事件
-                        isNeedSendOnlineEvent = false;
-                    } else {
-                        LOG.error("socketchannel already existed and not the same socket in local when deal online event, we will update to the new channel : uniqueNo={}", uniqueNo);
-                        // socket 不同：更新socket
-                        clientSocketCollection.updateAndCloseOld(uniqueNo, channel);
-                    }
-                } else {
-                    // 修正本地在线缓存
-                    clientSocketCollection.online(uniqueNo, channel);
+        }
+
+        /**
+         * 执行上线
+         */
+        // 已注册
+        if (redisConnService.isOnline(uniqueNo, gatewayType)) {
+            // 已经在线（redis在线）
+            boolean socketExisted = clientSocketCollection.existed(uniqueNo);
+            boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
+            if (channelIdMappingExisted) {
+                LOG.error("channelMapping already existed in local when deal online event : uniqueNo={}", uniqueNo);
+                String channelIdLongText = channel.id().asLongText();
+                String existedUniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channelIdLongText).get();
+                if (!uniqueNo.equals(existedUniqueNo)) {
+                    // 不可能发生事件
+                    LOG.error("!!!channelMapping already existed and not same in local when deal online event : uniqueNo={}", uniqueNo);
                 }
             } else {
-                /**
-                 * 2. 更新本地缓存
-                 *      这里先处理 channelIdMapping映射
-                 */
+                // 修正本地在线缓存
                 channelMappingCollection.online(uniqueNo, channel.id());
-                clientSocketCollection.online(uniqueNo, channel);
-                // 3. 更新redis中在线状态
-                redisConnService.online(uniqueNo, channel, gatewayType);
             }
+            if (socketExisted) {
+                LOG.error("socketchannel already existed in local when deal online event : uniqueNo={}", uniqueNo);
+                boolean isSameSocket = clientSocketCollection.sameChannel(uniqueNo, channel);
+                if (isSameSocket) {
+                    // socket 相同：不发送上线事件
+                    isNeedSendOnlineEvent = false;
+                } else {
+                    LOG.error("socketchannel already existed and not the same socket in local when deal online event, we will update to the new channel : uniqueNo={}", uniqueNo);
+                    // socket 不同：更新socket
+                    clientSocketCollection.updateAndCloseOld(uniqueNo, channel);
+                }
+            } else {
+                // 修正本地在线缓存
+                clientSocketCollection.online(uniqueNo, channel);
+            }
+        } else {
+            /**
+             * 2. 更新本地缓存
+             *      这里先处理 channelIdMapping映射
+             */
+            channelMappingCollection.online(uniqueNo, channel.id());
+            clientSocketCollection.online(uniqueNo, channel);
+            // 3. 更新redis中在线状态
+            redisConnService.online(uniqueNo, channel, gatewayType);
         }
 
         /**

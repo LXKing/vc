@@ -5,7 +5,7 @@ package com.ccclubs.gateway.common.constant;
  * @Date: 2018/7/4
  * @Time: 10:18
  * Email:  yeanzhi@ccclubs.com
- * channel在线状态
+ * channel当前状态
  */
 public enum ChannelLiveStatus {
 
@@ -20,22 +20,17 @@ public enum ChannelLiveStatus {
     ONLINE_CONNECT,
 
     /**
-     * 客户端注册
+     * 客户端已注册
      */
     ONLINE_REGISTER,
 
     /**
-     * 客户端鉴权
+     * 客户端已经鉴权
      */
     ONLINE_AUTH,
 
     // 后面的状态都可以获取uniqueNo
     // -----------------------------------------------
-
-    /**
-     * 客户端重连
-     */
-    ONLINE_RECONNECT,
 
     /**
      * 连接由于读空闲断开
@@ -51,6 +46,11 @@ public enum ChannelLiveStatus {
      * 客户端主动断开了连接
      */
     OFFLINE_CLIENT_CUT,
+
+    /**
+     * 客户端登出
+     */
+    OFFLINE_LOGOUT,
 
     /**
      * 下线完成

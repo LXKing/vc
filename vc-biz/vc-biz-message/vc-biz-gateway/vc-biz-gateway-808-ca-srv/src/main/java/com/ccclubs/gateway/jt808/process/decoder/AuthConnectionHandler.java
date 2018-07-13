@@ -13,6 +13,7 @@ import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
+import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -41,7 +42,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
-        LOG.info("终端建立连接: ip={}, port={}, channelId={}",
+        LOG.info("connection established: ip={}, port={}, channelId={}",
                     channel.remoteAddress().getHostString(),
                     channel.remoteAddress().getPort(),
                     channel.id().asLongText()
@@ -56,6 +57,15 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         SocketChannel channel = (SocketChannel) ctx.channel();
 
         ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
+        /**
+         *连接被探测
+         */
+        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
+            LOG.error("tcp server received ping-pong event: client={}", PacUtil.getUniqueNoOrHost(null, channel));
+            channel.close();
+            return;
+        }
+
         if (Objects.nonNull(channelLifeCycleTrack) &&
                 !ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus()) &&
@@ -67,21 +77,26 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+        SocketChannel channel = (SocketChannel) ctx.channel();
         UpPacType upPacType = UpPacType.getByCode(pac.getHeader().getPacId());
         String uniqueNo = pac.getHeader().getTerMobile();
+        boolean isAuthEvent = false;
         // 处理认证类型消息
         switch(upPacType) {
                 // 终端注册
             case REGISTER:
                 doRegister(uniqueNo, ctx);
+                isAuthEvent = true;
                 break;
                 // 终端注销
             case LOGOUT:
                 doLogout(uniqueNo, ctx);
+                isAuthEvent = true;
                 break;
                 // 终端鉴权
             case AUTH:
                 doAuth(pac, ctx);
+                isAuthEvent = true;
                 break;
             default:
                 break;
@@ -90,7 +105,45 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         if (LOG.isDebugEnabled()) {
             LOG.debug("auth complete");
         }
-        return HandleStatus.NEXT;
+
+        /**
+         * 终端发送 注册、注销、鉴权 等认证事件则：正常通过
+         */
+        if (isAuthEvent) {
+            return HandleStatus.NEXT;
+        }
+
+        /**
+         * 其他报文，并且为已认证状态：通过
+         */
+        ChannelLiveStatus liveStatus =  ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
+
+        // channel状态是否存在
+        if (Objects.nonNull(liveStatus)) {
+            // 已认证
+            if (ChannelLiveStatus.ONLINE_AUTH.equals(liveStatus)) {
+                return HandleStatus.NEXT;
+            } else {
+                // 未认证：判断是否需要执行下线
+                LOG.error("message cannot pass to next handler without auth first: uniqueNo={}", uniqueNo);
+                if (liveStatus.ordinal() > ChannelLiveStatus.ONLINE_REGISTER.ordinal()) {
+
+                    releasePacBuffer(pac.getSourceBuff());
+                    // 未鉴权就发送报文： 踢掉
+                    ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    terminalConnService.offline(channel, GatewayType.GATEWAY_808);
+                    return HandleStatus.END;
+                }
+            }
+        } else {
+            LOG.error("channel live status is empty when deal auth: uniqueNo={}", uniqueNo);
+        }
+        /**
+         * 未鉴权，释放buffer，关闭channel
+         */
+        releasePacBuffer(pac.getSourceBuff());
+        channel.unsafe().closeForcibly();
+        return HandleStatus.END;
     }
 
     @Override
@@ -116,6 +169,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     private void doLogout(String uniqueNo, ChannelHandlerContext ctx) {
         SocketChannel channel = (SocketChannel) ctx.channel();
         terminalConnService.logout(uniqueNo, channel, GatewayType.GATEWAY_808);
+        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_LOGOUT);
     }
 
     /**
@@ -130,7 +184,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         boolean authSuccess = true;
         if (Objects.isNull(pac.getBody().getContent()) || 0 == pac.getBody().getContent().readableBytes()) {
             // 无鉴权码
-            LOG.error("终端({})鉴权时发现无鉴权码, 原始报文[{}]", uniqueNo, pac.getSourceHexStr());
+            LOG.error("terminal({})can not find authcode when deal auth event, sourceHex[{}]", uniqueNo, pac.getSourceHexStr());
             authSuccess = false;
         } else {
             String authCode = DecodeUtil.byte2Str(pac.getBody().getContent(), pac.getBody().getContent().readableBytes());
@@ -142,12 +196,12 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         // 鉴权失败: 断开连接
         if (!authSuccess) {
             pac.setErrorPac(true);
-            LOG.error("重连的终端({})鉴权失败, 原始报文[{}]", uniqueNo, pac.getSourceHexStr());
+            LOG.error("terminal({})auth failed, sourceHex[{}]", uniqueNo, pac.getSourceHexStr());
         } else {
             ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_AUTH);
             // 终端上线
             terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
-            LOG.info("重连的终端({})鉴权成功", uniqueNo);
+            LOG.info("terminal({})auth success", uniqueNo);
         }
     }
 }

@@ -121,7 +121,6 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             frame.resetReaderIndex();
         }
 
-
         // 读取消息ID
         int pacId = frame.readUnsignedShort();
         UpPacType upPacType = UpPacType.getByCode(pacId);
@@ -137,7 +136,6 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         }
 
         // 读取消息体属性
-
         PacContentAttr pacAttr = new PacContentAttr();
         Short contentAttr = frame.readShort();
         pacAttr.setContentLen(PacUtil.getContentLen(contentAttr))

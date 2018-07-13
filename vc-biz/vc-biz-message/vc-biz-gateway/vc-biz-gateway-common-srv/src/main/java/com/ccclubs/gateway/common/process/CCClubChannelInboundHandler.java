@@ -5,8 +5,10 @@ import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,15 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 
     protected void fireChannelInnerMsg(ChannelHandlerContext ctx, InnerMsgType innerMsgType, Object msg) {
         ctx.fireChannelRead(new AbstractChannelInnerMsg().setInnerMsgType(innerMsgType).setMsg(msg));
+    }
+
+    /**
+     * release buffer
+     * @param erroPacBuf
+     */
+    protected void releasePacBuffer(ByteBuf erroPacBuf) {
+
+        ReferenceCountUtil.release(erroPacBuf);
     }
 
 }
