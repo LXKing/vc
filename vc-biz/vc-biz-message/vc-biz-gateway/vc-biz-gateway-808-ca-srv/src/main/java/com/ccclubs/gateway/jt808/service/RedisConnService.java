@@ -60,12 +60,13 @@ public class RedisConnService {
 
     @Deprecated
     public void cleanChacheForTheFirstTime() {
-        Set<String> tcpKeys = redisTemplate.keys("tcp*");
-        tcpKeys = tcpKeys.stream().filter(k -> k.contains(":808")).collect(Collectors.toSet());
-        redisTemplate.delete(tcpKeys);
         Set<String> TCPKeys = redisTemplate.keys("TCP*");
         TCPKeys = TCPKeys.stream().filter(k -> k.contains(":808")).collect(Collectors.toSet());
         redisTemplate.delete(TCPKeys);
+
+        Set<String> tcpKeys = redisTemplate.keys("tcp*");
+        tcpKeys = tcpKeys.stream().filter(k -> k.contains(":808")).collect(Collectors.toSet());
+        redisTemplate.delete(tcpKeys);
     }
 
     /**
