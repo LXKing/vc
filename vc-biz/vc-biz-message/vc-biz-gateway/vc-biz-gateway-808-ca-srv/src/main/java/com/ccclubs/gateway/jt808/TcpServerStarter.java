@@ -80,8 +80,7 @@ public class TcpServerStarter implements SmartLifecycle {
             LOG.info("tcp server is closing, all client will offline");
             terminalConnService.offlineOfAll();
         } catch (Exception e) {
-            LOG.error("exception occured in offline all client when server shutdown: {}", e.getCause());
-            e.printStackTrace();
+            LOG.error("exception occured in offline all client when server shutdown: {}", e);
         }
         serverChannel.close();
         if (Objects.nonNull(serverChannel.parent())) {

@@ -290,7 +290,7 @@ public class TerminalConnService {
                         resultFutList.add(resFut);
                     }
                 } catch (Exception e) {
-                    LOG.error("channel ({}) close failed when server shutdown: {}", k,  e.getCause());
+                    LOG.error("channel ({}) close failed when server shutdown: {}", k,  e);
                 }
             })
         );
