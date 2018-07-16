@@ -81,7 +81,7 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
         // 要发送消息的tag
         String tag = MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, pacId);
         // 要发送的消息
-        String onsMsg = PacUtil.packWithPacSymbol(pac.getSourceHexStr());
+        String onsMsg = pac.getSourceHexStr();
 
         /**
          * 上行透传的消息，根据功能号不同发送不同的消息
