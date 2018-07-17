@@ -3,8 +3,10 @@ server:
 
 spring:
   redis:
-    host: 127.0.0.1
-    port: 6379
+    host: 118.178.229.234
+    port: 63791
+    password: WDnlDnt6f7GuYh
+    database: 7
     pool:
       maxIdle: 10
       minIdle: 2

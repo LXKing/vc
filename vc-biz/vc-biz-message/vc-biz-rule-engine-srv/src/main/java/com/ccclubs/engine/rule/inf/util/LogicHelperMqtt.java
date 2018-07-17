@@ -419,6 +419,7 @@ public class LogicHelperMqtt {
         stateDTO.setOrder(csState.getCssOrder());
         stateDTO.setAutopilot(csState.getCssAutopilot());
         stateDTO.setHandbrake(csState.getCssHandbrake());
+        stateDTO.setSourceHex(csState.getCssMoData());
         return stateDTO;
     }
 }

@@ -6,6 +6,7 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
@@ -73,6 +74,9 @@ public class LogicHelperJt808 {
 
     @Resource
     QueryStateService queryStateService;
+
+    @Resource
+    QueryTerminalService queryTerminalService;
 
     /**
      * 保存状态数据
@@ -221,19 +225,23 @@ public class LogicHelperJt808 {
 
             //保存长安状态历史数据30条至redis
             if (mapping.getAccess() == 3 || mapping.getAccess() == 4 || mapping.getAccess() == 5) {
-                StateDTO stateDTO = new StateDTO();
-                stateDTO.setCurrentTime(new Date(jt808PositionData.getCurrentTime()));
-                stateDTO.setLatitude(jt808PositionData.getLatitude());
-                stateDTO.setLongitude(jt808PositionData.getLongitude());
-                stateDTO.setCsq(jvi.getCsq());
-                stateDTO.setGpsValid(jt808PositionData.getGpsValid().byteValue());
-                stateDTO.setSpeed(jt808PositionData.getGpsSpeed());
-                redisTemplate.opsForList()
-                        .leftPush(REDIS_KEY_RECENT_STATES + mapping.getNumber(), stateDTO);
-                Long queueSize = redisTemplate.opsForList()
-                        .size(REDIS_KEY_RECENT_STATES + mapping.getNumber());
-                if (queueSize >= 30) {
-                    redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + mapping.getNumber(), 0, 29);
+                CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(mapping.getNumber());
+                if (csMachine != null && (csMachine.getCsmTlV2() == null || csMachine.getCsmTlV2() == 0)) {
+                    StateDTO stateDTO = new StateDTO();
+                    stateDTO.setCurrentTime(new Date(jt808PositionData.getCurrentTime()));
+                    stateDTO.setLatitude(jt808PositionData.getLatitude());
+                    stateDTO.setLongitude(jt808PositionData.getLongitude());
+                    stateDTO.setCsq(jvi.getCsq());
+                    stateDTO.setGpsValid(jt808PositionData.getGpsValid().byteValue());
+                    stateDTO.setSpeed(jt808PositionData.getGpsSpeed());
+                    stateDTO.setSourceHex(message.getPacketDescr());
+                    redisTemplate.opsForList()
+                            .leftPush(REDIS_KEY_RECENT_STATES + mapping.getNumber(), stateDTO);
+                    Long queueSize = redisTemplate.opsForList()
+                            .size(REDIS_KEY_RECENT_STATES + mapping.getNumber());
+                    if (queueSize >= 30) {
+                        redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + mapping.getNumber(), 0, 29);
+                    }
                 }
             }
 
