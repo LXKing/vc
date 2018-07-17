@@ -15,7 +15,6 @@ import com.ccclubs.gateway.common.config.NettyProperties;
 import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.service.MqttMessageProcessService;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.DefaultLifecycleProcessor;
 
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -105,10 +108,21 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
    * 启动Tcp服务器
    * @return
    */
-  @Bean(name = "tcpServerStarter", destroyMethod = "stop")
+  @Bean(name = "tcpServerStarter")
   public TcpServerStarter getTcpServerStarter() {
-
-    return new TcpServerStarter();
+    TcpServerStarter tcpServerStarter = new TcpServerStarter();
+    return tcpServerStarter;
   }
 
+    /**
+     * 配合tcpServerStarter的销毁前清理数据
+     * 防止timeout过早
+     * @return
+     */
+  @Bean(name = "lifecycleProcessor")
+  public DefaultLifecycleProcessor defaultLifecycleProcessor() {
+    DefaultLifecycleProcessor defaultLifecycleProcessor = new DefaultLifecycleProcessor();
+    defaultLifecycleProcessor.setTimeoutPerShutdownPhase(10 * 60 * 1000);
+    return defaultLifecycleProcessor;
+  }
 }

@@ -3,6 +3,7 @@ package com.ccclubs.gateway.jt808.api;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
+import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerOverseeService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,6 +31,9 @@ public class OverseeTerminalController {
     @Autowired
     private TerOverseeService vehicleService;
 
+    @Autowired
+    private RedisConnService redisConnService;
+
     @GetMapping("/add/{sim}")
     public R addVin(@PathVariable("sim") String sim) {
         if (StringUtils.isNotEmpty(sim)) {
@@ -54,6 +58,7 @@ public class OverseeTerminalController {
     public R removeAllClientCache(@PathVariable("auth")String auth) {
         if ("Andaren".equals(auth)) {
             vehicleService.removeAll();
+            redisConnService.cleanChacheForTheFirstTime();
             return OK.Statu.SUCCESS.build();
         } else {
             return Error.Statu.AUTH_FAILED.build();

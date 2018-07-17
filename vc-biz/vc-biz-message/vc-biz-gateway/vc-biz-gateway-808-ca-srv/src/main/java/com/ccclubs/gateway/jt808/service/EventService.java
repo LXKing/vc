@@ -13,7 +13,10 @@ import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * @Author: yeanzi
@@ -38,11 +41,11 @@ public class EventService {
     @Autowired
     private RedisConnService redisConnService;
 
-    public void sendOnlineEvent(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
+    public ListenableFuture<SendResult> sendOnlineEvent(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
         // 发送上线事件
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
         KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-        kafkaService.send(task);
+        ListenableFuture<SendResult> resultFut = kafkaService.send(task);
 
         // 向redis发送上线事件
         redisConnService.sendOnlineEventForOld(connOnlineStatusEvent);
@@ -55,9 +58,12 @@ public class EventService {
                 .gatewayType(gatewayType)
                 .build();
         redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, onlineEvent);
+        return resultFut;
     }
 
-    public void sendOfflineEvent(boolean needUpdateRedis, String uniqueNo, SocketChannel channel, GatewayType gatewayType, ChannelLiveStatus liveStatus) {
+    public ListenableFuture<SendResult> sendOfflineEvent(boolean needUpdateRedis, String uniqueNo, SocketChannel channel, GatewayType gatewayType, ChannelLiveStatus liveStatus) {
+        // fixme 如何避免空指针?
+        ListenableFuture<SendResult> resultFut = null;
         if (needUpdateRedis) {
             // 下发下线事件
             ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
@@ -79,7 +85,7 @@ public class EventService {
             connOnlineStatusEvent.setOfflineType(offlineType);
 
             KafkaTask task = new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson());
-            kafkaService.send(task);
+            resultFut = kafkaService.send(task);
 
             // 3. 向redis发送下线事件
             redisConnService.sendOfflineEventForOld(connOnlineStatusEvent);
@@ -99,6 +105,7 @@ public class EventService {
         offlineEvent.build();
 
         redisConnService.addTcpStatusTraceEvent(uniqueNo, gatewayType, offlineEvent);
+        return resultFut;
     }
 
 }
