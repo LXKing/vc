@@ -33,6 +33,11 @@ public enum ChannelLiveStatus {
     // -----------------------------------------------
 
     /**
+     * 连接吧被更新
+     */
+    OFFLINE_UPDATE,
+
+    /**
      * 连接由于读空闲断开
      */
     OFFLINE_IDLE,

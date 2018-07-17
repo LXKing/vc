@@ -48,7 +48,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                     channel.id().asLongText()
                 );
 
-        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_CONNECT);
+        /**
+         * 初始化渠道生命周期
+         */
+        ChannelAttrbuteUtil.getLifeTrack(channel)
+                .setCreateTime(System.currentTimeMillis())
+                .setGatewayType(GatewayType.GATEWAY_808)
+                .setLiveStatus(ChannelLiveStatus.ONLINE_CONNECT);
         super.channelActive(ctx);
     }
 
@@ -58,6 +64,10 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
         ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
         /**
+         * 注入销毁时间
+         */
+        channelLifeCycleTrack.setDestoryTime(System.currentTimeMillis());
+        /**
          *连接被探测
          */
         if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
@@ -66,8 +76,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             return;
         }
 
-        if (Objects.nonNull(channelLifeCycleTrack) &&
-                !ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
+        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus()) &&
                 !ChannelLiveStatus.OFFLINE_END.equals(channelLifeCycleTrack.getLiveStatus()) ) {
             ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_CLIENT_CUT);

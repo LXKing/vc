@@ -1,5 +1,8 @@
 package com.ccclubs.gateway.common.connection;
 
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.internal.PlatformDependent;
@@ -55,7 +58,7 @@ public class ClientSocketCollection {
             throw new IllegalStateException("更新channel时发现：新连接连接状态异常");
         }
         SocketChannel oldChannel = UNIQUENO_TO_SOCKET.get(uniqueNo);
-        closeChannel(oldChannel);
+        closeChannelFocely(oldChannel);
         UNIQUENO_TO_SOCKET.put(uniqueNo, newChannel);
     }
 
@@ -122,8 +125,18 @@ public class ClientSocketCollection {
                 closeChannel(offlineChannel);
                 UNIQUENO_TO_SOCKET.remove(uniqueNo);
             } else {
-                LOG.error("client socket are not same when offline; both socket will be closed!");
-                getByUniqueNo(uniqueNo).ifPresent(socket -> closeChannel(socket));
+                LOG.error("client socket are not same when offline; current socket will be closed!");
+                getByUniqueNo(uniqueNo).ifPresent(existed -> {
+                    ChannelLifeCycleTrack existedLife = ChannelAttrbuteUtil.getLifeTrack(existed);
+                    ChannelLifeCycleTrack currentLife = ChannelAttrbuteUtil.getLifeTrack(offlineChannel);
+                    /**
+                     * 对于 当前连接未下线，但是新连接已上线的情况：不能关闭新的连接
+                     */
+                    if (currentLife.getCreateTime() > existedLife.getCreateTime()) {
+                        LOG.error("client socket are not same when offline; old socket will be closed!");
+                        closeChannelFocely(existed);
+                    }
+                });
                 closeChannel(offlineChannel);
                 UNIQUENO_TO_SOCKET.remove(uniqueNo);
             }
@@ -193,6 +206,16 @@ public class ClientSocketCollection {
             return channel.close();
         }
         return null;
+    }
+
+    private void closeChannelFocely(SocketChannel channel) {
+        if (Objects.nonNull(channel)) {
+            try {
+                channel.unsafe().closeForcibly();
+            } catch (Exception e) {
+                LOG.error("focely close channel failed for: ", e);
+            }
+        }
     }
 
 
