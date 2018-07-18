@@ -65,10 +65,10 @@ public class TerminalUtils {
     @Autowired
     CsLoggerDao csLoggerDao;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + ":topic_tbox_log}")
     String tboxLogTopic;
 
-    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + "}")
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + ":topic_tbox_log_exp}")
     String tboxLogTopicExp;
 
     @Autowired
