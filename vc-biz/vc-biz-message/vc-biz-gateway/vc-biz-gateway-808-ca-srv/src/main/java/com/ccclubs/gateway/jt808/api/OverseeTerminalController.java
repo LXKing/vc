@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.api;
 
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
@@ -70,4 +71,21 @@ public class OverseeTerminalController {
         Set<String> sims = vehicleService.getAll();
         return OK.Statu.SUCCESS_WITH_DATA.build().addData("sims", sims);
     }
+
+    @GetMapping("/log/{status}")
+    public R openTcpServerLog(@PathVariable("status") String status) {
+        if ("open".equals(status)) {
+            TcpServerConf.GATEWAY_PRINT_LOG = true;
+        } else if ("close".equals(status)) {
+            TcpServerConf.GATEWAY_PRINT_LOG = false;
+        }
+        StringBuilder sharkLog = new StringBuilder();
+        sharkLog.append("\n*---------------------------------------------------------------\n")
+                .append("*      gateway log status:  ").append(status)
+                .append("\n*---------------------------------------------------------------\n");
+        LOG.info(sharkLog.toString());
+        return OK.Statu.SUCCESS.build();
+    }
+
+
 }

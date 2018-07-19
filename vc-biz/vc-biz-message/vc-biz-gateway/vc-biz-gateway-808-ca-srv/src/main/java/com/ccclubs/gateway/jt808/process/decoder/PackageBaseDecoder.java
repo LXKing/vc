@@ -72,6 +72,8 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
         Package808 pac = composePac(unTranslatedPacHex, frame, pacProcessTrack);
 
+        // 设置唯一标识
+        ChannelAttrbuteUtil.getLifeTrack(ctx.channel()).setUniqueNo(pac.getHeader().getTerMobile());
         return pac;
     }
 

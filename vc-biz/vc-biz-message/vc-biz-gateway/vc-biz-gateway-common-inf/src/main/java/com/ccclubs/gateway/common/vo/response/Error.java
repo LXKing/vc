@@ -18,6 +18,8 @@ public class Error extends R {
 
         PARAM_INCORECT_FORMAT(400105, "参数格式不正确"),
 
+        STATUS_INCORRECT(400106, "状态异常"),
+
         /**
          * 没有足够的权限进行操作
          */

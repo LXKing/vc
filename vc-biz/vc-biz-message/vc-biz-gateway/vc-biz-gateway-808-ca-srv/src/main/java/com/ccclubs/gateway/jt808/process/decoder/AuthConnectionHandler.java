@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.HandleStatus;
@@ -12,6 +13,7 @@ import com.ccclubs.gateway.common.util.DecodeUtil;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -48,7 +51,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                     channel.id().asLongText()
                 );
 
-        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_CONNECT);
+        /**
+         * 初始化渠道生命周期
+         */
+        ChannelAttrbuteUtil.getLifeTrack(channel)
+                .setCreateTime(System.currentTimeMillis())
+                .setGatewayType(GatewayType.GATEWAY_808)
+                .setLiveStatus(ChannelLiveStatus.ONLINE_CONNECT);
         super.channelActive(ctx);
     }
 
@@ -58,6 +67,10 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
         ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
         /**
+         * 注入销毁时间
+         */
+        channelLifeCycleTrack.setDestoryTime(System.currentTimeMillis());
+        /**
          *连接被探测
          */
         if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
@@ -66,8 +79,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             return;
         }
 
-        if (Objects.nonNull(channelLifeCycleTrack) &&
-                !ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
+        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus()) &&
                 !ChannelLiveStatus.OFFLINE_END.equals(channelLifeCycleTrack.getLiveStatus()) ) {
             ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_CLIENT_CUT);
@@ -131,7 +143,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                     releasePacBuffer(pac.getSourceBuff());
                     // 未鉴权就发送报文： 踢掉
                     ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
-                    terminalConnService.offline(channel, GatewayType.GATEWAY_808);
+                    channel.pipeline().fireChannelInactive();
                     return HandleStatus.END;
                 }
             }
@@ -142,6 +154,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
          * 未鉴权，释放buffer，关闭channel
          */
         releasePacBuffer(pac.getSourceBuff());
+
+
         channel.unsafe().closeForcibly();
         return HandleStatus.END;
     }
@@ -198,10 +212,31 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             pac.setErrorPac(true);
             LOG.error("terminal({})auth failed, sourceHex[{}]", uniqueNo, pac.getSourceHexStr());
         } else {
-            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_AUTH);
-            // 终端上线
-            terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
-            LOG.info("terminal({})auth success", uniqueNo);
+            ChannelLifeCycleTrack channelLife = ChannelAttrbuteUtil.getLifeTrack(channel);
+            /**
+             * 如果已认证后的重复认证
+             *     如果是重复的认证报文：不重复验证
+             *     如果是新建的连接发起认证，而旧连接还未断开：再走认证，更新连接
+             */
+            boolean isReAuth = false;
+            if (ChannelLiveStatus.ONLINE_AUTH.equals(channelLife.getLiveStatus())) {
+                Optional<ClientCache> clientOpt = ClientCache.getByUniqueNo(uniqueNo);
+                if (clientOpt.isPresent()) {
+                    ClientCache existedClient = clientOpt.get();
+                    if (existedClient.getChannel().equals(channel)) {
+                        isReAuth = true;
+                        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+                            LOG.info("terminal ({}) already auth successed", uniqueNo);
+                        }
+                    }
+                }
+            }
+            if (!isReAuth) {
+                ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_AUTH);
+                // 终端上线
+                terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
+                LOG.info("terminal({})auth success", uniqueNo);
+            }
         }
     }
 }
