@@ -1,146 +1,3 @@
-/*
- * Copyright 2012 The ccclubs_iot_platform Project
- *
- * The ccclubs_iot_platform Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- *
- * the structure of the project is underline-
- *
- * --vc-biz
- *   --vc-biz-command-inf
- *     1.各个协议下发命令的命令结构，定义发送命令的接口
- *   --vc-biz-command-srv
- *     1.各个协议下命令发送的具体实现
- *       参数校验
- *       校验车辆与终端绑定关系是否正常
- *       检查终端是否在线
- *         查询指令结构体定义
- *         保存记录
- *         发送指令
- *         确认结果
- *   --vc-biz-common-srv
- *     1.切面定义
- *     2.公共的一些服务类实现
- *     3.公共工具类
- *   --vc-biz-influxdb-inf
- *     1.用于实时数据监控分析的接口定义
- *   --vc-biz-influx-srv
- *     1.用于实时数据监控分析的接口实现
- *   --vc-biz-message
- *     --vc-biz-cmd-engine-inf
- *       1.mqAckService接口定义
- *       2.mqMessageSender接口定义
- *     --vc-biz-cmd-engine-srv
- *     --vc-biz-engine-core
- *       各种工具类
- *     --vc-biz-gateway
- *       1.各个协议对应网关的实现
- *         消息编解码的实现
- *       2.解码后的消息处理
- *     --vc-biz-rule-engine-inf
- *     --vc-biz-rule-engine-srv
- *     --vc-biz-upgrade-inf
- *       1.终端升级相关数据模型和接口定义
- *     --vc-biz-upgrade-srv
- *       1.终端升级服务接口的实现
- *   --vc-biz-mongo-inf
- *     1.mongo服务接口的定义，历史数据模型
- *   --vc-biz-mongo-orm
- *     1.mongo数据查询接口实现
- *     2.部分接口声明
- *   --vc-biz-mongo-srv
- *     1.mongo服务接口实现
- *       CsLoggerService
- *       CsRemoteService
- *       CsVehicleExpService
- *   --vc-biz-phoenix-inf
- *   --vc-biz-phoenix-orm
- *   --vc-biz-phoenix-srv
- *   --vc-biz-protocol-inf
- *     1.各种协议的dto的实体
- *     2.各种协议的数据包抽象接口声明
- *     3.相关工具类
- *   --vc-biz-protocol-srv
- *     1.对应各种协议中的各类型的消息包实体的组装
- *     2.相应事件的数据包实体组装
- *   --vc-biz-pub-model
- *     1.公共的一些数据库中的数据模型
- *   --vc-biz-pub-orm
- *     1.公共的一些数据库的模型对应的Mapper
- *         这些 *Mapper.java和*Mapper.xml是有MybatisGenerator生成的
- *   --vc-biz-quota-inf
- *     1.一些指标类接口的定义
- *   --vc-biz-quota-model
- *     1.一些业务表的实体声明
- *         // 下面列出所有实体的对应的表和表意义
- *   --vc-biz-quota-orm
- *   --vc-biz-quota-srv
- *     1.指标类接口实现
- *   --vc-biz-storage-inf
- *   --vc-biz-storage-srv
- *   --vc-biz-terminal-inf
- *     1.终端信息查询等dto定义（xxInput）
- *     2.查询终端自身配置信息等接口声明
- *   --vc-biz-terminal-srv
- *     1.终端信息接口实现类
- *   --vc-biz-usr-orm
- *     1.用户组等用户信息查询实体和Mapper
- *   --vc-biz-vehicle-inf
- *   --vc-biz-vehicle-srv
- *     1.机车绑定信息等机车类接口实现
- * --vc-env
- *    --一些连接等等配置信息集合
- *
- * --vc-frm
- *   1.对于整个框架中的摸个模块提供框架（配置等的）支持
- *   --vc-frm-cache
- *   --vc-frm-core
- *   --vc-frm-dubbox
- *   --vc-frm-encryp
- *   --vc-frm-influxdb
- *   --vc-frm-logger
- *   --vc-frm-mongo
- *   --vc-frm-mqtt
- *   --vc-frm-mybatis
- *   --vc-frm-ons
- *   --vc-frm-phoenix
- *   --vc-frm-redis
- *   --vc-frm-spring
- *   --vc-frm-swagger
- *   --vc-frm-test
- *   --vc-frm-token
- *   --vc-frm-validation
- *
- * --vc-web
- *   1.暴露各个服务接口
- *   2.提供各个模块应用启动类
- *   --vc-web-cfg
- *     1.SpringCloud的配置中心支持
- *   --vc-web-command-api
- *     1.对外暴露指令接口服务
- *   --vc-web-command-srv
- *   --vc-web-front
- *     1.管理后台系统
- *   --vc-web-message
- *     1.cmd engine start class
- *     2.提供了各种各样的启动类
- *   --vc-web-phoenix-api
- *   --vc-web-phoenix-srv
- *   --vc-web-quota-api
- *   --vc-web-quota-srv
- *   --vc-web-vtsearch-api
- *   --vc-web-vtsearch-srv
- */
-
 package com.ccclubs.engine.rule.inf.util;
 
 
@@ -248,6 +105,7 @@ public class LogicHelperMqtt {
 
     /**
      * 保存状态数据
+     *  Timer: 该方法受时间记录
      */
     @Timer
     public void saveStatusData(final MachineMapping mapping, final MqMessage message,
@@ -430,8 +288,10 @@ public class LogicHelperMqtt {
             updateStateService.insert(csState);
             // 发送历史状态到kafka
             if (StringUtils.empty(mapping.getVin())) {
+                // 发送
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
+                // 发送
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
@@ -455,80 +315,179 @@ public class LogicHelperMqtt {
         }
         // 构造一个新的车机对象
         CsMachine csMachine = new CsMachine();
-
+        // 设置CsmAccess
         csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+        // 设置域名
         csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
+        // 设置车机号
         csMachine.setCsmNumber(mapping.getNumber());
-
+        // 构造车辆对象
         CsVehicle csVehicle = new CsVehicle();
+        /**
+         * 如果
+         * car == null
+         * 车辆对象也设置为空
+         */
         if (mapping.getCar() == null) {
             csVehicle = null;
         } else {
+            // 设置CsvId
             csVehicle.setCsvId(mapping.getCar().intValue());
         }
+        // 从工具类中构建车辆状态详情
         final CsState csState = terminalUtils.setCsStatus(csVehicle, csMachine);
         // 加入Vin add by jhy 2018.5.8
         csState.setCssVin(mapping.getVin());
+        // 设置Iccid
         csState.setIccid(mapping.getIccid());
+        // 设置电话
         csState.setMobile(mapping.getMobile());
+        // 设置终端号
         csState.setCssTeNo(mapping.getTeno());
+        // 设置车机号
         csState.setCssNumber(message.getCarNumber());
+        // 设置添加时间
         csState.setCssAddTime(new Date());
+        // 设置CssRented
         csState.setCssRented(String.valueOf(mqtt_68_03.getCcclubs_60().getTradeStatus()));
+        // 设置CssRfid
         csState.setCssRfid(mqtt_68_03.getCcclubs_60().getTradeInitCard());
+        // 设置速度
         csState.setCssSpeed(mqtt_68_03.getSpeed());
+        // 设置发动机
         csState.setCssMotor(mqtt_68_03.getRpm());
+        // 设置电量
         csState.setCssPower(mqtt_68_03.getBattery());
+        // 设置里程
         csState.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles());
+        // 设置驱动机
         csState.setCssEngine((byte) mqtt_68_03.getEngineStatus());
+        // 设置CssKey
         csState.setCssKey((byte) mqtt_68_03.getKeyStatus());
+        // 设置CssGear
         csState.setCssGear((byte) mqtt_68_03.getGearStatus());
 
+        // 设置CssOrder
         csState.setCssOrder(message.getTransId());
+        // 设置告警级别
         csState.setCssWarn(mqtt_68_03.getCcclubs_60().getAlarm());
+        // 设置温度
         csState.setCssTemperature(new BigDecimal(mqtt_68_03.getTerminalTemperature()));
+        // 设置CssCsq
         csState.setCssCsq((short) mqtt_68_03.getCsq());
+        // 设置当前时间
         csState.setCssCurrentTime(new Date(mqtt_68_03.getTime()));
+        // 设置CssRfidDte
         csState.setCssRfidDte(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
         // 插件由于升级，而车辆未启动，会采集不到累计里程 add at 2018-03-02 by qsxiaogang
         if (mqtt_68_03.getObdMile().doubleValue() > 0) {
+            // 设置OBD里程数
             csState.setCssObdMile(mqtt_68_03.getObdMile());
         }
+        // 设置CssEngineT
         csState.setCssEngineT(new BigDecimal(mqtt_68_03.getTankTemperature()));
+        // 设置CssEndurance
         csState.setCssEndurance(mqtt_68_03.getCcclubs_60().getEndurance());
+        // 设置CssOil
         csState.setCssOil(mqtt_68_03.getCcclubs_60().getOil());
+        // 设置Ev电池
         csState.setCssEvBattery(mqtt_68_03.getCcclubs_60().getSoc().byteValue());
+        // 设置充电
         csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
+        /**
+         * 根据
+         * 特定条件
+         * 设置
+         *      空调控制器
+         */
         int airConditioner = mqtt_68_03.getCcclubs_60().getAirConditionerCircular();
         if (airConditioner == 0) {
+            /**
+             * 如果为0
+             *      设置一些相关参数
+             *      CssCircular
+             *      CssPtc
+             *      CssCompres
+             *      CssFan
+             */
             csState.setCssCircular((byte) 0);
             csState.setCssPtc((byte) 0);
             csState.setCssCompres((byte) 0);
             csState.setCssFan((byte) 0);
         } else {
+            /**
+             * 如果不为0
+             *      从协议工具类中设置
+             */
             csState.setCssCircular((byte) ProtocolTools.getAirConditionerCircular(airConditioner));
             csState.setCssPtc((byte) ProtocolTools.getAirConditionerPtc(airConditioner));
             csState.setCssCompres((byte) ProtocolTools.getAirConditionerCompres(airConditioner));
             csState.setCssFan((byte) ProtocolTools.getAirConditionerFan(airConditioner));
         }
+        /**
+         * 设置CssSaving
+         */
         csState.setCssSaving((byte) mqtt_68_03.getVehicleWorkingStatus());
+        /**
+         * 设置开门
+         */
         csState.setCssDoor(String.valueOf(mqtt_68_03.getDoorStatusWithMask()));
+        /**
+         * 设置光照
+         */
         csState.setCssLight(mqtt_68_03.getLightStatusWithMask());
+        /**
+         * 设置CssMoData
+         */
         csState.setCssMoData(message.getHexString());
+        /**
+         * 设置dir
+         */
         csState.setCssDir(new BigDecimal(mqtt_68_03.getHeading()));
 
         // csState.setCssNetType((long) mqtt_66.getNetType());
         csState.setCssBaseLac(mqtt_68_03.getCcclubs_60().getBaseLAC());
+        /**
+         * 设置CssBaseCi
+         */
         csState.setCssBaseCi(mqtt_68_03.getCcclubs_60().getBaseCI());
 
+        /**
+         * 设置CssGpsValid
+         */
         csState.setCssGpsValid((byte) mqtt_68_03.getGpsValid());
+        /**
+         * 设置CssGpsCn
+         */
         csState.setCssGpsCn((short) mqtt_68_03.getCn());
+        /**
+         * 设置CssGpsCount
+         */
         csState.setCssGpsCount((short) mqtt_68_03.getSatelliteCount());
+        /**
+         * 设置CssAutopilot
+         */
         csState.setCssAutopilot(mqtt_68_03.getCcclubs_60().getAutopilot());
+        /**
+         * 设置CssHandbrake
+         */
         csState.setCssHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
 
+        /**
+         * 首先
+         *      1. 检查state是否存在
+         *  如果存在=> 校验经纬度
+         *  如果不存在=> 设置经纬度
+         */
         if (mapping.getState() != null) {
             csState.setCssId(mapping.getState().intValue());
+            /**
+             * 校
+             * 验
+             * 经
+             * 纬
+             * 度
+             */
             if (ProtocolTools
                     .isValid(mqtt_68_03.getLongitude() * 0.000001, mqtt_68_03.getLatitude() * 0.000001)) {
                 csState.setCssLongitude(AccurateOperationUtils
@@ -543,15 +502,26 @@ public class LogicHelperMqtt {
             opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             // 发送历史状态到kafka
             if (StringUtils.empty(mapping.getVin())) {
+                /**
+                 * 发送
+                 */
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
+                /**
+                 * 发送
+                 */
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
-
         } else {
+            /**
+             * 设置经度
+             */
             csState.setCssLongitude(AccurateOperationUtils
                     .add(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
             );
+            /**
+             * 设置纬度
+             */
             csState.setCssLatitude(AccurateOperationUtils
                     .add(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
             );
@@ -559,8 +529,14 @@ public class LogicHelperMqtt {
             updateStateService.insert(csState);
             // 发送历史状态到kafka
             if (StringUtils.empty(mapping.getVin())) {
+                /**
+                 * 发送到kafka
+                 */
                 kafkaTemplate.send(kafkaTopicCsStateExp, JSONObject.toJSONString(csState));
             } else {
+                /**
+                 * 发送到kafka
+                 */
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
@@ -575,28 +551,72 @@ public class LogicHelperMqtt {
     @Timer
     public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
                             CanStatusZotye canZotye) {
+        /**
+         * 构造车机对象
+         */
         CsMachine csMachine = new CsMachine();
+        /**
+         * 设置CsmAccess
+         */
         csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
+        /**
+         * 设置域名
+         */
         csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
+        /**
+         * 设置车机号
+         */
         csMachine.setCsmNumber(mapping.getNumber());
-
+        /**
+         * 设置车辆对象
+         */
         CsVehicle csVehicle = new CsVehicle();
+        /**
+         * 设置CsvId
+         */
         if (mapping.getCar() == null) {
             csVehicle = null;
         } else {
             csVehicle.setCsvId(mapping.getCar().intValue());
         }
 
+        /**
+         * 设置CAN数据
+         */
         CsCan canData = terminalUtils.setCsCan(csVehicle, csMachine);
         // 加入Vin add by jhy 2018.5.8
         canData.setCscVin(mapping.getVin());
+        /**
+         * 设置Iccid
+         */
         canData.setIccid(mapping.getIccid());
+        /**
+         * 设置电话号码
+         */
         canData.setMobile(mapping.getMobile());
+        /**
+         * 设置终端号码
+         */
         canData.setTeNo(mapping.getTeno());
+        /**
+         * 设置添加时间
+         */
         canData.setCscAddTime(new Date());
+        /**
+         * 设置车机号
+         */
         canData.setCscNumber(mqMessage.getCarNumber());
+        /**
+         * 设置车机数据
+         */
         canData.setCscData(mqMessage.getHexString());
+        /**
+         * 设置车机发动机
+         */
         canData.setCscModel((short) (canZotye.mSubfuc & 0xFF));
+        /**
+         * 设置CscType
+         */
         canData.setCscType((short) (canZotye.mCanType & 0xff));
         // new Date(carStatus.mTime * 1000l + SYSTEM.MACHINE_TIME)
         canData.setCscUploadTime(new Date(ProtocolTools.transformToServerTime(canZotye.mTime)));
@@ -614,63 +634,205 @@ public class LogicHelperMqtt {
         }
         // 发送kafka处理can历史状态
         if (StringUtils.empty(mapping.getVin())) {
+            /**
+             * kafka发送
+             */
             kafkaTemplate.send(kafkaTopicCsCanExp, JSONObject.toJSONString(canData));
         } else {
+            /**
+             * kafka发送
+             */
             kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(canData));
         }
     }
 
+    /**
+     * 向redis 中设置 运行状态
+     * @param csState
+     * @param csMachine
+     */
     private void setRentStatesToRedis(CsState csState, CsMachine csMachine) {
         if (csState.getCssAccess() == 3 || csState.getCssAccess() == 4 || csState.getCssAccess() == 5) {
+            /**
+             * 如果CssAccess为
+             * 3：
+             * 4：
+             * 5：
+             */
             StateDTO stateDTO = getStateDTO(csState);
             redisTemplate.opsForList()
                     .leftPush(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), stateDTO);
+            /**
+             * 获取队列长度
+             */
             Long queueSize = redisTemplate.opsForList()
                     .size(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber());
             if (queueSize >= 30) {
+                /**
+                 * 如果长度大于30，做裁剪
+                 */
                 redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), 0, 29);
             }
         }
     }
 
+    /**
+     * 根据车机状态
+     * 获取状态dto
+     * @param csState
+     *
+     * @return
+     */
     private StateDTO getStateDTO(CsState csState) {
+        // 构建dto对象
         StateDTO stateDTO = new StateDTO();
+        /**
+         * 设置当前时间
+         */
         stateDTO.setCurrentTime(csState.getCssCurrentTime());
+        /**
+         * 设置obd里程数
+         */
         stateDTO.setObdMile(csState.getCssObdMile());
+        /**
+         * 设置Mileage
+         */
         stateDTO.setMileage(csState.getCssMileage());
+        /**
+         * 设置速度
+         */
         stateDTO.setSpeed(csState.getCssSpeed());
+        /**
+         * 设置转速
+         */
         stateDTO.setRotateSpeed(csState.getCssMotor());
+        /**
+         * 设置FuelQuantity
+         */
         stateDTO.setFuelQuantity(csState.getCssOil());
+        /**
+         * 设置电量
+         */
         stateDTO.setPower(csState.getCssPower());
+        /**
+         * 设置Soc
+         */
         stateDTO.setSoc(csState.getCssEvBattery());
+        /**
+         * 设置充电
+         */
         stateDTO.setCharging(csState.getCssCharging());
+        /**
+         * 设置FuelMileage
+         */
         stateDTO.setFuelMileage(csState.getCssFuelMileage());
+        /**
+         * 设置ElectricMileage
+         */
         stateDTO.setElectricMileage(csState.getCssElectricMileage());
+        /**
+         * 设置Endurance
+         */
         stateDTO.setEndurance(csState.getCssEndurance());
+        /**
+         * 设置温度值
+         */
         stateDTO.setTemperature(csState.getCssTemperature());
+        /**
+         * 设置Csq
+         */
         stateDTO.setCsq(csState.getCssCsq());
+        /**
+         * 设置经度
+         */
         stateDTO.setLongitude(csState.getCssLongitude());
+        /**
+         * 设置纬度
+         */
         stateDTO.setLatitude(csState.getCssLatitude());
+        /**
+         * 设置GPS验证
+         */
         stateDTO.setGpsValid(csState.getCssGpsValid());
+        /**
+         * 设置GpsCn
+         */
         stateDTO.setGpsCn(csState.getCssGpsCn());
+        /**
+         * 设置GpsCount
+         */
         stateDTO.setGpsCount(csState.getCssGpsCount());
+        /**
+         * 设置DirAngle
+         */
         stateDTO.setDirAngle(csState.getCssDir());
+        /**
+         * 设置Circular
+         */
         stateDTO.setCircular(csState.getCssCircular());
+        /**
+         * 设置Ptc
+         */
         stateDTO.setPtc(csState.getCssPtc());
+        /**
+         * 设置Compress
+         */
         stateDTO.setCompress(csState.getCssCompres());
+        /**
+         * 设置Fan
+         */
         stateDTO.setFan(csState.getCssFan());
+        /**
+         * 设置Saving
+         */
         stateDTO.setSaving(csState.getCssSaving());
+        /**
+         * 设置开门
+         */
         stateDTO.setDoor(csState.getCssDoor());
+        /**
+         * 设置驱动机
+         */
         stateDTO.setEngine(csState.getCssEngine());
+        /**
+         * 设置Key
+         */
         stateDTO.setKey(csState.getCssKey());
+        /**
+         * 设置Gear
+         */
         stateDTO.setGear(csState.getCssGear());
+        /**
+         * 设置Light
+         */
         stateDTO.setLight(csState.getCssLight());
+        /**
+         * 设置锁
+         */
         stateDTO.setLock(csState.getCssLock());
+        /**
+         * 设置网络类型
+         */
         stateDTO.setNetType(csState.getCssNetType());
+        /**
+         * 设置基本Lac
+         */
         stateDTO.setBaseLac(csState.getCssBaseLac());
+        /**
+         * 设置基本Ci
+         */
         stateDTO.setBaseCi(csState.getCssBaseCi());
+        /**
+         * 设置Order
+         */
         stateDTO.setOrder(csState.getCssOrder());
+        /**
+         * 设置Autopilot
+         */
         stateDTO.setAutopilot(csState.getCssAutopilot());
+        /**
+         * 设置Handbrake
+         */
         stateDTO.setHandbrake(csState.getCssHandbrake());
         return stateDTO;
     }
