@@ -22,7 +22,13 @@ public class MqManager {
 
     private static Logger logger = LoggerFactory.getLogger(MqManager.class);
 
+    /**
+     * MQ客户端
+     */
     private IMqClient mqClient;
+    /**
+     * MQTT客户端
+     */
     private IMqClient mqttClient;
 
     /**
@@ -30,9 +36,15 @@ public class MqManager {
      */
     private IMqAckService mqAckService;
 
+    /**
+     * 终端信息查询
+     */
     @Resource
     QueryTerminalService queryTerminalService;
 
+    /**
+     * 消息工厂类
+     */
     @Resource
     MessageFactory messageFactory;
 
