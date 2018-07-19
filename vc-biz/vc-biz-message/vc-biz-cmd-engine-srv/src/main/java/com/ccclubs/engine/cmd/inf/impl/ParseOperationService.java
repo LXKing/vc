@@ -111,23 +111,27 @@ public class ParseOperationService implements IParseDataService {
                 return;
             }
             byte[] byteMsg = tm.WriteToBytes();
-
+            // -
             commonWriter = CommonWriter.readObject(byteMsg, CommonWriter.class);
-
+            // -
             MyBuffer myBuffer = new MyBuffer(tm.getMsgBody());
             //取命令码，四个字节
             int fcCode = myBuffer.getInt();
+            // -
             switch (fcCode) {
                 //远程开门
                 case 0x1000FF00:
+                    // -
                     int fcCodeOpen = myBuffer.getInt();
                     String resultJson;
                     short remoteResult;
+                    // -
                     switch (fcCodeOpen) {
                         // 开门并允许启动
                         case 0x1004FF00:
                             // 开门并禁止启动
                         case 0x10040000:
+                            // -
                             remoteResult = myBuffer.getShort();
                             //指令结果转json
                             resultJson = RemoteHelper
@@ -148,8 +152,10 @@ public class ParseOperationService implements IParseDataService {
                             break;
                         //简单开门指令
                         default:
+                            // -
                             MyBuffer myBufferOpen = new MyBuffer(tm.getMsgBody());
                             myBufferOpen.getInt();
+                            // -
                             remoteResult = myBufferOpen.getShort();
                             //指令结果转json
                             resultJson = RemoteHelper
@@ -172,15 +178,18 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 // 远程关门
                 case 0x10000000:
+                    // -
                     int fcCodeClose = myBuffer.getInt();
                     String resultJsonClose;
                     // 指令返回结果
                     short remoteResultClose;
+                    // -
                     switch (fcCodeClose) {
                         // 关门并允许启动
                         case 0x1004FF00:
                             // 关门并禁止启动
                         case 0x10040000:
+                            // -
                             remoteResultClose = myBuffer.getShort();
                             //指令结果转json
                             resultJsonClose = RemoteHelper
@@ -202,8 +211,10 @@ public class ParseOperationService implements IParseDataService {
                             break;
                         // 简单关门指令
                         default:
+                            // -
                             MyBuffer myBufferClose = new MyBuffer(tm.getMsgBody());
                             myBufferClose.getInt();
+                            // -
                             remoteResultClose = myBufferClose.getShort();
                             // 指令结果转json
                             resultJsonClose = RemoteHelper
@@ -227,6 +238,7 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 //远程鸣笛
                 case 0x1012FF00:
+                    // -
                     String resultJsonW = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -252,6 +264,7 @@ public class ParseOperationService implements IParseDataService {
                     //发动机停止
                 case 0x10170000:
                 case 0x10220010:
+                    // -
                     String resultJsonCommon = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -288,8 +301,9 @@ public class ParseOperationService implements IParseDataService {
                     short fcCodeParams = myBuffer.getShort();
                     // 获取结果
                     short fcCodeResult = myBuffer.getShort();
-
+                    // -
                     String resultJsonCloseWithParams;
+                    // -
                     resultJsonCloseWithParams = RemoteHelper
                             .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
                                     myBuffer.gets(tm.getMsgBody().length - 4 - 2 - 2),
@@ -309,7 +323,9 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 //语音指令
                 case 0x10240010:
+                    // -
                     short fcCodeVoice = myBuffer.getShort();
+                    // -
                     String resultJsonVoice = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -326,7 +342,9 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 //站点下发
                 case 0x10260010:
+                    // -
                     short fcCodeSite = myBuffer.getShort();
+                    // -
                     String resultJsonSite = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -344,8 +362,9 @@ public class ParseOperationService implements IParseDataService {
                 default:
                     //状态获取
                     CCCLUBS_60 terminalInfo = new CCCLUBS_60();
+                    // -
                     terminalInfo.ReadFromBytes(tm.getMsgBody());
-
+                    // -
                     TerminalPartStatus terminalPartStatus = new TerminalPartStatus();
                     // terminalPartStatus.setCssNumber(tm.getCarNumber());
                     //电池电量
@@ -386,7 +405,9 @@ public class ParseOperationService implements IParseDataService {
                     // 操作成功
                     CommonResult commonResult = CommonResult
                             .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");
+                    // -
                     commonResult.setData(terminalPartStatus);
+                    // -
                     String resultJsonState = JSON.toJSONString(commonResult);
                     // 指令结果写入redis
                     redisHelper.setRemote(String.valueOf(commonWriter.mId), resultJsonState);
@@ -402,8 +423,10 @@ public class ParseOperationService implements IParseDataService {
         } catch (Exception e) {
             logger.error("processMultipleOperation" + e.getMessage(), e);
             if (null != commonWriter) {
+                // -
                 csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), "协议错误",
                         false);
+                // -
                 updateRemoteService.update(csRemote);
             }
         }
@@ -452,6 +475,7 @@ public class ParseOperationService implements IParseDataService {
             Message mqMessage = messageFactory
                     .getMessage(topic, MqTagProperty.MQ_TERMINAL_ORDER, msg);
             if (mqMessage != null) {
+                // -
                 client.send(mqMessage);
             } else {
                 logger.error(msg.getCarNumber() + " 未授权给应用");
@@ -509,60 +533,81 @@ public class ParseOperationService implements IParseDataService {
     @Override
     public void processRemoteStatus(MqMessage message) {
         try {
+            // -
             if (message.getTransId() == 0) {
                 return;
             }
+            // -
             int headerType = message.getFucCode();
+            // -
             byte[] byteMsg = message.WriteToBytes();
             // 订单价格更新，续订，T-Box升级等
             if (headerType == 0x10) {
+                // -
                 RemoteOption commonWriter = RemoteOption.readObject(byteMsg, RemoteOption.class);
                 // 订单续订信息
                 if (commonWriter != null && (commonWriter.address & 0xFFFF) == 0x900E) {
+                    // -
                     processOrderModify(message);
                 } else if (commonWriter != null) {
+                    // -
                     CsRemote csRemote = remoteHelper.getRemote(commonWriter, message.getHexString());
+                    // -
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.id),
                                     csRemote.getCsrResult());
+                    // -
                     transferRemoteStatus(message, csRemote.getCsrResult());
+                    // -
                     updateRemoteService.update(csRemote);
                 }
             } else {
                 // 添加 远程开门，远程关门，允许启动，禁止启动，鸣笛，初始化，远程还车，远程取车 操作反馈
                 if (byteMsg.length == 21) {
+                    // -
                     RemoteOption remoteOption = RemoteOption.readObject(byteMsg, RemoteOption.class);
+                    // -
                     CsRemote csRemote = remoteHelper.getRemote(remoteOption, message.getHexString());
+                    // -
                     redisHelper
                             .setRemote(String.valueOf(remoteOption.id),
                                     csRemote.getCsrResult());
+                    // -
                     transferRemoteStatus(message, csRemote.getCsrResult());
+                    // -
                     updateRemoteService.update(csRemote);
                 } else if (byteMsg.length == 21 + 8
                         || byteMsg.length == 21 + 14) {
                     //TODO:新版本，关门反馈，还车反馈
                     CommonWriter commonWriter = CommonWriter.readObject(byteMsg, CommonWriter.class);
+                    // -
                     CsRemote csRemote =
                             RemoteHelper.getRemote(commonWriter.mId, message.getHexString(),
                                     RemoteHelper.getRemoteJsonMessage(commonWriter, byteMsg),
                                     byteMsg[21] == 0 && (byteMsg[22] == 0 || (byteMsg[22] & 0xFF) == 0xFF));
+                    // -
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
                                     csRemote.getCsrResult());
-
+                    // -
                     transferRemoteStatus(message, csRemote.getCsrResult());
+                    // -
                     updateRemoteService.update(csRemote);
                 } else {
+                    // -
                     RemoteCurtness remoteCurtness = RemoteCurtness
                             .readObject(byteMsg, RemoteCurtness.class);
+                    // -
                     CsRemote csRemote = RemoteHelper.getRemote(remoteCurtness.id, message.getHexString(),
                             RemoteHelper.getRemoteJsonMessage(remoteCurtness.id),
                             true);
+                    // -
                     redisHelper
                             .setRemote(String.valueOf(remoteCurtness.id),
                                     csRemote.getCsrResult());
-
+                    // -
                     transferRemoteStatus(message, csRemote.getCsrResult());
+                    // -
                     updateRemoteService.update(csRemote);
                 }
             }
@@ -580,7 +625,7 @@ public class ParseOperationService implements IParseDataService {
      * 修改终端BLE参数，如：MAC地址或蓝牙密钥
      */
     private void modifyTerminalBle(MqMessage message) {
-
+        // -
         CsMachine csMachineBase = queryTerminalService
                 .queryCsMachineByCarNumber(message.getCarNumber());
         if (csMachineBase == null) {
@@ -594,15 +639,21 @@ public class ParseOperationService implements IParseDataService {
             csMachine.setCsmId(csMachineBase.getCsmId());
             // 更新终端mac地址
             if (!StringUtils.empty(bleModle.getMacValue())) {
+                // -
                 csMachine.setCsmBluetoothMac(bleModle.getMacValue());
+                // -
                 csMachine.setCsmUpdateTime(new Date());
+                // -
                 updateTerminalService.update(csMachine);
                 return;
             }
             // 更新终端蓝牙密钥
             if (!StringUtils.empty(bleModle.getBleKey())) {
+                // -
                 csMachine.setCsmBluetoothPsd(bleModle.getBleKey());
+                // -
                 csMachine.setCsmUpdateTime(new Date());
+                // -
                 updateTerminalService.update(csMachine);
                 return;
             }
@@ -610,34 +661,48 @@ public class ParseOperationService implements IParseDataService {
             if (bleModle.getGunValue() != 0) {
                 String functions = csMachine.getCsmFunctions();
                 if (StringUtils.empty(functions)) {
+                    // -
                     csMachine.setCsmFunctions("#2#");
                 } else {
+                    // -
                     csMachine.setCsmFunctions(functions + ",#2#");
                 }
+                // -
                 csMachine.setCsmUpdateTime(new Date());
+                // -
                 updateTerminalService.update(csMachine);
                 return;
             } else {
+                // -
                 String functions = csMachine.getCsmFunctions();
+                // -
                 if (!StringUtils.empty(functions) && functions.contains("#2#")) {
                     csMachine.setCsmFunctions(
                             functions.replaceAll(",#2#", "").replaceAll("#2#,", "").replaceAll("#2#", ""));
+                    // -
                     csMachine.setCsmUpdateTime(new Date());
+                    // -
                     updateTerminalService.update(csMachine);
                     return;
                 }
             }
             //多媒体DVD当前版本
             if (bleModle.getMediaCurrentVersion() != 0) {
+                // -
                 csMachine.setCsmV3(String.valueOf(bleModle.getMediaCurrentVersion()));
+                // -
                 csMachine.setCsmUpdateTime(new Date());
+                // -
                 updateTerminalService.update(csMachine);
                 return;
             }
             //多媒体DVD最新版本
             if (bleModle.getMediaNewVersion() != 0) {
+                // -
                 csMachine.setCsmV3To(String.valueOf(bleModle.getMediaNewVersion()));
+                // -
                 csMachine.setCsmUpdateTime(new Date());
+                // -
                 updateTerminalService.update(csMachine);
                 return;
             }
@@ -649,6 +714,7 @@ public class ParseOperationService implements IParseDataService {
      */
     public void processOrderModifyNew(MqMessage message) {
         try {
+            // -
             OrderUpStreamII orderUpStream = OrderUpStreamII
                     .readObject(Tools.HexString2Bytes(message.getHexString()), OrderUpStreamII.class);
             String jsonString;
@@ -661,12 +727,13 @@ public class ParseOperationService implements IParseDataService {
                 jsonString = JSON.toJSONString(CommonResult
                         .create(orderUpStream.mId, false, RemoteHelper.FAILED_CODE, "操作失败"));
             }
+            // -
             redisHelper
                     .setRemote(String.valueOf(orderUpStream.mId),
                             jsonString);
             //消息转发
             transferRemoteStatus(message, jsonString);
-
+            // -
             CsRemote csRemote = RemoteHelper
                     .getRemote(orderUpStream.mId, message.getHexString(), jsonString,
                             orderUpStream.isSuccess());
