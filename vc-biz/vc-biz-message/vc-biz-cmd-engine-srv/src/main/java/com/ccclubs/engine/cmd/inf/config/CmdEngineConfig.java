@@ -34,6 +34,10 @@ public class CmdEngineConfig {
   @Autowired
   private OnsProperties onsProperties;
 
+  /**
+   * ons消息生产者配置
+   * @return
+   */
   @Bean(name = "producer", initMethod = "start", destroyMethod = "shutdown")
   public Producer producer() {
     Properties properties = new Properties();
@@ -43,6 +47,10 @@ public class CmdEngineConfig {
     return ONSFactory.createProducer(properties);
   }
 
+  /**
+   * 处理数据服务
+   * @return
+   */
   @Bean(name = "terminalParseService")
   @Qualifier(value = "producer")
   public IParseDataService parseDataService(Producer producer) {
