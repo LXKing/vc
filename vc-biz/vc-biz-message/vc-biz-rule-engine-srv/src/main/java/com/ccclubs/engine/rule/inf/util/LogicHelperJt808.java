@@ -196,6 +196,7 @@ public class LogicHelperJt808 {
             // 组装位置数据 add by jhy 2018.5.9
             Jt808PositionData jt808PositionData = new Jt808PositionData();
             jt808PositionData.setVin(mapping.getVin());
+            jt808PositionData.setAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
             jt808PositionData.setTeNumber(mapping.getNumber());
             jt808PositionData.setTeNo(mapping.getTeno());
             jt808PositionData.setIccid(mapping.getIccid());

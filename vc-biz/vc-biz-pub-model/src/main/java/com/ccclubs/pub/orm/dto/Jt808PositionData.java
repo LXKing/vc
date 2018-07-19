@@ -14,6 +14,8 @@ public class Jt808PositionData implements Serializable {
     private static final long serialVersionUID = 7495821073984888521L;
     // 车架号
     String vin;
+    // 授权系统
+    private Integer access;
     // 车机号
     String teNumber;
     // 终端序列号
@@ -46,6 +48,14 @@ public class Jt808PositionData implements Serializable {
     Integer gpsValid;
     // 原始报文
     String sourceHex;
+
+    public Integer getAccess() {
+        return access;
+    }
+
+    public void setAccess(Integer access) {
+        this.access = access;
+    }
 
     public BigDecimal getGpsSpeed() {
         return gpsSpeed;

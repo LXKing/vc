@@ -682,12 +682,12 @@ public class ParseOperationService implements IParseDataService {
      */
     private void transferRemoteStatus(MqMessage message, String jsonString) {
         try {
-
+            // 根据车机号查询车机信息
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
                 return;
             }
-
+            // 查询接入商信息
             SrvHost srvHost = queryHostInfoService.queryHostById(csMachine.getCsmAccess());
             // 当指令转发设置为不转发时，则不转发
             if (srvHost == null || StringUtils.empty(srvHost.getShTransformRemote()) || "0"
@@ -700,6 +700,7 @@ public class ParseOperationService implements IParseDataService {
             Message mqMessage = messageFactory.getMessage(transTopic,
                     MqTagProperty.MQ_TERMINAL_REMOTE + srvHost.getShId(),
                     JSON.toJSONBytes(jsonString));
+            //目前只在生产环境转发
             if (mqMessage != null && environmentUtils.isProdEnvironment()) {
                 client.sendOneway(mqMessage);
             }
