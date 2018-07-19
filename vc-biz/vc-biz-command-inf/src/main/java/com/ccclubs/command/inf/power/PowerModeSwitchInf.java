@@ -10,5 +10,10 @@ import com.ccclubs.command.dto.PowerModeOutput;
  * @create 2017-06-30
  **/
 public interface PowerModeSwitchInf {
+    /**
+     * 省电模式开关
+     * @param input
+     * @return
+     */
     PowerModeOutput powerModeSwitch(PowerModeInput input);
 }

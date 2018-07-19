@@ -35,6 +35,10 @@ public class HttpConfirmResultImpl implements HttpConfirmResultInf {
         CommonResult commonResult = JSON.parseObject(remote.getCsrResult(), new TypeReference<CommonResult>() {
         });
 
+        /**
+         * 执行成功：返回执行结果
+         * 执行失败：抛出异常
+         */
         if (commonResult.isSuccess()) {
             if (commonResult.getData() == null) {
                 return null;

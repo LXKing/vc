@@ -35,10 +35,12 @@ public class TerminalOnlineHelper {
         switch (protocol) {
             case 1:
                 isOnline = (null != redisTemplate.opsForValue()
+                        // onlie: 车机号
                         .get(ConstantUtils.ONLINE_REDIS_PRE + csMachine.getCsmNumber()));
                 break;
             case 2:
                 isOnline = (null != redisTemplate.opsForValue()
+                        // online: 车机SIM卡号
                         .get(ConstantUtils.ONLINE_REDIS_PRE + csMachine.getCsmMobile()));
                 break;
             default:

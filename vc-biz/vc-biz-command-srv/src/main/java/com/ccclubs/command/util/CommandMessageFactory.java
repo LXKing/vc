@@ -57,10 +57,13 @@ public class CommandMessageFactory {
         if (csMachine.getCsmProtocol() == null || StringUtils.empty(csMachine.getCsmNumber())) {
             return null;
         } else if (csMachine.getCsmProtocol() == 3L) {
+            // MQTT协议
             return TOPIC_CAR + "/p2p/GID_car@@@" + csMachine.getCsmNumber();
         } else if (csMachine.getCsmProtocol() == 2L) {
+            // 808协议
             return TOPIC_PROTOCOL + "/" + TOPIC_PROTOCOL_TAG + "/";
         } else if (csMachine.getCsmProtocol() == 1L) {
+            // MQ
             if (StringUtils.empty(csMachine.getCsmMqttFlag())) {
                 return COMMOND_DOWN_STREAM_TEMPLATE.replace("{1}", csMachine.getCsmNumber())
                         .replace("{0}", DEFAULT_TOPIC_MQTT_TAG);

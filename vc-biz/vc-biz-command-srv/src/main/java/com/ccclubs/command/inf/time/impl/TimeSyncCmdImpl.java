@@ -62,6 +62,11 @@ public class TimeSyncCmdImpl implements TimeSyncCmdInf {
     @Resource
     AuthValidateHelper authValidateHelper;
 
+    /**
+     * 设置同步时间
+     * @param input
+     * @return
+     */
     @Override
     public TimeSyncOutput timeSynchronization(TimeSyncInput input) {
         //数据权限校验
@@ -70,6 +75,7 @@ public class TimeSyncCmdImpl implements TimeSyncCmdInf {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
         }
         Long structId = CommandConstants.CMD_TIME.longValue();
+        // 要设置的时间
         Date time = StringUtils.date(input.getTime(), CommandConstants.DATE_FORMAT);
         logger.debug("begin process command {} start.", structId);
         // 校验指令码

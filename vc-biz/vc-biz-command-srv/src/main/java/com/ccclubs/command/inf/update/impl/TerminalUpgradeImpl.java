@@ -78,6 +78,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         Integer currentVersion = csMachine.getCsmTlV2();
         // TODO:检查终端是否在线，暂时通过查询状态数据来实现
         switch (csMachine.getCsmTeType()) {
+            //
             case 0:
                 if (currentVersion < 0x1322) {
                     process.dealRemoteCommand(csMachine,
@@ -109,6 +110,10 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
                 T808Message updateMessage = updateHelper
                         .getUpdateMessageForTl(csMachine.getCsmMobile(), input.getFilename());
 
+                /**
+                 * 处理远程指令
+                 *      处理升级
+                 */
                 process.dealRemoteCommand(csMachine, updateMessage.WriteToBytes(), true);
 
                 logger.info("给终端（Mobile {}）发送升级指令", csMachine.getCsmMobile());

@@ -59,6 +59,11 @@ public class PowerModeSwitchImpl implements PowerModeSwitchInf {
     @Resource
     AuthValidateHelper authValidateHelper;
 
+    /**
+     * 切换至省电模式
+     * @param input  命令输入
+     * @return
+     */
     @Override
     public PowerModeOutput powerModeSwitch(PowerModeInput input) {
         //数据权限校验

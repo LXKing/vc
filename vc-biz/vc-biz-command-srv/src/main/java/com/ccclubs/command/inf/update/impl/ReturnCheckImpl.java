@@ -39,28 +39,54 @@ import java.util.Map;
 public class ReturnCheckImpl implements ReturnCheckInf {
     private static final Logger logger = LoggerFactory.getLogger(ReturnCheckImpl.class);
 
+    /**
+     * 指令处理
+     */
     @Autowired
     private CommandProcessInf process;
 
+    /**
+     * 指令结构
+     */
     @Autowired
     private CsStructMapper sdao;
 
+    /**
+     * 验证
+     */
     @Resource
     private ValidateHelper validateHelper;
 
+    /**
+     * 指令结果
+     */
     @Resource
     private ResultHelper resultHelper;
 
+    /**
+     * 指令记录
+     */
     @Resource
     private CsRemoteManager csRemoteManager;
     @Resource
     IdGeneratorHelper idGen;
 
+    /**
+     * 终端在线状态查询
+     */
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
+    /**
+     * 数据权限校验
+     */
     @Resource
     AuthValidateHelper authValidateHelper;
 
+    /**
+     * 设置还车
+     * @param input
+     * @return
+     */
     @Override
     public ReturnCheckOutput setReturn(ReturnCheckInput input) {
         //数据权限校验
