@@ -31,6 +31,7 @@ public class ValidateHelper {
 
     public boolean isVehicleExists(String vin) {
 
+        // 查询车辆信息
         CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(vin);
         // 未查询到车辆
         if (null == csVehicle) {
@@ -42,6 +43,7 @@ public class ValidateHelper {
 
     public boolean isMachineExists(String teNo) {
 
+        // 查询车机信息
         CsMachine machine = queryTerminalService.queryCsMachineByTeNo(teNo);
         // 未查询到终端
         if (null == machine) {

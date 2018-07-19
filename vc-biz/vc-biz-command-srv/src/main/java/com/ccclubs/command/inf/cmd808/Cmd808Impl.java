@@ -62,7 +62,7 @@ public class Cmd808Impl implements Cmd808Inf {
      */
     @Override
     public Send808CmdOutput send808CmdInf(Send808CmdInput input) {
-        //数据权限校验
+        // 数据权限校验
         boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
         if (!validateResult) {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
@@ -79,6 +79,8 @@ public class Cmd808Impl implements Cmd808Inf {
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = queryStructService.queryCsStructByStructId(structId);
         String cssReq = csStruct.getCssRequest();
+
+        // 将JSON数组转化成映射数组
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
 //        List<Map> values = JSONArray.parseArray(MessageFormatter.
 //                format("[{\"type\":\"{}\",\"ctrl\":\"{}\"}]", input.getItem(), input.getValue())
@@ -88,6 +90,7 @@ public class Cmd808Impl implements Cmd808Inf {
         // 2.保存记录 cs_remote
         long csrId = idGen.getNextId();
         long csrsId = idGen.getNextSid(input.getVin());
+        // 获取远程控制记录
         CsRemote csRemote = CsRemoteUtil.construct808(csVehicle, csMachine, structId, input.getAppId(), csrId, csrsId);
         csRemoteManager.asyncSave(csRemote);
 

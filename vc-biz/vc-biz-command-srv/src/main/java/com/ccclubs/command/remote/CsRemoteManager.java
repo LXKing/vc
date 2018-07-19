@@ -30,7 +30,13 @@ public class CsRemoteManager {
         executorService.execute(new RemoteSaveTask(csRemote));
     }
 
+    /**
+     * 远程指令任务
+     */
     class RemoteSaveTask implements Runnable {
+        /**
+         * 远程控制记录
+         */
         private CsRemote csRemote;
 
         public RemoteSaveTask(CsRemote csRemote) {
@@ -39,6 +45,7 @@ public class CsRemoteManager {
 
         @Override
         public void run() {
+            // 保存远程控制记录
             remoteService.save(csRemote);
         }
     }

@@ -10,5 +10,8 @@ import com.ccclubs.command.dto.TimeSyncOutput;
  * @create 2017-06-30
  **/
 public interface TimeSyncCmdInf {
+    /**
+     * 时间同步
+     */
     TimeSyncOutput timeSynchronization(TimeSyncInput input);
 }

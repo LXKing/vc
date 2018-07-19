@@ -37,28 +37,58 @@ import java.util.Map;
 public class SetDvdVersionImpl implements SetDvdVersionInf {
     private static final Logger logger = LoggerFactory.getLogger(SetDvdVersionImpl.class);
 
+    /**
+     * 命令处理
+     *      主要用于终端升级
+     */
     @Autowired
     private CommandProcessInf process;
 
+    /**
+     * 指令结构
+     */
     @Autowired
     private CsStructMapper sdao;
 
+    /**
+     * 验证
+     */
     @Resource
     private ValidateHelper validateHelper;
 
+    /**
+     * 指令结果
+     */
     @Resource
     private ResultHelper resultHelper;
 
+    /**
+     * 指令记录
+     */
     @Resource
     private CsRemoteManager csRemoteManager;
+    /**
+     * ID生成
+     */
     @Resource
     IdGeneratorHelper idGen;
 
+    /**
+     * 终端在线情况查询
+     */
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
+    /**
+     * 指令发送时身份认证
+     */
     @Resource
     AuthValidateHelper authValidateHelper;
 
+    /**
+     * 设置DVD版本
+     * @param input
+     * @return
+     */
     @Override
     public DvdVersionOutput setDvdVersion(DvdVersionIntput input) {
         //数据权限校验

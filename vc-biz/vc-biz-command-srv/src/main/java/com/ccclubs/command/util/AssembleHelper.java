@@ -8,6 +8,11 @@ package com.ccclubs.command.util;
  **/
 public class AssembleHelper {
 
+    /**
+     * 获取集合的key
+     * @param csrId
+     * @return
+     */
     public static String assembleKey(Long csrId) {
         return CommandConstants.REMOTE_REDIS_PRE + csrId;
     }

@@ -10,5 +10,10 @@ import com.ccclubs.command.dto.DvdVersionOutput;
  * @create 2017-08-01
  **/
 public interface SetDvdVersionInf {
+    /**
+     * 设置DVD版本
+     * @param input
+     * @return
+     */
     DvdVersionOutput setDvdVersion(DvdVersionIntput input);
 }
