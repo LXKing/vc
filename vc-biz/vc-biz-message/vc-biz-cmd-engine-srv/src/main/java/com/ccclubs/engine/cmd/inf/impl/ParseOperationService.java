@@ -34,33 +34,46 @@ public class ParseOperationService implements IParseDataService {
 
     private static Logger logger = LoggerFactory.getLogger(ParseOperationService.class);
 
+    //ons消息发送
     private Producer client;
 
+    //消息构造器
     @Resource
     MessageFactory messageFactory;
 
+    //topic
     @Value("${" + ConstantUtils.MQ_TOPIC + "}")
     String topic;
 
+    //redisHelper
     @Resource
     RedisHelper redisHelper;
-
+    //remoteHelper
     @Resource
     RemoteHelper remoteHelper;
-
+    //终端信息查询服务
     @Resource
     QueryTerminalService queryTerminalService;
+    //接入商信息查询服务
     @Resource
     QueryAppInfoService queryHostInfoService;
+    //终端信息更新服务
     @Resource
     UpdateTerminalService updateTerminalService;
+    //远程指令记录更新服务mongo
     @Resource
     UpdateRemoteService updateRemoteService;
+    //当前运行环境
     @Resource
     EnvironmentUtils environmentUtils;
+    //remoteDao
     @Resource
     CsRemoteDao remoteDao;
 
+    /**
+     * 处理消息
+     * @param tm
+     */
     @Override
     public void processMessage(MqMessage tm) {
         // 消息类型
@@ -87,6 +100,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * 新版本复合远程控制指令 ，目前暂时仅供众行EVPOP使用
+     * @param tm
      */
     private void processMultipleOperation(MqMessage tm) {
         CsRemote csRemote;
@@ -395,22 +409,42 @@ public class ParseOperationService implements IParseDataService {
         }
     }
 
+    /**
+     * processCarStatus
+     * @param message
+     */
     @Override
     public void processCarStatus(MqMessage message) {
     }
 
+    /**
+     * processAlarmStatus
+     * @param message
+     */
     @Override
     public void processAlarmStatus(MqMessage message) {
     }
 
+    /**
+     * processCanStatus
+     * @param message
+     */
     @Override
     public void processCanStatus(MqMessage message) {
     }
 
+    /**
+     * processStartStopStatus
+     * @param message
+     */
     @Override
     public void processStartStopStatus(MqMessage message) {
     }
 
+    /**
+     * processOrderModify
+     * @param msg
+     */
     @Override
     public void processOrderModify(MqMessage msg) {
         try {
@@ -427,27 +461,51 @@ public class ParseOperationService implements IParseDataService {
         }
     }
 
+    /**
+     * processTakeCarStatus
+     * @param message
+     */
     @Override
     public void processTakeCarStatus(MqMessage message) {
 
     }
 
+    /**
+     * processOrderStatus
+     * @param message
+     */
     @Override
     public void processOrderStatus(MqMessage message) {
     }
 
+    /**
+     * processOrderDetailStatus
+     * @param message
+     */
     @Override
     public void processOrderDetailStatus(MqMessage message) {
     }
 
+    /**
+     * processFurtherCarStatus
+     * @param message
+     */
     @Override
     public void processFurtherCarStatus(MqMessage message) {
     }
 
+    /**
+     * processTerminalLog
+     * @param message
+     */
     @Override
     public void processTerminalLog(MqMessage message) {
     }
 
+    /**
+     * processRemoteStatus
+     * @param message
+     */
     @Override
     public void processRemoteStatus(MqMessage message) {
         try {
@@ -730,10 +788,18 @@ public class ParseOperationService implements IParseDataService {
         }
     }
 
+    /**
+     * getClient
+     * @return
+     */
     public Producer getClient() {
         return client;
     }
 
+    /**
+     * setClient
+     * @param client
+     */
     public void setClient(Producer client) {
         this.client = client;
     }

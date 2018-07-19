@@ -12,6 +12,7 @@ import com.ccclubs.protocol.util.StringUtils;
  */
 public class OperationMessageProcessService implements IMqMessageProcessService {
 
+    //注入parseDataService
     private IParseDataService parseDataService;
 
     /**
@@ -48,10 +49,18 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
         }
     }
 
+    /**
+     * getParseDataService
+     * @return
+     */
     public IParseDataService getParseDataService() {
         return parseDataService;
     }
 
+    /**
+     * setParseDataService
+     * @param parseDataService
+     */
     public void setParseDataService(IParseDataService parseDataService) {
         this.parseDataService = parseDataService;
     }
