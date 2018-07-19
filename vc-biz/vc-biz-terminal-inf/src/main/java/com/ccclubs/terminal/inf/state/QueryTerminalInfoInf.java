@@ -15,7 +15,13 @@ import java.util.List;
  **/
 public interface QueryTerminalInfoInf {
     Byte TL_TYPE = 3;//通领终端类型
+
+    //判断是否最新版本
     VersionQryOutput isLatestVersion(VersionQryInput input);
+
+    //状态信息的实时读取
     TerminalQryOutput getTerminalInfo(TerminalQryInput input);
+
+    //通过序列号获取终端信息
     List<TerminalQryOutput> searchTerminalInfo(TerminalListQryInput input);
 }

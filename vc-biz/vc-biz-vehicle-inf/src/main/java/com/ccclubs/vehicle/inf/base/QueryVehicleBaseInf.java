@@ -11,6 +11,6 @@ import com.ccclubs.vehicle.dto.VehicleBaseOutput;
  **/
 public interface QueryVehicleBaseInf {
 
-    // 车辆出厂日期及车辆的颜色
+    // 获取车辆出厂日期及车辆的颜色
     VehicleBaseOutput getProdDateAndCarColor(VehicleBaseInput input);
 }

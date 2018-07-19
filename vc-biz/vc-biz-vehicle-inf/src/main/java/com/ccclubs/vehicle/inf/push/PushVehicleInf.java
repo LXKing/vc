@@ -13,6 +13,7 @@ public interface PushVehicleInf {
 
   VehiclePushOutput vehiclePushSave(VehiclePushInput input);
 
+    //:推送车辆数据
   VehiclePushOutput vehiclePushSave(String input);
 
 }

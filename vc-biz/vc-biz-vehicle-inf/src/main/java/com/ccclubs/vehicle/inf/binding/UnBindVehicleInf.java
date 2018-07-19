@@ -10,5 +10,6 @@ import com.ccclubs.vehicle.dto.UnBindVehicleOutput;
  * @create 2017-07-05
  **/
 public interface UnBindVehicleInf {
+    //终端车辆解除绑定
     UnBindVehicleOutput unBindVehicle(UnBindVehicleInput input);
 }
