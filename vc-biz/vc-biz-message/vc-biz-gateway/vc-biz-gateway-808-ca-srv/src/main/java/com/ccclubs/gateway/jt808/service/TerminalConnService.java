@@ -1,7 +1,6 @@
 package com.ccclubs.gateway.jt808.service;
 
-import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
-import com.ccclubs.gateway.common.connection.ClientSocketCollection;
+import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
@@ -14,10 +13,7 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.annotation.Resource;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @Author: yeanzi
@@ -37,22 +33,11 @@ public class TerminalConnService {
     private RedisConnService redisConnService;
 
     /**
-     * 本地缓存的channId->uniqueNo映射信息
-     */
-    @Resource
-    private ChannelMappingCollection channelMappingCollection;
-
-    /**
-     * 本地缓存的
-     */
-    @Resource
-    private ClientSocketCollection clientSocketCollection;
-
-    /**
      * 事件发送服务
      */
     @Autowired
     private EventService eventService;
+
 
     /**
      * 终端第一次注册
@@ -66,7 +51,7 @@ public class TerminalConnService {
         Objects.requireNonNull(gatewayType);
 
         // 检验连接状态
-        if (ClientSocketCollection.channelInActive(newChannel)) {
+        if (!newChannel.isActive()) {
             throw new IllegalStateException("创建新客户端缓存时发现：连接通道状态异常");
         }
 
@@ -75,18 +60,10 @@ public class TerminalConnService {
         boolean existedInReids = redisConnService.isExisted(uniqueNo, gatewayType);
         if (existedInReids) {
             // 已存在：
-            boolean socketExisted = clientSocketCollection.existed(uniqueNo);
-            boolean channelIdMappingExisted = channelMappingCollection.existed(newChannel.id().asLongText());
-            LOG.error("终端({})注册时发现redis中已存在该客户端信息; 本地缓存信息：对应socket存在={}，对应channelIdMapping存在={}",
-                    uniqueNo, socketExisted, channelIdMappingExisted);
+            boolean existed = ClientCache.existed(uniqueNo, newChannel);
+            LOG.error("终端({})注册时发现redis中已存在该客户端信息; 本地缓存信息：对应client存在={}",
+                    uniqueNo, existed);
         } else {
-            // 不存在：新建一个连接
-
-            // 1. 本地缓存socket
-//            clientSocketCollection.add(uniqueNo, newChannel);
-            // 2. 本地缓存channelId -> uniqueNo的映射
-//            channelMappingCollection.add(uniqueNo, newChannel.id());
-            // 3. redis缓存客户端信息
             redisConnService.clientRegister(uniqueNo, newChannel, gatewayType);
             LOG.info("client ({}) register success!", uniqueNo);
         }
@@ -110,45 +87,61 @@ public class TerminalConnService {
         // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
             return null;
-        } else {
-            ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
         }
-        Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
-        String uniqueNo = null;
-        if (uniqueNoOpt.isPresent()) {
-            uniqueNo = uniqueNoOpt.get();
-        } else {
-            LOG.error("this channelId ({}) can not mapping to uniquNo when offline!", channel.id().asLongText());
-            uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
-        }
+
+        /**
+         * 更新channel状态为结束防止重复进入inactive
+         */
+        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
+        String uniqueNo = ChannelAttrbuteUtil.getLifeTrack(channel).getUniqueNo();
         if (Objects.isNull(uniqueNo)) {
-            throw new OfflineException("cannot mapping to a uniqueNo when deal offline");
+            throw new OfflineException("cannot mapping to a uniqueNo from channelLifeTrace when deal offline");
         }
-        // 1. 清除本地连接缓存
-        clientSocketCollection.offline(uniqueNo, channel);
-        channelMappingCollection.offline(uniqueNo, channel.id().asLongText());
+
+        // 清理内存缓存
+        Optional<ClientCache> clientOpt = ClientCache.getByUniqueNo(uniqueNo);
+        if (clientOpt.isPresent()) {
+            /**
+             * 清除映射
+             */
+            clientOpt.get().delFromMapping();
+        } else {
+            LOG.error("cannot find client when deal offline event: uniqueNo={}", uniqueNo);
+        }
 
         /**
          * 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件，不更新redis中的状态
          */
         boolean needSend2RedisAndUpdateStatu = true;
         if (ChannelLiveStatus.OFFLINE_IDLE.equals(liveStatus)) {
-            com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
+            ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
             // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
             if (Objects.nonNull(event) && !channel.localAddress().getHostString().equals(event.getServerIp())) {
                 needSend2RedisAndUpdateStatu = false;
             }
         }
 
+        ListenableFuture<SendResult> resultFut = null;
         if (needSend2RedisAndUpdateStatu) {
             // 2. 更新redis在线状态
             redisConnService.offline(uniqueNo, channel, gatewayType);
+            // 发送下线事件
+            resultFut = eventService.sendOfflineEvent(needSend2RedisAndUpdateStatu,
+                    uniqueNo, channel, gatewayType, liveStatus);
+            LOG.info("client ({}) offline success!", uniqueNo);
         }
-        // 发送下线事件
-        ListenableFuture<SendResult> resultFut = eventService.sendOfflineEvent(needSend2RedisAndUpdateStatu,
-                uniqueNo, channel, gatewayType, liveStatus);
 
-        LOG.info("client ({}) offline success!", uniqueNo);
+        /**
+         * 如果连接活跃，则关闭该连接
+         */
+        if (channel.isActive()) {
+            try {
+                channel.close();
+            } catch (Exception e) {
+                LOG.error("({}) close channel failed when deal offline event, the server will close it forcibly", uniqueNo);
+                channel.unsafe().closeForcibly();
+            }
+        }
         return resultFut;
     }
 
@@ -169,80 +162,65 @@ public class TerminalConnService {
         // 1. 判断是否已经在Redis中注册，未注册则先执行注册
         boolean isRegisted = redisConnService.isExisted(uniqueNo, gatewayType);
         if (!isRegisted) {
-            LOG.info("client ({}) info not existed when deal online event, do register begin---", uniqueNo);
-            boolean socketExisted = clientSocketCollection.existed(uniqueNo);
-            boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
-            if (channelIdMappingExisted) {
-                LOG.error("channelMapping already existed but not register in redis: uniqueNo={}", uniqueNo);
+            LOG.info("client ({}) info not existed in redis when deal online event, do register begin---", uniqueNo);
+            boolean existed = ClientCache.existed(uniqueNo, channel);
+            if (existed) {
+                LOG.error("client already existed but not register in redis: uniqueNo={}", uniqueNo);
                 // 执行下线 TODO 一般不会发生
-                channelMappingCollection.offline(uniqueNo, channel.id().asLongText());
-            }
-            if (socketExisted) {
-                LOG.error("socket already existed but not register in redis: uniqueNo={}", uniqueNo);
-                SocketChannel existedChannel = clientSocketCollection.getByUniqueNo(uniqueNo).get();
-                // old socket 执行下线
-                clientSocketCollection.offline(uniqueNo, existedChannel);
+
+                ClientCache.getByUniqueNo(uniqueNo).ifPresent(existedClient -> {
+                    // 原连接下线
+                    ChannelAttrbuteUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
+                });
             }
             // 未注册: 重新注册
             register(uniqueNo, channel, gatewayType);
-            LOG.info("client ({}) info not existed when deal online event, do register end---", uniqueNo);
+            LOG.info("client ({}) info not existed in redis when deal online event, do register end---", uniqueNo);
         }
 
         /**
          * 执行上线
          */
         // 已注册
-        if (redisConnService.isOnline(uniqueNo, gatewayType)) {
-            // 已经在线（redis在线）
-            boolean socketExisted = clientSocketCollection.existed(uniqueNo);
-            boolean channelIdMappingExisted = channelMappingCollection.existed(channel.id().asLongText());
-            if (channelIdMappingExisted) {
-                LOG.error("channelMapping already existed in local when deal online event : uniqueNo={}", uniqueNo);
-                String channelIdLongText = channel.id().asLongText();
-                String existedUniqueNo = channelMappingCollection.getUniqueNoByChannelIdLongText(channelIdLongText).get();
-                if (!uniqueNo.equals(existedUniqueNo)) {
-                    // 不可能发生事件
-                    LOG.error("!!!channelMapping already existed and not same in local when deal online event : uniqueNo={}", uniqueNo);
-                }
-            } else {
-                // 修正本地在线缓存
-                channelMappingCollection.online(uniqueNo, channel.id());
-            }
-            if (socketExisted) {
-                LOG.error("socketchannel already existed in local when deal online event : uniqueNo={}", uniqueNo);
-                boolean isSameSocket = clientSocketCollection.sameChannel(uniqueNo, channel);
-                if (isSameSocket) {
-                    // socket 相同：不发送上线事件
+        boolean existed = ClientCache.existed(uniqueNo, channel);
+        if (existed) {
+            // 如果连接相同，则同一个上线事件不需要再次处理
+            if (ClientCache.sameChannel(uniqueNo, channel)) {
+                LOG.info("same client send same online event: uniqueNo={}", uniqueNo);
+                if (redisConnService.isOnline(uniqueNo, gatewayType)) {
                     isNeedSendOnlineEvent = false;
                 } else {
-                    LOG.error("socketchannel already existed and not the same socket in local when deal online event, we will update to the new channel : uniqueNo={}", uniqueNo);
-                    // socket 不同：更新socket
-                    clientSocketCollection.updateAndCloseOld(uniqueNo, channel);
+                    LOG.info("found same client but not online in redis, the server will resend the online event: uniqueNo={}", uniqueNo);
                 }
             } else {
-                // 修正本地在线缓存
-                clientSocketCollection.online(uniqueNo, channel);
+                // 同一客户端不同连接的上线事件：原连接下线, 新连接上线
+                ClientCache.getByUniqueNo(uniqueNo).ifPresent((existedClient) -> {
+
+                    LOG.info("client update to newChannel, old client will offline and new client will online: uniqueNo={}", uniqueNo);
+                    // 原连接下线
+                    ChannelAttrbuteUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
+                    // 新连接上线
+                    ClientCache.ofNew(uniqueNo, channel).addToMapping();
+                });
             }
         } else {
-            /**
-             * 2. 更新本地缓存
-             *      这里先处理 channelIdMapping映射
-             */
-            channelMappingCollection.online(uniqueNo, channel.id());
-            clientSocketCollection.online(uniqueNo, channel);
-            // 3. 更新redis中在线状态
-            redisConnService.online(uniqueNo, channel, gatewayType);
+            // 新连接建立,初始化映射
+            ClientCache newClient = ClientCache.ofNew(uniqueNo, channel);
+            newClient.addToMapping();
         }
 
         /**
          * 对于终端上线，如果终端第一次上线也需要发上线事件，但是终端注册不需要，因为终端注册后会发送鉴权（判定为上线）
          */
         if (isNeedSendOnlineEvent) {
+            // 3. 更新redis中在线状态
+            redisConnService.online(uniqueNo, channel, gatewayType);
             // 4. 发送上线事件
             eventService.sendOnlineEvent(uniqueNo, channel, gatewayType);
+            LOG.info("client ({}) online success!", uniqueNo);
         }
-
-        LOG.info("client ({}) online success!", uniqueNo);
     }
 
     /**
@@ -265,11 +243,10 @@ public class TerminalConnService {
             redisConnService.logout(uniqueNo, gatewayType);
         }
 
-        // 2. 本地缓存注销
-        channelMappingCollection.logout(uniqueNo, channel.id().asLongText());
-        clientSocketCollection.logout(uniqueNo, channel);
-
-        // 4. 发送注销事件 TODO
+        /**
+         * 下线
+         */
+        offline(channel, GatewayType.GATEWAY_808);
 
         LOG.info("client ({}) logout success!", uniqueNo);
     }
@@ -278,20 +255,21 @@ public class TerminalConnService {
      * 程序退出时，服务端将所有客户端下线
      */
     public void offlineOfAll() {
-        Set<String> keysets = clientSocketCollection.getAllKeySet();
+        Set<String> keysets = ClientCache.getAllKeySet();
         int allClient = keysets.size();
         final List<ListenableFuture<SendResult>> resultFutList = new ArrayList<>();
         keysets.stream().forEach(k->
-            clientSocketCollection.getByUniqueNo(k).ifPresent(channel -> {
-                ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
-                try {
-                    ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
-                    if (Objects.nonNull(resFut)) {
-                        resultFutList.add(resFut);
+                ClientCache.getByUniqueNo(k).ifPresent(client -> {
+                    SocketChannel channel = client.getChannel();
+                    ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    try {
+                        ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
+                        if (Objects.nonNull(resFut)) {
+                            resultFutList.add(resFut);
+                        }
+                    } catch (Exception e) {
+                        LOG.error("channel ({}) close failed when server shutdown: {}", k,  e);
                     }
-                } catch (Exception e) {
-                    LOG.error("channel ({}) close failed when server shutdown: {}", k,  e);
-                }
             })
         );
         int unDoneCount = 1;

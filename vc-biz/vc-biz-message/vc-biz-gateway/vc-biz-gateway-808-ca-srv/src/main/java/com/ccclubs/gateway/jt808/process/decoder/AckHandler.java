@@ -4,11 +4,14 @@ import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.DateUtil;
+import com.ccclubs.gateway.jt808.constant.CommandStatus;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.AckResultType;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.service.CommandCache;
 import com.ccclubs.gateway.jt808.util.AckBuilder;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
@@ -40,6 +43,11 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         // 对于终端的应答不需要平台再次应答
         if (UpPacType.getByCode(pac.getHeader().getPacId()).toString().startsWith(PackageCons.UP_PAC_ACK_PRIFIX)) {
             // TODO 对于终端通用应答，应该记录它应答了什么，因为这是一个带操作结果的应答
+
+            /**
+             * 用于命令监控
+             */
+            dealCmdWatch(pac);
             return HandleStatus.NEXT;
         }
 
@@ -122,5 +130,19 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
                     break;
         }
         return ackPac;
+    }
+
+    private void dealCmdWatch(Package808 pac) {
+        if (UpPacType.ACK.getCode() == pac.getHeader().getPacId()) {
+            if (CommandCache.isOpen() && CommandCache.isCurrent(pac.getHeader().getTerMobile())) {
+                short serialNo = pac.getBody().getContent().getShort(0);
+                CommandCache.getBy808SerivalNo(serialNo).ifPresent(cmd -> {
+                    if (cmd.getSerialNo808() == serialNo) {
+                        cmd.setCommandStatus(CommandStatus.ANSWERD_808)
+                                .setAck808Time(DateUtil.getNowStr());
+                    }
+                });
+            }
+        }
     }
 }

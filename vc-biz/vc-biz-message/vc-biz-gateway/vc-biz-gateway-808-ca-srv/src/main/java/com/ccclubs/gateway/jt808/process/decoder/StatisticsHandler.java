@@ -2,18 +2,15 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.jt808.constant.RedisConnCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.service.EventService;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
-import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -38,9 +35,6 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
     private RedisConnService redisConnService;
 
     @Autowired
-    private TerminalConnService terminalConnService;
-
-    @Autowired
     private EventService eventService;
 
     @Override
@@ -49,6 +43,10 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         SocketChannel channel = (SocketChannel) ctx.channel();
 
         redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_TOTAL_PAC, 1, GatewayType.GATEWAY_808);
+        /**
+         * 实时刷新在线online状态
+         */
+        eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
         // 统计错误报文
         if (pac.getErrorPac()) {
             redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_ERROR_PAC, 1, GatewayType.GATEWAY_808);
