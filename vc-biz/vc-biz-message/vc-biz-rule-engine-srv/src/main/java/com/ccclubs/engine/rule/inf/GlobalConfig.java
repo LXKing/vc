@@ -2,6 +2,9 @@ package com.ccclubs.engine.rule.inf;
 
 public class GlobalConfig {
 
+    /**
+     * 是否展示资源
+     */
 	private static boolean showSoure;
 
 	public static boolean isShowSoure() {
