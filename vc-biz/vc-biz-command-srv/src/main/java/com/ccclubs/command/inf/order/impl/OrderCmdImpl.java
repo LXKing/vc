@@ -225,7 +225,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderDetailDownStream.getBytes(), false);
             return new IssueOrderDetailOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -253,7 +253,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orederRenew.getBytes(), false);
             return new RenewOrderOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -282,7 +282,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplyFailure.getBytes(), false);
             return new RenewOrderReplyFOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -312,7 +312,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplySuccess.getBytes(), false);
             return new RenewOrderReplySOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

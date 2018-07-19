@@ -14,6 +14,13 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
 
     private IParseDataService parseDataService;
 
+    /**
+     * 处理消息
+     * @param tag 区分是哪种协议
+     * @param upTopic mqtt主题
+     * @param srcByteArray 原始字节数组
+     * @param hexString 原始字节十六进制字符串
+     */
     @Override
     public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
                                 final String hexString) {
@@ -29,7 +36,9 @@ public class OperationMessageProcessService implements IMqMessageProcessService 
             mqMessage.ReadFromBytes(srcByteArray);
             // 从消息中取出基本属性赋值消息对象
             if (mqMessage != null && StringUtils.notEmpty(mqMessage.getCarNumber())) {
+                //topic
                 mqMessage.setUpTopic(upTopic);
+                //原始报文
                 mqMessage.setHexString(hexString);
                 // 设置时间有效性，暂时设置为 60*1000 ，主要用于流转
                 mqMessage.setTimeStamp(System.currentTimeMillis());

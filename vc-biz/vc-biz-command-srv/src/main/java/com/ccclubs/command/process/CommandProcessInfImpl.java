@@ -96,7 +96,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

@@ -28,9 +28,6 @@ import java.util.Properties;
  **/
 @Configuration
 public class CmdEngineConfig {
-
-    private static Logger logger = LoggerFactory.getLogger(CmdEngineConfig.class);
-
     @Autowired
     private OnsProperties onsProperties;
 
@@ -60,15 +57,16 @@ public class CmdEngineConfig {
     @Qualifier(value = "producer")
     public IParseDataService parseDataService(Producer producer) {
         ParseOperationService terminalParseService = new ParseOperationService();
+        //设置生产者
         terminalParseService.setClient(producer);
         return terminalParseService;
     }
 
-    //根据
     @Bean(name = "terminalProcessService")
     @Qualifier(value = "terminalParseService")
     public IMqMessageProcessService mqMessageProcessService(IParseDataService terminalParseService) {
         OperationMessageProcessService mqMessageProcessService = new OperationMessageProcessService();
+        //注入消息解析服务
         mqMessageProcessService.setParseDataService(terminalParseService);
         return mqMessageProcessService;
     }
@@ -78,6 +76,7 @@ public class CmdEngineConfig {
     @Qualifier(value = "terminalProcessService")
     public MessageListener messageListener(IMqMessageProcessService terminalProcessService) {
         MqMessageListener messageListener = new MqMessageListener();
+        //注入消息处理服务
         messageListener.setMqMessageProcessService(terminalProcessService);
         return messageListener;
     }
