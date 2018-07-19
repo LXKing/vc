@@ -17,6 +17,11 @@ public class ChannelLifeCycleTrack {
     private String uniqueNo;
 
     /**
+     * 流水号
+     */
+    private Short serialNo;
+
+    /**
      * 渠道类型
      */
     private GatewayType gatewayType;
@@ -78,6 +83,15 @@ public class ChannelLifeCycleTrack {
 
     public ChannelLifeCycleTrack setGatewayType(GatewayType gatewayType) {
         this.gatewayType = gatewayType;
+        return this;
+    }
+
+    public Short getSerialNo() {
+        return serialNo;
+    }
+
+    public ChannelLifeCycleTrack setSerialNo(Short serialNo) {
+        this.serialNo = serialNo;
         return this;
     }
 }

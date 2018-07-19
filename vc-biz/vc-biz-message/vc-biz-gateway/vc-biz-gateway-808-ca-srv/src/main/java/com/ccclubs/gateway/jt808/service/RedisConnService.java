@@ -48,7 +48,7 @@ public class RedisConnService {
     /**
      * 所有键过期时间
      */
-    private static final Integer REDIS_KEY_EXPIRE_SECONDS = -1;
+    private static final Integer REDIS_KEY_EXPIRE_SECONDS = 10 * 60;
 
     /**
      * 上下线轨迹列表维护的容量
@@ -156,7 +156,7 @@ public class RedisConnService {
         // 老网关上线事件(设置过期时间)
         redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
                 new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
-                        System.currentTimeMillis()));
+                        System.currentTimeMillis()), REDIS_KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
         // 新网关上线事件(设置过期时间)
         redisTemplate.opsForHash().put(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey, event);
         redisTemplate.opsForHash().delete(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey);
@@ -177,6 +177,18 @@ public class RedisConnService {
         // 新网关下线事件
         redisTemplate.opsForHash().put(REDIS_KEY_TCP_OFFLINE + ":" + event.getGatewayType(), eventKey, event);
         redisTemplate.opsForHash().delete(REDIS_KEY_TCP_ONLINE + ":" + event.getGatewayType(), eventKey);
+    }
+
+    /**
+     * 在有消息到来时，实时刷新online
+     * @param event
+     */
+    public void keepOnlineWhenEventCome(ConnOnlineStatusEvent event) {
+        String eventKey = event.uniqueNoByGatewayType();
+        // 老网关上线事件(设置过期时间)
+        redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
+                new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
+                        System.currentTimeMillis()), REDIS_KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
