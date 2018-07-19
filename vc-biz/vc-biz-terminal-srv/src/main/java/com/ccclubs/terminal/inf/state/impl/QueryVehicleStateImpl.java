@@ -84,6 +84,7 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         List<VehicleStateQryOutput> vehicleStateQryOutputList = new ArrayList<>();
         String[] vins = input.getVins();
         for (String vin : vins) {
+            //根据vin码获取车辆信息
             CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(vin);
             // 未查询到车辆
             if (null == csVehicle) {
@@ -110,8 +111,15 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         return output;
     }
 
+    /**
+     * 车辆在线状态判断
+     *
+     * @param input
+     * @return
+     */
     @Override
     public VehicleOnlineOutput isOnline(VehicleOnlineInput input) {
+        //根据vin码获取车辆信息
         CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(input.getVin());
         // 未查询到车辆
         if (null == csVehicle) {
@@ -122,7 +130,7 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
-
+        //根据id获取车机信息
         CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
         if (null == csMachine) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);

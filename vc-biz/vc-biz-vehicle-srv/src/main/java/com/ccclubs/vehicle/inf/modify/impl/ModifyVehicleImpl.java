@@ -43,6 +43,7 @@ public class ModifyVehicleImpl implements ModifyVehicleInf {
         if (!validateResult) {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
         }
+        //根据vin码获取车辆信息
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         if (null==vehicle){
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
@@ -56,6 +57,7 @@ public class ModifyVehicleImpl implements ModifyVehicleInf {
             throw new ApiException(ApiEnum.DATE_FORMAT_ERROR);
         }
         vehicle.setCsvUpdateTime(new Date());
+        //更新车辆信息
         updateVehicleService.update(vehicle);
         return null;
     }

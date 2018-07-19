@@ -11,5 +11,6 @@ import com.ccclubs.vehicle.dto.VehicleRegisterInput;
  * @create 2017-07-24
  **/
 public interface ModelRegisterInf {
+    //车型注册
     RegisterOutput vehicleModelRegister(ModelRegisterInput... inputs);
 }

@@ -55,18 +55,20 @@ public class UnBindVehicleImpl implements UnBindVehicleInf {
         if (!validateResult) {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
         }
+        //根据vin码获取车辆信息
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
+        //根据终端编号获取车机信息
         CsMachine machine = queryTerminalService.queryCsMachineByTeNo(input.getTeNo());
 
         // 1.校验输入的车辆和终端是否存在
         if (vehicle == null) {
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
-
+        //检查车机是否存在
         if (machine == null) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
-
+        //检查车辆与终端绑定是否存在
         if (machine.getCsmId().equals(vehicle.getCsvMachine())) {
             //开始解绑
             vehicle.setCsvMachine(null);

@@ -80,6 +80,7 @@ public class VtOperateApi {
                                                      BindVehicleInput input) {
         logger.info("API事件:终端车辆绑定,APPID:{},车架号:{},终端编号:{}", input.getAppId(), input.getVin(), input.getTeNo());
         input.setAppId(appId);
+        //终端车辆绑定
         BindVehicleOutput output = bindVehicleInf.bindVehicle(input);
         return new ApiMessage<>(output);
     }
@@ -98,6 +99,7 @@ public class VtOperateApi {
                                                          UnBindVehicleInput input) {
         logger.info("API事件:终端车辆解除绑定,APPID:{},车架号:{},终端编号:{}", appId, input.getVin(), input.getTeNo());
         input.setAppId(appId);
+        //车辆与车机解除绑定
         UnBindVehicleOutput output = unBindVehicleInf.unBindVehicle(input);
         return new ApiMessage<>(output);
     }
@@ -114,6 +116,7 @@ public class VtOperateApi {
     public ApiMessage<RegisterOutput> vehicleModelRegister(ModelInputList list) {
         ModelRegisterInput[] array = list.getInputs()
                 .toArray(new ModelRegisterInput[list.getInputs().size()]);
+        //车型注册
         RegisterOutput output = modelRegisterInf.vehicleModelRegister(array);
         return new ApiMessage<>(output);
     }
@@ -131,6 +134,7 @@ public class VtOperateApi {
                                                       VehicleInputList list) {
         logger.info("API事件:车辆注册,APPID:{},车辆数:{}辆", appId, list.getInputs().size());
         VehicleRegisterInput[] array = list.getInputs().toArray(new VehicleRegisterInput[list.getInputs().size()]);
+        //车辆注册
         RegisterOutput output = vehicleRegisterInf.vehicleRegister(appId, array);
         return new ApiMessage<>(output);
     }
@@ -149,6 +153,7 @@ public class VtOperateApi {
                                                          ModifyVehicleInput input) {
         logger.info("API事件:车辆基本信息修改,APPID:{},车架号:{}", appId, input.getVin());
         input.setAppId(appId);
+        //车辆基本信息修改
         ModifyVehicleOutput output = modifyVehicleInf.vehicleModify(input);
         return new ApiMessage<>(output);
     }
@@ -165,6 +170,7 @@ public class VtOperateApi {
             throw new ApiException(ApiEnum.REQUEST_PARAMS_VALID_FAILED.code(), "推送内容不能为空！");
         }
         logger.info("API事件:推送车辆数据");
+        //:推送车辆数据
         VehiclePushOutput output = pushVehicleInf.vehiclePushSave(input);
 
         return new ApiMessage<>(output);
