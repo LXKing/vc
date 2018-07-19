@@ -175,7 +175,7 @@ public class PushVehicleImpl implements PushVehicleInf {
       loggerBusiness.info(result);
       pushInput = new ObjectMapper().readValue(result, VehiclePushInput.class);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
       throw new ApiException(ApiEnum.FAIL.code(), "推送内容解密时出错！");
     }
 
