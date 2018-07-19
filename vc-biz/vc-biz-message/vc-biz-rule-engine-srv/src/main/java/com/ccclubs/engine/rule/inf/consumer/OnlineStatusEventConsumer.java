@@ -178,7 +178,7 @@ public class OnlineStatusEventConsumer {
             default:
                 break;
         }
-        if (Objects.nonNull(csVehicle) && (csVehicle.getCsvAccess() == 3 || csVehicle.getCsvAccess() == 4 || csVehicle.getCsvAccess() == 5)) {
+        if (csVehicle != null && (csVehicle.getCsvAccess() == 3 || csVehicle.getCsvAccess() == 4 || csVehicle.getCsvAccess() == 5)) {
 
             SrvHost srvHost = queryHostService.queryHostByIdFromCache(csVehicle.getCsvAccess());
             JSONObject jsonObject = new JSONObject();
