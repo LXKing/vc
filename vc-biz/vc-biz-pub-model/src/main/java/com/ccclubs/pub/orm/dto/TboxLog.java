@@ -11,6 +11,8 @@ import java.io.Serializable;
 public class TboxLog implements Serializable {
     //车架号
     private String vin;
+    //授权系统
+    private Integer access;
     //车机号
     private String teNumber;
     //订单号
@@ -21,6 +23,14 @@ public class TboxLog implements Serializable {
     private String sourceHex;
     //添加时间
     private Long addTime;
+
+    public Integer getAccess() {
+        return access;
+    }
+
+    public void setAccess(Integer access) {
+        this.access = access;
+    }
 
     public String getVin() {
         return vin;

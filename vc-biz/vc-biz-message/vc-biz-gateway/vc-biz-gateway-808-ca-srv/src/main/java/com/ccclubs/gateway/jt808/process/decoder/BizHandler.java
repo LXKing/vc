@@ -6,10 +6,13 @@ import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.OnsTask;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.DateUtil;
+import com.ccclubs.gateway.jt808.constant.CommandStatus;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
 import com.ccclubs.gateway.jt808.constant.msg.MQTTMsgType;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.service.CommandCache;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.util.MqTagUtils;
@@ -106,10 +109,19 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
                             // 跳过消息类型
                             .skipBytes(1);
                     onsMsg = ByteBufUtil.hexDump(onsContentBuf);
+                    onsContentBuf.resetReaderIndex();
                 }
             } else if (Objects.nonNull(MQTTMsgType.getByCode(msgTypeCode))) {
                 // 发送到MQTT 的tag上 eg: JT_0900_FD
                 tag = MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, pacId, (byte) msgTypeCode);
+            }
+
+            /**
+             * 处理命令监听
+             *   功能号+车机号+流水号=17
+             */
+            if (pac.getBody().getContent().readableBytes() >= 17) {
+                dealWatchCommand(pac);
             }
         }
 
@@ -133,6 +145,25 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
         int ackPacId = PacUtil.getAckPacIdFromNormalAck(pac);
 
         return DownPacType.SEND_MQTT.getCode() != ackPacId;
+    }
+
+    private void dealWatchCommand(Package808 pac) {
+        // cmd check start-----------------------------------------------
+
+        try {
+            if (CommandCache.isOpen() && CommandCache.isCurrent(pac.getHeader().getTerMobile())) {
+                long serialNoMqtt = pac.getBody().getContent().getLong(9);
+                CommandCache.getByMqttSerivalNo(serialNoMqtt).ifPresent(cmd -> {
+                    cmd.setCommandStatus(CommandStatus.ANSWERD_MQTT)
+                            .setAckMQTTTime(DateUtil.getNowStr())
+                            .setAckFromMQTTHex(pac.getSourceHexStr());
+                });
+            }
+        } catch (Exception e) {
+            LOG.error("命令监听异常：uniqueNo={}, for -->", pac.getHeader().getTerMobile(), e);
+        }
+
+        // cmd check end-----------------------------------------------
     }
 
     @Override

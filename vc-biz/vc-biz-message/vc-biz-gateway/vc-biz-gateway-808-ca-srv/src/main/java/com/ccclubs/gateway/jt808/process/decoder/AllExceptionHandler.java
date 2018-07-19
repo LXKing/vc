@@ -1,8 +1,8 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
-import com.ccclubs.gateway.common.connection.ChannelMappingCollection;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
@@ -11,6 +11,7 @@ import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
+import com.ccclubs.gateway.jt808.exception.ClientMappingException;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.PacUtil;
@@ -25,12 +26,10 @@ import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -43,9 +42,6 @@ import java.util.Optional;
 @ChannelHandler.Sharable
 public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     public static final Logger LOG = LoggerFactory.getLogger(AllExceptionHandler.class);
-
-    @Autowired
-    private ChannelMappingCollection channelMappingCollection;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -72,14 +68,12 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
 
-                ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_IDLE);
-                Optional<String> uniqueNoOpt = channelMappingCollection.getUniqueNoByChannelIdLongText(channel.id().asLongText());
-                String uniqueNo = null;
-                if (!uniqueNoOpt.isPresent()) {
+                ChannelLifeCycleTrack channelLife = ChannelAttrbuteUtil.getLifeTrack(channel);
+                channelLife.setLiveStatus( ChannelLiveStatus.OFFLINE_IDLE);
+                String uniqueNo = channelLife.getUniqueNo();
+                if (Objects.isNull(uniqueNo)) {
                     LOG.error("cannot mapping to uniqueNo when deal idle event");
                     uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
-                } else {
-                    uniqueNo = uniqueNoOpt.get();
                 }
                 LOG.error("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
 
@@ -133,26 +127,13 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 // 自定义抛出的处理异常
             } else {
                 // 其他非自定义的异常
-                ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
-                expMessageDTO.setMsgTime(System.currentTimeMillis());
-                expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                        .setGatewayType(GatewayType.GATEWAY_808.getDes())
-                        .setSourceHex(pacProcessTrack.getSourceHex())
-                        .setReason(cause.getMessage())
-                        .setMobile(uniqueNo);
+                setOtherException(uniqueNo, pacProcessTrack, cause);
             }
         } else {
-            LOG.error("terminal ({})- occured exception when handle sourceHex = [{}], exception throwed but step invalid step={}, for reason: {}",
+            LOG.error("terminal ({})- occured exception when handle sourceHex = [{}], exception throwed but step invalid: step={}, for reason: {}",
                     uniqueNo, exceptionPacHex, pacProcessTrack.getStep(), cause);
-
             // 其他非自定义的异常
-            ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
-            expMessageDTO.setMsgTime(System.currentTimeMillis());
-            expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                    .setGatewayType(GatewayType.GATEWAY_808.getDes())
-                    .setSourceHex(pacProcessTrack.getSourceHex())
-                    .setReason(cause.getMessage())
-                    .setMobile(uniqueNo);
+            setOtherException(uniqueNo, pacProcessTrack, cause);
         }
 
         // 其他非自定义异常如果获取不到vin码则不发送到kafka
@@ -168,15 +149,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
         if (cause instanceof TooLongFrameException) {
-            StringBuilder tooLongSb = new StringBuilder("检测到车机");
-            if (StringUtils.isNotEmpty(pacProcessTrack.getUniqueNo())) {
-                tooLongSb.append("[").append(pacProcessTrack.getUniqueNo()).append("]");
-            } else {
-                tooLongSb.append("[ip=").append(channel.remoteAddress().getHostString())
-                        .append(", port=").append(channel.remoteAddress().getPort()).append("]");
-            }
-            tooLongSb.append("发送帧长度异常，服务端将主动断开连接");
-            LOG.error(tooLongSb.toString());
+            LOG.error("检测到车机[" + uniqueNo +"]发送帧长度异常，服务端将主动断开连接");
             needCloseConn = true;
         } else if (cause instanceof OfflineException) {
             // 断开连接异常，服务端将强制断开. 这里已经找不到uniqueNo了，所以也发送不了下线事件给 redis
@@ -186,6 +159,9 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         } else if (cause instanceof IOException) {
             // Connection reset by peer
             LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
+            needCloseConn = true;
+        } else if (cause instanceof ClientMappingException) {
+            LOG.error("client ({}) cannot find mapping: cause={}", uniqueNo, cause);
             needCloseConn = true;
         }
 
@@ -197,5 +173,19 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         // 最后释放可能存在的缓存
         ReferenceCountUtil.release(cause);
+
+        /**
+         * TODO 这里需要考虑，如果发生异常，是否有必要拿到buffer对象并且释放？
+         */
+    }
+
+    private void setOtherException(String uniqueNo, PacProcessTrack pacProcessTrack, Throwable cause) {
+        ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+        expMessageDTO.setMsgTime(System.currentTimeMillis());
+        expMessageDTO.setCode(pacProcessTrack.getStep() + "")
+                .setGatewayType(GatewayType.GATEWAY_808.getDes())
+                .setSourceHex(pacProcessTrack.getSourceHex())
+                .setReason(cause.getMessage())
+                .setMobile(uniqueNo);
     }
 }

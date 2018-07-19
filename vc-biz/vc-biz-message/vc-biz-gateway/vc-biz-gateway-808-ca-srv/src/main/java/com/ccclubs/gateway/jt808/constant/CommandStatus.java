@@ -7,19 +7,24 @@ package com.ccclubs.gateway.jt808.constant;
  * Email:  yeanzhi@ccclubs.com
  * 下行命令状态
  */
-public enum CommandStatu {
+public enum CommandStatus {
     /**
      * 命令已发送
      */
-    send,
+    SEND,
 
     /**
      * 命令已重发
      */
-    resend,
+    RESEND,
 
     /**
-     * 命令已应答
+     * 808已应答
      */
-    answerd;
+    ANSWERD_808,
+
+    /**
+     * MQTT已应答
+     */
+    ANSWERD_MQTT;
 }

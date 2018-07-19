@@ -72,6 +72,11 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
     @Resource
     AuthValidateHelper authValidateHelper;
 
+    /**
+     * 下发简单指令
+     * @param input
+     * @return
+     */
     @Override
     public SimpleCmdOutput sendSimpleCmd(SimpleCmdInput input) {
         //数据权限校验
@@ -223,7 +228,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         } catch (ApiException ex) {
             throw ex;
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -284,6 +289,13 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         return structId;
     }
 
+    /**
+     * 获取适配结构ID
+     * @param csMachine  车机
+     * @param input
+     * @param structId
+     * @return
+     */
     private Integer getAdapterStructId(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
         if (null == csMachine.getCsmTlV2()) {

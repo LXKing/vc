@@ -47,21 +47,33 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
     @Autowired
     private CsStructMapper sdao;
 
+    /**
+     * 验证
+     */
     @Resource
     private ValidateHelper validateHelper;
 
+    /**
+     * 指令发送结果
+     */
     @Resource
     private ResultHelper resultHelper;
 
     @Resource
     private CsRemoteManager csRemoteManager;
 
+    /**
+     * 上下线查询
+     */
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
 
     @Resource
     IdGeneratorHelper idGen;
 
+    /**
+     * 身份认证
+     */
     @Resource
     AuthValidateHelper authValidateHelper;
 
@@ -73,6 +85,7 @@ public class AirConditionerCmdImpl implements AirConditionerCmdInf {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
         }
 
+        // 获取结构ID
         Long structId = CommandConstants.CMD_AIR.longValue();
         if (input.getItem() == 1 && input.getValue() != 0 && input.getValue() != 1) {
             throw new ApiException(ApiEnum.AIR_CTRL_CIRCULAR_ERROR);

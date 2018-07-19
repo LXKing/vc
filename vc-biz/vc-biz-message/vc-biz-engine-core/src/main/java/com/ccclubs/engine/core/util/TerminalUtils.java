@@ -16,20 +16,12 @@ import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
-import com.ccclubs.protocol.util.ConstantUtils;
-import com.ccclubs.protocol.util.MyBuffer;
-import com.ccclubs.protocol.util.ProtocolTools;
-import com.ccclubs.protocol.util.StringUtils;
-import com.ccclubs.protocol.util.Tools;
+import com.ccclubs.protocol.util.*;
 import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
-
-import java.util.Date;
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +29,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
-import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_SIMNO;
-import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_VIN;
+import javax.annotation.Resource;
+import java.util.Date;
+
+import static com.ccclubs.engine.core.util.RuleEngineConstant.*;
 
 
 @Component
@@ -583,7 +576,6 @@ public class TerminalUtils {
     public void processTerminalLog(String carNumber, String content, String hexString,
                                    Long order) {
         try {
-//      logger.info("收到来自 " + carNumber + "的 " + content + " ，原始数据：" + hexString);
             Long addTime = System.currentTimeMillis();
             CsLogger csLogger = new CsLogger();
             csLogger.setCslNumber(carNumber);
@@ -603,18 +595,21 @@ public class TerminalUtils {
             dto.setSourceHex(hexString);
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
             if (csMachine == null) {
-                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
-            }
-            CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
-            if (csVehicle == null) {
+                logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
-                dto.setVin(csVehicle.getCsvVin());
-                kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                dto.setAccess(csMachine.getCsmAccess());
+                if (csVehicle == null) {
+                    kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+                } else {
+                    dto.setVin(csVehicle.getCsvVin());
+                    kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                }
             }
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            e.printStackTrace();
         }
     }
 
@@ -651,7 +646,6 @@ public class TerminalUtils {
             return Tools.ToHexString(buff.array());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            e.printStackTrace();
             return "";
         }
     }

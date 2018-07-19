@@ -90,10 +90,14 @@ public class OrderCmdImpl implements OrderCmdInf {
             rfidCode = "0" + rfidCode;
         }
 
+        /**
+         * 大于999999或者小于100000则更新为111111
+         */
         if (code > 999999 || code < 100000) {
             code = 111111;
         }
 
+        // 发送新远程订单
         OrderDownStreamNew orderDownStream = new OrderDownStreamNew(csMachine.getCsmNumber(),
                 input.getOrderId(), ProtocolTools.transformToTerminalTime(startTime),
                 ProtocolTools.transformToTerminalTime(endTime), input.getOrderId(),
@@ -146,7 +150,9 @@ public class OrderCmdImpl implements OrderCmdInf {
             throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
         }
         Long structId = CommandConstants.CMD_ORDER_AUTH.longValue();
+        // 开始日期
         Date startTime = StringUtils.date(input.getStartTime(), CommandConstants.DATE_FORMAT);
+        // 结束日期
         Date endTime = StringUtils.date(input.getEndTime(), CommandConstants.DATE_FORMAT);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
@@ -154,6 +160,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 构建一个:发送给远程车辆的订单信息
         OrderDownStream orderDownStream = new OrderDownStream(csMachine.getCsmNumber(),
                 input.getOrderId(), ProtocolTools.transformToTerminalTime(startTime),
                 ProtocolTools.transformToTerminalTime(endTime), input.getOrderId(),
@@ -192,6 +199,11 @@ public class OrderCmdImpl implements OrderCmdInf {
         return output;
     }
 
+    /**
+     * 订单详情
+     * @param input
+     * @return
+     */
     @Override
     public IssueOrderDetailOutput issueOrderDetailData(IssueOrderDetailInput input) {
         //数据权限校验
@@ -203,6 +215,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 构建一个:订单详情
         OrderDetailDownStream orderDetailDownStream = new OrderDetailDownStream(
                 csMachine.getCsmNumber(), input.getOrderId(), input.getRealName(), input.getMobile(),
                 input.getOrderId(), input.getGender());
@@ -212,7 +225,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderDetailDownStream.getBytes(), false);
             return new IssueOrderDetailOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -240,7 +253,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orederRenew.getBytes(), false);
             return new RenewOrderOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -257,6 +270,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 订单修改信息确认回复
         OrderModifyReplyFailure orderModifyReplyFailure = new OrderModifyReplyFailure(
                 csMachine.getCsmNumber(),
                 input.getOrderId(),
@@ -268,7 +282,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplyFailure.getBytes(), false);
             return new RenewOrderReplyFOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -286,6 +300,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 订单修改信息确认回复
         OrderModifyReplySuccess orderModifyReplySuccess = new OrderModifyReplySuccess(
                 csMachine.getCsmNumber(),
                 input.getOrderId(),
@@ -297,7 +312,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplySuccess.getBytes(), false);
             return new RenewOrderReplySOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

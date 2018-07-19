@@ -12,7 +12,6 @@ import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.config.KafkaProperties;
 import com.ccclubs.gateway.common.config.NettyProperties;
-import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.jt808.TcpServerStarter;
 import com.ccclubs.gateway.jt808.service.MqttMessageProcessService;
 import org.slf4j.Logger;
@@ -22,15 +21,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.DefaultLifecycleProcessor;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -50,9 +46,6 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
   private MqttAliyunProperties mqttAliyunProperties;
   @Autowired
   private OnsProperties onsProperties;
-
-  @Autowired
-  private ClientSocketCollection clientSocketCollection;
 
   @Override
   protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -86,7 +79,7 @@ public class Gateway808CASrvApp extends SpringBootServletInitializer {
 
   @Bean(name = "jt808RemoteProcessService")
   public IMessageProcessService getRemoteMessageProcessService() {
-    return new MqttMessageProcessService(clientSocketCollection);
+    return new MqttMessageProcessService();
   }
 
 

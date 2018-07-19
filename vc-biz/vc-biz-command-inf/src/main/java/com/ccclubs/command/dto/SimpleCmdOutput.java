@@ -9,6 +9,9 @@ import java.math.BigDecimal;
  * @create 2017-06-30
  **/
 public class SimpleCmdOutput extends CommonOutput implements java.io.Serializable{
+    /**
+     * 当前时间
+     */
     private Long cssCurrentTime;
     private Integer cssObdMile;
     private Integer cssEvBattery;

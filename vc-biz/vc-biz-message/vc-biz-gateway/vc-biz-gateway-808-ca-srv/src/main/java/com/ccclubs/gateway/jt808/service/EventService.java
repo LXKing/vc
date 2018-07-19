@@ -61,6 +61,17 @@ public class EventService {
         return resultFut;
     }
 
+    /**
+     * 实时刷新online在线
+     * @param uniqueNo
+     * @param channel
+     * @param gatewayType
+     */
+    public void realtimeReflushOnline(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
+        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
+        redisConnService.keepOnlineWhenEventCome(connOnlineStatusEvent);
+    }
+
     public ListenableFuture<SendResult> sendOfflineEvent(boolean needUpdateRedis, String uniqueNo, SocketChannel channel, GatewayType gatewayType, ChannelLiveStatus liveStatus) {
         // fixme 如何避免空指针?
         ListenableFuture<SendResult> resultFut = null;

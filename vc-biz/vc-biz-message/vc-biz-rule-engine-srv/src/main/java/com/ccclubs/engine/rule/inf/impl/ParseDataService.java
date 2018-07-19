@@ -154,7 +154,7 @@ public class ParseDataService implements IParseDataService {
             }
             logicHelperMqtt.saveStatusData(mapping, message, mqtt_66);
         } catch (Exception e) {
-            
+
             logger.error("saveStatusData error : " + message.getHexString());
             logger.error(e.getMessage(), e);
         }
@@ -167,9 +167,8 @@ public class ParseDataService implements IParseDataService {
             MQTT_43 mqtt_43 = new MQTT_43();
             mqtt_43.ReadFromBytes(message.getMsgBody());
             //暂时不记录报警数据 2017-10-11
-//      logicHelperMqtt.saveAlarmData(message, mqtt_43);
+            //      logicHelperMqtt.saveAlarmData(message, mqtt_43);
         } catch (Exception e) {
-            
             logger.error(e.getMessage(), e);
         }
     }
@@ -197,7 +196,6 @@ public class ParseDataService implements IParseDataService {
             }
             logicHelperMqtt.saveCanData(mapping, message, canZotye);
         } catch (Exception e) {
-            
             logger.error(e.getMessage(), e);
         }
     }
@@ -229,7 +227,7 @@ public class ParseDataService implements IParseDataService {
                         MQTT_43 mqtt_43 = new MQTT_43();
                         mqtt_43.setAlarmType(carStartAndStop.mGear == 0 ? (byte) 254 : (byte) 255);
                         // 暂时不记录报警数据 2017-10-11
-//            logicHelperMqtt.saveAlarmData(message, mqtt_43);
+                        //            logicHelperMqtt.saveAlarmData(message, mqtt_43);
                     }
                     break;
 
@@ -277,7 +275,7 @@ public class ParseDataService implements IParseDataService {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            
+
         }
     }
 
@@ -341,7 +339,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "订单续订数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -355,7 +353,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "取车数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -369,7 +367,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "订单回复数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -428,15 +426,19 @@ public class ParseDataService implements IParseDataService {
             dto.setSourceHex(message.getHexString());
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
-                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
-            }
-            CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
-            if (csVehicle == null) {
+                logger.error("车机号在系统中不存在,车机号[{}]", message.getCarNumber());
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
-                dto.setVin(csVehicle.getCsvVin());
-                kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                dto.setAccess(csMachine.getCsmAccess());
+                if (csVehicle == null) {
+                    kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+                } else {
+                    dto.setVin(csVehicle.getCsvVin());
+                    kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                }
             }
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -475,7 +477,7 @@ public class ParseDataService implements IParseDataService {
                 updateTerminalService.update(machineUpdate);
             }
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -513,7 +515,7 @@ public class ParseDataService implements IParseDataService {
                 updateTerminalService.update(machine);
             }
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -564,7 +566,7 @@ public class ParseDataService implements IParseDataService {
                 logger.error(message.getCarNumber() + " 未授权给应用");
             }
         } catch (Exception e) {
-            
+
             logger.error(e.getMessage(), e);
         }
     }

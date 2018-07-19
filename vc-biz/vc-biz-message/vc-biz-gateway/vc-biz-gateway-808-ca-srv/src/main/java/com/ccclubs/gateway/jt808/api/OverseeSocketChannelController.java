@@ -1,11 +1,10 @@
 package com.ccclubs.gateway.jt808.api;
 
-import com.ccclubs.gateway.common.connection.ClientSocketCollection;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
+import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.protocol.util.StringUtils;
-import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,16 +29,22 @@ public class OverseeSocketChannelController {
 
     @GetMapping("/count/all")
     public R countAllConnection() {
-        int count = ClientSocketCollection.getAll();
+        int count = ClientCache.getAll();
+        return OK.Statu.SUCCESS_WITH_DATA.build().addData("count", count);
+    }
+
+    @GetMapping("/map/all")
+    public R countAllChannelMapping() {
+        int count = ClientCache.getAllMap();
         return OK.Statu.SUCCESS_WITH_DATA.build().addData("count", count);
     }
 
     @GetMapping("/{sim}/detail")
     public R getTerConnDetail(@PathVariable("sim") String sim) {
         if (StringUtils.notEmpty(sim)) {
-            SocketChannel channel = ClientSocketCollection.getDetail(sim);
-            if (Objects.nonNull(channel)) {
-                return OK.Statu.SUCCESS_WITH_DATA.build().addData("channel", channel);
+            ClientCache client = ClientCache.getDetail(sim);
+            if (Objects.nonNull(client)) {
+                return OK.Statu.SUCCESS_WITH_DATA.build().addData("channel", client);
             } else {
                 return Error.Statu.SIM_NOT_EXIST.build();
             }
@@ -49,7 +54,7 @@ public class OverseeSocketChannelController {
 
     @GetMapping("/all/sim")
     public R getAllConnSIMSet() {
-        Set<String> simSet = ClientSocketCollection.getAllUniqueNo();
+        Set<String> simSet = ClientCache.getAllUniqueNo();
         return OK.Statu.SUCCESS_WITH_DATA.build()
                 .addData("total", simSet.size())
                 .addData("sims", simSet);
@@ -57,7 +62,7 @@ public class OverseeSocketChannelController {
 
     @GetMapping("/all/disconnected")
     public R getAllDisconnected() {
-        Set<String> simSet = ClientSocketCollection.getAllDisConnected();
+        Set<String> simSet = ClientCache.getAllDisConnected();
         return OK.Statu.SUCCESS_WITH_DATA.build()
                 .addData("total", simSet.size())
                 .addData("sims", simSet);

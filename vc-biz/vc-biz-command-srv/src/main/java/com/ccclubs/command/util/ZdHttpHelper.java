@@ -51,6 +51,13 @@ public class ZdHttpHelper {
         }
     }
 
+    /**
+     * 发送GET请求
+     * @param url
+     * @param encoding
+     * @return
+     * @throws Exception
+     */
     public String httpDoGet(String url, String encoding) throws Exception {
         String result = "";
         CloseableHttpClient httpclient = HttpClients
@@ -59,6 +66,7 @@ public class ZdHttpHelper {
         CloseableHttpResponse response = httpclient.execute(httpPost);
         System.out.println(response.getStatusLine());
         int statusCode = response.getStatusLine().getStatusCode();
+        // 200正常
         if (statusCode == 200) {
             HttpEntity entity = response.getEntity();
             result = IOUtils.toString(entity.getContent(), encoding);

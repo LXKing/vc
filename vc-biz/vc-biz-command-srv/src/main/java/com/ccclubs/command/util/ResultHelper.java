@@ -37,6 +37,15 @@ public class ResultHelper {
     @Resource
     private RedisTemplate redisTemplate;
 
+    /**
+     * 确认指令结果
+     * @param csRemote
+     * @param resultType
+     * @param output
+     * @param csMachine
+     * @param <T>
+     * @return
+     */
     public <T> T confirmResult(CsRemote csRemote, Integer resultType, T output, CsMachine csMachine) {
         switch (resultType) {
             case 1://async
@@ -100,7 +109,7 @@ public class ResultHelper {
         } catch (ApiException ex) {
             throw ex;
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

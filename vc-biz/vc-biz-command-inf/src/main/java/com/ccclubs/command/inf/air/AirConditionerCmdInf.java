@@ -13,7 +13,17 @@ import com.ccclubs.command.dto.AirMonoOutput;
  **/
 public interface AirConditionerCmdInf {
 
+    /**
+     * 空调控制-单个控制项
+     * @param input
+     * @return
+     */
     AirMonoOutput airConditionerMonoCtrl(AirMonoInput input);
 
+    /**
+     * 空调控制-全部控制项
+     * @param input
+     * @return
+     */
     AirAllOutput airConditionerAllCtrl(AirAllInput input);
 }
