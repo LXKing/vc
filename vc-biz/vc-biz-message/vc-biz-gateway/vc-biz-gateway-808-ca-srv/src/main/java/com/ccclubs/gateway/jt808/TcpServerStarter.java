@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808;
 
+import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -24,7 +25,9 @@ import java.util.Objects;
 public class TcpServerStarter implements SmartLifecycle {
     private static final Logger LOG = LoggerFactory.getLogger(TcpServerStarter.class);
 
-    // 是否开启缓存检查（debug时用）
+    /**
+     * 是否开启缓存检查（debug时用）
+     */
     private boolean checkBufferLeaker;
 
     @Autowired
@@ -57,6 +60,7 @@ public class TcpServerStarter implements SmartLifecycle {
             } else if (!future.isSuccess()) {
                 LOG.error("808-TCP bind failed cause：{}", future.cause());
             } else {
+                ClientCache.setServerChannel(this.serverChannel);
                 LOG.info("808-TCP server start success: port={}", tcpPort);
             }
         }));
@@ -71,15 +75,15 @@ public class TcpServerStarter implements SmartLifecycle {
 
     @Override
     public void stop() {
+        serverChannel.close().syncUninterruptibly();
+        if (Objects.nonNull(serverChannel.parent())) {
+            serverChannel.parent().close().syncUninterruptibly();
+        }
         try {
             LOG.info("tcp server is closing, all client will offline");
             terminalConnService.offlineOfAll();
         } catch (Exception e) {
             LOG.error("exception occured in offline all client when server shutdown: {}", e);
-        }
-        serverChannel.close();
-        if (Objects.nonNull(serverChannel.parent())) {
-            serverChannel.parent().close();
         }
     }
 
