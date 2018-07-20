@@ -13,7 +13,14 @@ import java.util.Map;
  **/
 @ConfigurationProperties(prefix = "command")
 public class CommandProp {
+    /**
+     * key=指令 value=指令值
+     */
     private Map<String, Integer> cmdMap;
+
+    /**
+     * key=版本 value=版本号
+     */
     private Map<String, Integer> supportVersionMap;
 
     public Map<String, Integer> getSupportVersionMap() {

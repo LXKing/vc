@@ -16,8 +16,17 @@ public class MqMessageListener implements MessageListener {
 
   private static Logger logger = LoggerFactory.getLogger(MqMessageListener.class);
 
+  /**
+   * mq消息处理
+   */
   private IMqMessageProcessService mqMessageProcessService;
 
+  /**
+   * 消费阿里MQ消息
+   * @param message
+   * @param context
+   * @return
+   */
   @Override
   public Action consume(Message message, ConsumeContext context) {
     try {

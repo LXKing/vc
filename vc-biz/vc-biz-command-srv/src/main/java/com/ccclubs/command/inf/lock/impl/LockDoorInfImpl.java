@@ -44,6 +44,9 @@ public class LockDoorInfImpl implements LockDoorInf {
     @Autowired
     private CsStructMapper sdao;
 
+    /**
+     * 校验服务
+     */
     @Resource
     private ValidateHelper validateHelper;
 

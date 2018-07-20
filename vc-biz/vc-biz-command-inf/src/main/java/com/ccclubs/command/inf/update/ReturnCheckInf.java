@@ -12,5 +12,10 @@ import com.ccclubs.command.dto.ReturnCheckOutput;
  * @create 2017-08-01
  **/
 public interface ReturnCheckInf {
+    /**
+     * 设置还车
+     * @param input
+     * @return
+     */
     ReturnCheckOutput setReturn(ReturnCheckInput input);
 }

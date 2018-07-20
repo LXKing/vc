@@ -32,6 +32,16 @@ public class CsRemoteUtil {
         return csRemote;
     }
 
+    /**
+     * 构建808指令
+     * @param v
+     * @param m
+     * @param structId
+     * @param appId
+     * @param csrId
+     * @param csrsId
+     * @return
+     */
     public static CsRemote construct808(CsVehicle v, CsMachine m, Long structId, String appId, Long csrId, Long csrsId) {
         CsRemote csRemote = new CsRemote();
         csRemote.setCsrId(csrId);

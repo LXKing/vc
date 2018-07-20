@@ -164,6 +164,11 @@ public class AutopilotInfImpl implements AutopilotInf {
         return output;
     }
 
+    /**
+     * 获取所有值
+     * @param input
+     * @return
+     */
     private int getAllValue(VoiceIssuedInput input) {
         int voicetype = 0;
         if (input.getVoiceType() == 1) {
