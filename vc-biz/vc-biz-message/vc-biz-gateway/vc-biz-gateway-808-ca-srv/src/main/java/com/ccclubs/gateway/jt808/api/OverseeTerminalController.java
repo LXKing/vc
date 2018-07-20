@@ -4,6 +4,7 @@ import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
+import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerOverseeService;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
@@ -108,6 +109,10 @@ public class OverseeTerminalController {
                     .append("\n*---------------------------------------------------------------\n");
             LOG.info(cmdCountSb.toString());
             if (10 == ALL_CLIENT_OFFLINE_CMD_COUNT) {
+                /**
+                 * 先关闭服务端再下线所有连接
+                 */
+                ClientCache.getServerChannel().close().syncUninterruptibly();
                 terminalConnService.offlineOfAll();
                 LOG.warn("truely executed cmd: offline all client");
                 ALL_CLIENT_OFFLINE_CMD_COUNT = 0;
