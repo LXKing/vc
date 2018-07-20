@@ -11,13 +11,13 @@ import com.ccclubs.gateway.jt808.exception.PackageDecodeException;
 import com.ccclubs.gateway.jt808.message.pac.PacContentAttr;
 import com.ccclubs.gateway.jt808.message.pac.PacSealInfo;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.util.BufReleaseUtil;
 import com.ccclubs.gateway.jt808.util.PacTranslateUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
-import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,22 +56,18 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         if (LOG.isDebugEnabled()) {
             LOG.debug("after decode: frame={}", frame==null?"null":ByteBufUtil.hexDump(frame));
         }
-
+        // 处理空贞
         if (Objects.isNull(frame) || frame.readableBytes() == 0) {
             dealEmptyPackage(frame);
             return null;
         }
-
+        // 还原原始报文
         String unTranslatedPacHex = PacUtil.packWithPacSymbol(ByteBufUtil.hexDump(frame));
-        // 消息转义: 还原消息
-        PacTranslateUtil.translateUpPac(frame);
         if (TcpServerConf.GATEWAY_PRINT_LOG) {
             LOG.info("-------------------------------------------------------> new package came: start handling X)");
         }
-
         PacProcessTrack pacProcessTrack = resetTracks(ctx);
         Package808 pac = composePac(unTranslatedPacHex, frame, pacProcessTrack);
-
         // 设置唯一标识
         ChannelAttrbuteUtil.getLifeTrack(ctx.channel()).setUniqueNo(pac.getHeader().getTerMobile());
         return pac;
@@ -88,11 +84,27 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
      * @return
      */
     public Package808 composePac(String sourceHexStr, ByteBuf frame, PacProcessTrack pacProcessTrack) {
+        DecodeExceptionDTO decodeExceptionInfo = new DecodeExceptionDTO(sourceHexStr);
+        pacProcessTrack.setSourceHex(sourceHexStr);
+        // 消息转义: 还原消息
+        try {
+            PacTranslateUtil.translateUpPac(frame);
+        } catch (Exception e) {
+            decodeExceptionInfo.fail()
+                    .setReason("消息转义还原时出现异常")
+                    .setExpectedVal(e.getMessage());
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack, frame);
+        }
+
+        /**
+         * 只有当消息转义正常才能继续执行
+         */
         Package808 pac = Package808.ofNew()
                 .setSourceBuff(frame).setSourceHexStr(sourceHexStr);
-        pacProcessTrack.setSourceHex(sourceHexStr);
-        DecodeExceptionDTO decodeExceptionInfo = new DecodeExceptionDTO(pac.getSourceHexStr());
-
+        /**
+         * 当任何handler出现异常时，在异常处理中释放该buf
+         */
+        pacProcessTrack.setPacBuf(frame);
         // 最小包校验
         int currPacLen = frame.readableBytes();
         if (currPacLen < this.minFrameLength) {
@@ -100,7 +112,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
                     .setReason("整包长度小于最小包长")
                     .setExpectedVal(">=" + this.minFrameLength)
                     .setExceptionVal("" + currPacLen);
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack, frame);
         }
 
         // 读取终端手机号
@@ -109,7 +121,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
             decodeExceptionInfo.fail()
                     .setReason("sim号码字段不满12个字符")
                     .setExpectedVal("非空的12个字符");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack, frame);
         } else {
             frame.readerIndex(mobileByteIndex);
             ByteBuf mobileBuf = frame.readSlice(PackagePart.TER_MOBILE.getLen());
@@ -131,7 +143,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
                     .setReason("不支持的消息ID")
                     .setExceptionVal(Integer.toHexString(pacId))
                     .setExpectedVal(UpPacType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack, frame);
         } else {
             decodeExceptionInfo.next();
             pac.getHeader().setPacId(pacId);
@@ -175,7 +187,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
                     .setReason("消息体的长度大于实际可读字节数")
                     .setExceptionVal(String.valueOf(contentLen))
                     .setExpectedVal("小于" + String.valueOf(frame.readableBytes()));
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack, frame);
         } else {
             ByteBuf bodyBuf = frame.readSlice(pac.getHeader().getPacContentAttr().getContentLen());
             pac.getBody().setContent(bodyBuf);
@@ -197,7 +209,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
      */
     private void dealEmptyPackage(ByteBuf frame) {
         // 释放空的Direct Buffer（空包）
-        ReferenceCountUtil.release(frame);
+        BufReleaseUtil.releaseOnce(frame);
     }
 
     /**
@@ -210,7 +222,12 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         return ChannelAttrbuteUtil.getPacTracker(ctx.channel()).next();
     }
 
-    public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack) {
+    public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack, ByteBuf buf) {
+        /**
+         * 释放引用
+         */
+        BufReleaseUtil.releaseByLoop(buf);
+
         pacProcessTrack.getCurrentHandlerTracker().setErrorOccur(true);
         pacProcessTrack.getExpMessageDTO()
                 .setMsgTime(System.currentTimeMillis());

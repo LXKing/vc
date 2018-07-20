@@ -38,7 +38,9 @@ public class ValidatePacHandler extends CCClubChannelInboundHandler<Package808> 
             LOG.error("校验异常, 原始报文[{}]", pac.getSourceHexStr());
         }
 
-        LOG.debug("validate result: {}", pacCurrect);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("validate result: {}", pacCurrect);
+        }
         return HandleStatus.NEXT;
     }
 

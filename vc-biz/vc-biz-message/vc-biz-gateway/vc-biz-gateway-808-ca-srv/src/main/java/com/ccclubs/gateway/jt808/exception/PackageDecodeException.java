@@ -1,8 +1,6 @@
 package com.ccclubs.gateway.jt808.exception;
 
-import com.ccclubs.gateway.jt808.constant.PackagePart;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.DecoderException;
 
 /**
@@ -16,53 +14,25 @@ public class PackageDecodeException extends DecoderException {
 
     private static final String EXCEPTION_DECRIPTION_PRIFIX= "解析数据包时出现异常: ";
 
-    private String vin;
+    /**
+     * 异常出现时，附带需要销毁的buf对象
+     */
+    private ByteBuf buf;
 
     public PackageDecodeException() {
         super(EXCEPTION_DECRIPTION_PRIFIX);
     }
 
-
     public PackageDecodeException(String message) {
         super(message);
     }
 
-    public PackageDecodeException(PackagePart pacPart, String exceptionVal) {
-        super(new StringBuilder(EXCEPTION_DECRIPTION_PRIFIX)
-                        .append("位置[").append(pacPart.getDes()).append("]")
-                        .append("异常值[").append(exceptionVal).append("]").toString());
+    public ByteBuf getBuf() {
+        return buf;
     }
 
-    public PackageDecodeException(String message, Throwable cause) {
-        super(new StringBuilder(EXCEPTION_DECRIPTION_PRIFIX)
-                        .append("[msg=").append(message).append("]")
-                        .append("[errormsg=").append(cause.getMessage()).append("]").toString(),
-                cause);
-    }
-
-    public PackageDecodeException(ByteBuf message, Throwable cause) {
-        super(new StringBuilder(EXCEPTION_DECRIPTION_PRIFIX)
-                        .append("[msg=").append(ByteBufUtil.hexDump(message)).append("]")
-                        .append("[errormsg=").append(cause.getMessage()).append("]").toString(),
-                cause);
-    }
-
-    public PackageDecodeException(ByteBuf message) {
-        super(EXCEPTION_DECRIPTION_PRIFIX + "[msg=]" + ByteBufUtil.hexDump(message));
-    }
-
-    public PackageDecodeException(Throwable cause) {
-        super(cause);
-    }
-
-
-
-    public String getVin() {
-        return vin;
-    }
-
-    public PackageDecodeException setVin(String vin) {
-        this.vin = vin;
+    public PackageDecodeException setBuf(ByteBuf buf) {
+        this.buf = buf;
         return this;
     }
 }
