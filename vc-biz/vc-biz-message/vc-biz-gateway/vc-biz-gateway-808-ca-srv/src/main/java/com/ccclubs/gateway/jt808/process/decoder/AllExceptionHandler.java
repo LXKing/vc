@@ -14,6 +14,7 @@ import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.exception.ClientMappingException;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
+import com.ccclubs.gateway.jt808.util.BufReleaseUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -54,7 +55,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             ReferenceCountUtil.release(pac.getSourceBuff());
             if (pac.getSourceBuff().refCnt() > 0) {
                 LOG.error("buf 引用计数 release后发现计数仍大于0 refCng={}", pac.getSourceBuff().refCnt());
-                while (ReferenceCountUtil.release(pac.getSourceBuff())) {}
+                BufReleaseUtil.releaseByLoop(pac.getSourceBuff());
             }
         }
     }
@@ -112,6 +113,9 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          *  3.发送至kafka
          */
         PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(channel);
+        // (重要)*如果buf未释放则：释放buf*
+        BufReleaseUtil.releaseByLoop(pacProcessTrack.getPacBuf());
+
         PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
         String uniqueNo = pacProcessTrack.getUniqueNo();
         uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);

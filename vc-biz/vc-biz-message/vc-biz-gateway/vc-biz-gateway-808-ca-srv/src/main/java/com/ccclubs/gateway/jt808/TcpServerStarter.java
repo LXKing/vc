@@ -4,18 +4,13 @@ import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.EventLoopGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.Lifecycle;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.context.support.DefaultLifecycleProcessor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
 import java.net.InetSocketAddress;
 import java.util.Objects;
 

@@ -76,8 +76,9 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
      * @param erroPacBuf
      */
     protected void releasePacBuffer(ByteBuf erroPacBuf) {
-
-        ReferenceCountUtil.release(erroPacBuf);
+        if (Objects.nonNull(erroPacBuf) && erroPacBuf.refCnt() > 0) {
+            ReferenceCountUtil.release(erroPacBuf);
+        }
     }
 
 }
