@@ -107,7 +107,7 @@ public final class PacTranslateUtil {
         if (sourceBuf.readableBytes() <= 0) {
             return Optional.empty();
         }
-        for (int i = sourceBuf.readerIndex(); i < sourceBuf.writerIndex(); i++) {
+        for (int i = sourceBuf.readerIndex(); i < sourceBuf.writerIndex() - 1; i++) {
             for (TranslateType t :
                     TranslateType.values()) {
                 boolean find = true;
@@ -123,6 +123,10 @@ public final class PacTranslateUtil {
             }
             sourceBuf.skipBytes(1);
         }
+        /**
+         * 直接跳过最后一位
+         */
+        sourceBuf.skipBytes(1);
         return Optional.empty();
     }
 

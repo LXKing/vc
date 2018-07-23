@@ -13,13 +13,13 @@ public enum TranslateType {
      * 转义：
      *  0x7e->0x7d0x02
      */
-    HEX_7E((byte) 0x7e, new byte[]{(byte) 0x7d, (byte) 0x02}),
+    HEX_7E((byte) 0x7e, PackageCons.PAC_TRANSLATE_TYPE_HEX_7E),
 
     /**
      * 转义：
      *  0x7d->0x7d0x01
      */
-    HEX_7D((byte) 0x7d, new byte[]{(byte) 0x7d, (byte) 0x01});
+    HEX_7D((byte) 0x7d, PackageCons.PAC_TRANSLATE_TYPE_HEX_7D);
 
     /**
      * 目标字节
