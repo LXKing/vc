@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>升级版本编号：</dt>
+					<dd>
+					<input name="id" placeholder="请输入升级版本编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>软件版本号：</dt>
+					<dd>
+					<input name="softVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>硬件版本号：</dt>
+					<dd>
+					<input name="hardVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型：</dt>
+					<dd>
+					<input name="modelId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>终端类型：</dt>
+					<dd>
+					<select class="form-control m-b" name="telType"  >
+                         <option></option>
+                         <option value="0">车厘子</option>
+                         <option value="1">中导</option>
+                         <option value="2">慧翰</option>
+                         <option value="3">通领</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>生产内部版本号：</dt>
+					<dd>
+					<input name="innerVer" placeholder="请输入生产内部版本号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>是否对外开放：</dt>
+					<dd>
+					<select class="form-control m-b" name="isOpen"  >
+                         <option></option>
+                         <option value="0">是</option>
+                         <option value="1">否</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>描述：</dt>
+					<dd>
+					<input name="des" placeholder="请输入描述" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>升级版本号：</dt>
+					<dd>
+					<input name="upVerNo" placeholder="请输入升级版本号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>文件服务器名称：</dt>
+					<dd>
+					<input name="serFtpId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/ftpserver/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>单次升级超时时长（毫秒）：</dt>
+					<dd>
+					<input name="perTimeout" placeholder="请输入单次升级超时时长（毫秒）" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>单次升级最大车辆数：</dt>
+					<dd>
+					<input name="perMaxVehicle" placeholder="请输入单次升级最大车辆数" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>升级文件名称：</dt>
+					<dd>
+					<input name="fileName" placeholder="请输入升级文件名称" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>是否为拐点版本：</dt>
+					<dd>
+					<select class="form-control m-b" name="turnOffFlag"  >
+                         <option></option>
+                         <option value="0">否</option>
+                         <option value="1">是</option>
+                    </select>
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/version/upgrade/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/version/upgrade/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

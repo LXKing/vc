@@ -2,6 +2,7 @@ package com.ccclubs.command.inf.update;
 
 import com.ccclubs.command.dto.UpgradeInput;
 import com.ccclubs.command.dto.UpgradeOutput;
+import com.ccclubs.upgrade.dto.UpgradeTask;
 
 /**
  * 终端一键升级
@@ -16,4 +17,12 @@ public interface TerminalUpgradeInf {
      * @return
      */
     UpgradeOutput oneKeyUpgrade(UpgradeInput input);
+
+    UpgradeOutput basicUpgrade(UpgradeTask task);
+
+    UpgradeOutput upgradePlugin(UpgradeTask task);
+
+    UpgradeOutput upgradeMajor(UpgradeTask task);
+
+    void sendSetCommand(String vin);
 }
