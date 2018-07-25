@@ -2,7 +2,7 @@ package com.ccclubs.command.inf.update.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
-import com.ccclubs.command.dto.MixedUpgradeTask;
+import com.ccclubs.command.dto.MixedUpgradeInput;
 import com.ccclubs.command.dto.UpgradeInput;
 import com.ccclubs.command.dto.UpgradeOutput;
 import com.ccclubs.command.inf.update.TerminalUpgradeInf;
@@ -153,7 +153,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
      */
     @Override
     @Transactional
-    public UpgradeOutput upgradeMixedVersionTask(MixedUpgradeTask upgradeTask) {
+    public UpgradeOutput upgradeMixedVersionTask(MixedUpgradeInput upgradeTask) {
         /**
          * 1. 命令执行前，对命令发起者的权限和车机校验
          */
