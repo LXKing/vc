@@ -374,6 +374,126 @@ public class VerUpgradeExample {
             return (Criteria) this;
         }
 
+        public Criteria andBluetoothVerIdIsNull() {
+            addCriterion("bluetooth_ver_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdIsNotNull() {
+            addCriterion("bluetooth_ver_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdEqualTo(Integer value) {
+            addCriterion("bluetooth_ver_id =", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdNotEqualTo(Integer value) {
+            addCriterion("bluetooth_ver_id <>", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdGreaterThan(Integer value) {
+            addCriterion("bluetooth_ver_id >", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("bluetooth_ver_id >=", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdLessThan(Integer value) {
+            addCriterion("bluetooth_ver_id <", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdLessThanOrEqualTo(Integer value) {
+            addCriterion("bluetooth_ver_id <=", value, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdIn(List<Integer> values) {
+            addCriterion("bluetooth_ver_id in", values, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdNotIn(List<Integer> values) {
+            addCriterion("bluetooth_ver_id not in", values, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdBetween(Integer value1, Integer value2) {
+            addCriterion("bluetooth_ver_id between", value1, value2, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andBluetoothVerIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("bluetooth_ver_id not between", value1, value2, "bluetoothVerId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdIsNull() {
+            addCriterion("major_version_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdIsNotNull() {
+            addCriterion("major_version_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdEqualTo(Integer value) {
+            addCriterion("major_version_id =", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdNotEqualTo(Integer value) {
+            addCriterion("major_version_id <>", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdGreaterThan(Integer value) {
+            addCriterion("major_version_id >", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("major_version_id >=", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdLessThan(Integer value) {
+            addCriterion("major_version_id <", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdLessThanOrEqualTo(Integer value) {
+            addCriterion("major_version_id <=", value, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdIn(List<Integer> values) {
+            addCriterion("major_version_id in", values, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdNotIn(List<Integer> values) {
+            addCriterion("major_version_id not in", values, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdBetween(Integer value1, Integer value2) {
+            addCriterion("major_version_id between", value1, value2, "majorVersionId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorVersionIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("major_version_id not between", value1, value2, "majorVersionId");
+            return (Criteria) this;
+        }
+
         public Criteria andModelIdIsNull() {
             addCriterion("model_id is null");
             return (Criteria) this;
@@ -444,52 +564,52 @@ public class VerUpgradeExample {
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeEqualTo(Integer value) {
+        public Criteria andTelTypeEqualTo(Byte value) {
             addCriterion("tel_type =", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeNotEqualTo(Integer value) {
+        public Criteria andTelTypeNotEqualTo(Byte value) {
             addCriterion("tel_type <>", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeGreaterThan(Integer value) {
+        public Criteria andTelTypeGreaterThan(Byte value) {
             addCriterion("tel_type >", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeGreaterThanOrEqualTo(Integer value) {
+        public Criteria andTelTypeGreaterThanOrEqualTo(Byte value) {
             addCriterion("tel_type >=", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeLessThan(Integer value) {
+        public Criteria andTelTypeLessThan(Byte value) {
             addCriterion("tel_type <", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeLessThanOrEqualTo(Integer value) {
+        public Criteria andTelTypeLessThanOrEqualTo(Byte value) {
             addCriterion("tel_type <=", value, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeIn(List<Integer> values) {
+        public Criteria andTelTypeIn(List<Byte> values) {
             addCriterion("tel_type in", values, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeNotIn(List<Integer> values) {
+        public Criteria andTelTypeNotIn(List<Byte> values) {
             addCriterion("tel_type not in", values, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeBetween(Integer value1, Integer value2) {
+        public Criteria andTelTypeBetween(Byte value1, Byte value2) {
             addCriterion("tel_type between", value1, value2, "telType");
             return (Criteria) this;
         }
 
-        public Criteria andTelTypeNotBetween(Integer value1, Integer value2) {
+        public Criteria andTelTypeNotBetween(Byte value1, Byte value2) {
             addCriterion("tel_type not between", value1, value2, "telType");
             return (Criteria) this;
         }

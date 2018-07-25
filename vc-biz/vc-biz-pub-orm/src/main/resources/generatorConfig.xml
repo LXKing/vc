@@ -104,11 +104,10 @@
         </javaClientGenerator>
 
 
-        <table tableName="ver_up_precondition" schema="">
+        <table tableName="ver_upgrade" schema="">
             <!-- <generatedKey column="id" sqlStatement="select  replace(uuid(),'-','')   from dual" identity="false"/> -->
         </table>
-        <table tableName="ver_upgrade" schema=""></table>
-        <table tableName="ver_upgrade_record" schema=""></table>
+        <!--<table tableName="ver_upgrade_record" schema=""></table>-->
         <!--<table tableName="cs_his_machine_relation" schema=""></table>
         <table tableName="cs_machine" schema=""></table>
         <table tableName="cs_machine_mapping" schema=""></table>
