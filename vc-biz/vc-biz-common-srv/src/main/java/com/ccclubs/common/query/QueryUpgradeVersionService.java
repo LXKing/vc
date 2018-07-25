@@ -1,5 +1,6 @@
 package com.ccclubs.common.query;
 
+import com.ccclubs.pub.orm.mapper.VerUpgradeMapper;
 import com.ccclubs.pub.orm.model.VerUpgrade;
 import com.ccclubs.pub.orm.model.VerUpgradeExample;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class QueryUpgradeVersionService {
      * @param isTurning     是否拐点
      * @return
      */
-    public VerUpgrade getUpgradeVersion(int vehicleModel, int terType, String terModel, boolean isTurning) {
+    public VerUpgrade getUpgradeVersion(int vehicleModel, byte terType, String terModel, boolean isTurning) {
         VerUpgradeExample example = new VerUpgradeExample();
         VerUpgradeExample.Criteria criteria = example.createCriteria();
         criteria.andTelTypeEqualTo(terType);
