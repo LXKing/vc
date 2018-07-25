@@ -2,6 +2,7 @@ package com.ccclubs.command.util;
 
 
 import com.ccclubs.protocol.dto.jt808.*;
+import com.ccclubs.protocol.util.MyBuffer;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
@@ -9,10 +10,14 @@ import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.upgrade.constant.UpgradeVerType;
 import com.ccclubs.upgrade.dto.FtpServer;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by qsxiaogang on 2017/7/6.
@@ -306,6 +311,38 @@ public class UpdateHelper {
     public boolean isSharingCar(String vin) {
         // TODO
         return true;
+    }
+
+    /**
+     * 根据给定的波特率值，生成设置can波特率的报文
+     * @param rate
+     * @return
+     */
+    public String generateTLCANRateByParam(Short rate) {
+        if (Objects.isNull(rate)) {
+            return null;
+        }
+        StringBuilder rateSb = new StringBuilder("020000000504C00001F40000000604C000");
+        rateSb.append(Tools.ToHexString(rate));
+        return rateSb.toString();
+    }
+
+    /**
+     * 根据给定的can ID数组, 生成设置过滤表报文
+     * @param canIdList
+     * @return
+     */
+    public String genertateTLCanFilterTableByArray(List<Integer> canIdList) {
+        /**
+         * TODO 第一期简单实现
+         */
+        return CAN_HEX_STRING;
+    }
+
+
+    public static void main(String[] args) {
+        String s = new UpdateHelper().generateTLCANRateByParam((short)500);
+        Assert.assertTrue(RATE_J.equals(s));
     }
 
 

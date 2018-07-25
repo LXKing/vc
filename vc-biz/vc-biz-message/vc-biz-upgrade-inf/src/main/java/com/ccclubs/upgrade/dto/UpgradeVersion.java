@@ -1,5 +1,7 @@
 package com.ccclubs.upgrade.dto;
 
+import java.util.List;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/5/18
@@ -44,6 +46,15 @@ public class UpgradeVersion {
      * 升级文件所在服务器配置
      */
     private FtpServer ftpServer;
+
+    /**
+     * can波特率
+     */
+    private Short canRate;
+    /**
+     * 过滤表中canID列表
+     */
+    private List<Integer> canIdList;
 
     // -----------------------------------
 
@@ -107,6 +118,24 @@ public class UpgradeVersion {
 
     public UpgradeVersion setFtpServer(FtpServer ftpServer) {
         this.ftpServer = ftpServer;
+        return this;
+    }
+
+    public Short getCanRate() {
+        return canRate;
+    }
+
+    public UpgradeVersion setCanRate(Short canRate) {
+        this.canRate = canRate;
+        return this;
+    }
+
+    public List<Integer> getCanIdList() {
+        return canIdList;
+    }
+
+    public UpgradeVersion setCanIdList(List<Integer> canIdList) {
+        this.canIdList = canIdList;
         return this;
     }
 }

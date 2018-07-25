@@ -1,5 +1,6 @@
 package com.ccclubs.command.inf.update;
 
+import com.ccclubs.command.dto.MixedUpgradeTask;
 import com.ccclubs.command.dto.UpgradeInput;
 import com.ccclubs.command.dto.UpgradeOutput;
 import com.ccclubs.upgrade.dto.UpgradeTask;
@@ -23,6 +24,12 @@ public interface TerminalUpgradeInf {
     UpgradeOutput upgradePlugin(UpgradeTask task);
 
     UpgradeOutput upgradeMajor(UpgradeTask task);
+
+    /**
+     * 通领二合一版本升级
+     * @param upgradeTask
+     */
+    UpgradeOutput upgradeMixedVersionTask(MixedUpgradeTask upgradeTask);
 
     void sendSetCommand(String vin);
 }
