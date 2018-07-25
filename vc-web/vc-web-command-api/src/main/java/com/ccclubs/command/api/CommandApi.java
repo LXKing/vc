@@ -126,7 +126,6 @@ public class CommandApi {
     @PostMapping("mixedUpgrade")
     public ApiMessage<UpgradeOutput> upgradeMixedVersion(@RequestHeader("appId") String appId, VerUpgradeInput input) {
         logger.info("API事件:通领二合一版本升级,APPID:{},车架号:{},目标升级包id:{}", appId, input.getVin(), input.getUpgradeVerId());
-        input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "终端升级");
         }

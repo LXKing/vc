@@ -12,11 +12,6 @@ import java.io.Serializable;
  */
 public class VerUpgradeInput implements Serializable {
     /**
-     * 身份验证
-     */
-    private String appId;
-
-    /**
      * 车机VIN码
      */
     @NotNull(message = "车辆vin码必填")
@@ -43,15 +38,6 @@ public class VerUpgradeInput implements Serializable {
 
     public VerUpgradeInput setUpgradeVerId(Integer upgradeVerId) {
         this.upgradeVerId = upgradeVerId;
-        return this;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public VerUpgradeInput setAppId(String appId) {
-        this.appId = appId;
         return this;
     }
 }
