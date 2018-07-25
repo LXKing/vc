@@ -32,11 +32,11 @@ public class TboxVersionOutput implements Serializable {
     /**
      * 升级进度百分比
      */
-    private Integer percent;
+    private Long percent;
     /**
      * 剩余时间
      */
-    private Integer leftTime;
+    private Long leftTime;
 
     public String getLatestV() {
         return latestV;
@@ -78,19 +78,19 @@ public class TboxVersionOutput implements Serializable {
         this.statusText = statusText;
     }
 
-    public Integer getPercent() {
+    public Long getPercent() {
         return percent;
     }
 
-    public void setPercent(Integer percent) {
+    public void setPercent(Long percent) {
         this.percent = percent;
     }
 
-    public Integer getLeftTime() {
+    public Long getLeftTime() {
         return leftTime;
     }
 
-    public void setLeftTime(Integer leftTime) {
+    public void setLeftTime(Long leftTime) {
         this.leftTime = leftTime;
     }
 }

@@ -1,5 +1,6 @@
 package com.ccclubs.terminal.inf.upgrade.impl;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.spring.constant.ApiEnum;
@@ -16,7 +17,9 @@ import com.ccclubs.terminal.dto.AbleUpgradeOutput;
 import com.ccclubs.terminal.dto.TboxVersionInput;
 import com.ccclubs.terminal.dto.TboxVersionOutput;
 import com.ccclubs.terminal.inf.upgrade.UpgradeInf;
+import com.ccclubs.terminal.version.TerminalServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.List;
  * @author jianghaiyang
  * @create 2018-07-24
  **/
+@Service(version = TerminalServiceVersion.V1)
 public class UpgradeInfImpl implements UpgradeInf {
 
     @Autowired
@@ -47,6 +51,9 @@ public class UpgradeInfImpl implements UpgradeInf {
 
     @Resource
     VerSoftHardwareMapper verSoftHardwareMapper;
+
+    @Value("${upgrade.timeout}")
+    Integer upgradeTimeout;
 
     /**
      * 获取终端可升级的版本列表
@@ -98,7 +105,7 @@ public class UpgradeInfImpl implements UpgradeInf {
         VerUpgradeRecordExample example = new VerUpgradeRecordExample();
         VerUpgradeRecordExample.Criteria criteria = example.createCriteria();
         criteria.andTeNumberEqualTo(csMachine.getCsmNumber());
-        example.setOrderByClause("id desc");
+        example.setOrderByClause("id desc limit 1");
         List<VerUpgradeRecord> verUpgradeRecordList = verUpgradeRecordMapper.selectByExample(example);
 
         //查询该终端对应的升级包
@@ -107,7 +114,7 @@ public class UpgradeInfImpl implements UpgradeInf {
         verUpgradeCriteria.andModelIdEqualTo(csVehicle.getCsvModel());
         verUpgradeCriteria.andTelModelEqualTo(csMachine.getCsmTeModel());
         verUpgradeCriteria.andTelTypeEqualTo(csMachine.getCsmTeType());
-        verUpgradeExample.setOrderByClause("id desc");
+        verUpgradeExample.setOrderByClause("id desc limit 1");
         List<VerUpgrade> verUpgradeList = verUpgradeMapper.selectByExample(verUpgradeExample);
 
         TboxVersionOutput output = new TboxVersionOutput();
@@ -120,18 +127,46 @@ public class UpgradeInfImpl implements UpgradeInf {
             //得到最新的版本包
             VerUpgrade verUpgrade = verUpgradeList.get(0);
             output.setLatestV(getLatestPluginV(verUpgrade));
+            output.setLatest(currentPluginV >= Integer.parseInt(output.getLatestV()));
         }
 
-        //未查询到升级记录，默认已升级
+        //未查询到升级记录
         if (verUpgradeRecordList == null || verUpgradeRecordList.size() == 0) {
-
             output.setCurrentV(String.valueOf(currentPluginV));
+            //插件版本已最新，返回已升级；否则返回待升级
+            if (output.getLatest()) {
+                output.setStatus(UpgradeStatus.UPGRADED.getValue());
+                output.setStatusText(UpgradeStatus.UPGRADED.getName());
+            } else {
+                output.setStatus(UpgradeStatus.TOUPGRADE.getValue());
+                output.setStatusText(UpgradeStatus.TOUPGRADE.getName());
+            }
         } else {
             //最新的升级记录
             VerUpgradeRecord verUpgradeRecord = verUpgradeRecordList.get(0);
             UpgradeStatus status = UpgradeStatus.getStatus(verUpgradeRecord.getStatus());
             output.setStatus(status.getValue());
             output.setStatusText(status.getName());
+            //只有处于升级中的才显示进度、剩余时间
+            if (UpgradeStatus.UPGRADING.getValue().equals(status.getValue())) {
+                //已升级的时间
+                Long passedTime = System.currentTimeMillis() - verUpgradeRecord.getAddTime().getTime();
+                if (passedTime < upgradeTimeout) {
+                    Long percent = (passedTime * 100) / (upgradeTimeout * 1000L);
+                    Long leftTime = upgradeTimeout - upgradeTimeout * percent / 100;
+                    output.setPercent(percent);
+                    output.setLeftTime(leftTime);
+                } else if (passedTime > upgradeTimeout * 2) {
+                    //升级超过10min，认为失败
+                    output.setStatus(UpgradeStatus.FAILED.getValue());
+                    output.setStatusText(UpgradeStatus.FAILED.getName());
+                    //更新record
+                    VerUpgradeRecord verUpgradeRecordUpdate = new VerUpgradeRecord();
+                    verUpgradeRecordUpdate.setId(verUpgradeRecord.getId());
+                    verUpgradeRecordUpdate.setStatus(UpgradeStatus.FAILED.getValue());
+                    updateUpgradeRecord(verUpgradeRecordUpdate);
+                }
+            }
         }
         return output;
     }
@@ -148,5 +183,12 @@ public class UpgradeInfImpl implements UpgradeInf {
             throw new ApiException(ApiEnum.FAIL, "系统未查询到该车机安装的插件版本信息，请联系管理员录入");
         }
         return verSoftHardware.getVerNo();
+    }
+
+    private int updateUpgradeRecord(VerUpgradeRecord verUpgradeRecordUpdate) {
+        VerUpgradeRecordExample example = new VerUpgradeRecordExample();
+        VerUpgradeRecordExample.Criteria criteria = example.createCriteria();
+        criteria.andIdEqualTo(verUpgradeRecordUpdate.getId());
+        return verUpgradeRecordMapper.updateByExampleSelective(verUpgradeRecordUpdate, example);
     }
 }
