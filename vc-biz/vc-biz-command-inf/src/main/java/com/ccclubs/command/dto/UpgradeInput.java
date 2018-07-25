@@ -14,12 +14,6 @@ public class UpgradeInput extends CommonInput implements java.io.Serializable{
     private String vin;
 
     /**
-     * 目标升级版本ID
-     */
-    @NotNull(message = "目标升级包ID必填")
-    private Integer upgradeVerId;
-
-    /**
      * 文件名称
      */
     private String filename;
@@ -38,13 +32,5 @@ public class UpgradeInput extends CommonInput implements java.io.Serializable{
 
     public void setFilename(String filename) {
         this.filename = filename;
-    }
-
-    public Integer getUpgradeVerId() {
-        return upgradeVerId;
-    }
-
-    public void setUpgradeVerId(Integer upgradeVerId) {
-        this.upgradeVerId = upgradeVerId;
     }
 }

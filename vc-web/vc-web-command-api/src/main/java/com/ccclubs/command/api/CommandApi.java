@@ -22,7 +22,8 @@ import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import com.ccclubs.terminal.inf.upgrade.UpgradeInf;
-import com.ccclubs.upgrade.dto.UpgradeVersion;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,15 +124,14 @@ public class CommandApi {
     @ApiSecurity
     @ApiOperation(value = "通领二合一版本升级", notes = "通领二合一版本升级")
     @PostMapping("mixedUpgrade")
-    public ApiMessage<UpgradeOutput> upgradeMixedVersion(@RequestHeader("appId") String appId, UpgradeInput input) {
+    public ApiMessage<UpgradeOutput> upgradeMixedVersion(@RequestHeader("appId") String appId, VerUpgradeInput input) {
         logger.info("API事件:通领二合一版本升级,APPID:{},车架号:{},目标升级包id:{}", appId, input.getVin(), input.getUpgradeVerId());
-        input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "终端升级");
         }
 
         // 构造升级条件
-        MixedUpgradeTask upgradeTask = new MixedUpgradeTask();
+        MixedUpgradeInput upgradeTask = new MixedUpgradeInput();
         upgradeTask.setAppId(appId)
                 .setVin(input.getVin())
                 .setMixedUpVersionId(input.getUpgradeVerId());

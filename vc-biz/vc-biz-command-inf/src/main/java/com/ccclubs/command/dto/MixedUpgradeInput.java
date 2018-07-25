@@ -7,7 +7,7 @@ package com.ccclubs.command.dto;
  * Email:  yeanzhi@ccclubs.com
  * 二合一版本升级条件
  */
-public class MixedUpgradeTask {
+public class MixedUpgradeInput {
     /**
      * 权限
      */
@@ -35,7 +35,7 @@ public class MixedUpgradeTask {
         return vin;
     }
 
-    public MixedUpgradeTask setVin(String vin) {
+    public MixedUpgradeInput setVin(String vin) {
         this.vin = vin;
         return this;
     }
@@ -44,7 +44,7 @@ public class MixedUpgradeTask {
         return terType;
     }
 
-    public MixedUpgradeTask setTerType(Byte terType) {
+    public MixedUpgradeInput setTerType(Byte terType) {
         this.terType = terType;
         return this;
     }
@@ -53,7 +53,7 @@ public class MixedUpgradeTask {
         return terModel;
     }
 
-    public MixedUpgradeTask setTerModel(String terModel) {
+    public MixedUpgradeInput setTerModel(String terModel) {
         this.terModel = terModel;
         return this;
     }
@@ -62,7 +62,7 @@ public class MixedUpgradeTask {
         return appId;
     }
 
-    public MixedUpgradeTask setAppId(String appId) {
+    public MixedUpgradeInput setAppId(String appId) {
         this.appId = appId;
         return this;
     }
