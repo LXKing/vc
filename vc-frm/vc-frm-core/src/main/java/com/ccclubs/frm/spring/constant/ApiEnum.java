@@ -50,9 +50,10 @@ public enum ApiEnum {
 	OLD_VERSION_DETECTED(101023, "Old terminal version detected, please update your terminal to {} or higher", "终端版本过低，请升级到{}以上"),
 	TERMINAL_NOT_ONLINE(101024, "Terminal is not online at current time", "终端当前不在线"),
 	AUTOPILOT_CTRL_ERROR(101025,"autopilot parameter error","自动驾驶相关指令参数异常"),
-    UPGRADE_VERSION_NOT_FOUND(101026, "mixed upgrade version not found", "未查询对应的升级包"),
+    UPGRADE_VERSION_NOT_FOUND(101026, "mixed upgrade version not found", "系统未查询到该车机安装的版本包信息，请联系管理员录入"),
     UPGRADE_FTP_SERVER_NOT_FOUND(101027, "upgrade ftp server info not found", "版本升级时未查询到ftp服务器信息"),
-    UPGRADE_CURRENT_VERSION_NOT_FOUND(101028, "current version info not found", "版本升级时未查询到当前车机版本信息");
+    UPGRADE_CURRENT_VERSION_NOT_FOUND(101028, "current version info not found", "版本升级时未查询到当前车机版本信息"),
+    UPGRADE_PLUGIN_VERSION_NOT_FOUND(101029, "plugin version info not found", "系统未查询到该车机安装的插件版本信息，请联系管理员录入");
 	private int code;
 	private String msg;
 	private String memo;

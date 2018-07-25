@@ -15,6 +15,8 @@ import com.ccclubs.vehicle.dto.VehicleBaseOutput;
 import com.ccclubs.vehicle.inf.base.QueryVehicleBaseInf;
 import com.ccclubs.vehicle.inf.binding.BindHistoryInf;
 import com.ccclubs.vehicle.version.VehicleServiceVersion;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -175,6 +177,8 @@ public class VtSearchApi {
      */
     @ApiSecurity
     @ApiOperation(value = "获取终端可升级的版本列表", notes = "获取终端可升级的版本列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "vin", value = "车架号", required = true, paramType = "query")})
     @PostMapping("getAbleUpgradeList")
     public ApiMessage<List<AbleUpgradeOutput>> getAbleUpgradeList(@RequestHeader("appId") String appId, AbleUpgradeInput input) {
         input.setAppId(appId);
@@ -191,6 +195,8 @@ public class VtSearchApi {
      */
     @ApiSecurity
     @ApiOperation(value = "获取终端版本升级进度", notes = "获取终端版本升级进度")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "vin", value = "车架号", required = true, paramType = "query")})
     @PostMapping("getTboxVersionInfo")
     public ApiMessage<TboxVersionOutput> getTboxVersionInfo(@RequestHeader("appId") String appId, TboxVersionInput input) {
         input.setAppId(appId);

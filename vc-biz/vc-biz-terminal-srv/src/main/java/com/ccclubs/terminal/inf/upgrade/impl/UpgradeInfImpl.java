@@ -77,11 +77,11 @@ public class UpgradeInfImpl implements UpgradeInf {
         criteria.andTelModelEqualTo(csMachine.getCsmTeModel());
         criteria.andTelTypeEqualTo(csMachine.getCsmTeType());
         List<VerUpgrade> list = verUpgradeMapper.selectByExample(example);
-        if (list == null || list.size() == 0) {
+        if (list == null || list.isEmpty()) {
             return new ArrayList<>();
         }
-        List<AbleUpgradeOutput> output = BeanMapper.mapList(list, AbleUpgradeOutput.class);
-        return output;
+
+        return BeanMapper.mapList(list, AbleUpgradeOutput.class);
     }
 
     /**
@@ -118,11 +118,12 @@ public class UpgradeInfImpl implements UpgradeInf {
         List<VerUpgrade> verUpgradeList = verUpgradeMapper.selectByExample(verUpgradeExample);
 
         TboxVersionOutput output = new TboxVersionOutput();
+        //当前插件版本
         Integer currentPluginV = csMachine.getCsmTlV2();
 
         //未查询到该终端对应的版本包，提示需要到车机中心注册该版本包信息[ver_upgrade]
-        if (verUpgradeList == null || verUpgradeList.size() == 0) {
-            throw new ApiException(ApiEnum.FAIL, "系统未查询到该车机安装的版本包信息，请联系管理员录入");
+        if (verUpgradeList == null || verUpgradeList.isEmpty()) {
+            throw new ApiException(ApiEnum.UPGRADE_VERSION_NOT_FOUND);
         } else {
             //得到最新的版本包
             VerUpgrade verUpgrade = verUpgradeList.get(0);
@@ -131,7 +132,7 @@ public class UpgradeInfImpl implements UpgradeInf {
         }
 
         //未查询到升级记录
-        if (verUpgradeRecordList == null || verUpgradeRecordList.size() == 0) {
+        if (verUpgradeRecordList == null || verUpgradeRecordList.isEmpty()) {
             output.setCurrentV(String.valueOf(currentPluginV));
             //插件版本已最新，返回已升级；否则返回待升级
             if (output.getLatest()) {
@@ -172,7 +173,7 @@ public class UpgradeInfImpl implements UpgradeInf {
     }
 
     /**
-     * 通过最新的版本包得到最新的插件版本
+     * 通过最新的版本包得到最新的插件版本号
      *
      * @param verUpgrade 最新的版本包
      * @return 最新的插件版本
@@ -180,7 +181,7 @@ public class UpgradeInfImpl implements UpgradeInf {
     private String getLatestPluginV(VerUpgrade verUpgrade) {
         VerSoftHardware verSoftHardware = verSoftHardwareMapper.selectByPrimaryKey(verUpgrade.getSoftVerId());
         if (verSoftHardware == null) {
-            throw new ApiException(ApiEnum.FAIL, "系统未查询到该车机安装的插件版本信息，请联系管理员录入");
+            throw new ApiException(ApiEnum.UPGRADE_PLUGIN_VERSION_NOT_FOUND);
         }
         return verSoftHardware.getVerNo();
     }
