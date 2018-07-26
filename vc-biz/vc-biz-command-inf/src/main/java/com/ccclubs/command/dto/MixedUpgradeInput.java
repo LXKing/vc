@@ -1,5 +1,7 @@
 package com.ccclubs.command.dto;
 
+import java.io.Serializable;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/7/25
@@ -7,7 +9,7 @@ package com.ccclubs.command.dto;
  * Email:  yeanzhi@ccclubs.com
  * 二合一版本升级条件
  */
-public class MixedUpgradeInput {
+public class MixedUpgradeInput implements Serializable {
     /**
      * 权限
      */
