@@ -21,9 +21,6 @@ import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
-import com.ccclubs.terminal.inf.upgrade.UpgradeInf;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,9 +50,6 @@ public class CommandApi {
 
     @Reference(version = CommandServiceVersion.V1)
     TerminalUpgradeInf upgradeCmd;
-
-    @Reference(version = CommandServiceVersion.V1)
-    UpgradeInf upgradeInf;
 
     @Reference(version = CommandServiceVersion.V1)
     SendSimpleCmdInf simpleCmd;
@@ -118,24 +112,6 @@ public class CommandApi {
         //最新版本文件名称
         input.setFilename(version.getFilename());
         UpgradeOutput output = upgradeCmd.oneKeyUpgrade(input);
-        return new ApiMessage<>(output);
-    }
-
-    @ApiSecurity
-    @ApiOperation(value = "通领二合一版本升级", notes = "通领二合一版本升级")
-    @PostMapping("mixedUpgrade")
-    public ApiMessage<UpgradeOutput> upgradeMixedVersion(@RequestHeader("appId") String appId, VerUpgradeInput input) {
-        logger.info("API事件:通领二合一版本升级,APPID:{},车架号:{},目标升级包id:{}", appId, input.getVin(), input.getUpgradeVerId());
-        if (isRateLimit(input.getVin())) {
-            throw new ApiException(ApiEnum.API_RATE_LIMIT, appId, input.getVin(), "终端升级");
-        }
-
-        // 构造升级条件
-        MixedUpgradeInput upgradeTask = new MixedUpgradeInput();
-        upgradeTask.setAppId(appId)
-                .setVin(input.getVin())
-                .setMixedUpVersionId(input.getUpgradeVerId());
-        UpgradeOutput output = upgradeCmd.upgradeMixedVersionTask(upgradeTask);
         return new ApiMessage<>(output);
     }
 
@@ -207,7 +183,7 @@ public class CommandApi {
     @ApiOperation(value = "空调控制-单个控制项", notes = "空调控制-单个控制项")
     @PostMapping("airConditionerMonoCtrl")
     public ApiMessage<AirMonoOutput> airConditionerMonoCtrl(@RequestHeader("appId") String appId, AirMonoInput input) {
-        logger.info("API事件:终端校时,APPID:{},车架号:{},控制项:{},控制项值:{}", appId, input.getVin(),
+        logger.info("API事件:终端校时,APPID:{},车架号:{},控制项:{},控制项:{},控制项值:{}", appId, input.getVin(),
                 input.getItem(), input.getValue());
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {

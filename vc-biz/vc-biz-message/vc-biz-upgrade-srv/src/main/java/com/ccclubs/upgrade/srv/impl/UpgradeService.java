@@ -11,7 +11,6 @@ import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import com.ccclubs.upgrade.dto.UpgradeInput;
 import com.ccclubs.upgrade.dto.UpgradeOutput;
-import com.ccclubs.upgrade.dto.UpgradeTask;
 import com.ccclubs.upgrade.inf.UpgradeInf;
 import com.ccclubs.upgrade.srv.util.UpgradeConstants;
 import com.ccclubs.upgrade.util.UpgradeServiceVersion;
@@ -49,16 +48,6 @@ public class UpgradeService implements UpgradeInf {
         UpgradeOutput output = new UpgradeOutput();
         output.setVin(input.getVin());
         return output;
-    }
-
-    /**
-     * 执行车机版本升级任务
-     *
-     * @param task
-     */
-    @Override
-    public void doUpgradeTask(UpgradeTask task) {
-
     }
 
     public boolean isSuccess(String vin) {

@@ -1,9 +1,7 @@
 package com.ccclubs.command.inf.update;
 
-import com.ccclubs.command.dto.MixedUpgradeInput;
 import com.ccclubs.command.dto.UpgradeInput;
 import com.ccclubs.command.dto.UpgradeOutput;
-import com.ccclubs.upgrade.dto.UpgradeTask;
 
 /**
  * 终端一键升级
@@ -18,18 +16,4 @@ public interface TerminalUpgradeInf {
      * @return
      */
     UpgradeOutput oneKeyUpgrade(UpgradeInput input);
-
-    UpgradeOutput basicUpgrade(UpgradeTask task);
-
-    UpgradeOutput upgradePlugin(UpgradeTask task);
-
-    UpgradeOutput upgradeMajor(UpgradeTask task);
-
-    /**
-     * 通领二合一版本升级
-     * @param upgradeTask
-     */
-    UpgradeOutput upgradeMixedVersionTask(MixedUpgradeInput upgradeTask);
-
-    void sendSetCommand(String vin);
 }
