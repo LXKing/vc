@@ -34,6 +34,34 @@ public enum VerUpgradeResolver{
 				}
 		})
 	,
+        蓝牙版本(new Resolver<VerUpgrade>("bluetoothVerIdText", com.ccclubs.admin.metadata.MetaDef.getVersionNo) {
+        private static final long serialVersionUID = 203882704L;
+
+        @Override
+        public <T> T execute(VerUpgrade record) {
+            if(record.getHardVerId()==null){
+                return null;
+            }
+            String result = "";
+            result = this.getMetadata().get(record.getBluetoothVerId());
+            return (T)result;
+        }
+    })
+    ,
+        主版本(new Resolver<VerUpgrade>("majorVersionIdText", com.ccclubs.admin.metadata.MetaDef.getVersionNo) {
+        private static final long serialVersionUID = 203882704L;
+
+        @Override
+        public <T> T execute(VerUpgrade record) {
+            if(record.getHardVerId()==null){
+                return null;
+            }
+            String result = "";
+            result = this.getMetadata().get(record.getMajorVersionId());
+            return (T)result;
+        }
+    })
+    ,
         车型(new Resolver<VerUpgrade>("modelIdText", com.ccclubs.admin.metadata.MetaDef.getVehicleModelName) {
 		private static final long serialVersionUID = 203884399L;
 

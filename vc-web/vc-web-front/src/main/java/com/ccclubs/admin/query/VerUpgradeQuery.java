@@ -1,6 +1,9 @@
 package com.ccclubs.admin.query;
 
 import com.ccclubs.admin.entity.VerUpgradeCrieria;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+import java.util.Date;
 
 public class VerUpgradeQuery {
 	
@@ -43,6 +46,32 @@ public class VerUpgradeQuery {
 	
 	private Integer hardVerIdGreater;
 	
+	private Integer bluetoothVerIdEquals;
+	private Integer[] bluetoothVerIdIn;
+	private Boolean bluetoothVerIdIsNull;
+	private Boolean bluetoothVerIdIsNotNull;
+	
+	private Integer bluetoothVerIdStart;
+	
+	private Integer bluetoothVerIdEnd;
+	
+	private Integer bluetoothVerIdLess;
+	
+	private Integer bluetoothVerIdGreater;
+	
+	private Integer majorVersionIdEquals;
+	private Integer[] majorVersionIdIn;
+	private Boolean majorVersionIdIsNull;
+	private Boolean majorVersionIdIsNotNull;
+	
+	private Integer majorVersionIdStart;
+	
+	private Integer majorVersionIdEnd;
+	
+	private Integer majorVersionIdLess;
+	
+	private Integer majorVersionIdGreater;
+	
 	private Integer modelIdEquals;
 	private Integer[] modelIdIn;
 	private Boolean modelIdIsNull;
@@ -56,18 +85,32 @@ public class VerUpgradeQuery {
 	
 	private Integer modelIdGreater;
 	
-	private Integer telTypeEquals;
-	private Integer[] telTypeIn;
+	private Short telTypeEquals;
+	private Short[] telTypeIn;
 	private Boolean telTypeIsNull;
 	private Boolean telTypeIsNotNull;
 	
-	private Integer telTypeStart;
+	private Short telTypeStart;
 	
-	private Integer telTypeEnd;
+	private Short telTypeEnd;
 	
-	private Integer telTypeLess;
+	private Short telTypeLess;
 	
-	private Integer telTypeGreater;
+	private Short telTypeGreater;
+	private String telModelLike;
+	
+	private String telModelEquals;
+	private String[] telModelIn;
+	private Boolean telModelIsNull;
+	private Boolean telModelIsNotNull;
+	
+	private String telModelStart;
+	
+	private String telModelEnd;
+	
+	private String telModelLess;
+	
+	private String telModelGreater;
 	private String innerVerLike;
 	
 	private String innerVerEquals;
@@ -360,6 +403,118 @@ public class VerUpgradeQuery {
 	public Integer getHardVerIdGreater(){
 		return this.hardVerIdGreater;
 	}
+	public VerUpgradeQuery setBluetoothVerIdEquals(Integer bluetoothVerIdEquals){
+		this.bluetoothVerIdEquals = bluetoothVerIdEquals;
+		return this;
+	}
+	public Integer getBluetoothVerIdEquals(){
+		return this.bluetoothVerIdEquals;
+	}
+	public VerUpgradeQuery setBluetoothVerIdIn(Integer[] bluetoothVerIdIn){
+		this.bluetoothVerIdIn = bluetoothVerIdIn;
+		return this;
+	}
+	public Integer[] getBluetoothVerIdIn(){
+		return this.bluetoothVerIdIn;
+	}
+	public VerUpgradeQuery setBluetoothVerIdIsNull(Boolean bluetoothVerIdIsNull){
+		this.bluetoothVerIdIsNull = bluetoothVerIdIsNull;
+		return this;
+	}
+	public Boolean getBluetoothVerIdIsNull(){
+		return this.bluetoothVerIdIsNull;
+	}
+	public VerUpgradeQuery setBluetoothVerIdIsNotNull(Boolean bluetoothVerIdIsNotNull){
+		this.bluetoothVerIdIsNotNull = bluetoothVerIdIsNotNull;
+		return this;
+	}
+	public Boolean getBluetoothVerIdIsNotNull(){
+		return this.bluetoothVerIdIsNotNull;
+	}
+	public VerUpgradeQuery setBluetoothVerIdStart(Integer bluetoothVerIdStart){
+		this.bluetoothVerIdStart = bluetoothVerIdStart;
+		return this;
+	}
+	public Integer getBluetoothVerIdStart(){
+		return this.bluetoothVerIdStart;
+	}
+	public VerUpgradeQuery setBluetoothVerIdEnd(Integer bluetoothVerIdEnd){
+		this.bluetoothVerIdEnd = bluetoothVerIdEnd;
+		return this;
+	}
+	public Integer getBluetoothVerIdEnd(){
+		return this.bluetoothVerIdEnd;
+	}
+	public VerUpgradeQuery setBluetoothVerIdLess(Integer bluetoothVerIdLess){
+		this.bluetoothVerIdLess = bluetoothVerIdLess;
+		return this;
+	}
+	public Integer getBluetoothVerIdLess(){
+		return this.bluetoothVerIdLess;
+	}
+	public VerUpgradeQuery setBluetoothVerIdGreater(Integer bluetoothVerIdGreater){
+		this.bluetoothVerIdGreater = bluetoothVerIdGreater;
+		return this;
+	}
+	public Integer getBluetoothVerIdGreater(){
+		return this.bluetoothVerIdGreater;
+	}
+	public VerUpgradeQuery setMajorVersionIdEquals(Integer majorVersionIdEquals){
+		this.majorVersionIdEquals = majorVersionIdEquals;
+		return this;
+	}
+	public Integer getMajorVersionIdEquals(){
+		return this.majorVersionIdEquals;
+	}
+	public VerUpgradeQuery setMajorVersionIdIn(Integer[] majorVersionIdIn){
+		this.majorVersionIdIn = majorVersionIdIn;
+		return this;
+	}
+	public Integer[] getMajorVersionIdIn(){
+		return this.majorVersionIdIn;
+	}
+	public VerUpgradeQuery setMajorVersionIdIsNull(Boolean majorVersionIdIsNull){
+		this.majorVersionIdIsNull = majorVersionIdIsNull;
+		return this;
+	}
+	public Boolean getMajorVersionIdIsNull(){
+		return this.majorVersionIdIsNull;
+	}
+	public VerUpgradeQuery setMajorVersionIdIsNotNull(Boolean majorVersionIdIsNotNull){
+		this.majorVersionIdIsNotNull = majorVersionIdIsNotNull;
+		return this;
+	}
+	public Boolean getMajorVersionIdIsNotNull(){
+		return this.majorVersionIdIsNotNull;
+	}
+	public VerUpgradeQuery setMajorVersionIdStart(Integer majorVersionIdStart){
+		this.majorVersionIdStart = majorVersionIdStart;
+		return this;
+	}
+	public Integer getMajorVersionIdStart(){
+		return this.majorVersionIdStart;
+	}
+	public VerUpgradeQuery setMajorVersionIdEnd(Integer majorVersionIdEnd){
+		this.majorVersionIdEnd = majorVersionIdEnd;
+		return this;
+	}
+	public Integer getMajorVersionIdEnd(){
+		return this.majorVersionIdEnd;
+	}
+	public VerUpgradeQuery setMajorVersionIdLess(Integer majorVersionIdLess){
+		this.majorVersionIdLess = majorVersionIdLess;
+		return this;
+	}
+	public Integer getMajorVersionIdLess(){
+		return this.majorVersionIdLess;
+	}
+	public VerUpgradeQuery setMajorVersionIdGreater(Integer majorVersionIdGreater){
+		this.majorVersionIdGreater = majorVersionIdGreater;
+		return this;
+	}
+	public Integer getMajorVersionIdGreater(){
+		return this.majorVersionIdGreater;
+	}
 	public VerUpgradeQuery setModelIdEquals(Integer modelIdEquals){
 		this.modelIdEquals = modelIdEquals;
 		return this;
@@ -416,18 +571,18 @@ public class VerUpgradeQuery {
 	public Integer getModelIdGreater(){
 		return this.modelIdGreater;
 	}
-	public VerUpgradeQuery setTelTypeEquals(Integer telTypeEquals){
+	public VerUpgradeQuery setTelTypeEquals(Short telTypeEquals){
 		this.telTypeEquals = telTypeEquals;
 		return this;
 	}
-	public Integer getTelTypeEquals(){
+	public Short getTelTypeEquals(){
 		return this.telTypeEquals;
 	}
-	public VerUpgradeQuery setTelTypeIn(Integer[] telTypeIn){
+	public VerUpgradeQuery setTelTypeIn(Short[] telTypeIn){
 		this.telTypeIn = telTypeIn;
 		return this;
 	}
-	public Integer[] getTelTypeIn(){
+	public Short[] getTelTypeIn(){
 		return this.telTypeIn;
 	}
 	public VerUpgradeQuery setTelTypeIsNull(Boolean telTypeIsNull){
@@ -444,33 +599,96 @@ public class VerUpgradeQuery {
 	public Boolean getTelTypeIsNotNull(){
 		return this.telTypeIsNotNull;
 	}
-	public VerUpgradeQuery setTelTypeStart(Integer telTypeStart){
+	public VerUpgradeQuery setTelTypeStart(Short telTypeStart){
 		this.telTypeStart = telTypeStart;
 		return this;
 	}
-	public Integer getTelTypeStart(){
+	public Short getTelTypeStart(){
 		return this.telTypeStart;
 	}
-	public VerUpgradeQuery setTelTypeEnd(Integer telTypeEnd){
+	public VerUpgradeQuery setTelTypeEnd(Short telTypeEnd){
 		this.telTypeEnd = telTypeEnd;
 		return this;
 	}
-	public Integer getTelTypeEnd(){
+	public Short getTelTypeEnd(){
 		return this.telTypeEnd;
 	}
-	public VerUpgradeQuery setTelTypeLess(Integer telTypeLess){
+	public VerUpgradeQuery setTelTypeLess(Short telTypeLess){
 		this.telTypeLess = telTypeLess;
 		return this;
 	}
-	public Integer getTelTypeLess(){
+	public Short getTelTypeLess(){
 		return this.telTypeLess;
 	}
-	public VerUpgradeQuery setTelTypeGreater(Integer telTypeGreater){
+	public VerUpgradeQuery setTelTypeGreater(Short telTypeGreater){
 		this.telTypeGreater = telTypeGreater;
 		return this;
 	}
-	public Integer getTelTypeGreater(){
+	public Short getTelTypeGreater(){
 		return this.telTypeGreater;
+	}
+	public VerUpgradeQuery setTelModelLike(String telModelLike){
+		this.telModelLike = telModelLike;
+		return this;
+	}
+	public String getTelModelLike(){
+		return this.telModelLike;
+	}
+	public VerUpgradeQuery setTelModelEquals(String telModelEquals){
+		this.telModelEquals = telModelEquals;
+		return this;
+	}
+	public String getTelModelEquals(){
+		return this.telModelEquals;
+	}
+	public VerUpgradeQuery setTelModelIn(String[] telModelIn){
+		this.telModelIn = telModelIn;
+		return this;
+	}
+	public String[] getTelModelIn(){
+		return this.telModelIn;
+	}
+	public VerUpgradeQuery setTelModelIsNull(Boolean telModelIsNull){
+		this.telModelIsNull = telModelIsNull;
+		return this;
+	}
+	public Boolean getTelModelIsNull(){
+		return this.telModelIsNull;
+	}
+	public VerUpgradeQuery setTelModelIsNotNull(Boolean telModelIsNotNull){
+		this.telModelIsNotNull = telModelIsNotNull;
+		return this;
+	}
+	public Boolean getTelModelIsNotNull(){
+		return this.telModelIsNotNull;
+	}
+	public VerUpgradeQuery setTelModelStart(String telModelStart){
+		this.telModelStart = telModelStart;
+		return this;
+	}
+	public String getTelModelStart(){
+		return this.telModelStart;
+	}
+	public VerUpgradeQuery setTelModelEnd(String telModelEnd){
+		this.telModelEnd = telModelEnd;
+		return this;
+	}
+	public String getTelModelEnd(){
+		return this.telModelEnd;
+	}
+	public VerUpgradeQuery setTelModelLess(String telModelLess){
+		this.telModelLess = telModelLess;
+		return this;
+	}
+	public String getTelModelLess(){
+		return this.telModelLess;
+	}
+	public VerUpgradeQuery setTelModelGreater(String telModelGreater){
+		this.telModelGreater = telModelGreater;
+		return this;
+	}
+	public String getTelModelGreater(){
+		return this.telModelGreater;
 	}
 	public VerUpgradeQuery setInnerVerLike(String innerVerLike){
 		this.innerVerLike = innerVerLike;
@@ -1020,11 +1238,20 @@ public class VerUpgradeQuery {
 		else if(this.sidx.equals("hardVerId")){
 			return "hard_ver_id";
 		}
+		else if(this.sidx.equals("bluetoothVerId")){
+			return "bluetooth_ver_id";
+		}
+		else if(this.sidx.equals("majorVersionId")){
+			return "major_version_id";
+		}
 		else if(this.sidx.equals("modelId")){
 			return "model_id";
 		}
 		else if(this.sidx.equals("telType")){
 			return "tel_type";
+		}
+		else if(this.sidx.equals("telModel")){
+			return "tel_model";
 		}
 		else if(this.sidx.equals("innerVer")){
 			return "inner_ver";
@@ -1111,6 +1338,36 @@ public class VerUpgradeQuery {
 		}else if(this.getHardVerIdLess()!=null){
 			c.andhardVerIdLessThan(this.getHardVerIdLess());
 		}
+		if(this.getBluetoothVerIdEquals()!=null){
+			c.andbluetoothVerIdEqualTo(this.getBluetoothVerIdEquals());
+		}else if(this.getBluetoothVerIdIsNull()!=null && this.getBluetoothVerIdIsNull()){
+			c.andbluetoothVerIdIsNull();
+		}else if(this.getBluetoothVerIdIsNotNull()!=null && this.getBluetoothVerIdIsNotNull()){
+			c.andbluetoothVerIdIsNotNull();
+		}else if(this.getBluetoothVerIdIn()!=null){
+			c.andbluetoothVerIdIn(java.util.Arrays.asList(this.getBluetoothVerIdIn()));
+		}else if(this.getBluetoothVerIdStart()!=null && this.getBluetoothVerIdEnd()!=null){
+			c.andbluetoothVerIdBetween(this.getBluetoothVerIdStart(), this.getBluetoothVerIdEnd());
+		}else if(this.getBluetoothVerIdGreater()!=null){
+			c.andbluetoothVerIdGreaterThan(this.getBluetoothVerIdGreater());
+		}else if(this.getBluetoothVerIdLess()!=null){
+			c.andbluetoothVerIdLessThan(this.getBluetoothVerIdLess());
+		}
+		if(this.getMajorVersionIdEquals()!=null){
+			c.andmajorVersionIdEqualTo(this.getMajorVersionIdEquals());
+		}else if(this.getMajorVersionIdIsNull()!=null && this.getMajorVersionIdIsNull()){
+			c.andmajorVersionIdIsNull();
+		}else if(this.getMajorVersionIdIsNotNull()!=null && this.getMajorVersionIdIsNotNull()){
+			c.andmajorVersionIdIsNotNull();
+		}else if(this.getMajorVersionIdIn()!=null){
+			c.andmajorVersionIdIn(java.util.Arrays.asList(this.getMajorVersionIdIn()));
+		}else if(this.getMajorVersionIdStart()!=null && this.getMajorVersionIdEnd()!=null){
+			c.andmajorVersionIdBetween(this.getMajorVersionIdStart(), this.getMajorVersionIdEnd());
+		}else if(this.getMajorVersionIdGreater()!=null){
+			c.andmajorVersionIdGreaterThan(this.getMajorVersionIdGreater());
+		}else if(this.getMajorVersionIdLess()!=null){
+			c.andmajorVersionIdLessThan(this.getMajorVersionIdLess());
+		}
 		if(this.getModelIdEquals()!=null){
 			c.andmodelIdEqualTo(this.getModelIdEquals());
 		}else if(this.getModelIdIsNull()!=null && this.getModelIdIsNull()){
@@ -1140,6 +1397,23 @@ public class VerUpgradeQuery {
 			c.andtelTypeGreaterThan(this.getTelTypeGreater());
 		}else if(this.getTelTypeLess()!=null){
 			c.andtelTypeLessThan(this.getTelTypeLess());
+		}
+		if(this.getTelModelEquals()!=null){
+			c.andtelModelEqualTo(this.getTelModelEquals());
+		}else if(this.getTelModelIsNull()!=null && this.getTelModelIsNull()){
+			c.andtelModelIsNull();
+		}else if(this.getTelModelIsNotNull()!=null && this.getTelModelIsNotNull()){
+			c.andtelModelIsNotNull();
+		}else if(this.getTelModelLike()!=null){
+			c.andtelModelLike(this.getTelModelLike());
+		}else if(this.getTelModelIn()!=null){
+			c.andtelModelIn(java.util.Arrays.asList(this.getTelModelIn()));
+		}else if(this.getTelModelStart()!=null && this.getTelModelEnd()!=null){
+			c.andtelModelBetween(this.getTelModelStart(), this.getTelModelEnd());
+		}else if(this.getTelModelGreater()!=null){
+			c.andtelModelGreaterThan(this.getTelModelGreater());
+		}else if(this.getTelModelLess()!=null){
+			c.andtelModelLessThan(this.getTelModelLess());
 		}
 		if(this.getInnerVerEquals()!=null){
 			c.andinnerVerEqualTo(this.getInnerVerEquals());

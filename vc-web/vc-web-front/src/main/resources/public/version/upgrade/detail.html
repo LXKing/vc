@@ -28,15 +28,29 @@
 				<dl  >
 					<dt>软件版本号：</dt>
 					<dd>
-					<input name="softVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					<input name="softVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/1">
 					</dd>
 				</dl>
 				<dl  >
 					<dt>硬件版本号：</dt>
 					<dd>
-					<input name="hardVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					<input name="hardVerId" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/0">
 					</dd>
 				</dl>
+                <dl  >
+                    <dt>蓝牙版本号</dt>
+                    <dd>
+                        <input name="bluetoothVerId" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/version/softhardware/query/3">
+                        <label id="bluetoothVerId-error" class="error" for="bluetoothVerId"><i class="fa fa-info-circle fieldTip">必填</i></label>
+                    </dd>
+                </dl>
+                <dl  >
+                    <dt>主版本号</dt>
+                    <dd>
+                        <input name="majorVersionId" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/version/softhardware/query/2">
+                        <label id="majorVersionId-error" class="error" for="majorVersionId"><i class="fa fa-info-circle fieldTip">必填</i></label>
+                    </dd>
+                </dl>
 				<dl  >
 					<dt>车型：</dt>
 					<dd>
@@ -55,6 +69,13 @@
                     </select>
 					</dd>
 				</dl>
+                <dl  >
+                    <dt>终端型号</dt>
+                    <dd>
+                        <input name="telModel" placeholder="" class="form-control" >
+                        <label id="telModel-error" class="error" for="telModel"><i class="fa fa-info-circle fieldTip">必填</i></label>
+                    </dd>
+                </dl>
 				<dl  >
 					<dt>生产内部版本号：</dt>
 					<dd>

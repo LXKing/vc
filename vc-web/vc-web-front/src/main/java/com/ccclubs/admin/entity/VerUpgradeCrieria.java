@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 升级版本管理数据查询条件对象
+ * 车辆信息管理数据查询条件对象
  * @author Joel
  */
 public class VerUpgradeCrieria{
@@ -314,6 +314,126 @@ public class VerUpgradeCrieria{
 	            addCriterion("hard_ver_id not between", value1, value2, "hardVerId");
 	            return (Criteria) this;
 	        }
+	        public Criteria andbluetoothVerIdIsNull() {
+	            addCriterion("bluetooth_ver_id is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdIsNotNull() {
+	            addCriterion("bluetooth_ver_id is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        
+	        public Criteria andbluetoothVerIdEqualTo(Integer value) {
+	            addCriterion("bluetooth_ver_id =", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdNotEqualTo(Integer value) {
+	            addCriterion("bluetooth_ver_id <>", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdGreaterThan(Integer value) {
+	            addCriterion("bluetooth_ver_id >", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdGreaterThanOrEqualTo(Integer value) {
+	            addCriterion("bluetooth_ver_id >=", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdLessThan(Integer value) {
+	            addCriterion("bluetooth_ver_id <", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdLessThanOrEqualTo(Integer value) {
+	            addCriterion("bluetooth_ver_id <=", value, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdIn(List<Integer> values) {
+	            addCriterion("bluetooth_ver_id in", values, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdNotIn(List<Integer> values) {
+	            addCriterion("bluetooth_ver_id not in", values, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdBetween(Integer value1, Integer value2) {
+	            addCriterion("bluetooth_ver_id between", value1, value2, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andbluetoothVerIdNotBetween(Integer value1, Integer value2) {
+	            addCriterion("bluetooth_ver_id not between", value1, value2, "bluetoothVerId");
+	            return (Criteria) this;
+	        }
+	        public Criteria andmajorVersionIdIsNull() {
+	            addCriterion("major_version_id is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdIsNotNull() {
+	            addCriterion("major_version_id is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        
+	        public Criteria andmajorVersionIdEqualTo(Integer value) {
+	            addCriterion("major_version_id =", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdNotEqualTo(Integer value) {
+	            addCriterion("major_version_id <>", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdGreaterThan(Integer value) {
+	            addCriterion("major_version_id >", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdGreaterThanOrEqualTo(Integer value) {
+	            addCriterion("major_version_id >=", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdLessThan(Integer value) {
+	            addCriterion("major_version_id <", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdLessThanOrEqualTo(Integer value) {
+	            addCriterion("major_version_id <=", value, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdIn(List<Integer> values) {
+	            addCriterion("major_version_id in", values, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdNotIn(List<Integer> values) {
+	            addCriterion("major_version_id not in", values, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdBetween(Integer value1, Integer value2) {
+	            addCriterion("major_version_id between", value1, value2, "majorVersionId");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andmajorVersionIdNotBetween(Integer value1, Integer value2) {
+	            addCriterion("major_version_id not between", value1, value2, "majorVersionId");
+	            return (Criteria) this;
+	        }
 	        public Criteria andmodelIdIsNull() {
 	            addCriterion("model_id is null");
 	            return (Criteria) this;
@@ -385,53 +505,122 @@ public class VerUpgradeCrieria{
 	        }
 	        
 	        
-	        public Criteria andtelTypeEqualTo(Integer value) {
+	        public Criteria andtelTypeEqualTo(Short value) {
 	            addCriterion("tel_type =", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeNotEqualTo(Integer value) {
+	        public Criteria andtelTypeNotEqualTo(Short value) {
 	            addCriterion("tel_type <>", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeGreaterThan(Integer value) {
+	        public Criteria andtelTypeGreaterThan(Short value) {
 	            addCriterion("tel_type >", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeGreaterThanOrEqualTo(Integer value) {
+	        public Criteria andtelTypeGreaterThanOrEqualTo(Short value) {
 	            addCriterion("tel_type >=", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeLessThan(Integer value) {
+	        public Criteria andtelTypeLessThan(Short value) {
 	            addCriterion("tel_type <", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeLessThanOrEqualTo(Integer value) {
+	        public Criteria andtelTypeLessThanOrEqualTo(Short value) {
 	            addCriterion("tel_type <=", value, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeIn(List<Integer> values) {
+	        public Criteria andtelTypeIn(List<Short> values) {
 	            addCriterion("tel_type in", values, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeNotIn(List<Integer> values) {
+	        public Criteria andtelTypeNotIn(List<Short> values) {
 	            addCriterion("tel_type not in", values, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeBetween(Integer value1, Integer value2) {
+	        public Criteria andtelTypeBetween(Short value1, Short value2) {
 	            addCriterion("tel_type between", value1, value2, "telType");
 	            return (Criteria) this;
 	        }
 
-	        public Criteria andtelTypeNotBetween(Integer value1, Integer value2) {
+	        public Criteria andtelTypeNotBetween(Short value1, Short value2) {
 	            addCriterion("tel_type not between", value1, value2, "telType");
+	            return (Criteria) this;
+	        }
+	        public Criteria andtelModelIsNull() {
+	            addCriterion("tel_model is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelIsNotNull() {
+	            addCriterion("tel_model is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andtelModelLike(String value) {
+	            addCriterion("tel_model like", "%"+value+"%", "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelNotLike(String value) {
+	            addCriterion("tel_model not like", "%"+value+"%", "telModel");
+	            return (Criteria) this;
+	        }
+	        
+	        public Criteria andtelModelEqualTo(String value) {
+	            addCriterion("tel_model =", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelNotEqualTo(String value) {
+	            addCriterion("tel_model <>", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelGreaterThan(String value) {
+	            addCriterion("tel_model >", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelGreaterThanOrEqualTo(String value) {
+	            addCriterion("tel_model >=", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelLessThan(String value) {
+	            addCriterion("tel_model <", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelLessThanOrEqualTo(String value) {
+	            addCriterion("tel_model <=", value, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelIn(List<String> values) {
+	            addCriterion("tel_model in", values, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelNotIn(List<String> values) {
+	            addCriterion("tel_model not in", values, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelBetween(String value1, String value2) {
+	            addCriterion("tel_model between", value1, value2, "telModel");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andtelModelNotBetween(String value1, String value2) {
+	            addCriterion("tel_model not between", value1, value2, "telModel");
 	            return (Criteria) this;
 	        }
 	        public Criteria andinnerVerIsNull() {

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<dl  >
+					<dt>记录编号：</dt>
+					<dd>
+					<input name="id" placeholder="请输入记录编号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车架号：</dt>
+					<dd>
+					<input name="vin" placeholder="请输入车架号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车型：</dt>
+					<dd>
+					<input name="carModel" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机号：</dt>
+					<dd>
+					<input name="teNumber" placeholder="请输入车机号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机类型：</dt>
+					<dd>
+                        <select class="form-control m-b" name="teType"  >
+                            <option></option>
+                            <option value="0">车厘子</option>
+                            <option value="1">中导</option>
+                            <option value="2">慧翰</option>
+                            <option value="3">通领</option>
+                        </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>车机型号：</dt>
+					<dd>
+					<input name="teModel" placeholder="请输入车机型号" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>当前版本：</dt>
+					<dd>
+					<input name="fromVersion" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/upgrade/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>目的版本：</dt>
+					<dd>
+					<input name="toVersion" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/upgrade/query">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+					<select class="form-control m-b" name="status"  >
+                         <option></option>
+                         <option value="0">待升级</option>
+                         <option value="1">升级中</option>
+                         <option value="2">已升级</option>
+                         <option value="3">升级失败</option>
+                         <option value="-1">无效</option>
+                    </select>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+					<input name="addTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>更新时间：</dt>
+					<dd>
+					<input name="updateTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					</dd>
+				</dl>
+		</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/version/upgrade/record/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var url = getServUrl("/version/upgrade/record/detail/")+getQueryString("id");
+				ajaxRequest(url,"GET",{},function(json) {
+					loadFormData(json.value.tbody);
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

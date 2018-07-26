@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ccclubs.admin.orm.mapper.VerUpgradeMapper">
+<mapper namespace="com.ccclubs.admin.dao.VerUpgradeMapper">
 	<!-- 开启基于redis的二级缓存，仅适用单表
     <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
     
@@ -8,8 +8,11 @@
 		<result column="id" jdbcType="INTEGER" property="id" />
 		<result column="soft_ver_id" jdbcType="INTEGER" property="softVerId" />
 		<result column="hard_ver_id" jdbcType="INTEGER" property="hardVerId" />
+		<result column="bluetooth_ver_id" jdbcType="INTEGER" property="bluetoothVerId" />
+		<result column="major_version_id" jdbcType="INTEGER" property="majorVersionId" />
 		<result column="model_id" jdbcType="INTEGER" property="modelId" />
-		<result column="tel_type" jdbcType="INTEGER" property="telType" />
+		<result column="tel_type" jdbcType="TINYINT" property="telType" />
+		<result column="tel_model" jdbcType="VARCHAR" property="telModel" />
 		<result column="inner_ver" jdbcType="VARCHAR" property="innerVer" />
 		<result column="is_open" jdbcType="TINYINT" property="isOpen" />
 		<result column="des" jdbcType="VARCHAR" property="des" />

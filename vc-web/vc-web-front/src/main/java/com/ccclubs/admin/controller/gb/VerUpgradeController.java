@@ -88,6 +88,8 @@ public class VerUpgradeController {
 		if(data!=null){
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.软件版本号.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.硬件版本号.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.蓝牙版本.getResolver());
+            data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.主版本.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.车型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.终端类型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeResolver.是否对外开放.getResolver());

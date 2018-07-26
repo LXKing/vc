@@ -15,15 +15,27 @@
 <dl cond="softVerId" style="display:none;">
 				<dt>软件版本号</dt>
 				<dd  >
-					<input  name="softVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					<input  name="softVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/1">
 				</dd>
 			</dl>
 <dl cond="hardVerId" style="display:none;">
 				<dt>硬件版本号</dt>
 				<dd  >
-					<input  name="hardVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query">
+					<input  name="hardVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/0">
 				</dd>
 			</dl>
+<dl cond="bluetoothVerId" style="display:none;">
+                <dt>蓝牙版本号</dt>
+                <dd  >
+                    <input  name="bluetoothVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/3">
+                </dd>
+            </dl>
+<dl cond="majorVersionId" style="display:none;">
+                <dt>主版本号</dt>
+                <dd  >
+                    <input  name="majorVersionIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/2">
+                </dd>
+            </dl>
 <dl cond="modelId" style="display:none;">
 				<dt>车型</dt>
 				<dd  >
@@ -42,6 +54,12 @@
                     </select>
 				</dd>
 			</dl>
+<dl cond="telModel" style="display:none;">
+                <dt>终端型号</dt>
+                <dd  >
+                    <input  name="telModelEquals" placeholder="" class="form-control" >
+                </dd>
+            </dl>
 <dl cond="innerVer" style="display:none;">
 				<dt>生产内部版本号</dt>
 				<dd  >
@@ -116,8 +134,11 @@
 			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >升级版本编号</label></li>
 			        <li><label><input cond="softVerId" value="softVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >软件版本号</label></li>
 			        <li><label><input cond="hardVerId" value="hardVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >硬件版本号</label></li>
+                    <li><label><input cond="bluetoothVerId" value="bluetoothVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓝牙版本号</label></li>
+                    <li><label><input cond="majorVersionId" value="majorVersionIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >主版本号</label></li>
 			        <li><label><input cond="modelId" value="modelIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
 			        <li><label><input cond="telType" value="telTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端类型</label></li>
+                    <li><label><input cond="telModel" value="telModelText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端型号</label></li>
 			        <li><label><input cond="innerVer" value="innerVer"  type="checkbox" onclick='showHideCondition(this, this.value);' >生产内部版本号</label></li>
 			        <li><label><input cond="isOpen" value="isOpenText"  type="checkbox" onclick='showHideCondition(this, this.value);' >是否对外开放</label></li>
 			        <li><label><input cond="des" value="des"  type="checkbox" onclick='showHideCondition(this, this.value);' >描述</label></li>
