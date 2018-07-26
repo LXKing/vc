@@ -77,3 +77,7 @@ terminal:
   #通领
   latestVersionMap[3]: 1072,SHENGJI(7837CC_1072).fx1
 
+#终端升级
+upgrade:
+  timeout: 300      #升级超时时间300s
+
