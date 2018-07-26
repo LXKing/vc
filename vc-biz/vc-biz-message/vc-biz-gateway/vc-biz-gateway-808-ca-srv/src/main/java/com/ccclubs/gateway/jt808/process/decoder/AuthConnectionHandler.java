@@ -42,6 +42,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
     /**
      * 连接建立后未发送鉴权的超时时间(秒)
+     * （注意）延迟的时间越短越好，越短则回收channel越快
      */
     private static final int TIMEOUT_SECONDS_PRE_AUTH = 60;
 

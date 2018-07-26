@@ -44,9 +44,9 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 if (client.getChannel().isActive()) {
                     client.getChannel().writeAndFlush(payloadBuf.copy());
                     // 便于ELK日志分析
-                    LOG.info("DOWN >> 7E000000010{}{}7E", uniqueNo, hexString);
+                    LOG.info("({}):DOWN >> 7E000000010{}{}7E", uniqueNo, uniqueNo, hexString);
                 } else {
-                    LOG.error("client not active when deal sendout cmd1: {}", hexString);
+                    LOG.error("client ({}) not active when deal sendout cmd1: {}", uniqueNo, hexString);
                 }
             });
         } else {
@@ -74,7 +74,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                         client.getChannel().writeAndFlush(resetedSourceBuf.copy());
                         // 便于ELK日志分析
                         String downCmd = ByteBufUtil.hexDump(resetedSourceBuf);
-                        LOG.info("DOWN >> {}", downCmd);
+                        LOG.info("({}): DOWN >> {}", mobile, downCmd);
 
                         if (CommandCache.isOpen() && CommandCache.isCurrent(mobile)) {
                             short serialNo808 = sourceBuf.getShort(PackagePart.PAC_SERIAL_NO.getStartIndex() + 1);
@@ -87,7 +87,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                                     .setSerialNoMqtt(serialNoMqtt);
                         }
                     } else {
-                        LOG.error("client not active when deal sendout cmd2: {}", hexString);
+                        LOG.error("client ({}) not active when deal sendout cmd2: {}", mobile, hexString);
                     }
                 });
             }
