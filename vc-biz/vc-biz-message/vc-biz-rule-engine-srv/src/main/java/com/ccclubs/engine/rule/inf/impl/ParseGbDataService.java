@@ -198,19 +198,6 @@ public class ParseGbDataService implements IParseGbDataService {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
-        } else if (csVehicle.getCsvAccess() == 1 && org.apache.commons.lang3.StringUtils.isNotEmpty(csVehicle.getCsvLandmark())) {
-            try {
-                Message mqMessage = messageFactory
-                        .getMessage(csVehicle.getCsvLandmark(), topic, MqTagProperty.MQ_TERMINAL_GB, message.getPacketDescr());
-
-                if (mqMessage != null) {
-                    client.send(mqMessage);
-                } else {
-                    logger.error(message.getVin() + " 未授权给应用");
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
         }
     }
 
