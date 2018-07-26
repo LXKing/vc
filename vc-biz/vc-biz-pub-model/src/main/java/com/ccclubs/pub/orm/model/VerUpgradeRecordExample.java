@@ -645,6 +645,66 @@ public class VerUpgradeRecordExample {
             return (Criteria) this;
         }
 
+        public Criteria andFromTypeIsNull() {
+            addCriterion("from_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeIsNotNull() {
+            addCriterion("from_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeEqualTo(Byte value) {
+            addCriterion("from_type =", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeNotEqualTo(Byte value) {
+            addCriterion("from_type <>", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeGreaterThan(Byte value) {
+            addCriterion("from_type >", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeGreaterThanOrEqualTo(Byte value) {
+            addCriterion("from_type >=", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeLessThan(Byte value) {
+            addCriterion("from_type <", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeLessThanOrEqualTo(Byte value) {
+            addCriterion("from_type <=", value, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeIn(List<Byte> values) {
+            addCriterion("from_type in", values, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeNotIn(List<Byte> values) {
+            addCriterion("from_type not in", values, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeBetween(Byte value1, Byte value2) {
+            addCriterion("from_type between", value1, value2, "fromType");
+            return (Criteria) this;
+        }
+
+        public Criteria andFromTypeNotBetween(Byte value1, Byte value2) {
+            addCriterion("from_type not between", value1, value2, "fromType");
+            return (Criteria) this;
+        }
+
         public Criteria andToVersionIsNull() {
             addCriterion("to_version is null");
             return (Criteria) this;
