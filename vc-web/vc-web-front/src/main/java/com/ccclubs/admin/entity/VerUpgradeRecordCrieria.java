@@ -581,6 +581,66 @@ public class VerUpgradeRecordCrieria{
 	            addCriterion("from_version not between", value1, value2, "fromVersion");
 	            return (Criteria) this;
 	        }
+	        public Criteria andfromTypeIsNull() {
+	            addCriterion("from_type is null");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeIsNotNull() {
+	            addCriterion("from_type is not null");
+	            return (Criteria) this;
+	        }
+	        
+	        
+	        public Criteria andfromTypeEqualTo(Short value) {
+	            addCriterion("from_type =", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeNotEqualTo(Short value) {
+	            addCriterion("from_type <>", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeGreaterThan(Short value) {
+	            addCriterion("from_type >", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeGreaterThanOrEqualTo(Short value) {
+	            addCriterion("from_type >=", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeLessThan(Short value) {
+	            addCriterion("from_type <", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeLessThanOrEqualTo(Short value) {
+	            addCriterion("from_type <=", value, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeIn(List<Short> values) {
+	            addCriterion("from_type in", values, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeNotIn(List<Short> values) {
+	            addCriterion("from_type not in", values, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeBetween(Short value1, Short value2) {
+	            addCriterion("from_type between", value1, value2, "fromType");
+	            return (Criteria) this;
+	        }
+
+	        public Criteria andfromTypeNotBetween(Short value1, Short value2) {
+	            addCriterion("from_type not between", value1, value2, "fromType");
+	            return (Criteria) this;
+	        }
 	        public Criteria andtoVersionIsNull() {
 	            addCriterion("to_version is null");
 	            return (Criteria) this;

@@ -95,6 +95,7 @@ public class VerUpgradeRecordController {
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.车型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.车机类型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.当前版本.getResolver());
+			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.当前版本数据类型.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.目的版本.getResolver());
 			data.registResolver(com.ccclubs.admin.resolver.VerUpgradeRecordResolver.状态.getResolver());
 		}

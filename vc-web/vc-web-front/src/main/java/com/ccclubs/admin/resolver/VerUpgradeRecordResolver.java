@@ -7,7 +7,7 @@ import com.ccclubs.frm.spring.resolver.Resolver;
 public enum VerUpgradeRecordResolver{
 	
 		车型(new Resolver<VerUpgradeRecord>("carModelText", com.ccclubs.admin.metadata.MetaDef.getVehicleModelName) {
-		private static final long serialVersionUID = 2038864217L;
+		private static final long serialVersionUID = 203885989L;
 
 		@Override
 		public <T> T execute(VerUpgradeRecord record) {
@@ -20,37 +20,37 @@ public enum VerUpgradeRecordResolver{
 				}
 		})
 	,
-        车机类型(new Resolver<VerUpgradeRecord>("teTypeText") {
-            private static final long serialVersionUID = 2038815437L;
+		车机类型(new Resolver<VerUpgradeRecord>("teTypeText") {
+		private static final long serialVersionUID = 2038840856L;
 
-            @Override
-            public <T> T execute(VerUpgradeRecord record) {
-                if(record.getTeType()==null){
-                    return null;
-                }
-                String result = "";
-                String[] sArr = record.getTeType().toString().split(",");
-                for(int i=0;i<sArr.length;i++){
-                    if(sArr[i].equals("0")){
-                        result+=(i==0?"":",")+ "车厘子";
-                    }
-                    if(sArr[i].equals("1")){
-                        result+=(i==0?"":",")+ "中导";
-                    }
-                    if(sArr[i].equals("2")){
-                        result+=(i==0?"":",")+ "慧翰";
-                    }
-                    if(sArr[i].equals("3")){
-                        result+=(i==0?"":",")+ "通领";
-                    }
-                }
+		@Override
+		public <T> T execute(VerUpgradeRecord record) {
+				if(record.getTeType()==null){
+				return null;
+				}
+				String result = "";
+				String[] sArr = record.getTeType().toString().split(",");
+			for(int i=0;i<sArr.length;i++){
+				if(sArr[i].equals("0")){
+					result+=(i==0?"":",")+ "车厘子";
+				}
+				if(sArr[i].equals("1")){
+					result+=(i==0?"":",")+ "中导";
+				}
+				if(sArr[i].equals("2")){
+					result+=(i==0?"":",")+ "慧翰";
+				}
+				if(sArr[i].equals("3")){
+					result+=(i==0?"":",")+ "通领";
+				}
+			}
 
-                return (T)result;
-            }
-        })
+				return (T)result;
+				}
+		})
 	,
 		当前版本(new Resolver<VerUpgradeRecord>("fromVersionText", com.ccclubs.admin.metadata.MetaDef.getUpgradeVersionNo) {
-		private static final long serialVersionUID = 2038867102L;
+		private static final long serialVersionUID = 2038846340L;
 
 		@Override
 		public <T> T execute(VerUpgradeRecord record) {
@@ -63,8 +63,31 @@ public enum VerUpgradeRecordResolver{
 				}
 		})
 	,
+		当前版本数据类型(new Resolver<VerUpgradeRecord>("fromTypeText") {
+		private static final long serialVersionUID = 2038879717L;
+
+		@Override
+		public <T> T execute(VerUpgradeRecord record) {
+				if(record.getFromType()==null){
+				return null;
+				}
+				String result = "";
+				String[] sArr = record.getFromType().toString().split(",");
+			for(int i=0;i<sArr.length;i++){
+				if(sArr[i].equals("1")){
+					result+=(i==0?"":",")+ "升级包";
+				}
+				if(sArr[i].equals("2")){
+					result+=(i==0?"":",")+ "插件";
+				}
+			}
+
+				return (T)result;
+				}
+		})
+	,
 		目的版本(new Resolver<VerUpgradeRecord>("toVersionText", com.ccclubs.admin.metadata.MetaDef.getUpgradeVersionNo) {
-		private static final long serialVersionUID = 2038897701L;
+		private static final long serialVersionUID = 2038899167L;
 
 		@Override
 		public <T> T execute(VerUpgradeRecord record) {
@@ -78,7 +101,7 @@ public enum VerUpgradeRecordResolver{
 		})
 	,
 		状态(new Resolver<VerUpgradeRecord>("statusText") {
-		private static final long serialVersionUID = 2038830455L;
+		private static final long serialVersionUID = 2038874944L;
 
 		@Override
 		public <T> T execute(VerUpgradeRecord record) {

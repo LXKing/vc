@@ -12,6 +12,7 @@
 		<result column="te_type" jdbcType="TINYINT" property="teType" />
 		<result column="te_model" jdbcType="VARCHAR" property="teModel" />
 		<result column="from_version" jdbcType="INTEGER" property="fromVersion" />
+		<result column="from_type" jdbcType="TINYINT" property="fromType" />
 		<result column="to_version" jdbcType="INTEGER" property="toVersion" />
 		<result column="status" jdbcType="TINYINT" property="status" />
 		<result column="add_time" jdbcType="TIMESTAMP" property="addTime" />

@@ -1,17 +1,16 @@
 package com.ccclubs.admin.model;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import com.ccclubs.frm.spring.resolver.Resolver;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-
-import com.ccclubs.frm.spring.resolver.Resolver;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 车机升级记录
@@ -41,7 +40,7 @@ public class VerUpgradeRecord implements java.io.Serializable
 	
 	private   String teNumber;
 	/**
-	 * [te_type]车机类型0:车厘子,1:中导,2:慧翰,3:通领
+	 * [te_type]车机类型0:车厘子 1:中导 2:慧翰 3:通领
 	 */
 	
 	private   Short teType;
@@ -55,6 +54,11 @@ public class VerUpgradeRecord implements java.io.Serializable
 	 */
 	
 	private   Integer fromVersion;
+	/**
+	 * [from_type]当前版本数据类型1:升级包 2:插件
+	 */
+	
+	private   Short fromType;
 	/**
 	 * [to_version]目的版本
 	 */
@@ -101,6 +105,9 @@ public class VerUpgradeRecord implements java.io.Serializable
 	}
 	public Object getFromVersionText(){
 		return resolve("fromVersionText");
+	}
+	public Object getFromTypeText(){
+		return resolve("fromTypeText");
 	}
 	public Object getToVersionText(){
 		return resolve("toVersionText");
@@ -220,6 +227,20 @@ public class VerUpgradeRecord implements java.io.Serializable
 	**/
 	public void setFromVersion(Integer fromVersion){
 		this.fromVersion = fromVersion;
+	}
+	/*******************************当前版本数据类型**********************************/	
+	/**
+	* 当前版本数据类型 [可空]      
+	**/
+	public Short getFromType(){
+		return this.fromType;
+	}
+	
+	/**
+	* 当前版本数据类型 [可空]     
+	**/
+	public void setFromType(Short fromType){
+		this.fromType = fromType;
 	}
 	/*******************************目的版本**********************************/	
 	/**

@@ -74,7 +74,11 @@ public class QueryUpgradeVersionService {
                 }
                 return false;
             }).collect(Collectors.toList());
-            return csVerList.get(0);
+            if (csVerList.size() > 0) {
+                return csVerList.get(0);
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

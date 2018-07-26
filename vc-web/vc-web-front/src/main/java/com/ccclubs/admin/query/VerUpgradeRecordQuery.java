@@ -101,6 +101,19 @@ public class VerUpgradeRecordQuery {
 	
 	private Integer fromVersionGreater;
 	
+	private Short fromTypeEquals;
+	private Short[] fromTypeIn;
+	private Boolean fromTypeIsNull;
+	private Boolean fromTypeIsNotNull;
+	
+	private Short fromTypeStart;
+	
+	private Short fromTypeEnd;
+	
+	private Short fromTypeLess;
+	
+	private Short fromTypeGreater;
+	
 	private Integer toVersionEquals;
 	private Integer[] toVersionIn;
 	private Boolean toVersionIsNull;
@@ -568,6 +581,62 @@ public class VerUpgradeRecordQuery {
 	public Integer getFromVersionGreater(){
 		return this.fromVersionGreater;
 	}
+	public VerUpgradeRecordQuery setFromTypeEquals(Short fromTypeEquals){
+		this.fromTypeEquals = fromTypeEquals;
+		return this;
+	}
+	public Short getFromTypeEquals(){
+		return this.fromTypeEquals;
+	}
+	public VerUpgradeRecordQuery setFromTypeIn(Short[] fromTypeIn){
+		this.fromTypeIn = fromTypeIn;
+		return this;
+	}
+	public Short[] getFromTypeIn(){
+		return this.fromTypeIn;
+	}
+	public VerUpgradeRecordQuery setFromTypeIsNull(Boolean fromTypeIsNull){
+		this.fromTypeIsNull = fromTypeIsNull;
+		return this;
+	}
+	public Boolean getFromTypeIsNull(){
+		return this.fromTypeIsNull;
+	}
+	public VerUpgradeRecordQuery setFromTypeIsNotNull(Boolean fromTypeIsNotNull){
+		this.fromTypeIsNotNull = fromTypeIsNotNull;
+		return this;
+	}
+	public Boolean getFromTypeIsNotNull(){
+		return this.fromTypeIsNotNull;
+	}
+	public VerUpgradeRecordQuery setFromTypeStart(Short fromTypeStart){
+		this.fromTypeStart = fromTypeStart;
+		return this;
+	}
+	public Short getFromTypeStart(){
+		return this.fromTypeStart;
+	}
+	public VerUpgradeRecordQuery setFromTypeEnd(Short fromTypeEnd){
+		this.fromTypeEnd = fromTypeEnd;
+		return this;
+	}
+	public Short getFromTypeEnd(){
+		return this.fromTypeEnd;
+	}
+	public VerUpgradeRecordQuery setFromTypeLess(Short fromTypeLess){
+		this.fromTypeLess = fromTypeLess;
+		return this;
+	}
+	public Short getFromTypeLess(){
+		return this.fromTypeLess;
+	}
+	public VerUpgradeRecordQuery setFromTypeGreater(Short fromTypeGreater){
+		this.fromTypeGreater = fromTypeGreater;
+		return this;
+	}
+	public Short getFromTypeGreater(){
+		return this.fromTypeGreater;
+	}
 	public VerUpgradeRecordQuery setToVersionEquals(Integer toVersionEquals){
 		this.toVersionEquals = toVersionEquals;
 		return this;
@@ -820,6 +889,9 @@ public class VerUpgradeRecordQuery {
 		else if(this.sidx.equals("fromVersion")){
 			return "from_version";
 		}
+		else if(this.sidx.equals("fromType")){
+			return "from_type";
+		}
 		else if(this.sidx.equals("toVersion")){
 			return "to_version";
 		}
@@ -955,6 +1027,21 @@ public class VerUpgradeRecordQuery {
 			c.andfromVersionGreaterThan(this.getFromVersionGreater());
 		}else if(this.getFromVersionLess()!=null){
 			c.andfromVersionLessThan(this.getFromVersionLess());
+		}
+		if(this.getFromTypeEquals()!=null){
+			c.andfromTypeEqualTo(this.getFromTypeEquals());
+		}else if(this.getFromTypeIsNull()!=null && this.getFromTypeIsNull()){
+			c.andfromTypeIsNull();
+		}else if(this.getFromTypeIsNotNull()!=null && this.getFromTypeIsNotNull()){
+			c.andfromTypeIsNotNull();
+		}else if(this.getFromTypeIn()!=null){
+			c.andfromTypeIn(java.util.Arrays.asList(this.getFromTypeIn()));
+		}else if(this.getFromTypeStart()!=null && this.getFromTypeEnd()!=null){
+			c.andfromTypeBetween(this.getFromTypeStart(), this.getFromTypeEnd());
+		}else if(this.getFromTypeGreater()!=null){
+			c.andfromTypeGreaterThan(this.getFromTypeGreater());
+		}else if(this.getFromTypeLess()!=null){
+			c.andfromTypeLessThan(this.getFromTypeLess());
 		}
 		if(this.getToVersionEquals()!=null){
 			c.andtoVersionEqualTo(this.getToVersionEquals());

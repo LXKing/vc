@@ -211,6 +211,12 @@ public class MetaDef {
                             .append(record.getdes())
                             .append("）");
                     return (T) desSb.toString();
+                } else {
+                    /**
+                     * fixme 当前版本信息不存在时，展示原参数
+                     * 这样做是为了在用插件版本ID查不到当前升级版本信息时，展示插件版本ID
+                     */
+                    return (T) String.valueOf(data);
                 }
             }
             return null;

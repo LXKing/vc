@@ -260,12 +260,24 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
 
         /**
          * 查询当前升级版本id
-         *      车型+终端类型+终端型号=唯一一个升级包
+         *      查询条件:车型+终端类型+终端型号
          */
         VerUpgrade currentVer = queryUpgradeVersionService.getCurrentUpgradeVersionInfo(csVehicle.getCsvModel(), upgradeTask.getTerModel(), upgradeTask.getTerType(), csMachine);
+        Integer fromVersion = null;
+        /**
+         * 是否能找到当前升级包
+         */
+        boolean hasFoundCurrentUpgradeVer = false;
         if (Objects.isNull(currentVer)) {
-            // 版本升级时未查询到当前车机版本信息
-            throw new ApiException(ApiEnum.UPGRADE_CURRENT_VERSION_NOT_FOUND);
+            // 版本升级时未查询到当前车机版本信息:
+            // 未查询到时：FromVersion字段为插件版本ID
+            fromVersion = csMachine.getCsmTlV2();
+            if (Objects.isNull(fromVersion)) {
+                throw new ApiException(ApiEnum.UPGRADE_CURRENT_VERSION_NOT_FOUND);
+            }
+        } else {
+            fromVersion = currentVer.getId();
+            hasFoundCurrentUpgradeVer = true;
         }
         /**
          * 插入一条升级记录
@@ -273,7 +285,16 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         VerUpgradeRecord upgradeRecord = new VerUpgradeRecord();
         upgradeRecord.setCarModel(csVehicle.getCsvModel());
         upgradeRecord.setStatus((byte)1);
-        upgradeRecord.setFromVersion(currentVer.getId());
+        upgradeRecord.setFromVersion(fromVersion);
+        /**
+         * 1: fromVersion是升级包ID
+         * 2：fromVersion是插件版本
+         */
+        if (hasFoundCurrentUpgradeVer) {
+            upgradeRecord.setFromType((byte)1);
+        } else {
+            upgradeRecord.setFromType((byte)2);
+        }
         upgradeRecord.setTeModel(upgradeTask.getTerModel());
         upgradeRecord.setTeNumber(csMachine.getCsmTeNo());
         upgradeRecord.setTeType(upgradeTask.getTerType());

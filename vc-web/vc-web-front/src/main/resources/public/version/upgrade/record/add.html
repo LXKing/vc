@@ -43,13 +43,14 @@
 				<dl  >
 					<dt>车机类型</dt>
 					<dd>
-                        <select class="form-control" name="teType"  >
-                            <option></option>
-                            <option value="0">车厘子</option>
-                            <option value="1">中导</option>
-                            <option value="2">慧翰</option>
-                            <option value="3">通领</option>
-                        </select>
+					<select class="form-control" name="teType"  >
+                        <option></option>
+                         <option value="0">车厘子</option>
+                         <option value="1">中导</option>
+                         <option value="2">慧翰</option>
+                         <option value="3">通领</option>
+                    </select>
+					
 					</dd>
 				</dl>
 				<dl  >
@@ -63,6 +64,17 @@
 					<dt>当前版本</dt>
 					<dd>
 					<input name="fromVersion" placeholder="" class="form-control searchinput" dataWhere="" dataUrl="/version/upgrade/query">
+					
+					</dd>
+				</dl>
+				<dl  >
+					<dt>当前版本数据类型</dt>
+					<dd>
+					<select class="form-control" name="fromType"  >
+                        <option></option>
+                         <option value="1">升级包</option>
+                         <option value="2">插件</option>
+                    </select>
 					
 					</dd>
 				</dl>
@@ -131,6 +143,10 @@
 				},
 				"fromVersion":{
 					"maxlength":11,
+					"digits":true
+				},
+				"fromType":{
+					"maxlength":4,
 					"digits":true
 				},
 				"teModel":{
