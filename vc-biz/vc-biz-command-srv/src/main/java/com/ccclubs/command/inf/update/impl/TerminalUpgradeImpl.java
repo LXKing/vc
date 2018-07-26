@@ -151,8 +151,8 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
      * 通领二合一版本升级
      * @param upgradeTask       升级信息
      */
+//    @Transactional(rollbackFor = {ApiException.class, RuntimeException.class, Exception.class})
     @Override
-    @Transactional
     public UpgradeOutput upgradeMixedVersionTask(MixedUpgradeInput upgradeTask) {
         /**
          * 1. 命令执行前，对命令发起者的权限和车机校验
@@ -270,9 +270,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         /**
          * 插入一条升级记录
          */
-        Date now = new Date();
         VerUpgradeRecord upgradeRecord = new VerUpgradeRecord();
-        upgradeRecord.setAddTime(now);
         upgradeRecord.setCarModel(csVehicle.getCsvModel());
         upgradeRecord.setStatus((byte)1);
         upgradeRecord.setFromVersion(currentVer.getId());
@@ -280,7 +278,6 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
         upgradeRecord.setTeNumber(csMachine.getCsmTeNo());
         upgradeRecord.setTeType(upgradeTask.getTerType());
         upgradeRecord.setToVersion(upgradeTask.getMixedUpVersionId());
-        upgradeRecord.setUpdateTime(now);
         upgradeRecord.setVin(upgradeTask.getVin());
         verUpgradeRecordMapper.insertSelective(upgradeRecord);
 
