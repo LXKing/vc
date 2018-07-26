@@ -65,11 +65,11 @@ public class UpgradeInfImpl implements UpgradeInf {
      */
     @Override
     public List<AbleUpgradeOutput> getAbleUpgradeList(AbleUpgradeInput input) {
-        CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(input.getVin());
+        CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         if (csVehicle == null) {
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
-        CsMachine csMachine = queryTerminalService.queryCsMachineByIdFromCache(csVehicle.getCsvMachine());
+        CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
         if (csMachine == null) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
