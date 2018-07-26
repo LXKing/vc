@@ -104,7 +104,7 @@
         </javaClientGenerator>
 
 
-        <table tableName="srv_dict" schema="">
+        <table tableName="ver_up_manage" schema="">
             <!-- <generatedKey column="id" sqlStatement="select  replace(uuid(),'-','')   from dual" identity="false"/> -->
         </table>
         <!--<table tableName="ver_upgrade_record" schema=""></table>-->
