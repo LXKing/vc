@@ -76,7 +76,7 @@ public class VerFtpSerController {
 	 * @return
 	 */
 	@RequestMapping(value="delete", method = RequestMethod.DELETE)
-	public VoResult<?> delete(@RequestParam(required=true)final Long[] ids){
+	public VoResult<?> delete(@RequestParam(required=true)final Integer[] ids){
 		verFtpSerService.batchDelete(ids);
 		return VoResult.success();
 	}
@@ -94,7 +94,7 @@ public class VerFtpSerController {
 	 * 获取单条升级文件服务器管理信息
 	 */
 	@RequestMapping(value="/detail/{id}", method = RequestMethod.GET)
-	public VoResult<Map<String, VerFtpSer>> detail(@PathVariable(required = true) Long id){
+	public VoResult<Map<String, VerFtpSer>> detail(@PathVariable(required = true) Integer id){
 		VerFtpSer data = verFtpSerService.selectByPrimaryKey( id.intValue());
 		Map<String, VerFtpSer> map = new HashMap<String, VerFtpSer>();
 		registResolvers(data);
