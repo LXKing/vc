@@ -1,7 +1,13 @@
 package com.ccclubs.admin.task.jobs;
 
+import com.ccclubs.admin.model.CsMachine;
+import com.ccclubs.admin.model.VerSoftHardware;
+import com.ccclubs.admin.model.VerUpgrade;
 import com.ccclubs.admin.model.VerUpgradeRecord;
+import com.ccclubs.admin.service.ICsMachineService;
+import com.ccclubs.admin.service.IVerSoftHardwareService;
 import com.ccclubs.admin.service.IVerUpgradeRecordService;
+import com.ccclubs.admin.service.IVerUpgradeService;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -35,23 +41,65 @@ public class VerUpgradeTimeoutCheckJob implements Runnable {
     @Autowired
     private IVerUpgradeRecordService verUpgradeRecordService;
 
+    @Autowired
+    private IVerUpgradeService verUpgradeService;
+
+    @Autowired
+    private IVerSoftHardwareService verSoftHardwareService;
+
+    @Autowired
+    private ICsMachineService csMachineService;
+
     @Override
     public void run() {
+        /**
+         * 查询出所有升级中的记录
+         */
         VerUpgradeRecord queryAll = new VerUpgradeRecord();
         queryAll.setstatus((short)1);
         List<VerUpgradeRecord> upgradingRecords = verUpgradeRecordService.select(queryAll);
         if (Objects.nonNull(upgradingRecords) && upgradingRecords.size() > 0) {
-            Date now = new Date();
             /**
-             * 筛选出所有超时任务
+             * 对于升级中的任务，检查升级是否已完成，完成则标记升级状态为：升级完成
+             * 未完成检查是否超时，超时则升级失败
              */
-            upgradingRecords = upgradingRecords.stream().filter(this::isTimeout).collect(Collectors.toList());
-            upgradingRecords.forEach(r -> {
-                VerUpgradeRecord updateParam = new VerUpgradeRecord();
-                updateParam.setUpdateTime(now);
-                // 更新为升级失败
-                updateParam.setstatus((short) 3);
-                int updateCount = verUpgradeRecordService.updateByPrimaryKeySelective(updateParam);
+            upgradingRecords.forEach(record -> {
+                // 查询目标升级版本
+                VerUpgrade destVersion = verUpgradeService.selectByPrimaryKey(record.getToVersion());
+                if (Objects.nonNull(destVersion) && Objects.nonNull(destVersion.getSoftVerId())) {
+                    // 获取目标版本中的插件版本信息
+                    VerSoftHardware softHardware = verSoftHardwareService.selectByPrimaryKey(destVersion.getSoftVerId());
+                    if (Objects.nonNull(softHardware) && Objects.nonNull(softHardware.getVerNo())) {
+                        // 目标版本的插件版本号
+                        String destPluginVerNo = softHardware.getVerNo();
+
+                        /**
+                         * 查询当前车机信息
+                         */
+                        CsMachine machineQuery = new CsMachine();
+                        machineQuery.setCsmTeType(record.getTeType());
+                        machineQuery.setCsmTeNo(record.getTeNumber());
+                        CsMachine currMachine = csMachineService.selectOne(machineQuery);
+                        if (Objects.nonNull(currMachine) && Objects.nonNull(currMachine.getCsmTlV2())) {
+                            /**
+                             * 如果当前车机的插件版本与目标升级版本中的插件版本相同，则认为升级完成
+                             */
+                            if (String.valueOf(currMachine.getCsmTlV2()).equals(destPluginVerNo)) {
+                                // 升级完成
+                                updateUpgradeStatus(record.getid(), true);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                /**
+                 * 即使前一步有些参数没有查询到，判断如果超时，则仍标记为升级失败
+                 */
+                if (isTimeout(record)) {
+                    updateUpgradeStatus(record.getid(), false);
+                    return;
+                }
             });
         }
     }
@@ -79,6 +127,19 @@ public class VerUpgradeTimeoutCheckJob implements Runnable {
             LOG.error("param [addTime] is null while check upgrade timeout: id={}", record.getid());
         }
         return false;
+    }
+
+    private int updateUpgradeStatus(Integer id, Boolean isSuccess) {
+        VerUpgradeRecord updateParam = new VerUpgradeRecord();
+        updateParam.setid(id);
+        updateParam.setUpdateTime(new Date());
+        // 更新升级状态
+        if (isSuccess) {
+            updateParam.setstatus((short) 2);
+        } else {
+            updateParam.setstatus((short) 3);
+        }
+        return verUpgradeRecordService.updateByPrimaryKeySelective(updateParam);
     }
 
     public static void main(String[] args) throws Exception{
