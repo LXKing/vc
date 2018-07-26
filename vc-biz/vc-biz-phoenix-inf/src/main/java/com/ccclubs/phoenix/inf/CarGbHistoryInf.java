@@ -10,17 +10,21 @@ import java.util.List;
 
 //extends BaseHistoryInf<CarGb>
 public interface CarGbHistoryInf {
+    @Deprecated
     //查询车辆GB信息(非分页)
-    public List<CarGb> queryCarGbListNoPage(CarGbHistoryParam carGbHistoryParam);
+    List<CarGb> queryCarGbListNoPage(CarGbHistoryParam carGbHistoryParam);
 
+    @Deprecated
     //查询车辆GB信息(分页)
-    public List<CarGb> queryCarGbListWithPage(CarGbHistoryParam carGbHistoryParam);
+    List<CarGb> queryCarGbListWithPage(CarGbHistoryParam carGbHistoryParam);
 
+    @Deprecated
     //查询车辆GB信息记录总数
-    public Long queryCarGbListCount(CarGbHistoryParam carGbHistoryParam);
+    Long queryCarGbListCount(CarGbHistoryParam carGbHistoryParam);
 
+    @Deprecated
     //查询车辆GB信息(封装)
-    public CarGbHistoryOutput queryCarGbListByOutput(CarGbHistoryParam carGbHistoryParam);
+    CarGbHistoryOutput queryCarGbListByOutput(CarGbHistoryParam carGbHistoryParam);
 
 
 

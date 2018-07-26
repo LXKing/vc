@@ -3,10 +3,12 @@ package com.ccclubs.gateway.gb.handler.encode;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.utils.ValidUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 
@@ -16,6 +18,8 @@ import java.nio.charset.Charset;
  * @Time: 18:25
  * Email:  yeanzhi@ccclubs.com
  */
+@Component
+@ChannelHandler.Sharable
 public class GBPackageEncoder extends MessageToByteEncoder<Object> {
 
     private static final Logger LOG = LoggerFactory.getLogger(GBPackageEncoder.class);

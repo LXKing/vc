@@ -1,9 +1,10 @@
 package com.ccclubs.gateway.jt808.mina;
 
-import java.net.SocketAddress;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+
+import java.net.SocketAddress;
 
 public class UdpServerHandler extends IoHandlerAdapter {
 

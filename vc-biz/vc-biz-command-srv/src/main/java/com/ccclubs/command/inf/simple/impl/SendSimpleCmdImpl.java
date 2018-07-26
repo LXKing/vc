@@ -12,7 +12,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
-import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
@@ -20,7 +20,9 @@ import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
-import com.ccclubs.pub.orm.model.*;
+import com.ccclubs.pub.orm.model.CsMachine;
+import com.ccclubs.pub.orm.model.CsStructWithBLOBs;
+import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +69,21 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
 
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
+    @Resource
+    AuthValidateHelper authValidateHelper;
 
+    /**
+     * 下发简单指令
+     * @param input
+     * @return
+     */
     @Override
-    @DataAuth
     public SimpleCmdOutput sendSimpleCmd(SimpleCmdInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Integer structId = commandProp.getCmdMap().get(input.getCmd() + "");
 
         logger.debug("begin process command {} start.", structId);
@@ -86,7 +98,7 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         /*****************************************************/
         /******************** 适配（低）终端版本 *****************/
@@ -181,14 +193,14 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
                     csRemote.setCsrUpdateTime(System.currentTimeMillis());
                     csRemote.setCsrStatus(1);
                     csRemote.setCsrResult(result);
-                    JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
-                    jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
-                    jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
-                    jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
-                    jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+                    JSONObject jsonObject = (JSONObject) JSONObject.toJSON(csRemote);
+                    jsonObject.put("csrTerminalType", csMachine.getCsmTeType());
+                    jsonObject.put("csrTerminalMobile", csMachine.getCsmMobile());
+                    jsonObject.put("csrTerminalPlugin", csMachine.getCsmTlV2());
+                    jsonObject.put("csrTerminalVersion", csMachine.getCsmTlV1());
                     loggerBusiness.info(JSONObject.toJSONString(jsonObject));
-                    CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result, new TypeReference<CommonResult<SimpleCmdOutput>>() {
-                    });
+                    CommonResult<SimpleCmdOutput> commonResult = JSON.parseObject(result,
+                            new TypeReference<CommonResult<SimpleCmdOutput>>() {});
 
                     if (commonResult.isSuccess()) {
                         if (commonResult.getData() == null) {
@@ -205,18 +217,18 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
             logger.debug("command timeout and exit.");
             csRemote.setCsrUpdateTime(System.currentTimeMillis());
             csRemote.setCsrStatus(-1);
-            JSONObject jsonObject = (JSONObject)JSONObject.toJSON(csRemote);
-            jsonObject.put("csrTerminalType",csMachine.getCsmTeType());
-            jsonObject.put("csrTerminalMobile",csMachine.getCsmMobile());
-            jsonObject.put("csrTerminalPlugin",csMachine.getCsmTlV2());
-            jsonObject.put("csrTerminalVersion",csMachine.getCsmTlV1());
+            JSONObject jsonObject = (JSONObject) JSONObject.toJSON(csRemote);
+            jsonObject.put("csrTerminalType", csMachine.getCsmTeType());
+            jsonObject.put("csrTerminalMobile", csMachine.getCsmMobile());
+            jsonObject.put("csrTerminalPlugin", csMachine.getCsmTlV2());
+            jsonObject.put("csrTerminalVersion", csMachine.getCsmTlV1());
             loggerBusiness.info(JSONObject.toJSONString(jsonObject));
             throw new ApiException(ApiEnum.COMMAND_TIMEOUT);
 
         } catch (ApiException ex) {
             throw ex;
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -277,6 +289,13 @@ public class SendSimpleCmdImpl implements SendSimpleCmdInf {
         return structId;
     }
 
+    /**
+     * 获取适配结构ID
+     * @param csMachine  车机
+     * @param input
+     * @param structId
+     * @return
+     */
     private Integer getAdapterStructId(CsMachine csMachine, SimpleCmdInput input, Integer structId) {
         Integer supportV = commandProp.getSupportVersionMap().get(csMachine.getCsmTeType() + "");
         if (null == csMachine.getCsmTlV2()) {

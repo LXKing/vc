@@ -2,23 +2,13 @@ package com.ccclubs.gateway.jt808.inf.impl;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.ons.OnsMessageFactory;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IMessageSender;
-import com.ccclubs.common.modify.UpdateTerminalService;
-import com.ccclubs.protocol.dto.jt808.JT_0001;
-import com.ccclubs.protocol.dto.jt808.JT_0100;
-import com.ccclubs.protocol.dto.jt808.JT_0102;
-import com.ccclubs.protocol.dto.jt808.JT_0201;
-import com.ccclubs.protocol.dto.jt808.JT_0500;
-import com.ccclubs.protocol.dto.jt808.JT_8001;
-import com.ccclubs.protocol.dto.jt808.JT_80F4;
-import com.ccclubs.protocol.dto.jt808.JT_8100;
-import com.ccclubs.protocol.dto.jt808.JT_81F4;
-import com.ccclubs.protocol.dto.jt808.T808Message;
-import com.ccclubs.protocol.dto.jt808.T808MessageHeader;
+import com.ccclubs.protocol.dto.jt808.*;
 import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
@@ -26,15 +16,16 @@ import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsTerminal;
 import com.ccclubs.pub.orm.model.CsVehicle;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.annotation.Resource;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 
 /**
@@ -259,10 +250,10 @@ public class AckService implements IAckService {
 
       getMessageSender().send808Message(ts);
     } else if (msgType == 0x0001) {
-      // 如果是终端通用应答，就更新数据库的指令状态为已应答
+      // 如果是终端通用应答，就更新数据库的指令状态为已应答(TODO)
       JT_0001 answerData = (JT_0001) msgFromTerminal.getMessageContents();
       // 转发 0001 非 0x8900 的通用应答，0x8900为分时租赁透传ID
-      if ((answerData.getResponseMessageId() & 0xFFFF) == 0x8900) {
+      if ((answerData.getResponseMessageId() & 0xFFFF) != 0x8900) {
         transferToMQ(msgFromTerminal, MqTagUtils.getTag(MqTagUtils.PROTOCOL_JT808, msgType));
       }
     } else if (msgType == 0x01F0) {
@@ -343,7 +334,7 @@ public class AckService implements IAckService {
       // 终端对车门控制的应答
       JT_0500 answerData = (JT_0500) msgFromTerminal.getMessageContents();
       short platformSn = answerData.getResponseMessageSerialNo();
-    } else if (msgType == 0x0104) {
+    } else if (msgType == 0x0104) {//TODO
       // 查询终端参数应答
       JT_8001 echoData = new JT_8001();
       echoData.setResponseMessageSerialNo(msgFromTerminal.getHeader().getMessageSerialNo());

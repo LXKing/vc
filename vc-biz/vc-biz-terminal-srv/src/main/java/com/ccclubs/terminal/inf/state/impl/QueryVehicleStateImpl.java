@@ -5,6 +5,7 @@ import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -43,11 +44,16 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
 
     @Resource
     private RedisTemplate redisTemplate;
+    @Resource
+    AuthValidateHelper authValidateHelper;
 
     @Override
-    @DataAuth
     public VehicleStateQryOutput getRealTimeCarState(VehicleStateQryInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         //Step1.查询车辆
         CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         // 未查询到车辆
@@ -78,6 +84,7 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         List<VehicleStateQryOutput> vehicleStateQryOutputList = new ArrayList<>();
         String[] vins = input.getVins();
         for (String vin : vins) {
+            //根据vin码获取车辆信息
             CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(vin);
             // 未查询到车辆
             if (null == csVehicle) {
@@ -104,8 +111,15 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         return output;
     }
 
+    /**
+     * 车辆在线状态判断
+     *
+     * @param input
+     * @return
+     */
     @Override
     public VehicleOnlineOutput isOnline(VehicleOnlineInput input) {
+        //根据vin码获取车辆信息
         CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(input.getVin());
         // 未查询到车辆
         if (null == csVehicle) {
@@ -116,7 +130,7 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
-
+        //根据id获取车机信息
         CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
         if (null == csMachine) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);

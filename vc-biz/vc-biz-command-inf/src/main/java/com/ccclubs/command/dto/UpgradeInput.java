@@ -13,6 +13,9 @@ public class UpgradeInput extends CommonInput implements java.io.Serializable{
     @NotNull(message = "车辆vin码必填")
     private String vin;
 
+    /**
+     * 文件名称
+     */
     private String filename;
 
     public String getVin() {

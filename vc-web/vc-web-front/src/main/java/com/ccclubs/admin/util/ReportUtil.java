@@ -8,31 +8,30 @@ import com.ccclubs.admin.service.IReportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 
 /**
  * 此方法用于将查询到的数据进行处理，然后生成表格xls文件，最后存储到oss。
+ *
  * @field baseName  此参数是你将要生成的文件的最为主要的一部分，
- *                  它反应了你的这个文件来自哪个表。例如：‘CsState’。
+ * 它反应了你的这个文件来自哪个表。例如：‘CsState’。
  * @field headNameMap 此参数是由前端传过来的用于判断哪些字段需要被导出
- *                    以及它们的对应中文名字是什么。
- *                    其中，key为field名，value为中文名字。
+ * 以及它们的对应中文名字是什么。
+ * 其中，key为field名，value为中文名字。
  * @field list 你通过查询或其他方法得到的数据。
  * @field reportParam 前端传递过来的页面参数。
  * @field userUuid 控制层生成的uuid，用于将生成好的文件url放入redis。
- *                 前端用此值来查询是否导出完成。
- * */
+ * 前端用此值来查询是否导出完成。
+ */
 @Component
-public class ReportUtil{
+public class ReportUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportUtil.class);
 
@@ -43,9 +42,9 @@ public class ReportUtil{
     IReportService reportService;
 
     public <T> void doReport(String baseName,
-                    Collection list,
-                    ReportParam<T> reportParam,
-                    String userUuid){
+                             Collection list,
+                             ReportParam<T> reportParam,
+                             String userUuid) {
 
         long startTime = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -54,19 +53,19 @@ public class ReportUtil{
          * 命名规则是 表意义+“——”+页号+“——”+页面大小+“——”+日期
          * */
         String fileName = null;
-        if (null!=reportParam.getAllReport()&&1==reportParam.getAllReport()) {
-            fileName = baseName+"_All_Data" + dateNowStr + ".xls";
+        if (null != reportParam.getAllReport() && 1 == reportParam.getAllReport()) {
+            fileName = baseName + "_All_Data" + dateNowStr + ".xls";
         } else {
             fileName =
-                    baseName+"_" + reportParam.getPage() + "_" + reportParam.getRows()
+                    baseName + "_" + reportParam.getPage() + "_" + reportParam.getRows()
                             + "_" + dateNowStr + ".xls";
         }
         //文件路径
         ByteArrayOutputStream bytes;
-        logger.info("we start a report process.the file is:"+fileName);
+        logger.info("we start a report process.the file is:" + fileName);
 
         HashMap<String, String> headMap = new HashMap<>();
-        for (ReportModel reportModel:reportParam.getClms()) {
+        for (ReportModel reportModel : reportParam.getClms()) {
             headMap.put(reportModel.getField(), reportModel.getTitle());
         }
         /*for (int i = 0; i < reportParam.getClms().size(); i++) {
@@ -85,7 +84,8 @@ public class ReportUtil{
         logger.info("report use time(ms): " + (endTime - startTime));
         logger.info("report a file to oss done:" + fileName);
     }
-    public static ReportUtil getFromApplication(){
+
+    public static ReportUtil getFromApplication() {
         return AppContext.CTX.getBean(ReportUtil.class);
     }
 }

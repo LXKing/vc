@@ -9,5 +9,10 @@ import com.ccclubs.command.dto.ConfirmInput;
  * @create 2017-07-25
  **/
 public interface HttpConfirmResultInf {
+    /**
+     * 指令确认
+     * @param input
+     * @return
+     */
     Object confirm(ConfirmInput input);
 }

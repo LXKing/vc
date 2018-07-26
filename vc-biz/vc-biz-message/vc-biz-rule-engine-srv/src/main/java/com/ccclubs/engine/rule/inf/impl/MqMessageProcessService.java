@@ -3,7 +3,9 @@ package com.ccclubs.engine.rule.inf.impl;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
+import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.IMqAckService;
@@ -15,13 +17,7 @@ import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.modify.UpdateLoggerService;
 import com.ccclubs.protocol.dto.gb.GBMessage;
-import com.ccclubs.protocol.dto.jt808.JT_01F0;
-import com.ccclubs.protocol.dto.jt808.JT_0200;
-import com.ccclubs.protocol.dto.jt808.JT_0201;
-import com.ccclubs.protocol.dto.jt808.JT_0704;
-import com.ccclubs.protocol.dto.jt808.JT_0900;
-import com.ccclubs.protocol.dto.jt808.JT_0900_can;
-import com.ccclubs.protocol.dto.jt808.T808Message;
+import com.ccclubs.protocol.dto.jt808.*;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
@@ -30,11 +26,10 @@ import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
-import com.ccclubs.pub.orm.model.CsMachine;
-import com.ccclubs.pub.orm.model.CsState;
-import com.ccclubs.pub.orm.model.CsVehicle;
-import com.ccclubs.pub.orm.model.SrvHost;
+import com.ccclubs.pub.orm.model.*;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 
@@ -49,7 +44,7 @@ import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_SIM
 /**
  * 处理网关gateway发送出来的消息
  * 订阅Topic：ser
- * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0900_01||JT0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
+ * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0100||JT_0900_01||JT_0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
  * 备注：包括808信息，国标信息，分时租赁信息
  */
 public class MqMessageProcessService implements IMqMessageProcessService {
@@ -84,6 +79,12 @@ public class MqMessageProcessService implements IMqMessageProcessService {
 
     @Autowired
     UpdateLoggerService updateLoggerService;
+
+    @Resource
+    QueryTerminalService queryTerminalService;
+
+    @Autowired
+    UpdateTerminalService updateTerminalService;
 
     /**
      * 通过 TAG 区分是哪种协议
@@ -178,6 +179,61 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 // 写日志
                 updateLoggerService.save(msgFromTerminal.getSimNo(), "终端CAN过滤表",
                         msgFromTerminal.getPacketDescr(), 0L);
+
+            } else if (headerType == 0x0100) {
+                /**
+                 * 原终端注册流程
+                 */
+                JT_0100 registerData = (JT_0100) msgFromTerminal.getMessageContents();
+
+                if (registerData == null) {
+                    return;
+                }
+                String simNo = msgFromTerminal.getSimNo();
+                // 查询终端绑定的车机
+                CsMachine csMachine = queryTerminalService
+                        .queryCsMachineByTeNo(registerData.getTerminalId());
+                // 查询终端
+                CsTerminal csTerminal = queryTerminalService
+                        .queryCsTerminalByCstIdd(registerData.getTerminalId());
+                // 更新终端注册信息
+                Date now = new Date();
+                if (csTerminal != null) {
+                    CsTerminal newCsTerminal = new CsTerminal();
+                    newCsTerminal.setCstId(csTerminal.getCstId());
+                    newCsTerminal.setCstMobile(simNo);
+                    newCsTerminal.setCstUpdateTime(now);
+                    updateTerminalService.update(newCsTerminal);
+                } else {
+                    // 写入终端注册信息
+                    CsTerminal newCsTerminal = new CsTerminal();
+                    newCsTerminal.setCstAddTime(now);
+                    newCsTerminal.setCstCity(String.valueOf(registerData.getCityId()));
+                    newCsTerminal.setCstColor((short) registerData.getPlateColor());
+                    newCsTerminal.setCstIdd(registerData.getTerminalId());
+                    newCsTerminal.setCstMade(registerData.getManufactureId());
+                    newCsTerminal.setCstModel(registerData.getTerminalModelNo());
+                    newCsTerminal.setCstNumber(registerData.getPlateNo());
+                    newCsTerminal.setCstStatus((byte) 1);
+                    newCsTerminal.setCstProvince(String.valueOf(registerData.getProvinceId()));
+                    // 终端未授权
+                    //						newCsTerminal.setCstStatus((short) 3);
+                    newCsTerminal.setCstMobile(simNo);
+                    newCsTerminal.setCstUpdateTime(now);
+                    //
+                    updateTerminalService.insert(newCsTerminal);
+                }
+
+                if (csMachine != null) {
+                    // 更新初次激活时间
+                    if (csMachine.getCsmCeFirst() == null) {
+                        CsMachine updateMachine = new CsMachine();
+                        updateMachine.setCsmId(csMachine.getCsmId());
+                        updateMachine.setCsmUpdateTime(now);
+                        updateMachine.setCsmCeFirst(now);
+                        updateTerminalService.update(updateMachine);
+                    }
+                }
             }
             return;
         }

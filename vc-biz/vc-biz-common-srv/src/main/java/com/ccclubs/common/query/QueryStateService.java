@@ -77,6 +77,7 @@ public class QueryStateService {
     CsStateExample stateExample = new CsStateExample();
     CsStateExample.Criteria stateExampleCriteria = stateExample.createCriteria();
     stateExampleCriteria.andCssCarEqualTo(vehicleId);
+    stateExample.setOrderByClause(" css_add_time DESC ");
     List<CsState> stateList = dao.selectByExample(stateExample);
 
     // 未查询到车辆实时状态

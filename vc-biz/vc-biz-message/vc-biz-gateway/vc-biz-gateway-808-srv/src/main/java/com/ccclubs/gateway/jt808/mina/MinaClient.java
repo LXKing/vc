@@ -1,8 +1,5 @@
 package com.ccclubs.gateway.jt808.mina;
 
-import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.future.WriteFuture;
@@ -11,6 +8,10 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
+import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 基于mina的转发客户端

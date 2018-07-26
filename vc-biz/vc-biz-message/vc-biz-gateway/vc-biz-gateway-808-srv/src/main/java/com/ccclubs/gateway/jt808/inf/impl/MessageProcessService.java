@@ -4,9 +4,10 @@ import com.ccclubs.gateway.jt808.inf.I808MessageProcessService;
 import com.ccclubs.gateway.jt808.inf.IAckService;
 import com.ccclubs.gateway.jt808.inf.IGpsDataService;
 import com.ccclubs.protocol.dto.jt808.T808Message;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
 
 /**
  * 终端上行数据处理服务

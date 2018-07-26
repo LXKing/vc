@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface BaseHistoryInf<T> {
 
-    void insertBulid(T historyDate,PreparedStatement preparedStatement) throws SQLException;
+    void insertBulid(T historyDate, PreparedStatement preparedStatement) throws SQLException;
     //写入或更新信息
     void saveOrUpdate(List<T> records);
 

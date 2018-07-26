@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 缓存终端连接等信息
  */
 public class ClientCache {
-    public static String EMPTY_VIN = "EMPTY_VIN";
+    public static final String EMPTY_VIN = "EMPTY_VIN";
 
     private static final Logger LOG = LoggerFactory.getLogger(ClientCache.class);
 

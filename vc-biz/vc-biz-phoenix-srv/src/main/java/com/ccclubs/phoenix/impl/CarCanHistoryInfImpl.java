@@ -9,6 +9,7 @@ import com.ccclubs.phoenix.inf.CarCanHistoryInf;
 import com.ccclubs.phoenix.input.CarCanHistoryParam;
 import com.ccclubs.phoenix.orm.model.CarCan;
 import com.ccclubs.phoenix.output.CarCanHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,13 @@ import java.util.List;
  */
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
+@Deprecated
 public class CarCanHistoryInfImpl implements CarCanHistoryInf {
 
-    static Logger logger= LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
+    static Logger logger = LoggerFactory.getLogger(CarCanHistoryInfImpl.class);
 
 
-
-    static  final String count_sql = "select " +
+    static final String COUNT_SQL = "select " +
             "count(cs_number) as total " +
             "from phoenix_car_can_history " +
             "where cs_number=? " +
@@ -50,37 +51,36 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     public List<CarCan> queryCarCanListNoPage(final CarCanHistoryParam carCanHistoryParam) {
         final String queryFields = carCanHistoryParam.getQuery_fields();
         String query_sql = "select " +
-                queryFields+" " +
+                queryFields + " " +
                 "from phoenix_car_can_history " +
                 "where cs_number=? " +
                 "and current_time>=? " +
                 "and current_time<=? " +
-                "order by current_time  "+carCanHistoryParam.getOrder()+" ";
+                "order by current_time  " + carCanHistoryParam.getOrder() + " ";
 
         List<CarCan> carCanList = new ArrayList<CarCan>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             String cs_number = carCanHistoryParam.getCs_number();
-            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
 
             preparedStatement = connection.prepareStatement(query_sql);
-            preparedStatement.setString(1 , cs_number);
-            preparedStatement.setLong(2 , start_time);
-            preparedStatement.setLong(3 , end_time);
-            resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            preparedStatement.setString(1, cs_number);
+            preparedStatement.setLong(2, start_time);
+            preparedStatement.setLong(3, end_time);
+            resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
 
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray, queryFields, carCanList, CarCan.class);
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"CarCan queryCarCanListNoPage");
+                    preparedStatement, resultSet, "CarCan queryCarCanListNoPage");
         }
 
         return carCanList;
@@ -91,76 +91,74 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
         Integer page_size = carCanHistoryParam.getPage_size();
         Integer page_no = carCanHistoryParam.getPage_no();
         final Integer limit = page_size;
-        final Integer offset = (page_no-1)*page_size;
+        final Integer offset = (page_no - 1) * page_size;
         final String queryFields = carCanHistoryParam.getQuery_fields();
         String query_sql = "select " +
-                queryFields+" " +
+                queryFields + " " +
                 "from phoenix_car_can_history " +
                 "where cs_number=? " +
                 "and current_time>=? " +
                 "and current_time<=? " +
-                "order by current_time  "+carCanHistoryParam.getOrder()+" "+
+                "order by current_time  " + carCanHistoryParam.getOrder() + " " +
                 "limit ? offset ? ";
 
         List<CarCan> carCanList = new ArrayList<CarCan>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
 
             String cs_number = carCanHistoryParam.getCs_number();
-            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
 
             preparedStatement = connection.prepareStatement(query_sql);
-            preparedStatement.setString(1,cs_number);
-            preparedStatement.setLong(2,start_time);
-            preparedStatement.setLong(3,end_time);
-            preparedStatement.setInt(4,limit);
-            preparedStatement.setInt(5,offset);
-            resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
+            preparedStatement.setString(1, cs_number);
+            preparedStatement.setLong(2, start_time);
+            preparedStatement.setLong(3, end_time);
+            preparedStatement.setInt(4, limit);
+            preparedStatement.setInt(5, offset);
+            resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
 
-            BaseQueryInfImpl.parseJosnArrayToObjects(jsonArray,queryFields,carCanList,CarCan.class);
+            BaseTransformTool.parseJosnArrayToObjects(jsonArray, queryFields, carCanList, CarCan.class);
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"CarCan queryCarCanListWithPage");
+                    preparedStatement, resultSet, "CarCan queryCarCanListWithPage");
         }
         return carCanList;
     }
 
     @Override
     public Long queryCarCanListCount(final CarCanHistoryParam carCanHistoryParam) {
-        long total=0;
+        long total = 0;
 
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             String cs_number = carCanHistoryParam.getCs_number();
-            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(),DateTimeUtil.UNIX_FORMAT);
-            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(),DateTimeUtil.UNIX_FORMAT);
+            long start_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getStart_time(), DateTimeUtil.UNIX_FORMAT);
+            long end_time = DateTimeUtil.date2UnixFormat(carCanHistoryParam.getEnd_time(), DateTimeUtil.UNIX_FORMAT);
 
-            preparedStatement = connection.prepareStatement(count_sql);
-            preparedStatement.setString(1,cs_number);
-            preparedStatement.setLong(2,start_time);
-            preparedStatement.setLong(3,end_time);
-            resultSet= preparedStatement.executeQuery();
-            JSONArray jsonArray = BaseQueryInfImpl.queryRecords(resultSet);
-            if(jsonArray!=null&&jsonArray.size()>0){
+            preparedStatement = connection.prepareStatement(COUNT_SQL);
+            preparedStatement.setString(1, cs_number);
+            preparedStatement.setLong(2, start_time);
+            preparedStatement.setLong(3, end_time);
+            resultSet = preparedStatement.executeQuery();
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            if (jsonArray != null && jsonArray.size() > 0) {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                total=jsonObject.getLong("TOTAL");
+                total = jsonObject.getLong("TOTAL");
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"CarCan queryCarCanListCount");
+                    preparedStatement, resultSet, "CarCan queryCarCanListCount");
 
         }
 
@@ -170,16 +168,16 @@ public class CarCanHistoryInfImpl implements CarCanHistoryInf {
     @Override
     public CarCanHistoryOutput queryCarCanListByOutput(final CarCanHistoryParam carCanHistoryParam) {
         CarCanHistoryOutput carCanHistoryOutput = new CarCanHistoryOutput();
-        long total=-1L;
+        long total = -1L;
         //首先判断是否是分页查询
-        if(carCanHistoryParam.getPage_no()>0){
+        if (carCanHistoryParam.getPage_no() > 0) {
             total = queryCarCanListCount(carCanHistoryParam);
             List<CarCan> carCanList = queryCarCanListWithPage(carCanHistoryParam);
             carCanHistoryOutput.setTotal(total);
             carCanHistoryOutput.setList(carCanList);
         }
         //非分页查询
-        else{
+        else {
             List<CarCan> carCanList = queryCarCanListNoPage(carCanHistoryParam);
             carCanHistoryOutput.setList(carCanList);
         }

@@ -19,7 +19,6 @@ spring:
           #取分支 默认master
           default-label: develop
 
-
 encrypt:
   keyStore:
     location: classpath:/vckey.jks

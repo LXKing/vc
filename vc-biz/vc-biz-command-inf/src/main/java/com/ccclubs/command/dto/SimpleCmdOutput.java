@@ -9,6 +9,9 @@ import java.math.BigDecimal;
  * @create 2017-06-30
  **/
 public class SimpleCmdOutput extends CommonOutput implements java.io.Serializable{
+    /**
+     * 当前时间
+     */
     private Long cssCurrentTime;
     private Integer cssObdMile;
     private Integer cssEvBattery;
@@ -21,6 +24,15 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
     private Short cssLock;
     private Integer cssBaseLAC;
     private Integer cssBaseCI;
+    private Integer controlStatus;
+
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
+
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
 
     public Long getCssCurrentTime() {
         return cssCurrentTime;

@@ -1,15 +1,20 @@
-tcp:
-  port: 27700
-boss:
-  thread:
-    count: 2
-worker:
-  thread:
-    count: 4
-#true: 连接复用；false：每次新建一个连接
-so:
-  keepalive: false
+# springboot 配置
+server:
+  port: 12003
+
+# netty配置
+netty:
+  tcp-port: 27700
+  boss-count: 1
+  worker-count: 10
+  keep-alive: false
   backlog: 100
+
+# 网关配置
+gateway:
+  server:
+    log-print: true       # 打印消息日志
+    buffer-check: false   # 开启缓存检查
 
 #kafka生产者配置
 spring:
@@ -18,6 +23,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 #kafka Topic
 kafka:
   topic:
@@ -25,12 +31,8 @@ kafka:
       error: topic_gb_error
       success: topic_gb_success
       conn: topic_conn_status
+      oversee: topic_gb_oversee # 用于监听特定车辆的报文
 
-pac:
-  log:
-    debug: true    #是否开启消息日志打印
-  buffer:
-    check: false   #是否打开buffer缓存检查（测试时开启）
 
 
 

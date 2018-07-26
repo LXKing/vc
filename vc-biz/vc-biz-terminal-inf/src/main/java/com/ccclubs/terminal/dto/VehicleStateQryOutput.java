@@ -45,11 +45,11 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private BigDecimal cssLatitude;//纬度【小数6位】
 
-    //TODO cssGpsValid GPS有效位
-    //TODO cssGpsCn GPS CN值
-    //TODO cssGpsCount GPS可视卫星数量
+    private Byte cssGpsValid;// GPS有效位
+    private Short cssGpsCn;//  GPS CN值
+    private Short cssGpsCount;// GPS可视卫星数量
 
-    private String cssDir;//方向角度
+    private BigDecimal cssDir;//方向角度
 
     private Byte cssCircular;//循环模式，（0:内循环 1:外循环）
 
@@ -59,8 +59,10 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssFan;//档风量，（0:OFF 1:1档 2:2档 3:3档 4:4档）
 
-    //TODO cssBaseLAC 基站信号 LAC 值
-    //TODO cssBaseCI  基站信号 CI值
+
+
+    private Integer cssBaseLac; // 基站信号 LAC 值
+    private Integer cssBaseCi;//  基站信号 CI值
 
     private Byte cssSaving;//省电模式，（0:标准模式 1:最佳省电 2:极度省电）
 
@@ -75,30 +77,66 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Byte cssGear;//0：空挡；1：1挡；2：2挡；3：3挡；...13：倒挡；14：自动D挡；15：停车P挡
 
     private Byte cssHandbrake;//手刹状态0x0=所有刹车释放；0x1=所有刹车应用；0x2=所有刹车不工作（应用或释放中）；0x3=未知；
-    /**
-     * 0x0：默认值
-     * 0x1:宾馆门口到车库门自动驾驶
-     * 0x2：到达车库门
-     * 0x3:进入停车场；
-     * 0x4: 停车场内自动驾驶寻找车位;
-     * 0x5:在车位旁停下；
-     * 0x6: 泊车入库；
-     * 0x7: 泊车完成
-     * 0x8: 泊车出库
-     * 0x9:自动驾驶驶出停车场
-     * 0xA：到达停车场出库门
-     * 0xB：驶出停车场，自动驾驶到酒店门口
-     * 0xC：到达酒店门口
-     * 0xD：异常情况
-     * **/
-    private Integer cssAutopilotState;
 
-    public Integer getCssAutopilotState() {
-        return cssAutopilotState;
+    private Integer cssAutopilot;//自动驾驶状态
+
+    private Byte cssKey;//钥匙状态
+
+    public Byte getCssKey() {
+        return cssKey;
     }
 
-    public void setCssAutopilotState(Integer cssAutopilotState) {
-        this.cssAutopilotState = cssAutopilotState;
+    public void setCssKey(Byte cssKey) {
+        this.cssKey = cssKey;
+    }
+
+
+    public Byte getCssGpsValid() {
+        return cssGpsValid;
+    }
+
+    public void setCssGpsValid(Byte cssGpsValid) {
+        this.cssGpsValid = cssGpsValid;
+    }
+
+    public Short getCssGpsCn() {
+        return cssGpsCn;
+    }
+
+    public void setCssGpsCn(Short cssGpsCn) {
+        this.cssGpsCn = cssGpsCn;
+    }
+
+    public Short getCssGpsCount() {
+        return cssGpsCount;
+    }
+
+    public void setCssGpsCount(Short cssGpsCount) {
+        this.cssGpsCount = cssGpsCount;
+    }
+
+    public Integer getCssBaseLac() {
+        return cssBaseLac;
+    }
+
+    public void setCssBaseLac(Integer cssBaseLac) {
+        this.cssBaseLac = cssBaseLac;
+    }
+
+    public Integer getCssBaseCi() {
+        return cssBaseCi;
+    }
+
+    public void setCssBaseCi(Integer cssBaseCi) {
+        this.cssBaseCi = cssBaseCi;
+    }
+
+    public Integer getCssAutopilot() {
+        return cssAutopilot;
+    }
+
+    public void setCssAutopilot(Integer cssAutopilot) {
+        this.cssAutopilot = cssAutopilot;
     }
 
     public String getCssTeNo() {
@@ -237,11 +275,11 @@ public class VehicleStateQryOutput implements java.io.Serializable{
         this.cssLatitude = cssLatitude;
     }
 
-    public String getCssDir() {
+    public BigDecimal getCssDir() {
         return cssDir;
     }
 
-    public void setCssDir(String cssDir) {
+    public void setCssDir(BigDecimal cssDir) {
         this.cssDir = cssDir;
     }
 

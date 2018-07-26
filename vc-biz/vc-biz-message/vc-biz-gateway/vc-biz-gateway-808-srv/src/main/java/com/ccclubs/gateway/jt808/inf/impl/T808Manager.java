@@ -7,10 +7,11 @@ import com.ccclubs.gateway.jt808.inf.IJT808Server;
 import com.ccclubs.gateway.jt808.inf.IMessageSender;
 import com.ccclubs.gateway.jt808.inf.IT808Manager;
 import com.ccclubs.protocol.dto.jt808.T808Message;
-import java.util.Collection;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Resource;
+import java.util.Collection;
 
 /**
  * 提供外部调用808平台的接口 启动服务StartServer方法

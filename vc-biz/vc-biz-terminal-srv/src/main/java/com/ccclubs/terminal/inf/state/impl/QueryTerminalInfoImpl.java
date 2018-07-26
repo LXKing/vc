@@ -5,6 +5,7 @@ import com.ccclubs.common.aop.DataAuth;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.model.CsMachine;
@@ -43,10 +44,17 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
   private TerminalProp terminalProp;
   @Resource
   QueryAppInfoService hostService;
+  @Resource
+  AuthValidateHelper authValidateHelper;
 
   @Override
-  @DataAuth
   public TerminalQryOutput getTerminalInfo(TerminalQryInput input) {
+    //数据权限校验
+    boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+    if (!validateResult) {
+      throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+    }
+    //根据vin码获取车辆信息
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
     // 未查询到车辆
     if (null == csVehicle) {
@@ -57,6 +65,7 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
     if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
       throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
     }
+    //根据id获取车机信息
     CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
     if (null == csMachine) {
       throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
@@ -85,6 +94,7 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
 
   @Override
   public List<TerminalQryOutput> searchTerminalInfo(TerminalListQryInput input) {
+    //根据appId获取
     SrvHost host = hostService.queryHostByAppid(input.getAppId());
     // 未查询到终端
     List<CsMachine> csMachineList = queryTerminalService.searchCsMachineFuzzyByTenoOrMobile(host.getShId(),input.getKey());
@@ -120,6 +130,7 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
 
   @Override
   public VersionQryOutput isLatestVersion(VersionQryInput input) {
+    //根据vin码获取车辆信息
     CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
 
     // 未查询到车辆
@@ -131,6 +142,7 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
     if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
       throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
     }
+    //根据id查询车机信息
     CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
     if (null == csMachine) {
       throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);

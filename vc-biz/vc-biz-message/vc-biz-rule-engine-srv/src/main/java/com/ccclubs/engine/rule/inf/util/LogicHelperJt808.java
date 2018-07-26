@@ -6,6 +6,7 @@ import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
+import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
@@ -18,6 +19,7 @@ import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.*;
 import com.ccclubs.pub.orm.dto.Jt808PositionData;
+import com.ccclubs.pub.orm.dto.StateDTO;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -34,42 +36,72 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
+
+/**
+ * 消息解析、入库帮助类
+ * @author jhy
+ */
 @Component
 public class LogicHelperJt808 {
 
     private static Logger logger = LoggerFactory.getLogger(LogicHelperJt808.class);
 
-  @Resource
-  private RedisTemplate redisTemplate;
-  @Resource
-  private KafkaTemplate kafkaTemplate;
+    @Resource
+    private RedisTemplate redisTemplate;
+    @Resource
+    private KafkaTemplate kafkaTemplate;
 
+    /**
+     * 历史can数据topic
+     */
     @Value("${" + KafkaConst.KAFKA_TOPIC_CAN + "}")
     String kafkaTopicCsCan;
 
+    /**
+     * 历史can-exp
+     */
     @Value("${" + KafkaConst.KAFKA_TOPIC_CAN_EXP + "}")
     String kafkaTopicCsCanExp;
 
+    /**
+     * 位置数据
+     */
     @Value("${" + KafkaConst.KAFKA_TOPIC_JT_POSITION + "}")
     String kafkaTopicJt808Position;
 
+    /**
+     * 位置数据exp
+     */
     @Value("${" + KafkaConst.KAFKA_TOPIC_JT_POSITION_EXP + "}")
     String kafkaTopicJt808PositionExp;
 
     @Resource
     private TerminalUtils terminalUtils;
 
+    /**
+     * 车机状态更新
+     */
     @Resource
     private UpdateStateService updateStateService;
 
     @Resource
     UpdateCanService updateCanService;
 
+    /**
+     * CAN查询
+     */
     @Resource
     QueryCanService queryCanService;
 
+    /**
+     * 状态查询
+     */
     @Resource
     QueryStateService queryStateService;
+
+    @Resource
+    QueryTerminalService queryTerminalService;
 
     /**
      * 保存状态数据
@@ -79,8 +111,9 @@ public class LogicHelperJt808 {
      */
     @Timer
     public void saveStatusData(final MachineMapping mapping, final T808Message message,
-                                  final JT_0200 jvi) {
+                               final JT_0200 jvi) {
         try {
+            // 根据Mapping 设置 车机对象
             CsMachine csMachine = new CsMachine();
             csMachine.setCsmAccess(mapping.getAccess() == null ? 0 : mapping.getAccess().intValue());
             csMachine.setCsmHost(mapping.getHost() == null ? 0 : mapping.getHost().intValue());
@@ -119,6 +152,7 @@ public class LogicHelperJt808 {
                 opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
 
             } else {
+                // 车机状态为空
                 // 808 原始0200数据，以下业务数据不做更新
                 CsState csStateInsert = terminalUtils.setCsStatus(csVehicle, csMachine);
                 csStateInsert.setCssVin(mapping.getVin());
@@ -189,6 +223,7 @@ public class LogicHelperJt808 {
             // 组装位置数据 add by jhy 2018.5.9
             Jt808PositionData jt808PositionData = new Jt808PositionData();
             jt808PositionData.setVin(mapping.getVin());
+            jt808PositionData.setAccess(mapping.getAccess() == null ? null : mapping.getAccess().intValue());
             jt808PositionData.setTeNumber(mapping.getNumber());
             jt808PositionData.setTeNo(mapping.getTeno());
             jt808PositionData.setIccid(mapping.getIccid());
@@ -216,6 +251,27 @@ public class LogicHelperJt808 {
                 kafkaTemplate.send(kafkaTopicJt808Position, JSONObject.toJSONString(jt808PositionData));
             }
 
+            //保存长安状态历史数据30条至redis
+            if (mapping.getAccess() == 3 || mapping.getAccess() == 4 || mapping.getAccess() == 5) {
+                CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(mapping.getNumber());
+                if (csMachine != null && (csMachine.getCsmTlV2() == null || csMachine.getCsmTlV2() == 0)) {
+                    StateDTO stateDTO = new StateDTO();
+                    stateDTO.setCurrentTime(new Date(jt808PositionData.getCurrentTime()));
+                    stateDTO.setLatitude(jt808PositionData.getLatitude());
+                    stateDTO.setLongitude(jt808PositionData.getLongitude());
+                    stateDTO.setCsq(jvi.getCsq());
+                    stateDTO.setGpsValid(jt808PositionData.getGpsValid().byteValue());
+                    stateDTO.setSpeed(jt808PositionData.getGpsSpeed());
+                    stateDTO.setSourceHex(message.getPacketDescr());
+                    redisTemplate.opsForList()
+                            .leftPush(REDIS_KEY_RECENT_STATES + mapping.getNumber(), stateDTO);
+                    Long queueSize = redisTemplate.opsForList()
+                            .size(REDIS_KEY_RECENT_STATES + mapping.getNumber());
+                    if (queueSize >= 30) {
+                        redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + mapping.getNumber(), 0, 29);
+                    }
+                }
+            }
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -244,6 +300,7 @@ public class LogicHelperJt808 {
                 csVehicle.setCsvId(mapping.getCar() == null ? null : mapping.getCar().intValue());
             }
 
+            // 设置CAN状态
             CsCan csCan = terminalUtils.setCsCan(csVehicle, csMachine);
 
             CanStatusZotye zotyeStatus = new CanStatusZotye();
@@ -263,6 +320,7 @@ public class LogicHelperJt808 {
             int obdMiles = 0;
             int speed = 0;
 
+            // 遍历0900CAN数据
             for (JT_0900_can_item item : canData.getCanList()) {
                 CanDataTypeI canDataTypeI = new CanDataTypeI();
                 canDataTypeI.mCanLength = 0x08;
@@ -292,6 +350,7 @@ public class LogicHelperJt808 {
                 }
             }
 
+            // 从buffer中获取原始16进制字符串
             final String hexString = Tools.ToHexString(buff.array());
 
             csCan.setCscVin(mapping.getVin());
@@ -312,6 +371,7 @@ public class LogicHelperJt808 {
                 ListOperations opsForList = redisTemplate.opsForList();
                 opsForList.leftPush(RuleEngineConstant.REDIS_KEY_CAN_UPDATE_QUEUE, csCan);
             } else {
+                // 更新CAN
                 updateCanService.insert(csCan);
             }
 

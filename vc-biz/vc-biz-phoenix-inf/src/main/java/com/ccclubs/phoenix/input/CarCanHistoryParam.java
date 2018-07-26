@@ -10,6 +10,7 @@ import java.io.Serializable;
  * User: taosm
  * DateTime: 2017/11/27 0027
  */
+@Deprecated
 public class CarCanHistoryParam extends Page  implements Serializable{
 
 

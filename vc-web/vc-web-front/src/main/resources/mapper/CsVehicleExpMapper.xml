@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.CsVehicleExpMapper">
+    <!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+
+    <resultMap id="BaseResultMap" type="com.ccclubs.admin.model.CsVehicleExp">
+        <result column="csve_id" jdbcType="BIGINT" property="csveId"/>
+        <result column="csve_vin" jdbcType="VARCHAR" property="csveVin"/>
+        <result column="csve_te_no" jdbcType="VARCHAR" property="csveTeNo"/>
+        <result column="csve_iccid" jdbcType="VARCHAR" property="csveIccid"/>
+        <result column="csve_engine_no" jdbcType="VARCHAR" property="csveEngineNo"/>
+        <result column="csve_bataccu_code" jdbcType="VARCHAR" property="csveBataccuCode"/>
+        <result column="csve_model_code_simple" jdbcType="VARCHAR" property="csveModelCodeSimple"/>
+        <result column="csve_car_no" jdbcType="VARCHAR" property="csveCarNo"/>
+        <result column="csve_number" jdbcType="VARCHAR" property="csveNumber"/>
+        <result column="csve_prod_date" jdbcType="TIMESTAMP" property="csveProdDate"/>
+        <result column="csve_add_time" jdbcType="TIMESTAMP" property="csveAddTime"/>
+        <result column="csve_te_type" jdbcType="TINYINT" property="csveTeType"/>
+        <result column="csve_model_code_full" jdbcType="VARCHAR" property="csveModelCodeFull"/>
+        <result column="csve_te_model" jdbcType="VARCHAR" property="csveTeModel"/>
+        <result column="csve_mobile" jdbcType="VARCHAR" property="csveMobile"/>
+    </resultMap>
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" prefixOverrides="and" suffix=")">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach close=")" collection="criterion.value" item="listItem" open="("
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+
+    <insert id="insertListSelective" parameterType="java.util.List">
+        insert into cs_vehicle_exp(
+        csve_vin,csve_te_no,csve_iccid,csve_engine_no,csve_bataccu_code,csve_model_code_simple,csve_car_no,csve_number,csve_prod_date,csve_add_time,csve_te_type,csve_model_code_full,csve_te_model,csve_mobile
+        )
+        values
+
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.csveVin,jdbcType=VARCHAR},
+            #{item.csveTeNo,jdbcType=VARCHAR},
+            #{item.csveIccid,jdbcType=VARCHAR},
+            #{item.csveEngineNo,jdbcType=VARCHAR},
+            #{item.csveBataccuCode,jdbcType=VARCHAR},
+            #{item.csveModelCodeSimple,jdbcType=VARCHAR},
+            #{item.csveCarNo,jdbcType=VARCHAR},
+            #{item.csveNumber,jdbcType=VARCHAR},
+            #{item.csveProdDate,jdbcType=DATE},
+            #{item.csveAddTime,jdbcType=TIMESTAMP},
+            #{item.csveTeType,jdbcType=TINYINT},
+            #{item.csveModelCodeFull,jdbcType=VARCHAR},
+            #{item.csveTeModel,jdbcType=VARCHAR},
+            #{item.csveMobile,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

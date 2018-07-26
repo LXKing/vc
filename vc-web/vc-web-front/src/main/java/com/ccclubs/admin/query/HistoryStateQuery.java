@@ -17,13 +17,13 @@ public class HistoryStateQuery implements Serializable{
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
 	private Date currentTimeEnd;
 
-	private String csNumberEquals;
+	private String csVinEquals;
 
 
-	public String getCsNumberEquals(){return this.csNumberEquals;}
+	public String getCsVinEquals(){return this.csVinEquals;}
 
-	public HistoryStateQuery setCsNumberEquals(String csNumberEquals){
-		this.csNumberEquals = csNumberEquals;
+	public HistoryStateQuery setCsVinEquals(String csVinEquals){
+		this.csVinEquals = csVinEquals;
 		return this;
 	}
 

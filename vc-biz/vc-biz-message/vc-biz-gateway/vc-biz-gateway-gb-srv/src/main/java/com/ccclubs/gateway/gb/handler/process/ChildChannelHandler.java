@@ -1,17 +1,17 @@
 package com.ccclubs.gateway.gb.handler.process;
 
+import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.gb.constant.ChannelAttrKey;
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
-import com.ccclubs.gateway.gb.utils.KafkaProperties;
+import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
+import com.ccclubs.gateway.gb.service.KafkaService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 
@@ -23,17 +23,27 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
-
+    // 是否打印消息日志
     public static boolean printPacLog;
 
 //    @Autowired
 //    private ApplicationContext context;
 
     @Autowired
-    private KafkaProperties kafkaProperties;
+    private KafkaService kafkaService;
+
+    /*shared handlers*/
+    @Autowired
+    private ProtecterHandler protecterHandler;
+    @Autowired
+    private MsgDeliverHandler msgDeliverHandler;
+    @Autowired
+    private PackageValidateHandler packageValidateHandler;
+    @Autowired
+    private PreProcessHandler preProcessHandler;
 
     @Autowired
-    private KafkaTemplate kafkaTemplate;
+    private GBPackageEncoder gbPackageEncoder;
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
@@ -42,26 +52,29 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(300,0,0))
+                // 记录监视的车辆报文
+                .addLast("preHandler", preProcessHandler)
                 // 解码
-                .addLast("gbDecoder", new GBLengthFieldFrameDecoder())
+                .addLast("gbDecoder", new GBLengthFieldFrameDecoder(4096))
                 // 数据包校验
-                .addLast("validateHandler", new PackageValidateHandler())
+                .addLast("validateHandler", packageValidateHandler)
                 // 连接数据统计
-                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaTemplate, kafkaProperties))
+                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
                 // 业务处理
-                .addLast("deliverHandler", new MsgDeliverHandler())
+                .addLast("deliverHandler", msgDeliverHandler)
                 // 过程保障
-                .addLast("protectorHandler", new ProtecterHandler(kafkaTemplate, kafkaProperties))
+                .addLast("protectorHandler", protecterHandler)
 
                 /*outbound*/
                 // 编码器
-                .addLast("GBEncoder", new GBPackageEncoder());
+                .addLast("GBEncoder", gbPackageEncoder);
 
         /**
          * 在追踪处理异常时：
          *      初始化全局记录消息中被所有链路handler共享的数据
          */
         initPacTrack(channel);
+
 
 
         /**
@@ -74,7 +87,10 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
     private void initPacTrack(SocketChannel channel) {
         Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
         PacProcessTrack newPacProessTrack = new PacProcessTrack();
-        newPacProessTrack.setErrorOccur(false).setStep(0);
+        newPacProessTrack
+                .setErrorOccur(false)
+                .setStep(0)
+                .setExpMessageDTO(new ExpMessageDTO());
         HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[6];
         for (int i = 0; i < handlerPacTracks.length; i ++) {
             handlerPacTracks[i] = new HandlerPacTrack();

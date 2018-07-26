@@ -9,7 +9,7 @@ import com.ccclubs.command.process.CommandProcessInf;
 import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
-import com.ccclubs.common.aop.DataAuth;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
@@ -18,18 +18,17 @@ import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
 import com.ccclubs.pub.orm.model.CsMachine;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
-
 import com.ccclubs.pub.orm.model.CsStructWithBLOBs;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.MessageFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单指令实现
@@ -55,6 +54,9 @@ public class OrderCmdImpl implements OrderCmdInf {
     private ResultHelper resultHelper;
     @Resource
     private TerminalOnlineHelper terminalOnlineHelper;
+    @Resource
+    AuthValidateHelper authValidateHelper;
+
     /**
      * 订单数据下发指令（只判断成功与否，不返回data）
      *
@@ -62,9 +64,12 @@ public class OrderCmdImpl implements OrderCmdInf {
      * @return
      */
     @Override
-    @DataAuth
     public IssueOrderOutput issueOrderData(IssueOrderInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_ORDER.longValue();
         Date startTime = StringUtils.date(input.getStartTime(), CommandConstants.DATE_FORMAT);
         Date endTime = StringUtils.date(input.getEndTime(), CommandConstants.DATE_FORMAT);
@@ -75,32 +80,36 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         // add at 2017-11-17 ，兼容长安出行订单下发
         String rfidCode = StringUtils.empty(input.getRfid()) ? "00000000" : input.getRfid();
         int code = null == input.getAuthCode() ? 111111 : input.getAuthCode();
 
-        while (rfidCode.length() < 8){
+        while (rfidCode.length() < 8) {
             rfidCode = "0" + rfidCode;
         }
 
-        if (code > 999999 || code < 100000){
+        /**
+         * 大于999999或者小于100000则更新为111111
+         */
+        if (code > 999999 || code < 100000) {
             code = 111111;
         }
 
+        // 发送新远程订单
         OrderDownStreamNew orderDownStream = new OrderDownStreamNew(csMachine.getCsmNumber(),
                 input.getOrderId(), ProtocolTools.transformToTerminalTime(startTime),
                 ProtocolTools.transformToTerminalTime(endTime), input.getOrderId(),
-            rfidCode, code, input.getRealName(), input.getMobile(), input.getGender());
+                rfidCode, code, input.getRealName(), input.getMobile(), input.getGender());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
-                        arrayFormat("[{\"orderId\":\"{}\",\"startTime\":\"{}\",\"endTime\":\"{}\",\"rfid\":\"{}\",\"code\":\"{}\",\"simNo\":\"{}\",\"gender\":\"{}\",\"firstName\":\"{}\",\"secondName\":\"{}\",\"lastName\":\"{}\"}]",
-                                orderDownStream.getArray()).getMessage(),Map.class);
+                arrayFormat("[{\"orderId\":\"{}\",\"startTime\":\"{}\",\"endTime\":\"{}\",\"rfid\":\"{}\",\"code\":\"{}\",\"simNo\":\"{}\",\"gender\":\"{}\",\"firstName\":\"{}\",\"secondName\":\"{}\",\"lastName\":\"{}\"}]",
+                        orderDownStream.getArray()).getMessage(), Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
@@ -129,14 +138,21 @@ public class OrderCmdImpl implements OrderCmdInf {
 
     /**
      * 下发订单数据--需要授权信息
+     *
      * @param input 指令参数
      * @return
      */
     @Override
-    @DataAuth
     public IssueAuthOrderOutput issueAuthOrderData(IssueAuthOrderInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = CommandConstants.CMD_ORDER_AUTH.longValue();
+        // 开始日期
         Date startTime = StringUtils.date(input.getStartTime(), CommandConstants.DATE_FORMAT);
+        // 结束日期
         Date endTime = StringUtils.date(input.getEndTime(), CommandConstants.DATE_FORMAT);
 
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
@@ -144,6 +160,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 构建一个:发送给远程车辆的订单信息
         OrderDownStream orderDownStream = new OrderDownStream(csMachine.getCsmNumber(),
                 input.getOrderId(), ProtocolTools.transformToTerminalTime(startTime),
                 ProtocolTools.transformToTerminalTime(endTime), input.getOrderId(),
@@ -155,7 +172,7 @@ public class OrderCmdImpl implements OrderCmdInf {
         List<Map> requests = JSONArray.parseArray(cssReq, Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
                 arrayFormat("[{\"orderId\":\"{}\",\"startTime\":\"{}\",\"endTime\":\"{}\",\"rfid\":\"{}\",\"code\":\"{}\"}]",
-                        orderDownStream.getArray()).getMessage(),Map.class);
+                        orderDownStream.getArray()).getMessage(), Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
         // 2.保存记录 cs_remote
@@ -182,13 +199,23 @@ public class OrderCmdImpl implements OrderCmdInf {
         return output;
     }
 
+    /**
+     * 订单详情
+     * @param input
+     * @return
+     */
     @Override
-    @DataAuth
     public IssueOrderDetailOutput issueOrderDetailData(IssueOrderDetailInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 构建一个:订单详情
         OrderDetailDownStream orderDetailDownStream = new OrderDetailDownStream(
                 csMachine.getCsmNumber(), input.getOrderId(), input.getRealName(), input.getMobile(),
                 input.getOrderId(), input.getGender());
@@ -198,15 +225,19 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderDetailDownStream.getBytes(), false);
             return new IssueOrderDetailOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
     }
 
     @Override
-    @DataAuth
     public RenewOrderOutput renewOrder(RenewOrderInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Date renewTime = StringUtils.date(input.getRenewEndTime(), CommandConstants.DATE_FORMAT);
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
@@ -222,19 +253,24 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orederRenew.getBytes(), false);
             return new RenewOrderOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
     }
 
     @Override
-    @DataAuth
     public RenewOrderReplyFOutput renewOrderReplyFailed(RenewOrderReplyFInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 订单修改信息确认回复
         OrderModifyReplyFailure orderModifyReplyFailure = new OrderModifyReplyFailure(
                 csMachine.getCsmNumber(),
                 input.getOrderId(),
@@ -246,20 +282,25 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplyFailure.getBytes(), false);
             return new RenewOrderReplyFOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
     }
 
     @Override
-    @DataAuth
     public RenewOrderReplySOutput renewOrderReplySuccess(RenewOrderReplySInput input) {
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Date renewTime = StringUtils.date(input.getRenewEndTime(), CommandConstants.DATE_FORMAT);
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
+        // 订单修改信息确认回复
         OrderModifyReplySuccess orderModifyReplySuccess = new OrderModifyReplySuccess(
                 csMachine.getCsmNumber(),
                 input.getOrderId(),
@@ -271,7 +312,7 @@ public class OrderCmdImpl implements OrderCmdInf {
             process.dealRemoteCommand(csMachine, orderModifyReplySuccess.getBytes(), false);
             return new RenewOrderReplySOutput();
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

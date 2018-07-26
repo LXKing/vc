@@ -1,11 +1,25 @@
 package com.ccclubs.admin.resolver;
 
-import com.ccclubs.frm.spring.resolver.Resolver;
 import com.ccclubs.admin.model.HistoryGb;
+import com.ccclubs.frm.spring.resolver.Resolver;
 
 
 public enum HistoryGbResolver{
-	
+
+	接入商(new Resolver<HistoryGb>("csAccessText", com.ccclubs.admin.metadata.MetaDef.getAccessName) {
+		private static final long serialVersionUID = 2038857404L;
+
+		@Override
+		public <T> T execute(HistoryGb record) {
+			if(record.getCsAccess()==null){
+				return null;
+			}
+			String result = "";
+			result = this.getMetadata().get(record.getCsAccess());
+			return (T)result;
+		}
+	})
+	,
 		协议类型(new Resolver<HistoryGb>("csProtocolText") {
 		private static final long serialVersionUID = 2038886175L;
 

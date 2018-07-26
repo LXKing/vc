@@ -15,6 +15,7 @@
         <module>vc-web-gateway-808-srv</module>
         <module>vc-web-gateway-gb-srv</module>
         <module>vc-web-gateway-mqtt-srv</module>
+        <module>vc-web-gateway-808-ca-srv</module>
     </modules>
 
 

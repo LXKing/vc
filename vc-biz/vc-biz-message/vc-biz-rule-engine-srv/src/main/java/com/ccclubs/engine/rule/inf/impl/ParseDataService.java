@@ -1,29 +1,24 @@
 package com.ccclubs.engine.rule.inf.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.ccclubs.common.modify.UpdateTerminalService;
 import com.ccclubs.common.query.QueryAppInfoService;
 import com.ccclubs.common.query.QueryTerminalService;
-import com.ccclubs.frm.spring.util.EnvironmentUtils;
+import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.MessageFactory;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.engine.rule.inf.util.LogicHelperMqtt;
 import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
+import com.ccclubs.frm.spring.constant.KafkaConst;
+import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
-import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
-import com.ccclubs.protocol.dto.mqtt.CCCLUBS_6C;
-import com.ccclubs.protocol.dto.mqtt.CStruct;
-import com.ccclubs.protocol.dto.mqtt.CarStartAndStop;
-import com.ccclubs.protocol.dto.mqtt.MQTT_43;
-import com.ccclubs.protocol.dto.mqtt.MQTT_66;
-import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
-import com.ccclubs.protocol.dto.mqtt.MQTT_6B;
-import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.mqtt.*;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
@@ -33,18 +28,19 @@ import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
-
-import java.util.Date;
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
+
+import javax.annotation.Resource;
+import java.util.Date;
 
 import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
 
@@ -71,11 +67,23 @@ public class ParseDataService implements IParseDataService {
     @Value("${" + ConstantUtils.MQ_TOPIC + "}")
     String topic;
 
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + "}")
+    String tboxLogTopic;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + "}")
+    String tboxLogTopicExp;
+
+    @Autowired
+    KafkaTemplate kafkaTemplate;
+
     @Resource
     QueryAppInfoService queryHostInfoService;
 
     @Resource
     QueryTerminalService queryTerminalService;
+
+    @Resource
+    QueryVehicleService queryVehicleService;
 
     @Resource
     UpdateTerminalService updateTerminalService;
@@ -146,7 +154,7 @@ public class ParseDataService implements IParseDataService {
             }
             logicHelperMqtt.saveStatusData(mapping, message, mqtt_66);
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error("saveStatusData error : " + message.getHexString());
             logger.error(e.getMessage(), e);
         }
@@ -159,9 +167,8 @@ public class ParseDataService implements IParseDataService {
             MQTT_43 mqtt_43 = new MQTT_43();
             mqtt_43.ReadFromBytes(message.getMsgBody());
             //暂时不记录报警数据 2017-10-11
-//      logicHelperMqtt.saveAlarmData(message, mqtt_43);
+            //      logicHelperMqtt.saveAlarmData(message, mqtt_43);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
@@ -189,7 +196,6 @@ public class ParseDataService implements IParseDataService {
             }
             logicHelperMqtt.saveCanData(mapping, message, canZotye);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
@@ -221,7 +227,7 @@ public class ParseDataService implements IParseDataService {
                         MQTT_43 mqtt_43 = new MQTT_43();
                         mqtt_43.setAlarmType(carStartAndStop.mGear == 0 ? (byte) 254 : (byte) 255);
                         // 暂时不记录报警数据 2017-10-11
-//            logicHelperMqtt.saveAlarmData(message, mqtt_43);
+                        //            logicHelperMqtt.saveAlarmData(message, mqtt_43);
                     }
                     break;
 
@@ -269,7 +275,7 @@ public class ParseDataService implements IParseDataService {
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            e.printStackTrace();
+
         }
     }
 
@@ -333,7 +339,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "订单续订数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -347,7 +353,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "取车数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -361,7 +367,7 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "订单回复数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -375,7 +381,6 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "订单详细数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
@@ -389,14 +394,19 @@ public class ParseDataService implements IParseDataService {
             terminalUtils.processTerminalLog(message.getCarNumber(), "还车数据", message.getHexString(),
                     message.getTransId());
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
 
+    /**
+     * 车机网络日志
+     *
+     * @param message
+     */
     @Override
     public void processTerminalLog(MqMessage message) {
         try {
+            Long addTime = System.currentTimeMillis();
             CCCLUBS_6C logCcclubs_6c = new CCCLUBS_6C();
             logCcclubs_6c.ReadFromBytes(message.getMsgBody());
             CsLogger csLogger = new CsLogger();
@@ -404,11 +414,32 @@ public class ParseDataService implements IParseDataService {
             csLogger.setCslOrder(message.getTransId());
             csLogger.setCslLog(logCcclubs_6c.getmLog());
             csLogger.setCslData(message.getHexString());
-            csLogger.setCslAddTime(System.currentTimeMillis());
+            csLogger.setCslAddTime(addTime);
             csLogger.setCslStatus((short) 1);
             loggerDao.save(csLogger);
+            //转发到kafka，存储HBASE
+            TboxLog dto = new TboxLog();
+            dto.setAddTime(addTime);
+            dto.setLogInfo(logCcclubs_6c.getmLog());
+            dto.setOrderNo(message.getTransId());
+            dto.setTeNumber(message.getCarNumber());
+            dto.setSourceHex(message.getHexString());
+            CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
+            if (csMachine == null) {
+                logger.error("车机号在系统中不存在,车机号[{}]", message.getCarNumber());
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+            } else {
+                CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                dto.setAccess(csMachine.getCsmAccess());
+                if (csVehicle == null) {
+                    kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+                } else {
+                    dto.setVin(csVehicle.getCsvVin());
+                    kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                }
+            }
+
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
@@ -446,7 +477,7 @@ public class ParseDataService implements IParseDataService {
                 updateTerminalService.update(machineUpdate);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -484,7 +515,7 @@ public class ParseDataService implements IParseDataService {
                 updateTerminalService.update(machine);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }
@@ -535,7 +566,7 @@ public class ParseDataService implements IParseDataService {
                 logger.error(message.getCarNumber() + " 未授权给应用");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
         }
     }

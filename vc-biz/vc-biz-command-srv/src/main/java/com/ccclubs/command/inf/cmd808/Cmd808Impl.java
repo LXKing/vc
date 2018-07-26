@@ -10,7 +10,10 @@ import com.ccclubs.command.remote.CsRemoteManager;
 import com.ccclubs.command.util.*;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.query.QueryStructService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.logger.VehicleControlLogger;
+import com.ccclubs.frm.spring.constant.ApiEnum;
+import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsStructWithBLOBs;
@@ -30,7 +33,7 @@ import java.util.Map;
  * @create 2018-01-24
  **/
 @Service(version = CommandServiceVersion.V1)
-public class Cmd808Impl implements Cmd808Inf{
+public class Cmd808Impl implements Cmd808Inf {
     private static final Logger logger = LoggerFactory.getLogger(SendSimpleCmdImpl.class);
     private static final Logger loggerBusiness = VehicleControlLogger.getLogger();
     @Resource
@@ -47,15 +50,23 @@ public class Cmd808Impl implements Cmd808Inf{
     private ResultHelper resultHelper;
     @Autowired
     private CommandProcessInf process;
+    @Resource
+    AuthValidateHelper authValidateHelper;
 
     /**
      * 发送808指令 TODO
      * 808指令只有两个字节存储指令流水号（csrsId）
+     *
      * @param input
      * @return
      */
     @Override
     public Send808CmdOutput send808CmdInf(Send808CmdInput input) {
+        // 数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
         Long structId = 808L;
         // 校验终端与车辆绑定关系是否正常，正常则返回终端车辆信息
         Map vm = validateHelper.isVehicleAndCsMachineBoundRight(input.getVin());
@@ -63,11 +74,13 @@ public class Cmd808Impl implements Cmd808Inf{
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = queryStructService.queryCsStructByStructId(structId);
         String cssReq = csStruct.getCssRequest();
+
+        // 将JSON数组转化成映射数组
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
 //        List<Map> values = JSONArray.parseArray(MessageFormatter.
 //                format("[{\"type\":\"{}\",\"ctrl\":\"{}\"}]", input.getItem(), input.getValue())
@@ -77,7 +90,8 @@ public class Cmd808Impl implements Cmd808Inf{
         // 2.保存记录 cs_remote
         long csrId = idGen.getNextId();
         long csrsId = idGen.getNextSid(input.getVin());
-        CsRemote csRemote = CsRemoteUtil.construct808(csVehicle, csMachine, structId, input.getAppId(),csrId,csrsId);
+        // 获取远程控制记录
+        CsRemote csRemote = CsRemoteUtil.construct808(csVehicle, csMachine, structId, input.getAppId(), csrId, csrsId);
         csRemoteManager.asyncSave(csRemote);
 
         // 3.发送指令

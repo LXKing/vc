@@ -6,6 +6,7 @@ import com.ccclubs.common.modify.UpdateTboxBindHisService;
 import com.ccclubs.common.modify.UpdateVehicleService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
+import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
 import com.ccclubs.pub.orm.mapper.CsVehicleMapper;
@@ -21,6 +22,8 @@ import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 /**
  * 终端绑定车辆
@@ -42,22 +45,28 @@ public class BindVehicleImpl implements BindVehicleInf {
 
     @Autowired
     UpdateTboxBindHisService updateTboxBindHisService;
-
+    @Resource
+    AuthValidateHelper authValidateHelper;
     /**
      * 车机绑定
      */
     @Override
-    @DataAuth
     public BindVehicleOutput bindVehicle(BindVehicleInput input) {
-
+        //数据权限校验
+        boolean validateResult = authValidateHelper.validateAuth(input.getAppId(), input.getVin(), "");
+        if (!validateResult) {
+            throw new ApiException(ApiEnum.DATA_ACCESS_CHECK_FAILED);
+        }
+        //根据vin码获取车辆信息
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
+        //根据终端编号获取车机信息
         CsMachine machine = queryTerminalService.queryCsMachineByTeNo(input.getTeNo());
 
         // 1.校验输入的车辆和终端是否存在
         if (vehicle == null) {
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
-
+        //检查车机是否存在
         if (machine == null || machine.getCsmId() == null) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
@@ -86,6 +95,9 @@ public class BindVehicleImpl implements BindVehicleInf {
         return output;
     }
 
+    /**
+     * 判断终端可否绑定
+     */
     private boolean isTerminalAbleToBind(String teNo) {
         VehicleVo queryVo = new VehicleVo();
         queryVo.setTeNo(teNo);
@@ -98,6 +110,7 @@ public class BindVehicleImpl implements BindVehicleInf {
         }
     }
 
+    //判断车辆可否绑定
     private boolean isVehicleAbleToBind(CsVehicle csVehicle) {
         if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
             return true;

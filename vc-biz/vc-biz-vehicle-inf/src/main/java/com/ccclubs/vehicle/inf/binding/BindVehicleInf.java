@@ -10,5 +10,6 @@ import com.ccclubs.vehicle.dto.*;
  **/
 public interface BindVehicleInf {
 
+    //终端车辆绑定
     BindVehicleOutput bindVehicle(BindVehicleInput input);
 }
