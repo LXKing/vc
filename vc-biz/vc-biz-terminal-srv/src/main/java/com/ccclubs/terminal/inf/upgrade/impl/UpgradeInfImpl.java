@@ -18,12 +18,14 @@ import com.ccclubs.terminal.dto.TboxVersionInput;
 import com.ccclubs.terminal.dto.TboxVersionOutput;
 import com.ccclubs.terminal.inf.upgrade.UpgradeInf;
 import com.ccclubs.terminal.version.TerminalServiceVersion;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 终端升级相关查询接口
@@ -92,15 +94,20 @@ public class UpgradeInfImpl implements UpgradeInf {
      */
     @Override
     public TboxVersionOutput getTboxVersionInfo(TboxVersionInput input) {
-        CsVehicle csVehicle = queryVehicleService.queryVehicleByVinFromCache(input.getVin());
+        CsVehicle csVehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         if (csVehicle == null) {
-            throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
+            throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND.code(), ApiEnum.VEHICLE_NOT_FOUND.memo());
         }
-        CsMachine csMachine = queryTerminalService.queryCsMachineByIdFromCache(csVehicle.getCsvMachine());
-        if (csMachine == null) {
-            throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
+        CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
+        if (Objects.isNull(csMachine)) {
+            throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND.code(), ApiEnum.TERMINAL_NOT_FOUND.memo());
         }
-
+        if (Objects.isNull(csMachine.getCsmTeType())) {
+            throw new ApiException(ApiEnum.UPGRADE_TERMINAL_TYPE_NOT_FOUND.code(), ApiEnum.UPGRADE_TERMINAL_TYPE_NOT_FOUND.memo());
+        }
+        if (StringUtils.isEmpty(csMachine.getCsmTeModel())) {
+            throw new ApiException(ApiEnum.UPGRADE_TERMINAL_MODEL_NOT_FOUND.code(), ApiEnum.UPGRADE_TERMINAL_MODEL_NOT_FOUND.memo());
+        }
         //查询该终端对应的升级记录
         VerUpgradeRecordExample example = new VerUpgradeRecordExample();
         VerUpgradeRecordExample.Criteria criteria = example.createCriteria();
@@ -120,10 +127,13 @@ public class UpgradeInfImpl implements UpgradeInf {
         TboxVersionOutput output = new TboxVersionOutput();
         //当前插件版本
         Integer currentPluginV = csMachine.getCsmTlV2();
+        if (Objects.isNull(currentPluginV)) {
+            currentPluginV = 0;
+        }
 
         //未查询到该终端对应的版本包，提示需要到车机中心注册该版本包信息[ver_upgrade]
-        if (verUpgradeList == null || verUpgradeList.isEmpty()) {
-            throw new ApiException(ApiEnum.UPGRADE_VERSION_NOT_FOUND);
+        if (verUpgradeList.isEmpty()) {
+            throw new ApiException(ApiEnum.UPGRADE_VERSION_NOT_FOUND.code(), ApiEnum.UPGRADE_VERSION_NOT_FOUND.memo());
         } else {
             //得到最新的版本包
             VerUpgrade verUpgrade = verUpgradeList.get(0);
@@ -181,7 +191,7 @@ public class UpgradeInfImpl implements UpgradeInf {
     private String getLatestPluginV(VerUpgrade verUpgrade) {
         VerSoftHardware verSoftHardware = verSoftHardwareMapper.selectByPrimaryKey(verUpgrade.getSoftVerId());
         if (verSoftHardware == null) {
-            throw new ApiException(ApiEnum.UPGRADE_PLUGIN_VERSION_NOT_FOUND);
+            throw new ApiException(ApiEnum.UPGRADE_PLUGIN_VERSION_NOT_FOUND.code(), ApiEnum.UPGRADE_PLUGIN_VERSION_NOT_FOUND.memo());
         }
         return verSoftHardware.getVerNo();
     }
