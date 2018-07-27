@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<meta http-equiv="Pragma" content="no-cache">
+		<meta http-equiv="Cache-control" content="no-cache">
+		<meta http-equiv="Cache" content="no-cache">
+
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+<br/>
+<br/>
+	<a style="margin-left:30px;"  href="http://oss-vc.oss-cn-hangzhou.aliyuncs.com/Template/csVehicleTemplate.xlsx">条件模板下载</a>
+	<br/>
+	<br/>
+
+	<div class="form_content">
+
+		<form  class="form-horizontal" id="addform" style="margin:15px;"  enctype="multipart/form-data" >
+
+			<div  class="form-group"  style="...">
+
+				<dl>
+					<dt>Excel文件上传</dt>
+					<dd>
+						<input style="height: 35px; text-align:left;vertical-align:middle" placeholder=""    type="file" class="form-control" id="fileUpload"  name="fileUpload" /><!-- 定义change事件,选择文件后触发 -->
+						<label id="file-error" class="error" for="fileUpload"><i class="fa fa-info-circle fieldTip">必填</i></label>
+						<br/>
+						<span style="color: red" id="fileTypeError"></span>　　　　<!-- onchange="fileChange('${base }')"文件类型错误回显,此处通过前后端两次验证文件类型 -->
+					</dd>
+				</dl>
+			</div>
+
+			<br/>
+			<br/>
+
+			<div class="form-group" id="conditionId" style="...">
+				<dl  >
+                    <dt>升级状态</dt>
+                    <dd  >
+                        <select class="form-control"  name="statusUpgrade">
+                            <option></option>
+                            <option value="0">无升级</option>
+                            <option value="1">升级中</option>
+                            <option value="2">升级失败</option>
+                            <option value="3">升级成功</option>
+                        </select>
+                    </dd>
+				</dl>
+
+			</div>
+
+			<div class="form-group windowButtonBar">
+				<div class="hr-line-dashed"></div>
+				<div class="col-sm-10 col-sm-offset-1">
+					<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>
+					<button class="btn btn-white col-sm-2 col-sm-offset-2" type="reset">清空</button>
+					<button class="btn btn-primary col-sm-2 col-sm-offset-2" type="button" onclick="closeTopWin();">关闭</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="form_footer"></div>
+
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+
+	<script type="text/javascript">
+        $(function(){
+            /**
+             * 表单校验规则配置
+             */
+            var validateRuleConfig = {
+                rules:{
+                    "csvDomain":{
+                        "maxlength":4,
+                        "digits":true
+                    },
+                    "csvInteriorColorCode":{
+                        "maxlength":64
+                    },
+                    "csvBataccuCode":{
+                        "maxlength":64
+                    },
+                    "csvCarNo":{
+                        "maxlength":32
+                    },
+                    "csvStatus":{
+                        "maxlength":4,
+                        "digits":true,
+                        "required":true
+                    },
+                    "csvVin":{
+                        "maxlength":32,
+                        "required":true
+                    },
+                    "csvAccess":{
+                        "maxlength":11,
+                        "digits":true,
+                        "required":true
+                    },
+                    "csvId":{
+                        "maxlength":11,
+                        "digits":true,
+                        "required":true
+                    },
+                    "csvColorCode":{
+                        "maxlength":4,
+                        "digits":true
+                    },
+                    "csvModelCodeFull":{
+                        "maxlength":128,
+                        "required":true
+                    },
+                    "csvModel":{
+                        "maxlength":11,
+                        "digits":true,
+                        "required":true
+                    },
+                    "csvModelCodeSimple":{
+                        "maxlength":64
+                    },
+                    "csvProdDate":{
+                        "date":true
+                    },
+                    "csvLandmark":{
+                        "maxlength":64
+                    },
+                    "csvCertific":{
+                        "maxlength":32
+                    },
+                    "csvEngineNo":{
+                        "maxlength":32
+                    }
+                }
+            };
+
+            var define = {
+                form:$("#addform"),
+                url:getServUrl("/upgrade/manage/insertBatch"),
+                validateRuleConfig:validateRuleConfig,
+                valid:function(){
+                    return this.form.validate(this.validateRuleConfig);
+                },
+                init:function(option){
+                    var o = $.extend(this, option);
+                    $(".searchinput").each(function(){
+                        $(this).searchinput({});
+                    });
+                    $(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+                    $("#saveBtn").click(function(){
+                        if(o.valid().form()) {
+                            o.submit(o.form);
+                        }else{
+                            console.log("validate failure!");
+                        }
+                    });
+                },
+                submit:function(){
+//                    var queryJson = getFormData(this.form);
+//                    console.log("validate success! ===>"+queryJson);
+//                    ajaxRequest(this.url, "POST", queryJson, function(json) {
+//                        console.log(json);
+//                        closeTopWin(true);
+//                    });
+                    $("#fileTypeError").html('');
+                    var fileName = $('#fileUpload').val();　　　　　　　　　　　　　　　　　　//获得文件名称
+                    var fileType = fileName.substr(fileName.length-4,fileName.length);　　//截取文件类型,如(.xls)
+                    if(fileType=='xls' || fileType=='xlsx' ){　　　　　//验证文件类型,此处验证也可使用正则
+                        var token = cookieUtil.get("token");
+                        $.ajax({
+                            url: this.url,　　　　　　　　　　//上传地址
+                            type: 'POST',
+                            data:   new FormData($('#addform')[0]),
+                            async: false,
+                            cache: false,
+                            contentType: false,
+                            processData: false,
+                            dataType: "json",
+                            headers: {'Authorization': token},
+                            success:function(data){
+                                if(data=='fileTypeError'){
+                                    $("#fileTypeError").html('*上传文件类型错误,支持类型: .xls .xlsx');　　//根据后端返回值,回显错误信息
+                                }
+                                $("input[name='enclosureCode']").attr('value',data);
+                            },
+                        });
+                        closeTopWin(true);
+                    }else{
+                        $("#fileTypeError").html('*上传文件类型错误,支持类型:.xls .xlsx');
+                    }
+                }
+            };
+            define.init();
+        });
+	</script>
+</body>

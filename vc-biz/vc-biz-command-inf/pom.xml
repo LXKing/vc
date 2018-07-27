@@ -17,6 +17,11 @@
             <artifactId>vc-frm-validation</artifactId>
             <version>${frm.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-upgrade-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
