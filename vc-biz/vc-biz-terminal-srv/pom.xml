@@ -47,6 +47,10 @@
             <artifactId>vc-biz-common-srv</artifactId>
             <version>${biz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -33,5 +33,4 @@ public class UpgradeInput extends CommonInput implements java.io.Serializable{
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
 }
