@@ -40,9 +40,9 @@ public class QueryUpgradeVersionService {
     public VerUpgrade getUpgradeVersion(int vehicleModel, byte terType, String terModel, boolean isTurning) {
         VerUpgradeExample example = new VerUpgradeExample();
         VerUpgradeExample.Criteria criteria = example.createCriteria();
-        criteria.andTelTypeEqualTo((byte)terType);
+        criteria.andTelTypeEqualTo(terType);
         List<VerUpgrade> verUpgrades = verUpgradeMapper.selectByExample(example);
-        if (Objects.nonNull(verUpgrades)) {
+        if (!verUpgrades.isEmpty()) {
             return verUpgrades.get(0);
         }
         return null;
@@ -63,7 +63,7 @@ public class QueryUpgradeVersionService {
                 .andTelModelEqualTo(terModel)
                 .andTelTypeEqualTo(terType);
         List<VerUpgrade> csVerList = verUpgradeMapper.selectByExample(currentQuery);
-        if (Objects.nonNull(csVerList) && csVerList.size() > 0) {
+        if (!csVerList.isEmpty()) {
             csVerList = csVerList.stream().filter(up -> {
                 VerSoftHardware currentPluginModel = verSoftHardwareMapper.selectByPrimaryKey(up.getSoftVerId());
                 if (Objects.nonNull(currentPluginModel)) {
@@ -74,10 +74,10 @@ public class QueryUpgradeVersionService {
                 }
                 return false;
             }).collect(Collectors.toList());
-            if (csVerList.size() > 0) {
-                return csVerList.get(0);
-            } else {
+            if (csVerList.isEmpty()) {
                 return null;
+            } else {
+                return csVerList.get(0);
             }
         } else {
             return null;

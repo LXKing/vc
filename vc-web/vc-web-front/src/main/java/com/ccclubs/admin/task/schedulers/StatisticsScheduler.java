@@ -53,11 +53,14 @@ public class StatisticsScheduler implements ApplicationContextAware {
         EvManageContext.getThreadPool().execute(statisticsJob);
     }
 
+    /**
+     * 每分钟检查是否有升级中的升级记录，并更新升级状态
+     */
     @Resource
     VerUpgradeTimeoutCheckJob verUpgradeTimeoutCheckJob;
     @Scheduled(cron = "0 * * * * ?")
     public void everyMinuteJob() {
-        logger.info("执行了一次<车机升级超时检查>");
+        logger.info("执行了一次<车机升级状态检查>");
         EvManageContext.getThreadPool().execute(verUpgradeTimeoutCheckJob);
     }
 

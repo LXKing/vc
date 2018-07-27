@@ -244,8 +244,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
                     try {
                         dealTLMixedVersionUpgradeByModel(upgradeTask.getVin(), upgradeVersion);
                     } catch (Exception e) {
-                        logger.error("通领终端[{}]升级失败：{}", upgradeTask.getVin(), e.getMessage());
-                        e.printStackTrace();
+                        logger.error("通领终端[{}]升级失败：{}", upgradeTask.getVin(), e);
                     }
                 } else {
                     logger.error("该车型类型不存在：csModel={}", csVehicle.getCsvModel());
@@ -296,7 +295,7 @@ public class TerminalUpgradeImpl implements TerminalUpgradeInf {
             upgradeRecord.setFromType((byte)2);
         }
         upgradeRecord.setTeModel(upgradeTask.getTerModel());
-        upgradeRecord.setTeNumber(csMachine.getCsmTeNo());
+        upgradeRecord.setTeNumber(csMachine.getCsmNumber());
         upgradeRecord.setTeType(upgradeTask.getTerType());
         upgradeRecord.setToVersion(upgradeTask.getMixedUpVersionId());
         upgradeRecord.setVin(upgradeTask.getVin());
