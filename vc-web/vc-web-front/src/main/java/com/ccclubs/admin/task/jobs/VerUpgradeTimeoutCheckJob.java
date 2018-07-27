@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * @Author: yeanzi
@@ -58,7 +57,7 @@ public class VerUpgradeTimeoutCheckJob implements Runnable {
         VerUpgradeRecord queryAll = new VerUpgradeRecord();
         queryAll.setstatus((short)1);
         List<VerUpgradeRecord> upgradingRecords = verUpgradeRecordService.select(queryAll);
-        if (Objects.nonNull(upgradingRecords) && upgradingRecords.size() > 0) {
+        if (Objects.nonNull(upgradingRecords) && !upgradingRecords.isEmpty()) {
             /**
              * 对于升级中的任务，检查升级是否已完成，完成则标记升级状态为：升级完成
              * 未完成检查是否超时，超时则升级失败
@@ -78,7 +77,7 @@ public class VerUpgradeTimeoutCheckJob implements Runnable {
                          */
                         CsMachine machineQuery = new CsMachine();
                         machineQuery.setCsmTeType(record.getTeType());
-                        machineQuery.setCsmTeNo(record.getTeNumber());
+                        machineQuery.setCsmNumber(record.getTeNumber());
                         CsMachine currMachine = csMachineService.selectOne(machineQuery);
                         if (Objects.nonNull(currMachine) && Objects.nonNull(currMachine.getCsmTlV2())) {
                             /**
