@@ -4,22 +4,21 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.admin.constants.AttachmentConst;
+import com.ccclubs.admin.entity.CsVehicleExpCriteria;
+import com.ccclubs.admin.model.CsVehicleExp;
 import com.ccclubs.admin.model.VcJobTriggerInfo;
+import com.ccclubs.admin.service.ICsVehicleExpService;
 import com.ccclubs.admin.service.IVcJobTriggerInfoService;
 import com.ccclubs.admin.task.param.ExpDataCheckJobParam;
 import com.ccclubs.admin.util.SendMailService;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
-import com.ccclubs.mongo.orm.model.history.CsVehicleExp;
 import org.apache.commons.mail.EmailException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,8 +50,8 @@ public class ExpDataExportJob implements Runnable {
     @Value("${filedisk.path}")
     private String filePath;     //文件保存目录
 
-    @Resource(name = "historyMongoTemplate")
-    MongoTemplate historyMongoTemplate;
+    @Resource
+    ICsVehicleExpService csVehicleExpService;
 
     @Override
     public void run() {
@@ -64,13 +63,15 @@ public class ExpDataExportJob implements Runnable {
         ExpDataCheckJobParam jobParam = JSONObject.parseObject(jobTriggerInfo.getJobParam(), ExpDataCheckJobParam.class);
 
         long exportStart = System.currentTimeMillis();
-        Query query = new Query();
-        long count = historyMongoTemplate.count(query, CsVehicleExp.class);
+        CsVehicleExpCriteria example = new CsVehicleExpCriteria();
+        CsVehicleExpCriteria.Criteria criteria = example.createCriteria();
+        criteria.andCsveIdIsNotNull();
+        long count = csVehicleExpService.selectCountByExample(example);
 
         if (count > 0) {
-            logger.info("近 "+jobParam.getDateRange()+" 天检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
-            query.with(new Sort(Sort.Direction.DESC, "csvAddTime"));
-            List<CsVehicleExp> list = historyMongoTemplate.find(query, CsVehicleExp.class);
+            logger.info("近 " + jobParam.getDateRange() + " 天检测到 " + count + " 条数据异常的车辆，开始导出异常数据并发送邮件.");
+            example.setOrderByClause("createTime desc");
+            List<CsVehicleExp> list = csVehicleExpService.selectAll();
 
             ExportParams params = new ExportParams("车辆异常数据", "异常车辆");
             Workbook workbook = ExcelExportUtil.exportExcel(params, CsVehicleExp.class, list);
@@ -98,7 +99,7 @@ public class ExpDataExportJob implements Runnable {
             try {
                 logger.info("开始发送通知邮件");
                 sendMailService.sslSend(jobParam.getToEmail(), jobParam.getCcEmail(), jobParam.getSubject(),
-                        "检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
+                        "近 " + jobParam.getDateRange() + " 天检测到 " + count + " 条数据异常的车辆，请及时处理！", attachmentProp);
             } catch (EmailException e) {
                 throw new ApiException(ApiEnum.FAIL.code(), "邮件发送失败！");
             } catch (MalformedURLException e) {
