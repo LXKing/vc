@@ -82,7 +82,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                         PacTranslateUtil.translateDownPac(resetedSourceBuf);
                         resetedSourceBuf.resetReaderIndex();
                         // 还原-包装7E
-                        resetedSourceBuf.writeBytes(PackageCons.PAC_DECODE_DELIMITER);
+                        resetedSourceBuf.writeByte(PackageCons.PAC_START_SYMBOL_BYTE);
 
                         client.getChannel().writeAndFlush(resetedSourceBuf.copy());
                         // 便于ELK日志分析
@@ -108,17 +108,21 @@ public class MqttMessageProcessService  implements IMessageProcessService {
     }
 
     public static void main(String[] args) {
-        String sourceHex = "7e890000120648441648780000f154363739353232310000000000000003067E7E";
+        PackageCons.PAC_DECODE_DELIMITER.readerIndex(1);
+        String sourceHex = "7E890000120648441648780000F15436373935323231000000000000002006087E";
 
         ByteBuf sourceBuf = Unpooled.buffer().writeBytes(ByteBufUtil.decodeHexDump(sourceHex));
-        sourceBuf.readerIndex(sourceBuf.readerIndex() + 1);
-        sourceBuf.writerIndex(sourceBuf.writerIndex() - 1);
-        System.out.println(ByteBufUtil.hexDump(sourceBuf));
 
-        PacTranslateUtil.translateDownPac(sourceBuf);
+        ByteBuf resetedSourceBuf = sourceBuf.resetReaderIndex();
+        System.out.println(ByteBufUtil.hexDump(resetedSourceBuf));
+        resetedSourceBuf.readerIndex(resetedSourceBuf.readerIndex() + 1);
+        resetedSourceBuf.writerIndex(resetedSourceBuf.writerIndex() - 1);
+        System.out.println(ByteBufUtil.hexDump(resetedSourceBuf));
 
-        sourceBuf.resetReaderIndex();
-        sourceBuf.writeBytes(PackageCons.PAC_DECODE_DELIMITER);
-        System.out.println(ByteBufUtil.hexDump(sourceBuf));
+        PacTranslateUtil.translateDownPac(resetedSourceBuf);
+
+        resetedSourceBuf.resetReaderIndex();
+        resetedSourceBuf.writeByte(PackageCons.PAC_START_SYMBOL_BYTE);
+        System.out.println(ByteBufUtil.hexDump(resetedSourceBuf));
     }
 }
