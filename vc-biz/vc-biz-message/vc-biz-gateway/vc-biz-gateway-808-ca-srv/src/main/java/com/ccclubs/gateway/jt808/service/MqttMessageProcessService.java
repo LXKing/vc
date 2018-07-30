@@ -76,7 +76,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                          * bug fix: 修改 消息下发前的转移还原
                          * 2018-7-30
                          */
-                        resetedSourceBuf.readerIndex(sourceBuf.readerIndex() + 1);
+                        resetedSourceBuf.readerIndex(resetedSourceBuf.readerIndex() + 1);
                         resetedSourceBuf.writerIndex(resetedSourceBuf.writerIndex() - 1);
                         // 执行去除7E部分后的转义
                         PacTranslateUtil.translateDownPac(resetedSourceBuf);
@@ -86,7 +86,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
 
                         client.getChannel().writeAndFlush(resetedSourceBuf.copy());
                         // 便于ELK日志分析
-                        String downCmd = ByteBufUtil.hexDump(sourceBuf);
+                        String downCmd = ByteBufUtil.hexDump(resetedSourceBuf);
                         LOG.info("({}): DOWN >> {}", mobile, downCmd);
 
                         if (CommandCache.isOpen() && CommandCache.isCurrent(mobile)) {
@@ -108,7 +108,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
     }
 
     public static void main(String[] args) {
-        String sourceHex = "7e890000120648441648780000f154363739353232310000000000000003062b7E";
+        String sourceHex = "7e890000120648441648780000f154363739353232310000000000000003067E7E";
 
         ByteBuf sourceBuf = Unpooled.buffer().writeBytes(ByteBufUtil.decodeHexDump(sourceHex));
         sourceBuf.readerIndex(sourceBuf.readerIndex() + 1);
