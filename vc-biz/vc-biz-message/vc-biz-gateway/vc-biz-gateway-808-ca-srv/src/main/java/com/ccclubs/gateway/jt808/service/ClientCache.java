@@ -20,6 +20,11 @@ import java.util.*;
 public class ClientCache {
     public static final Logger LOG = LoggerFactory.getLogger(ClientCache.class);
 
+    /**
+     * 持有一个服务端channel
+     */
+    private static Channel serverChannel;
+
     private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
 
     private static Map<Channel, ClientCache> CHANNEL_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
@@ -213,4 +218,11 @@ public class ClientCache {
         return uniqueNos;
     }
 
+    public static void setServerChannel(Channel serverChannel) {
+        ClientCache.serverChannel = serverChannel;
+    }
+
+    public static Channel getServerChannel() {
+        return serverChannel;
+    }
 }

@@ -88,6 +88,11 @@
             <artifactId>vc-biz-phoenix-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-upgrade-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
         <!-- 第三方 -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>

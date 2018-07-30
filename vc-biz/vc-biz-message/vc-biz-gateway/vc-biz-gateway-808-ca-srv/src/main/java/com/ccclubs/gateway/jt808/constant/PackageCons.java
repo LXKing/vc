@@ -36,6 +36,16 @@ public class PackageCons {
     public static final ByteBuf PAC_DECODE_DELIMITER = Unpooled.wrappedBuffer(new byte[]{0x7e});
 
     /**
+     * 消息转义时7e对应转义后的字节数组
+     */
+    public static final byte[] PAC_TRANSLATE_TYPE_HEX_7E = new byte[]{(byte) 0x7d, (byte) 0x02};
+
+    /**
+     * 消息转义时7d对应转义后的字节数组
+     */
+    public static final byte[] PAC_TRANSLATE_TYPE_HEX_7D = new byte[]{(byte) 0x7d, (byte) 0x01};
+
+    /**
      * 用于与消息ID相与，转换成下行消息类型
      */
     public static final Integer ACK_PRIFIX_HIGH = 0x8000;

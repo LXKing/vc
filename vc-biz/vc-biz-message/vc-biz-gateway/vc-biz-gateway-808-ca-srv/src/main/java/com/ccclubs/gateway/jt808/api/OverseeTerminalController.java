@@ -4,8 +4,10 @@ import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
+import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerOverseeService;
+import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,11 +31,19 @@ import java.util.Set;
 public class OverseeTerminalController {
     public static final Logger LOG = LoggerFactory.getLogger(OverseeTerminalController.class);
 
+    /**
+     * 默认需要10次以上提交请求才真正执行下线所有客户端操作，防止手误
+     */
+    private static volatile int ALL_CLIENT_OFFLINE_CMD_COUNT = 0;
+
     @Autowired
     private TerOverseeService vehicleService;
 
     @Autowired
     private RedisConnService redisConnService;
+
+    @Autowired
+    private TerminalConnService terminalConnService;
 
     @GetMapping("/add/{sim}")
     public R addVin(@PathVariable("sim") String sim) {
@@ -87,5 +97,32 @@ public class OverseeTerminalController {
         return OK.Statu.SUCCESS.build();
     }
 
+    @GetMapping("/all/offline/{admin}/{password}")
+    @Deprecated
+    public R offlineAllClientByApi(@PathVariable("admin") String admin,
+                                   @PathVariable("password") String password) {
+
+        if ("Andaren".equals(admin) && "YAz20111183067".equals(password)) {
+            StringBuilder cmdCountSb = new StringBuilder();
+            cmdCountSb.append("\n*---------------------------------------------------------------\n")
+                    .append("*      offline all client command count:  ").append(++ ALL_CLIENT_OFFLINE_CMD_COUNT)
+                    .append("\n*---------------------------------------------------------------\n");
+            LOG.info(cmdCountSb.toString());
+            if (10 == ALL_CLIENT_OFFLINE_CMD_COUNT) {
+                /**
+                 * 先关闭服务端再下线所有连接
+                 */
+                ClientCache.getServerChannel().close().syncUninterruptibly();
+                terminalConnService.offlineOfAll();
+                LOG.warn("truely executed cmd: offline all client");
+                ALL_CLIENT_OFFLINE_CMD_COUNT = 0;
+                return OK.Statu.SUCCESS_WITH_DATA.build().addData("result", true);
+            } else {
+                return OK.Statu.SUCCESS_WITH_DATA.build().addData("count", ALL_CLIENT_OFFLINE_CMD_COUNT);
+            }
+        } else {
+            return Error.Statu.AUTH_FAILED.build();
+        }
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.common.bean.track;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -16,6 +17,11 @@ public class PacProcessTrack {
      * 消息中的唯一区分码，区别车机
      */
     private String uniqueNo;
+
+    /**
+     * 当前报文字节缓冲
+     */
+    private ByteBuf pacBuf;
 
     /**
      * 16进制的源报文
@@ -128,6 +134,15 @@ public class PacProcessTrack {
 
     public PacProcessTrack setExpMessageDTO(ExpMessageDTO expMessageDTO) {
         this.expMessageDTO = expMessageDTO;
+        return this;
+    }
+
+    public ByteBuf getPacBuf() {
+        return pacBuf;
+    }
+
+    public PacProcessTrack setPacBuf(ByteBuf pacBuf) {
+        this.pacBuf = pacBuf;
         return this;
     }
 }

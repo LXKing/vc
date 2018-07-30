@@ -1,24 +1,19 @@
 package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.mqtt.inf.IMessageProcessService;
-import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.gateway.common.util.DateUtil;
 import com.ccclubs.gateway.jt808.constant.CommandStatus;
 import com.ccclubs.gateway.jt808.constant.MsgTopicCon;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
-import com.ccclubs.gateway.jt808.process.command.Command;
 import com.ccclubs.gateway.jt808.util.PacTranslateUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.socket.SocketChannel;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 /**
  * @Author: yeanzi
@@ -49,9 +44,9 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 if (client.getChannel().isActive()) {
                     client.getChannel().writeAndFlush(payloadBuf.copy());
                     // 便于ELK日志分析
-                    LOG.info("DOWN >> 7E000000010{}{}7E", uniqueNo, hexString);
+                    LOG.info("({}):DOWN >> 7E000000010{}{}7E", uniqueNo, uniqueNo, hexString);
                 } else {
-                    LOG.error("client not active when deal sendout cmd1: {}", hexString);
+                    LOG.error("client ({}) not active when deal sendout cmd1: {}", uniqueNo, hexString);
                 }
             });
         } else {
@@ -79,9 +74,9 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                         client.getChannel().writeAndFlush(resetedSourceBuf.copy());
                         // 便于ELK日志分析
                         String downCmd = ByteBufUtil.hexDump(resetedSourceBuf);
-                        LOG.info("DOWN >> {}", downCmd);
+                        LOG.info("({}): DOWN >> {}", mobile, downCmd);
 
-                        if (CommandCache.isOpen()) {
+                        if (CommandCache.isOpen() && CommandCache.isCurrent(mobile)) {
                             short serialNo808 = sourceBuf.getShort(PackagePart.PAC_SERIAL_NO.getStartIndex() + 1);
                             long serialNoMqtt = sourceBuf.getLong(22);
                             CommandCache.addCmd(mobile)
@@ -92,7 +87,7 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                                     .setSerialNoMqtt(serialNoMqtt);
                         }
                     } else {
-                        LOG.error("client not active when deal sendout cmd2: {}", hexString);
+                        LOG.error("client ({}) not active when deal sendout cmd2: {}", mobile, hexString);
                     }
                 });
             }
