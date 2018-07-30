@@ -70,10 +70,11 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 ClientCache.getByUniqueNo(mobile).ifPresent(client -> {
                     if (client.getChannel().isActive()) {
                         // 终端在线
-                        ByteBuf resetedSourceBuf =  sourceBuf.resetReaderIndex();
-                        client.getChannel().writeAndFlush(resetedSourceBuf.copy());
+                        //ByteBuf resetedSourceBuf =  sourceBuf.resetReaderIndex();
+                        PacTranslateUtil.translateDownPac(sourceBuf);
+                        client.getChannel().writeAndFlush(sourceBuf.copy());
                         // 便于ELK日志分析
-                        String downCmd = ByteBufUtil.hexDump(resetedSourceBuf);
+                        String downCmd = ByteBufUtil.hexDump(sourceBuf);
                         LOG.info("({}): DOWN >> {}", mobile, downCmd);
 
                         if (CommandCache.isOpen() && CommandCache.isCurrent(mobile)) {
