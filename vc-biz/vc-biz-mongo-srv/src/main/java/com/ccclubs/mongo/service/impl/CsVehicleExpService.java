@@ -20,7 +20,7 @@ import java.util.List;
  * @author jianghaiyang
  * @create 2018-03-02
  **/
-@Service
+//@Service
 public class CsVehicleExpService {
 
     @Autowired
