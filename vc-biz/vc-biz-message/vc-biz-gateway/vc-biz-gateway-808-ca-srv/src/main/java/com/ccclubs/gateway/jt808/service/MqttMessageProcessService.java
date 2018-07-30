@@ -70,9 +70,21 @@ public class MqttMessageProcessService  implements IMessageProcessService {
                 ClientCache.getByUniqueNo(mobile).ifPresent(client -> {
                     if (client.getChannel().isActive()) {
                         // 终端在线
-                        //ByteBuf resetedSourceBuf =  sourceBuf.resetReaderIndex();
-                        PacTranslateUtil.translateDownPac(sourceBuf);
-                        client.getChannel().writeAndFlush(sourceBuf.copy());
+                        ByteBuf resetedSourceBuf =  sourceBuf.resetReaderIndex();
+
+                        /**
+                         * bug fix: 修改 消息下发前的转移还原
+                         * 2018-7-30
+                         */
+                        resetedSourceBuf.readerIndex(sourceBuf.readerIndex() + 1);
+                        resetedSourceBuf.writerIndex(resetedSourceBuf.writerIndex() - 1);
+                        // 执行去除7E部分后的转义
+                        PacTranslateUtil.translateDownPac(resetedSourceBuf);
+                        resetedSourceBuf.resetReaderIndex();
+                        // 还原-包装7E
+                        resetedSourceBuf.writeBytes(PackageCons.PAC_DECODE_DELIMITER);
+
+                        client.getChannel().writeAndFlush(resetedSourceBuf.copy());
                         // 便于ELK日志分析
                         String downCmd = ByteBufUtil.hexDump(sourceBuf);
                         LOG.info("({}): DOWN >> {}", mobile, downCmd);
@@ -96,9 +108,17 @@ public class MqttMessageProcessService  implements IMessageProcessService {
     }
 
     public static void main(String[] args) {
-        String sourceHex = "7e890000120648441648780000f154363739353232310000000000000003062b7e";
-        ByteBuf sourceBuf = Unpooled.wrappedBuffer(ByteBufUtil.decodeHexDump(sourceHex));
-        long serialNo3 = sourceBuf.getLong(22);
-        System.out.println(serialNo3);
+        String sourceHex = "7e890000120648441648780000f154363739353232310000000000000003062b7E";
+
+        ByteBuf sourceBuf = Unpooled.buffer().writeBytes(ByteBufUtil.decodeHexDump(sourceHex));
+        sourceBuf.readerIndex(sourceBuf.readerIndex() + 1);
+        sourceBuf.writerIndex(sourceBuf.writerIndex() - 1);
+        System.out.println(ByteBufUtil.hexDump(sourceBuf));
+
+        PacTranslateUtil.translateDownPac(sourceBuf);
+
+        sourceBuf.resetReaderIndex();
+        sourceBuf.writeBytes(PackageCons.PAC_DECODE_DELIMITER);
+        System.out.println(ByteBufUtil.hexDump(sourceBuf));
     }
 }
