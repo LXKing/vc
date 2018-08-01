@@ -120,9 +120,11 @@ public class SendMailService {
         email.setCharset(CODING);
         email.setSmtpPort(PORT);
         email.addTo(toEmail.split(","));
-        email.addCc(ccEmail.split(","));
         if(StringUtils.isNotEmpty(bccEmail)){
             email.addBcc(bccEmail.split(","));
+        }
+        if(StringUtils.isNotEmpty(ccEmail)){
+            email.addCc(ccEmail.split(","));
         }
         email.setFrom(SMTP_USERNAME, USERNAME);
         email.setSubject(subject);
@@ -152,7 +154,9 @@ public class SendMailService {
         mailInfo.setFromAddress(SMTP_USERNAME);
         mailInfo.setFromName(USERNAME);
         mailInfo.setToAddress(toEmail.split(","));
-        mailInfo.setToCarbonCopyAddress(ccEmail.split(","));
+        if(StringUtils.isNotEmpty(ccEmail)){
+            mailInfo.setToCarbonCopyAddress(ccEmail.split(","));
+        }
         mailInfo.setAttachFileNames(new String[]{attachmentProp.get(AttachmentConst.LOCAL_FILE_PATH)});
         mailInfo.setSubject(subject);
         mailInfo.setContent(msg);
