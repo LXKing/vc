@@ -9,6 +9,7 @@ import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
+import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +68,9 @@ public class EventService {
      * @param channel
      * @param gatewayType
      */
-    public void realtimeReflushOnline(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
+    public void realtimeReflushOnline(String uniqueNo, SocketChannel channel, GatewayType gatewayType, Package808 pac) {
         ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
-        redisConnService.keepOnlineWhenEventCome(connOnlineStatusEvent);
+        redisConnService.keepOnlineWhenEventCome(connOnlineStatusEvent, pac);
     }
 
     public ListenableFuture<SendResult> sendOfflineEvent(boolean needUpdateRedis, String uniqueNo, SocketChannel channel, GatewayType gatewayType, ChannelLiveStatus liveStatus) {

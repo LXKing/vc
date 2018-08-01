@@ -47,7 +47,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Package808 pac = (Package808) msg;
-
         /*
          * 只清理引用计数
          */

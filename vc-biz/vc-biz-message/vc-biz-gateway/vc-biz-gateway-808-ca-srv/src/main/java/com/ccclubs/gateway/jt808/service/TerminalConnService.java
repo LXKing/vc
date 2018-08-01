@@ -110,15 +110,13 @@ public class TerminalConnService {
         }
 
         /**
-         * 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件，不更新redis中的状态
+         * 任何原因导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件，不更新redis中的状态
          */
         boolean needSend2RedisAndUpdateStatu = true;
-        if (ChannelLiveStatus.OFFLINE_IDLE.equals(liveStatus)) {
-            ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
-            // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-            if (Objects.nonNull(event) && !channel.localAddress().getHostString().equals(event.getServerIp())) {
-                needSend2RedisAndUpdateStatu = false;
-            }
+        ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
+        // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
+        if (Objects.nonNull(event) && !channel.localAddress().getHostString().equals(event.getServerIp())) {
+            needSend2RedisAndUpdateStatu = false;
         }
 
         ListenableFuture<SendResult> resultFut = null;
