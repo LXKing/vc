@@ -2,6 +2,7 @@ package com.ccclubs.protocol.dto.transform;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 通过远程控制指令获取的部分车辆状态数据 Created by qsxiaogang on 2017/6/3.
@@ -18,7 +19,26 @@ public class TerminalPartStatus implements Serializable {
    * 车辆OBD里程
    */
   private Integer cssObdMile;
-
+  /**
+   * 油量
+   */
+  private Integer cssOil;
+  /**
+   * 订单状态
+   */
+  private Integer cssTradeStatus;
+  /**
+   * 订单里程
+   */
+  private Integer cssTradeMile;
+  /**
+   * 订单开始时间
+   */
+  private Date cssTradeStartTime;
+  /**
+   * 订单结束时间
+   */
+  private Date cssTradeEndTime;
   /**
    * 动力电池电量
    */
@@ -95,6 +115,45 @@ public class TerminalPartStatus implements Serializable {
    * */
   private Integer controlStatus;
 
+  public Integer getCssOil() {
+    return cssOil;
+  }
+
+  public void setCssOil(Integer cssOil) {
+    this.cssOil = cssOil;
+  }
+
+  public Date getCssTradeStartTime() {
+    return cssTradeStartTime;
+  }
+
+  public void setCssTradeStartTime(Date cssTradeStartTime) {
+    this.cssTradeStartTime = cssTradeStartTime;
+  }
+
+  public Date getCssTradeEndTime() {
+    return cssTradeEndTime;
+  }
+
+  public void setCssTradeEndTime(Date cssTradeEndTime) {
+    this.cssTradeEndTime = cssTradeEndTime;
+  }
+
+  public Integer getCssTradeStatus() {
+    return cssTradeStatus;
+  }
+
+  public void setCssTradeStatus(Integer cssTradeStatus) {
+    this.cssTradeStatus = cssTradeStatus;
+  }
+
+  public Integer getCssTradeMile() {
+    return cssTradeMile;
+  }
+
+  public void setCssTradeMile(Integer cssTradeMile) {
+    this.cssTradeMile = cssTradeMile;
+  }
 
   public Integer getControlStatus() {
     return controlStatus;
