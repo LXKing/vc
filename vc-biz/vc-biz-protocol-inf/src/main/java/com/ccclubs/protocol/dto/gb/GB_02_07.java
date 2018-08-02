@@ -301,59 +301,59 @@ public class GB_02_07 implements IRealTimeAdditionalItem {
     //		return $.zerofill(Integer.toBinaryString(getGeneralAlarmFlag()), 32);
     String alarmFlag = StringUtils.zerofill(Integer.toBinaryString(getGeneralAlarmFlag()), 32);
     StringBuilder sBuilder = new StringBuilder();
-    sBuilder.append((Byte.parseByte(alarmFlag.substring(12, 13), 10) & 0x1) == 0 ? "正常" : "温度差异报警");
+    sBuilder.append((Byte.parseByte(alarmFlag.substring(31, 32), 10) & 0x1) == 0 ? "正常" : "温度差异报警");
     sBuilder.append(";");
-    sBuilder.append((Byte.parseByte(alarmFlag.substring(13, 14), 10) & 0x1) == 0 ? "正常" : "电池高温报警");
-    sBuilder.append(";");
-    sBuilder
-        .append(
-            (Byte.parseByte(alarmFlag.substring(14, 15), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型过压报警");
+    sBuilder.append((Byte.parseByte(alarmFlag.substring(30, 31), 10) & 0x1) == 0 ? "正常" : "电池高温报警");
     sBuilder.append(";");
     sBuilder
         .append(
-            (Byte.parseByte(alarmFlag.substring(15, 16), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型欠压报警");
-    sBuilder.append(";");
-    sBuilder.append((Byte.parseByte(alarmFlag.substring(16, 17), 10) & 0x1) == 0 ? "正常" : "SOC低报警");
+                (Byte.parseByte(alarmFlag.substring(29, 30), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型过压报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(17, 18), 10) & 0x1) == 0 ? "正常" : "单体电池过压报警");
+        .append(
+                (Byte.parseByte(alarmFlag.substring(28, 29), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型欠压报警");
+    sBuilder.append(";");
+    sBuilder.append((Byte.parseByte(alarmFlag.substring(27, 28), 10) & 0x1) == 0 ? "正常" : "SOC低报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(18, 19), 10) & 0x1) == 0 ? "正常" : "单体电池欠压报警");
+            .append((Byte.parseByte(alarmFlag.substring(26, 27), 10) & 0x1) == 0 ? "正常" : "单体电池过压报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(19, 20), 10) & 0x1) == 0 ? "正常" : "SOC过高报警");
+            .append((Byte.parseByte(alarmFlag.substring(25, 26), 10) & 0x1) == 0 ? "正常" : "单体电池欠压报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(20, 21), 10) & 0x1) == 0 ? "正常" : "SOC跳变报警");
+            .append((Byte.parseByte(alarmFlag.substring(24, 25), 10) & 0x1) == 0 ? "正常" : "SOC过高报警");
+    sBuilder.append(";");
+    sBuilder
+            .append((Byte.parseByte(alarmFlag.substring(23, 24), 10) & 0x1) == 0 ? "正常" : "SOC跳变报警");
     sBuilder.append(";");
     sBuilder.append(
-        (Byte.parseByte(alarmFlag.substring(21, 22), 10) & 0x1) == 0 ? "正常" : "可充电储能系统不匹配报警");
+            (Byte.parseByte(alarmFlag.substring(22, 23), 10) & 0x1) == 0 ? "正常" : "可充电储能系统不匹配报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(22, 23), 10) & 0x1) == 0 ? "正常" : "电池单体一致性差报警");
+            .append((Byte.parseByte(alarmFlag.substring(21, 22), 10) & 0x1) == 0 ? "正常" : "电池单体一致性差报警");
     sBuilder.append(";");
-    sBuilder.append((Byte.parseByte(alarmFlag.substring(23, 24), 10) & 0x1) == 0 ? "正常" : "绝缘报警");
-    sBuilder.append(";");
-    sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(24, 25), 10) & 0x1) == 0 ? "正常" : "DC-DC温度报警");
-    sBuilder.append(";");
-    sBuilder.append((Byte.parseByte(alarmFlag.substring(25, 26), 10) & 0x1) == 0 ? "正常" : "制动系统报警");
+    sBuilder.append((Byte.parseByte(alarmFlag.substring(20, 21), 10) & 0x1) == 0 ? "正常" : "绝缘报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(26, 27), 10) & 0x1) == 0 ? "正常" : "DC-DC状态报警");
+            .append((Byte.parseByte(alarmFlag.substring(19, 20), 10) & 0x1) == 0 ? "正常" : "DC-DC温度报警");
+    sBuilder.append(";");
+    sBuilder.append((Byte.parseByte(alarmFlag.substring(18, 19), 10) & 0x1) == 0 ? "正常" : "制动系统报警");
+    sBuilder.append(";");
+    sBuilder
+            .append((Byte.parseByte(alarmFlag.substring(17, 18), 10) & 0x1) == 0 ? "正常" : "DC-DC状态报警");
     sBuilder.append(";");
     sBuilder.append(
-        (Byte.parseByte(alarmFlag.substring(27, 28), 10) & 0x1) == 0 ? "正常" : "驱动电机控制器温度报警");
+            (Byte.parseByte(alarmFlag.substring(16, 17), 10) & 0x1) == 0 ? "正常" : "驱动电机控制器温度报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(28, 29), 10) & 0x1) == 0 ? "正常" : "高压互锁状态报警");
+            .append((Byte.parseByte(alarmFlag.substring(15, 16), 10) & 0x1) == 0 ? "正常" : "高压互锁状态报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(29, 30), 10) & 0x1) == 0 ? "正常" : "驱动电机温度报警");
+            .append((Byte.parseByte(alarmFlag.substring(14, 15), 10) & 0x1) == 0 ? "正常" : "驱动电机温度报警");
     sBuilder.append(";");
     sBuilder
-        .append((Byte.parseByte(alarmFlag.substring(30, 31), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型过充");
+            .append((Byte.parseByte(alarmFlag.substring(13, 14), 10) & 0x1) == 0 ? "正常" : "车载储能装置类型过充");
     return sBuilder.toString();
   }
 
