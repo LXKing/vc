@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author: yeanzi
@@ -39,18 +40,23 @@ import java.util.Optional;
 public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package808> {
     public static final Logger LOG = LoggerFactory.getLogger(AuthConnectionHandler.class);
 
+    /**
+     * 连接建立后未发送鉴权的超时时间(秒)
+     * （注意）延迟的时间越短越好，越短则回收channel越快
+     */
+    private static final int TIMEOUT_SECONDS_PRE_AUTH = 60;
+
     @Autowired
     private TerminalConnService terminalConnService;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        SocketChannel channel = (SocketChannel) ctx.channel();
+        final SocketChannel channel = (SocketChannel) ctx.channel();
         LOG.info("connection established: ip={}, port={}, channelId={}",
                     channel.remoteAddress().getHostString(),
                     channel.remoteAddress().getPort(),
                     channel.id().asLongText()
                 );
-
         /**
          * 初始化渠道生命周期
          */
@@ -58,6 +64,16 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 .setCreateTime(System.currentTimeMillis())
                 .setGatewayType(GatewayType.GATEWAY_808)
                 .setLiveStatus(ChannelLiveStatus.ONLINE_CONNECT);
+        /**
+         * 注册定时任务：如果1分钟秒内没有发送鉴权(或者鉴权失败)，断开该连接
+         */
+        channel.eventLoop().schedule(() -> {
+            ChannelLifeCycleTrack lifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
+            if (Objects.isNull(lifeCycleTrack.getUniqueNo()) &&
+                    ChannelLiveStatus.ONLINE_CONNECT.equals(lifeCycleTrack.getLiveStatus())) {
+                channel.pipeline().fireChannelInactive();
+            }
+        }, TIMEOUT_SECONDS_PRE_AUTH, TimeUnit.SECONDS);
         super.channelActive(ctx);
     }
 
@@ -73,8 +89,9 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         /**
          *连接被探测
          */
-        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
+        if (isPingPongEvent(channelLifeCycleTrack)) {
             LOG.error("tcp server received ping-pong event: client={}", PacUtil.getUniqueNoOrHost(null, channel));
+            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_END);
             channel.close();
             return;
         }
@@ -238,5 +255,27 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 LOG.info("terminal({})auth success", uniqueNo);
             }
         }
+    }
+
+    /**
+     * 判定渠道状态是否为pingpong事件状态
+     * @param channelLifeCycleTrack
+     * @return
+     */
+    private boolean isPingPongEvent(ChannelLifeCycleTrack channelLifeCycleTrack) {
+        /**
+         * 如果连接建立后，无报文交互，在idle前断开
+         */
+        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
+            return true;
+        }
+        /**
+         * 如果连接建立后，无报文交互，在idle后断开
+         */
+        String uniqueNo = channelLifeCycleTrack.getUniqueNo();
+        if (Objects.isNull(uniqueNo) && ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus())) {
+            return true;
+        }
+        return false;
     }
 }

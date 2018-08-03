@@ -80,9 +80,9 @@ public class DBHelperZt {
     public List<Map<String,Object>>  getGbReportDate(){
         List<Map<String,Object>> tempList=new ArrayList<>();
         try {
-            String sql = " SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber  " +
-                    " FROM cs_vehicle t1, cs_machine t2 " +
-                    "WHERE t1.csv_model=22 AND t1.csv_machine=t2.csm_id";
+
+            String sql = "SELECT t1.csv_car_no  csmrCarNo,t1.csv_vin  csmrVin,t1.csv_model csmrModel,t1.csv_prod_date csmrProdTime,t1.csv_domain  csmrDomain,t2.csm_number csmrNumber  FROM cs_vehicle t1 left join cs_machine t2  on  t1.csv_machine=t2.csm_id WHERE t1.csv_model=22";
+            //
             pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
             ResultSetMetaData metaData = rs.getMetaData();

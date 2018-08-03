@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.ccclubs.frm.spring.resolver.Resolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -34,43 +35,43 @@ public class CsVehicleExp implements java.io.Serializable {
     /**
      * [csve_vin]车架号
      */
-
+    @Excel(name = "车架号", width = 20)
     private String csveVin;
 
     /**
      * [csve_te_no]终端编号
      */
-
+    @Excel(name = "终端编号", width = 20)
     private String csveTeNo;
 
     /**
      * [csve_iccid]iccid
      */
-
+    @Excel(name = "ICCID", width = 25)
     private String csveIccid;
 
     /**
      * [csve_engine_no]发动机号
      */
-
+    @Excel(name = "发动机号", width = 20)
     private String csveEngineNo;
 
     /**
      * [csve_bataccu_code]可充电储能系统编码
      */
-
+    @Excel(name = "可充电储能系统编码", width = 25)
     private String csveBataccuCode;
 
     /**
      * [csve_model_code_simple]车型备案型号
      */
-
+    @Excel(name = "车型备案型号", width = 15)
     private String csveModelCodeSimple;
 
     /**
      * [csve_car_no]真实车牌
      */
-
+    @Excel(name = "车牌号", width = 15)
     private String csveCarNo;
 
     /**
@@ -84,6 +85,7 @@ public class CsVehicleExp implements java.io.Serializable {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Excel(name = "出厂日期", format = "yyyy-MM-dd", width = 20)
     private Date csveProdDate;
 
     /**
@@ -91,6 +93,7 @@ public class CsVehicleExp implements java.io.Serializable {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Excel(name = "车辆添加时间", format = "yyyy-MM-dd HH:mm:ss", width = 20)
     private Date csveAddTime;
 
     /**

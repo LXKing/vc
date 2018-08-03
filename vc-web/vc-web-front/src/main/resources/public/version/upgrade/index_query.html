@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="id" style="display:none;">
+				<dt>编号</dt>
+				<dd  >
+					<input  name="idEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="softVerId" style="display:none;">
+				<dt>插件版本号</dt>
+				<dd  >
+					<input  name="softVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/1">
+				</dd>
+			</dl>
+<dl cond="hardVerId" style="display:none;">
+				<dt>硬件版本号</dt>
+				<dd  >
+					<input  name="hardVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/0">
+				</dd>
+			</dl>
+<dl cond="bluetoothVerId" style="display:none;">
+                <dt>蓝牙版本号</dt>
+                <dd  >
+                    <input  name="bluetoothVerIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/3">
+                </dd>
+            </dl>
+<dl cond="majorVersionId" style="display:none;">
+                <dt>主版本号</dt>
+                <dd  >
+                    <input  name="majorVersionIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/softhardware/query/2">
+                </dd>
+            </dl>
+<dl cond="modelId" style="display:none;">
+				<dt>车型</dt>
+				<dd  >
+					<input  name="modelIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+				</dd>
+			</dl>
+<dl cond="telType" style="display:none;">
+				<dt>终端类型</dt>
+				<dd  >
+					<select class="form-control"  name="telTypeEquals"  >
+	                    <option></option>
+                         <option value="0">车厘子</option>
+                         <option value="1">中导</option>
+                         <option value="2">慧翰</option>
+                         <option value="3">通领</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="telModel" style="display:none;">
+                <dt>终端型号</dt>
+                <dd  >
+                    <input  name="telModelEquals" placeholder="" class="form-control" >
+                </dd>
+            </dl>
+<dl cond="innerVer" style="display:none;">
+				<dt>生产内部版本号</dt>
+				<dd  >
+					<input  name="innerVerEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="isOpen" style="display:none;">
+				<dt>是否对外开放</dt>
+				<dd  >
+					<select class="form-control"  name="isOpenEquals"  >
+	                    <option></option>
+                         <option value="0">是</option>
+                         <option value="1">否</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="des" style="display:none;">
+				<dt>描述</dt>
+				<dd  >
+					<input  name="desEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="upVerNo" style="display:none;">
+				<dt>升级版本号</dt>
+				<dd  >
+					<input  name="upVerNoEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="serFtpId" style="display:none;">
+				<dt>文件服务器名称</dt>
+				<dd  >
+					<input  name="serFtpIdEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/ftpserver/query">
+				</dd>
+			</dl>
+<dl cond="perTimeout" style="display:none;">
+				<dt>单次升级超时时长（毫秒）</dt>
+				<dd  >
+					<input  name="perTimeoutEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="perMaxVehicle" style="display:none;">
+				<dt>单次升级最大车辆数</dt>
+				<dd  >
+					<input  name="perMaxVehicleEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="fileName" style="display:none;">
+				<dt>升级文件名称</dt>
+				<dd  >
+					<input  name="fileNameEquals" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="turnOffFlag" style="display:none;">
+				<dt>是否为拐点版本</dt>
+				<dd  >
+					<select class="form-control"  name="turnOffFlagEquals"  >
+	                    <option></option>
+                         <option value="0">否</option>
+                         <option value="1">是</option>
+                    </select>
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >升级版本编号</label></li>
+			        <li><label><input cond="softVerId" value="softVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >软件版本号</label></li>
+			        <li><label><input cond="hardVerId" value="hardVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >硬件版本号</label></li>
+                    <li><label><input cond="bluetoothVerId" value="bluetoothVerIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >蓝牙版本号</label></li>
+                    <li><label><input cond="majorVersionId" value="majorVersionIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >主版本号</label></li>
+			        <li><label><input cond="modelId" value="modelIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
+			        <li><label><input cond="telType" value="telTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端类型</label></li>
+                    <li><label><input cond="telModel" value="telModelText"  type="checkbox" onclick='showHideCondition(this, this.value);' >终端型号</label></li>
+			        <li><label><input cond="innerVer" value="innerVer"  type="checkbox" onclick='showHideCondition(this, this.value);' >生产内部版本号</label></li>
+			        <li><label><input cond="isOpen" value="isOpenText"  type="checkbox" onclick='showHideCondition(this, this.value);' >是否对外开放</label></li>
+			        <li><label><input cond="des" value="des"  type="checkbox" onclick='showHideCondition(this, this.value);' >描述</label></li>
+			        <li><label><input cond="upVerNo" value="upVerNo"  type="checkbox" onclick='showHideCondition(this, this.value);' >升级版本号</label></li>
+			        <li><label><input cond="serFtpId" value="serFtpIdText"  type="checkbox" onclick='showHideCondition(this, this.value);' >文件服务器名称</label></li>
+			        <li><label><input cond="perTimeout" value="perTimeout"  type="checkbox" onclick='showHideCondition(this, this.value);' >单次升级超时时长（毫秒）</label></li>
+			        <li><label><input cond="perMaxVehicle" value="perMaxVehicle"  type="checkbox" onclick='showHideCondition(this, this.value);' >单次升级最大车辆数</label></li>
+			        <li><label><input cond="fileName" value="fileName"  type="checkbox" onclick='showHideCondition(this, this.value);' >升级文件名称</label></li>
+			        <li><label><input cond="turnOffFlag" value="turnOffFlagText"  type="checkbox" onclick='showHideCondition(this, this.value);' >是否为拐点版本</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

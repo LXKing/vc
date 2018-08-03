@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<link href="/css/bootstrap.min.css?v=3.3.5" rel="stylesheet">
+		<link href="/css/plugins/iCheck/custom.css" rel="stylesheet">
+		<link href="/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+		<link href="/css/animate.min.css" rel="stylesheet">
+		<link href="/css/style.min.css?v=4.0.0" rel="stylesheet">
+		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+		<!-- jqgrid-->
+    	<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    	<link href="/css/plugins/chosen/chosen.css" rel="stylesheet">
+		<link href="/css/cnmain.css" rel="stylesheet">
+	</head>
+<body >
+	<div class="form_content">
+		<form class="form-horizontal" id="addform" style="margin:15px;">
+			<div class="form-group" id="conditionId" style="height:80%;">
+				<input name="id" id="keyInput" type="hidden"  />
+			</div>
+
+			<table class="table">
+				<thead>
+				<tr>
+					<th scope="col">序号</th>
+					<th scope="col">数据类型</th>
+					<th scope="col">数据子类型</th>
+					<th scope="col">模块名称</th>
+					<th scope="col">模块版本</th>
+					<th scope="col">模块描述</th>
+					<th scope="col">模块值</th>
+					<th scope="col">是否支持</th>
+					<th scope="col">模块值描述</th>
+				</tr>
+				</thead>
+				<tbody class="module-rows">
+
+				</tbody>
+			</table>
+		
+			<div class="form-group windowButtonBar">
+				<div class="hr-line-dashed"></div>
+				<div class="col-sm-10 col-sm-offset-1">
+					<button class="btn btn-primary col-sm-2" type="button" id="saveBtn">保存</button>
+					<button class="btn btn-primary col-sm-2 col-sm-offset-7" type="button" onclick="closeTopWin();">关闭</button>
+				</div>
+			</div>
+		
+		</form>
+	</div>
+	
+	<div class="form_footer"></div>
+	
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+	<script src="/js/tpui-core.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.5"></script>
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="/js/plugins/suggest/bootstrap-suggest.min.js"></script>
+	<script src="/js/plugins/iCheck/icheck.min.js"></script>
+	<script src="/js/plugins/chosen/chosen.jquery.js"></script>
+	<script src="/js/plugins/validate/jquery.validate.min.js"></script>
+    <script src="/js/plugins/validate/messages_zh.min.js"></script>
+    <script src="/js/layer/layer.js"></script>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**
+			 * 表单校验规则配置
+ 			 */
+			var validateRuleConfig = {
+				rules:{
+				"des":{
+					"maxlength":50
+				},
+				"verNo":{
+					"maxlength":50,
+					"required":true
+				},
+				"type":{
+					"maxlength":1,
+					"digits":true,
+					"required":true
+				}
+			}
+			};
+			
+			var define = {
+				form:$("#addform"),
+				url:getServUrl("/version/vermodule/add"),
+				validateRuleConfig:validateRuleConfig,
+				valid:function(){
+					return this.form.validate(this.validateRuleConfig);
+				},
+				init:function(option){
+					var o = $.extend(this, option);
+					$(".searchinput").each(function(){
+						$(this).searchinput({});
+					});
+					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
+					$("#saveBtn").click(function(){
+						if(o.valid().form()) {
+							o.submit(o.form);
+						}else{
+							console.log("validate failure!");
+						}
+					});
+				},
+				submit:function(){
+					var relationList = [];
+                    var verId = parseInt($("#keyInput")[0].value);
+					$(".module-row").each(function () {
+					    var newModule = {};
+                        newModule.verId = verId;
+                        newModule.moduleId = parseInt($(this).attr("data-module-id"));
+                        // newModule.moduleVal = $(this).find(".module-value")[0].value;
+                        newModule.moduleVal = $("select[name='module-value"+newModule.moduleId+"']").val();
+                        newModule.isSup = parseInt($("input[name='isSup"+newModule.moduleId+"']:checked").val());
+                        console.log(newModule)
+                        relationList.push(newModule)
+                    });
+					ajaxRequest(this.url, "POST", JSON.stringify(relationList), function(json) {
+						console.log(json);
+						closeTopWin(true);
+					}, true, "application/json");
+				}
+			};
+			
+			define.init();
+			
+			function init(){
+				var id = getQueryString("id");
+				var url = getServUrl("/version/module/bind/")+id;
+				$("#keyInput").val(id);
+				ajaxRequest(url,"GET",{},function(json) {
+					var data = json.value;
+
+					// TODO 添加模块数据
+					var moduleLocal = $(".module-rows");
+                    for(d in data) {
+                        var newModuleRow =
+                            "	<tr class='module-row' data-module-id='" + data[d].id + "'></td>\n" +
+                            "      <th scope=\"row\">" + d + "</th>\n" +
+                            "      <td>" + ((data[d].dataTypeText===undefined)?"":data[d].dataTypeText) + "</td>\n" +
+                            "      <td>" + ((data[d].dataItemTypeText===undefined)?"":data[d].dataItemTypeText) + "</td>\n" +
+                            "      <td>" + ((data[d].name===undefined)?"":data[d].name) + "</td>\n" +
+                            "      <td>" + ((data[d].version===undefined)?"":data[d].version) + "</td>\n" +
+                            "      <td>" + ((data[d].des===undefined)?"":data[d].des) + "</td>\n";
+
+                        // var moduleValueHtml = "<td><input type='text' class='module-value' value='"+ ((data[d].value===undefined)?"":data[d].value) + "'>\n";
+                        var allValue = data[d].dataValue;
+                        if (allValue !== undefined && allValue !== '') {
+                            // 如果值存在：加入列表
+                            var moduleValueHtml = "<td><select type='checkbox' name='module-value"+data[d].id+"' value='"+ ((data[d].value===undefined)?"":data[d].value) + "'>\n";
+
+                            var valueList = allValue.split(";");
+                            moduleValueHtml += "<option value=''></option>";
+                            for(var i in valueList) {
+                                var l_key = valueList[i].split("=")[0];
+                                var l_val = valueList[i].split("=")[1];
+                                if (data[d].value == l_key) {
+                                    moduleValueHtml += "<option value='"+l_key+"' selected>"+l_val+"</option>";
+                                } else {
+                                    moduleValueHtml += "<option value='"+l_key+"'>"+l_val+"</option>";
+                                }
+                            }
+                            moduleValueHtml += "</select></td>";
+                            // 加入值下拉列表
+                            newModuleRow += moduleValueHtml;
+                        } else {
+                            // 如果值不存在：置空
+                            newModuleRow += "<td></td>";
+                        }
+
+                         var isSupHtml = "<td>";
+                            if(data[d].isSup===undefined) {
+                                data[d].isSup = 0;
+                            }
+                            if (data[d].isSup===0) {
+                                 isSupHtml += ("<input type='radio' name='isSup"+data[d].id+"' value='0' checked='checked'/> 不支持<br />\n");
+                                 isSupHtml += ("<input type='radio' name='isSup"+data[d].id+"' value='1' /> 支持<br />");
+							 } else if(data[d].isSup===1) {
+                                 isSupHtml += ("<input type='radio' name='isSup"+data[d].id+"' value='0'/> 不支持<br />\n");
+                                 isSupHtml += ("<input type='radio' name='isSup"+data[d].id+"' value='1' checked='checked'/> 支持<br />");
+							 }
+                        isSupHtml += "</td>";
+                        newModuleRow+=(isSupHtml);
+                        newModuleRow+=("      <td>" + ((data[d].dataValue===undefined)?"":data[d].dataValue) + "</td>\n" +
+                                " 	</tr>");
+
+                        moduleLocal.append(newModuleRow)
+                    }
+				});
+			}
+			
+			init();
+		});
+	</script>
+</body>

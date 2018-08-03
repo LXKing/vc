@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	</head>
+<body>
+	<form class="form-horizontal queryform">
+		<div class="form-group">
+<dl cond="id" style="display:none;">
+				<dt>记录编号</dt>
+				<dd  >
+					<input  name="idEquals" placeholder="请输入数字" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="vin" >
+				<dt>车架号</dt>
+				<dd  >
+					<input  name="vinLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="carModel" style="display:none;">
+				<dt>车型</dt>
+				<dd  >
+					<input  name="carModelEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/admin/model/query">
+				</dd>
+			</dl>
+<dl cond="teNumber" >
+				<dt>车机号</dt>
+				<dd  >
+					<input  name="teNumberLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="teType" style="display:none;">
+				<dt>车机类型</dt>
+				<dd  >
+					<select class="form-control"  name="teTypeEquals"  >
+	                    <option></option>
+                         <option value="0">车厘子</option>
+                         <option value="1">中导</option>
+                         <option value="2">慧翰</option>
+                         <option value="3">通领</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="teModel" >
+				<dt>车机型号</dt>
+				<dd  >
+					<input  name="teModelLike" placeholder="" class="form-control" >
+				</dd>
+			</dl>
+<dl cond="fromVersion" style="display:none;">
+				<dt>当前版本</dt>
+				<dd  >
+					<input  name="fromVersionEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/upgrade/query">
+				</dd>
+			</dl>
+<dl cond="fromType" style="display:none;">
+				<dt>当前版本数据类型</dt>
+				<dd  >
+					<select class="form-control"  name="fromTypeEquals"  >
+	                    <option></option>
+                         <option value="1">升级包</option>
+                         <option value="2">插件</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="toVersion" style="display:none;">
+				<dt>目的版本</dt>
+				<dd  >
+					<input  name="toVersionEquals" placeholder="请输入关键字" class="form-control searchinput"  dataWhere=""  dataUrl="/version/upgrade/query">
+				</dd>
+			</dl>
+<dl cond="status" style="display:none;">
+				<dt>状态</dt>
+				<dd  >
+					<select class="form-control"  name="statusEquals"  >
+	                    <option></option>
+                         <option value="0">待升级</option>
+                         <option value="1">升级中</option>
+                         <option value="2">已升级</option>
+                         <option value="3">升级失败</option>
+                         <option value="-1">无效</option>
+                    </select>
+				</dd>
+			</dl>
+<dl cond="addTime" style="display:none;">
+				<dt>添加时间</dt>
+				<dd class="timergroup" >
+					<input  name="addTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="addTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+<dl cond="updateTime" style="display:none;">
+				<dt>更新时间</dt>
+				<dd class="timergroup" >
+					<input  name="updateTimeStart"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <label class="timegrouplabel">-</label>
+                    <input  name="updateTimeEnd" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+				</dd>
+			</dl>
+			<div class="querybtns">
+				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
+				<div class="btn-group">
+					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+				 		<i class="glyphicon glyphicon-list"></i>更多条件
+				 		<span class="caret"></span>
+				 	</button>
+					<ul class="dropdown-menu tableMenu conditionMenu" role="menu">
+			        <li><label><input cond="id" value="id"  type="checkbox" onclick='showHideCondition(this, this.value);' >记录编号</label></li>
+			        <li><label><input cond="vin" value="vin" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车架号</label></li>
+			        <li><label><input cond="carModel" value="carModelText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车型</label></li>
+			        <li><label><input cond="teNumber" value="teNumber" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机号</label></li>
+			        <li><label><input cond="teType" value="teTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >车机类型</label></li>
+			        <li><label><input cond="teModel" value="teModel" checked="checked" type="checkbox" onclick='showHideCondition(this, this.value);' >车机型号</label></li>
+			        <li><label><input cond="fromVersion" value="fromVersionText"  type="checkbox" onclick='showHideCondition(this, this.value);' >当前版本</label></li>
+			        <li><label><input cond="fromType" value="fromTypeText"  type="checkbox" onclick='showHideCondition(this, this.value);' >当前版本数据类型</label></li>
+			        <li><label><input cond="toVersion" value="toVersionText"  type="checkbox" onclick='showHideCondition(this, this.value);' >目的版本</label></li>
+			        <li><label><input cond="status" value="statusText"  type="checkbox" onclick='showHideCondition(this, this.value);' >状态</label></li>
+			        <li><label><input cond="addTime" value="addTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >添加时间</label></li>
+			        <li><label><input cond="updateTime" value="updateTime"  type="checkbox" onclick='showHideCondition(this, this.value);' >更新时间</label></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</form>
+</body>
+<script type="text/javascript">
+$(".searchinput").each(function(){
+	$(this).searchinput({});
+});
+$("button[resetForm]").click(function(){
+	resetForm($(this).parents("form")[0]);
+});	
+
+$(".conditionMenu").find("input[type=checkbox]").each(function(){
+	$(this).click(function(){
+		var flag = $(this).is(':checked');
+		$(".queryform").find("dl[cond="+$(this).attr("cond")+"]").each(function(){
+			if(flag){
+				$(this).show();
+			}else{
+				$(this).val("");
+				$(this).hide();
+			}
+		});
+		$(window).trigger("resize");
+	});
+});
+</script>

@@ -31,7 +31,7 @@ public class CsVehicleExpController {
     private static Logger logger = LoggerFactory.getLogger(CsVehicleExpController.class);
 
 
-    @Autowired
+    @Resource
     ICsVehicleExpService csVehicleExpService;
 
 

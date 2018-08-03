@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.VerUpManageMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.VerUpManage">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="status_upgrade" jdbcType="INTEGER" property="statusUpgrade" />
+		<result column="ver_cur_id" jdbcType="INTEGER" property="verCurId" />
+		<result column="model_id" jdbcType="INTEGER" property="modelId" />
+		<result column="vehicle_id" jdbcType="INTEGER" property="vehicleId" />
+	</resultMap>
+
+    <resultMap id="BaseVehicleResultMap" type="com.ccclubs.admin.model.CsVehicle">
+        <result column="csv_id" jdbcType="INTEGER" property="csvId" />
+        <result column="csv_vin" jdbcType="VARCHAR" property="csvVin" />
+        <result column="csv_model" jdbcType="INTEGER" property="csvModel" />
+    </resultMap>
+
+    <!-- 关联车辆信息表和车辆升级版本表，查询车辆信息 -->
+    <select id="getAllUpgradeVehicle" resultMap="BaseVehicleResultMap">
+        SELECT cv.csv_id, cv.csv_vin, cv.csv_model
+        FROM cs_vehicle cv
+        INNER JOIN ver_up_manage vum ON cv.csv_id = vum.vehicle_id AND cv.csv_status = 1
+    </select>
+
+    <insert id="insertBatchSelective" useGeneratedKeys="true" parameterType="java.util.List">
+        insert into ver_up_manage
+        (
+        vehicle_id, ver_cur_id, model_id, status_upgrade
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (
+            #{item.vehicleId,jdbcType=INTEGER},
+            #{item.verCurId,jdbcType=INTEGER},
+            #{item.modelId,jdbcType=INTEGER}
+            <choose>
+                <when test="item.statusUpgrade != null and item.statusUpgrade != ''">
+                    ,#{item.statusUpgrade,jdbcType=INTEGER}
+                </when>
+                <otherwise>
+                    ,0
+                </otherwise>
+            </choose>
+            )
+        </foreach>
+    </insert>
+
+</mapper>
