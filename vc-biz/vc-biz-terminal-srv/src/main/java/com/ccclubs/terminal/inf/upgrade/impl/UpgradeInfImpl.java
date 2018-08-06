@@ -167,7 +167,7 @@ public class UpgradeInfImpl implements UpgradeInf {
                     Long leftTime = upgradeTimeout - upgradeTimeout * percent / 100;
                     output.setPercent(percent);
                     output.setLeftTime(leftTime);
-                } else if (passedTime > upgradeTimeout * 2) {
+                } else if (passedTime > upgradeTimeout * 1000L * 2) {
                     //升级超过10min，认为失败
                     output.setStatus(UpgradeStatus.FAILED.getValue());
                     output.setStatusText(UpgradeStatus.FAILED.getName());
