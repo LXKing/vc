@@ -63,32 +63,7 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
 
-        List<GbMessageDto> gbMessageDtoList = new ArrayList<GbMessageDto>();
-        Connection connection = phoenixTool.getConnection();
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
-        try {
-
-            preparedStatement = connection.prepareStatement(querySql);
-            preparedStatement.setString(1, param.getVin());
-            preparedStatement.setLong(2, startTime);
-            preparedStatement.setLong(3, endTime);
-            if (!StringUtils.isEmpty(pageSql)){
-                Integer limit = param.getPageSize();
-                Integer offset = (param.getPageNum() - 1) * limit;
-                preparedStatement.setInt(4, limit);
-                preparedStatement.setInt(5, offset);
-            }
-            resultSet = preparedStatement.executeQuery();
-            gbMessageDtoList= BaseTransformTool.resultSetToObjectList(resultSet,GbMessageDto.class);
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-        }
-        finally {
-            phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"queryGbMessageDtoList");
-        }
-        return gbMessageDtoList;
+        return dbOpration(param, startTime, endTime, pageSql, querySql);
 
     }
 
@@ -133,5 +108,67 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         gbMessageHistoryOutput.setList(queryGbMessageDtoList(param));
         gbMessageHistoryOutput.setTotal(queryListCount(param));
         return gbMessageHistoryOutput;
+    }
+
+    @Override
+    public List<GbMessageDto> queryGbMessageDtoList(GbMessageParam param, Boolean isBanded) {
+
+        /*return baseQuery.queryDtoList(param,
+                PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY,
+                null,
+                GbMessageDto.class);*/
+        String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
+        if(!isBanded) {
+            tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
+        }
+
+        String pageSql = "";
+        if (param.getPageNum() > 0) {
+            pageSql = "limit ? offset ? ";
+        }
+
+        String querySql = "select " +
+                param.getQueryFields() + " from " + tableName + " where VIN=? and add_time>=? and add_time<=? order by add_time  "
+                + param.getOrder() + " " + pageSql;
+
+        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
+        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
+
+        return dbOpration(param, startTime, endTime, pageSql, querySql);
+
+    }
+
+    private List<GbMessageDto> dbOpration(GbMessageParam param,
+            Long startTime, Long endTime, String pageSql, String querySql) {
+
+        List<GbMessageDto> gbMessageDtoList = new ArrayList<GbMessageDto>();
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet=null;
+        try {
+
+            preparedStatement = connection.prepareStatement(querySql);
+            preparedStatement.setString(1, param.getVin());
+            preparedStatement.setLong(2, startTime);
+            preparedStatement.setLong(3, endTime);
+            if (!StringUtils.isEmpty(pageSql)){
+                Integer limit = param.getPageSize();
+                Integer offset = (param.getPageNum() - 1) * limit;
+                preparedStatement.setInt(4, limit);
+                preparedStatement.setInt(5, offset);
+            }
+            resultSet = preparedStatement.executeQuery();
+            gbMessageDtoList= BaseTransformTool.resultSetToObjectList(
+                    resultSet,GbMessageDto.class);
+
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement,resultSet,"queryGbMessageDtoList");
+        }
+
+        return gbMessageDtoList;
     }
 }

@@ -20,4 +20,16 @@ public class CsMachineServiceImpl extends CrudService<CsMachineMapper, CsMachine
     public void insertBatchSelective(List<CsMachine> list) {
         getDao().insertBatchSelective( list);
     }
+
+    @Override
+    public Integer getIdByNumber(String number) {
+
+        CsMachine csMachine =new CsMachine();
+        csMachine.setCsmNumber(number);
+        csMachine = getDao().selectOne(csMachine);
+        if(csMachine != null) {
+            return csMachine.getCsmId();
+        }
+        return null;
+    }
 }

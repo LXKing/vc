@@ -25,4 +25,6 @@ public interface GbMessageHistoryInf {
     //查询车辆状态信息(封装)
     GbMessageHistoryOutput queryListByParam(GbMessageParam param);
 
+    //查询车辆状态信息（带车架 VIN码、车机号 是否绑定的信息）
+    List<GbMessageDto> queryGbMessageDtoList(GbMessageParam param, Boolean isBanded);
 }

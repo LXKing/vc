@@ -1,9 +1,12 @@
 package com.ccclubs.admin.controller.gb;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.model.HistoryGb;
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.HistoryGbQuery;
+import com.ccclubs.admin.service.ICsMachineService;
+import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.admin.service.IHistoryGbService;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
@@ -48,6 +51,10 @@ public class HistoryGbController {
     IHistoryGbService historyGbService;
     @Autowired
     ReportThread reportThread;
+    @Autowired
+    ICsVehicleService csVehicleService;
+    @Autowired
+    ICsMachineService csMachineService;
 
     @Reference(version = "1.0.0")
     GbMessageHistoryInf gbMessageHistoryInf;
@@ -198,6 +205,85 @@ public class HistoryGbController {
         tableResult.setData(gbMessageList);
         tableResult.setPage(pageInfo);
         return tableResult;
+    }
+
+    @RequestMapping(value = "/listNew", method = RequestMethod.GET)
+    public TableResult<HistoryGb> gbMessageList(@RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "15") Integer rows,
+            @RequestParam(defaultValue = "desc") String order,
+            HistoryGbQuery query) {
+
+        TableResult<HistoryGb> tableResult = new TableResult<>();
+
+        if (StringUtils.isEmpty(query.getCsVinEquals())
+                || query.getAddTimeStart() == null
+                || query.getAddTimeEnd() == null) {
+
+            tableResult.setPage(new Page(page, rows, 0));
+            return tableResult;
+        }
+
+        GbMessageParam param = new GbMessageParam();
+        String startTime = DateTimeUtil.getDateTimeByUnixFormat(
+                query.getAddTimeStart().getTime());
+        String endTime = DateTimeUtil.getDateTimeByUnixFormat(
+                query.getAddTimeEnd().getTime());
+
+        if (this.paramTimeCheck(startTime, endTime)) {
+            return tableResult;
+        }
+
+        logger.debug("请求参数：" + param.toString());
+        param.setVin(query.getCsVinEquals());
+        param.setStartTime(startTime);
+        param.setEndTime(endTime);
+        param.setPageNum(page);
+        param.setPageSize(rows);
+        param.setQueryFields("*");
+        String pointQueryKey = param.getVin();
+
+        if (!paramCheck(pointQueryKey, param.getStartTime(),
+                param.getEndTime(), param.getPageNum(), param.getPageSize())) {
+
+            return tableResult;
+        }
+
+        //是否车机与车辆绑定
+        Boolean isBanded;
+        String vin = StringUtils.isNotEmpty(query.getCsVinEquals()) ?
+                query.getCsVinEquals() : null;
+        String number = StringUtils.isNotEmpty(query.getCsNumberEquals()) ?
+                query.getCsNumberEquals() : null;
+
+        isBanded = checkVehicleBand(vin, number);
+
+        gbMessageHistoryInf.queryGbMessageDtoList(param, isBanded);
+
+
+        return null;
+    }
+
+    /**
+     * 判断车架vin码 与 车机号是否绑定
+     * @param vin
+     * @param number
+     * @return
+     */
+    Boolean checkVehicleBand(String vin, String number) {
+
+        CsVehicle csVehicle = new CsVehicle();
+        if(vin != null) {
+            csVehicle = csVehicleService.getVehicleInfo(vin, null);
+        }
+        if(number != null) {
+            Integer machineId = csMachineService.getIdByNumber(number);
+            csVehicle = csVehicleService.getVehicleInfo(vin, machineId);
+        }
+
+        if (csVehicle.getCsvMachine() != null) {
+            return true;
+        }
+        return false;
     }
 
     /**
