@@ -99,7 +99,7 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
                 vehicleCarNO = null;
             }
             //根据发动机号查需车辆信息
-            vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
+//            vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
             //machine = terminalService.queryCsMachineByTeNo(input.getTeNo());
             host = queryAppInfoService.queryHostByAppid(appId);
             outputItem = new JSONObject();
@@ -113,15 +113,18 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
                 input.setCsvCarNo(null);
             }
 
-            if (null != vehicleEngineNo) {
-                outputItem.put("vin", input.getCsvVin());
-                outputItem.put("errorMsg", "csvEngineNo aready exists");
-                output.getFailure().add(outputItem);
-                continue;
-            } else {
-                //重置CsvEngineNo
-                input.setCsvEngineNo(input.getCsvEngineNo().trim());
-            }
+            /**
+             * 由于车机中心对接，北京平台那边没有维护发动机号，所以这里取消发动机号的校验
+             */
+//            if (null != vehicleEngineNo) {
+//                outputItem.put("vin", input.getCsvVin());
+//                outputItem.put("errorMsg", "csvEngineNo aready exists");
+//                output.getFailure().add(outputItem);
+//                continue;
+//            } else {
+//                //重置CsvEngineNo
+//                input.setCsvEngineNo(input.getCsvEngineNo().trim());
+//            }
 
             if (null == vehicle) {
                 vehicle = new CsVehicle();

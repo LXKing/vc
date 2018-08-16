@@ -4,6 +4,8 @@ import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
+import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.RedisObjectBuilder;
 import com.ccclubs.protocol.dto.online.OnlineConnection;
 import com.ccclubs.protocol.util.ConstantUtils;
@@ -183,12 +185,20 @@ public class RedisConnService {
      * 在有消息到来时，实时刷新online
      * @param event
      */
-    public void keepOnlineWhenEventCome(ConnOnlineStatusEvent event) {
+    public void keepOnlineWhenEventCome(ConnOnlineStatusEvent event, Package808 pac) {
         String eventKey = event.uniqueNoByGatewayType();
         // 老网关上线事件(设置过期时间)
         redisTemplate.opsForValue().set(ConstantUtils.ONLINE_REDIS_PRE + eventKey,
-                new OnlineConnection(eventKey, event.getClientIp(), event.getServerIp(),
-                        System.currentTimeMillis()), REDIS_KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
+                new OnlineConnection(
+                        eventKey,
+                        event.getClientIp(),
+                        event.getServerIp(),
+                        System.currentTimeMillis(),
+                        // 消息类型描述（不会为空）
+                        UpPacType.getByCode(pac.getHeader().getPacId()).getDes(),
+                        pac.getSourceHexStr()
+                )
+                , REDIS_KEY_EXPIRE_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
