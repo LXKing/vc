@@ -92,32 +92,11 @@ public class HistoryGbController {
 
         GbMessageHistoryOutput gbMessageHistoryOutput =
                 gbMessageHistoryInf.queryListByParam(param);
-        List<HistoryGb> historyGbList = new ArrayList<>();
-        HistoryGb historyGb;
-        for (GbMessageDto dto : gbMessageHistoryOutput.getList()) {
-            historyGb = new HistoryGb();
-            historyGb.setAddTime(new Date(dto.getAddTime()));
-            historyGb.setCsAccess(dto.getAccess());
-            historyGb.setCsVin(dto.getVin());
-            historyGb.setCsProtocol(dto.getProtocol());
-            historyGb.setCsVerify(dto.getVerify());
-            //
-            Long current = DateTimeUtil.date2UnixFormat("1970-01-01 08:00:00", DateTimeUtil.UNIX_FORMAT);
-            //
-            if (dto.getCurrentTime() - current <= 0) {
-                historyGb.setCurrentTime(new Date(dto.getAddTime()));
-            } else {
-                historyGb.setCurrentTime(new Date(dto.getCurrentTime()));
-            }
-            historyGb.setGbData(dto.getSourceHex());
-            historyGb.setGbType(dto.getMessageType());
-            historyGbList.add(historyGb);
-        }
 
-        for (HistoryGb data : historyGbList) {
-            registResolvers(data);
-        }
         Page pageInfo = new Page(page, rows, gbMessageHistoryOutput.getTotal());
+
+        List<HistoryGb> historyGbList = new ArrayList<>();
+        setHistoryGbList(historyGbList, gbMessageHistoryOutput);
 
         tableResult.setData(historyGbList);
         tableResult.setPage(pageInfo);
@@ -207,6 +186,15 @@ public class HistoryGbController {
         return tableResult;
     }
 
+    /**
+     * 国标历史数据
+     *
+     * @param page
+     * @param rows
+     * @param order
+     * @param query
+     * @return
+     */
     @RequestMapping(value = "/listNew", method = RequestMethod.GET)
     public TableResult<HistoryGb> gbMessageList(@RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "15") Integer rows,
@@ -257,10 +245,45 @@ public class HistoryGbController {
 
         isBanded = checkVehicleBand(vin, number);
 
-        gbMessageHistoryInf.queryGbMessageDtoList(param, isBanded);
+        GbMessageHistoryOutput gbMessageHistoryOutput =
+                gbMessageHistoryInf.queryListByParam(param, isBanded);
 
+        Page pageInfo = new Page(page, rows, gbMessageHistoryOutput.getTotal());
 
-        return null;
+        List<HistoryGb> historyGbList = new ArrayList<>();
+        setHistoryGbList(historyGbList, gbMessageHistoryOutput);
+        
+        tableResult.setData(historyGbList);
+        tableResult.setPage(pageInfo);
+        return tableResult;
+    }
+
+    private void setHistoryGbList (List<HistoryGb> historyGbList, GbMessageHistoryOutput gbMessageHistoryOutput) {
+
+        HistoryGb historyGb;
+        for (GbMessageDto dto : gbMessageHistoryOutput.getList()) {
+            historyGb = new HistoryGb();
+            historyGb.setAddTime(new Date(dto.getAddTime()));
+            historyGb.setCsAccess(dto.getAccess());
+            historyGb.setCsVin(dto.getVin());
+            historyGb.setCsProtocol(dto.getProtocol());
+            historyGb.setCsVerify(dto.getVerify());
+            //
+            Long current = DateTimeUtil.date2UnixFormat("1970-01-01 08:00:00", DateTimeUtil.UNIX_FORMAT);
+            //
+            if (dto.getCurrentTime() - current <= 0) {
+                historyGb.setCurrentTime(new Date(dto.getAddTime()));
+            } else {
+                historyGb.setCurrentTime(new Date(dto.getCurrentTime()));
+            }
+            historyGb.setGbData(dto.getSourceHex());
+            historyGb.setGbType(dto.getMessageType());
+            historyGbList.add(historyGb);
+        }
+
+        for (HistoryGb data : historyGbList) {
+            registResolvers(data);
+        }
     }
 
     /**

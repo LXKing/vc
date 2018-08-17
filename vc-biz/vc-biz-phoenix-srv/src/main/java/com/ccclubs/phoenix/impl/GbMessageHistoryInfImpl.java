@@ -56,14 +56,10 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
             pageSql = "limit ? offset ? ";
         }
 
-        String querySql = "select " +
-                param.getQueryFields() + " from " + tableName + " where VIN=? and add_time>=? and add_time<=? order by add_time  "
-                + param.getOrder() + " " + pageSql;
+        String querySql = "select " + param.getQueryFields() + " from " + tableName +
+                " where VIN=? and add_time>=? and add_time<=? order by add_time  " + param.getOrder() + " " + pageSql;
 
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
-        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-
-        return dbOpration(param, startTime, endTime, pageSql, querySql);
+        return dbSelectList(param, pageSql, querySql);
 
     }
 
@@ -75,31 +71,8 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         String countSql = "select count(add_time) as total from "
                 + PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY +
                 " where VIN=? and add_time>=? and add_time<=? ";
-        long total = 0L;
-        PreparedStatement pst = null;
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
-        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-        Connection connection= phoenixTool.getConnection();
-        ResultSet resultSet =null;
-        try {
-            pst = connection.prepareStatement(countSql);
-            pst.setString(1, param.getVin());
-            pst.setLong(2, startTime);
-            pst.setLong(3, endTime);
-            resultSet = pst.executeQuery();
-            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            if(jsonArray!=null&&jsonArray.size()>0){
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-                total=jsonObject.getLong("TOTAL");
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage());
-        }
-        finally {
-            phoenixTool.closeResource(connection,
-                    pst,resultSet,"queryGbMessageListCount");
-        }
-        return total;
+
+        return dbSelectCount(param, countSql);
     }
 
     @Override
@@ -127,20 +100,49 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
             pageSql = "limit ? offset ? ";
         }
 
-        String querySql = "select " +
-                param.getQueryFields() + " from " + tableName + " where VIN=? and add_time>=? and add_time<=? order by add_time  "
-                + param.getOrder() + " " + pageSql;
+        String querySql = "select " + param.getQueryFields() + " from " + tableName +
+                " where VIN=? and add_time>=? and add_time<=? order by add_time  " + param.getOrder() + " " + pageSql;
 
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
-        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-
-        return dbOpration(param, startTime, endTime, pageSql, querySql);
+        return dbSelectList(param, pageSql, querySql);
 
     }
 
-    private List<GbMessageDto> dbOpration(GbMessageParam param,
-            Long startTime, Long endTime, String pageSql, String querySql) {
+    @Override
+    public Long queryListCount(GbMessageParam param, Boolean isBanded) {
+        /* return baseQuery.queryListCount(param,
+                PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY,
+                null);*/
+        String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
+        if(!isBanded) {
+            tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
+        }
+        String countSql = "select count(add_time) as total from "
+                + tableName + " where VIN=? and add_time>=? and add_time<=? ";
 
+        return dbSelectCount(param, countSql);
+    }
+
+    @Override
+    public GbMessageHistoryOutput queryListByParam(GbMessageParam param, Boolean isBanded) {
+
+        GbMessageHistoryOutput gbMessageHistoryOutput=new GbMessageHistoryOutput();
+        gbMessageHistoryOutput.setList(queryGbMessageDtoList(param, isBanded));
+        gbMessageHistoryOutput.setTotal(queryListCount(param, isBanded));
+        return gbMessageHistoryOutput;
+    }
+
+    /**
+     * 查询列表
+     *
+     * @param param
+     * @param pageSql
+     * @param querySql
+     * @return
+     */
+    private List<GbMessageDto> dbSelectList(GbMessageParam param, String pageSql, String querySql) {
+
+        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
+        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
         List<GbMessageDto> gbMessageDtoList = new ArrayList<GbMessageDto>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
@@ -170,5 +172,42 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
         }
 
         return gbMessageDtoList;
+    }
+
+    /**
+     * 查询数据条数
+     *
+     * @param param
+     * @param countSql
+     * @return
+     */
+    private Long dbSelectCount(GbMessageParam param, String countSql) {
+
+        long total = 0L;
+        PreparedStatement pst = null;
+        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
+        long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
+        Connection connection= phoenixTool.getConnection();
+        ResultSet resultSet =null;
+        try {
+            pst = connection.prepareStatement(countSql);
+            pst.setString(1, param.getVin());
+            pst.setLong(2, startTime);
+            pst.setLong(3, endTime);
+            resultSet = pst.executeQuery();
+            JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
+            if(jsonArray!=null&&jsonArray.size()>0){
+                JSONObject jsonObject = jsonArray.getJSONObject(0);
+                total=jsonObject.getLong("TOTAL");
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        }
+        finally {
+            phoenixTool.closeResource(connection,
+                    pst,resultSet,"queryGbMessageListCount");
+        }
+
+        return total;
     }
 }
