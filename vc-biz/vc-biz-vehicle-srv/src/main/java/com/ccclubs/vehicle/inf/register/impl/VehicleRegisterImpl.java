@@ -109,8 +109,9 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
                 output.getFailure().add(outputItem);
                 continue;
             } else {
-                //重置csvCarNo为null FIXME
-                input.setCsvCarNo(null);
+                if (StringUtils.isBlank(input.getCsvCarNo())) {
+                    input.setCsvCarNo(null);
+                }
             }
 
             /**
