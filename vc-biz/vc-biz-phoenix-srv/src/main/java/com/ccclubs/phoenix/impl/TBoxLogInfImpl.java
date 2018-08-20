@@ -6,81 +6,84 @@ import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
-import com.ccclubs.phoenix.inf.GbMessageHistoryInf;
-import com.ccclubs.phoenix.input.GbMessageParam;
-import com.ccclubs.phoenix.orm.dto.GbMessageDto;
-import com.ccclubs.phoenix.output.GbMessageHistoryOutput;
+import com.ccclubs.phoenix.inf.TBoxLogInf;
+import com.ccclubs.phoenix.input.TBoxLogParam;
+import com.ccclubs.phoenix.orm.dto.TBoxLogDto;
+import com.ccclubs.phoenix.output.TBoxLogOutput;
 import com.ccclubs.phoenix.util.BaseTransformTool;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created with IntelliJ IDEA2017.
- *
- * @Author: Alban
- * @Date: 2018/5/15
- * @Time: 16:59
- * @Description: 请填写描述！
+ * @Author: GFA
+ * @Project: vc
+ * @Package: com.ccclubs.phoenix.impl
+ * @Date: 2018/08/20  15:47
+ * @Description:
  */
 @org.springframework.stereotype.Service
 @Service(version = "1.0.0")
-public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
+public class TBoxLogInfImpl implements TBoxLogInf {
 
-    static  final Logger logger= LoggerFactory.getLogger(GbMessageHistoryInfImpl.class);
-
-    @Autowired
-    private BaseQueryImpl baseQuery;
+    static  final Logger logger= LoggerFactory.getLogger(TBoxLogInfImpl.class);
 
     @Autowired
     private PhoenixTool phoenixTool;
 
     @Override
-    public List<GbMessageDto> queryGbMessageDtoList(GbMessageParam param) {
-        /*return baseQuery.queryDtoList(param,
-                PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY,
-                null,
-                GbMessageDto.class);*/
-        String tableName = PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY;
+    public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean isBanded) {
+
+        String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
+        if(!isBanded) {
+            tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
+        }
 
         String pageSql = "";
         if (param.getPageNum() > 0) {
             pageSql = "limit ? offset ? ";
         }
 
-        String querySql = "select " +
-                param.getQueryFields() + " from " + tableName + " where VIN=? and add_time>=? and add_time<=? order by add_time  "
+//        String orderBy = " add_time desc ";
+
+        String querySql = "select " + param.getQueryFields() + " from " + tableName +
+                " where VIN=? and TE_NUMBER=? and ORDER_NO=? and add_time>=? and add_time<=? order by add_time  "
                 + param.getOrder() + " " + pageSql;
 
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
 
-        List<GbMessageDto> gbMessageDtoList = new ArrayList<GbMessageDto>();
+        List<TBoxLogDto> tBoxLogDtoList = new ArrayList<TBoxLogDto>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet=null;
         try {
-
             preparedStatement = connection.prepareStatement(querySql);
             preparedStatement.setString(1, param.getVin());
-            preparedStatement.setLong(2, startTime);
-            preparedStatement.setLong(3, endTime);
+            preparedStatement.setString(2, param.getTeNumber());
+            preparedStatement.setLong(3, param.getOrderNo());
+            preparedStatement.setLong(4, startTime);
+            preparedStatement.setLong(5, endTime);
+
+            //设置分页信息
             if (!StringUtils.isEmpty(pageSql)){
                 Integer limit = param.getPageSize();
                 Integer offset = (param.getPageNum() - 1) * limit;
-                preparedStatement.setInt(4, limit);
-                preparedStatement.setInt(5, offset);
+                preparedStatement.setInt(6, limit);
+                preparedStatement.setInt(7, offset);
             }
+
             resultSet = preparedStatement.executeQuery();
-            gbMessageDtoList= BaseTransformTool.resultSetToObjectList(resultSet,GbMessageDto.class);
+            tBoxLogDtoList= BaseTransformTool.resultSetToObjectList(
+                    resultSet,TBoxLogDto.class);
+
         } catch (SQLException e) {
             logger.error(e.getMessage());
         }
@@ -88,24 +91,27 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
             phoenixTool.closeResource(connection,
                     preparedStatement,resultSet,"queryGbMessageDtoList");
         }
-        return gbMessageDtoList;
 
+        return tBoxLogDtoList;
     }
 
     @Override
-    public Long queryListCount(GbMessageParam param) {
-       /* return baseQuery.queryListCount(param,
-                PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY,
-                null);*/
+    public Long queryListCount(TBoxLogParam param, Boolean isBanded) {
+
+        String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
+        if(!isBanded) {
+            tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
+        }
         String countSql = "select count(add_time) as total from "
-                + PhoenixConst.PHOENIX_CAR_GB_MESSAGE_HISTORY +
-                " where VIN=? and add_time>=? and add_time<=? ";
+                + PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR
+                + " where VIN=? and add_time>=? and add_time<=? ";
         long total = 0L;
         PreparedStatement pst = null;
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
         Connection connection= phoenixTool.getConnection();
         ResultSet resultSet =null;
+
         try {
             pst = connection.prepareStatement(countSql);
             pst.setString(1, param.getVin());
@@ -128,10 +134,11 @@ public class GbMessageHistoryInfImpl implements GbMessageHistoryInf {
     }
 
     @Override
-    public GbMessageHistoryOutput queryListByParam(GbMessageParam param) {
-        GbMessageHistoryOutput gbMessageHistoryOutput=new GbMessageHistoryOutput();
-        gbMessageHistoryOutput.setList(queryGbMessageDtoList(param));
-        gbMessageHistoryOutput.setTotal(queryListCount(param));
+    public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean isBanded) {
+
+        TBoxLogOutput gbMessageHistoryOutput=new TBoxLogOutput();
+        gbMessageHistoryOutput.setList(queryTBoxDtoList(param, isBanded));
+        gbMessageHistoryOutput.setTotal(queryListCount(param, isBanded));
         return gbMessageHistoryOutput;
     }
 }
