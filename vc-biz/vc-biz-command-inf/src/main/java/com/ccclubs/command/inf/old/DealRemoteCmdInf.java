@@ -17,5 +17,5 @@ public interface DealRemoteCmdInf {
      * @param input
      * @return
      */
-    DealRemoteCmdOutput dealRemoteCommend(DealRemoteCmdInput input);
+    DealRemoteCmdOutput dealRemoteCommand(DealRemoteCmdInput input);
 }

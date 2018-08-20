@@ -44,7 +44,7 @@ public class DealRemoteCmdInfImpl implements DealRemoteCmdInf {
      * 提供远程指令下发功能
      */
     @Override
-    public DealRemoteCmdOutput dealRemoteCommend(DealRemoteCmdInput input) {
+    public DealRemoteCmdOutput dealRemoteCommand(DealRemoteCmdInput input) {
         // 1.查询指令远程控制记录
         CsRemote csRemote = csRemoteService.queryById(input.getRemoteId());
         if (csRemote == null || (csRemote.getCsrType() == 0 || csRemote.getCsrType() == null)) {
