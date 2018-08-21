@@ -39,10 +39,10 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     private PhoenixTool phoenixTool;
 
     @Override
-    public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean isBanded) {
+    public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean idBound) {
 
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!isBanded) {
+        if(!idBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
@@ -56,7 +56,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         querySql = "select " + param.getQueryFields() + " from " + tableName +
                 " where VIN=? and add_time>=? and add_time<=? order by add_time  "
                 + param.getOrder() + " " + pageSql;
-        if(!isBanded) {
+        if(!idBound) {
             querySql = "select " + param.getQueryFields() + " from " + tableName +
                     " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
                     + param.getOrder() + " " + pageSql;
@@ -71,7 +71,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         ResultSet resultSet=null;
         try {
             preparedStatement = connection.prepareStatement(querySql);
-            if(isBanded) {
+            if(idBound) {
                 preparedStatement.setString(1, param.getVin());
             } else {
                 preparedStatement.setString(1, param.getTeNumber());
@@ -103,17 +103,17 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     }
 
     @Override
-    public Long queryListCount(TBoxLogParam param, Boolean isBanded) {
+    public Long queryListCount(TBoxLogParam param, Boolean idBound) {
 
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!isBanded) {
+        if(!idBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
         String countSql = "";
         countSql = "select count(add_time) as total from "
                 + tableName + " where VIN=? and add_time>=? and add_time<=? ";
-        if(!isBanded) {
+        if(!idBound) {
             countSql = "select count(add_time) as total from "
                     + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
         }
@@ -127,7 +127,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         try {
             pst = connection.prepareStatement(countSql);
-            if(isBanded) {
+            if(idBound) {
                 pst.setString(1, param.getVin());
             } else {
                 pst.setString(1, param.getTeNumber());
@@ -151,11 +151,11 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     }
 
     @Override
-    public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean isBanded) {
+    public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean idBound) {
 
         TBoxLogOutput gbMessageHistoryOutput=new TBoxLogOutput();
-        gbMessageHistoryOutput.setList(queryTBoxDtoList(param, isBanded));
-        gbMessageHistoryOutput.setTotal(queryListCount(param, isBanded));
+        gbMessageHistoryOutput.setList(queryTBoxDtoList(param, idBound));
+        gbMessageHistoryOutput.setTotal(queryListCount(param, idBound));
         return gbMessageHistoryOutput;
     }
 }

@@ -15,11 +15,11 @@ import java.util.List;
 public interface TBoxLogInf {
 
     //查询车辆状态信息（带车架 VIN码、车机号 是否绑定的信息）
-    List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean isBanded);
+    List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean idBound);
 
     //查询车辆状态信息记录总数（带车架 VIN码、车机号 是否绑定的信息）
-    Long queryListCount(TBoxLogParam param, Boolean isBanded);
+    Long queryListCount(TBoxLogParam param, Boolean idBound);
 
     //查询车辆状态信息(封装)（带车架 VIN码、车机号 是否绑定的信息）
-    TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean isBanded);
+    TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean idBound);
 }

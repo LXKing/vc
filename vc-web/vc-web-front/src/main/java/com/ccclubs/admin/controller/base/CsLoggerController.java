@@ -80,10 +80,8 @@ public class CsLoggerController {
     @ApiOperation(value = "获得日志分页记录（增加车辆绑定信息判断）", notes = "获取日志分页记录")
     @RequestMapping(value = "getlist", method = RequestMethod.GET)
     public TableResult<TBoxLog> getList (TBoxLogQuery query,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer rows,
-            @RequestParam(defaultValue = "addTime") String sidx,
-            @RequestParam(defaultValue = "desc") String sord) {
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "15") Integer rows) {
 
         TableResult<TBoxLog> tableResult = new TableResult<>();
 
@@ -110,14 +108,14 @@ public class CsLoggerController {
         param.setQueryFields("*");
 
         //是否车机与车辆绑定
-        Boolean isBanded;
+        Boolean idBound;
         String vin = query.getCsVinEquals();
         String number = query.getCsNumberEquals();
 
-        isBanded = checkVehicleBand(vin, number);
+        idBound = checkVehicleBand(vin, number);
 
         TBoxLogOutput tBoxLogOutput =
-                tBoxLogInf.queryListByParam(param, isBanded);
+                tBoxLogInf.queryListByParam(param, idBound);
 
         List<TBoxLog> historyGbList = new ArrayList<>();
 
