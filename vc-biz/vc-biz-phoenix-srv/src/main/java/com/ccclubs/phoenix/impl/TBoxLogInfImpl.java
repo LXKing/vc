@@ -52,10 +52,15 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         }
 
 //        String orderBy = " add_time desc ";
-
-        String querySql = "select " + param.getQueryFields() + " from " + tableName +
-                " where VIN=? and TE_NUMBER=? and ORDER_NO=? and add_time>=? and add_time<=? order by add_time  "
+        String querySql = "";
+        querySql = "select " + param.getQueryFields() + " from " + tableName +
+                " where VIN=? and add_time>=? and add_time<=? order by add_time  "
                 + param.getOrder() + " " + pageSql;
+        if(!isBanded) {
+            querySql = "select " + param.getQueryFields() + " from " + tableName +
+                    " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
+                    + param.getOrder() + " " + pageSql;
+        }
 
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
@@ -66,18 +71,20 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         ResultSet resultSet=null;
         try {
             preparedStatement = connection.prepareStatement(querySql);
-            preparedStatement.setString(1, param.getVin());
-            preparedStatement.setString(2, param.getTeNumber());
-            preparedStatement.setLong(3, param.getOrderNo());
-            preparedStatement.setLong(4, startTime);
-            preparedStatement.setLong(5, endTime);
+            if(isBanded) {
+                preparedStatement.setString(1, param.getVin());
+            } else {
+                preparedStatement.setString(1, param.getTeNumber());
+            }
+            preparedStatement.setLong(2, startTime);
+            preparedStatement.setLong(3, endTime);
 
             //设置分页信息
             if (!StringUtils.isEmpty(pageSql)){
                 Integer limit = param.getPageSize();
                 Integer offset = (param.getPageNum() - 1) * limit;
-                preparedStatement.setInt(6, limit);
-                preparedStatement.setInt(7, offset);
+                preparedStatement.setInt(4, limit);
+                preparedStatement.setInt(5, offset);
             }
 
             resultSet = preparedStatement.executeQuery();
@@ -89,7 +96,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         }
         finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"queryGbMessageDtoList");
+                    preparedStatement,resultSet,"queryTBoxDtoList");
         }
 
         return tBoxLogDtoList;
@@ -102,8 +109,15 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         if(!isBanded) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
-        String countSql = "select count(add_time) as total from "
+
+        String countSql = "";
+        countSql = "select count(add_time) as total from "
                 + tableName + " where VIN=? and add_time>=? and add_time<=? ";
+        if(!isBanded) {
+            countSql = "select count(add_time) as total from "
+                    + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
+        }
+
         long total = 0L;
         PreparedStatement pst = null;
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
@@ -113,7 +127,11 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         try {
             pst = connection.prepareStatement(countSql);
-            pst.setString(1, param.getVin());
+            if(isBanded) {
+                pst.setString(1, param.getVin());
+            } else {
+                pst.setString(1, param.getTeNumber());
+            }
             pst.setLong(2, startTime);
             pst.setLong(3, endTime);
             resultSet = pst.executeQuery();
@@ -127,7 +145,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         }
         finally {
             phoenixTool.closeResource(connection,
-                    pst,resultSet,"queryGbMessageListCount");
+                    pst,resultSet,"queryListCount");
         }
         return total;
     }

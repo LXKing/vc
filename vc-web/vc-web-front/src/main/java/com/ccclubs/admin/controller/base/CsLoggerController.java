@@ -51,7 +51,7 @@ public class CsLoggerController {
     @Autowired
     ICsMachineService csMachineService;
 
-    @Reference
+    @Reference(version = "1.0.0")
     TBoxLogInf tBoxLogInf;
 
     /**
@@ -89,20 +89,19 @@ public class CsLoggerController {
 
         //初始化参数
         TBoxLogParam param = new TBoxLogParam();
-        //组装参数值
-        if(query.getAddTimeStart() != null) {
-            param.setStartTime(DateTimeUtil.getDateTimeByUnixFormat(
-                    query.getAddTimeStart().getTime()));
-        }
-        if(query.getAddTimeEnd() != null) {
-            param.setEndTime(DateTimeUtil.getDateTimeByUnixFormat(
-                    query.getAddTimeEnd().getTime()));
-        }
 
         //校验参数
         if(query.getCsVinEquals() == null && query.getCsNumberEquals() == null) {
             return tableResult;
         }
+        if(query.getAddTimeStart() == null || query.getAddTimeEnd() == null) {
+            return tableResult;
+        }
+
+        param.setStartTime(DateTimeUtil.getDateTimeByUnixFormat(
+                query.getAddTimeStart().getTime()));
+        param.setEndTime(DateTimeUtil.getDateTimeByUnixFormat(
+                query.getAddTimeEnd().getTime()));
         param.setVin(query.getCsVinEquals());
         param.setTeNumber(query.getCsNumberEquals());
         param.setPageNum(page);
@@ -112,10 +111,8 @@ public class CsLoggerController {
 
         //是否车机与车辆绑定
         Boolean isBanded;
-        String vin = StringUtils.isNotEmpty(query.getCsVinEquals()) ?
-                query.getCsVinEquals() : null;
-        String number = StringUtils.isNotEmpty(query.getCsNumberEquals()) ?
-                query.getCsNumberEquals() : null;
+        String vin = query.getCsVinEquals();
+        String number = query.getCsNumberEquals();
 
         isBanded = checkVehicleBand(vin, number);
 
