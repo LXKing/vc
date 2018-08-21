@@ -1,11 +1,9 @@
 package com.ccclubs.admin.service.impl;
 
 
-import com.ccclubs.admin.entity.CsVehicleCrieria;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.orm.mapper.BackCsVehicleMapper;
 import com.ccclubs.admin.orm.mapper.CsVehicleMapper;
-import com.ccclubs.admin.query.CsVehicleQuery;
 import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.frm.base.CrudService;
 import com.ccclubs.pub.orm.page.PageInput;
@@ -48,12 +46,14 @@ public class CsVehicleServiceImpl extends
     @Override
     public CsVehicle getVehicleInfo(String vin, Integer machineId) {
 
-        if(vin == null && machineId == null) {
+        if(vin == null) {
             return null;
         }
         CsVehicle csVehicle = new CsVehicle();
         csVehicle.setCsvVin(vin);
-        csVehicle.setCsvMachine(machineId);
+        if(machineId != null) {
+            csVehicle.setCsvMachine(machineId);
+        }
         return getDao().selectOne(csVehicle);
     }
 
