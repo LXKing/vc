@@ -79,7 +79,7 @@ public class CsLoggerController {
 
     @ApiOperation(value = "获得日志分页记录（增加车辆绑定信息判断）", notes = "获取日志分页记录")
     @RequestMapping(value = "getlist", method = RequestMethod.GET)
-    public TableResult<TBoxLog> getlist (TBoxLogQuery query,
+    public TableResult<TBoxLog> getList (TBoxLogQuery query,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer rows,
             @RequestParam(defaultValue = "addTime") String sidx,
@@ -90,27 +90,25 @@ public class CsLoggerController {
         //初始化参数
         TBoxLogParam param = new TBoxLogParam();
         //组装参数值
-        String startTime = DateTimeUtil.getDateTimeByUnixFormat(
-                query.getAddTimeStart().getTime());
-        String endTime = DateTimeUtil.getDateTimeByUnixFormat(
-                query.getAddTimeEnd().getTime());
+        if(query.getAddTimeStart() != null) {
+            param.setStartTime(DateTimeUtil.getDateTimeByUnixFormat(
+                    query.getAddTimeStart().getTime()));
+        }
+        if(query.getAddTimeEnd() != null) {
+            param.setEndTime(DateTimeUtil.getDateTimeByUnixFormat(
+                    query.getAddTimeEnd().getTime()));
+        }
 
+        //校验参数
+        if(query.getCsVinEquals() == null && query.getCsNumberEquals() == null) {
+            return tableResult;
+        }
         param.setVin(query.getCsVinEquals());
         param.setTeNumber(query.getCsNumberEquals());
-        param.setStartTime(startTime);
-        param.setEndTime(endTime);
         param.setPageNum(page);
         param.setPageSize(rows);
 //        param.setOrderBy(query.getSidx() + " " + query.getSord());
         param.setQueryFields("*");
-
-        //Check Param
-        if (null == param.getVin() || null == endTime || null == startTime) {
-            return tableResult;
-        }
-        if (param.getVin().isEmpty() || endTime.isEmpty() || startTime.isEmpty()) {
-            return tableResult;
-        }
 
         //是否车机与车辆绑定
         Boolean isBanded;
@@ -183,8 +181,7 @@ public class CsLoggerController {
             Integer machineId = csMachineService.getIdByNumber(number);
             csVehicle = csVehicleService.getVehicleInfo(vin, machineId);
         }
-
-        if (csVehicle.getCsvMachine() != null) {
+        if (csVehicle != null && csVehicle.getCsvMachine() != null) {
             return true;
         }
         return false;

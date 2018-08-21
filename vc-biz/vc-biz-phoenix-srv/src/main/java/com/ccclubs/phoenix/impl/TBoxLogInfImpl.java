@@ -103,8 +103,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
         String countSql = "select count(add_time) as total from "
-                + PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR
-                + " where VIN=? and add_time>=? and add_time<=? ";
+                + tableName + " where VIN=? and add_time>=? and add_time<=? ";
         long total = 0L;
         PreparedStatement pst = null;
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
