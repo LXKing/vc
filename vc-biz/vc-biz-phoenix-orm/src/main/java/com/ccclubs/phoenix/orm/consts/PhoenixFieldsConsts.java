@@ -113,5 +113,8 @@ public class PhoenixFieldsConsts {
             "SOURCE_HEX", "ADD_TIME"
     );
 
-
+    public static final List<String> TBOX_LOG_FIELDS = ImmutableList.of(
+            "VIN", "ADD_TIME", "TE_NUMBER",
+            "LOG_INFO", "ORDER_NO", "SOURCE_HEX"
+    );
 }

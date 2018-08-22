@@ -21,6 +21,9 @@ public interface ICsVehicleService extends BaseService<CsVehicle, Integer>{
 
   void updateBatchByExampleSelective(List<CsVehicle> list);
 
+  //通过vin码，找到一条符合要求的数据
+  CsVehicle getVehicleInfo(String vin, Integer machineId);
+
     /**
      * 根据用户查询名下车辆
      * @param vo
