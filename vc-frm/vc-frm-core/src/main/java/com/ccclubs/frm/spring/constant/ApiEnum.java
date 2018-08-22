@@ -55,7 +55,8 @@ public enum ApiEnum {
     UPGRADE_CURRENT_VERSION_NOT_FOUND(101028, "current version info not found", "版本升级时未查询到当前车机版本信息"),
     UPGRADE_PLUGIN_VERSION_NOT_FOUND(101029, "plugin version info not found", "系统未查询到该车机安装的插件版本信息，请联系管理员录入"),
     UPGRADE_TERMINAL_MODEL_NOT_FOUND(101030, "tbox model info not found", "系统未查询到该车机的终端型号信息，请联系管理员录入"),
-    UPGRADE_TERMINAL_TYPE_NOT_FOUND(101031, "tbox type info not found", "系统未查询到该车机的终端类型信息，请联系管理员录入");
+    UPGRADE_TERMINAL_TYPE_NOT_FOUND(101031, "tbox type info not found", "系统未查询到该车机的终端类型信息，请联系管理员录入"),
+    REMOTE_RECORD_NOT_FOUND(101032, "remote record [{}] not found", "系统未查询到该远程控制记录[{}]");
 	private int code;
 	private String msg;
 	private String memo;

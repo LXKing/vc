@@ -72,6 +72,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * 处理消息
+     *
      * @param tm
      */
     @Override
@@ -100,6 +101,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * 新版本复合远程控制指令 ，目前暂时仅供众行EVPOP使用
+     *
      * @param tm
      */
     private void processMultipleOperation(MqMessage tm) {
@@ -371,6 +373,16 @@ public class ParseOperationService implements IParseDataService {
                     terminalPartStatus.setCssEvBattery(terminalInfo.getSoc());
                     //obd里程
                     terminalPartStatus.setCssObdMile(terminalInfo.getObdMile().intValue());
+                    //油量
+                    terminalPartStatus.setCssOil(terminalInfo.getOil().intValue());
+                    //订单里程
+                    terminalPartStatus.setCssTradeMile(terminalInfo.getTradeMiles().intValue());
+                    //订单状态
+                    terminalPartStatus.setCssTradeStatus(terminalInfo.getTradeStatus());
+                    //订单开始时间
+                    terminalPartStatus.setCssTradeStartTime(terminalInfo.getTradeStartTime() == null ? null : new Date(terminalInfo.getTradeStartTime().longValue()));
+                    //订单结束时间
+                    terminalPartStatus.setCssTradeEndTime(terminalInfo.getTradeEndTime() == null ? null : new Date(terminalInfo.getTradeEndTime().longValue()));
                     //纬度
                     terminalPartStatus.setCssLatitude(terminalInfo.getTriggerGpsLatitude());
                     //经度
@@ -434,6 +446,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processCarStatus
+     *
      * @param message
      */
     @Override
@@ -442,6 +455,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processAlarmStatus
+     *
      * @param message
      */
     @Override
@@ -450,6 +464,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processCanStatus
+     *
      * @param message
      */
     @Override
@@ -458,6 +473,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processStartStopStatus
+     *
      * @param message
      */
     @Override
@@ -466,6 +482,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processOrderModify
+     *
      * @param msg
      */
     @Override
@@ -487,6 +504,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processTakeCarStatus
+     *
      * @param message
      */
     @Override
@@ -496,6 +514,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processOrderStatus
+     *
      * @param message
      */
     @Override
@@ -504,6 +523,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processOrderDetailStatus
+     *
      * @param message
      */
     @Override
@@ -512,6 +532,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processFurtherCarStatus
+     *
      * @param message
      */
     @Override
@@ -520,6 +541,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processTerminalLog
+     *
      * @param message
      */
     @Override
@@ -528,6 +550,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * processRemoteStatus
+     *
      * @param message
      */
     @Override
@@ -857,6 +880,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * getClient
+     *
      * @return
      */
     public Producer getClient() {
@@ -865,6 +889,7 @@ public class ParseOperationService implements IParseDataService {
 
     /**
      * setClient
+     *
      * @param client
      */
     public void setClient(Producer client) {

@@ -43,6 +43,20 @@ public class CsVehicleServiceImpl extends
         getDao().updateBatchByExampleSelective(list);
     }
 
+    @Override
+    public CsVehicle getVehicleInfo(String vin, Integer machineId) {
+
+        if(vin == null) {
+            return null;
+        }
+        CsVehicle csVehicle = new CsVehicle();
+        csVehicle.setCsvVin(vin);
+        if(machineId != null) {
+            csVehicle.setCsvMachine(machineId);
+        }
+        return getDao().selectOne(csVehicle);
+    }
+
     /**
      * 根据用户分页查询名下车辆
      *
