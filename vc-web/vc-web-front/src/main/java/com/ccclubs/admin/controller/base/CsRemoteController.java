@@ -207,7 +207,7 @@ public class CsRemoteController {
                     DealRemoteCmdInput dealRemoteCmdInput=new DealRemoteCmdInput();
                     dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
                     dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
-                    dealRemoteCmdService.dealRemoteCommend(dealRemoteCmdInput);
+                    dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
                 }
             }
 
