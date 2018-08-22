@@ -141,11 +141,17 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-web</artifactId>
-            <version>3.1.0</version>
-        </dependency>-->
+      <dependency>
+        <groupId>www.ccclubs</groupId>
+        <artifactId>vc-biz-command-inf</artifactId>
+        <version>1.0.0</version>
+        <scope>compile</scope>
+      </dependency>
+      <!--<dependency>
+          <groupId>cn.afterturn</groupId>
+          <artifactId>easypoi-web</artifactId>
+          <version>3.1.0</version>
+      </dependency>-->
     </dependencies>
 
     <build>
