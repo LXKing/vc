@@ -138,4 +138,16 @@ public class CsStructController {
         return VoResult.success().setValue(mapList);
     }
 
+    @RequestMapping(value = "/find",method = RequestMethod.GET)
+    public VoResult<List<Map<String,Object>>> find(){
+        List<CsStruct> csStructList=csStructService.selectAll();
+        List<Map<String,Object>> mapList=new ArrayList<>();
+        for (CsStruct csStruct:csStructList){
+            Map<String,Object> map=new HashMap<>();
+            map.put(csStruct.getCssName(),csStruct);
+            mapList.add(map);
+        }
+        return VoResult.success().setValue(mapList);
+    }
+
 }

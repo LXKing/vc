@@ -471,7 +471,7 @@ public class CommandApi {
     @PostMapping("dealRemoteCommend")
     public ApiMessage dealRemoteCommend(DealRemoteCmdInput input) {
         logger.info("API事件:远程指令下发,remoteId:{},指令值:{}", input.getRemoteId(), input.getStrJson());
-        DealRemoteCmdOutput output = dealRemoteCmdInf.dealRemoteCommend(input);
+        DealRemoteCmdOutput output = dealRemoteCmdInf.dealRemoteCommand(input);
         return new ApiMessage<>(output);
     }
 
