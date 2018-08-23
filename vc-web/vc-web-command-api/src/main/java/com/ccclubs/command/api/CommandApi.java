@@ -1,45 +1,7 @@
 package com.ccclubs.command.api;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.ccclubs.command.dto.AirAllInput;
-import com.ccclubs.command.dto.AirAllOutput;
-import com.ccclubs.command.dto.AirMonoInput;
-import com.ccclubs.command.dto.AirMonoOutput;
-import com.ccclubs.command.dto.ConfirmInput;
-import com.ccclubs.command.dto.DealRemoteCmdInput;
-import com.ccclubs.command.dto.DealRemoteCmdOutput;
-import com.ccclubs.command.dto.DvdVersionIntput;
-import com.ccclubs.command.dto.DvdVersionOutput;
-import com.ccclubs.command.dto.IssueAuthOrderInput;
-import com.ccclubs.command.dto.IssueAuthOrderOutput;
-import com.ccclubs.command.dto.IssueOrderDetailInput;
-import com.ccclubs.command.dto.IssueOrderDetailOutput;
-import com.ccclubs.command.dto.IssueOrderInput;
-import com.ccclubs.command.dto.IssueOrderOutput;
-import com.ccclubs.command.dto.LockDoorInput;
-import com.ccclubs.command.dto.LockDoorOutput;
-import com.ccclubs.command.dto.MixedUpgradeInput;
-import com.ccclubs.command.dto.PowerModeInput;
-import com.ccclubs.command.dto.PowerModeOutput;
-import com.ccclubs.command.dto.RenewOrderInput;
-import com.ccclubs.command.dto.RenewOrderOutput;
-import com.ccclubs.command.dto.RenewOrderReplyFInput;
-import com.ccclubs.command.dto.RenewOrderReplyFOutput;
-import com.ccclubs.command.dto.RenewOrderReplySInput;
-import com.ccclubs.command.dto.RenewOrderReplySOutput;
-import com.ccclubs.command.dto.ReturnCheckInput;
-import com.ccclubs.command.dto.ReturnCheckOutput;
-import com.ccclubs.command.dto.SimpleCmdInput;
-import com.ccclubs.command.dto.SimpleCmdOutput;
-import com.ccclubs.command.dto.SiteIssuedInput;
-import com.ccclubs.command.dto.SiteIssuedOutput;
-import com.ccclubs.command.dto.TimeSyncInput;
-import com.ccclubs.command.dto.TimeSyncOutput;
-import com.ccclubs.command.dto.UpgradeInput;
-import com.ccclubs.command.dto.UpgradeOutput;
-import com.ccclubs.command.dto.VerUpgradeInput;
-import com.ccclubs.command.dto.VoiceIssuedInput;
-import com.ccclubs.command.dto.VoiceIssuedOutput;
+import com.ccclubs.command.dto.*;
 import com.ccclubs.command.inf.air.AirConditionerCmdInf;
 import com.ccclubs.command.inf.autopilot.AutopilotInf;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
@@ -52,6 +14,7 @@ import com.ccclubs.command.inf.time.TimeSyncCmdInf;
 import com.ccclubs.command.inf.update.ReturnCheckInf;
 import com.ccclubs.command.inf.update.SetDvdVersionInf;
 import com.ccclubs.command.inf.update.TerminalUpgradeInf;
+import com.ccclubs.command.inf.tamper.TamperCmdInf;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.frm.spring.annotation.ApiSecurity;
 import com.ccclubs.frm.spring.constant.ApiEnum;
@@ -129,6 +92,8 @@ public class CommandApi {
     @Reference(version = CommandServiceVersion.V1)
     DealRemoteCmdInf dealRemoteCmdInf;
 
+    @Reference(version = CommandServiceVersion.V1)
+    TamperCmdInf tamperCmdInf;
     /**
      * 1.车机的一键升级功能
      */
@@ -474,7 +439,24 @@ public class CommandApi {
         DealRemoteCmdOutput output = dealRemoteCmdInf.dealRemoteCommand(input);
         return new ApiMessage<>(output);
     }
+    /**
+     * 14.防拆控制指令
+     *
+     * @return
+     */
+    //@ApiSecurity
+    @ApiOperation(value = "防拆指令下发", notes = "防拆指令下发")
+    @PostMapping("com/ccclubs/command/inf/tamper")
+    public ApiMessage tamperCommand(@RequestHeader("appId") String appId,TamperInput input) {
+        logger.info("API事件:防拆指令下发，APPID:{},车架号:{},控制参数:{}", input.getAppId(), input.getVin(), input.getCode());
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+        }
+        TamperOutput output = tamperCmdInf.tamperCommandComply(input);
+        return new ApiMessage<>(output);
 
+    }
     @Autowired
     RedisTemplate redisTemplate;
 
