@@ -20,7 +20,6 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.Date;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,8 @@ import java.util.List;
 public class CsLoggerController {
 
     Logger logger = LoggerFactory.getLogger(CsLoggerController.class);
+
+    private static final long ONE_MOUTH = 2592000000L;
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -93,6 +94,9 @@ public class CsLoggerController {
             return tableResult;
         }
         if(query.getAddTimeStart() == null || query.getAddTimeEnd() == null) {
+            return tableResult;
+        }
+        if (this.paramTimeCheck(query.getAddTimeStart(), query.getAddTimeEnd())) {
             return tableResult;
         }
 
@@ -180,5 +184,19 @@ public class CsLoggerController {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 检查查询的时间，其查询的间隔不能过长。
+     */
+    private boolean paramTimeCheck(Date startTime, Date endTime) {
+        boolean flag = false;//false为验证通过。
+        long startTimeLong = startTime.getTime();
+        long endTimeLong = endTime.getTime();
+        long timeLong = endTimeLong - startTimeLong;
+        if (timeLong > ONE_MOUTH) {
+            flag = true;
+        }
+        return flag;
     }
 }
