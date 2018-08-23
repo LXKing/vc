@@ -2,12 +2,18 @@ package com.ccclubs.admin.controller.base;
 
 import com.ccclubs.admin.entity.CsStructCrieria;
 import com.ccclubs.admin.model.CsStruct;
+import com.ccclubs.admin.model.SrvGroup;
+import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.query.CsStructQuery;
 import com.ccclubs.admin.service.ICsStructService;
+import com.ccclubs.admin.service.ISrvGroupService;
+import com.ccclubs.admin.util.UserAccessUtils;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,8 +33,15 @@ import java.util.Map;
 @RequestMapping("/control/struct")
 public class CsStructController {
 
+    private static Logger logger = LoggerFactory.getLogger(CsStructController.class);
+    @Autowired
+    UserAccessUtils userAccessUtils;
+
     @Autowired
     ICsStructService csStructService;
+
+    @Autowired
+    ISrvGroupService srvGroupService;
 
     /**
      * 获取分页列表数据
@@ -139,15 +152,40 @@ public class CsStructController {
     }
 
     @RequestMapping(value = "/find",method = RequestMethod.GET)
-    public VoResult<List<Map<String,Object>>> find(){
+    public VoResult<List<Map<String,Object>>> find(@CookieValue("token") String token){
+        SrvUser user = userAccessUtils.getCurrentUser(token);
         List<CsStruct> csStructList=csStructService.selectAll();
         List<Map<String,Object>> mapList=new ArrayList<>();
         for (CsStruct csStruct:csStructList){
-            Map<String,Object> map=new HashMap<>();
-            map.put(csStruct.getCssName(),csStruct);
-            mapList.add(map);
+            //此指令是否有效  1为有效
+            if (csStruct.getCssStatus()==1){
+                //高级命令需要管理员才可以查看
+                if (csStruct.getCssType()==1){
+                    if (isSystemUser(user)){
+                        Map<String,Object> map=new HashMap<>();
+                        map.put(csStruct.getCssName(),csStruct);
+                        mapList.add(map);
+                    }
+                }else {
+                    Map<String,Object> map=new HashMap<>();
+                    map.put(csStruct.getCssName(),csStruct);
+                    mapList.add(map);
+                }
+
+            }
+
         }
         return VoResult.success().setValue(mapList);
+    }
+
+    private boolean isSystemUser(SrvUser user){
+        boolean flag=false;
+        SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
+        if (srvGroup.getSgFlag().equals("sys_user")) {
+            //系统用户，此种用户可以随意查询（为所欲为）
+            flag=true;
+        }
+        return flag;
     }
 
 }

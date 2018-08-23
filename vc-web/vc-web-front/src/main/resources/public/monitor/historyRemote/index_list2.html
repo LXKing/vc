@@ -74,7 +74,7 @@
 
 </div>
 <script type="text/html" id="tlCsrUpdateTime">
-    <div>{{dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+    <div>{{d.csrUpdateTime?dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss"):''}}</div>
 </script>
 
 <script type="text/html" id="tlCsrAddTime">
