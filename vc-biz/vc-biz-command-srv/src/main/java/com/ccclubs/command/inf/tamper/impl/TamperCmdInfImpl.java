@@ -55,6 +55,11 @@ public class TamperCmdInfImpl implements TamperCmdInf {
     private CsStructMapper sdao;
 
 
+    /**
+     * 防拆指令下发
+     * @param input
+     * @return
+     */
     @DataAuth
     @Override
     public TamperOutput tamperCommandComply(TamperInput input) {

@@ -444,9 +444,9 @@ public class CommandApi {
      *
      * @return
      */
-    //@ApiSecurity
+    @ApiSecurity
     @ApiOperation(value = "防拆指令下发", notes = "防拆指令下发")
-    @PostMapping("com/ccclubs/command/inf/tamper")
+    @PostMapping("tamper")
     public ApiMessage tamperCommand(@RequestHeader("appId") String appId,TamperInput input) {
         logger.info("API事件:防拆指令下发，APPID:{},车架号:{},控制参数:{}", input.getAppId(), input.getVin(), input.getCode());
         input.setAppId(appId);
