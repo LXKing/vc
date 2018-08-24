@@ -3,6 +3,7 @@ package com.ccclubs.admin.controller.base;
 import com.ccclubs.admin.entity.SrvUserCrieria;
 import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.query.SrvUserQuery;
+import com.ccclubs.admin.resolver.SrvUserResolver;
 import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
@@ -111,6 +112,7 @@ public class SrvUserController {
      */
     void registResolvers(SrvUser data) {
         if (data != null) {
+            data.registResolver(SrvUserResolver.状态.getResolver());
         }
     }
 
