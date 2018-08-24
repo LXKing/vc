@@ -19,8 +19,78 @@
 	<div class="form_content">
 		<form class="form-horizontal" id="addform" style="margin:15px;">
 			<div class="form-group" id="conditionId" style="height:80%;">
-				<input name="suId" id="keyInput" type="hidden"  />
-		</div>
+						<input name="suId" type="hidden" placeholder="请输入编号">
+						<input name="suHost" type="hidden" placeholder="请输入接入商">
+				<dl  >
+					<dt>所属组：</dt>
+					<dd>
+						<input name="suGroup" placeholder="请输入所属组" class="form-control searchinput" dataUrl="/auth/group/query">
+						<label id="suGroup-error" class="error"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>登录账号：</dt>
+					<dd>
+						<input name="suUsername" placeholder="请输入登录账号" class="form-control" >
+						<label id="suUsername-error" class="error"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>登录密码：</dt>
+					<dd>
+						<input name="suPassword" placeholder="请输入登录密码" class="form-control" >
+						<label id="suPassword-error" class="error"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>真实姓名：</dt>
+					<dd>
+						<input name="suRealName" placeholder="请输入真实姓名" class="form-control" >
+						<label id="suRealName-error" class="error"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+				<dl  >
+					<dt>手机号码：</dt>
+					<dd>
+						<input name="suMobile" placeholder="请输入手机号码" class="form-control" >
+					</dd>
+				</dl>
+				<dl class="rowfull" >
+					<dt>快捷方式：</dt>
+					<dd>
+						<input name="suShortcut" placeholder="请输入快捷方式" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>添加时间：</dt>
+					<dd>
+						<input name="suAddTime" disabled="disabled" class="form-control layer-date laydate-icon">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>最后登录时间：</dt>
+					<dd>
+						<input name="suLastTime" disabled="disabled" class="form-control">
+					</dd>
+				</dl>
+				<dl  >
+					<dt>最后登录IP：</dt>
+					<dd>
+						<input name="suLastIp" disabled="disabled" placeholder="请输入最后登录IP" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+						<select name="suStatus" class="form-control" >
+							<option value=""></option>
+							<option value="0">失效</option>
+							<option value="1">正常</option>
+						</select>
+						<label id="suStatus-error" class="error"><i class="fa fa-info-circle fieldTip">必填</i></label>
+					</dd>
+				</dl>
+			</div>
 		
 		<div class="form-group windowButtonBar">
 			<div class="hr-line-dashed"></div>
