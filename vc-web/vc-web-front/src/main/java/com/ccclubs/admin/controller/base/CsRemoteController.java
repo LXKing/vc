@@ -1,6 +1,8 @@
 package com.ccclubs.admin.controller.base;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.admin.entity.CsMappingCrieria;
 import com.ccclubs.admin.model.CsMachine;
 import com.ccclubs.admin.model.CsMapping;
@@ -27,9 +29,13 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.mongo.orm.query.CsRemoteQuery;
 import com.ccclubs.mongo.service.impl.CsRemoteService;
+import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
 import com.github.pagehelper.PageInfo;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +120,7 @@ public class CsRemoteController {
     public VoResult<?> doRemote(@CookieValue("token") String token
             ,String targetVehicles,String remark
             ,String strJson,Long structId){
+
         if (null==targetVehicles||targetVehicles.isEmpty()){
 
             return VoResult.error("30001", "参数号码列表为空");
@@ -147,6 +154,7 @@ public class CsRemoteController {
         CsMachineQuery csMachineQuery=new CsMachineQuery();
         csMachineQuery.setCsmNumberIn(targetVehicleLsit);
         List<CsMachine>  csMachineList=csMachineService.getAllByParam(csMachineQuery.getCrieria());
+
 
         if (null!=csMachineList&&csMachineList.size()>0){
             Integer[] csMachineIds= new Integer[csMachineList.size()];
@@ -188,6 +196,24 @@ public class CsRemoteController {
             csVehicleQueryForCsVin.setCsvVinIn(targetVehicleLsit);
             csVehicleList.addAll(csVehicleService.getAllByParam(csVehicleQueryForCsVin.getCrieria()));
         }
+
+
+        if (structId==85||structId==86){
+            //订单下发时间转换处理
+            List<Map> strArray = JSONArray.parseArray(strJson, Map.class);
+            // 开始日期
+            Date startTime = StringUtils.date((String) strArray.get(0).get("startTime"), "yyyy-MM-dd HH:mm:ss");
+            // 结束日期
+            Date endTime = StringUtils.date((String) strArray.get(0).get("endTime"),"yyyy-MM-dd HH:mm:ss");
+            Integer startTimeInt=ProtocolTools.transformToTerminalTime(startTime);
+            Integer endTimeInt=ProtocolTools.transformToTerminalTime(endTime);
+            strArray.get(0).put("endTime",endTimeInt.toString());
+            strArray.get(0).put("startTime",startTimeInt.toString());
+
+            strJson =JSON.toJSONString(strArray);
+
+        }
+
 
         if (csVehicleList.size()>0){
             //保存指令并发送指令
