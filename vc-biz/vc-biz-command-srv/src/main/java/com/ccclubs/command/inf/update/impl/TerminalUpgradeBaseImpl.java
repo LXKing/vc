@@ -61,7 +61,7 @@ public class TerminalUpgradeBaseImpl implements TerminalUpgradeBase {
         //CsVehicle csVehicle = (CsVehicle) vm.get(CommandConstants.MAP_KEY_CSVEHICLE);
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
         // 0.检查终端是否在线
-        terminalOnlineHelper.isOnline(csMachine);
+        terminalOnlineHelper.isOnline(csMachine, vin);
         // 只支持通灵的车
         if (tl != csMachine.getCsmTeType()) {
             throw new ApiException(ApiEnum.FAIL);
