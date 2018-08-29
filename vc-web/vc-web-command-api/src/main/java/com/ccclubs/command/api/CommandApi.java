@@ -503,6 +503,6 @@ public class CommandApi {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
         }
         terminalUpgradeBase.terminalUpgradeByFileName(input.getVin(), input.getFilename());
-        return new ApiMessage<>();
+        return new ApiMessage<>(ApiEnum.SUCCESS);
     }
 }
