@@ -162,7 +162,7 @@ public class LogicHelperJt808 {
                 opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
                 //实时状态->redis
                 redisTemplate.opsForHash()
-                        .put(REDIS_KEY_RT_STATES, csState.getCssNumber(), csState);
+                        .put(REDIS_KEY_RT_STATES, csMachine.getCsmNumber(), csState);
             } else {
                 // 车机状态为空
                 // 808 原始0200数据，以下业务数据不做更新

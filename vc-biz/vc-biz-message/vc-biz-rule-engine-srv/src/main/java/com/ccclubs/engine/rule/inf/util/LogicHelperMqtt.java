@@ -141,11 +141,11 @@ public class LogicHelperMqtt {
         csState.setMobile(mapping.getMobile());
         // 设置终端号
         csState.setCssTeNo(mapping.getTeno());
-        // 设置css号码
+        // 设置车机号
         csState.setCssNumber(message.getCarNumber());
         // 设置添加时间
         csState.setCssAddTime(new Date());
-        // 设置cssrented
+        // 设置租赁状态
         csState.setCssRented(String.valueOf(mqtt_66.getCarStatus() & 0xFF));
         // 设置rfid
         csState.setCssRfid(mqtt_66.getRfid());
@@ -161,7 +161,7 @@ public class LogicHelperMqtt {
         csState.setCssEngine((byte) mqtt_66.getEngineStatus());
         // 设置CssKey
         csState.setCssKey((byte) mqtt_66.getKeyStatus());
-        //目前档位信息不对，暂时不用
+        //目前档位信息不对，暂时不用 fixme todo
         // csState.setCssGear(mqtt_66.getGear());
         csState.setCssOrder(message.getTransId());
         // 设置css报警
