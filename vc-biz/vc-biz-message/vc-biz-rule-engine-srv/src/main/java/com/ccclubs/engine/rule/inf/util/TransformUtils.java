@@ -88,7 +88,6 @@ public class TransformUtils {
             StringUtils.empty(csMachine.getCsmTlV1()) ? 0 : Integer.parseInt(csMachine.getCsmTlV1()));
         terminalStatus.setSoftwareII(0);
         terminalStatus.setPluginVersion(csMachine.getCsmTlV2() == null ? 0 : csMachine.getCsmTlV2());
-
         return terminalStatus;
     }
 
@@ -174,6 +173,8 @@ public class TransformUtils {
         terminalStatus.setHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
         //Alban 于2018年6月12日添加了钥匙状态
         terminalStatus.setCssKey(mqtt_68_03.getKeyStatus());
+        //add by jianghaiyang 2018.08.30 控制状态
+        terminalStatus.setControlStatus(mqtt_68_03.getControlStatusWithMask() & 0xFFFF);
         return terminalStatus;
     }
 
