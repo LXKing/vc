@@ -3,8 +3,6 @@
  */
 package com.ccclubs.command.inf.update;
 
-import com.ccclubs.command.dto.UpgradeOutput;
-
 /**
  * @author zhaoyunxing92
  * @class: com.ccclubs.command.inf.update.TerminalUpgrade
@@ -13,11 +11,12 @@ import com.ccclubs.command.dto.UpgradeOutput;
  */
 public interface TerminalUpgradeBase {
     /**
-     * 根据文件名称升级
+     * 根据文件名称升级程序
      *
+     * @param appId    appId
      * @param vin      终端vin码
      * @param fileName 文件名称
      * @return
      */
-    void terminalUpgradeByFileName(String vin, String fileName);
+    void terminalUpgradeByFileName(String appId, String vin, String fileName);
 }
