@@ -26,6 +26,8 @@ public class CommandConstants {
     public static final Integer CMD_SITE = 110;//站点下发
     public static final Integer CMD_VOICE = 109;//语音编号下发
     public static final Integer CMD_TAMPER=127;//防拆指令下发
+
+    public static final Integer CMD_UPGREAD_FILE=68;//带文件名升级
     //风量fan 0:OFF 1:1档 2:2档 3:3档 4:4档
     public static final Integer[] FAN = {0, 1, 2, 3, 4};
 

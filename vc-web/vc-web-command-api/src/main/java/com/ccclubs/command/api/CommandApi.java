@@ -502,7 +502,7 @@ public class CommandApi {
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
         }
-        terminalUpgradeBase.terminalUpgradeByFileName(input.getVin(), input.getFilename());
+        terminalUpgradeBase.terminalUpgradeByFileName(appId,input.getVin(), input.getFilename());
         return new ApiMessage<>(ApiEnum.SUCCESS);
     }
 }
