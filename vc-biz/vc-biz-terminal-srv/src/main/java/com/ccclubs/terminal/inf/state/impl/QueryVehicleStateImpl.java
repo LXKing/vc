@@ -74,7 +74,7 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
-        CsMachine csMachine = queryTerminalService.queryCsMachineById(csVehicle.getCsvMachine());
+        CsMachine csMachine = queryTerminalService.queryCsMachineByIdFromCache(csVehicle.getCsvMachine());
         if (null == csMachine) {
             throw new ApiException(ApiEnum.TERMINAL_NOT_FOUND);
         }
