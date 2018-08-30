@@ -80,11 +80,12 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
         }
 
         //Step3.查询状态
-        CsState csState = (CsState) redisTemplate.opsForHash()
+        /*CsState csState = (CsState) redisTemplate.opsForHash()
                 .get(REDIS_KEY_RT_STATES, csMachine.getCsmNumber());
         if (null == csState) {
-            csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
-        }
+            CsState csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
+        }*/
+        CsState csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
         if (null == csState) {
             throw new ApiException(ApiEnum.VEHICLE_STATE_NOT_FOUND);
         }
