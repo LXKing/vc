@@ -51,17 +51,35 @@ public class TBoxLogInfImpl implements TBoxLogInf {
             pageSql = "limit ? offset ? ";
         }
 
-//        String orderBy = " add_time desc ";
+        //初始化查询语句
         String querySql = "";
-        querySql = "select " + param.getQueryFields() + " from " + tableName +
-                " where VIN=? and add_time>=? and add_time<=? order by add_time  "
-                + param.getOrder() + " " + pageSql;
-        if(!idBound) {
-            querySql = "select " + param.getQueryFields() + " from " + tableName +
-                    " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
-                    + param.getOrder() + " " + pageSql;
+        //判断根据哪一个条件进行查询  0:车机号和车架号均为空; 1:根据车架号查询; 2:根据车机号查询
+        short searchType = 0;
+        //判断Type值
+        if(param.getVin() != null) {
+            searchType = 1;
+        } else if(param.getTeNumber() != null) {
+            searchType = 2;
         }
 
+        switch (searchType) {
+            case 0:
+                return null;
+            case 1:
+                querySql = "select " + param.getQueryFields() + " from " + tableName +
+                        " where VIN=? and add_time>=? and add_time<=? order by add_time  "
+                        + param.getOrder() + " " + pageSql;
+                break;
+            case 2:
+                querySql = "select " + param.getQueryFields() + " from " + tableName +
+                        " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
+                        + param.getOrder() + " " + pageSql;
+                break;
+            default:
+                break;
+        }
+
+        //格式化开始和结束时间
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
 
@@ -71,7 +89,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         ResultSet resultSet=null;
         try {
             preparedStatement = connection.prepareStatement(querySql);
-            if(idBound) {
+            if (searchType == 1) {
                 preparedStatement.setString(1, param.getVin());
             } else {
                 preparedStatement.setString(1, param.getTeNumber());
