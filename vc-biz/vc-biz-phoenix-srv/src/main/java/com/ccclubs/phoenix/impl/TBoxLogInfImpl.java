@@ -58,13 +58,11 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         //判断Type值
         if(param.getVin() != null) {
             searchType = 1;
-        } else if(param.getTeNumber() != null) {
+        } else {
             searchType = 2;
         }
 
         switch (searchType) {
-            case 0:
-                return null;
             case 1:
                 querySql = "select " + param.getQueryFields() + " from " + tableName +
                         " where VIN=? and add_time>=? and add_time<=? order by add_time  "
@@ -134,13 +132,11 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         //判断Type值
         if(param.getVin() != null) {
             searchType = 1;
-        } else if(param.getTeNumber() != null) {
+        } else {
             searchType = 2;
         }
 
         switch (searchType) {
-            case 0:
-                return null;
             case 1:
                 countSql = "select count(add_time) as total from "
                         + tableName + " where VIN=? and add_time>=? and add_time<=? ";
