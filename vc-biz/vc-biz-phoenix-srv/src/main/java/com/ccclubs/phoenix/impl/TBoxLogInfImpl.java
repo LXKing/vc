@@ -39,10 +39,10 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     private PhoenixTool phoenixTool;
 
     @Override
-    public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean idBound) {
+    public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean isBound) {
 
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!idBound) {
+        if(!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
@@ -54,7 +54,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         //初始化查询语句
         String querySql = "";
         //判断根据哪一个条件进行查询  0:车机号和车架号均为空; 1:根据车架号查询; 2:根据车机号查询
-        short searchType = 0;
+        int searchType = 0;
         //判断Type值
         if(param.getVin() != null) {
             searchType = 1;
@@ -121,21 +121,39 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     }
 
     @Override
-    public Long queryListCount(TBoxLogParam param, Boolean idBound) {
+    public Long queryListCount(TBoxLogParam param, Boolean isBound) {
 
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!idBound) {
+        if(!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
         String countSql = "";
-        countSql = "select count(add_time) as total from "
-                + tableName + " where VIN=? and add_time>=? and add_time<=? ";
-        if(!idBound) {
-            countSql = "select count(add_time) as total from "
-                    + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
+        //判断根据哪一个条件进行查询  0:车机号和车架号均为空; 1:根据车架号查询; 2:根据车机号查询
+        int searchType = 0;
+        //判断Type值
+        if(param.getVin() != null) {
+            searchType = 1;
+        } else if(param.getTeNumber() != null) {
+            searchType = 2;
         }
 
+        switch (searchType) {
+            case 0:
+                return null;
+            case 1:
+                countSql = "select count(add_time) as total from "
+                        + tableName + " where VIN=? and add_time>=? and add_time<=? ";
+                break;
+            case 2:
+                countSql = "select count(add_time) as total from "
+                        + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
+                break;
+            default:
+                break;
+        }
+
+        //参数初始化
         long total = 0L;
         PreparedStatement pst = null;
         long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
@@ -145,7 +163,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         try {
             pst = connection.prepareStatement(countSql);
-            if(idBound) {
+            if(searchType == 1) {
                 pst.setString(1, param.getVin());
             } else {
                 pst.setString(1, param.getTeNumber());
@@ -169,11 +187,11 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     }
 
     @Override
-    public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean idBound) {
+    public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean isBound) {
 
         TBoxLogOutput gbMessageHistoryOutput=new TBoxLogOutput();
-        gbMessageHistoryOutput.setList(queryTBoxDtoList(param, idBound));
-        gbMessageHistoryOutput.setTotal(queryListCount(param, idBound));
+        gbMessageHistoryOutput.setList(queryTBoxDtoList(param, isBound));
+        gbMessageHistoryOutput.setTotal(queryListCount(param, isBound));
         return gbMessageHistoryOutput;
     }
 }
