@@ -41,6 +41,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     @Override
     public List<TBoxLogDto> queryTBoxDtoList(TBoxLogParam param, Boolean isBound) {
 
+        //根据绑定关系选择对应查询表
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
         if(!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
@@ -53,28 +54,16 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         //初始化查询语句
         String querySql = "";
-        //判断根据哪一个条件进行查询  0:车机号和车架号均为空; 1:根据车架号查询; 2:根据车机号查询
-        int searchType = 0;
-        //判断Type值
-        if(param.getVin() != null) {
-            searchType = 1;
-        } else {
-            searchType = 2;
-        }
-
-        switch (searchType) {
-            case 1:
-                querySql = "select " + param.getQueryFields() + " from " + tableName +
-                        " where VIN=? and add_time>=? and add_time<=? order by add_time  "
-                        + param.getOrder() + " " + pageSql;
-                break;
-            case 2:
-                querySql = "select " + param.getQueryFields() + " from " + tableName +
-                        " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
-                        + param.getOrder() + " " + pageSql;
-                break;
-            default:
-                break;
+        //只根据绑定关系来确定查询语句
+        //默认为存在绑定关系，根据VIN码查询
+        querySql = "select " + param.getQueryFields() + " from " + tableName +
+                " where VIN=? and add_time>=? and add_time<=? order by add_time  "
+                + param.getOrder() + " " + pageSql;
+        //如果不存在绑定关系，就根据车机号查询
+        if(!isBound) {
+            querySql = "select " + param.getQueryFields() + " from " + tableName +
+                    " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
+                    + param.getOrder() + " " + pageSql;
         }
 
         //格式化开始和结束时间
@@ -87,7 +76,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         ResultSet resultSet=null;
         try {
             preparedStatement = connection.prepareStatement(querySql);
-            if (searchType == 1) {
+            if (isBound) {
                 preparedStatement.setString(1, param.getVin());
             } else {
                 preparedStatement.setString(1, param.getTeNumber());
@@ -121,32 +110,22 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     @Override
     public Long queryListCount(TBoxLogParam param, Boolean isBound) {
 
+        //根据绑定关系选择对应查询表
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
         if(!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
+        //初始化计算语句
         String countSql = "";
-        //判断根据哪一个条件进行查询  0:车机号和车架号均为空; 1:根据车架号查询; 2:根据车机号查询
-        int searchType = 0;
-        //判断Type值
-        if(param.getVin() != null) {
-            searchType = 1;
-        } else {
-            searchType = 2;
-        }
-
-        switch (searchType) {
-            case 1:
-                countSql = "select count(add_time) as total from "
-                        + tableName + " where VIN=? and add_time>=? and add_time<=? ";
-                break;
-            case 2:
-                countSql = "select count(add_time) as total from "
-                        + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
-                break;
-            default:
-                break;
+        //根据绑定关系来确定查询语句
+        //默认为存在绑定关系，根据VIN码来查询总数
+        countSql = "select count(add_time) as total from "
+                + tableName + " where VIN=? and add_time>=? and add_time<=? ";
+        //如果不存在绑定关系，就根据车机号来查询总数
+        if(!isBound) {
+            countSql = "select count(add_time) as total from "
+                    + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
         }
 
         //参数初始化
@@ -159,7 +138,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         try {
             pst = connection.prepareStatement(countSql);
-            if(searchType == 1) {
+            if(isBound) {
                 pst.setString(1, param.getVin());
             } else {
                 pst.setString(1, param.getTeNumber());
