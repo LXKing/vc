@@ -100,6 +100,7 @@ public class CsLoggerController {
             return tableResult;
         }
 
+        //设置param值
         param.setStartTime(DateTimeUtil.getDateTimeByUnixFormat(
                 query.getAddTimeStart().getTime()));
         param.setEndTime(DateTimeUtil.getDateTimeByUnixFormat(
@@ -108,16 +109,46 @@ public class CsLoggerController {
         param.setTeNumber(query.getCsNumberEquals());
         param.setPageNum(page);
         param.setPageSize(rows);
-//        param.setOrderBy(query.getSidx() + " " + query.getSord());
         param.setQueryFields("*");
 
-        //是否车机与车辆绑定
-        Boolean isBound;
-        String vin = query.getCsVinEquals();
-        String number = query.getCsNumberEquals();
+        // 车机与车辆是否绑定，默认不存在
+        // true：车机与车辆存在绑定关系，false：不存在绑定关系
+        Boolean isBound = false;
 
-        isBound = checkVehicleBand(vin, number);
+        //存在绑定关系时，只根据Vin码查询
+        CsVehicle csVehicle;
+        if(query.getCsVinEquals() != null && query.getCsNumberEquals() == null) {
+            csVehicle = csVehicleService.getVehicleInfo(query.getCsVinEquals(), null);
+            if (csVehicle != null && csVehicle.getCsvMachine() != null) {
+                //存在绑定关系，根据Vin码查询
+                isBound = true;
+            } else {
+                //不存在绑定关系,给出提示
+                tableResult.setMsg("当前车辆没有绑定车机");
+                return tableResult;
+            }
+        }
+        // 当车机号不为空，而Vin码为空时，如果找到了对应的车辆信息，就存在绑定关系。
+        // 当Vin码不为空时，如果通过Vin码和车机号，进行查找。如果找到了对应车辆信息，肯定同时符合两者，说明存在绑定关系；
+        // 如果没有找到，说明两个不存在绑定关系，应该根据车机号查询并且提示两者没有绑定关系
+        if(query.getCsNumberEquals() != null) {
+            Integer machineId = csMachineService.getIdByNumber(query.getCsNumberEquals());
+            csVehicle = csVehicleService.getVehicleInfo(query.getCsVinEquals(), machineId);
+            if (csVehicle != null && csVehicle.getCsvMachine() != null) {
+                //存在绑定关系，根据Vin码查询
+                //设置param值
+                param.setVin(csVehicle.getCsvVin());
+                isBound = true;
+            }
+            if (csVehicle == null && query.getCsVinEquals() != null) {
+                //同时输入了车机号和Vin码，并且不存在绑定关系
+                //给出两者不存在绑定关系的提示
+                tableResult.setMsg("该车机号与该车辆并未绑定");
+                return tableResult;
+            }
+        }
 
+        //进行查询操作
         TBoxLogOutput tBoxLogOutput =
                 tBoxLogInf.queryListByParam(param, isBound);
 
@@ -162,28 +193,6 @@ public class CsLoggerController {
         if (data != null) {
             data.registResolver(com.ccclubs.admin.resolver.CsLoggerResolver.状态.getResolver());
         }
-    }
-
-    /**
-     * 判断车架vin码 与 车机号是否绑定
-     * @param vin
-     * @param number
-     * @return
-     */
-    Boolean checkVehicleBand(String vin, String number) {
-
-        CsVehicle csVehicle = new CsVehicle();
-        if(vin != null) {
-            csVehicle = csVehicleService.getVehicleInfo(vin, null);
-        }
-        if(number != null) {
-            Integer machineId = csMachineService.getIdByNumber(number);
-            csVehicle = csVehicleService.getVehicleInfo(vin, machineId);
-        }
-        if (csVehicle != null && csVehicle.getCsvMachine() != null) {
-            return true;
-        }
-        return false;
     }
 
     /**
