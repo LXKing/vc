@@ -3,6 +3,7 @@ package com.ccclubs.admin.controller.base;
 import com.ccclubs.admin.entity.SrvUserCrieria;
 import com.ccclubs.admin.model.SrvUser;
 import com.ccclubs.admin.query.SrvUserQuery;
+import com.ccclubs.admin.resolver.SrvUserResolver;
 import com.ccclubs.admin.service.ISrvUserService;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
@@ -97,8 +98,8 @@ public class SrvUserController {
         SrvUser conditionUserNameSrvUser = new SrvUser();
         conditionUserNameSrvUser.setSuUsername(data.getSuUsername());
         existSrvUser = srvUserService.selectOne(conditionUserNameSrvUser);
-        if (null != existSrvUser && !existSrvUser.getSuId().equals(data.getSuId())) {
-            return VoResult.error("20010", String.format("用户名%s已经存在。", existSrvUser.getSuUsername()));
+        if (null == existSrvUser) {
+            return VoResult.error("20010", "用户不存在。");
         }
 
         srvUserService.updateByPrimaryKeySelective(data);
@@ -111,6 +112,7 @@ public class SrvUserController {
      */
     void registResolvers(SrvUser data) {
         if (data != null) {
+            data.registResolver(SrvUserResolver.状态.getResolver());
         }
     }
 

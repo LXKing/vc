@@ -102,7 +102,10 @@ public class SrvUser implements java.io.Serializable
 		this.suStatus=suStatus;
 		return this;
 	}
-	
+
+	public Object getSuStatusText() {
+		return resolve("suStatusText");
+	}
 	
 	@Transient
 	Map<String, Resolver<SrvUser>> resolvers = new HashMap<String, Resolver<SrvUser>>();

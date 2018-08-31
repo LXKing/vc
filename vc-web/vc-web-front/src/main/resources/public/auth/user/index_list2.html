@@ -24,7 +24,7 @@
 				        <li><label><input value="suAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >添加时间</label></li>
 				        <li><label><input value="suLastTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >最后登录时间</label></li>
 				        <li><label><input value="suLastIp" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >最后登录IP</label></li>
-				        <li><label><input value="suStatus" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
+				        <li><label><input value="suStatusText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
 					</ul>
 				</div>
 			</div>
@@ -133,7 +133,7 @@
 	  		,{field: "suAddTime", title: "添加时间", width: 160, sort:true}
 	  		,{field: "suLastTime", title: "最后登录时间", width: 160, sort:true}
 	  		,{field: "suLastIp", title: "最后登录IP", width: 160, sort:true}
-	  		,{field: "suStatus", title: "状态", width: 110, sort:true}
+	  		,{field: "suStatusText", title: "状态", width: 110, sort:true}
       		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

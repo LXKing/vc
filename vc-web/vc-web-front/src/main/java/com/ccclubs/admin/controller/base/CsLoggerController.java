@@ -112,14 +112,14 @@ public class CsLoggerController {
         param.setQueryFields("*");
 
         //是否车机与车辆绑定
-        Boolean idBound;
+        Boolean isBound;
         String vin = query.getCsVinEquals();
         String number = query.getCsNumberEquals();
 
-        idBound = checkVehicleBand(vin, number);
+        isBound = checkVehicleBand(vin, number);
 
         TBoxLogOutput tBoxLogOutput =
-                tBoxLogInf.queryListByParam(param, idBound);
+                tBoxLogInf.queryListByParam(param, isBound);
 
         List<TBoxLog> historyGbList = new ArrayList<>();
 
