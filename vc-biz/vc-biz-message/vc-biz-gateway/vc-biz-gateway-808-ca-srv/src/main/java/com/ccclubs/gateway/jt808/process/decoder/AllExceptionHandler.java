@@ -47,7 +47,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Package808 pac = (Package808) msg;
-
         /*
          * 只清理引用计数
          */
@@ -76,7 +75,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                     LOG.error("cannot mapping to uniqueNo when deal idle event");
                     uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
                 }
-                LOG.error("连接(sim={})长时间空闲，将关闭该连接", uniqueNo);
+                LOG.error("连接(sim={})长时间空闲，将关闭该连接", PacUtil.getUniqueNoOrHost(uniqueNo, channel));
 
                 /**
                  * 区别于正常的断开连接

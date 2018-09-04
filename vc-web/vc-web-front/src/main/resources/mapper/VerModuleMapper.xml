@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ccclubs.admin.orm.mapper.VerModuleMapper">
+	<!-- 开启基于redis的二级缓存，仅适用单表
+    <cache type="com.ccclubs.framework.mybatis.RedisCache"/>-->
+    
+	<resultMap id="BaseResultMap" type="com.ccclubs.admin.model.VerModule">
+		<result column="id" jdbcType="INTEGER" property="id" />
+		<result column="type" jdbcType="TINYINT" property="type" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="des" jdbcType="VARCHAR" property="des" />
+		<result column="version" jdbcType="VARCHAR" property="version" />
+		<result column="data_type" jdbcType="BIGINT" property="dataType" />
+		<result column="data_item_type" jdbcType="BIGINT" property="dataItemType" />
+		<result column="data_value" jdbcType="VARCHAR" property="dataValue" />
+		<result column="sort" jdbcType="INTEGER" property="sort" />
+	</resultMap>
+
+	<select id="selectAllModule" resultMap="BaseResultMap">
+		SELECT vm.*
+		FROM ver_module vm
+		ORDER BY vm.type ASC, vm.sort ASC
+	</select>
+	
+	
+</mapper>

@@ -284,6 +284,9 @@ layui.define(['laytpl', 'laypage', 'layer', 'form'], function(exports){
             xhr.setRequestHeader("Authorization", token);
         }
         ,success: function(res){
+          if(res[response.msgName] != null) {
+            layer.msg(res[response.msgName]);
+          }
           if(res[response.statusName] != response.statusCode){
             that.renderForm();
             return that.layMain.html('<div class="'+ NONE +'">'+ (res[response.msgName] || '返回的数据状态异常') +'</div>');

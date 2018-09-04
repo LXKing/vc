@@ -228,6 +228,19 @@ public class TerminalStatus implements Serializable {
      * */
     private Integer cssKey;
 
+    /**
+     * 车辆启动控制状态
+     * */
+    private Integer controlStatus;
+
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
+
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
+
     public Integer getCssKey() {
         return cssKey;
     }

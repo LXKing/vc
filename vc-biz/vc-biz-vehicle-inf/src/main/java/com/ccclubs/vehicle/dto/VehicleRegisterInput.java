@@ -53,7 +53,7 @@ public class VehicleRegisterInput  implements Serializable {
     /**
      *   车型
      */
-    @NotNull(message = "车型备案型号必填")
+    @NotNull(message = "车型标志必填")
     private String csvModel;
 
     /**

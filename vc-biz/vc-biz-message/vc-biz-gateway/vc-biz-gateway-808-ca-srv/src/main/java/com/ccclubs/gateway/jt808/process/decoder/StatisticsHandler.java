@@ -46,7 +46,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         /**
          * 实时刷新在线online状态
          */
-        eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808);
+        eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808, pac);
         // 统计错误报文
         if (pac.getErrorPac()) {
             redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_ERROR_PAC, 1, GatewayType.GATEWAY_808);
