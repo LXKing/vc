@@ -19,7 +19,17 @@ public class StorageRemoteCmdInput implements Serializable {
 
     private String vin;
 
+    private String teNumber;
+
     private  String user;
+
+    public String getTeNumber() {
+        return teNumber;
+    }
+
+    public void setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
+    }
 
     public String getUser() {
         return user;

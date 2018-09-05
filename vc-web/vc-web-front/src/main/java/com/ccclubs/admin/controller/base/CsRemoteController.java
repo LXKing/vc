@@ -210,7 +210,7 @@ public class CsRemoteController {
         }
 
         if (csVehicleList.size() > 0) {
-            //保存指令并发送指令
+            // 保存指令并发送指令
             for (CsVehicle csVehicle : csVehicleList) {
                 logger.info("VIN码为{}车牌号为{}的车辆被发送指令{}"
                         , csVehicle.getCsvVin(), csVehicle.getCsvCarNo(), strJson);
@@ -220,15 +220,14 @@ public class CsRemoteController {
                 storageRemoteCmdInput.setUser(authority);
                 storageRemoteCmdInput.setValues(strJson);
                 storageRemoteCmdInput.setVin(csVehicle.getCsvVin());
-
+                // save remote
                 StorageRemoteCmdOutput storageRemoteCmdOutput =
                         storageRemoteCmdService.saveRemoteCmdToMongo(storageRemoteCmdInput);
-                if (null != storageRemoteCmdOutput) {
-                    DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
-                    dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
-                    dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
-                    dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
-                }
+                // 发指令
+                DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
+                dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
+                dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
+                dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
             }
 
         }
