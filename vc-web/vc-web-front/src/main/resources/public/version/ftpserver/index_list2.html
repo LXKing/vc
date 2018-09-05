@@ -29,7 +29,6 @@
 <table id="table"></table>
 <div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
 		<a href='javascript:' sctl="canView"  class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-		<a href='javascript:'  sctl="update" class="btn btn-warning btn-outline grid_oper_btn" lay-event="edit" title="编辑"><i class="fa fa-wrench"></i></a>
 		<a href='javascript:' sctl="del" class="btn btn-danger btn-outline grid_oper_btn" lay-event="del" title="删除"><i class="fa fa-trash"></i></a>
 	</div>
 
@@ -55,23 +54,6 @@
 				  maxmin: true,
 				  area: ['770px', '580px'],
 				  content: "/version/ftpserver/add.html?uuid="+(new Date().getTime()),
-				  zIndex: layer.zIndex, //重点1
-				  end:function(result){
-					  if(result.success){
-						  layer.msg("操作成功！", {icon: 1, time:1600});
-						  grid.reloadData();
-					  }
-				  }
-			});
-		},
-		update:function(id){
-			var o = this;
-			showTopWin({
-				  type: 2,
-				  shade: 0.4,
-				  maxmin: true,
-				  area: ['770px', '580px'],
-				  content: "/version/ftpserver/edit.html?id="+id,
 				  zIndex: layer.zIndex, //重点1
 				  end:function(result){
 					  if(result.success){
