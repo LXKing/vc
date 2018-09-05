@@ -93,9 +93,9 @@
 <dl cond="csrAddTime">
 				<dt>添加时间：</dt>
 				<dd class="timergroup" >
-					<input  name="startTime"  placeholder="开始时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					<input  name="startTime"  placeholder="开始时间" class="form-control timegroupinput timeStart" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
                     <label class="timegrouplabel">-</label>
-                    <input  name="endTime" placeholder="结束时间" class="form-control timegroupinput" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
+                    <input  name="endTime" placeholder="结束时间" class="form-control timegroupinput timeEnd" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
 				</dd>
 			</dl>
 <dl cond="csrState">
@@ -121,7 +121,7 @@
 				</dd>
 			</dl>
 			<div class="querybtns">
-				<button class="btn btn-success " type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
+				<button class="btn btn-success searchBtn" type="button" onclick="operate.query();"><i class="glyphicon fa fa-search"></i>查询</button>
 				<button class="btn btn-primary" type="button" resetForm><i class="glyphicon fa fa-reply"></i>清空</button>
 				<div class="btn-group">
 					<button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -157,7 +157,20 @@ $(".searchinput").each(function(){
 });
 $("button[resetForm]").click(function(){
 	resetForm($(this).parents("form")[0]);
-});	
+});
+$(".searchBtn").click(function () {
+  var addTimeStart = $(".timeStart").val();
+  var startTimestamp = new Date(addTimeStart).getTime();
+  var addTimeEnd = $(".timeEnd").val();
+  var endTimestamp = new Date(addTimeEnd).getTime();
+
+  if(startTimestamp > endTimestamp) {
+    layer.msg("开始时间不能大于结束时间", {icon:7, time:1600});
+  }
+  if(endTimestamp - startTimestamp > 30*24*60*60*1000) {
+    layer.msg("最多只能查询一个月内的数据", {icon:7, time:1600});
+  }
+});
 
 $(".conditionMenu").find("input[type=checkbox]").each(function(){
 	$(this).click(function(){

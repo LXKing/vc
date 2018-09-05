@@ -87,6 +87,9 @@ public class VerFtpSerController {
 	void registResolvers(VerFtpSer data){
 		if(data!=null){
 			data.registResolver(com.ccclubs.admin.resolver.VerFtpSerResolver.服务器类型.getResolver());
+			data.setSerUsername("******");
+			data.setSerPwd("******");
+			data.seturl("******");
 		}
 	}
 	

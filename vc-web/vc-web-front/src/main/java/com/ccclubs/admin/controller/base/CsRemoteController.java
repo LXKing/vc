@@ -1,5 +1,6 @@
 package com.ccclubs.admin.controller.base;
 
+import com.ccclubs.admin.vo.Page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -59,6 +60,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("monitor/historyRemote")
 public class CsRemoteController {
 
+    private static final long ONE_MOUTH = 2592000000L;
+
     private static Logger logger = LoggerFactory.getLogger(CsRemoteController.class);
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -87,16 +90,37 @@ public class CsRemoteController {
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsRemote> list(CsRemoteQuery query,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer rows,
-            @RequestParam(defaultValue = "csrAddTime") String order) {
+                                      @RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer rows,
+                                      @RequestParam(defaultValue = "csrAddTime") String order) {
+
+        TableResult<CsRemote> tableResult = new TableResult<>();
+        //时间校验
+        if(query.getStartTime() != null && query.getEndTime() != null) {
+            long startTimeLong = query.getStartTime().getTime();
+            long endTimeLong = query.getEndTime().getTime();
+            long timeLong = endTimeLong - startTimeLong;
+            if (timeLong > ONE_MOUTH) {
+                return tableResult;
+            }
+        }
+        if(query.getStartTime() != null && query.getEndTime() == null) {
+            long endTimeLong = query.getStartTime().getTime() + ONE_MOUTH;
+            query.setEndTime(new Date(endTimeLong));
+        }
+        if(query.getStartTime() == null && query.getEndTime() != null) {
+            long startTimeLong = query.getEndTime().getTime() - ONE_MOUTH;
+            query.setStartTime(new Date(startTimeLong));
+        }
+
         PageInfo<CsRemote> pageResult = csRemoteService
                 .getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
         List<CsRemote> list = pageResult.getList();
         for (CsRemote data : list) {
             registResolvers(data);
         }
-        TableResult<CsRemote> tableResult = new TableResult<>(page, rows, pageResult);
+        tableResult.setPage(new Page(page, rows, pageResult.getTotal()));
+        tableResult.setData(pageResult.getList() == null ? new ArrayList<>() : pageResult.getList());
         return tableResult;
     }
 
