@@ -50,6 +50,11 @@ public class RedisConst {
     public static final String REDIS_KEY_RECENT_STATES = "RECENT_STATES:";
 
     /**
+     * 实时状态数据的 redis key 前缀
+     */
+    public static final String REDIS_KEY_RT_STATES = "REAL_TIME:STATE";
+
+    /**
      * key:{id} -> key:id
      * @param key
      * @param id

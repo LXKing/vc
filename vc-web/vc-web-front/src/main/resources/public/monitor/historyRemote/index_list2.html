@@ -1,6 +1,9 @@
 <div class="menubar">
     <div class="buttoncons">
-
+        <button type="button" class="btn btn-primary  btn-outline" onclick="operate.doRemote();">
+            <i class="glyphicon fa fa-plus-circle"></i>
+            远程控制
+        </button>
 
         <div class="btn-group" title="列">
             <div class="btn-group">
@@ -71,7 +74,7 @@
 
 </div>
 <script type="text/html" id="tlCsrUpdateTime">
-    <div>{{dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+    <div>{{d.csrUpdateTime?dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss"):''}}</div>
 </script>
 
 <script type="text/html" id="tlCsrAddTime">
@@ -92,7 +95,16 @@
         query: function () {
             grid.reloadData({where: getFormData(this.getQueryForm())});
         },
-
+      doRemote :function(){
+        showTopWin({
+          type: 2,
+          shade: 0.4,
+          maxmin: true,
+          area: ['770px', '580px'],
+          content: "/monitor/historyRemote/remote.html",
+          zIndex: layer.zIndex //重点1
+        });
+      },
 
         batchDel: function () {
             var o = this;
