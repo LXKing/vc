@@ -46,6 +46,19 @@ public class TerminalTriggerStatus implements Serializable {
    */
   private Integer cssGear;
 
+  /**
+   * 控制状态
+   */
+  private short controlStatusWithMask;
+
+  public short getControlStatusWithMask() {
+    return controlStatusWithMask;
+  }
+
+  public void setControlStatusWithMask(short controlStatusWithMask) {
+    this.controlStatusWithMask = controlStatusWithMask;
+  }
+
   public String getCssNumber() {
     return cssNumber;
   }
