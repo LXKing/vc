@@ -136,10 +136,7 @@
       countName: "count"
     },
     request: {limitName: "rows"},
-    where: {
-      // sidx: "addTime",
-      // sord: "desc"
-    }
+    where: getFormData(operate.getQueryForm())
   };
 
   function showHideColumn() {
