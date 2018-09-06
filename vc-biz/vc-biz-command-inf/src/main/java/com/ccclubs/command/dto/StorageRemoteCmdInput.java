@@ -21,7 +21,17 @@ public class StorageRemoteCmdInput implements Serializable {
 
     private String teNumber;
 
+    private String remark;
+
     private  String user;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public String getTeNumber() {
         return teNumber;
