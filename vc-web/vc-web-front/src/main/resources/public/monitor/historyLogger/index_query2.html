@@ -13,7 +13,7 @@
 				</dd>
 			</dl>
 <dl cond="vin">
-				<dt>车辆：</dt>
+				<dt>车架号：</dt>
 				<dd  >
 					<input  name="csVinEquals" placeholder="" class="form-control">
 				</dd>
@@ -68,7 +68,7 @@ $(".searchBtn").click(function () {
     layer.msg("开始时间和结束时间不能为空",  {icon: 7, time:1600});
   }
   if(csNumber == "" && csVin == "") {
-    layer.msg("车机号和车辆号不能同时为空", {icon: 7, time:1600});
+    layer.msg("车机号和车架号不能同时为空", {icon: 7, time:1600});
 	}
 	if(startTimestamp > endTimestamp) {
     layer.msg("开始时间不能大于结束时间", {icon:7, time:1600});
