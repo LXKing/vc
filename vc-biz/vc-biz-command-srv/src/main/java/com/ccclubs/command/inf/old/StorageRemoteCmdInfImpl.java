@@ -100,6 +100,7 @@ public class StorageRemoteCmdInfImpl implements StorageRemoteCmdInf {
         long csrId = idGen.getNextId();
         CsRemote csRemote = CsRemoteUtil
                 .construct(csVehicle, csMachine, structId, array, input.getUser(), csrId);
+        csRemote.setCsrRemark(input.getRemark());
         csRemoteManager.syncSave(csRemote);
         StorageRemoteCmdOutput storageRemoteCmdOutput=new StorageRemoteCmdOutput();
         storageRemoteCmdOutput.setStrJson(input.getValues());

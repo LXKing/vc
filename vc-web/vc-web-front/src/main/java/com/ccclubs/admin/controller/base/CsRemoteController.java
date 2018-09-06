@@ -220,6 +220,7 @@ public class CsRemoteController {
                 storageRemoteCmdInput.setUser(authority);
                 storageRemoteCmdInput.setValues(strJson);
                 storageRemoteCmdInput.setVin(csVehicle.getCsvVin());
+                storageRemoteCmdInput.setRemark(remark);
                 // save remote
                 StorageRemoteCmdOutput storageRemoteCmdOutput =
                         storageRemoteCmdService.saveRemoteCmdToMongo(storageRemoteCmdInput);
@@ -244,7 +245,7 @@ public class CsRemoteController {
         SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
         if (srvGroup.getSgFlag().equals("sys_user")) {
             //系统用户，此种用户可以随意查询（为所欲为）
-            return "SysUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+            return "SysUser@" + user.getSuUsername();
         } else if (srvGroup.getSgFlag().equals("factory_user")) {
             //车厂 （按照车型进行查询）
             CsModelMapping csModelMapping = new CsModelMapping();
@@ -260,7 +261,7 @@ public class CsRemoteController {
             if (query.getCsvModelIn() == null) {
                 return null;
             } else {
-                return "FactoryUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "FactoryUser@" + user.getSuUsername();
             }
 
         } else if (srvGroup.getSgFlag().equals("platform_user")) {
@@ -279,10 +280,10 @@ public class CsRemoteController {
             if (query.getCsvIdIn() == null) {
                 return null;
             } else {
-                return "PlatformUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "PlatformUser@" + user.getSuUsername();
             }
         }
-        return "未知用户：" + user.getSuRealName() + " 账户：" + user.getSuUsername();
+        return "Unknown@" + user.getSuUsername();
     }
 
 
