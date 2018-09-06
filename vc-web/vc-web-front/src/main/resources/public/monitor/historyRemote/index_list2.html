@@ -185,10 +185,7 @@
             countName: "count"
         },
         request: {limitName: "rows"},
-        where: {
-            sidx: "csrAddTime",
-            sord: "desc"
-        }
+        where: getFormData(operate.getQueryForm())
     };
 
     function showHideColumn() {

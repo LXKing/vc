@@ -95,23 +95,6 @@ public class CsRemoteController {
                                       @RequestParam(defaultValue = "csrAddTime") String order) {
 
         TableResult<CsRemote> tableResult = new TableResult<>();
-        //时间校验
-        if(query.getStartTime() != null && query.getEndTime() != null) {
-            long startTimeLong = query.getStartTime().getTime();
-            long endTimeLong = query.getEndTime().getTime();
-            long timeLong = endTimeLong - startTimeLong;
-            if (timeLong > ONE_MOUTH) {
-                return tableResult;
-            }
-        }
-        if(query.getStartTime() != null && query.getEndTime() == null) {
-            long endTimeLong = query.getStartTime().getTime() + ONE_MOUTH;
-            query.setEndTime(new Date(endTimeLong));
-        }
-        if(query.getStartTime() == null && query.getEndTime() != null) {
-            long startTimeLong = query.getEndTime().getTime() - ONE_MOUTH;
-            query.setStartTime(new Date(startTimeLong));
-        }
 
         PageInfo<CsRemote> pageResult = csRemoteService
                 .getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
