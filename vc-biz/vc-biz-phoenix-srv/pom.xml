@@ -1,79 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>vc-biz</artifactId>
-        <groupId>www.ccclubs</groupId>
-        <version>1.0.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>vc-biz</artifactId>
+    <groupId>www.ccclubs</groupId>
+    <version>1.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>vc-biz-phoenix-srv</artifactId>
+  <artifactId>vc-biz-phoenix-srv</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-phoenix-inf</artifactId>
-            <version>${biz.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-dubbox</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-core</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-phoenix</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-core</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-common-srv</artifactId>
-            <version>${biz.version}</version>
-        </dependency>-->
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-pub-orm</artifactId>
-            <version>${biz.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>www.ccclubs</groupId>
-                    <artifactId>vc-frm-mybatis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-redis</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-frm-logger</artifactId>
-            <version>${frm.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>www.ccclubs</groupId>
-            <artifactId>vc-biz-vehicle-inf</artifactId>
-            <version>${biz.version}</version>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <!-- biz -->
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-vehicle-inf</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-phoenix-inf</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-biz-pub-model</artifactId>
+      <version>${biz.version}</version>
+    </dependency>
+    <!-- frm -->
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-dubbox</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-core</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-phoenix</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-redis</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>www.ccclubs</groupId>
+      <artifactId>vc-frm-logger</artifactId>
+      <version>${frm.version}</version>
+    </dependency>
+    <!-- third party -->
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+    </dependency>
+  </dependencies>
 
 
 </project>
