@@ -95,23 +95,6 @@ public class CsRemoteController {
                                       @RequestParam(defaultValue = "csrAddTime") String order) {
 
         TableResult<CsRemote> tableResult = new TableResult<>();
-        //时间校验
-        if(query.getStartTime() != null && query.getEndTime() != null) {
-            long startTimeLong = query.getStartTime().getTime();
-            long endTimeLong = query.getEndTime().getTime();
-            long timeLong = endTimeLong - startTimeLong;
-            if (timeLong > ONE_MOUTH) {
-                return tableResult;
-            }
-        }
-        if(query.getStartTime() != null && query.getEndTime() == null) {
-            long endTimeLong = query.getStartTime().getTime() + ONE_MOUTH;
-            query.setEndTime(new Date(endTimeLong));
-        }
-        if(query.getStartTime() == null && query.getEndTime() != null) {
-            long startTimeLong = query.getEndTime().getTime() - ONE_MOUTH;
-            query.setStartTime(new Date(startTimeLong));
-        }
 
         PageInfo<CsRemote> pageResult = csRemoteService
                 .getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
@@ -234,7 +217,7 @@ public class CsRemoteController {
         }
 
         if (csVehicleList.size() > 0) {
-            //保存指令并发送指令
+            // 保存指令并发送指令
             for (CsVehicle csVehicle : csVehicleList) {
                 logger.info("VIN码为{}车牌号为{}的车辆被发送指令{}"
                         , csVehicle.getCsvVin(), csVehicle.getCsvCarNo(), strJson);
@@ -244,15 +227,15 @@ public class CsRemoteController {
                 storageRemoteCmdInput.setUser(authority);
                 storageRemoteCmdInput.setValues(strJson);
                 storageRemoteCmdInput.setVin(csVehicle.getCsvVin());
-
+                storageRemoteCmdInput.setRemark(remark);
+                // save remote
                 StorageRemoteCmdOutput storageRemoteCmdOutput =
                         storageRemoteCmdService.saveRemoteCmdToMongo(storageRemoteCmdInput);
-                if (null != storageRemoteCmdOutput) {
-                    DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
-                    dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
-                    dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
-                    dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
-                }
+                // 发指令
+                DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
+                dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
+                dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
+                dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
             }
 
         }
@@ -269,7 +252,7 @@ public class CsRemoteController {
         SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
         if (srvGroup.getSgFlag().equals("sys_user")) {
             //系统用户，此种用户可以随意查询（为所欲为）
-            return "SysUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+            return "SysUser@" + user.getSuUsername();
         } else if (srvGroup.getSgFlag().equals("factory_user")) {
             //车厂 （按照车型进行查询）
             CsModelMapping csModelMapping = new CsModelMapping();
@@ -285,7 +268,7 @@ public class CsRemoteController {
             if (query.getCsvModelIn() == null) {
                 return null;
             } else {
-                return "FactoryUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "FactoryUser@" + user.getSuUsername();
             }
 
         } else if (srvGroup.getSgFlag().equals("platform_user")) {
@@ -304,10 +287,10 @@ public class CsRemoteController {
             if (query.getCsvIdIn() == null) {
                 return null;
             } else {
-                return "PlatformUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "PlatformUser@" + user.getSuUsername();
             }
         }
-        return "未知用户：" + user.getSuRealName() + " 账户：" + user.getSuUsername();
+        return "Unknown@" + user.getSuUsername();
     }
 
 

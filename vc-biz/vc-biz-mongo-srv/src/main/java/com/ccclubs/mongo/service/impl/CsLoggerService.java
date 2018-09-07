@@ -27,7 +27,7 @@ public class CsLoggerService {
     private MongoTemplate historyMongoTemplate;
 
     public PageInfo<CsLogger> getPage(CsLoggerQuery queryVo, Pageable pageVo) {
-        Criteria criteria = Criteria.where("cslId").ne(null);
+        Criteria criteria = new Criteria();
         Query query = new Query();
 
         if (queryVo.getCslId() != null) {

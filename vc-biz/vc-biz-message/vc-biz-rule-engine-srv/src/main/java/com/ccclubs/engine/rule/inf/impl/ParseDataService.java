@@ -17,6 +17,7 @@ import com.ccclubs.engine.rule.inf.util.TransformUtils;
 import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
+import com.ccclubs.frm.spring.util.UuidUtil;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
@@ -449,6 +450,7 @@ public class ParseDataService implements IParseDataService {
             dto.setOrderNo(message.getTransId());
             dto.setTeNumber(message.getCarNumber());
             dto.setSourceHex(message.getHexString());
+            dto.setUuid(UuidUtil.getUuid());
             CsMachine csMachine = queryTerminalService
                     .queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {

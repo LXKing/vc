@@ -41,7 +41,7 @@ public class CsRemoteService {
     }*/
 
     public PageInfo<CsRemote> getPage(CsRemoteQuery queryVo, Pageable pageVo) {
-        Criteria criteria = Criteria.where("csrId").ne(null);
+        Criteria criteria = new Criteria();
         Query query = new Query();
 
         if (queryVo.getCsrId() != null) {
