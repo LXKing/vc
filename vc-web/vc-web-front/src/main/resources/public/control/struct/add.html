@@ -19,7 +19,41 @@
 	<div class="form_content">
 		<form class="form-horizontal" id="addform" style="margin:15px;">
 			<div class="form-group" id="conditionId" style="height:80%;">
-		</div>
+				<dl  >
+					<dt>指令名称：</dt>
+					<dd>
+						<input name="cssName" placeholder="请输入指令名称" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>命令类型：</dt>
+					<dd>
+						<select class="form-control m-b" name="cssType"  >
+							<option></option>
+							<option value="1">高级命令</option>
+							<option value="0">一般命令</option>
+						</select>
+					</dd>
+				</dl>
+				<dl class="rowfull" >
+					<dt>请求示例：</dt>
+					<dd>
+						<input name="cssReqCode" placeholder="请输入请求示例" class="form-control" >
+					</dd>
+				</dl>
+				<dl class="rowfull" >
+					<dt>请求结构：</dt>
+					<dd>
+						<input name="cssRequest" placeholder="请输入请求结构" class="form-control" >
+					</dd>
+				</dl>
+				<dl  >
+					<dt>状态：</dt>
+					<dd>
+						<input name="cssStatus" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+					</dd>
+				</dl>
+			</div>
 		
 		<div class="form-group windowButtonBar">
 			<div class="hr-line-dashed"></div>
