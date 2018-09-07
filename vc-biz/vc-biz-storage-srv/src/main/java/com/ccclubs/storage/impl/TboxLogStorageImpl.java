@@ -30,32 +30,33 @@ public class TboxLogStorageImpl implements BaseHistoryInf<TboxLog> {
     private BaseInfImpl baseImpl;
 
     private static String baseTboxLogUpsertNorSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR + " (" +
-            "VIN,ADD_TIME,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
+            "VIN,ADD_TIME,UUID,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
             "?, ?, ?, ?, ?, ?)";//1-6
     private static String baseTboxLogUpsertExpSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP + " (" +
-            "VIN,ADD_TIME,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
+            "VIN,ADD_TIME,UUID,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
             "?, ?, ?, ?, ?, ?)";//1-6
 
     @Override
     public void insertBulid(TboxLog tboxLog, PreparedStatement preparedStatement) throws SQLException {
 
-        //1-6  VIN,ADD_TIME,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX
+        //1-7  VIN,ADD_TIME,UUID,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX
 
         String vin = tboxLog.getVin();
         preparedStatement.setString(1, vin);
         Long addTime = tboxLog.getAddTime();
         preparedStatement.setLong(2, addTime);
+        String uuid = tboxLog.getUuid();
+        preparedStatement.setString(3, uuid);
         String teNumber = tboxLog.getTeNumber();
-        preparedStatement.setString(3, teNumber);
+        preparedStatement.setString(4, teNumber);
         String logInfo = tboxLog.getLogInfo();
-        preparedStatement.setString(4, logInfo);
+        preparedStatement.setString(5, logInfo);
         Long orderNo = tboxLog.getOrderNo();
-        preparedStatement.setLong(5, orderNo);
+        preparedStatement.setLong(6, orderNo);
         String sourceHex = tboxLog.getSourceHex();
-        preparedStatement.setString(6, sourceHex);
+        preparedStatement.setString(7, sourceHex);
         preparedStatement.addBatch();
     }
-
 
     @Override
     public void saveOrUpdate(List<TboxLog> records) {
