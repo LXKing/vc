@@ -39,7 +39,7 @@ public class TboxLogStorageImpl implements BaseHistoryInf<TboxLog> {
     @Override
     public void insertBulid(TboxLog tboxLog, PreparedStatement preparedStatement) throws SQLException {
 
-        //1-7  VIN,ADD_TIME,UUID,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX
+        //1-8  VIN,ADD_TIME,UUID,TE_NUMBER,ACCESS,LOG_INFO,ORDER_NO,SOURCE_HEX
 
         String vin = tboxLog.getVin();
         preparedStatement.setString(1, vin);
