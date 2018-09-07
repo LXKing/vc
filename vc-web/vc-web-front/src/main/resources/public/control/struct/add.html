@@ -23,6 +23,7 @@
 					<dt>指令名称：</dt>
 					<dd>
 						<input name="cssName" placeholder="请输入指令名称" class="form-control" >
+						<label id="cssName-error" class="error" for="cssName"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl  >
@@ -33,6 +34,7 @@
 							<option value="1">高级命令</option>
 							<option value="0">一般命令</option>
 						</select>
+						<label id="cssType-error" class="error" for="cssType"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 				<dl class="rowfull" >
@@ -51,6 +53,7 @@
 					<dt>状态：</dt>
 					<dd>
 						<input name="cssStatus" placeholder="请输入关键字" class="form-control searchinput"  dataWhere="status"  dataUrl="/base/dict/query">
+						<label id="cssStatus-error" class="error" for="cssStatus"><i class="fa fa-info-circle fieldTip">必填</i></label>
 					</dd>
 				</dl>
 			</div>
@@ -88,7 +91,16 @@
  			 */
 			var validateRuleConfig = {
 				rules:{
-				
+          "cssName":{
+            "maxlength":256,
+            "required":true
+          },
+          "cssType":{
+            "required":true
+          },
+          "cssStatus":{
+            "required":true
+          }
 			}
 			};
 			
