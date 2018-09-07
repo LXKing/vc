@@ -31,15 +31,15 @@ public class TboxLogStorageImpl implements BaseHistoryInf<TboxLog> {
 
     private static String baseTboxLogUpsertNorSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR + " (" +
             "VIN,ADD_TIME,UUID,TE_NUMBER,ACCESS,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
-            "?, ?, ?, ?, ?, ?)";//1-6
+            "?, ?, ?, ?, ?, ?, ?, ?)";//1-8
     private static String baseTboxLogUpsertExpSql = "UPSERT INTO " + PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP + " (" +
             "VIN,ADD_TIME,UUID,TE_NUMBER,ACCESS,LOG_INFO,ORDER_NO,SOURCE_HEX ) values (" +
-            "?, ?, ?, ?, ?, ?)";//1-6
+            "?, ?, ?, ?, ?, ?, ?, ?)";//1-8
 
     @Override
     public void insertBulid(TboxLog tboxLog, PreparedStatement preparedStatement) throws SQLException {
 
-        //1-7  VIN,ADD_TIME,UUID,TE_NUMBER,LOG_INFO,ORDER_NO,SOURCE_HEX
+        //1-8  VIN,ADD_TIME,UUID,TE_NUMBER,ACCESS,LOG_INFO,ORDER_NO,SOURCE_HEX
 
         String vin = tboxLog.getVin();
         preparedStatement.setString(1, vin);
