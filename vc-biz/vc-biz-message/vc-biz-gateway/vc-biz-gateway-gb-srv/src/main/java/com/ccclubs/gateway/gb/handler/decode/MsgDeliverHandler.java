@@ -1,6 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.constant.HandleStatus;
+import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
+import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import io.netty.channel.ChannelHandler;
@@ -22,9 +24,14 @@ public class MsgDeliverHandler extends CCClubChannelInboundHandler<GBPackage> {
     private static final Logger LOG = LoggerFactory.getLogger(MsgDeliverHandler.class);
 
     @Override
-    protected boolean channelRead0(ChannelHandlerContext ctx, GBPackage pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, GBPackage pac) {
 
         // 事件下发
-        return true;
+        return HandleStatus.NEXT;
+    }
+
+    @Override
+    protected HandleStatus handleInnerMsg(AbstractChannelInnerMsg innerMsg) {
+        return HandleStatus.NEXT;
     }
 }

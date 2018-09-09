@@ -1,20 +1,20 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
-import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
+import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
+import com.ccclubs.gateway.common.util.BufReleaseUtil;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.gb.beans.KafkaTask;
 import com.ccclubs.gateway.gb.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
-import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.reflect.ClientCache;
 import com.ccclubs.gateway.gb.reflect.GBConnection;
 import com.ccclubs.gateway.gb.service.KafkaService;
-import com.ccclubs.gateway.gb.service.VehicleService;
-import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -49,14 +49,10 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead (ChannelHandlerContext ctx, Object msg) throws Exception {
         GBPackage pac = (GBPackage) msg;
-        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
-        // 统计处理器处理用时
-        long startTime = System.nanoTime();
-        long endTime = System.nanoTime();
-        pacProcessTrack.getCurrentHandlerTracker().setUsedTime(endTime -startTime);
+        ChannelAttrbuteUtil.getTrace(ctx.channel()).next();
 
         // 真正处理的方法
-        handle(pac, pacProcessTrack);
+        handle(pac);
         /**
          *  最终处理消息，不需要继续向下传递消息
          *      1.释放字节缓存
@@ -64,18 +60,10 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
         ReferenceCountUtil.release(pac.getSourceBuff());
     }
 
-    private void handle(GBPackage pac, PacProcessTrack pacProcessTrack) {
+    private void handle(GBPackage pac) {
         // 如果是测试阶段则打印报告日志
-        if (ChildChannelHandler.printPacLog) {
-            StringBuilder trackSb = new StringBuilder(pac.toLogString());
-            trackSb.append("\n")
-                    .append("消息处理各个阶段用时：");
-            int stepIndex = 0;
-            for (HandlerPacTrack ht : pacProcessTrack.getHandlerPacTracks()) {
-                trackSb.append("step-").append(PacProcessing.getByCode(stepIndex ++).getDes())
-                        .append("[").append(ht.getUsedTime()).append("]");
-            }
-            LOG.info(trackSb.toString());
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info(pac.toLogString());
         }
 
         PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
@@ -83,7 +71,9 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
                 .setVin(pac.getHeader().getUniqueNo())
                 .setSourceHex(pac.getSourceHexStr());
         // 正常的消息发送至kafka
-        kafkaService.send(new KafkaTask(KafkaSendTopicType.SUCCESS, pacProcessTrack.getVin(), packProcessExceptionDTO.toJson()));
+        kafkaService.send(new KafkaTask(KafkaSendTopicType.SUCCESS,
+                pac.getHeader().getUniqueNo(),
+                packProcessExceptionDTO.toJson()));
     }
 
     @Override
@@ -92,7 +82,11 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
         LOG.info("new channel active: ip={}, port={}",
                 channel.remoteAddress().getHostString(),
                 channel.remoteAddress().getPort());
-        ClientCache.addByChannelId(channel.id());
+
+        ChannelAttrbuteUtil.getStatus(channel)
+                .setCurrentStatus(ChannelLiveStatus.ONLINE_CONNECT)
+                .nextStage();
+
     }
 
     @Override
@@ -154,6 +148,13 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
      */
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+        SocketChannel channel = (SocketChannel) context.channel();
+        /**
+         * 抛出异常时，先清理buf
+         */
+        PackageTraceAttr packageTraceAttr = ChannelAttrbuteUtil.getTrace(channel);
+        BufReleaseUtil.releaseByLoop(packageTraceAttr.getPacBuf());
+
         // 部分异常可能需要服务端主动释放连接
         boolean needCloseConn = false;
         // 是否发送至kafka
@@ -167,63 +168,35 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
          *      如果是链路上非主动抛出：组装其他异常dto
          *  3.发送至kafka
          */
-        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(context.channel());
-        PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
-
-        if (Objects.nonNull(pacProcessing)) {
-            LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause.getMessage());
-            if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
-                // 自定义抛出的处理异常
-            } else {
-                // 其他非自定义的异常
-                ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
-                expMessageDTO.setMsgTime(System.currentTimeMillis());
-                expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                        .setVin(pacProcessTrack.getVin())
-                        .setSourceHex(pacProcessTrack.getSourceHex())
-                        .setReason(cause.getMessage());
-            }
+        PacProcessing pacProcessing = PacProcessing.getByCode(packageTraceAttr.getStep());
+        LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause);
+        if (packageTraceAttr.isErrorOccured()) {
+            // 自定义抛出的处理异常
         } else {
-            LOG.error("exception throwed but step invalid step={}", pacProcessTrack.getStep());
-
             // 其他非自定义的异常
-            ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
-            expMessageDTO.setMsgTime(System.currentTimeMillis());
-            expMessageDTO.setCode(pacProcessTrack.getStep() + "")
-                    .setVin(pacProcessTrack.getVin())
-                    .setSourceHex(pacProcessTrack.getSourceHex())
+            packageTraceAttr.getExpMessageDTO()
+                    .setCode(String.valueOf(packageTraceAttr.getStep()))
                     .setReason(cause.getMessage());
         }
 
         // 其他非自定义异常如果获取不到vin码则不发送到kafka
-        if (StringUtils.isEmpty(pacProcessTrack.getVin())) {
+        if (StringUtils.isEmpty(packageTraceAttr.getUniqueNo())) {
             needSendKafka = false;
         }
 
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
-
-            kafkaService.send(new KafkaTask(KafkaSendTopicType.ERROR, pacProcessTrack.getVin(), pacProcessTrack.getExpMessageDTO().toJson()));
+            kafkaService.send(new KafkaTask(KafkaSendTopicType.ERROR, packageTraceAttr.getUniqueNo(), packageTraceAttr.getExpMessageDTO().toJson()));
         }
 
         // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
         if (cause instanceof TooLongFrameException) {
-            StringBuilder tooLongSb = new StringBuilder("检测到车机");
-            if (StringUtils.isNotEmpty(pacProcessTrack.getVin())) {
-                tooLongSb.append("[").append(pacProcessTrack.getVin()).append("]");
-            } else {
-                SocketChannel channel = (SocketChannel) context.channel();
-                tooLongSb.append("[ip=").append(channel.remoteAddress().getHostString())
-                        .append(", port=").append(channel.remoteAddress().getPort()).append("]");
-            }
-            tooLongSb.append("发送帧长度异常，服务端将主动断开连接");
+            StringBuilder tooLongSb = new StringBuilder();
+            tooLongSb.append("检测到车机")
+                    .append(ChannelUtils.getUniqueNoOrHost(packageTraceAttr.getUniqueNo(), channel))
+                    .append("发送帧长度异常，服务端将主动断开连接");
             LOG.error(tooLongSb.toString());
             needCloseConn = true;
-        }
-
-        // 打印异常链
-        if (cause.getCause() != null) {
-            cause.printStackTrace();
         }
 
         if (needCloseConn) {

@@ -1,16 +1,13 @@
 package com.ccclubs.gateway.gb.handler.process;
 
-import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
-import com.ccclubs.gateway.gb.constant.ChannelAttrKey;
+import com.ccclubs.gateway.common.config.GatewayProperties;
+import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
-import com.ccclubs.gateway.gb.message.track.HandlerPacTrack;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.service.KafkaService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.netty.util.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +20,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
-    // 是否打印消息日志
-    public static boolean printPacLog;
 
 //    @Autowired
 //    private ApplicationContext context;
 
     @Autowired
     private KafkaService kafkaService;
+
+    @Autowired
+    private GatewayProperties gatewayProperties;
 
     /*shared handlers*/
     @Autowired
@@ -39,8 +37,6 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
     private MsgDeliverHandler msgDeliverHandler;
     @Autowired
     private PackageValidateHandler packageValidateHandler;
-    @Autowired
-    private PreProcessHandler preProcessHandler;
 
     @Autowired
     private GBPackageEncoder gbPackageEncoder;
@@ -51,9 +47,9 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         channel.pipeline()
                 /*inbound*/
                 // 空闲处理
-                .addLast("idleHandler", new IdleStateHandler(300,0,0))
+                .addLast("idleHandler", new IdleStateHandler(gatewayProperties.getIdleSeconds(),0,0))
                 // 记录监视的车辆报文
-                .addLast("preHandler", preProcessHandler)
+//                .addLast("preHandler", preProcessHandler)
                 // 解码
                 .addLast("gbDecoder", new GBLengthFieldFrameDecoder(4096))
                 // 数据包校验
@@ -70,33 +66,9 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 .addLast("GBEncoder", gbPackageEncoder);
 
         /**
-         * 在追踪处理异常时：
-         *      初始化全局记录消息中被所有链路handler共享的数据
+         * 初始化全链路共享的channelAttribute
          */
-        initPacTrack(channel);
+        ChannelAttrKey.initForAll(channel);
 
-
-
-        /**
-         * 可以在运行时动态的编排handler顺序和增删新旧handler达到一些控流等功能
-         *      如：1.可以依据消息头部，动态的给多种协议的报文组装处理流水线，而不仅仅处理GB协议报文
-         *          2.依据流量情况，动态的在处理链中增加业务功能。
-         */
-    }
-
-    private void initPacTrack(SocketChannel channel) {
-        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACTRACK_KEY);
-        PacProcessTrack newPacProessTrack = new PacProcessTrack();
-        newPacProessTrack
-                .setErrorOccur(false)
-                .setStep(0)
-                .setExpMessageDTO(new ExpMessageDTO());
-        HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[6];
-        for (int i = 0; i < handlerPacTracks.length; i ++) {
-            handlerPacTracks[i] = new HandlerPacTrack();
-        }
-        newPacProessTrack.setHandlerPacTracks(handlerPacTracks);
-
-        pacProcessTrackAttribute.setIfAbsent(newPacProessTrack);
     }
 }

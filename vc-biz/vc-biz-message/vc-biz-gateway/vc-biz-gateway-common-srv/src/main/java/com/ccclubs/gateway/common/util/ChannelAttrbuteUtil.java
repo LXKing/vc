@@ -1,9 +1,13 @@
 package com.ccclubs.gateway.common.util;
 
+import com.ccclubs.gateway.common.bean.attr.AbstractChannelHealthyAttr;
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
+import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
+import com.ccclubs.gateway.common.inf.ChannelAttr;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.Attribute;
@@ -20,33 +24,32 @@ import java.util.Objects;
  */
 public class ChannelAttrbuteUtil {
 
-    public static void refreshPacTrackForNewMsg(Channel channel) {
+    public static PackageTraceAttr getTrace(Channel channel) {
         Objects.requireNonNull(channel);
 
-        PacProcessTrack pacProcessTrack = getPacTracker(channel);
-        pacProcessTrack.reset();
+        Attribute<PackageTraceAttr> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACKAGE_TRACE.getAttributeKey());
+        return checkNullForAttr(pacProcessTrackAttribute.get());
     }
 
-    public static PacProcessTrack getPacTracker(Channel channel) {
+    public static <T extends AbstractChannelHealthyAttr> T getHealthy (SocketChannel channel) {
         Objects.requireNonNull(channel);
 
-        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACKAGE_TRACK);
-        PacProcessTrack pacProcessTrack = pacProcessTrackAttribute.get();
-        return pacProcessTrack;
+        Attribute<T> healthyInfoAttribute = (Attribute<T>) channel.attr(ChannelAttrKey.CHANNEL_HEALTHY.getAttributeKey());
+        return checkNullForAttr(healthyInfoAttribute.get());
     }
 
-    public static ChannelLifeCycleTrack getLifeTrack(Channel channel) {
+    public static ChannelStatusAttr getStatus(SocketChannel channel) {
         Objects.requireNonNull(channel);
 
-        Attribute<ChannelLifeCycleTrack> trackValue = channel.attr(ChannelAttrKey.CHANNEL_LIFE_CYCLE_TRACK);
-        ChannelLifeCycleTrack track = trackValue.get();
-        return track;
+        Attribute<ChannelStatusAttr> channelStatusAttrAttribute = channel.attr(ChannelAttrKey.CHANNEL_STATUS.getAttributeKey());
+        return checkNullForAttr(channelStatusAttrAttribute.get());
     }
 
-    public static void setChannelLiveStatus(SocketChannel channel, ChannelLiveStatus liveStatus) {
-        Objects.requireNonNull(channel);
-
-        getLifeTrack(channel).setLiveStatus(liveStatus);
+    private static <T extends ChannelAttr> T checkNullForAttr(T attr) {
+        if (Objects.isNull(attr)) {
+            throw new IllegalStateException("channel attribute values is empty");
+        }
+        return attr;
     }
 
 }

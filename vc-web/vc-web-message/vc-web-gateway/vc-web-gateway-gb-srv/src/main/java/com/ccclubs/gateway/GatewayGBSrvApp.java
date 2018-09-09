@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties({KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
 public class GatewayGBSrvApp extends SpringBootServletInitializer {
 
-  private static final Logger logger = LoggerFactory.getLogger(GatewayGBSrvApp.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GatewayGBSrvApp.class);
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(GatewayGBSrvApp.class);

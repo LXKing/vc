@@ -1,19 +1,20 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.constant.HandleStatus;
+import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
+import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.constant.PacErrorType;
 import com.ccclubs.gateway.gb.constant.RealtimeDataType;
-import com.ccclubs.gateway.gb.handler.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.gb.handler.process.ChildChannelHandler;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.common.AckMsgBuilder;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
 import com.ccclubs.gateway.gb.utils.ValidUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,21 +34,21 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
     private static final Logger LOG = LoggerFactory.getLogger(PackageValidateHandler.class);
 
     @Override
-    protected boolean channelRead0(ChannelHandlerContext ctx, GBPackage pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, GBPackage pac) {
         ByteBuf frame = pac.getSourceBuff();
 
         if(!ValidUtil.validePac(frame)) {
-            LOG.error("收到一个校验异常包：{}", pac.toLogString());
+            LOG.error("received a error validated package：{}", pac.toLogString());
             // 标记为错误包
             pac.setErrorPac(true);
             pac.setPacErrorType(PacErrorType.PAC_VALID_ERROR);
             // 根据消息类型的不同，做不同的应答处理
             processFailAckByMsgType(ctx, pac);
         } else {
-            // TODO 校验成功：发送成功应答
+            // 校验成功：发送成功应答
             processSuccessAck(ctx, pac);
 
-            validPacLength(pac, pacProcessTrack.getExpMessageDTO());
+            validPacLength(pac, (SocketChannel) ctx.channel());
         }
 
         // 空消息时，预警
@@ -58,7 +59,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
         }
 
         // 统计处理时间
-        return true;
+        return HandleStatus.NEXT;
     }
 
     /**
@@ -75,10 +76,12 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                 // TODO 心跳校验失败不知道是否应答失败(理论上不用回复)
 //            case HEARTBEAT:
                 ByteBuf destBuf = AckMsgBuilder.ofFail(pac.getSourceBuff().copy());
-                if (ChildChannelHandler.printPacLog) {
-                    LOG.info("服务器下发异常错误应答>>>" + ByteBufUtil.hexDump(destBuf));
+                if (Objects.nonNull(destBuf)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("server downstream fail ack: [{}]", ByteBufUtil.hexDump(destBuf));
+                    }
+                    ctx.pipeline().writeAndFlush(destBuf);
                 }
-                ctx.writeAndFlush(destBuf);
                 break;
             // 其他类型的消息不做应答
             default:
@@ -91,15 +94,15 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             // 需要应答
             ByteBuf destBuf = AckMsgBuilder.ofSuccess(pac.getSourceBuff().copy());
             if (Objects.nonNull(destBuf)) {
-                if (ChildChannelHandler.printPacLog) {
-                    LOG.info("服务器下发成功应答>>>" + ByteBufUtil.hexDump(destBuf));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("server downstream success ack: [{}]", ByteBufUtil.hexDump(destBuf));
                 }
-                ctx.writeAndFlush(destBuf.resetReaderIndex());
+                ctx.pipeline().writeAndFlush(destBuf);
             }
         }
     }
 
-    public void validPacLength(GBPackage pac, ExpMessageDTO expMessageDTO) {
+    public void validPacLength(GBPackage pac, SocketChannel channel) {
         // 校验报文长度
         ByteBuf contentBuffer = pac.getBody().getContent().discardReadBytes();
         // 是否发生包长度校验异常
@@ -204,7 +207,8 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                             lengthError = true;
                             int lackedBytes = (expectedLengthIndex + 1) - pacContentLength;
                             RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(lackBytesIndex);
-                            expMessageDTO
+                            ChannelAttrbuteUtil.getTrace(channel)
+                                    .getExpMessageDTO()
                                     .setIndex(realtimeDataType.getCode())
                                     .setReason("[" + realtimeDataType.getDes() + "]缺少[" + lackedBytes + "]字节");
                             LOG.error("车机({})实时数据中[{}]部位缺失[{}]字节, 原始数据[{}]",
@@ -216,7 +220,8 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                         break;
                     } catch (IndexOutOfBoundsException e) {
                         lengthError = true;
-                        expMessageDTO
+                        ChannelAttrbuteUtil.getTrace(channel)
+                                .getExpMessageDTO()
                                 .setIndex(lackBytesIndex)
                                 .setReason(e.getMessage());
                         LOG.error("车机({})实时数据中[{}]部位读取字节失败, 原始数据[{}]",
@@ -265,5 +270,10 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
             pac.setErrorPac(true);
             pac.setPacErrorType(PacErrorType.PAC_LENGTH_ERROR);
         }
+    }
+
+    @Override
+    protected HandleStatus handleInnerMsg(AbstractChannelInnerMsg innerMsg) {
+        return HandleStatus.NEXT;
     }
 }
