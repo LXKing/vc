@@ -25,6 +25,78 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
     private Integer cssBaseLAC;
     private Integer cssBaseCI;
     private Integer controlStatus;
+    /**
+     * GPS辅助定位，经度平均值
+     */
+    private BigDecimal cssLongitudeAvg;
+    /**
+     * GPS辅助定位，纬度平均值
+     */
+    private BigDecimal cssLatitudeAvg;
+    /**
+     * GPS辅助定位，经度最大值
+     */
+    private BigDecimal cssLongitudeMax;
+    /**
+     * GPS辅助定位，纬度最大值
+     */
+    private BigDecimal cssLatitudeMax;
+    /**
+     * GPS辅助定位，经度最小值
+     */
+    private BigDecimal cssLongitudeMin;
+    /**
+     * GPS辅助定位，纬度最小值
+     */
+    private BigDecimal cssLatitudeMin;
+
+    public BigDecimal getCssLongitudeAvg() {
+        return cssLongitudeAvg;
+    }
+
+    public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
+        this.cssLongitudeAvg = cssLongitudeAvg;
+    }
+
+    public BigDecimal getCssLatitudeAvg() {
+        return cssLatitudeAvg;
+    }
+
+    public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
+        this.cssLatitudeAvg = cssLatitudeAvg;
+    }
+
+    public BigDecimal getCssLongitudeMax() {
+        return cssLongitudeMax;
+    }
+
+    public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
+        this.cssLongitudeMax = cssLongitudeMax;
+    }
+
+    public BigDecimal getCssLatitudeMax() {
+        return cssLatitudeMax;
+    }
+
+    public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
+        this.cssLatitudeMax = cssLatitudeMax;
+    }
+
+    public BigDecimal getCssLongitudeMin() {
+        return cssLongitudeMin;
+    }
+
+    public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
+        this.cssLongitudeMin = cssLongitudeMin;
+    }
+
+    public BigDecimal getCssLatitudeMin() {
+        return cssLatitudeMin;
+    }
+
+    public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
+        this.cssLatitudeMin = cssLatitudeMin;
+    }
 
     public Integer getControlStatus() {
         return controlStatus;
