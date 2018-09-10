@@ -2,8 +2,6 @@ package com.ccclubs.gateway.gb.handler.process;
 
 import com.ccclubs.gateway.gb.inf.MsgSender;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.reflect.ClientCache;
-import com.ccclubs.gateway.gb.reflect.GBConnection;
 
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;

@@ -13,7 +13,7 @@ import java.util.Objects;
  * @Time: 15:17
  * Email:  yeanzhi@ccclubs.com
  */
-public class GBPackage {
+public final class GBPackage {
     /**
      * 源数据包缓冲区(引用)
      */

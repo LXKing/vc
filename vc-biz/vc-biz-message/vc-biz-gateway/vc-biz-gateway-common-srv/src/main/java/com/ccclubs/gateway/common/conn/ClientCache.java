@@ -24,9 +24,9 @@ public class ClientCache {
      */
     private static Channel serverChannel;
 
-    private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
+    private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(1<<10);
 
-    private static Map<Channel, ClientCache> CHANNEL_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
+    private static Map<Channel, ClientCache> CHANNEL_TO_CLIENT = PlatformDependent.newConcurrentHashMap(1<<10);
 
     /**
      * 唯一标识

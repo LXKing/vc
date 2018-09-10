@@ -72,11 +72,6 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
             ReferenceCountUtil.release(pac.getSourceBuff());
             return HandleStatus.END;
         } else {
-            if (CommandType.VEHICLE_LOGIN.equals(pac.getHeader().getCommandMark())) {
-                dealVehicleLogin(channel, pac.getHeader().getUniqueNo());
-            } else if (CommandType.VEHICLE_LOGOUT.equals(pac.getHeader().getCommandMark())) {
-                dealVehicleLogout(channel, pac.getHeader().getUniqueNo());
-            }
             // 因为错误包的数据不准确，所以不在错误包之前初始化连接
             DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttrbuteUtil.getHealthy(channel);
             // 统计总包数
@@ -106,37 +101,5 @@ public class ConnStatisticsHandler extends CCClubChannelInboundHandler<GBPackage
         channelHealthyAttr.setErrorPackageNum(channelHealthyAttr.getErrorPackageNum() + 1);
     }
 
-    private void dealVehicleLogin(SocketChannel channel, String uniqueNo) {
-        ChannelStatusAttr channelStatusAttr = ChannelAttrbuteUtil.getStatus(channel);
-        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus()) &&
-                ChannelLiveStatus.ONLINE_CONNECT.getCode() == channelStatusAttr.getChannelLiveStage()) {
-            /**
-             * 标记当前状态为已注册状态
-             */
-            ChannelAttrbuteUtil.getStatus(channel)
-                    .setCurrentStatus(ChannelLiveStatus.ONLINE_REGISTER)
-                    .nextStage();
-            // 车辆首次连入系统, 创建客户端缓存
-            ClientCache.ofNew(uniqueNo, channel);
-            // 给所有ChannelAttribute赋值vin
-            ChannelAttrKey.initUniqueNoForAll(channel, uniqueNo, GatewayType.GATEWAY_808);
-            LOG.info("车机[{}]登入成功", uniqueNo);
-        } else {
-            LOG.info("车机[{}]重复登入", uniqueNo);
-        }
-    }
 
-    private void dealVehicleLogout(SocketChannel channel, String uniqueNo) {
-        /**
-         * 标记当前状态为已登出状态
-         */
-        ChannelAttrbuteUtil.getStatus(channel)
-                .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT)
-                .setChannelLiveStage(ChannelLiveStatus.OFFLINE_LOGOUT.getCode());
-
-        ClientCache.getByUniqueNo(uniqueNo).ifPresent(client -> {
-            client.delFromMapping();
-            LOG.info("车机[{}]登出成功", uniqueNo);
-        });
-    }
 }

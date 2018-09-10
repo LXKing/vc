@@ -8,12 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 渠道状态
  */
-public class ChannelStatusAttr implements ChannelAttr {
-    /**
-     * 渠道唯一标志
-     */
-    private String uniqueNo;
-
+public class ChannelStatusAttr extends AbstractChannelAttr implements ChannelAttr {
     /**
      * 渠道生命阶段
      *  相对于当前状态，该值承步进式，默认值为0，即渠道创建，下一阶段为渠道连接
@@ -43,15 +38,6 @@ public class ChannelStatusAttr implements ChannelAttr {
      */
     public ChannelStatusAttr nextStage() {
         ++ this.channelLiveStage;
-        return this;
-    }
-
-    public String getUniqueNo() {
-        return uniqueNo;
-    }
-
-    public ChannelStatusAttr setUniqueNo(String uniqueNo) {
-        this.uniqueNo = uniqueNo;
         return this;
     }
 

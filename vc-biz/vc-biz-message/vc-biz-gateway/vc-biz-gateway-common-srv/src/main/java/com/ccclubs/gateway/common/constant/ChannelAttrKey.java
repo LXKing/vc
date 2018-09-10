@@ -32,8 +32,6 @@ public enum ChannelAttrKey {
 
             channel.attr(getAttributeKey()).setIfAbsent(packageTraceAttr);
         }
-
-        public void get() {}
     },
 
     /**

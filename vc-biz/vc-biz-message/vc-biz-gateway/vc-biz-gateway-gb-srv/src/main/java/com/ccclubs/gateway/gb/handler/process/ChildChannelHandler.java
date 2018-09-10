@@ -40,6 +40,8 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
     @Autowired
     private GBPackageEncoder gbPackageEncoder;
+    @Autowired
+    private AuthticationHandler authticationHandler;
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
@@ -48,12 +50,12 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 /*inbound*/
                 // 空闲处理
                 .addLast("idleHandler", new IdleStateHandler(gatewayProperties.getIdleSeconds(),0,0))
-                // 记录监视的车辆报文
-//                .addLast("preHandler", preProcessHandler)
                 // 解码
                 .addLast("gbDecoder", new GBLengthFieldFrameDecoder(4096))
                 // 数据包校验
                 .addLast("validateHandler", packageValidateHandler)
+                // 数据权限校验
+                .addLast("authticationHandler", authticationHandler)
                 // 连接数据统计
                 .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
                 // 业务处理
@@ -63,7 +65,7 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
                 /*outbound*/
                 // 编码器
-                .addLast("GBEncoder", gbPackageEncoder);
+                .addLast("gbEncoder", gbPackageEncoder);
 
         /**
          * 初始化全链路共享的channelAttribute

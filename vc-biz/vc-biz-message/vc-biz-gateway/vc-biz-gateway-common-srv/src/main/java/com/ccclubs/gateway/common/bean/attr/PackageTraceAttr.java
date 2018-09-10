@@ -9,12 +9,7 @@ import io.netty.buffer.ByteBuf;
  *   循环记载消息处理轨迹
  *
  */
-public class PackageTraceAttr implements ChannelAttr {
-    /**
-     * 渠道唯一标志
-     */
-    private String uniqueNo;
-
+public class PackageTraceAttr extends AbstractChannelAttr implements ChannelAttr {
     /**
      * 当前报文字节缓冲
      */
@@ -60,15 +55,6 @@ public class PackageTraceAttr implements ChannelAttr {
 
     public PackageTraceAttr next() {
         ++ this.step;
-        return this;
-    }
-
-    public String getUniqueNo() {
-        return uniqueNo;
-    }
-
-    public PackageTraceAttr setUniqueNo(String uniqueNo) {
-        this.uniqueNo = uniqueNo;
         return this;
     }
 

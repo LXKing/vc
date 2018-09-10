@@ -143,7 +143,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
          */
         // 先获取vin码
         String vinNo = validateAndGetVin(frame);
-        if (StringUtils.isNoneEmpty(vinNo)) {
+        if (StringUtils.isNotEmpty(vinNo)) {
             /**
              * 与原有vin对比
              */
@@ -157,9 +157,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             decodeExceptionInfo.setVin(vinNo).next();
             pacHeader.setUniqueNo(vinNo);
 
-            packageTraceAttr.setUniqueNo(vinNo)
+            packageTraceAttr.setUniqueNo(vinNo);
                     // 初始化异常信息
-                    .getExpMessageDTO()
+            packageTraceAttr.getExpMessageDTO()
                     .setVin(vinNo)
                     .setSourceHex(packageTraceAttr.getSourceHex())
                     .setMsgTime(System.currentTimeMillis());

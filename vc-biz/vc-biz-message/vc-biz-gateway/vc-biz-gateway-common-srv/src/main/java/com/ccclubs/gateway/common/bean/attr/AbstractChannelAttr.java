@@ -13,7 +13,13 @@ import com.ccclubs.gateway.common.inf.ChannelAttr;
  * date[更新日期] time[更新时间] updater[更新人]     for[原因]
  */
 public class AbstractChannelAttr implements ChannelAttr {
+    /**
+     * 渠道唯一标志
+     */
     private String uniqueNo;
+    /**
+     * 网关类型
+     */
     private GatewayType gatewayType;
 
     public String getUniqueNo() {

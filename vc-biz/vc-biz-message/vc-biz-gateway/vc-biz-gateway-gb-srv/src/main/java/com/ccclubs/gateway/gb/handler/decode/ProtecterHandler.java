@@ -1,9 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
-import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
+import com.ccclubs.gateway.common.exception.ServerCutException;
 import com.ccclubs.gateway.common.util.BufReleaseUtil;
 import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
 import com.ccclubs.gateway.common.util.ChannelUtils;
@@ -12,8 +11,6 @@ import com.ccclubs.gateway.gb.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.reflect.ClientCache;
-import com.ccclubs.gateway.gb.reflect.GBConnection;
 import com.ccclubs.gateway.gb.service.KafkaService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -28,8 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -74,46 +69,6 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
         kafkaService.send(new KafkaTask(KafkaSendTopicType.SUCCESS,
                 pac.getHeader().getUniqueNo(),
                 packProcessExceptionDTO.toJson()));
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext context) {
-        SocketChannel channel = (SocketChannel)context.channel();
-        LOG.info("new channel active: ip={}, port={}",
-                channel.remoteAddress().getHostString(),
-                channel.remoteAddress().getPort());
-
-        ChannelAttrbuteUtil.getStatus(channel)
-                .setCurrentStatus(ChannelLiveStatus.ONLINE_CONNECT)
-                .nextStage();
-
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext context) {
-        SocketChannel channel = (SocketChannel)context.channel();
-        GBConnection conn = ClientCache.getByChannelId(channel.id());
-
-        String vin = "无";
-        ConnOnlineStatusEvent connOnlineStatusEvent = new ConnOnlineStatusEvent();
-        if (Objects.nonNull(conn) && conn.isConnected()) {
-            connOnlineStatusEvent.setVin(conn.getVin())
-                    .setOnline(false)
-                    .setTimestamp(System.currentTimeMillis())
-                    .setClientIp(channel.remoteAddress().getHostString())
-                    .setServerIp(channel.localAddress().getHostString());
-            vin = conn.getVin();
-        }
-        LOG.info("vehicle({}) become inactive and is closing: ip={}, port={}",
-                vin,
-                channel.remoteAddress().getHostString(),
-                channel.remoteAddress().getPort());
-
-        boolean connClosedSuccess = ClientCache.closeWhenInactive((SocketChannel) context.channel());
-        if (connClosedSuccess) {
-
-            kafkaService.send(new KafkaTask(KafkaSendTopicType.CONN, connOnlineStatusEvent.getVin(), connOnlineStatusEvent.toJson()));
-        }
     }
 
     @Override
@@ -196,6 +151,8 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
                     .append(ChannelUtils.getUniqueNoOrHost(packageTraceAttr.getUniqueNo(), channel))
                     .append("发送帧长度异常，服务端将主动断开连接");
             LOG.error(tooLongSb.toString());
+            needCloseConn = true;
+        } else if (cause instanceof ServerCutException) {
             needCloseConn = true;
         }
 

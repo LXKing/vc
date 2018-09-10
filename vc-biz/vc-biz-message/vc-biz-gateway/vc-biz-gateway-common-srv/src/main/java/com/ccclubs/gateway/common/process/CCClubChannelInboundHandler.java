@@ -1,7 +1,5 @@
 package com.ccclubs.gateway.common.process;
 
-import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;

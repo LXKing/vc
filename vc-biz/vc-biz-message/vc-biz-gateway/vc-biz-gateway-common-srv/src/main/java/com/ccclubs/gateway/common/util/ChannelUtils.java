@@ -1,6 +1,8 @@
 package com.ccclubs.gateway.common.util;
 
 import io.netty.channel.socket.SocketChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -12,6 +14,7 @@ import java.util.Objects;
  * 通道工具类
  */
 public final class ChannelUtils {
+    public static final Logger LOG = LoggerFactory.getLogger(ChannelUtils.class);
     private ChannelUtils(){}
 
     /**
@@ -76,6 +79,25 @@ public final class ChannelUtils {
                 .append(":")
                 .append(channel.remoteAddress().getPort());
         return hostSb.toString();
+    }
+
+    /**
+     * 关闭通信连接，当调用关闭失败时，强制关闭连接
+     * @param channel
+     * @param uniqueNo
+     */
+    public static void closeChannel(SocketChannel channel, String uniqueNo) {
+        /**
+         * 如果连接活跃，则关闭该连接
+         */
+        if (channel.isActive()) {
+            try {
+                channel.close();
+            } catch (Exception e) {
+                LOG.error("({}) close channel failed when deal offline event, the server will close it forcibly", uniqueNo);
+                channel.unsafe().closeForcibly();
+            }
+        }
     }
 
 }

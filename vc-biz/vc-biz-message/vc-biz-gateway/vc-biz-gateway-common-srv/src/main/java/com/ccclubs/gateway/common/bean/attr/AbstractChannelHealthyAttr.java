@@ -13,12 +13,7 @@ import com.ccclubs.gateway.common.inf.ChannelAttr;
  * date[更新日期] time[更新时间] updater[更新人]     for[原因]
  *
  **/
-public abstract class AbstractChannelHealthyAttr implements ChannelAttr {
-    /**
-     * 渠道唯一标志
-     */
-    private String uniqueNo;
-
+public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr implements ChannelAttr {
     /**
      * 当前客户端IP端口信息
      */
@@ -33,15 +28,6 @@ public abstract class AbstractChannelHealthyAttr implements ChannelAttr {
      * 上次报文间隔时长（秒）
      */
     private int lastPackageDuration;
-
-    public String getUniqueNo() {
-        return uniqueNo;
-    }
-
-    public AbstractChannelHealthyAttr setUniqueNo(String uniqueNo) {
-        this.uniqueNo = uniqueNo;
-        return this;
-    }
 
     public String getCurrentClientAddress() {
         return currentClientAddress;
