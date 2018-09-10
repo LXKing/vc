@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.gb.service;
 
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.gb.beans.KafkaTask;
 import com.ccclubs.gateway.gb.config.KafkaProperties;
 import org.slf4j.Logger;
@@ -50,9 +51,11 @@ public class KafkaService {
                 break;
                 default:
                     LOG.error("无效的topic: [{}]", task.getTopic());
-                    break;
+                    throw new IllegalStateException("异常的kafka-topic：" + task.getTopic());
         }
-        LOG.debug("[{}]发送kafka[{}]消息完成", task.getKey(), topic);
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info("[{}]发送kafka[{}]消息完成: [{}]", task.getKey(), topic, task.getBody());
+        }
         // 目前只管发送，没有失败重发
         return kafkaTemplate.send(topic, task.getKey(), task.getBody());
     }

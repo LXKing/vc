@@ -58,7 +58,7 @@ public class GBPackage {
     public String toLogString() {
         StringBuilder pacSb = new StringBuilder();
         pacSb
-                .append("车辆(").append(getHeader().getUniqueNo()).append(")")
+                .append("车机(").append(getHeader().getUniqueNo()).append(")")
                 .append("上传")
                 .append("[").append(getHeader().getCommandMark().getDes()).append("]消息.")
                 .append("原始消息[").append(getSourceHexStr()).append("]");

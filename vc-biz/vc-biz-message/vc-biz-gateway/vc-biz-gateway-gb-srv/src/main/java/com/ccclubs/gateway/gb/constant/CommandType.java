@@ -2,6 +2,8 @@ package com.ccclubs.gateway.gb.constant;
 
 import com.ccclubs.gateway.gb.inf.ICodedStatus;
 
+import java.util.Objects;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/3/26
@@ -66,6 +68,11 @@ public enum CommandType  implements ICodedStatus {
      */
     CONTROL_COMMAND(0x82, "车载终端控制命令");
 
+    /**
+     * 期望值
+     */
+    private static String EXCEPTE_VALUES;
+
     private int code;   // 编码
     private String des; // 描述
 
@@ -74,6 +81,7 @@ public enum CommandType  implements ICodedStatus {
         this.des = des;
     }
 
+    @Override
     public int getCode() {
         return code;
     }
@@ -94,13 +102,16 @@ public enum CommandType  implements ICodedStatus {
 
     // 预期的期望值，逗号分隔
     public static String expectedVals() {
-        StringBuilder valSb = new StringBuilder();
-        for (CommandType c :
-                CommandType.values()) {
-            valSb.append(c.getCode()).append(",");
+        if (Objects.isNull(EXCEPTE_VALUES)) {
+            StringBuilder valSb = new StringBuilder();
+            for (CommandType c :
+                    CommandType.values()) {
+                valSb.append(c.getCode()).append(",");
+            }
+            // 删除最后一个逗号
+            valSb.deleteCharAt(valSb.length() - 1);
+            EXCEPTE_VALUES = valSb.toString();
         }
-        // 删除最后一个逗号
-        valSb.deleteCharAt(valSb.length() - 1);
-        return valSb.toString();
+        return EXCEPTE_VALUES;
     }
 }
