@@ -107,7 +107,7 @@ public class LogicHelperMqtt {
     /**
      * 保存状态数据 Timer: 该方法受时间记录
      */
-    @Timer
+    //@Timer
     public void saveStatusData(final MachineMapping mapping, final MqMessage message,
             final MQTT_66 mqtt_66) {
         // 车机对象
@@ -307,7 +307,7 @@ public class LogicHelperMqtt {
     /**
      * 保存新版本状态数据
      */
-    @Timer
+    //@Timer
     public void saveStatusData(MachineMapping mapping, final MqMessage message,
             final MQTT_68_03 mqtt_68_03) {
         /**
@@ -556,7 +556,7 @@ public class LogicHelperMqtt {
     /**
      * 保存CAN数据
      */
-    @Timer
+    //@Timer
     public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
             CanStatusZotye canZotye) {
         /**

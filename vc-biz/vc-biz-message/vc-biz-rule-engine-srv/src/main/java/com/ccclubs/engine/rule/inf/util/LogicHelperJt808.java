@@ -10,10 +10,13 @@ import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
 import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.common.query.QueryTerminalService;
+import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
 import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
+import com.ccclubs.frm.spring.util.UuidUtil;
 import com.ccclubs.helper.MachineMapping;
+import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
@@ -28,6 +31,7 @@ import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.dto.Jt808PositionData;
 import com.ccclubs.pub.orm.dto.StateDTO;
+import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
@@ -82,6 +86,12 @@ public class LogicHelperJt808 {
     @Value("${" + KafkaConst.KAFKA_TOPIC_JT_POSITION_EXP + "}")
     String kafkaTopicJt808PositionExp;
 
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG + ":topic_tbox_log}")
+    String tboxLogTopic;
+
+    @Value("${" + KafkaConst.KAFKA_TOPIC_TBOX_LOG_EXP + ":topic_tbox_log_exp}")
+    String tboxLogTopicExp;
+
     @Resource
     private TerminalUtils terminalUtils;
 
@@ -93,6 +103,9 @@ public class LogicHelperJt808 {
 
     @Resource
     UpdateCanService updateCanService;
+
+    @Resource
+    QueryVehicleService queryVehicleService;
 
     /**
      * CAN查询
@@ -110,12 +123,18 @@ public class LogicHelperJt808 {
     QueryTerminalService queryTerminalService;
 
     /**
-     * 保存状态数据 只有位置数据，不发kafka[topic_mqtt_state]，以免影响大数据分析的数据准确性
+     * 保存状态数据,只有JT_0200位置数据
+     * <p>
+     * 1.不发kafka[topic_mqtt_state]，以免影响大数据分析的数据准确性
+     * <p>
+     * 2.不在redis存储实时状态数据，以免影响业务平台调用api:getRealTimeState
+     * <p>
+     * 3.不存储最近30条状态数据,只有位置数据,基本上无法用来做实时计算分析
      *
      * @param message 上传
-     * @param jvi 0x0200数据
+     * @param jvi     0x0200数据
      */
-    @Timer
+    //@Timer
     public void saveStatusData(final MachineMapping mapping, final T808Message message,
             final JT_0200 jvi) {
         try {
@@ -160,9 +179,7 @@ public class LogicHelperJt808 {
                 // 需要更新的当前状态加入等待队列
                 ListOperations opsForList = redisTemplate.opsForList();
                 opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
-                //实时状态->redis
-                redisTemplate.opsForHash()
-                        .put(REDIS_KEY_RT_STATES, csMachine.getCsmNumber(), csState);
+
             } else {
                 // 车机状态为空
                 // 808 原始0200数据，以下业务数据不做更新
@@ -212,9 +229,6 @@ public class LogicHelperJt808 {
                         .setCssLatitude(AccurateOperationUtils.mul(jvi.getLatitude(), 0.000001));
 
                 updateStateService.insert(csStateInsert);
-                //实时状态->redis
-                redisTemplate.opsForHash()
-                        .put(REDIS_KEY_RT_STATES, csStateInsert.getCssNumber(), csStateInsert);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -225,9 +239,9 @@ public class LogicHelperJt808 {
      * 保存Geo数据 发kafka[topic_jt_position]
      *
      * @param message 上传
-     * @param jvi 0x0200数据
+     * @param jvi     0x0200数据
      */
-    @Timer
+    //@Timer
     public void saveGeoData(final MachineMapping mapping, final T808Message message,
             final JT_0200 jvi) {
         try {
@@ -273,10 +287,27 @@ public class LogicHelperJt808 {
                         .send(kafkaTopicJt808Position, JSONObject.toJSONString(jt808PositionData));
             }
 
+            //808数据且未安装分时租赁插件的,位置数据更新实时状态redis
+            CsMachine csMachine = queryTerminalService
+                    .queryCsMachineByCarNumber(mapping.getNumber());
+            if (csMachine != null && (csMachine.getCsmTlV2() == null
+                    || csMachine.getCsmTlV2() == 0)) {
+                CsState state = new CsState();
+                state.setCssTeNo(csMachine.getCsmTeNo());
+                state.setMobile(csMachine.getCsmMobile());
+                state.setIccid(csMachine.getCsmIccid());
+                state.setCssAccess(csMachine.getCsmAccess().shortValue());
+                state.setCssCurrentTime(new Date(jt808PositionData.getCurrentTime()));
+                state.setCssLatitude(jt808PositionData.getLatitude());
+                state.setCssLongitude(jt808PositionData.getLongitude());
+                state.setCssCsq(jvi.getCsq());
+                state.setCssGpsValid(jt808PositionData.getGpsValid().byteValue());
+                state.setCssSpeed(jt808PositionData.getGpsSpeed());
+                state.setCssMoData(message.getPacketDescr());
+                redisTemplate.opsForHash().put(REDIS_KEY_RT_STATES, state.getCssNumber(), state);
+            }
             //保存长安状态历史数据30条至redis
             if (mapping.getAccess() == 3 || mapping.getAccess() == 4 || mapping.getAccess() == 5) {
-                CsMachine csMachine = queryTerminalService
-                        .queryCsMachineByCarNumber(mapping.getNumber());
                 if (csMachine != null && (csMachine.getCsmTlV2() == null
                         || csMachine.getCsmTlV2() == 0)) {
                     StateDTO stateDTO = new StateDTO();
@@ -309,7 +340,7 @@ public class LogicHelperJt808 {
      * @param message 上传
      * @param canData 0x0900 透传数据
      */
-    @Timer
+    //@Timer
     public void saveCanData(MachineMapping mapping, final T808Message message,
             final JT_0900_can canData) {
         try {
@@ -455,7 +486,7 @@ public class LogicHelperJt808 {
      * @param message 上传
      * @param canData 0x0900 透传数据
      */
-    @Timer
+    //@Timer
     public void saveCanData(MachineMapping mapping, final T808Message message,
             final JT_0900_can canData,
             final String type) {
@@ -525,6 +556,46 @@ public class LogicHelperJt808 {
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 记录业务数据
+     *
+     * @param carNumber 车机号
+     * @param content   主要内容
+     * @param hexString 原始十六进制数据
+     * @param order     订单号
+     */
+    public void transferTboxLog(String carNumber, String content, String hexString,
+            Long order) {
+        try {
+            Long addTime = System.currentTimeMillis();
+            //转发到kafka，存储HBASE
+            TboxLog dto = new TboxLog();
+            dto.setAddTime(addTime);
+            dto.setLogInfo(content);
+            dto.setOrderNo(order);
+            dto.setTeNumber(carNumber);
+            dto.setSourceHex(hexString);
+            dto.setUuid(UuidUtil.getUuid());
+            CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
+            if (csMachine == null) {
+                logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
+                kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+            } else {
+                CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                dto.setAccess(csMachine.getCsmAccess());
+                if (csVehicle == null) {
+                    kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
+                } else {
+                    dto.setVin(csVehicle.getCsvVin());
+                    kafkaTemplate.send(tboxLogTopic, JSONObject.toJSONString(dto));
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
     }
 }
