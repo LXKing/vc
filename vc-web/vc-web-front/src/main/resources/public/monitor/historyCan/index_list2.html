@@ -35,9 +35,9 @@
 	</div>
 
 <table id="table"></table>
-<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
+<!--<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
 	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-</div>
+</div>-->
 
 <script type="text/javascript">
     var currPage=1,currSize=15;
@@ -161,11 +161,10 @@
 
 	var tableId = "THistoryCan";
 	var clms = [{checkbox: true}
-	  		,{field: "csNumber", title: "车机号", width: 140, sort:true}
-	  		,{field: "canData", title: "车辆can数据",width:700, sort:true}
-	  		,{field: "addTime", title: "添加时间", width: 160, sort:true}
-	  		,{field: "currentTime", title: "下位机时间", width: 160, sort:true}
-      		,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
+	  		,{field: "csNumber", title: "车机号", width: 140, sort:false}
+	  		,{field: "canData", title: "车辆can数据",width:700, sort:false}
+	  		,{field: "addTime", title: "添加时间", width: 160, sort:false}
+	  		,{field: "currentTime", title: "下位机时间", width: 160, sort:false}
     ];
 
 	var option = {
