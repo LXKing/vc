@@ -7,7 +7,7 @@ import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.message.GBPackage;
@@ -53,7 +53,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
                 channel.remoteAddress().getHostString(),
                 channel.remoteAddress().getPort());
 
-        ChannelAttrbuteUtil.getStatus(channel)
+        ChannelAttributeUtil.getStatus(channel)
                 .setCurrentStatus(ChannelLiveStatus.ONLINE_CONNECT)
                 .nextStage();
 
@@ -61,7 +61,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
          * 注册定时任务：如果1分钟秒内没有发送鉴权(或者鉴权失败)，断开该连接
          */
         channel.eventLoop().schedule(() -> {
-            ChannelStatusAttr channelStatusAttr = ChannelAttrbuteUtil.getStatus(channel);
+            ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
             if (Objects.isNull(channelStatusAttr.getUniqueNo()) &&
                     ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus())) {
                 channel.pipeline().fireChannelInactive();
@@ -74,7 +74,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         final SocketChannel channel = (SocketChannel) ctx.channel();
 
-        ChannelStatusAttr channelStatusAttr = ChannelAttrbuteUtil.getStatus(channel);
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
         if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
@@ -91,7 +91,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
          */
         if (isPingPongEvent(channelStatusAttr)) {
             LOG.error("tcp server received ping-pong event: client={}", ChannelUtils.getUniqueNoOrHost(null, channel));
-            ChannelAttrbuteUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_END)
+            ChannelAttributeUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_END)
                     .setChannelLiveStage(ChannelLiveStatus.OFFLINE_END.getCode());
             channel.close();
             return;
@@ -134,7 +134,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         /**
          * 其他报文，并且为已认证状态：通过
          */
-        ChannelStatusAttr liveStatus =  ChannelAttrbuteUtil.getStatus(channel);
+        ChannelStatusAttr liveStatus =  ChannelAttributeUtil.getStatus(channel);
 
         // channel状态是否存在
         if (Objects.nonNull(liveStatus)) {
@@ -184,19 +184,19 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
     }
 
     private void dealVehicleLogin(SocketChannel channel, String uniqueNo) {
-        ChannelStatusAttr channelStatusAttr = ChannelAttrbuteUtil.getStatus(channel);
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
         if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus()) &&
                 ChannelLiveStatus.ONLINE_CONNECT.getCode() == channelStatusAttr.getChannelLiveStage()) {
             /**
              * 标记当前状态为已注册状态
              */
-            ChannelAttrbuteUtil.getStatus(channel)
+            ChannelAttributeUtil.getStatus(channel)
                     .setCurrentStatus(ChannelLiveStatus.ONLINE_REGISTER)
                     .nextStage();
             // 车辆首次连入系统, 创建客户端缓存
             terminalConnService.online(uniqueNo, channel, GatewayType.GB);
             // 给所有ChannelAttribute赋值vin
-            ChannelAttrKey.initUniqueNoForAll(channel, uniqueNo, GatewayType.GATEWAY_808);
+            ChannelAttrKey.initUniqueNoForAll(channel, uniqueNo, GatewayType.GB);
             LOG.info("车机[{}]登入成功", uniqueNo);
         } else {
             LOG.info("车机[{}]重复登入", uniqueNo);
@@ -207,7 +207,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         /**
          * 标记当前状态为已登出状态
          */
-        ChannelAttrbuteUtil.getStatus(channel)
+        ChannelAttributeUtil.getStatus(channel)
                 .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT)
                 .setChannelLiveStage(ChannelLiveStatus.OFFLINE_LOGOUT.getCode())
                 .setCloseTime(LocalDateTime.now());

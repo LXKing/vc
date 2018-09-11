@@ -3,7 +3,7 @@ package com.ccclubs.gateway.common.process;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -36,7 +36,7 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
             AbstractChannelInnerMsg innerMsg = (AbstractChannelInnerMsg) pac;
             handleStatus = handleInnerMsg(innerMsg);
         } else {
-            ChannelAttrbuteUtil.getTrace(ctx.channel()).next();
+            ChannelAttributeUtil.getTrace(ctx.channel()).next();
 
             @SuppressWarnings("unchecked")
             T imsg = (T) pac;
@@ -67,11 +67,11 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 
     /**
      * release buffer
-     * @param erroPacBuf
+     * @param errorPacBuf
      */
-    protected void releasePacBuffer(ByteBuf erroPacBuf) {
-        if (Objects.nonNull(erroPacBuf) && erroPacBuf.refCnt() > 0) {
-            ReferenceCountUtil.release(erroPacBuf);
+    protected void releasePacBuffer(ByteBuf errorPacBuf) {
+        if (Objects.nonNull(errorPacBuf) && errorPacBuf.refCnt() > 0) {
+            ReferenceCountUtil.release(errorPacBuf);
         }
     }
 

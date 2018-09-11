@@ -4,7 +4,6 @@ import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
-import com.ccclubs.gateway.gb.service.KafkaService;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -25,23 +24,27 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 //    private ApplicationContext context;
 
     @Autowired
-    private KafkaService kafkaService;
-
-    @Autowired
     private GatewayProperties gatewayProperties;
 
-    /*shared handlers*/
+    /*shared inbound handlers*/
     @Autowired
-    private ProtecterHandler protecterHandler;
+    private PackageValidateHandler packageValidateHandler;
+    @Autowired
+    private AuthticationHandler authticationHandler;
+    @Autowired
+    private ConnStatisticsHandler connStatisticsHandler;
     @Autowired
     private MsgDeliverHandler msgDeliverHandler;
     @Autowired
-    private PackageValidateHandler packageValidateHandler;
+    private SendOutHandler sendOutHandler;
+    @Autowired
+    private ProtecterHandler protecterHandler;
 
+    /*shared outbound handlers*/
     @Autowired
     private GBPackageEncoder gbPackageEncoder;
-    @Autowired
-    private AuthticationHandler authticationHandler;
+
+
 
     @Override
     protected void initChannel(SocketChannel channel) throws Exception {
@@ -57,9 +60,11 @@ public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
                 // 数据权限校验
                 .addLast("authticationHandler", authticationHandler)
                 // 连接数据统计
-                .addLast("connStatisticsHandler", new ConnStatisticsHandler(kafkaService))
+                .addLast("connStatisticsHandler", connStatisticsHandler)
                 // 业务处理
                 .addLast("deliverHandler", msgDeliverHandler)
+                // 内部消息发送处理器
+                .addLast("sendOutHandler", sendOutHandler)
                 // 过程保障
                 .addLast("protectorHandler", protecterHandler)
 

@@ -97,7 +97,7 @@ public class ClientCache {
     }
 
 //    private void closeChannelFocely(SocketChannel channel) {
-//        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_UPDATE);
+//        ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_UPDATE);
 //        channel.pipeline().fireChannelInactive();
 //    }
 

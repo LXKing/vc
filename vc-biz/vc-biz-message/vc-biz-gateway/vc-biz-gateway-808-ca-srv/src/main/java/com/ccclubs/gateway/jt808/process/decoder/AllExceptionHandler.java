@@ -9,7 +9,7 @@ import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
 import com.ccclubs.gateway.jt808.exception.ClientMappingException;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
@@ -68,12 +68,12 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
 
-                ChannelLifeCycleTrack channelLife = ChannelAttrbuteUtil.getLifeTrack(channel);
+                ChannelLifeCycleTrack channelLife = ChannelAttributeUtil.getLifeTrack(channel);
                 channelLife.setLiveStatus( ChannelLiveStatus.OFFLINE_IDLE);
                 String uniqueNo = channelLife.getUniqueNo();
                 if (Objects.isNull(uniqueNo)) {
                     LOG.error("cannot mapping to uniqueNo when deal idle event");
-                    uniqueNo = ChannelAttrbuteUtil.getPacTracker(channel).getUniqueNo();
+                    uniqueNo = ChannelAttributeUtil.getPacTracker(channel).getUniqueNo();
                 }
                 LOG.error("连接(sim={})长时间空闲，将关闭该连接", PacUtil.getUniqueNoOrHost(uniqueNo, channel));
 
@@ -111,7 +111,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          *      如果是链路上非主动抛出：组装其他异常dto
          *  3.发送至kafka
          */
-        PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(channel);
+        PacProcessTrack pacProcessTrack = ChannelAttributeUtil.getPacTracker(channel);
         // (重要)*如果buf未释放则：释放buf*
         BufReleaseUtil.releaseByLoop(pacProcessTrack.getPacBuf());
 
@@ -169,7 +169,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         }
 
         if (needCloseConn) {
-            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
+            ChannelAttributeUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
             // 关闭链接
             context.pipeline().fireChannelInactive();
         }

@@ -17,7 +17,8 @@ public enum PacProcessing {
     PROCESS_AUTH(3, "数据权限校验"),
     PROCESS_STATISTIC(4, "连接信息统计"),
     PROCESS_DELIVER(5, "业务处理"),
-    PROCESS_PROTECTER(6, "异常拦截处理");
+    PROCESS_SEND_OUT(6, "业务处理"),
+    PROCESS_PROTECTER(7, "异常拦截处理");
 
     private int code;
     private String des;

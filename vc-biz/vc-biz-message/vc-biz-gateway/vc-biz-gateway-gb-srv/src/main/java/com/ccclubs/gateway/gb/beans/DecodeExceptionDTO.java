@@ -2,10 +2,7 @@ package com.ccclubs.gateway.gb.beans;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ccclubs.gateway.gb.constant.PackagePart;
-import com.ccclubs.gateway.gb.dto.ExceptionBaseDTO;
 import com.ccclubs.gateway.gb.inf.IExceptionDtoJsonParse;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**

@@ -3,7 +3,7 @@ package com.ccclubs.gateway.jt808.service;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
@@ -82,7 +82,7 @@ public class TerminalConnService {
     public ListenableFuture<SendResult> offline(SocketChannel channel, GatewayType gatewayType) {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
-        ChannelLiveStatus liveStatus = ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
+        ChannelLiveStatus liveStatus = ChannelAttributeUtil.getLifeTrack(channel).getLiveStatus();
 
         // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
@@ -92,8 +92,8 @@ public class TerminalConnService {
         /**
          * 更新channel状态为结束防止重复进入inactive
          */
-        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
-        String uniqueNo = ChannelAttrbuteUtil.getLifeTrack(channel).getUniqueNo();
+        ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
+        String uniqueNo = ChannelAttributeUtil.getLifeTrack(channel).getUniqueNo();
         if (Objects.isNull(uniqueNo)) {
             throw new OfflineException("cannot mapping to a uniqueNo from channelLifeTrace when deal offline");
         }
@@ -168,7 +168,7 @@ public class TerminalConnService {
 
                 ClientCache.getByUniqueNo(uniqueNo).ifPresent(existedClient -> {
                     // 原连接下线
-                    ChannelAttrbuteUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    ChannelAttributeUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                 });
             }
@@ -197,7 +197,7 @@ public class TerminalConnService {
 
                     LOG.info("client update to newChannel, old client will offline and new client will online: uniqueNo={}", uniqueNo);
                     // 原连接下线
-                    ChannelAttrbuteUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    ChannelAttributeUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                     // 新连接上线
                     ClientCache.ofNew(uniqueNo, channel).addToMapping();
@@ -259,7 +259,7 @@ public class TerminalConnService {
         keysets.stream().forEach(k->
                 ClientCache.getByUniqueNo(k).ifPresent(client -> {
                     SocketChannel channel = client.getChannel();
-                    ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     try {
                         ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
                         if (Objects.nonNull(resFut)) {

@@ -39,11 +39,11 @@ public final class PacUtil {
 
         // 获取第10、11、12位的bit位
         int encryptPart = (contentAttr >>> 10);
-        Boolean b10 = checkLastBit(encryptPart);
+        boolean b10 = checkLastBit(encryptPart);
         encryptPart = encryptPart >>> 1;
-        Boolean b11 = checkLastBit(encryptPart);
+        boolean b11 = checkLastBit(encryptPart);
         encryptPart = encryptPart >>> 1;
-        Boolean b12 = checkLastBit(encryptPart);
+        boolean b12 = checkLastBit(encryptPart);
 
         if (!b10 && !b11 && !b12) {
             return false;

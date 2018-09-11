@@ -7,7 +7,7 @@ import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.service.KafkaService;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import io.netty.channel.socket.SocketChannel;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.SettableListenableFuture;
 
 /**
  * @Author: yeanzi
@@ -104,7 +103,7 @@ public class EventService {
         }
 
         // 4. 发送离线轨迹信息用于统计
-        String exceptionHex = ChannelAttrbuteUtil.getPacTracker(channel).getSourceHex();
+        String exceptionHex = ChannelAttributeUtil.getPacTracker(channel).getSourceHex();
         ConnLiveEvent offlineEvent = new ConnLiveEvent()
                 .uniqueNo(uniqueNo)
                 .channel(channel)

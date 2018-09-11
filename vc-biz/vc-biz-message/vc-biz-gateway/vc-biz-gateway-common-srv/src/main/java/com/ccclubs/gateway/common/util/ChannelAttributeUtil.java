@@ -22,7 +22,7 @@ import java.util.Objects;
  * Email:  yeanzhi@ccclubs.com
  * 渠道共享属性工具类
  */
-public class ChannelAttrbuteUtil {
+public class ChannelAttributeUtil {
 
     public static PackageTraceAttr getTrace(Channel channel) {
         Objects.requireNonNull(channel);

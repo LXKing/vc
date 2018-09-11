@@ -1,7 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.gb.beans.DecodeExceptionDTO;
 import com.ccclubs.gateway.gb.constant.*;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
@@ -112,7 +113,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         /**
          * 处理链处理新消息
          */
-        PackageTraceAttr packageTraceAttr = ChannelAttrbuteUtil.getTrace(channel);
+        PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         packageTraceAttr
                 // 清除上一个消息的轨迹信息
                 .refreshForNew()
@@ -158,7 +159,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             pacHeader.setUniqueNo(vinNo);
 
             packageTraceAttr.setUniqueNo(vinNo);
-                    // 初始化异常信息
+            // 初始化异常信息
             packageTraceAttr.getExpMessageDTO()
                     .setVin(vinNo)
                     .setSourceHex(packageTraceAttr.getSourceHex())
@@ -290,6 +291,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         packageTraceAttr.setErrorOccured(true)
                 // 装载异常信息
                 .getExpMessageDTO()
+                .setGatewayType(GatewayType.GB.getDes())
                 .setSourceHex(decodeExceptionInfo.getSource())
                 .setVin(decodeExceptionInfo.getVin())
                 .setIndex(decodeExceptionInfo.getDecodeMarkIndex())

@@ -1,11 +1,12 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.jt808.constant.RedisConnCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
@@ -38,9 +39,9 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
     private EventService eventService;
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
         String uniqueNo = pac.getHeader().getTerMobile();
-        SocketChannel channel = (SocketChannel) ctx.channel();
+        final SocketChannel channel = (SocketChannel) ctx.channel();
 
         redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_TOTAL_PAC, 1, GatewayType.GATEWAY_808);
         /**
@@ -52,11 +53,10 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_ERROR_PAC, 1, GatewayType.GATEWAY_808);
             releasePacBuffer(pac.getSourceBuff());
 
+            // 渠道轨迹信息
+            PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
+            ExpMessageDTO expMessageDTO = packageTraceAttr.getExpMessageDTO();
             // 发送一个kafkaTask给SendoutHandelr
-            ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
-            expMessageDTO.setSourceHex(pac.getSourceHexStr());
-            expMessageDTO.setMsgTime(System.currentTimeMillis());
-            expMessageDTO.setMobile(pacProcessTrack.getUniqueNo());
             // 依据不同的校验异常类型，写入不同的错误码
             switch (pac.getPacErrorType()) {
                 case PAC_VALID_ERROR:
@@ -67,7 +67,7 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
                     break;
             }
             KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR,
-                    pacProcessTrack.getUniqueNo(),
+                    packageTraceAttr.getUniqueNo(),
                     expMessageDTO.toJson());
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             return HandleStatus.END;

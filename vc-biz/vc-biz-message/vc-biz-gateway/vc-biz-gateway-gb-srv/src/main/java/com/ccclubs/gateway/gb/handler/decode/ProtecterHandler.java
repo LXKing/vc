@@ -2,16 +2,16 @@ package com.ccclubs.gateway.gb.handler.decode;
 
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
+import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.exception.ServerCutException;
+import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.BufReleaseUtil;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.common.util.ChannelUtils;
-import com.ccclubs.gateway.gb.beans.KafkaTask;
-import com.ccclubs.gateway.gb.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
 import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.service.KafkaService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -44,7 +44,7 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead (ChannelHandlerContext ctx, Object msg) throws Exception {
         GBPackage pac = (GBPackage) msg;
-        ChannelAttrbuteUtil.getTrace(ctx.channel()).next();
+        ChannelAttributeUtil.getTrace(ctx.channel()).next();
 
         // 真正处理的方法
         handle(pac);
@@ -107,7 +107,7 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
         /**
          * 抛出异常时，先清理buf
          */
-        PackageTraceAttr packageTraceAttr = ChannelAttrbuteUtil.getTrace(channel);
+        PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         BufReleaseUtil.releaseByLoop(packageTraceAttr.getPacBuf());
 
         // 部分异常可能需要服务端主动释放连接

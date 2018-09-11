@@ -1,14 +1,20 @@
 package com.ccclubs.gateway.gb.service;
 
+import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.conn.ClientCache;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
+import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.exception.ClientMappingException;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.service.KafkaService;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.ClientEventFactory;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -26,6 +32,9 @@ import java.util.Set;
 public class TerminalConnService {
     public static final Logger LOG = LoggerFactory.getLogger(TerminalConnService.class);
 
+    @Autowired
+    private KafkaService kafkaService;
+
     /**
      * 终端下线
      *          1. 清除本地连接缓存
@@ -39,7 +48,10 @@ public class TerminalConnService {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
 
-        ChannelStatusAttr channelStatusAttr = ChannelAttrbuteUtil.getStatus(channel);
+
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+        // 保存当前渠道状态
+        ChannelLiveStatus currentLiveStatus = channelStatusAttr.getCurrentStatus();
         // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus())) {
             return;
@@ -54,6 +66,26 @@ public class TerminalConnService {
         if (Objects.isNull(uniqueNo)) {
             throw new ClientMappingException("cannot mapping to a uniqueNo from channelStatusAttr when deal offline");
         }
+
+        // 发送下线事件
+        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOffline(uniqueNo, channel, gatewayType);
+        // 增加下线类型（后面添加掉线原因）
+        int offlineType = 0;
+        switch (currentLiveStatus) {
+            case OFFLINE_IDLE:
+                offlineType = 2;
+                break;
+            case OFFLINE_SERVER_CUT:
+                offlineType = 1;
+                break;
+            case OFFLINE_CLIENT_CUT:
+                offlineType = 3;
+                break;
+            default:
+                break;
+        }
+        connOnlineStatusEvent.setOfflineType(offlineType);
+        kafkaService.send(new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson()));
 
         // 清理内存缓存
         Optional<ClientCache> clientOpt = ClientCache.getByUniqueNo(uniqueNo);
@@ -103,9 +135,9 @@ public class TerminalConnService {
 
                 LOG.info("client update to newChannel, old client will offline and new client will online: uniqueNo={}", uniqueNo);
                 // 原连接下线
-                ChannelAttrbuteUtil.getStatus(existedClient.getChannel())
+                ChannelAttributeUtil.getStatus(existedClient.getChannel())
                         .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
-                offline(existedClient.getChannel(), GatewayType.GB);
+                offline(existedClient.getChannel(), gatewayType);
                 // 新连接上线
                 ClientCache.ofNew(uniqueNo, channel).addToMapping();
             });
@@ -114,6 +146,9 @@ public class TerminalConnService {
             ClientCache newClient = ClientCache.ofNew(uniqueNo, channel);
             newClient.addToMapping();
         }
+        ConnOnlineStatusEvent connOnlineStatusEvent = ClientEventFactory.ofOnline(uniqueNo, channel, gatewayType);
+        // 发送至kafka
+        kafkaService.send(new KafkaTask(KafkaSendTopicType.CONN, uniqueNo, connOnlineStatusEvent.toJson()));
 
         LOG.info("client ({}) online success!", uniqueNo);
     }
@@ -151,7 +186,7 @@ public class TerminalConnService {
         keysets.forEach(k->
                 ClientCache.getByUniqueNo(k).ifPresent(client -> {
                     SocketChannel channel = client.getChannel();
-                    ChannelAttrbuteUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
+                    ChannelAttributeUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
                             .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
                     try {
                         offline(channel, GatewayType.GB);

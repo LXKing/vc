@@ -3,7 +3,7 @@ package com.ccclubs.gateway.gb.handler.decode;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.gb.constant.CommandType;
 import com.ccclubs.gateway.gb.constant.PacErrorType;
 import com.ccclubs.gateway.gb.constant.RealtimeDataType;
@@ -207,7 +207,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                             lengthError = true;
                             int lackedBytes = (expectedLengthIndex + 1) - pacContentLength;
                             RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(lackBytesIndex);
-                            ChannelAttrbuteUtil.getTrace(channel)
+                            ChannelAttributeUtil.getTrace(channel)
                                     .getExpMessageDTO()
                                     .setIndex(realtimeDataType.getCode())
                                     .setReason("[" + realtimeDataType.getDes() + "]缺少[" + lackedBytes + "]字节");
@@ -220,7 +220,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                         break;
                     } catch (IndexOutOfBoundsException e) {
                         lengthError = true;
-                        ChannelAttrbuteUtil.getTrace(channel)
+                        ChannelAttributeUtil.getTrace(channel)
                                 .getExpMessageDTO()
                                 .setIndex(lackBytesIndex)
                                 .setReason(e.getMessage());
