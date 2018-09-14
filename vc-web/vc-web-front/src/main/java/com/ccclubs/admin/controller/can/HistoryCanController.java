@@ -58,6 +58,33 @@ public class HistoryCanController {
         }
         return pageInfo;
     }
+    /**
+     * 2018/9/14
+     * can解析
+     *
+     * @param query
+     * @param page
+     * @param rows
+     * @param order
+     * @param isResolve
+     * @return com.ccclubs.admin.vo.TableResult<com.ccclubs.admin.model.HistoryCan>
+     * @author machuanpeng
+     */
+    @RequestMapping(value = "/canAnalyze", method = RequestMethod.GET)
+    public TableResult<HistoryCan> canAnalyze(HistoryCanQuery query, @RequestParam(defaultValue = "0") Integer page,
+                                        @RequestParam(defaultValue = "10") Integer rows,
+                                        @RequestParam(defaultValue = "desc") String order,
+                                        @RequestParam(defaultValue = "true") Boolean isResolve) {
+        if (null == query.getCsVinEquals()) {
+            return new TableResult<HistoryCan>();
+        }
+        TableResult<HistoryCan> pageInfo = historyCanService.getPage(query, page, rows, order);
+        List<HistoryCan> list = pageInfo.getData();
+        for (HistoryCan data : list) {
+            registResolvers(data);
+        }
+        return pageInfo;
+    }
 
 
     /**
