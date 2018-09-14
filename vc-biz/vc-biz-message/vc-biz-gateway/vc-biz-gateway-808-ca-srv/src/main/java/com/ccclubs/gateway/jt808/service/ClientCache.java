@@ -1,7 +1,6 @@
 package com.ccclubs.gateway.jt808.service;
 
-import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.jt808.exception.ClientMappingException;
+import com.ccclubs.gateway.common.exception.ClientMappingException;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.internal.PlatformDependent;

@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.process.schedule;
 
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
@@ -30,9 +31,9 @@ public class PreAuthConnectSchedule implements TimerTask {
     @Override
     public void run(Timeout timeout) throws Exception {
         System.out.println("注册的校验时间到了");
-        ChannelLifeCycleTrack lifeCycleTrack = ChannelAttributeUtil.getLifeTrack(channel);
-        if (Objects.isNull(lifeCycleTrack.getUniqueNo()) &&
-                ChannelLiveStatus.ONLINE_CONNECT.equals(lifeCycleTrack.getLiveStatus())) {
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+        if (Objects.isNull(channelStatusAttr.getUniqueNo()) &&
+                ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus())) {
             channel.pipeline().fireChannelInactive();
         }
     }

@@ -73,21 +73,13 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         final SocketChannel channel = (SocketChannel) ctx.channel();
-
         ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
-        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
-                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
-                !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
-            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT)
-                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_CLIENT_CUT.getCode());
-        }
-
         /**
          * 注入销毁时间
          */
         channelStatusAttr.setCloseTime(LocalDateTime.now());
         /**
-         *连接被探测
+         * 是否连接被探测
          */
         if (isPingPongEvent(channelStatusAttr)) {
             LOG.error("tcp server received ping-pong event: client={}", ChannelUtils.getUniqueNoOrHost(null, channel));
@@ -96,6 +88,13 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
             channel.close();
             return;
         }
+        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
+                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
+                !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
+            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT)
+                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_CLIENT_CUT.getCode());
+        }
+
         terminalConnService.offline(channel, GatewayType.GB);
     }
 

@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
@@ -82,8 +83,9 @@ public class TerminalConnService {
     public ListenableFuture<SendResult> offline(SocketChannel channel, GatewayType gatewayType) {
         Objects.requireNonNull(channel);
         Objects.requireNonNull(gatewayType);
-        ChannelLiveStatus liveStatus = ChannelAttributeUtil.getLifeTrack(channel).getLiveStatus();
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
 
+        ChannelLiveStatus liveStatus = channelStatusAttr.getCurrentStatus();
         // 如果已经下线处理过则不重复处理, 防止事件多次在Inactive传递
         if (ChannelLiveStatus.OFFLINE_END.equals(liveStatus)) {
             return null;
@@ -92,8 +94,10 @@ public class TerminalConnService {
         /**
          * 更新channel状态为结束防止重复进入inactive
          */
-        ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_END);
-        String uniqueNo = ChannelAttributeUtil.getLifeTrack(channel).getUniqueNo();
+        channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_END)
+                .setChannelLiveStage(ChannelLiveStatus.OFFLINE_END.getCode());
+
+        String uniqueNo = channelStatusAttr.getUniqueNo();
         if (Objects.isNull(uniqueNo)) {
             throw new OfflineException("cannot mapping to a uniqueNo from channelLifeTrace when deal offline");
         }
@@ -168,7 +172,9 @@ public class TerminalConnService {
 
                 ClientCache.getByUniqueNo(uniqueNo).ifPresent(existedClient -> {
                     // 原连接下线
-                    ChannelAttributeUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    ChannelAttributeUtil.getStatus(existedClient.getChannel())
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
+                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                 });
             }
@@ -197,7 +203,9 @@ public class TerminalConnService {
 
                     LOG.info("client update to newChannel, old client will offline and new client will online: uniqueNo={}", uniqueNo);
                     // 原连接下线
-                    ChannelAttributeUtil.setChannelLiveStatus(existedClient.getChannel(), ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    ChannelAttributeUtil.getStatus(existedClient.getChannel())
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
+                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                     // 新连接上线
                     ClientCache.ofNew(uniqueNo, channel).addToMapping();
@@ -256,10 +264,13 @@ public class TerminalConnService {
         Set<String> keysets = ClientCache.getAllKeySet();
         int allClient = keysets.size();
         final List<ListenableFuture<SendResult>> resultFutList = new ArrayList<>();
-        keysets.stream().forEach(k->
+        keysets.forEach(k->
                 ClientCache.getByUniqueNo(k).ifPresent(client -> {
                     SocketChannel channel = client.getChannel();
-                    ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    // 更新渠道当前状态为：服务端主动断开
+                    ChannelAttributeUtil.getStatus(channel)
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
+                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
                     try {
                         ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
                         if (Objects.nonNull(resFut)) {

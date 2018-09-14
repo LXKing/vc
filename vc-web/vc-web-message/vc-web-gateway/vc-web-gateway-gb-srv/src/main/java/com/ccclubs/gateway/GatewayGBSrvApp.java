@@ -1,9 +1,9 @@
 package com.ccclubs.gateway;
 
+import com.ccclubs.gateway.common.config.GatewayProperties;
+import com.ccclubs.gateway.common.config.KafkaProperties;
+import com.ccclubs.gateway.common.config.NettyProperties;
 import com.ccclubs.gateway.gb.TcpServerStarter;
-import com.ccclubs.gateway.gb.config.GatewayProperties;
-import com.ccclubs.gateway.gb.config.KafkaProperties;
-import com.ccclubs.gateway.gb.config.NettyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

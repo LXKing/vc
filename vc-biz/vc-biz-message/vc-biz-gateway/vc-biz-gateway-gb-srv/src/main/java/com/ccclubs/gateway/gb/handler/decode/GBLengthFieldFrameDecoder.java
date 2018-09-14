@@ -143,6 +143,8 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
          * 分别拼装消息的各个部分，最细粒度地定位错误报文异常位置
          */
         // 先获取vin码
+        //   跳过前几个字节到vin码字节上
+        frame.readerIndex(PackagePart.UNIQUENO.getStartIndex());
         String vinNo = validateAndGetVin(frame);
         if (StringUtils.isNotEmpty(vinNo)) {
             /**

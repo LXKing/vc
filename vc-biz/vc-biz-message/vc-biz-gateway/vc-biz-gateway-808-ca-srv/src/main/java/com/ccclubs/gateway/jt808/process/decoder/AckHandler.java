@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
@@ -37,7 +36,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
     private static final Logger LOG = LoggerFactory.getLogger(AckHandler.class);
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
         Package808 ackPac = null;
 
         // 对于终端的应答不需要平台再次应答

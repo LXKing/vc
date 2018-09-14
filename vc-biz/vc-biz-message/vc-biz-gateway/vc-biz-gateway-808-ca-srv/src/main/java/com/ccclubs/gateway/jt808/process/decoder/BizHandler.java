@@ -1,6 +1,6 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
@@ -43,8 +43,10 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
 //    private Map<String, String> multiPartPacMap = new HashMap<>();
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
-        LOG.info(pac.printLog());
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info(pac.printLog());
+        }
 
         // 如果是半包消息，则加到对应包后面
         if (pac.getHeader().getPacContentAttr().isMultiPac()) {
@@ -88,8 +90,8 @@ public class BizHandler extends CCClubChannelInboundHandler<Package808> {
 
         /**
          * 上行透传的消息，根据功能号不同发送不同的消息
-         *     透传的消息类型：01 | FD 发送到 JT_0900_01 | JT_0900_FD 上
-         *                   F1时，根据功能号发送到MQTT_功能号 上
+         *     透传的消息类型：01或者FD=> 发送到 JT_0900_01 | JT_0900_FD 上
+         *                       F1时=> 根据功能号发送到MQTT_功能号 上
          */
         if (UpPacType.PENETRATE_UP.getCode() == pacId) {
             // 透传的消息类型

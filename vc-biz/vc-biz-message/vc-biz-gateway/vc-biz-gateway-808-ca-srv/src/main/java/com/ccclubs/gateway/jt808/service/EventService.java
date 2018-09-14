@@ -103,7 +103,7 @@ public class EventService {
         }
 
         // 4. 发送离线轨迹信息用于统计
-        String exceptionHex = ChannelAttributeUtil.getPacTracker(channel).getSourceHex();
+        String exceptionHex = ChannelAttributeUtil.getTrace(channel).getSourceHex();
         ConnLiveEvent offlineEvent = new ConnLiveEvent()
                 .uniqueNo(uniqueNo)
                 .channel(channel)

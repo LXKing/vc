@@ -45,30 +45,11 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     public void channelRead (ChannelHandlerContext ctx, Object msg) throws Exception {
         GBPackage pac = (GBPackage) msg;
         ChannelAttributeUtil.getTrace(ctx.channel()).next();
-
-        // 真正处理的方法
-        handle(pac);
         /**
          *  最终处理消息，不需要继续向下传递消息
          *      1.释放字节缓存
          */
-        ReferenceCountUtil.release(pac.getSourceBuff());
-    }
-
-    private void handle(GBPackage pac) {
-        // 如果是测试阶段则打印报告日志
-        if (TcpServerConf.GATEWAY_PRINT_LOG) {
-            LOG.info(pac.toLogString());
-        }
-
-        PackProcessExceptionDTO packProcessExceptionDTO = new PackProcessExceptionDTO();
-        packProcessExceptionDTO.setCode(pac.getHeader().getCommandMark().getCode())
-                .setVin(pac.getHeader().getUniqueNo())
-                .setSourceHex(pac.getSourceHexStr());
-        // 正常的消息发送至kafka
-        kafkaService.send(new KafkaTask(KafkaSendTopicType.SUCCESS,
-                pac.getHeader().getUniqueNo(),
-                packProcessExceptionDTO.toJson()));
+        BufReleaseUtil.releaseByLoop(pac.getSourceBuff());
     }
 
     @Override

@@ -1,17 +1,17 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
-import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
+import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
+import com.ccclubs.gateway.common.exception.ClientMappingException;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
-import com.ccclubs.gateway.jt808.exception.ClientMappingException;
 import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.BufReleaseUtil;
@@ -67,13 +67,15 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
             if (IdleState.READER_IDLE == e.state()) {
                 // 读空闲
                 SocketChannel channel = (SocketChannel) ctx.channel();
+                // 更新渠道状态
+                ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+                channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_IDLE)
+                        .setChannelLiveStage(ChannelLiveStatus.OFFLINE_IDLE.getCode());
 
-                ChannelLifeCycleTrack channelLife = ChannelAttributeUtil.getLifeTrack(channel);
-                channelLife.setLiveStatus( ChannelLiveStatus.OFFLINE_IDLE);
-                String uniqueNo = channelLife.getUniqueNo();
+                String uniqueNo = channelStatusAttr.getUniqueNo();
                 if (Objects.isNull(uniqueNo)) {
                     LOG.error("cannot mapping to uniqueNo when deal idle event");
-                    uniqueNo = ChannelAttributeUtil.getPacTracker(channel).getUniqueNo();
+                    throw new ClientMappingException("cannot find mapping when idle event happend");
                 }
                 LOG.error("连接(sim={})长时间空闲，将关闭该连接", PacUtil.getUniqueNoOrHost(uniqueNo, channel));
 
@@ -111,42 +113,35 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          *      如果是链路上非主动抛出：组装其他异常dto
          *  3.发送至kafka
          */
-        PacProcessTrack pacProcessTrack = ChannelAttributeUtil.getPacTracker(channel);
+        PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         // (重要)*如果buf未释放则：释放buf*
-        BufReleaseUtil.releaseByLoop(pacProcessTrack.getPacBuf());
+        BufReleaseUtil.releaseByLoop(packageTraceAttr.getPacBuf());
 
-        PacProcessing pacProcessing = PacProcessing.getByCode(pacProcessTrack.getStep());
-        String uniqueNo = pacProcessTrack.getUniqueNo();
+        // TODO 若在获取到手机号之前发生异常，该异常信息不记录并且直接断开该连接
+
+        PacProcessing pacProcessing = PacProcessing.getByCode(packageTraceAttr.getStep());
+        LOG.error("[{}]发生异常，异常原因：", pacProcessing.getDes(), cause);
+
+        String uniqueNo = packageTraceAttr.getUniqueNo();
         uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);
-        /**
-         * 导致异常的异常原始报文
-         */
-        String exceptionPacHex = pacProcessTrack.getSourceHex();
 
-        if (Objects.nonNull(pacProcessing)) {
-            LOG.error("terminal ({})- [{}] step occured exception sourceHex = [{}], for reason：{}",
-                    uniqueNo, pacProcessing.getDes(), exceptionPacHex, cause);
-            if (pacProcessTrack.getCurrentHandlerTracker().isErrorOccur()) {
-                // 自定义抛出的处理异常
-            } else {
-                // 其他非自定义的异常
-                setOtherException(uniqueNo, pacProcessTrack, cause);
-            }
+        if (packageTraceAttr.isErrorOccured()) {
+            // 自定义抛出的处理异常
         } else {
-            LOG.error("terminal ({})- occured exception when handle sourceHex = [{}], exception throwed but step invalid: step={}, for reason: {}",
-                    uniqueNo, exceptionPacHex, pacProcessTrack.getStep(), cause);
             // 其他非自定义的异常
-            setOtherException(uniqueNo, pacProcessTrack, cause);
+            packageTraceAttr.getExpMessageDTO()
+                    .setCode(String.valueOf(packageTraceAttr.getStep()))
+                    .setReason(cause.getMessage());
         }
 
         // 其他非自定义异常如果获取不到vin码则不发送到kafka
-        if (StringUtils.isEmpty(pacProcessTrack.getUniqueNo())) {
+        if (StringUtils.isEmpty(packageTraceAttr.getUniqueNo())) {
             needSendKafka = false;
         }
 
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
-            KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR, uniqueNo, pacProcessTrack.getExpMessageDTO().toJson());
+            KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR, uniqueNo, packageTraceAttr.getExpMessageDTO().toJson());
             context.pipeline().fireChannelRead(new AbstractChannelInnerMsg().setInnerMsgType(InnerMsgType.TASK_KAFKA).setMsg(task));
         }
 
@@ -169,7 +164,9 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         }
 
         if (needCloseConn) {
-            ChannelAttributeUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
+            ChannelAttributeUtil.getStatus(channel)
+                    .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
+                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
             // 关闭链接
             context.pipeline().fireChannelInactive();
         }
@@ -182,12 +179,12 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          */
     }
 
-    private void setOtherException(String uniqueNo, PacProcessTrack pacProcessTrack, Throwable cause) {
-        ExpMessageDTO expMessageDTO = pacProcessTrack.getExpMessageDTO();
+    private void setOtherException(String uniqueNo, PackageTraceAttr packageTraceAttr, Throwable cause) {
+        ExpMessageDTO expMessageDTO = packageTraceAttr.getExpMessageDTO();
         expMessageDTO.setMsgTime(System.currentTimeMillis());
-        expMessageDTO.setCode(pacProcessTrack.getStep() + "")
+        expMessageDTO.setCode(String.valueOf(packageTraceAttr.getStep()))
                 .setGatewayType(GatewayType.GATEWAY_808.getDes())
-                .setSourceHex(pacProcessTrack.getSourceHex())
+                .setSourceHex(packageTraceAttr.getSourceHex())
                 .setReason(cause.getMessage())
                 .setMobile(uniqueNo);
     }

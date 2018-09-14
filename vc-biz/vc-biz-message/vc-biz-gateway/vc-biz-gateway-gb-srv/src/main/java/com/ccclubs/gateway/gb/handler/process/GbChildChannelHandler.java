@@ -2,6 +2,7 @@ package com.ccclubs.gateway.gb.handler.process;
 
 import com.ccclubs.gateway.common.config.GatewayProperties;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
+import com.ccclubs.gateway.common.inf.ChildChannelHandler;
 import com.ccclubs.gateway.gb.handler.decode.*;
 import com.ccclubs.gateway.gb.handler.encode.GBPackageEncoder;
 import io.netty.channel.ChannelInitializer;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
  * Email:  yeanzhi@ccclubs.com
  */
 @Component
-public class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
+public class GbChildChannelHandler extends ChannelInitializer<SocketChannel> implements ChildChannelHandler {
 
 //    @Autowired
 //    private ApplicationContext context;

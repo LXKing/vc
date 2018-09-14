@@ -161,6 +161,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
 
             packageTraceAttr.setUniqueNo(trimdMobile);
             // 初始化异常信息
+            packageTraceAttr.getExpMessageDTO().setMobile(trimdMobile);
             packageTraceAttr.getExpMessageDTO()
                     .setVin(trimdMobile)
                     .setSourceHex(packageTraceAttr.getSourceHex())

@@ -1,17 +1,16 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
+import com.ccclubs.gateway.common.bean.attr.DefaultChannelHealthyAttr;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.*;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
-import com.ccclubs.gateway.jt808.constant.RedisConnCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.service.EventService;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -33,9 +32,6 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
     public static final Logger LOG = LoggerFactory.getLogger(StatisticsHandler.class);
 
     @Autowired
-    private RedisConnService redisConnService;
-
-    @Autowired
     private EventService eventService;
 
     @Override
@@ -43,16 +39,17 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         String uniqueNo = pac.getHeader().getTerMobile();
         final SocketChannel channel = (SocketChannel) ctx.channel();
 
-        redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_TOTAL_PAC, 1, GatewayType.GATEWAY_808);
         /**
          * 实时刷新在线online状态
          */
         eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808, pac);
         // 统计错误报文
         if (pac.getErrorPac()) {
-            redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_ERROR_PAC, 1, GatewayType.GATEWAY_808);
+            // 获取健康数据
+            DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
+            channelHealthyAttr.setErrorPackageNum(channelHealthyAttr.getErrorPackageNum() + 1);
+            // 释放buf
             releasePacBuffer(pac.getSourceBuff());
-
             // 渠道轨迹信息
             PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
             ExpMessageDTO expMessageDTO = packageTraceAttr.getExpMessageDTO();
@@ -73,9 +70,14 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             return HandleStatus.END;
         }
 
+        // 获取健康数据
+        DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
+        // 统计总包数
+        channelHealthyAttr.setPackageNum(channelHealthyAttr.getPackageNum() + 1);
         // 统计位置报文
         if (UpPacType.POSITION_REPORT.getCode() == pac.getHeader().getPacId()) {
-            redisConnService.updatePac(uniqueNo, RedisConnCons.REDIS_KEY_CONN_UPDATE_POSITION_PAC, 1, GatewayType.GATEWAY_808);
+            // 位置包（实时信息包）数
+            channelHealthyAttr.setPositionPackageNum(channelHealthyAttr.getPositionPackageNum() + 1);
         }
         return HandleStatus.NEXT;
     }
