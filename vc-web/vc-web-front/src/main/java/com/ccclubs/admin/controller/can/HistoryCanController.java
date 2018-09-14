@@ -58,6 +58,7 @@ public class HistoryCanController {
         }
         return pageInfo;
     }
+
     /**
      * 2018/9/14
      * can解析
