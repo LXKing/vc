@@ -3,6 +3,7 @@ package com.ccclubs.gateway.gb.handler.decode;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.DateUtil;
 import com.ccclubs.gateway.gb.beans.DecodeExceptionDTO;
 import com.ccclubs.gateway.gb.constant.*;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
@@ -121,6 +122,13 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
                 .next()
                 .setPacBuf(frame)
                 .setSourceHex(pac.getSourceHexStr());
+
+        /**
+         * 更新健康数据
+         */
+        ChannelAttributeUtil.getHealthy(channel)
+                .setLastPackageTime(DateUtil.getNowStr())
+                .setLastPackageHex(pac.getSourceHexStr());
 
         // 消息组装
         composeMsgPac(pac, packageTraceAttr);

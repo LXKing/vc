@@ -46,7 +46,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
             /**
              * 用于命令监控
              */
-            dealCmdWatch(pac);
+//            dealCmdWatch(pac);
             return HandleStatus.NEXT;
         }
 
@@ -131,6 +131,12 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         return ackPac;
     }
 
+    /**
+     * 根据808消息的序列号，更新命令监控中该命令的808应答内容
+     *      由于当前下发指令中808消息序列号固定为0，故该值不可用也不用更新
+     * @param pac
+     */
+    @Deprecated
     private void dealCmdWatch(Package808 pac) {
         if (UpPacType.ACK.getCode() == pac.getHeader().getPacId()) {
             if (CommandCache.isOpen() && CommandCache.isCurrent(pac.getHeader().getTerMobile())) {

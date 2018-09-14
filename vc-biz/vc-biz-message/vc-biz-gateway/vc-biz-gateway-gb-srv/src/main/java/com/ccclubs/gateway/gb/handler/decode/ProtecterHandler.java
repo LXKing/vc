@@ -1,7 +1,8 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
-import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.exception.ServerCutException;
@@ -10,7 +11,6 @@ import com.ccclubs.gateway.common.util.BufReleaseUtil;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.gb.constant.PacProcessing;
-import com.ccclubs.gateway.gb.dto.PackProcessExceptionDTO;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -19,12 +19,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import io.netty.util.ReferenceCountUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -59,10 +60,21 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
             IdleStateEvent e = (IdleStateEvent) evt;
             if (IdleState.READER_IDLE == e.state()) {
                 // 读空闲
-                LOG.warn("连接长时间空闲，将关闭该连接");
-                ctx.close();
-                // 事件触发后，最终会触发ChannelInActive方法
+                SocketChannel channel = (SocketChannel) ctx.channel();
+                // 更新渠道状态
+                ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+                channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_IDLE);
 
+                String uniqueNo = channelStatusAttr.getUniqueNo();
+                if (Objects.isNull(uniqueNo)) {
+                    LOG.error("cannot mapping to uniqueNo when deal idle event");
+                }
+                LOG.error("连接(vin={})长时间空闲，将关闭该连接", ChannelUtils.getUniqueNoOrHost(uniqueNo, channel));
+
+                /**
+                 * 区别于正常的断开连接
+                 */
+                ctx.pipeline().fireChannelInactive();
             } else if (IdleState.WRITER_IDLE == e.state()) {
                 // 写空闲
             } else if (IdleState.ALL_IDLE == e.state()) {

@@ -186,8 +186,7 @@ public class TerminalConnService {
         keysets.forEach(k->
                 ClientCache.getByUniqueNo(k).ifPresent(client -> {
                     SocketChannel channel = client.getChannel();
-                    ChannelAttributeUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                    ChannelAttributeUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     try {
                         offline(channel, GatewayType.GB);
                     } catch (Exception e) {

@@ -107,8 +107,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
-            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT)
-                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_CLIENT_CUT.getCode());
+            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT);
         }
 
         terminalConnService.offline(channel, GatewayType.GATEWAY_808);
@@ -116,6 +115,10 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
+        if (pac.getErrorPac()) {
+            // 如果是校验异常，不做认证
+            return HandleStatus.NEXT;
+        }
         SocketChannel channel = (SocketChannel) ctx.channel();
         UpPacType upPacType = UpPacType.getByCode(pac.getHeader().getPacId());
         String uniqueNo = pac.getHeader().getTerMobile();
@@ -169,8 +172,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
                     releasePacBuffer(pac.getSourceBuff());
                     // 未鉴权就发送报文： 踢掉
-                    channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                    channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     channel.pipeline().fireChannelInactive();
                     return HandleStatus.END;
                 }
@@ -214,8 +216,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         SocketChannel channel = (SocketChannel) ctx.channel();
         terminalConnService.logout(uniqueNo, channel, GatewayType.GATEWAY_808);
         ChannelAttributeUtil.getStatus(channel)
-                .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT)
-                .setChannelLiveStage(ChannelLiveStatus.OFFLINE_LOGOUT.getCode());
+                .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT);
     }
 
     /**
@@ -265,7 +266,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             }
             if (!isReAuth) {
                 channelStatusAttr.setCurrentStatus(ChannelLiveStatus.ONLINE_AUTH)
-                        .setChannelLiveStage(ChannelLiveStatus.ONLINE_AUTH.getCode());
+                        .nextStage();
 
                 // 终端上线
                 terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);

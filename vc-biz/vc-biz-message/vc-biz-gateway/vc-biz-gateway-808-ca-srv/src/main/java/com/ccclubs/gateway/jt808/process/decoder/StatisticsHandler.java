@@ -39,10 +39,6 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
         String uniqueNo = pac.getHeader().getTerMobile();
         final SocketChannel channel = (SocketChannel) ctx.channel();
 
-        /**
-         * 实时刷新在线online状态
-         */
-        eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808, pac);
         // 统计错误报文
         if (pac.getErrorPac()) {
             // 获取健康数据
@@ -69,7 +65,10 @@ public class StatisticsHandler extends CCClubChannelInboundHandler<Package808> {
             fireChannelInnerMsg(ctx, InnerMsgType.TASK_KAFKA, task);
             return HandleStatus.END;
         }
-
+        /**
+         * 实时刷新在线online状态
+         */
+        eventService.realtimeReflushOnline(uniqueNo, channel, GatewayType.GATEWAY_808, pac);
         // 获取健康数据
         DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
         // 统计总包数

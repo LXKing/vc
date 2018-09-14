@@ -33,6 +33,17 @@ import java.util.Objects;
  * @Time: 11:26
  * Email:  yeanzhi@ccclubs.com
  * 808业务操作处理器
+ *
+ *
+ *
+ *      根据消息类型将消息发送到ONS中不同的topic中
+ *          原JT808的消息（非0900）发送到的topic为："JT_" + 具体的消息ID；              如：JT_0200
+ *
+ *          消息ID为0900的消息，根据不同透传的消息类型，发送不同的topic
+ *              透传的消息类型：01或者FD=> 发送到的topic为： "JT_0900" + 透传的消息类型；如： JT_0900_01 | JT_0900_FD 上
+ *              透传的消息类型：F1时=> 根据功能号发送到的topic为："MQTT_" + 功能号 上;   如：MQTT_66
+ *
+ *
  */
 @Component
 @ChannelHandler.Sharable

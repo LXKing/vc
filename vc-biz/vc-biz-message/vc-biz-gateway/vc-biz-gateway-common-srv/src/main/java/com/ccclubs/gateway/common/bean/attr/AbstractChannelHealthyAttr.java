@@ -11,6 +11,7 @@ import com.ccclubs.gateway.common.inf.ChannelAttr;
  * version : v1.0
  * update_log:
  * date[更新日期] time[更新时间] updater[更新人]     for[原因]
+ * 2018-9-14        15.28       Andaren         增加最近一次报文的时间和内容
  *
  **/
 public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr implements ChannelAttr {
@@ -25,9 +26,14 @@ public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr imp
     private String currentServerAddress;
 
     /**
-     * 上次报文间隔时长（秒）
+     * 最近一次报文时间
      */
-    private int lastPackageDuration;
+    private String lastPackageTime;
+
+    /**
+     * 最近一次报文的原始报文
+     */
+    private String lastPackageHex;
 
     public String getCurrentClientAddress() {
         return currentClientAddress;
@@ -47,14 +53,21 @@ public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr imp
         return this;
     }
 
-    public int getLastPackageDuration() {
-        return lastPackageDuration;
+    public String getLastPackageTime() {
+        return lastPackageTime;
     }
 
-    public AbstractChannelHealthyAttr setLastPackageDuration(int lastPackageDuration) {
-        this.lastPackageDuration = lastPackageDuration;
+    public AbstractChannelHealthyAttr setLastPackageTime(String lastPackageTime) {
+        this.lastPackageTime = lastPackageTime;
         return this;
     }
 
+    public String getLastPackageHex() {
+        return lastPackageHex;
+    }
 
+    public AbstractChannelHealthyAttr setLastPackageHex(String lastPackageHex) {
+        this.lastPackageHex = lastPackageHex;
+        return this;
+    }
 }

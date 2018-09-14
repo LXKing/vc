@@ -69,13 +69,11 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
                 SocketChannel channel = (SocketChannel) ctx.channel();
                 // 更新渠道状态
                 ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
-                channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_IDLE)
-                        .setChannelLiveStage(ChannelLiveStatus.OFFLINE_IDLE.getCode());
+                channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_IDLE);
 
                 String uniqueNo = channelStatusAttr.getUniqueNo();
                 if (Objects.isNull(uniqueNo)) {
                     LOG.error("cannot mapping to uniqueNo when deal idle event");
-                    throw new ClientMappingException("cannot find mapping when idle event happend");
                 }
                 LOG.error("连接(sim={})长时间空闲，将关闭该连接", PacUtil.getUniqueNoOrHost(uniqueNo, channel));
 
@@ -123,6 +121,11 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         LOG.error("[{}]发生异常，异常原因：", pacProcessing.getDes(), cause);
 
         String uniqueNo = packageTraceAttr.getUniqueNo();
+        if (Objects.isNull(uniqueNo)) {
+            LOG.error("cannot find uniqueNo when a exception was caughted.");
+//            context.channel().unsafe().closeForcibly();
+            return;
+        }
         uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);
 
         if (packageTraceAttr.isErrorOccured()) {
@@ -165,8 +168,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         if (needCloseConn) {
             ChannelAttributeUtil.getStatus(channel)
-                    .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                    .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
             // 关闭链接
             context.pipeline().fireChannelInactive();
         }

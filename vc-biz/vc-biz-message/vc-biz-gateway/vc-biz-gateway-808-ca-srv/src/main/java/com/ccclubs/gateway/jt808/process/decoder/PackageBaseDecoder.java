@@ -4,6 +4,7 @@ import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.DateUtil;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.exception.DecodeExceptionDTO;
@@ -85,7 +86,7 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         assert channel.isActive();
 
         /**
-         * 处理链处理新消息
+         * 为新消息更新消息轨迹
          */
         PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         packageTraceAttr
@@ -96,6 +97,12 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
                 .setPacBuf(frame)
                 .setSourceHex(unTranslatedPacHex);
 
+        /**
+         * 更新健康数据
+         */
+        ChannelAttributeUtil.getHealthy(channel)
+                .setLastPackageTime(DateUtil.getNowStr())
+                .setLastPackageHex(unTranslatedPacHex);
         // 消息组装
         return composePac(unTranslatedPacHex, frame, packageTraceAttr);
     }

@@ -91,8 +91,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
                 !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
-            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT)
-                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_CLIENT_CUT.getCode());
+            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT);
         }
 
         terminalConnService.offline(channel, GatewayType.GB);
@@ -100,6 +99,10 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
 
     @Override
     protected HandleStatus handlePackage(ChannelHandlerContext ctx, GBPackage pac) throws Exception {
+        if (pac.isErrorPac()) {
+            // 如果是校验异常，不做认证
+            return HandleStatus.NEXT;
+        }
         SocketChannel channel = (SocketChannel) ctx.channel();
         CommandType upPacType = pac.getHeader().getCommandMark();
         String uniqueNo = pac.getHeader().getUniqueNo();
@@ -208,7 +211,6 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
          */
         ChannelAttributeUtil.getStatus(channel)
                 .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT)
-                .setChannelLiveStage(ChannelLiveStatus.OFFLINE_LOGOUT.getCode())
                 .setCloseTime(LocalDateTime.now());
         // 不存在重复登出的问题
         terminalConnService.logout(uniqueNo, channel, GatewayType.GB);

@@ -173,8 +173,7 @@ public class TerminalConnService {
                 ClientCache.getByUniqueNo(uniqueNo).ifPresent(existedClient -> {
                     // 原连接下线
                     ChannelAttributeUtil.getStatus(existedClient.getChannel())
-                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                 });
             }
@@ -204,8 +203,7 @@ public class TerminalConnService {
                     LOG.info("client update to newChannel, old client will offline and new client will online: uniqueNo={}", uniqueNo);
                     // 原连接下线
                     ChannelAttributeUtil.getStatus(existedClient.getChannel())
-                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     offline(existedClient.getChannel(), GatewayType.GATEWAY_808);
                     // 新连接上线
                     ClientCache.ofNew(uniqueNo, channel).addToMapping();
@@ -269,8 +267,7 @@ public class TerminalConnService {
                     SocketChannel channel = client.getChannel();
                     // 更新渠道当前状态为：服务端主动断开
                     ChannelAttributeUtil.getStatus(channel)
-                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT)
-                            .setChannelLiveStage(ChannelLiveStatus.OFFLINE_SERVER_CUT.getCode());
+                            .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     try {
                         ListenableFuture<SendResult> resFut = offline(channel, GatewayType.GATEWAY_808);
                         if (Objects.nonNull(resFut)) {
