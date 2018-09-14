@@ -16,19 +16,19 @@ spring:
   data:
     mongodb:
       history:
-        host: dds-bp1cdb3a9426d8f41.mongodb.rds.aliyuncs.com
+        host: 114.55.24.97
         port: 3717
-        username: pgm_cjkf
-        password: 123qweASD
-        database: ccclubs_p2p_data
-        authenticationDatabase: ccclubs_p2p_data
+        username: zkj_user
+        password: zkj2017
+        database: vc_history
+        authenticationDatabase: vc_history
       remote:
-        host: dds-bp1cdb3a9426d8f41.mongodb.rds.aliyuncs.com
+        host: 114.55.24.97
         port: 3717
-        username: pgm_cjkf
-        password: 123qweASD
-        database: ccclubs_p2p_dataccclubs_p2p_data
-        authenticationDatabase: ccclubs_p2p_data
+        username: zkj_user
+        password: zkj2017
+        database: vc_remote
+        authenticationDatabase: vc_remote
   kafka:
     bootstrap-servers: 127.0.0.1:9092
     producer:
