@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.process.decoder;
 
 import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.conn.ClientCache;
 import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
@@ -14,7 +15,6 @@ import com.ccclubs.gateway.common.util.DecodeUtil;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;

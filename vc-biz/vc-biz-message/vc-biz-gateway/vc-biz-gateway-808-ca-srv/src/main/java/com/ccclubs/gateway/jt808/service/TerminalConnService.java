@@ -2,6 +2,7 @@ package com.ccclubs.gateway.jt808.service;
 
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
+import com.ccclubs.gateway.common.conn.ClientCache;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;

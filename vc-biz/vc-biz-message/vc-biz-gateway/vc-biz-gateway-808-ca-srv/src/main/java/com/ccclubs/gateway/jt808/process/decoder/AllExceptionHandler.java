@@ -124,7 +124,7 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         if (Objects.isNull(uniqueNo)) {
             LOG.error("cannot find uniqueNo when a exception was caughted.");
 //            context.channel().unsafe().closeForcibly();
-            return;
+//            return;
         }
         uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);
 

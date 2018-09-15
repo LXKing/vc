@@ -159,8 +159,12 @@ public class ClientCache {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ClientCache that = (ClientCache) o;
         return com.google.common.base.Objects.equal(uniqueNo, that.uniqueNo) &&
                 com.google.common.base.Objects.equal(serialNo, that.serialNo) &&

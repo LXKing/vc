@@ -133,7 +133,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
 
     /**
      * 根据808消息的序列号，更新命令监控中该命令的808应答内容
-     *      由于当前下发指令中808消息序列号固定为0，故该值不可用也不用更新
+     * @deprecated      由于当前下发指令中808消息序列号固定为0，故该值不可用也不用更新
      * @param pac
      */
     @Deprecated
