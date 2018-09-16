@@ -31,6 +31,11 @@ public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr imp
     private String lastPackageTime;
 
     /**
+     * 最近一次报文的描述
+     */
+    private String lastPackageDes;
+
+    /**
      * 最近一次报文的原始报文
      */
     private String lastPackageHex;
@@ -68,6 +73,15 @@ public abstract class AbstractChannelHealthyAttr extends AbstractChannelAttr imp
 
     public AbstractChannelHealthyAttr setLastPackageHex(String lastPackageHex) {
         this.lastPackageHex = lastPackageHex;
+        return this;
+    }
+
+    public String getLastPackageDes() {
+        return lastPackageDes;
+    }
+
+    public AbstractChannelHealthyAttr setLastPackageDes(String lastPackageDes) {
+        this.lastPackageDes = lastPackageDes;
         return this;
     }
 }

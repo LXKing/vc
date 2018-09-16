@@ -93,6 +93,15 @@ public final class PacUtil {
     }
 
     /**
+     * 获取上行数据消息类型的描述
+     * @return
+     */
+    public static String getUpPacTypeDesById(int pacId) {
+        UpPacType upPacType = UpPacType.getByCode(pacId);
+        return upPacType==null?"没有定义的消息类型":upPacType.getDes();
+    }
+
+    /**
      * 给当前报文加上808报文标识7E
      *      (即 在sourceHex的收尾加上7E)
      * @param sourceHex

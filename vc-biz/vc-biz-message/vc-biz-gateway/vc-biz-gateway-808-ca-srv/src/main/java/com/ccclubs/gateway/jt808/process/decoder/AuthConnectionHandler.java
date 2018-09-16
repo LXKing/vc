@@ -72,6 +72,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
             if (Objects.isNull(channelStatusAttr.getUniqueNo()) &&
                     ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus())) {
+                LOG.error("channel has not auth within 1 munite, the server will cut it off.");
                 channel.pipeline().fireChannelInactive();
             }
         }, TIMEOUT_SECONDS_PRE_AUTH, TimeUnit.SECONDS);

@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
+import com.ccclubs.gateway.common.bean.attr.DefaultChannelHealthyAttr;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.constant.GatewayType;
@@ -100,11 +101,14 @@ public class PackageBaseDecoder extends DelimiterBasedFrameDecoder {
         /**
          * 更新健康数据
          */
-        ChannelAttributeUtil.getHealthy(channel)
-                .setLastPackageTime(DateUtil.getNowStr())
+        DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
+        channelHealthyAttr.setLastPackageTime(DateUtil.getNowStr())
                 .setLastPackageHex(unTranslatedPacHex);
         // 消息组装
-        return composePac(unTranslatedPacHex, frame, packageTraceAttr);
+        Package808 pac = composePac(unTranslatedPacHex, frame, packageTraceAttr);
+        // 设置健康数据中的消息描述
+        channelHealthyAttr.setLastPackageDes(PacUtil.getUpPacTypeDesById(pac.getHeader().getPacId()));
+        return pac;
     }
 
     /**

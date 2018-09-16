@@ -22,7 +22,7 @@ public class ClientCache {
     /**
      * 持有一个服务端channel
      */
-    private static Channel serverChannel;
+    private static volatile Channel serverChannel;
 
     private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(1<<10);
 

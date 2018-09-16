@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.gateway.common.bean.attr.DefaultChannelHealthyAttr;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
@@ -126,13 +127,14 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
         /**
          * 更新健康数据
          */
-        ChannelAttributeUtil.getHealthy(channel)
-                .setLastPackageTime(DateUtil.getNowStr())
+        DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
+        channelHealthyAttr.setLastPackageTime(DateUtil.getNowStr())
                 .setLastPackageHex(pac.getSourceHexStr());
 
         // 消息组装
         composeMsgPac(pac, packageTraceAttr);
-
+        // 设置健康数据中的消息类型描述
+        channelHealthyAttr.setLastPackageDes(pac.getHeader().getCommandMark().getDes());
         return pac;
     }
 
