@@ -1,18 +1,17 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.frm.spring.gateway.ExpMessageDTO;
 import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
-import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.exception.ClientMappingException;
+import com.ccclubs.gateway.common.exception.OfflineException;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.jt808.constant.PacProcessing;
-import com.ccclubs.gateway.jt808.exception.OfflineException;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.BufReleaseUtil;
 import com.ccclubs.gateway.jt808.util.PacUtil;
@@ -98,8 +97,6 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
         SocketChannel channel = (SocketChannel) context.channel();
-        // 部分异常可能需要服务端主动释放连接
-        boolean needCloseConn = false;
         // 是否发送至kafka
         boolean needSendKafka = true;
 
@@ -122,15 +119,12 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
 
         String uniqueNo = packageTraceAttr.getUniqueNo();
         if (Objects.isNull(uniqueNo)) {
-            LOG.error("cannot find uniqueNo when a exception was caughted.");
-//            context.channel().unsafe().closeForcibly();
-//            return;
+            LOG.error("cannot find uniqueNo when a exception was caughted, the server will close the connection.");
+            ChannelUtils.closeChannelForcibly(channel);
+            return;
         }
-        uniqueNo = PacUtil.getUniqueNoOrHost(uniqueNo, channel);
-
-        if (packageTraceAttr.isErrorOccured()) {
-            // 自定义抛出的处理异常
-        } else {
+        uniqueNo = ChannelUtils.getUniqueNoOrHost(uniqueNo, channel);
+        if (!packageTraceAttr.isErrorOccured()) {
             // 其他非自定义的异常
             packageTraceAttr.getExpMessageDTO()
                     .setCode(String.valueOf(packageTraceAttr.getStep()))
@@ -141,37 +135,22 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
         if (StringUtils.isEmpty(packageTraceAttr.getUniqueNo())) {
             needSendKafka = false;
         }
-
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
             KafkaTask task = new KafkaTask(KafkaSendTopicType.ERROR, uniqueNo, packageTraceAttr.getExpMessageDTO().toJson());
             context.pipeline().fireChannelRead(new AbstractChannelInnerMsg().setInnerMsgType(InnerMsgType.TASK_KAFKA).setMsg(task));
         }
 
-        // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
-        if (cause instanceof TooLongFrameException) {
-            LOG.error("检测到车机[" + uniqueNo +"]发送帧长度异常，服务端将主动断开连接");
-            needCloseConn = true;
-        } else if (cause instanceof OfflineException) {
-            // 断开连接异常，服务端将强制断开. 这里已经找不到uniqueNo了，所以也发送不了下线事件给 redis
-            LOG.error("({}) 断开连接异常，服务端将强制断开", uniqueNo);
-
-            context.channel().unsafe().closeForcibly();
-        } else if (cause instanceof IOException) {
-            // Connection reset by peer
-            LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
-            needCloseConn = true;
-        } else if (cause instanceof ClientMappingException) {
-            LOG.error("client ({}) cannot find mapping: cause={}", uniqueNo, cause);
-            needCloseConn = true;
-        }
-
-        if (needCloseConn) {
+        // 部分异常可能需要服务端主动释放连接
+        if (isCutOffClientWhenException(cause, ChannelUtils.getUniqueNoOrHost(packageTraceAttr.getUniqueNo(), channel))) {
             ChannelAttributeUtil.getStatus(channel)
                     .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
             // 关闭链接
             context.pipeline().fireChannelInactive();
         }
+
+        // 处理主动断开与客户端的连接的异常
+        dealCloseClientForciblyException(cause, packageTraceAttr.getUniqueNo(), channel);
 
         // 最后释放可能存在的缓存
         ReferenceCountUtil.release(cause);
@@ -181,13 +160,41 @@ public class AllExceptionHandler extends ChannelInboundHandlerAdapter {
          */
     }
 
-    private void setOtherException(String uniqueNo, PackageTraceAttr packageTraceAttr, Throwable cause) {
-        ExpMessageDTO expMessageDTO = packageTraceAttr.getExpMessageDTO();
-        expMessageDTO.setMsgTime(System.currentTimeMillis());
-        expMessageDTO.setCode(String.valueOf(packageTraceAttr.getStep()))
-                .setGatewayType(GatewayType.GATEWAY_808.getDes())
-                .setSourceHex(packageTraceAttr.getSourceHex())
-                .setReason(cause.getMessage())
-                .setMobile(uniqueNo);
+    /**
+     * 根据异常类型，判断服务端是否需要主动断开客户端连接
+     * @param cause
+     * @param uniqueNo
+     * @return
+     */
+    private boolean isCutOffClientWhenException(Throwable cause, String uniqueNo) {
+        // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
+        if (cause instanceof TooLongFrameException) {
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", uniqueNo);
+        } else if (cause instanceof IOException) {
+            // Connection reset by peer
+            LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
+        } else if (cause instanceof ClientMappingException) {
+            LOG.error("client ({}) cannot find mapping: cause={}", uniqueNo, cause);
+        } else {
+            // 其他情况不断开连接
+            return false;
+        }
+        // 命中的异常，断开连接
+        return true;
+    }
+
+    /**
+     * 处理强制关闭终端连接的异常
+     *      当某些异常发生时，不能通过正常下线操作使终端下线，只有强制终端下线
+     * @param cause
+     * @param uniqueNo
+     * @param channel
+     */
+    private void dealCloseClientForciblyException(Throwable cause, String uniqueNo, SocketChannel channel) {
+        if (cause instanceof OfflineException) {
+            LOG.error("检测到终端[{}]下线异常，服务端将主动断开连接.", ChannelUtils.getUniqueNoOrHost(uniqueNo, channel));
+            ChannelUtils.closeChannelForcibly(channel);
+            return;
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import com.ccclubs.gateway.common.exception.ClientMappingException;
+import com.ccclubs.gateway.common.exception.OfflineException;
 import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import com.ccclubs.gateway.common.util.ClientEventFactory;
@@ -64,7 +65,7 @@ public class TerminalConnService {
                 .setChannelLiveStage(ChannelLiveStatus.OFFLINE_END.getCode());
         String uniqueNo = channelStatusAttr.getUniqueNo();
         if (Objects.isNull(uniqueNo)) {
-            throw new ClientMappingException("cannot mapping to a uniqueNo from channelStatusAttr when deal offline");
+            throw new OfflineException("cannot mapping to a uniqueNo from channelStatusAttr when deal offline");
         }
 
         // 发送下线事件

@@ -100,4 +100,14 @@ public final class ChannelUtils {
         }
     }
 
+    /**
+     * 强制关闭终端连接
+     * @param channel
+     */
+    public static void closeChannelForcibly(SocketChannel channel) {
+        if (channel.isActive()) {
+            channel.unsafe().closeForcibly();
+        }
+    }
+
 }

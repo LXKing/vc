@@ -5,6 +5,8 @@ import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.KafkaSendTopicType;
 import com.ccclubs.gateway.common.dto.KafkaTask;
+import com.ccclubs.gateway.common.exception.ClientMappingException;
+import com.ccclubs.gateway.common.exception.OfflineException;
 import com.ccclubs.gateway.common.exception.ServerCutException;
 import com.ccclubs.gateway.common.service.KafkaService;
 import com.ccclubs.gateway.common.util.BufReleaseUtil;
@@ -25,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -103,8 +106,6 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
         PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         BufReleaseUtil.releaseByLoop(packageTraceAttr.getPacBuf());
 
-        // 部分异常可能需要服务端主动释放连接
-        boolean needCloseConn = false;
         // 是否发送至kafka
         boolean needSendKafka = true;
 
@@ -118,40 +119,78 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
          */
         PacProcessing pacProcessing = PacProcessing.getByCode(packageTraceAttr.getStep());
         LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause);
-        if (packageTraceAttr.isErrorOccured()) {
-            // 自定义抛出的处理异常
-        } else {
+        if (!packageTraceAttr.isErrorOccured()) {
             // 其他非自定义的异常
             packageTraceAttr.getExpMessageDTO()
                     .setCode(String.valueOf(packageTraceAttr.getStep()))
                     .setReason(cause.getMessage());
         }
 
+        String uniqueNo = packageTraceAttr.getUniqueNo();
+        if (Objects.isNull(uniqueNo)) {
+            LOG.error("cannot find uniqueNo when a exception was caughted, the server will close the connection.");
+            ChannelUtils.closeChannelForcibly(channel);
+            return;
+        }
+        uniqueNo = ChannelUtils.getUniqueNoOrHost(uniqueNo, channel);
+
         // 其他非自定义异常如果获取不到vin码则不发送到kafka
         if (StringUtils.isEmpty(packageTraceAttr.getUniqueNo())) {
             needSendKafka = false;
         }
-
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
             kafkaService.send(new KafkaTask(KafkaSendTopicType.ERROR, packageTraceAttr.getUniqueNo(), packageTraceAttr.getExpMessageDTO().toJson()));
         }
 
-        // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
-        if (cause instanceof TooLongFrameException) {
-            StringBuilder tooLongSb = new StringBuilder();
-            tooLongSb.append("检测到车机")
-                    .append(ChannelUtils.getUniqueNoOrHost(packageTraceAttr.getUniqueNo(), channel))
-                    .append("发送帧长度异常，服务端将主动断开连接");
-            LOG.error(tooLongSb.toString());
-            needCloseConn = true;
-        } else if (cause instanceof ServerCutException) {
-            needCloseConn = true;
+        // 部分异常可能需要服务端主动释放连接
+        if (isCutOffClientWhenException(cause, uniqueNo)) {
+            ChannelAttributeUtil.getStatus(channel)
+                    .setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
+            // 关闭链接
+            context.pipeline().fireChannelInactive();
         }
 
-        if (needCloseConn) {
-            // 关闭链接
-            context.channel().close();
+        // 处理主动断开与客户端的连接的异常
+        dealCloseClientForciblyException(cause, uniqueNo, channel);
+    }
+
+    /**
+     * 根据异常类型，判断服务端是否需要主动断开客户端连接
+     * @param cause
+     * @param uniqueNo
+     * @return
+     */
+    private boolean isCutOffClientWhenException(Throwable cause, String uniqueNo) {
+        // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
+        if (cause instanceof TooLongFrameException) {
+            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", uniqueNo);
+        } else if (cause instanceof IOException) {
+            // Connection reset by peer
+            LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
+        } else if (cause instanceof ClientMappingException) {
+            LOG.error("client ({}) cannot find mapping: cause={}", uniqueNo, cause);
+        } else if (cause instanceof ServerCutException) {
+            LOG.error("the server cutoff the client,s connction: cause={}", uniqueNo, cause);
+        } else {
+            // 其他情况不断开连接
+            return false;
+        }
+        // 命中的异常，断开连接
+        return true;
+    }
+
+    /**
+     * 处理强制关闭终端连接的异常
+     *      当某些异常发生时，不能通过正常下线操作使终端下线，只有强制终端下线
+     * @param cause
+     * @param uniqueNo
+     * @param channel
+     */
+    private void dealCloseClientForciblyException(Throwable cause, String uniqueNo, SocketChannel channel) {
+        if (cause instanceof OfflineException) {
+            LOG.error("检测到终端[{}]下线异常，服务端将主动断开连接.", ChannelUtils.getUniqueNoOrHost(uniqueNo, channel));
+            ChannelUtils.closeChannelForcibly(channel);
         }
     }
 
