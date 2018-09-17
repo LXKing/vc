@@ -1,7 +1,6 @@
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.phoenix.inf.CanHistoryInf;
 import com.ccclubs.phoenix.input.CanParam;
@@ -9,15 +8,10 @@ import com.ccclubs.phoenix.input.CanStateParam;
 import com.ccclubs.phoenix.orm.dto.CanDto;
 import com.ccclubs.phoenix.orm.dto.CanStateDto;
 import com.ccclubs.phoenix.output.CanHistoryOutput;
-import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**

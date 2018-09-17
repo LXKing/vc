@@ -2,7 +2,6 @@ package com.ccclubs.admin.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.ccclubs.admin.model.HistoryCan;
-import com.ccclubs.admin.model.HistoryState;
 import com.ccclubs.admin.query.HistoryCanQuery;
 import com.ccclubs.admin.service.IHistoryCanService;
 import com.ccclubs.admin.vo.Page;

@@ -8,15 +8,12 @@ import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.input.BaseParamInf;
 import com.ccclubs.phoenix.input.CanStateParam;
 import com.ccclubs.phoenix.orm.dto.CanStateDto;
-import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -119,7 +116,7 @@ public class BaseQueryImpl {
 
     public CanStateDto queryCanStateDto(CanStateParam param) {
         String te_number = param.getTeNumber();
-        long current_time = param.getStartRow();
+        long current_time = param.getCanTime();
         CanStateDto carState = null;
 
         final String queryFields = param.getQueryFields();
