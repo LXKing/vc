@@ -1,6 +1,7 @@
 package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.phoenix.inf.CanHistoryInf;
 import com.ccclubs.phoenix.input.CanParam;
@@ -8,10 +9,15 @@ import com.ccclubs.phoenix.input.CanStateParam;
 import com.ccclubs.phoenix.orm.dto.CanDto;
 import com.ccclubs.phoenix.orm.dto.CanStateDto;
 import com.ccclubs.phoenix.output.CanHistoryOutput;
+import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -26,7 +32,7 @@ import java.util.List;
 @Service(version = "1.0.0")
 public class CanHistoryInfImpl implements CanHistoryInf {
 
-    static  final Logger logger= LoggerFactory.getLogger(CanHistoryInfImpl.class);
+    static final Logger logger = LoggerFactory.getLogger(CanHistoryInfImpl.class);
 
     @Autowired
     private BaseQueryImpl baseQuery;
@@ -35,7 +41,7 @@ public class CanHistoryInfImpl implements CanHistoryInf {
     public List<CanDto> queryCanDtoList(CanParam param) {
         return baseQuery.queryDtoList(param,
                 PhoenixConst.PHOENIX_CAR_CAN_HISTORY_NOR,
-                PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP,CanDto.class);
+                PhoenixConst.PHOENIX_CAR_CAN_HISTORY_EXP, CanDto.class);
     }
 
 
@@ -49,7 +55,7 @@ public class CanHistoryInfImpl implements CanHistoryInf {
 
     @Override
     public CanHistoryOutput queryListByParam(CanParam param) {
-        CanHistoryOutput canHistoryOutput=new CanHistoryOutput();
+        CanHistoryOutput canHistoryOutput = new CanHistoryOutput();
         canHistoryOutput.setList(queryCanDtoList(param));
         canHistoryOutput.setTotal(queryListCount(param));
         return canHistoryOutput;
@@ -57,6 +63,6 @@ public class CanHistoryInfImpl implements CanHistoryInf {
 
     @Override
     public CanStateDto queryCanStateDto(CanStateParam param) {
-        return null;
+        return baseQuery.queryCanStateDto(param);
     }
 }

@@ -13,12 +13,12 @@ public class CanStateDto implements Serializable {
     /**
      * 车机号
      */
-    private String csNumber;
-    private String csVin;
+    private String teNumber;
+    private String vin;
     /**
      * 授权系统
      */
-    private Integer csAccess;
+    private Integer access;
     /**
      * 添加时间
      */
@@ -27,7 +27,6 @@ public class CanStateDto implements Serializable {
      * 下位机时间
      */
     private Long currentTime;
-    private String currentDatetime;
     /**
      * 租赁状态
      */
@@ -197,28 +196,28 @@ public class CanStateDto implements Serializable {
      */
     private Integer handbrakeStatus;
 
-    public String getCsNumber() {
-        return csNumber;
+    public String getTeNumber() {
+        return teNumber;
     }
 
-    public void setCsNumber(String csNumber) {
-        this.csNumber = csNumber;
+    public void setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
     }
 
-    public String getCsVin() {
-        return csVin;
+    public String getVin() {
+        return vin;
     }
 
-    public void setCsVin(String csVin) {
-        this.csVin = csVin;
+    public void setVin(String vin) {
+        this.vin = vin;
     }
 
-    public Integer getCsAccess() {
-        return csAccess;
+    public Integer getAccess() {
+        return access;
     }
 
-    public void setCsAccess(Integer csAccess) {
-        this.csAccess = csAccess;
+    public void setAccess(Integer access) {
+        this.access = access;
     }
 
     public Long getAddTime() {
@@ -235,14 +234,6 @@ public class CanStateDto implements Serializable {
 
     public void setCurrentTime(Long currentTime) {
         this.currentTime = currentTime;
-    }
-
-    public String getCurrentDatetime() {
-        return currentDatetime;
-    }
-
-    public void setCurrentDatetime(String currentDatetime) {
-        this.currentDatetime = currentDatetime;
     }
 
     public Integer getRentFlg() {
@@ -581,3 +572,5 @@ public class CanStateDto implements Serializable {
         this.handbrakeStatus = handbrakeStatus;
     }
 }
+
+

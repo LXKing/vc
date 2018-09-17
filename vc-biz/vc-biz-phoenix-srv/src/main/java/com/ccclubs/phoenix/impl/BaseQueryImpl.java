@@ -2,9 +2,13 @@ package com.ccclubs.phoenix.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.ccclubs.frm.spring.constant.PhoenixConst;
 import com.ccclubs.frm.spring.entity.DateTimeUtil;
 import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.input.BaseParamInf;
+import com.ccclubs.phoenix.input.CanStateParam;
+import com.ccclubs.phoenix.orm.dto.CanStateDto;
+import com.ccclubs.phoenix.orm.model.CarState;
 import com.ccclubs.phoenix.util.BaseTransformTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +115,37 @@ public class BaseQueryImpl {
                     preparedStatement, resultSet, "queryList" + querySql);
         }
         return dtoList;
+    }
+
+    public CanStateDto queryCanStateDto(CanStateParam param) {
+        String te_number = param.getTeNumber();
+        long current_time = param.getStartRow();
+        CanStateDto carState = null;
+
+        final String queryFields = param.getQueryFields();
+        String querySql = "select " +
+                queryFields + " " +
+                "from " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY + " " +
+                "where te_number=? " +
+                "and current_time=? ";
+
+        Connection connection = phoenixTool.getConnection();
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(querySql);
+            preparedStatement.setString(1, te_number);
+            preparedStatement.setLong(2, current_time);
+            resultSet = preparedStatement.executeQuery();
+            List<CanStateDto> dtoList = BaseTransformTool.resultSetToObjectList(resultSet, CanStateDto.class);
+            carState = dtoList.get(0);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+        } finally {
+            phoenixTool.closeResource(connection,
+                    preparedStatement, resultSet, "carState queryCarState NoData");
+        }
+        return carState;
     }
 
 
