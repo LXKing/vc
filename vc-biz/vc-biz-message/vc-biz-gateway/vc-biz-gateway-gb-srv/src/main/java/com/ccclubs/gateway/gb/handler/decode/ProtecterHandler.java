@@ -21,7 +21,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,9 +104,20 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
          */
         PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
         BufReleaseUtil.releaseByLoop(packageTraceAttr.getPacBuf());
+        // 打印异常日志
+        PacProcessing pacProcessing = PacProcessing.getByCode(packageTraceAttr.getStep());
+        LOG.error("[{}]发生异常，异常原因：", pacProcessing.getDes(), cause);
 
         // 是否发送至kafka
         boolean needSendKafka = true;
+
+        // 获取唯一标识
+        String uniqueNo = packageTraceAttr.getUniqueNo();
+        if (Objects.isNull(uniqueNo)) {
+            LOG.error("cannot find uniqueNo when a exception was caughted, the server will close the connection.");
+            ChannelUtils.closeChannelForcibly(channel);
+            return;
+        }
 
         /**
          * 处理链路出现异常后
@@ -117,8 +127,6 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
          *      如果是链路上非主动抛出：组装其他异常dto
          *  3.发送至kafka
          */
-        PacProcessing pacProcessing = PacProcessing.getByCode(packageTraceAttr.getStep());
-        LOG.error("[{}]发生异常，异常原因：{}", pacProcessing.getDes(), cause);
         if (!packageTraceAttr.isErrorOccured()) {
             // 其他非自定义的异常
             packageTraceAttr.getExpMessageDTO()
@@ -126,18 +134,6 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
                     .setReason(cause.getMessage());
         }
 
-        String uniqueNo = packageTraceAttr.getUniqueNo();
-        if (Objects.isNull(uniqueNo)) {
-            LOG.error("cannot find uniqueNo when a exception was caughted, the server will close the connection.");
-            ChannelUtils.closeChannelForcibly(channel);
-            return;
-        }
-        uniqueNo = ChannelUtils.getUniqueNoOrHost(uniqueNo, channel);
-
-        // 其他非自定义异常如果获取不到vin码则不发送到kafka
-        if (StringUtils.isEmpty(packageTraceAttr.getUniqueNo())) {
-            needSendKafka = false;
-        }
         // json序列化之后发送到kafka对应Topic
         if (needSendKafka) {
             kafkaService.send(new KafkaTask(KafkaSendTopicType.ERROR, packageTraceAttr.getUniqueNo(), packageTraceAttr.getExpMessageDTO().toJson()));
@@ -164,10 +160,10 @@ public class ProtecterHandler extends ChannelInboundHandlerAdapter {
     private boolean isCutOffClientWhenException(Throwable cause, String uniqueNo) {
         // 帧长度异常，未免影响下一次发送结果，主动断开与客户端的连接
         if (cause instanceof TooLongFrameException) {
-            LOG.error("检测到车机[{}]发送帧长度异常，服务端将主动断开连接", uniqueNo);
+            LOG.error("client({}) send frame too long, the server will cutoff the connection.", uniqueNo);
         } else if (cause instanceof IOException) {
             // Connection reset by peer
-            LOG.error("({}) 连接重置[{}]，服务端将关闭该连接", uniqueNo, cause.getMessage());
+            LOG.error("client ({}) cause a io-exception: cause={}, the server will cutoff the connection.", uniqueNo, cause.getMessage());
         } else if (cause instanceof ClientMappingException) {
             LOG.error("client ({}) cannot find mapping: cause={}", uniqueNo, cause);
         } else if (cause instanceof ServerCutException) {
