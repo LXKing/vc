@@ -2,10 +2,11 @@ package com.ccclubs.phoenix.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ccclubs.frm.spring.constant.PhoenixConst;
-import com.ccclubs.hbase.phoenix.config.PhoenixTool;
 import com.ccclubs.phoenix.inf.CanHistoryInf;
 import com.ccclubs.phoenix.input.CanParam;
+import com.ccclubs.phoenix.input.CanStateParam;
 import com.ccclubs.phoenix.orm.dto.CanDto;
+import com.ccclubs.phoenix.orm.dto.CanStateDto;
 import com.ccclubs.phoenix.output.CanHistoryOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,8 @@ public class CanHistoryInfImpl implements CanHistoryInf {
         return canHistoryOutput;
     }
 
-
-
+    @Override
+    public CanStateDto queryCanStateDto(CanStateParam param) {
+        return null;
+    }
 }

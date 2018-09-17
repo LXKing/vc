@@ -4,14 +4,20 @@ import com.ccclubs.admin.model.HistoryCan;
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.HistoryCanQuery;
 import com.ccclubs.admin.service.IHistoryCanService;
+import com.ccclubs.admin.service.IHistoryStateService;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
+import com.ccclubs.phoenix.orm.dto.CanStateDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +40,9 @@ public class HistoryCanController {
 
     @Autowired
     ReportThread reportThread;
+
+    @Autowired
+    IHistoryStateService historyStateService;
 
     /**
      * 获取分页列表数据
@@ -63,30 +72,19 @@ public class HistoryCanController {
      * 2018/9/14
      * can解析
      *
-     * @param query
-     * @param page
-     * @param rows
-     * @param order
-     * @param isResolve
-     * @return com.ccclubs.admin.vo.TableResult<com.ccclubs.admin.model.HistoryCan>
+     * @param carNumber 车机号
+     * @param canTime   can记录时间戳
+     * @return com.ccclubs.admin.vo.VoResult<>
      * @author machuanpeng
      */
     @RequestMapping(value = "/canAnalyze", method = RequestMethod.GET)
-    public TableResult<HistoryCan> canAnalyze(HistoryCanQuery query, @RequestParam(defaultValue = "0") Integer page,
-                                        @RequestParam(defaultValue = "10") Integer rows,
-                                        @RequestParam(defaultValue = "desc") String order,
-                                        @RequestParam(defaultValue = "true") Boolean isResolve) {
-        if (null == query.getCsVinEquals()) {
-            return new TableResult<HistoryCan>();
-        }
-        TableResult<HistoryCan> pageInfo = historyCanService.getPage(query, page, rows, order);
-        List<HistoryCan> list = pageInfo.getData();
-        for (HistoryCan data : list) {
-            registResolvers(data);
-        }
-        return pageInfo;
+    public VoResult<CanStateDto> canAnalyze(@RequestParam String carNumber, @RequestParam Long canTime) {
+        CanStateDto historyState = historyCanService.getHistoryStateDetail(carNumber, canTime);
+        VoResult<CanStateDto> result = new VoResult<>();
+        result.setSuccess(true);
+        result.setValue(historyState);
+        return result;
     }
-
 
     /**
      * 注册属性内容解析器
@@ -95,7 +93,6 @@ public class HistoryCanController {
         if (data != null) {
         }
     }
-
 
     /**
      * 根据文本检索车辆历史状态信息并导出。
@@ -117,7 +114,6 @@ public class HistoryCanController {
                 reportParam.getRows(),
                 reportParam.getOrder());
         list = pageInfo.getData();
-
 
         for (HistoryCan data : list) {
             registResolvers(data);
