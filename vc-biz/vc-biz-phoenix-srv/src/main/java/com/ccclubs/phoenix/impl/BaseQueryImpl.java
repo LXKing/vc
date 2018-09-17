@@ -125,7 +125,7 @@ public class BaseQueryImpl {
         final String queryFields = param.getQueryFields();
         String querySql = "select " +
                 queryFields + " " +
-                "from " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY + " " +
+                "from " + PhoenixConst.PHOENIX_CAR_STATE_HISTORY_NOR + " " +
                 "where te_number=? " +
                 "and current_time=? ";
 
