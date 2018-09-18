@@ -489,7 +489,7 @@ public class LogicHelperJt808 {
             final JT_0900_can canData,
             final String type) {
         try {
-            long startTime = System.nanoTime();
+            //long startTime = System.nanoTime();
 
             CanStatusZotye zotyeStatus = new CanStatusZotye();
             zotyeStatus.mCanNum = canData.getCount();
@@ -521,22 +521,22 @@ public class LogicHelperJt808 {
 
             final String hexString = Tools.ToHexString(buff.array());
 
-            logger.info("saveCanData()2 init csCan time {} 微秒",
-                    System.nanoTime() - startTime);
+            /*logger.info("saveCanData()2 init csCan time {} 微秒",
+                    System.nanoTime() - startTime);*/
 
             CsCan csCanNew;
             if (mapping.getCan() != null) {
                 // 获取车机号，access，host，car 等信息
-                startTime = System.nanoTime();
+                //startTime = System.nanoTime();
                 csCanNew = queryCanService.queryCanById(mapping.getCan());
-                logger.info("saveCanData()2 queryCanService.queryCanById time {} 微秒",
-                        System.nanoTime() - startTime);
+                /*logger.info("saveCanData()2 queryCanService.queryCanById time {} 微秒",
+                        System.nanoTime() - startTime);*/
             } else {
                 return;
             }
             if (csCanNew != null) {
                 // 设置上传时间，原始数据
-                startTime = System.nanoTime();
+                //startTime = System.nanoTime();
                 csCanNew.setCscVin(mapping.getVin());
                 csCanNew.setCscUploadTime(
                         StringUtils.date(canData.getTime(), ConstantUtils.TIME_FORMAT));
@@ -548,12 +548,11 @@ public class LogicHelperJt808 {
                     kafkaTemplate.send(kafkaTopicCsCan, JSONObject.toJSONString(csCanNew));
                 }
 
-                logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
-                        System.nanoTime() - startTime);
+                /*logger.info("saveCanData()2 historyCanUtils.saveHistoryData time {} 微秒",
+                        System.nanoTime() - startTime);*/
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            e.printStackTrace();
         }
     }
 
