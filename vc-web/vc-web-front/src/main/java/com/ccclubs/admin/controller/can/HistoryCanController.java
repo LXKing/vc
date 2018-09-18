@@ -103,8 +103,8 @@ public class HistoryCanController {
      */
     @RequestMapping(value = "/canAnalyze", method = RequestMethod.GET)
     public VoResult<String> canAnalyze(@RequestParam String canOriginal) {
+        VoResult<String> result = new VoResult<>();
         if (StringUtils.empty(canOriginal)) {
-            VoResult<String> result = new VoResult<>();
             result.setSuccess(false);
             result.setMessage("can解析需要足够的参数。");
             return result;
@@ -117,7 +117,6 @@ public class HistoryCanController {
                 canList.put("0x" + Tools.ToHexString((short) canItem.getCanId()), canItem.getMap());
             }
         }
-        VoResult<String> result = new VoResult<>();
         result.setSuccess(true);
         result.setValue(canList.toString());
         return result;
