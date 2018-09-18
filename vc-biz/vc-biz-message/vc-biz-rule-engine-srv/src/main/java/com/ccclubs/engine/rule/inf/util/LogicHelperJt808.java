@@ -579,6 +579,7 @@ public class LogicHelperJt808 {
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
             if (csMachine == null) {
                 csMachine = queryTerminalService.queryCsMachineBySimNo(carNumber);
+                dto.setTeNumber(csMachine.getCsmNumber());
             }
             if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
