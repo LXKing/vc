@@ -321,9 +321,11 @@ public class ParseDataService implements IParseDataService {
         terminalTriggerStatus.setCssGear(
                 terminalInfo.getTriggerGearStatus() == null ? 0
                         : terminalInfo.getTriggerGearStatus());
-        terminalTriggerStatus.setControlStatusWithMask(
-                terminalInfo.getControlStatus() == null ? null
-                        : terminalInfo.getControlStatus().shortValue());
+
+        if(terminalInfo.getControlStatus() != null){
+            terminalTriggerStatus.setControlStatusWithMask(terminalInfo.getControlStatus().shortValue());
+        }
+
         SrvHost srvHost = queryHostInfoService
                 .queryHostByIdFromCache(mapping.getAccess().intValue());
 
