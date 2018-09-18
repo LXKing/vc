@@ -457,6 +457,7 @@ public class ParseDataService implements IParseDataService {
                     .queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
                 csMachine = queryTerminalService.queryCsMachineBySimNo(message.getCarNumber());
+                dto.setTeNumber(csMachine.getCsmNumber());
             }
             if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", message.getCarNumber());
