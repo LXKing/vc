@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xxx</title>
+    <style type="text/css">
+        .carList{
+
+        }
+        .carBox{
+            width:32.3%;
+            height:100px;
+            line-height:100px;
+            padding-left:1%;
+            float:left;
+            color:white;
+            background-color:#2f4050;
+        }
+        .bg1{
+            background-color: #607D8B;
+        }
+        .bg2{
+            background-color: #9ea6b9;
+        }
+        .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}/* Hide from IE Mac */.clearfix {display:block;}/* End hide from IE Mac *//* end of clearfix */
+    </style>
+</head>
+<body>
+    <div class="carList clearfix">
+        <div class="carBox">
+            <span>所有车辆:</span>
+            <span>1000</span>
+        </div>
+        <div class="carBox bg1">
+            <span>在线车辆:</span>
+            <span>1000</span>
+        </div>
+        <div class="carBox bg2">
+            <span>离线车辆:</span>
+            <span>1000</span>
+        </div>
+    </div>
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+    <script type="text/javascript">
+        console.log(servUrl)
+        $.ajax({
+            url:"http://localhost:9009/index/car/statistics",
+            type:"get",
+            success:function (data) {
+                console.log(data);
+            },
+            error:function(err){
+                console.log(err)
+            }
+        })
+    </script>
+</body>
+</html>
