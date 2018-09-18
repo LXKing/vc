@@ -257,9 +257,9 @@ public class ParseDataService implements IParseDataService {
                     }
 
                     // 0x6802 将在 0x6803 新版本状态数据后弃用
-                    CsState csStateNew = terminalUtils.setUpdateMapTriggerInfoNew(terminalInfo);
-                    csStateNew.setCssAddTime(new Date());
-                    csStateNew.setCssId(mapping.getState().intValue());
+                    //CsState csStateNew = terminalUtils.setUpdateMapTriggerInfoNew(terminalInfo);
+                    //csStateNew.setCssAddTime(new Date());
+                    //csStateNew.setCssId(mapping.getState().intValue());
                     //logicHelperMqtt.updateStatus(csStateNew);
                     break;
                 case 0x03:
@@ -454,7 +454,11 @@ public class ParseDataService implements IParseDataService {
             CsMachine csMachine = queryTerminalService
                     .queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
+                csMachine = queryTerminalService.queryCsMachineBySimNo(message.getCarNumber());
+            }
+            if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", message.getCarNumber());
+                dto.setAccess(0);
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
                 CsVehicle csVehicle = queryVehicleService
