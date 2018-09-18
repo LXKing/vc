@@ -4,7 +4,6 @@ import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES
 import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RT_STATES;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.common.query.QueryCanService;
@@ -16,7 +15,6 @@ import com.ccclubs.engine.core.util.TerminalUtils;
 import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.frm.spring.util.UuidUtil;
 import com.ccclubs.helper.MachineMapping;
-import com.ccclubs.mongo.orm.model.history.CsLogger;
 import com.ccclubs.protocol.dto.jt808.JT_0200;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can;
 import com.ccclubs.protocol.dto.jt808.JT_0900_can_item;
@@ -304,7 +302,7 @@ public class LogicHelperJt808 {
                 state.setCssGpsValid(jt808PositionData.getGpsValid().byteValue());
                 state.setCssSpeed(jt808PositionData.getGpsSpeed());
                 state.setCssMoData(message.getPacketDescr());
-                redisTemplate.opsForHash().put(REDIS_KEY_RT_STATES, state.getCssNumber(), state);
+                redisTemplate.opsForHash().put(REDIS_KEY_RT_STATES, mapping.getNumber(), state);
             }
             //保存长安状态历史数据30条至redis
             if (mapping.getAccess() == 3 || mapping.getAccess() == 4 || mapping.getAccess() == 5) {
@@ -581,10 +579,15 @@ public class LogicHelperJt808 {
             dto.setUuid(UuidUtil.getUuid());
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
             if (csMachine == null) {
+                csMachine = queryTerminalService.queryCsMachineBySimNo(carNumber);
+            }
+            if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
+                dto.setAccess(0);
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
-                CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
+                CsVehicle csVehicle = queryVehicleService
+                        .queryVehicleByMachineFromCache(csMachine.getCsmId());
                 dto.setAccess(csMachine.getCsmAccess());
                 if (csVehicle == null) {
                     kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));

@@ -597,7 +597,11 @@ public class TerminalUtils {
             dto.setUuid(UuidUtil.getUuid());
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
             if (csMachine == null) {
+                csMachine = queryTerminalService.queryCsMachineBySimNo(carNumber);
+            }
+            if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
+                dto.setAccess(0);
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
                 CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
