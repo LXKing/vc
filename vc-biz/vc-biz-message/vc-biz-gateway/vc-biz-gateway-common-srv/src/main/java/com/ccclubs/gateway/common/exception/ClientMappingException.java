@@ -1,4 +1,4 @@
-package com.ccclubs.gateway.jt808.exception;
+package com.ccclubs.gateway.common.exception;
 
 /**
  * @Author: yeanzi

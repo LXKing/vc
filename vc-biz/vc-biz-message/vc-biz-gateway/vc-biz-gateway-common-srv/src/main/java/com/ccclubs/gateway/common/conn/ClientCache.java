@@ -1,7 +1,6 @@
-package com.ccclubs.gateway.jt808.service;
+package com.ccclubs.gateway.common.conn;
 
-import com.ccclubs.gateway.common.config.TcpServerConf;
-import com.ccclubs.gateway.jt808.exception.ClientMappingException;
+import com.ccclubs.gateway.common.exception.ClientMappingException;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.internal.PlatformDependent;
@@ -23,11 +22,11 @@ public class ClientCache {
     /**
      * 持有一个服务端channel
      */
-    private static Channel serverChannel;
+    private static volatile Channel serverChannel;
 
-    private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
+    private static Map<String, ClientCache> UNIQUENO_TO_CLIENT = PlatformDependent.newConcurrentHashMap(1<<10);
 
-    private static Map<Channel, ClientCache> CHANNEL_TO_CLIENT = PlatformDependent.newConcurrentHashMap(2000);
+    private static Map<Channel, ClientCache> CHANNEL_TO_CLIENT = PlatformDependent.newConcurrentHashMap(1<<10);
 
     /**
      * 唯一标识
@@ -97,7 +96,7 @@ public class ClientCache {
     }
 
 //    private void closeChannelFocely(SocketChannel channel) {
-//        ChannelAttrbuteUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_UPDATE);
+//        ChannelAttributeUtil.getLifeTrack(channel).setLiveStatus(ChannelLiveStatus.OFFLINE_UPDATE);
 //        channel.pipeline().fireChannelInactive();
 //    }
 
@@ -160,8 +159,12 @@ public class ClientCache {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ClientCache that = (ClientCache) o;
         return com.google.common.base.Objects.equal(uniqueNo, that.uniqueNo) &&
                 com.google.common.base.Objects.equal(serialNo, that.serialNo) &&

@@ -20,10 +20,12 @@ gateway:
 spring:
   # redis配置
   redis:
-    host: 118.178.229.234
-    port: 63791
-    password: WDnlDnt6f7GuYh
+    host: 127.0.0.1
+    port: 6379
     database: 7
+#    port: 63791
+#    password: WDnlDnt6f7GuYh
+#    database: 7
   # kafka生产者配置
   kafka:
     bootstrap-servers: 127.0.0.1:9092

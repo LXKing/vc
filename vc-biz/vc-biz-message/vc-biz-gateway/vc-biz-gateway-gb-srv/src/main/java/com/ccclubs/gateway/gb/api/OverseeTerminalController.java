@@ -1,13 +1,12 @@
-package com.ccclubs.gateway.jt808.api;
+package com.ccclubs.gateway.gb.api;
 
 import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.conn.ClientCache;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
-import com.ccclubs.gateway.jt808.service.RedisConnService;
-import com.ccclubs.gateway.jt808.service.TerOverseeService;
-import com.ccclubs.gateway.jt808.service.TerminalConnService;
+import com.ccclubs.gateway.gb.service.TerOverseeService;
+import com.ccclubs.gateway.gb.service.TerminalConnService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,6 @@ public class OverseeTerminalController {
 
     @Autowired
     private TerOverseeService vehicleService;
-
-    @Autowired
-    private RedisConnService redisConnService;
 
     @Autowired
     private TerminalConnService terminalConnService;
@@ -74,24 +70,6 @@ public class OverseeTerminalController {
             return OK.Statu.SUCCESS_WITH_DATA.build();
         } else {
             return Error.Statu.UNIQUENO_NOT_EXIST.build();
-        }
-    }
-
-    /**
-     * 特殊车辆报文监控时【前提是网关开启了PreProcessHandler】
-     *      清除监控列表
-     *      清除redis中808相关缓存
-     * @param auth
-     * @return
-     */
-    @GetMapping("/clean/all/{auth}")
-    public R removeAllClientCache(@PathVariable("auth")String auth) {
-        if ("Andaren".equals(auth)) {
-            vehicleService.removeAll();
-            redisConnService.cleanChacheForTheFirstTime();
-            return OK.Statu.SUCCESS.build();
-        } else {
-            return Error.Statu.AUTH_FAILED.build();
         }
     }
 

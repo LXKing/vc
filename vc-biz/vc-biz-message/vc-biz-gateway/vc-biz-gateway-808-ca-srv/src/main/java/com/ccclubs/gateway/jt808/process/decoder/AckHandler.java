@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
@@ -37,7 +36,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
     private static final Logger LOG = LoggerFactory.getLogger(AckHandler.class);
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
         Package808 ackPac = null;
 
         // 对于终端的应答不需要平台再次应答
@@ -47,7 +46,7 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
             /**
              * 用于命令监控
              */
-            dealCmdWatch(pac);
+//            dealCmdWatch(pac);
             return HandleStatus.NEXT;
         }
 
@@ -132,6 +131,12 @@ public class AckHandler extends CCClubChannelInboundHandler<Package808> {
         return ackPac;
     }
 
+    /**
+     * 根据808消息的序列号，更新命令监控中该命令的808应答内容
+     * @deprecated      由于当前下发指令中808消息序列号固定为0，故该值不可用也不用更新
+     * @param pac
+     */
+    @Deprecated
     private void dealCmdWatch(Package808 pac) {
         if (UpPacType.ACK.getCode() == pac.getHeader().getPacId()) {
             if (CommandCache.isOpen() && CommandCache.isCurrent(pac.getHeader().getTerMobile())) {
