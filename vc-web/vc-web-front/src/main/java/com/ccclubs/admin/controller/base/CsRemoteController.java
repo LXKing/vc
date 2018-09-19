@@ -1,5 +1,6 @@
 package com.ccclubs.admin.controller.base;
 
+import com.ccclubs.admin.vo.Page;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -59,6 +60,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("monitor/historyRemote")
 public class CsRemoteController {
 
+    private static final long ONE_MOUTH = 2592000000L;
+
     private static Logger logger = LoggerFactory.getLogger(CsRemoteController.class);
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
@@ -87,16 +90,20 @@ public class CsRemoteController {
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsRemote> list(CsRemoteQuery query,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer rows,
-            @RequestParam(defaultValue = "csrAddTime") String order) {
+                                      @RequestParam(defaultValue = "0") Integer page,
+                                      @RequestParam(defaultValue = "10") Integer rows,
+                                      @RequestParam(defaultValue = "csrAddTime") String order) {
+
+        TableResult<CsRemote> tableResult = new TableResult<>();
+
         PageInfo<CsRemote> pageResult = csRemoteService
                 .getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
         List<CsRemote> list = pageResult.getList();
         for (CsRemote data : list) {
             registResolvers(data);
         }
-        TableResult<CsRemote> tableResult = new TableResult<>(page, rows, pageResult);
+        tableResult.setPage(new Page(page, rows, pageResult.getTotal()));
+        tableResult.setData(pageResult.getList() == null ? new ArrayList<>() : pageResult.getList());
         return tableResult;
     }
 
@@ -210,7 +217,7 @@ public class CsRemoteController {
         }
 
         if (csVehicleList.size() > 0) {
-            //保存指令并发送指令
+            // 保存指令并发送指令
             for (CsVehicle csVehicle : csVehicleList) {
                 logger.info("VIN码为{}车牌号为{}的车辆被发送指令{}"
                         , csVehicle.getCsvVin(), csVehicle.getCsvCarNo(), strJson);
@@ -220,15 +227,15 @@ public class CsRemoteController {
                 storageRemoteCmdInput.setUser(authority);
                 storageRemoteCmdInput.setValues(strJson);
                 storageRemoteCmdInput.setVin(csVehicle.getCsvVin());
-
+                storageRemoteCmdInput.setRemark(remark);
+                // save remote
                 StorageRemoteCmdOutput storageRemoteCmdOutput =
                         storageRemoteCmdService.saveRemoteCmdToMongo(storageRemoteCmdInput);
-                if (null != storageRemoteCmdOutput) {
-                    DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
-                    dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
-                    dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
-                    dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
-                }
+                // 发指令
+                DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
+                dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
+                dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
+                dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
             }
 
         }
@@ -245,7 +252,7 @@ public class CsRemoteController {
         SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
         if (srvGroup.getSgFlag().equals("sys_user")) {
             //系统用户，此种用户可以随意查询（为所欲为）
-            return "SysUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+            return "SysUser@" + user.getSuUsername();
         } else if (srvGroup.getSgFlag().equals("factory_user")) {
             //车厂 （按照车型进行查询）
             CsModelMapping csModelMapping = new CsModelMapping();
@@ -261,7 +268,7 @@ public class CsRemoteController {
             if (query.getCsvModelIn() == null) {
                 return null;
             } else {
-                return "FactoryUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "FactoryUser@" + user.getSuUsername();
             }
 
         } else if (srvGroup.getSgFlag().equals("platform_user")) {
@@ -280,10 +287,10 @@ public class CsRemoteController {
             if (query.getCsvIdIn() == null) {
                 return null;
             } else {
-                return "PlatformUser: " + user.getSuRealName() + " 账户：" + user.getSuUsername();
+                return "PlatformUser@" + user.getSuUsername();
             }
         }
-        return "未知用户：" + user.getSuRealName() + " 账户：" + user.getSuUsername();
+        return "Unknown@" + user.getSuUsername();
     }
 
 

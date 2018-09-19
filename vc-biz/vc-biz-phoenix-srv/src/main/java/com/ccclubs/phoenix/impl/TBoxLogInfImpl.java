@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Service(version = "1.0.0")
 public class TBoxLogInfImpl implements TBoxLogInf {
 
-    static  final Logger logger= LoggerFactory.getLogger(TBoxLogInfImpl.class);
+    static final Logger logger = LoggerFactory.getLogger(TBoxLogInfImpl.class);
 
     @Autowired
     private PhoenixTool phoenixTool;
@@ -43,7 +43,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         //根据绑定关系选择对应查询表
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!isBound) {
+        if (!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
@@ -60,20 +60,21 @@ public class TBoxLogInfImpl implements TBoxLogInf {
                 " where VIN=? and add_time>=? and add_time<=? order by add_time  "
                 + param.getOrder() + " " + pageSql;
         //如果不存在绑定关系，就根据车机号查询
-        if(!isBound) {
+        if (!isBound) {
             querySql = "select " + param.getQueryFields() + " from " + tableName +
                     " where TE_NUMBER=? and add_time>=? and add_time<=? order by add_time  "
                     + param.getOrder() + " " + pageSql;
         }
 
         //格式化开始和结束时间
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
+        long startTime = DateTimeUtil
+                .date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
 
         List<TBoxLogDto> tBoxLogDtoList = new ArrayList<TBoxLogDto>();
         Connection connection = phoenixTool.getConnection();
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet=null;
+        ResultSet resultSet = null;
         try {
             preparedStatement = connection.prepareStatement(querySql);
             if (isBound) {
@@ -85,7 +86,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
             preparedStatement.setLong(3, endTime);
 
             //设置分页信息
-            if (!StringUtils.isEmpty(pageSql)){
+            if (!StringUtils.isEmpty(pageSql)) {
                 Integer limit = param.getPageSize();
                 Integer offset = (param.getPageNum() - 1) * limit;
                 preparedStatement.setInt(4, limit);
@@ -93,15 +94,14 @@ public class TBoxLogInfImpl implements TBoxLogInf {
             }
 
             resultSet = preparedStatement.executeQuery();
-            tBoxLogDtoList= BaseTransformTool.resultSetToObjectList(
-                    resultSet,TBoxLogDto.class);
+            tBoxLogDtoList = BaseTransformTool.resultSetToObjectList(
+                    resultSet, TBoxLogDto.class);
 
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    preparedStatement,resultSet,"queryTBoxDtoList");
+                    preparedStatement, resultSet, "queryTBoxDtoList");
         }
 
         return tBoxLogDtoList;
@@ -112,7 +112,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
 
         //根据绑定关系选择对应查询表
         String tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_NOR;
-        if(!isBound) {
+        if (!isBound) {
             tableName = PhoenixConst.PHOENIX_CAR_TBOX_LOG_EXP;
         }
 
@@ -123,7 +123,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         countSql = "select count(add_time) as total from "
                 + tableName + " where VIN=? and add_time>=? and add_time<=? ";
         //如果不存在绑定关系，就根据车机号来查询总数
-        if(!isBound) {
+        if (!isBound) {
             countSql = "select count(add_time) as total from "
                     + tableName + " where TE_NUMBER=? and add_time>=? and add_time<=? ";
         }
@@ -131,14 +131,15 @@ public class TBoxLogInfImpl implements TBoxLogInf {
         //参数初始化
         long total = 0L;
         PreparedStatement pst = null;
-        long startTime = DateTimeUtil.date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
+        long startTime = DateTimeUtil
+                .date2UnixFormat(param.getStartTime(), DateTimeUtil.UNIX_FORMAT);
         long endTime = DateTimeUtil.date2UnixFormat(param.getEndTime(), DateTimeUtil.UNIX_FORMAT);
-        Connection connection= phoenixTool.getConnection();
-        ResultSet resultSet =null;
+        Connection connection = phoenixTool.getConnection();
+        ResultSet resultSet = null;
 
         try {
             pst = connection.prepareStatement(countSql);
-            if(isBound) {
+            if (isBound) {
                 pst.setString(1, param.getVin());
             } else {
                 pst.setString(1, param.getTeNumber());
@@ -147,16 +148,15 @@ public class TBoxLogInfImpl implements TBoxLogInf {
             pst.setLong(3, endTime);
             resultSet = pst.executeQuery();
             JSONArray jsonArray = BaseTransformTool.queryRecords(resultSet);
-            if(jsonArray!=null&&jsonArray.size()>0){
+            if (jsonArray != null && jsonArray.size() > 0) {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                total=jsonObject.getLong("TOTAL");
+                total = jsonObject.getLong("TOTAL");
             }
         } catch (SQLException e) {
             logger.error(e.getMessage());
-        }
-        finally {
+        } finally {
             phoenixTool.closeResource(connection,
-                    pst,resultSet,"queryListCount");
+                    pst, resultSet, "queryListCount");
         }
         return total;
     }
@@ -164,7 +164,7 @@ public class TBoxLogInfImpl implements TBoxLogInf {
     @Override
     public TBoxLogOutput queryListByParam(TBoxLogParam param, Boolean isBound) {
 
-        TBoxLogOutput gbMessageHistoryOutput=new TBoxLogOutput();
+        TBoxLogOutput gbMessageHistoryOutput = new TBoxLogOutput();
         gbMessageHistoryOutput.setList(queryTBoxDtoList(param, isBound));
         gbMessageHistoryOutput.setTotal(queryListCount(param, isBound));
         return gbMessageHistoryOutput;
