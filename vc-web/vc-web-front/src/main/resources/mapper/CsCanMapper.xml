@@ -30,7 +30,7 @@
 			<if test="_parameter != null and _parameter==1">
 				csc_upload_time >= DATE_SUB(now(), INTERVAL 5 MINUTE)
 			</if>
-			and csc_status=0
+			and (csc.csc_status = 0 OR csc.csc_status IS null)
 		</where>
 	</select>
 

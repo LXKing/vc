@@ -1,7 +1,7 @@
 package com.ccclubs.admin.service;
 
-import com.ccclubs.frm.base.BaseService;
 import com.ccclubs.admin.model.CsCan;
+import com.ccclubs.frm.base.BaseService;
 
 /**
  * 车辆实时CAN信息的Service接口
