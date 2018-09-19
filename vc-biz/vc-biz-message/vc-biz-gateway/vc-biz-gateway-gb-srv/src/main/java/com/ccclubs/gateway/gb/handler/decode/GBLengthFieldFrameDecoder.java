@@ -43,7 +43,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     public GBLengthFieldFrameDecoder(
             int maxFrameLength,
             int lengthFieldOffset, int lengthFieldLength) {
-        //   2K                  22                 2                       1
+        //   4K                  22                 2                       1
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength, 1, 0);
     }
 
