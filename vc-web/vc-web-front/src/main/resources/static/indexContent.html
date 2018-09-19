@@ -29,15 +29,15 @@
     <div class="carList clearfix">
         <div class="carBox">
             <span>所有车辆:</span>
-            <span>1000</span>
+            <span></span>
         </div>
         <div class="carBox bg1">
             <span>在线车辆:</span>
-            <span>1000</span>
+            <span></span>
         </div>
         <div class="carBox bg2">
             <span>离线车辆:</span>
-            <span>1000</span>
+            <span></span>
         </div>
     </div>
     <script src="js/jquery.min.js?v=2.1.4"></script>
@@ -45,10 +45,12 @@
     <script type="text/javascript">
         console.log(servUrl)
         $.ajax({
-            url:"http://localhost:9009/index/car/statistics",
+            url:servUrl+"/index/car/statistics",
             type:"get",
             success:function (data) {
-                console.log(data);
+                $(".carBox").eq(0).children("span:eq(1)").text(data.value.allCar)
+                $(".carBox").eq(1).children("span:eq(1)").text(data.value.onlineCar)
+                $(".carBox").eq(2).children("span:eq(1)").text(data.value.offLine)
             },
             error:function(err){
                 console.log(err)
