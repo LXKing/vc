@@ -140,6 +140,19 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                             int dataType = contentBuffer.getByte(++ expectedLengthIndex);
                             lackBytesIndex = dataType;
                             RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(dataType);
+                            if (Objects.isNull(realtimeDataType)) {
+                                ChannelAttributeUtil.getTrace(channel)
+                                        .getExpMessageDTO()
+                                        .setIndex(lackBytesIndex)
+                                        .setReason("实时数据中该字节处转换成实时数据类型时为null");
+                                LOG.error("车机({})实时数据中[{}]字节处转换成实时数据类型时为null, 原始数据[{}]",
+                                        pac.getHeader().getUniqueNo(),
+                                        lackBytesIndex,
+                                        pac.getSourceHexStr());
+
+                                lengthError = true;
+                                break;
+                            }
                             switch (realtimeDataType) {
                                 case ALL:// 整车数据
                                     expectedLengthIndex += 20;
@@ -203,7 +216,7 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                                     break;
                             }
                         }
-                        if (pacContentLength != expectedLengthIndex + 1) {
+                        if (pacContentLength != expectedLengthIndex + 1 && !lengthError) {
                             lengthError = true;
                             int lackedBytes = (expectedLengthIndex + 1) - pacContentLength;
                             RealtimeDataType realtimeDataType = RealtimeDataType.getByCode(lackBytesIndex);
