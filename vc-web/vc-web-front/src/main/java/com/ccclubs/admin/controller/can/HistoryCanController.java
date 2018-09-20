@@ -109,6 +109,20 @@ public class HistoryCanController {
             result.setMessage("can解析需要足够的参数。");
             return result;
         }
+        result.setSuccess(true);
+        result.setValue(this.canDataAnalyze(canOriginal));
+        return result;
+    }
+
+    /**
+     * 2018/9/20
+     * can数据解析
+     *
+     * @param canOriginal
+     * @return java.lang.String
+     * @author machuanpeng
+     */
+    private String canDataAnalyze(String canOriginal) {
         List<ICanData> list = CanHelperFactory.parseCanData(canOriginal);
         HashMap<String, Map> canList = new HashMap<>();
         for (ICanData iCanData : list) {
@@ -117,9 +131,7 @@ public class HistoryCanController {
                 canList.put("0x" + Tools.ToHexString((short) canItem.getCanId()), canItem.getMap());
             }
         }
-        result.setSuccess(true);
-        result.setValue(canList.toString());
-        return result;
+        return canList.toString();
     }
 
     /**
@@ -153,6 +165,7 @@ public class HistoryCanController {
 
         for (HistoryCan data : list) {
             registResolvers(data);
+            data.setCanAnalyze(this.canDataAnalyze(data.getCanData()));
         }
 
         String uuid = UUID.randomUUID().toString();
