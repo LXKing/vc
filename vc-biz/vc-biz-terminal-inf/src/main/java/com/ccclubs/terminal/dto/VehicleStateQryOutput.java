@@ -82,6 +82,71 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssKey;//钥匙状态
 
+    /**
+     * 车辆启动控制状态
+     * */
+    private Integer controlStatus;
+
+    /**
+     * 车辆自身经度
+     */
+    private BigDecimal acuLongitude;
+
+    /**
+     * 车辆自身纬度
+     */
+    private BigDecimal acuLatitude;
+
+    /**
+     * 车辆状态-自动行驶当前状态
+     */
+    private Byte acuVehicleAdState;
+
+    /**
+     * 车辆启动控制方式-自动行驶当前车机指令状态
+     */
+    private Byte vrtVehicleStart;
+
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
+
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
+
+    public BigDecimal getAcuLongitude() {
+        return acuLongitude;
+    }
+
+    public void setAcuLongitude(BigDecimal acuLongitude) {
+        this.acuLongitude = acuLongitude;
+    }
+
+    public BigDecimal getAcuLatitude() {
+        return acuLatitude;
+    }
+
+    public void setAcuLatitude(BigDecimal acuLatitude) {
+        this.acuLatitude = acuLatitude;
+    }
+
+    public Byte getAcuVehicleAdState() {
+        return acuVehicleAdState;
+    }
+
+    public void setAcuVehicleAdState(Byte acuVehicleAdState) {
+        this.acuVehicleAdState = acuVehicleAdState;
+    }
+
+    public Byte getVrtVehicleStart() {
+        return vrtVehicleStart;
+    }
+
+    public void setVrtVehicleStart(Byte vrtVehicleStart) {
+        this.vrtVehicleStart = vrtVehicleStart;
+    }
+
     public Long getCssOrder() {
         return cssOrder;
     }
