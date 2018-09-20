@@ -2,6 +2,7 @@ package com.ccclubs.engine.rule.inf.util;
 
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
@@ -180,6 +181,17 @@ public class TransformUtils {
         terminalStatus.setCssKey(mqtt_68_03.getKeyStatus());
         //add by jianghaiyang 2018.08.30 控制状态
         terminalStatus.setControlStatus(mqtt_68_03.getControlStatusWithMask() & 0xFFFF);
+        /**
+         *  高精度经纬度【车辆自身经纬度】
+         */
+        MachineAdditional_HighPrecisionGPS highPrecisionGPS = mqtt_68_03.getCcclubs_60()
+                .getHighPrecisionGPS();
+        if (highPrecisionGPS != null) {
+            terminalStatus.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+            terminalStatus.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+            terminalStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+            terminalStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+        }
         return terminalStatus;
     }
 

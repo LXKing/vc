@@ -29,6 +29,7 @@ import com.ccclubs.protocol.dto.mqtt.MQTT_43;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
 import com.ccclubs.protocol.dto.mqtt.MQTT_6B;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
@@ -41,7 +42,6 @@ import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.dto.TboxLog;
 import com.ccclubs.pub.orm.model.CsMachine;
-import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
 import java.util.Date;
@@ -322,10 +322,21 @@ public class ParseDataService implements IParseDataService {
                 terminalInfo.getTriggerGearStatus() == null ? 0
                         : terminalInfo.getTriggerGearStatus());
 
-        if(terminalInfo.getControlStatus() != null){
-            terminalTriggerStatus.setControlStatusWithMask(terminalInfo.getControlStatus().shortValue());
+        if (terminalInfo.getControlStatus() != null) {
+            terminalTriggerStatus
+                    .setControlStatusWithMask(terminalInfo.getControlStatus().shortValue());
         }
 
+        /**
+         *  高精度经纬度【车辆自身经纬度】
+         */
+        MachineAdditional_HighPrecisionGPS highPrecisionGPS = terminalInfo.getHighPrecisionGPS();
+        if (highPrecisionGPS != null) {
+            terminalTriggerStatus.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+            terminalTriggerStatus.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+            terminalTriggerStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+            terminalTriggerStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+        }
         SrvHost srvHost = queryHostInfoService
                 .queryHostByIdFromCache(mapping.getAccess().intValue());
 
