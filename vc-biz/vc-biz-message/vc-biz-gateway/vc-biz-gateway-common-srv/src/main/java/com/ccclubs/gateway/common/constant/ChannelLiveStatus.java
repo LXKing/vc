@@ -12,22 +12,22 @@ public enum ChannelLiveStatus {
     /**
      * channel创建
      */
-    ONLINE_CREATE,
+    ONLINE_CREATE(0),
 
     /**
      * 客户端建立连接
      */
-    ONLINE_CONNECT,
+    ONLINE_CONNECT(1),
 
     /**
      * 客户端已注册
      */
-    ONLINE_REGISTER,
+    ONLINE_REGISTER(2),
 
     /**
      * 客户端已经鉴权
      */
-    ONLINE_AUTH,
+    ONLINE_AUTH(3),
 
     // 后面的状态都可以获取uniqueNo
     // -----------------------------------------------
@@ -35,25 +35,34 @@ public enum ChannelLiveStatus {
     /**
      * 连接由于读空闲断开
      */
-    OFFLINE_IDLE,
+    OFFLINE_IDLE(4),
 
     /**
      * 连接被平台主动断开
      */
-    OFFLINE_SERVER_CUT,
+    OFFLINE_SERVER_CUT(5),
 
     /**
      * 客户端主动断开了连接
      */
-    OFFLINE_CLIENT_CUT,
+    OFFLINE_CLIENT_CUT(6),
 
     /**
      * 客户端登出
      */
-    OFFLINE_LOGOUT,
+    OFFLINE_LOGOUT(7),
 
     /**
      * 下线完成
      */
-    OFFLINE_END;
+    OFFLINE_END(8);
+
+    private int code;
+    ChannelLiveStatus (int code) {
+        this.code = code;
+    }
+
+    public int getCode() {
+        return code;
+    }
 }

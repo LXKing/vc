@@ -83,10 +83,7 @@ public class StorageRemoteCmdInfImpl implements StorageRemoteCmdInf {
         CsMachine csMachine = (CsMachine) vm.get(CommandConstants.MAP_KEY_CSMACHINE);
 
         // 0.检查终端是否在线
-        if (terminalOnlineHelper.isOnline(csMachine, input.getVin())){
-            logger.error("车辆{}的终端不存在!", input.getVin());
-            throw new ApiException(ApiEnum.TERMINAL_NOT_ONLINE);
-        }
+        terminalOnlineHelper.isOnline(csMachine, input.getVin());
 
         // 1.查询指令结构体定义
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
@@ -103,7 +100,8 @@ public class StorageRemoteCmdInfImpl implements StorageRemoteCmdInf {
         long csrId = idGen.getNextId();
         CsRemote csRemote = CsRemoteUtil
                 .construct(csVehicle, csMachine, structId, array, input.getUser(), csrId);
-        csRemoteManager.asyncSave(csRemote);
+        csRemote.setCsrRemark(input.getRemark());
+        csRemoteManager.syncSave(csRemote);
         StorageRemoteCmdOutput storageRemoteCmdOutput=new StorageRemoteCmdOutput();
         storageRemoteCmdOutput.setStrJson(input.getValues());
         storageRemoteCmdOutput.setRemoteId(csrId);

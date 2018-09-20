@@ -33,6 +33,10 @@ import com.ccclubs.command.dto.SimpleCmdInput;
 import com.ccclubs.command.dto.SimpleCmdOutput;
 import com.ccclubs.command.dto.SiteIssuedInput;
 import com.ccclubs.command.dto.SiteIssuedOutput;
+import com.ccclubs.command.dto.StorageRemoteCmdInput;
+import com.ccclubs.command.dto.StorageRemoteCmdOutput;
+import com.ccclubs.command.dto.TamperInput;
+import com.ccclubs.command.dto.TamperOutput;
 import com.ccclubs.command.dto.TimeSyncInput;
 import com.ccclubs.command.dto.TimeSyncOutput;
 import com.ccclubs.command.dto.UpgradeInput;
@@ -45,12 +49,15 @@ import com.ccclubs.command.inf.autopilot.AutopilotInf;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
 import com.ccclubs.command.inf.lock.LockDoorInf;
 import com.ccclubs.command.inf.old.DealRemoteCmdInf;
+import com.ccclubs.command.inf.old.StorageRemoteCmdInf;
 import com.ccclubs.command.inf.order.OrderCmdInf;
 import com.ccclubs.command.inf.power.PowerModeSwitchInf;
 import com.ccclubs.command.inf.simple.SendSimpleCmdInf;
+import com.ccclubs.command.inf.tamper.TamperCmdInf;
 import com.ccclubs.command.inf.time.TimeSyncCmdInf;
 import com.ccclubs.command.inf.update.ReturnCheckInf;
 import com.ccclubs.command.inf.update.SetDvdVersionInf;
+import com.ccclubs.command.inf.update.TerminalUpgradeBase;
 import com.ccclubs.command.inf.update.TerminalUpgradeInf;
 import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.frm.spring.annotation.ApiSecurity;
@@ -91,9 +98,6 @@ public class CommandApi {
     TerminalUpgradeInf upgradeCmd;
 
     @Reference(version = CommandServiceVersion.V1)
-    UpgradeInf upgradeInf;
-
-    @Reference(version = CommandServiceVersion.V1)
     SendSimpleCmdInf simpleCmd;
 
     @Reference(version = CommandServiceVersion.V1)
@@ -128,6 +132,15 @@ public class CommandApi {
 
     @Reference(version = CommandServiceVersion.V1)
     DealRemoteCmdInf dealRemoteCmdInf;
+
+    @Reference(version = CommandServiceVersion.V1)
+    StorageRemoteCmdInf storageRemoteCmdInf;
+
+    @Reference(version = CommandServiceVersion.V1)
+    TamperCmdInf tamperCmdInf;
+
+    @Reference(version = CommandServiceVersion.V1)
+    TerminalUpgradeBase terminalUpgradeBase;
 
     /**
      * 1.车机的一键升级功能
@@ -468,11 +481,39 @@ public class CommandApi {
     /**
      * 13.远程指令
      */
-    @PostMapping("dealRemoteCommend")
-    public ApiMessage dealRemoteCommend(DealRemoteCmdInput input) {
-        logger.info("API事件:远程指令下发,remoteId:{},指令值:{}", input.getRemoteId(), input.getStrJson());
-        DealRemoteCmdOutput output = dealRemoteCmdInf.dealRemoteCommand(input);
+    @PostMapping("doRemote")
+    public ApiMessage doRemote(StorageRemoteCmdInput input) {
+        logger.info("API事件:后台远程指令下发,操作人:{},指令:{},参数:{}", input.getUser(), input.getStructId(),
+                input.getValues());
+        // save remote
+        StorageRemoteCmdOutput storageRemoteCmdOutput =
+                storageRemoteCmdInf.saveRemoteCmdToMongo(input);
+        // 发指令
+        DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
+        dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
+        dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
+        DealRemoteCmdOutput output = dealRemoteCmdInf.dealRemoteCommand(dealRemoteCmdInput);
         return new ApiMessage<>(output);
+    }
+
+    /**
+     * 14.防拆控制指令
+     *
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "防拆指令下发", notes = "防拆指令下发")
+    @PostMapping("tamper")
+    public ApiMessage tamperCommand(@RequestHeader("appId") String appId, TamperInput input) {
+        logger.info("API事件:防拆指令下发，APPID:{},车架号:{},控制参数:{}", input.getAppId(), input.getVin(),
+                input.getCode());
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.AUTOPILOT_CTRL_ERROR);
+        }
+        TamperOutput output = tamperCmdInf.tamperCommandComply(input);
+        return new ApiMessage<>(output);
+
     }
 
     @Autowired
@@ -498,5 +539,27 @@ public class CommandApi {
                 return false;
             }
         }
+    }
+
+    /**
+     * 根据文件名升级
+     *
+     * @param appId
+     * @param input
+     *
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "根据文件名升级", notes = "根据车辆vin码和文件名称升级该车终端")
+    @PostMapping("upgradeByFile")
+    public ApiMessage upgradeByFileName(@RequestHeader("appId") String appId, UpgradeInput input) {
+        logger.info("API事件:一键升级,APPID:{},车架号:{},升级程序包:{}", input.getAppId(), input.getVin(),
+                input.getFilename());
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
+        terminalUpgradeBase.terminalUpgradeByFileName(appId, input.getVin(), input.getFilename());
+        return new ApiMessage<>(ApiEnum.SUCCESS);
     }
 }

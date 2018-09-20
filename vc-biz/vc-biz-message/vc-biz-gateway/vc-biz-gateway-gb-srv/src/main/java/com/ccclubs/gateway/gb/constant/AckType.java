@@ -2,6 +2,8 @@ package com.ccclubs.gateway.gb.constant;
 
 import com.ccclubs.gateway.gb.inf.ICodedStatus;
 
+import java.util.Objects;
+
 /**
  * @Author: yeanzi
  * @Date: 2018/3/26
@@ -26,11 +28,13 @@ public enum AckType implements ICodedStatus {
      */
     ACK_COMMAND(0xFE);
 
+    private static String EXCEPTED_VALUES;
     private int code;
     AckType(int code) {
         this.code = code;
     }
 
+    @Override
     public int getCode() {
         return code;
     }
@@ -45,16 +49,22 @@ public enum AckType implements ICodedStatus {
         return null;
     }
 
-    // 预期的期望值，逗号分隔
+    /**
+     * 预期的期望值，逗号分隔
+     * @return
+     */
     public static String expectedVals() {
-        StringBuilder valSb = new StringBuilder();
-        for (AckType c :
-                AckType.values()) {
-            valSb.append(c.getCode()).append(",");
+        if (Objects.isNull(EXCEPTED_VALUES)) {
+            StringBuilder valSb = new StringBuilder();
+            for (AckType c :
+                    AckType.values()) {
+                valSb.append(c.getCode()).append(",");
+            }
+            // 删除最后一个逗号
+            valSb.deleteCharAt(valSb.length() - 1);
+            EXCEPTED_VALUES = valSb.toString();
         }
-        // 删除最后一个逗号
-        valSb.deleteCharAt(valSb.length() - 1);
-        return valSb.toString();
+        return EXCEPTED_VALUES;
     }
 
 }

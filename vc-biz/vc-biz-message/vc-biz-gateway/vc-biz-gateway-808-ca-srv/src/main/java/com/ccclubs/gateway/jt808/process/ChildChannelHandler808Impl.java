@@ -91,51 +91,8 @@ public class ChildChannelHandler808Impl extends ChannelInitializer<SocketChannel
                 .addLast("808Encoder", new PackageEncoder());
 
         /**
-         * 在追踪处理异常时：
-         *      初始化全局记录消息中被所有链路handler共享的数据
+         * 初始化全链路共享的channelAttribute
          */
-        initPacTrack(channel);
-
-        /**
-         * 初始化channel生命周期轨迹
-         */
-        initChannelLiveTrack(channel);
-
-
-
-        /**
-         * 可以在运行时动态的编排handler顺序和增删新旧handler达到一些控流等功能
-         *      如：1.可以依据消息头部，动态的给多种协议的报文组装处理流水线，而不仅仅处理GB协议报文
-         *          2.依据流量情况，动态的在处理链中增加业务功能。
-         */
+        ChannelAttrKey.initForAll(channel);
     }
-
-
-    private void initPacTrack(SocketChannel channel) {
-        Attribute<PacProcessTrack> pacProcessTrackAttribute = channel.attr(ChannelAttrKey.PACKAGE_TRACK);
-        PacProcessTrack newPacProessTrack = new PacProcessTrack();
-        newPacProessTrack
-                .setErrorOccur(false)
-                .setStep(0)
-                .setExpMessageDTO(new ExpMessageDTO());
-        int needTrackHandlerCount = PacProcessing.countNeedTrack();
-        HandlerPacTrack[] handlerPacTracks = new HandlerPacTrack[needTrackHandlerCount];
-        for (int i = 0; i < needTrackHandlerCount; i ++) {
-            handlerPacTracks[i] = new HandlerPacTrack();
-        }
-        newPacProessTrack.setHandlerPacTracks(handlerPacTracks);
-
-        pacProcessTrackAttribute.setIfAbsent(newPacProessTrack);
-    }
-
-    private void initChannelLiveTrack(SocketChannel channel) {
-        Attribute<ChannelLifeCycleTrack> channelLifeCycleTrackAttribute = channel.attr(ChannelAttrKey.CHANNEL_LIFE_CYCLE_TRACK);
-
-        ChannelLifeCycleTrack newChannelLifeCycle = new ChannelLifeCycleTrack();
-        newChannelLifeCycle.setLiveStatus(ChannelLiveStatus.ONLINE_CREATE);
-        channelLifeCycleTrackAttribute.setIfAbsent(newChannelLifeCycle);
-    }
-
-
-
 }

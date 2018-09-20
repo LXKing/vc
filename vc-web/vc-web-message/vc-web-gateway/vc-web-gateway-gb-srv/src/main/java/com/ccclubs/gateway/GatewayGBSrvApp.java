@@ -1,9 +1,9 @@
 package com.ccclubs.gateway;
 
+import com.ccclubs.gateway.common.config.GatewayProperties;
+import com.ccclubs.gateway.common.config.KafkaProperties;
+import com.ccclubs.gateway.common.config.NettyProperties;
 import com.ccclubs.gateway.gb.TcpServerStarter;
-import com.ccclubs.gateway.gb.config.GatewayProperties;
-import com.ccclubs.gateway.gb.config.KafkaProperties;
-import com.ccclubs.gateway.gb.config.NettyProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 /**
  * 国标网关
@@ -25,7 +24,7 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties({KafkaProperties.class, NettyProperties.class, GatewayProperties.class})
 public class GatewayGBSrvApp extends SpringBootServletInitializer {
 
-  private static final Logger logger = LoggerFactory.getLogger(GatewayGBSrvApp.class);
+  private static final Logger LOG = LoggerFactory.getLogger(GatewayGBSrvApp.class);
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(GatewayGBSrvApp.class);

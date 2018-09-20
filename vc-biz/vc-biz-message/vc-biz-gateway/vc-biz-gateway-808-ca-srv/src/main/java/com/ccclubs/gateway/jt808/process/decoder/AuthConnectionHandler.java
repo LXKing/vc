@@ -1,21 +1,21 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.ChannelLifeCycleTrack;
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
+import com.ccclubs.gateway.common.bean.attr.ChannelStatusAttr;
 import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.conn.ClientCache;
+import com.ccclubs.gateway.common.constant.ChannelAttrKey;
 import com.ccclubs.gateway.common.constant.ChannelLiveStatus;
 import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.process.CCClubChannelInboundHandler;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.common.util.DecodeUtil;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
-import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
-import com.ccclubs.gateway.jt808.util.PacUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -60,17 +61,18 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         /**
          * 初始化渠道生命周期
          */
-        ChannelAttrbuteUtil.getLifeTrack(channel)
-                .setCreateTime(System.currentTimeMillis())
-                .setGatewayType(GatewayType.GATEWAY_808)
-                .setLiveStatus(ChannelLiveStatus.ONLINE_CONNECT);
+        ChannelAttributeUtil.getStatus(channel)
+                .setCurrentStatus(ChannelLiveStatus.ONLINE_CONNECT)
+                .nextStage();
+
         /**
          * 注册定时任务：如果1分钟秒内没有发送鉴权(或者鉴权失败)，断开该连接
          */
         channel.eventLoop().schedule(() -> {
-            ChannelLifeCycleTrack lifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
-            if (Objects.isNull(lifeCycleTrack.getUniqueNo()) &&
-                    ChannelLiveStatus.ONLINE_CONNECT.equals(lifeCycleTrack.getLiveStatus())) {
+            ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+            if (Objects.isNull(channelStatusAttr.getUniqueNo()) &&
+                    ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus())) {
+                LOG.error("channel has not auth within 1 munite, the server will cut it off.");
                 channel.pipeline().fireChannelInactive();
             }
         }, TIMEOUT_SECONDS_PRE_AUTH, TimeUnit.SECONDS);
@@ -81,31 +83,43 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         SocketChannel channel = (SocketChannel) ctx.channel();
 
-        ChannelLifeCycleTrack channelLifeCycleTrack = ChannelAttrbuteUtil.getLifeTrack(channel);
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
+        LOG.info("connection closing: ip={}, port={}, uniqueNo={}",
+                channel.remoteAddress().getHostString(),
+                channel.remoteAddress().getPort(),
+                channelStatusAttr.getUniqueNo()
+        );
         /**
          * 注入销毁时间
          */
-        channelLifeCycleTrack.setDestoryTime(System.currentTimeMillis());
+        channelStatusAttr.setCloseTime(LocalDateTime.now());
+
         /**
          *连接被探测
          */
-        if (isPingPongEvent(channelLifeCycleTrack)) {
-            LOG.error("tcp server received ping-pong event: client={}", PacUtil.getUniqueNoOrHost(null, channel));
-            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_END);
+        if (isPingPongEvent(channelStatusAttr)) {
+            LOG.error("tcp server received ping-pong event: client={}", ChannelUtils.getUniqueNoOrHost(null, channel));
+            ChannelAttributeUtil.getStatus(channel).setCurrentStatus(ChannelLiveStatus.OFFLINE_END)
+                    .setChannelLiveStage(ChannelLiveStatus.OFFLINE_END.getCode());
             channel.close();
             return;
         }
 
-        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus()) &&
-                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelLifeCycleTrack.getLiveStatus()) &&
-                !ChannelLiveStatus.OFFLINE_END.equals(channelLifeCycleTrack.getLiveStatus()) ) {
-            ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_CLIENT_CUT);
+        if (!ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus()) &&
+                !ChannelLiveStatus.OFFLINE_SERVER_CUT.equals(channelStatusAttr.getCurrentStatus()) &&
+                !ChannelLiveStatus.OFFLINE_END.equals(channelStatusAttr.getCurrentStatus()) ) {
+            channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_CLIENT_CUT);
         }
+
         terminalConnService.offline(channel, GatewayType.GATEWAY_808);
     }
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
+        if (pac.getErrorPac()) {
+            // 如果是校验异常，不做认证
+            return HandleStatus.NEXT;
+        }
         SocketChannel channel = (SocketChannel) ctx.channel();
         UpPacType upPacType = UpPacType.getByCode(pac.getHeader().getPacId());
         String uniqueNo = pac.getHeader().getTerMobile();
@@ -145,21 +159,21 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
         /**
          * 其他报文，并且为已认证状态：通过
          */
-        ChannelLiveStatus liveStatus =  ChannelAttrbuteUtil.getLifeTrack(channel).getLiveStatus();
+        ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
 
         // channel状态是否存在
-        if (Objects.nonNull(liveStatus)) {
+        if (Objects.nonNull(channelStatusAttr)) {
             // 已认证
-            if (ChannelLiveStatus.ONLINE_AUTH.equals(liveStatus)) {
+            if (ChannelLiveStatus.ONLINE_AUTH.equals(channelStatusAttr.getCurrentStatus())) {
                 return HandleStatus.NEXT;
             } else {
                 // 未认证：判断是否需要执行下线
                 LOG.error("message cannot pass to next handler without auth first: uniqueNo={}", uniqueNo);
-                if (liveStatus.ordinal() > ChannelLiveStatus.ONLINE_REGISTER.ordinal()) {
+                if (channelStatusAttr.getChannelLiveStage() > ChannelLiveStatus.ONLINE_REGISTER.getCode()) {
 
                     releasePacBuffer(pac.getSourceBuff());
                     // 未鉴权就发送报文： 踢掉
-                    ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_SERVER_CUT);
+                    channelStatusAttr.setCurrentStatus(ChannelLiveStatus.OFFLINE_SERVER_CUT);
                     channel.pipeline().fireChannelInactive();
                     return HandleStatus.END;
                 }
@@ -185,7 +199,9 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     private void doRegister(String uniqueNo, ChannelHandlerContext ctx) {
         SocketChannel newChannel = (SocketChannel) ctx.channel();
 
-        ChannelAttrbuteUtil.setChannelLiveStatus(newChannel, ChannelLiveStatus.ONLINE_REGISTER);
+        ChannelAttributeUtil.getStatus(newChannel)
+                .setCurrentStatus(ChannelLiveStatus.ONLINE_REGISTER)
+                .nextStage();
         terminalConnService.register(uniqueNo, newChannel, GatewayType.GATEWAY_808);
         // TODO 终端注册成功后，应该发送一段包含 终端ID、手机号、终端IP信息的数据给规则引擎
     }
@@ -200,7 +216,8 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     private void doLogout(String uniqueNo, ChannelHandlerContext ctx) {
         SocketChannel channel = (SocketChannel) ctx.channel();
         terminalConnService.logout(uniqueNo, channel, GatewayType.GATEWAY_808);
-        ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.OFFLINE_LOGOUT);
+        ChannelAttributeUtil.getStatus(channel)
+                .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT);
     }
 
     /**
@@ -229,14 +246,14 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
             pac.setErrorPac(true);
             LOG.error("terminal({})auth failed, sourceHex[{}]", uniqueNo, pac.getSourceHexStr());
         } else {
-            ChannelLifeCycleTrack channelLife = ChannelAttrbuteUtil.getLifeTrack(channel);
+            ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
             /**
              * 如果已认证后的重复认证
              *     如果是重复的认证报文：不重复验证
              *     如果是新建的连接发起认证，而旧连接还未断开：再走认证，更新连接
              */
             boolean isReAuth = false;
-            if (ChannelLiveStatus.ONLINE_AUTH.equals(channelLife.getLiveStatus())) {
+            if (ChannelLiveStatus.ONLINE_AUTH.equals(channelStatusAttr.getCurrentStatus())) {
                 Optional<ClientCache> clientOpt = ClientCache.getByUniqueNo(uniqueNo);
                 if (clientOpt.isPresent()) {
                     ClientCache existedClient = clientOpt.get();
@@ -249,9 +266,13 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
                 }
             }
             if (!isReAuth) {
-                ChannelAttrbuteUtil.setChannelLiveStatus(channel, ChannelLiveStatus.ONLINE_AUTH);
+                channelStatusAttr.setCurrentStatus(ChannelLiveStatus.ONLINE_AUTH)
+                        .nextStage();
+
                 // 终端上线
                 terminalConnService.online(uniqueNo, channel, GatewayType.GATEWAY_808);
+                // 给所有ChannelAttribute赋值vin
+                ChannelAttrKey.initUniqueNoForAll(channel, uniqueNo, GatewayType.GATEWAY_808);
                 LOG.info("terminal({})auth success", uniqueNo);
             }
         }
@@ -259,21 +280,21 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
     /**
      * 判定渠道状态是否为pingpong事件状态
-     * @param channelLifeCycleTrack
+     * @param channelStatusAttr
      * @return
      */
-    private boolean isPingPongEvent(ChannelLifeCycleTrack channelLifeCycleTrack) {
+    private boolean isPingPongEvent(ChannelStatusAttr channelStatusAttr) {
         /**
          * 如果连接建立后，无报文交互，在idle前断开
          */
-        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelLifeCycleTrack.getLiveStatus())) {
+        if (ChannelLiveStatus.ONLINE_CONNECT.equals(channelStatusAttr.getCurrentStatus())) {
             return true;
         }
         /**
          * 如果连接建立后，无报文交互，在idle后断开
          */
-        String uniqueNo = channelLifeCycleTrack.getUniqueNo();
-        if (Objects.isNull(uniqueNo) && ChannelLiveStatus.OFFLINE_IDLE.equals(channelLifeCycleTrack.getLiveStatus())) {
+        String uniqueNo = channelStatusAttr.getUniqueNo();
+        if (Objects.isNull(uniqueNo) && ChannelLiveStatus.OFFLINE_IDLE.equals(channelStatusAttr.getCurrentStatus())) {
             return true;
         }
         return false;
