@@ -59,7 +59,7 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssFan;//档风量，（0:OFF 1:1档 2:2档 3:3档 4:4档）
 
-
+    private Long cssOrder;//当前订单
 
     private Integer cssBaseLac; // 基站信号 LAC 值
     private Integer cssBaseCi;//  基站信号 CI值
@@ -81,6 +81,14 @@ public class VehicleStateQryOutput implements java.io.Serializable{
     private Integer cssAutopilot;//自动驾驶状态
 
     private Byte cssKey;//钥匙状态
+
+    public Long getCssOrder() {
+        return cssOrder;
+    }
+
+    public void setCssOrder(Long cssOrder) {
+        this.cssOrder = cssOrder;
+    }
 
     public Byte getCssKey() {
         return cssKey;

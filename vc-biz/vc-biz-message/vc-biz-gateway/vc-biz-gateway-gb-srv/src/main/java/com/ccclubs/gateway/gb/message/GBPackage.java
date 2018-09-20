@@ -13,7 +13,7 @@ import java.util.Objects;
  * @Time: 15:17
  * Email:  yeanzhi@ccclubs.com
  */
-public class GBPackage {
+public final class GBPackage {
     /**
      * 源数据包缓冲区(引用)
      */
@@ -58,7 +58,7 @@ public class GBPackage {
     public String toLogString() {
         StringBuilder pacSb = new StringBuilder();
         pacSb
-                .append("车辆(").append(getHeader().getUniqueNo()).append(")")
+                .append("车机(").append(getHeader().getUniqueNo()).append(")")
                 .append("上传")
                 .append("[").append(getHeader().getCommandMark().getDes()).append("]消息.")
                 .append("原始消息[").append(getSourceHexStr()).append("]");

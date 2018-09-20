@@ -39,7 +39,7 @@ public class PhoenixConst {
     public static final String PHOENIX_CAR_GB_MESSAGE_HISTORY="PHOENIX_CAR_GB_MESSAGE_HISTORY_V1";
     public static final String PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY="PHOENIX_CAR_GB_ERROR_MESSAGE_HISTORY_V1";
     public static final String PHOENIX_CAR_808_ERROR_MESSAGE_HISTORY="PHOENIX_CAR_808_ERROR_MESSAGE_HISTORY_V1";
-    public static final String PHOENIX_CAR_TBOX_LOG_NOR="PHOENIX_TBOX_LOG_NOR_V1";
-    public static final String PHOENIX_CAR_TBOX_LOG_EXP="PHOENIX_TBOX_LOG_EXP_V1";
+    public static final String PHOENIX_CAR_TBOX_LOG_NOR="PHOENIX_TBOX_LOG_NOR_V2";
+    public static final String PHOENIX_CAR_TBOX_LOG_EXP="PHOENIX_TBOX_LOG_EXP_V2";
 
 }

@@ -1,6 +1,9 @@
 package com.ccclubs.admin.controller.base;
 
+import com.ccclubs.admin.vo.Page;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.ccclubs.admin.entity.CsMappingCrieria;
 import com.ccclubs.admin.model.CsMachine;
 import com.ccclubs.admin.model.CsMapping;
@@ -27,9 +30,13 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.mongo.orm.query.CsRemoteQuery;
 import com.ccclubs.mongo.service.impl.CsRemoteService;
+import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
 import com.github.pagehelper.PageInfo;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +60,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("monitor/historyRemote")
 public class CsRemoteController {
 
-    private static Logger logger = LoggerFactory.getLogger(CsVehicleController.class);
+    private static final long ONE_MOUTH = 2592000000L;
+
+    private static Logger logger = LoggerFactory.getLogger(CsRemoteController.class);
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
     CsRemoteService csRemoteService;
@@ -78,58 +87,55 @@ public class CsRemoteController {
 
     /**
      * 获取分页列表数据
-     *
-     * @param query
-     * @param page
-     * @param rows
-     * @param order
-     * @return
      */
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public TableResult<CsRemote> list(CsRemoteQuery query,
                                       @RequestParam(defaultValue = "0") Integer page,
                                       @RequestParam(defaultValue = "10") Integer rows,
                                       @RequestParam(defaultValue = "csrAddTime") String order) {
-        PageInfo<CsRemote> pageResult = csRemoteService.getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
+
+        TableResult<CsRemote> tableResult = new TableResult<>();
+
+        PageInfo<CsRemote> pageResult = csRemoteService
+                .getPage(query, new PageRequest(page, rows, new Sort(Sort.Direction.DESC, order)));
         List<CsRemote> list = pageResult.getList();
         for (CsRemote data : list) {
             registResolvers(data);
         }
-        TableResult<CsRemote> tableResult = new TableResult<>(page, rows, pageResult);
+        tableResult.setPage(new Page(page, rows, pageResult.getTotal()));
+        tableResult.setData(pageResult.getList() == null ? new ArrayList<>() : pageResult.getList());
         return tableResult;
     }
 
     /**
      * 删除数据
-     *
-     * @param ids
-     * @return
      */
     @RequestMapping(value = "delete/{ids}", method = RequestMethod.DELETE)
     public int list(@PathVariable("ids") String ids) {
         return csRemoteService.delete(ids);
     }
 
-    @RequestMapping(value = "doRemote" ,method = RequestMethod.POST)
+    @RequestMapping(value = "doRemote", method = RequestMethod.POST)
     public VoResult<?> doRemote(@CookieValue("token") String token
-            ,String targetVehicles,String remark
-            ,String strJson,Long structId){
-        if (null==targetVehicles||targetVehicles.isEmpty()){
+            , String targetVehicles, String remark
+            , String strJson, Long structId) {
+
+        if (null == targetVehicles || targetVehicles.isEmpty()) {
 
             return VoResult.error("30001", "参数号码列表为空");
         }
-        if (structId==null){
+        if (structId == null) {
             return VoResult.error("30001", "未选择指令");
         }
-        if (null==strJson||strJson.isEmpty()){
+        if (null == strJson || strJson.isEmpty()) {
             return VoResult.error("30001", "未填写指令值");
         }
-        String[] targetVehicleLsit=targetVehicles.split(",");
-        if (!(targetVehicleLsit.length>0)){
+        String[] targetVehicleLsit = targetVehicles.split(",");
+        if (!(targetVehicleLsit.length > 0)) {
             return VoResult.error("30001", "参数号码列表为空");
         }
 
-        CsVehicleQuery query =new CsVehicleQuery();
+        CsVehicleQuery query = new CsVehicleQuery();
         //先添加统一的用户查询权限条件。
         SrvUser user = userAccessUtils.getCurrentUser(token);
         String authority = addQueryConditionsByUser(user, query);
@@ -142,73 +148,94 @@ public class CsRemoteController {
         if (null == authority) {
             return VoResult.error("30001", "用户错误");
         }
-        List<CsVehicle> csVehicleList=new ArrayList<>();
+        List<CsVehicle> csVehicleList = new ArrayList<>();
 
-        CsMachineQuery csMachineQuery=new CsMachineQuery();
+        CsMachineQuery csMachineQuery = new CsMachineQuery();
         csMachineQuery.setCsmNumberIn(targetVehicleLsit);
-        List<CsMachine>  csMachineList=csMachineService.getAllByParam(csMachineQuery.getCrieria());
+        List<CsMachine> csMachineList = csMachineService.getAllByParam(csMachineQuery.getCrieria());
 
-        if (null!=csMachineList&&csMachineList.size()>0){
-            Integer[] csMachineIds= new Integer[csMachineList.size()];
-            for (int i=0;i<csMachineList.size();i++){
-                csMachineIds[i]=csMachineList.get(i).getCsmId();
+        if (null != csMachineList && csMachineList.size() > 0) {
+            Integer[] csMachineIds = new Integer[csMachineList.size()];
+            for (int i = 0; i < csMachineList.size(); i++) {
+                csMachineIds[i] = csMachineList.get(i).getCsmId();
             }
             //首先查询车机号码符合条件的
-            CsVehicleQuery csVehicleQueryForMachine=null;
+            CsVehicleQuery csVehicleQueryForMachine = null;
             try {
-                csVehicleQueryForMachine=(CsVehicleQuery)query.clone();
+                csVehicleQueryForMachine = (CsVehicleQuery) query.clone();
             } catch (CloneNotSupportedException e) {
                 logger.debug(e.getMessage());
             }
-            if (null!=csVehicleQueryForMachine){
+            if (null != csVehicleQueryForMachine) {
                 csVehicleQueryForMachine.setCsvMachineIn(csMachineIds);
-                csVehicleList.addAll(csVehicleService.getAllByParam(csVehicleQueryForMachine.getCrieria()));
+                csVehicleList.addAll(csVehicleService
+                        .getAllByParam(csVehicleQueryForMachine.getCrieria()));
             }
         }
 
         //然后查询车牌号码符合条件的
-        CsVehicleQuery csVehicleQueryForCarNumber=null;
+        CsVehicleQuery csVehicleQueryForCarNumber = null;
         try {
-            csVehicleQueryForCarNumber=(CsVehicleQuery)query.clone();
+            csVehicleQueryForCarNumber = (CsVehicleQuery) query.clone();
         } catch (CloneNotSupportedException e) {
             logger.debug(e.getMessage());
         }
-        if (null!=csVehicleQueryForCarNumber){
+        if (null != csVehicleQueryForCarNumber) {
             csVehicleQueryForCarNumber.setCsvCarNoIn(targetVehicleLsit);
-            csVehicleList.addAll(csVehicleService.getAllByParam(csVehicleQueryForCarNumber.getCrieria()));
+            csVehicleList.addAll(csVehicleService
+                    .getAllByParam(csVehicleQueryForCarNumber.getCrieria()));
         }
         //最后查询车架号码符合条件的
-        CsVehicleQuery csVehicleQueryForCsVin=null;
+        CsVehicleQuery csVehicleQueryForCsVin = null;
         try {
-            csVehicleQueryForCsVin=(CsVehicleQuery)query.clone();
+            csVehicleQueryForCsVin = (CsVehicleQuery) query.clone();
         } catch (CloneNotSupportedException e) {
             logger.debug(e.getMessage());
         }
-        if (null!=csVehicleQueryForCsVin){
+        if (null != csVehicleQueryForCsVin) {
             csVehicleQueryForCsVin.setCsvVinIn(targetVehicleLsit);
-            csVehicleList.addAll(csVehicleService.getAllByParam(csVehicleQueryForCsVin.getCrieria()));
+            csVehicleList
+                    .addAll(csVehicleService.getAllByParam(csVehicleQueryForCsVin.getCrieria()));
         }
 
-        if (csVehicleList.size()>0){
-            //保存指令并发送指令
-            for (CsVehicle csVehicle:csVehicleList){
+        if (structId == 85 || structId == 86) {
+            //订单下发时间转换处理
+            List<Map> strArray = JSONArray.parseArray(strJson, Map.class);
+            // 开始日期
+            Date startTime = StringUtils
+                    .date((String) strArray.get(0).get("startTime"), "yyyy-MM-dd HH:mm:ss");
+            // 结束日期
+            Date endTime = StringUtils
+                    .date((String) strArray.get(0).get("endTime"), "yyyy-MM-dd HH:mm:ss");
+            Integer startTimeInt = ProtocolTools.transformToTerminalTime(startTime);
+            Integer endTimeInt = ProtocolTools.transformToTerminalTime(endTime);
+            strArray.get(0).put("endTime", endTimeInt.toString());
+            strArray.get(0).put("startTime", startTimeInt.toString());
+
+            strJson = JSON.toJSONString(strArray);
+
+        }
+
+        if (csVehicleList.size() > 0) {
+            // 保存指令并发送指令
+            for (CsVehicle csVehicle : csVehicleList) {
                 logger.info("VIN码为{}车牌号为{}的车辆被发送指令{}"
-                        ,csVehicle.getCsvVin(),csVehicle.getCsvCarNo(),strJson);
-                StorageRemoteCmdInput storageRemoteCmdInput=new StorageRemoteCmdInput();
+                        , csVehicle.getCsvVin(), csVehicle.getCsvCarNo(), strJson);
+                StorageRemoteCmdInput storageRemoteCmdInput = new StorageRemoteCmdInput();
 
                 storageRemoteCmdInput.setStructId(structId);
                 storageRemoteCmdInput.setUser(authority);
                 storageRemoteCmdInput.setValues(strJson);
                 storageRemoteCmdInput.setVin(csVehicle.getCsvVin());
-
-                StorageRemoteCmdOutput storageRemoteCmdOutput=
+                storageRemoteCmdInput.setRemark(remark);
+                // save remote
+                StorageRemoteCmdOutput storageRemoteCmdOutput =
                         storageRemoteCmdService.saveRemoteCmdToMongo(storageRemoteCmdInput);
-                if (null!=storageRemoteCmdOutput){
-                    DealRemoteCmdInput dealRemoteCmdInput=new DealRemoteCmdInput();
-                    dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
-                    dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
-                    dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
-                }
+                // 发指令
+                DealRemoteCmdInput dealRemoteCmdInput = new DealRemoteCmdInput();
+                dealRemoteCmdInput.setRemoteId(storageRemoteCmdOutput.getRemoteId());
+                dealRemoteCmdInput.setStrJson(storageRemoteCmdOutput.getStrJson());
+                dealRemoteCmdService.dealRemoteCommand(dealRemoteCmdInput);
             }
 
         }
@@ -225,7 +252,7 @@ public class CsRemoteController {
         SrvGroup srvGroup = srvGroupService.selectByPrimaryKey(user.getSuGroup().intValue());
         if (srvGroup.getSgFlag().equals("sys_user")) {
             //系统用户，此种用户可以随意查询（为所欲为）
-            return "sys_user";
+            return "SysUser@" + user.getSuUsername();
         } else if (srvGroup.getSgFlag().equals("factory_user")) {
             //车厂 （按照车型进行查询）
             CsModelMapping csModelMapping = new CsModelMapping();
@@ -241,7 +268,7 @@ public class CsRemoteController {
             if (query.getCsvModelIn() == null) {
                 return null;
             } else {
-                return "factory_user";
+                return "FactoryUser@" + user.getSuUsername();
             }
 
         } else if (srvGroup.getSgFlag().equals("platform_user")) {
@@ -260,10 +287,10 @@ public class CsRemoteController {
             if (query.getCsvIdIn() == null) {
                 return null;
             } else {
-                return "platform_user";
+                return "PlatformUser@" + user.getSuUsername();
             }
         }
-        return "";
+        return "Unknown@" + user.getSuUsername();
     }
 
 

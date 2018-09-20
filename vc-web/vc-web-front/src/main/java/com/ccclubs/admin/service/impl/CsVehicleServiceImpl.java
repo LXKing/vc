@@ -46,12 +46,14 @@ public class CsVehicleServiceImpl extends
     @Override
     public CsVehicle getVehicleInfo(String vin, Integer machineId) {
 
-        if(vin == null) {
+        if (vin == null && machineId == null) {
             return null;
         }
         CsVehicle csVehicle = new CsVehicle();
-        csVehicle.setCsvVin(vin);
-        if(machineId != null) {
+        if (vin != null) {
+            csVehicle.setCsvVin(vin);
+        }
+        if (machineId != null) {
             csVehicle.setCsvMachine(machineId);
         }
         return getDao().selectOne(csVehicle);

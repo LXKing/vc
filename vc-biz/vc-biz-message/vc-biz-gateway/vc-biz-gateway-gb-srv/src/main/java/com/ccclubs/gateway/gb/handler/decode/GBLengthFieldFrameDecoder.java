@@ -1,23 +1,26 @@
 package com.ccclubs.gateway.gb.handler.decode;
 
+import com.ccclubs.gateway.common.bean.attr.DefaultChannelHealthyAttr;
+import com.ccclubs.gateway.common.bean.attr.PackageTraceAttr;
+import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.DateUtil;
 import com.ccclubs.gateway.gb.beans.DecodeExceptionDTO;
-import com.ccclubs.gateway.gb.constant.AckType;
-import com.ccclubs.gateway.gb.constant.CommandType;
-import com.ccclubs.gateway.gb.constant.EncryType;
-import com.ccclubs.gateway.gb.constant.PackagePart;
+import com.ccclubs.gateway.gb.constant.*;
 import com.ccclubs.gateway.gb.exception.PackageDecodeException;
 import com.ccclubs.gateway.gb.message.GBPackage;
 import com.ccclubs.gateway.gb.message.PacHeader;
-import com.ccclubs.gateway.gb.message.track.PacProcessTrack;
-import com.ccclubs.gateway.gb.utils.ChannelPacTrackUtil;
 import com.ccclubs.gateway.gb.utils.DecodeUtil;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.TooLongFrameException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * @Author: yeanzi
@@ -28,7 +31,9 @@ import org.slf4j.LoggerFactory;
 public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     private static Logger LOG = LoggerFactory.getLogger(GBLengthFieldFrameDecoder.class);
 
-    // 记录当前渠道粘包处理状态
+    /**
+     * 记录当前渠道粘包处理状态
+     */
     private boolean isComplete = false;
 
     public GBLengthFieldFrameDecoder(Integer maxFrameLength) {
@@ -38,7 +43,7 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
     public GBLengthFieldFrameDecoder(
             int maxFrameLength,
             int lengthFieldOffset, int lengthFieldLength) {
-        //   2K                  22                 2                       1
+        //   4K                  22                 2                       1
         super(maxFrameLength, lengthFieldOffset, lengthFieldLength, 1, 0);
     }
 
@@ -92,31 +97,52 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             isComplete = false;
         }
 
-        /**
-         * 处理链处理新消息前，先清除上一个消息的轨迹信息
-         */
-        ChannelPacTrackUtil.refreshPacTrackForNewMsg(ctx.channel());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("received: [{}]", ByteBufUtil.hexDump(frame));
+        }
+        GBPackage pac = beginHandle((SocketChannel) ctx.channel(), frame);
+        return pac;
+    }
+
+    private GBPackage beginHandle(SocketChannel channel, ByteBuf frame) {
+        assert Objects.nonNull(frame);
+        assert channel.isActive();
 
         // 生成和初始化消息包装类
         GBPackage pac = GBPackage.valueOfEmpty();
         pac.setSourceBuff(frame);
-        // 标记为当前处理步骤
-        PacProcessTrack pacProcessTrack = ChannelPacTrackUtil.getPacTracker(ctx.channel()).next();
-        pacProcessTrack.setSourceHex(pac.getSourceHexStr());
+
+        /**
+         * 处理链处理新消息
+         */
+        PackageTraceAttr packageTraceAttr = ChannelAttributeUtil.getTrace(channel);
+        packageTraceAttr
+                // 清除上一个消息的轨迹信息
+                .refreshForNew()
+                // 标记为当前处理步骤
+                .next()
+                .setPacBuf(frame)
+                .setSourceHex(pac.getSourceHexStr());
+
+        /**
+         * 更新健康数据
+         */
+        DefaultChannelHealthyAttr channelHealthyAttr = ChannelAttributeUtil.getHealthy(channel);
+        channelHealthyAttr.setLastPackageTime(DateUtil.getNowStr())
+                .setLastPackageHex(pac.getSourceHexStr());
 
         // 消息组装
-        composeMsgPac(pac, pacProcessTrack);
-
+        composeMsgPac(pac, packageTraceAttr);
+        // 设置健康数据中的消息类型描述
+        channelHealthyAttr.setLastPackageDes(pac.getHeader().getCommandMark().getDes());
         return pac;
     }
 
     /**
-     * 将ByteBuf包装为GBPackage
+     * 将ByteBuf包装进GBPackage
      * @param pac
      */
-    private GBPackage composeMsgPac(GBPackage pac, PacProcessTrack pacProcessTrack) {
-        // 记录解析报文用时
-        Long startTime = System.nanoTime();
+    private GBPackage composeMsgPac(GBPackage pac, PackageTraceAttr packageTraceAttr) {
 
         ByteBuf frame = pac.getSourceBuff();
         // 初始化解析异常dto，记录异常详细信息
@@ -127,32 +153,50 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
          * 分别拼装消息的各个部分，最细粒度地定位错误报文异常位置
          */
         // 先获取vin码
+        //   跳过前几个字节到vin码字节上
         frame.readerIndex(PackagePart.UNIQUENO.getStartIndex());
-        String vinNo = DecodeUtil.byte2Str(frame, PackagePart.UNIQUENO.getLen());
-        if (StringUtils.isNotEmpty(vinNo) && vinNo.length() == PackagePart.UNIQUENO.getLen()) {
+        String vinNo = validateAndGetVin(frame);
+        if (StringUtils.isNotEmpty(vinNo)) {
+            /**
+             * 与原有vin对比
+             */
+            if (Objects.nonNull(packageTraceAttr.getUniqueNo()) && !vinNo.equals(packageTraceAttr.getUniqueNo())) {
+                decodeExceptionInfo.fail()
+                        .setExceptionVal(vinNo)
+                        .setReason("报文中的vin码与首次消息中的vin码不相同")
+                        .setExpectedVal(packageTraceAttr.getUniqueNo());
+                throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
+            }
             decodeExceptionInfo.setVin(vinNo).next();
             pacHeader.setUniqueNo(vinNo);
 
-            pacProcessTrack.setVin(vinNo);
-            // 重置回读指针
+            packageTraceAttr.setUniqueNo(vinNo);
+            // 初始化异常信息
+            packageTraceAttr.getExpMessageDTO()
+                    .setVin(vinNo)
+                    .setSourceHex(packageTraceAttr.getSourceHex())
+                    .setMsgTime(System.currentTimeMillis());
+            // 重置读指针到报文开始位置
             frame.resetReaderIndex();
         } else {
             decodeExceptionInfo.fail()
                     .setExceptionVal(vinNo)
+                    .setReason("vin码字段读取失败")
                     .setExpectedVal("非空的17个字符");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // 起始符
         String startSymbol = DecodeUtil.byte2Str(frame, PackagePart.START_SYMBOL.getLen());
-        if ("##".equals(startSymbol)) {
+        if (PackageCons.PAC_START_SYMBOL.equals(startSymbol)) {
             decodeExceptionInfo.next();
             pacHeader.setStartSymbol(startSymbol);
         } else {
             decodeExceptionInfo.fail()
                     .setExceptionVal(startSymbol)
-                    .setExpectedVal("##");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+                    .setReason("起始符异常")
+                    .setExpectedVal(PackageCons.PAC_START_SYMBOL);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // 命令标识
@@ -163,9 +207,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             pacHeader.setCommandMark(commandType);
         } else {
             decodeExceptionInfo.fail()
-                    .setExceptionVal("" + commandVal)
+                    .setExceptionVal(String.valueOf(commandVal)).setReason("命令标识异常")
                     .setExpectedVal(CommandType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // 应答标志
@@ -176,9 +220,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             pacHeader.setAckMark(ackType);
         } else {
             decodeExceptionInfo.fail()
-                    .setExceptionVal("" + ackVal)
+                    .setExceptionVal(String.valueOf(ackVal)).setReason("应答标识异常")
                     .setExpectedVal(AckType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // vin码在第一部分已经读取了，这里只需要跳过vin码部分
@@ -192,9 +236,9 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             pacHeader.setEncryptType(encryType);
         } else {
             decodeExceptionInfo.fail()
-                    .setExceptionVal("" + encryVal)
+                    .setExceptionVal(String.valueOf(encryVal)).setReason("加密方式异常")
                     .setExpectedVal(EncryType.expectedVals());
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // 包体长度
@@ -204,53 +248,69 @@ public class GBLengthFieldFrameDecoder extends LengthFieldBasedFrameDecoder {
             pacHeader.setContentLength(contentLength);
         } else {
             decodeExceptionInfo.fail()
-                    .setExceptionVal("" + contentLength)
+                    .setExceptionVal(String.valueOf(contentLength)).setReason("包长度字段异常")
                     .setExpectedVal("大于或者等于0");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
 
         // 包体
-        ByteBuf body = frame.readSlice(pac.getHeader().getContentLength());
-        if (null != body && body.readableBytes() >= 0) {
+        if (frame.readableBytes() < contentLength) {
+            decodeExceptionInfo.fail()
+                    .setExceptionVal(String.valueOf(contentLength)).setReason("包体长度异常")
+                    .setExpectedVal("消息体中可读字节少于包头定义值");
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
+        } else {
+            ByteBuf body = frame.readSlice(pac.getHeader().getContentLength());
             decodeExceptionInfo.next();
             pac.getBody().setContent(body);
-        } else {
-            decodeExceptionInfo.fail()
-                    .setExceptionVal("空")
-                    .setExpectedVal("消息体中可读字节不能为负数");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
         }
 
         // 校验码
         if(frame.readableBytes() == 1) {
             pac.setValidCode(frame.readByte());
         } else {
-            byte valideByte= frame.readByte();
             decodeExceptionInfo.fail()
-                    .setExceptionVal("" + valideByte).setReason("包长度超长，实际长度为：" + frame.readableBytes() + 1)
-                    .setExpectedVal("字节长度等于1");
-            throwWhenDecodeError(decodeExceptionInfo, pacProcessTrack);
+                    .setExceptionVal(String.valueOf(frame.readableBytes())).setReason("校验码后的字节长度超长")
+                    .setExpectedVal("校验码字节长度等于1");
+            throwWhenDecodeError(decodeExceptionInfo, packageTraceAttr);
         }
-
-        // 初始化异常信息
-        pacProcessTrack.getExpMessageDTO()
-                .setSourceHex(pac.getSourceHexStr())
-                .setVin(pacProcessTrack.getVin());
-        Long endTime = System.nanoTime();
-        pacProcessTrack.getCurrentHandlerTracker().setUsedTime(endTime - startTime);
         return pac;
     }
 
-    public void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PacProcessTrack pacProcessTrack) {
-        pacProcessTrack.getCurrentHandlerTracker().setErrorOccur(true);
-        pacProcessTrack.getExpMessageDTO()
-                .setMsgTime(System.currentTimeMillis());
-        pacProcessTrack.getExpMessageDTO()
+    /**
+     * 校验并返回vin码
+     * @param frame
+     * @return
+     */
+    private String validateAndGetVin(ByteBuf frame) {
+        String vinNo = null;
+        if (frame.readableBytes() >= PackagePart.UNIQUENO.getLen()) {
+            vinNo = DecodeUtil.byte2Str(frame, PackagePart.UNIQUENO.getLen());
+            if (StringUtils.isNotEmpty(vinNo) &&
+                    vinNo.length() == PackagePart.UNIQUENO.getLen())  {
+                return vinNo;
+            }
+        }
+        return vinNo;
+    }
+
+    /**
+     * 当主动的校验异常时，正常逻辑进行不下去，抛出异常，处理该异常
+     * @param decodeExceptionInfo
+     * @param packageTraceAttr
+     */
+    private void throwWhenDecodeError(DecodeExceptionDTO decodeExceptionInfo, PackageTraceAttr packageTraceAttr) {
+        packageTraceAttr.setErrorOccured(true)
+                // 装载异常信息
+                .getExpMessageDTO()
+                .setGatewayType(GatewayType.GB.getDes())
                 .setSourceHex(decodeExceptionInfo.getSource())
                 .setVin(decodeExceptionInfo.getVin())
                 .setIndex(decodeExceptionInfo.getDecodeMarkIndex())
                 .setReason(decodeExceptionInfo.toLogString())
-                .setCode(pacProcessTrack.getStep() + "");
+                .setCode(String.valueOf(packageTraceAttr.getStep()))
+                .setMsgTime(System.currentTimeMillis());
+
         throw new PackageDecodeException(decodeExceptionInfo.toLogString());
     }
 }

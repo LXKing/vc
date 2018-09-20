@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
 import com.ccclubs.gateway.common.dto.KafkaTask;
@@ -38,8 +37,8 @@ public class SendOutHandler extends CCClubChannelInboundHandler<Package808> {
     private OnsService onsService;
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
-
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
+        // Do nothing for package, just send to next handler
         return HandleStatus.NEXT;
     }
 
@@ -51,8 +50,10 @@ public class SendOutHandler extends CCClubChannelInboundHandler<Package808> {
                 break;
             case TASK_ONS:
                 onsService.sendOneway((OnsTask) innerMsg.getMsg());
+                break;
                 default:
-                    break;
+                    LOG.error("无效的内部消息类型: [{}]", innerMsg.getInnerMsgType());
+                    throw new IllegalStateException("异常的内部消息类型：" + innerMsg.getInnerMsgType());
         }
         return HandleStatus.END;
     }

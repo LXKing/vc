@@ -2,10 +2,7 @@ package com.ccclubs.gateway.gb.handler.process;
 
 import com.ccclubs.gateway.gb.inf.MsgSender;
 import com.ccclubs.gateway.gb.message.GBPackage;
-import com.ccclubs.gateway.gb.reflect.ClientCache;
-import com.ccclubs.gateway.gb.reflect.GBConnection;
 
-import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -53,10 +50,10 @@ public class GBMsgResponser {
                         // TODO 消息处理
 
                         // 获取sockeChannel
-                        GBConnection conn = ClientCache.getByVIN(pac.getHeader().getUniqueNo());
-                        if (Objects.nonNull(conn)) {
-                            conn.send(pac);
-                        }
+//                        GBConnection conn = ClientCache.getByVIN(pac.getHeader().getUniqueNo());
+//                        if (Objects.nonNull(conn)) {
+//                            conn.send(pac);
+//                        }
                         System.out.println("下发命令完成");
                     } else {
                         try {

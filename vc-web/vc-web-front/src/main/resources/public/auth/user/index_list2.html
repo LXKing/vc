@@ -24,7 +24,7 @@
 				        <li><label><input value="suAddTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >添加时间</label></li>
 				        <li><label><input value="suLastTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >最后登录时间</label></li>
 				        <li><label><input value="suLastIp" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >最后登录IP</label></li>
-				        <li><label><input value="suStatus" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
+				        <li><label><input value="suStatusText" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >状态</label></li>
 					</ul>
 				</div>
 			</div>
@@ -123,17 +123,17 @@
 
 	var tableId = "TSrvUser";
 	var clms = [{checkbox: true}
-	  		,{field: "suId", title: "编号", width: 110, sort:true}
-	  		,{field: "suHost", title: "接入商", width: 110, sort:true}
-	  		,{field: "suGroup", title: "所属组", width: 110, sort:true}
-	  		,{field: "suUsername", title: "登录账号", width: 160, sort:true}
-	  		,{field: "suRealName", title: "真实姓名", width: 160, sort:true}
-	  		,{field: "suMobile", title: "手机号码", width: 130, sort:true}
-	  		,{field: "suShortcut", title: "快捷方式", width: 110, sort:true}
-	  		,{field: "suAddTime", title: "添加时间", width: 160, sort:true}
-	  		,{field: "suLastTime", title: "最后登录时间", width: 160, sort:true}
-	  		,{field: "suLastIp", title: "最后登录IP", width: 160, sort:true}
-	  		,{field: "suStatus", title: "状态", width: 110, sort:true}
+	  		,{field: "suId", title: "编号", width: 110, sort:false}
+	  		,{field: "suHost", title: "接入商", width: 110, sort:false}
+	  		,{field: "suGroup", title: "所属组", width: 110, sort:false}
+	  		,{field: "suUsername", title: "登录账号", width: 160, sort:false}
+	  		,{field: "suRealName", title: "真实姓名", width: 160, sort:false}
+	  		,{field: "suMobile", title: "手机号码", width: 130, sort:false}
+	  		,{field: "suShortcut", title: "快捷方式", width: 110, sort:false}
+	  		,{field: "suAddTime", title: "添加时间", width: 160, sort:false}
+	  		,{field: "suLastTime", title: "最后登录时间", width: 160, sort:false}
+	  		,{field: "suLastIp", title: "最后登录IP", width: 160, sort:false}
+	  		,{field: "suStatusText", title: "状态", width: 110, sort:false}
       		,{field: 'operate', title: '操作', width: 80, fixed:'right', toolbar: '#gridToolBar'}
     ];
 

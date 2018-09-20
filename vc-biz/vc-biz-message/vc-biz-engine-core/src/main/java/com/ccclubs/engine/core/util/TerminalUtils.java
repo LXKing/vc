@@ -7,6 +7,7 @@ import com.ccclubs.common.query.QueryStateService;
 import com.ccclubs.common.query.QueryTerminalService;
 import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.frm.spring.constant.KafkaConst;
+import com.ccclubs.frm.spring.util.UuidUtil;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.orm.dao.CsLoggerDao;
 import com.ccclubs.mongo.orm.model.history.CsLogger;
@@ -593,9 +594,15 @@ public class TerminalUtils {
             dto.setOrderNo(order);
             dto.setTeNumber(carNumber);
             dto.setSourceHex(hexString);
+            dto.setUuid(UuidUtil.getUuid());
             CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(carNumber);
             if (csMachine == null) {
+                csMachine = queryTerminalService.queryCsMachineBySimNo(carNumber);
+                dto.setTeNumber(csMachine.getCsmNumber());
+            }
+            if (csMachine == null) {
                 logger.error("车机号在系统中不存在,车机号[{}]", carNumber);
+                dto.setAccess(0);
                 kafkaTemplate.send(tboxLogTopicExp, JSONObject.toJSONString(dto));
             } else {
                 CsVehicle csVehicle = queryVehicleService.queryVehicleByMachineFromCache(csMachine.getCsmId());
