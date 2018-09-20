@@ -1,52 +1,11 @@
 package com.ccclubs.command.api;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.ccclubs.command.dto.AirAllInput;
-import com.ccclubs.command.dto.AirAllOutput;
-import com.ccclubs.command.dto.AirMonoInput;
-import com.ccclubs.command.dto.AirMonoOutput;
-import com.ccclubs.command.dto.ConfirmInput;
-import com.ccclubs.command.dto.DealRemoteCmdInput;
-import com.ccclubs.command.dto.DealRemoteCmdOutput;
-import com.ccclubs.command.dto.DvdVersionIntput;
-import com.ccclubs.command.dto.DvdVersionOutput;
-import com.ccclubs.command.dto.IssueAuthOrderInput;
-import com.ccclubs.command.dto.IssueAuthOrderOutput;
-import com.ccclubs.command.dto.IssueOrderDetailInput;
-import com.ccclubs.command.dto.IssueOrderDetailOutput;
-import com.ccclubs.command.dto.IssueOrderInput;
-import com.ccclubs.command.dto.IssueOrderOutput;
-import com.ccclubs.command.dto.LockDoorInput;
-import com.ccclubs.command.dto.LockDoorOutput;
-import com.ccclubs.command.dto.MixedUpgradeInput;
-import com.ccclubs.command.dto.PowerModeInput;
-import com.ccclubs.command.dto.PowerModeOutput;
-import com.ccclubs.command.dto.RenewOrderInput;
-import com.ccclubs.command.dto.RenewOrderOutput;
-import com.ccclubs.command.dto.RenewOrderReplyFInput;
-import com.ccclubs.command.dto.RenewOrderReplyFOutput;
-import com.ccclubs.command.dto.RenewOrderReplySInput;
-import com.ccclubs.command.dto.RenewOrderReplySOutput;
-import com.ccclubs.command.dto.ReturnCheckInput;
-import com.ccclubs.command.dto.ReturnCheckOutput;
-import com.ccclubs.command.dto.SimpleCmdInput;
-import com.ccclubs.command.dto.SimpleCmdOutput;
-import com.ccclubs.command.dto.SiteIssuedInput;
-import com.ccclubs.command.dto.SiteIssuedOutput;
-import com.ccclubs.command.dto.StorageRemoteCmdInput;
-import com.ccclubs.command.dto.StorageRemoteCmdOutput;
-import com.ccclubs.command.dto.TamperInput;
-import com.ccclubs.command.dto.TamperOutput;
-import com.ccclubs.command.dto.TimeSyncInput;
-import com.ccclubs.command.dto.TimeSyncOutput;
-import com.ccclubs.command.dto.UpgradeInput;
-import com.ccclubs.command.dto.UpgradeOutput;
-import com.ccclubs.command.dto.VerUpgradeInput;
-import com.ccclubs.command.dto.VoiceIssuedInput;
-import com.ccclubs.command.dto.VoiceIssuedOutput;
+import com.ccclubs.command.dto.*;
 import com.ccclubs.command.inf.air.AirConditionerCmdInf;
 import com.ccclubs.command.inf.autopilot.AutopilotInf;
 import com.ccclubs.command.inf.confirm.HttpConfirmResultInf;
+import com.ccclubs.command.inf.drive.AutoDriveCmdInf;
 import com.ccclubs.command.inf.lock.LockDoorInf;
 import com.ccclubs.command.inf.old.DealRemoteCmdInf;
 import com.ccclubs.command.inf.old.StorageRemoteCmdInf;
@@ -141,6 +100,9 @@ public class CommandApi {
 
     @Reference(version = CommandServiceVersion.V1)
     TerminalUpgradeBase terminalUpgradeBase;
+
+    @Reference(version = CommandServiceVersion.V1)
+    AutoDriveCmdInf autoDriveCmdInf;
 
     /**
      * 1.车机的一键升级功能
@@ -561,5 +523,27 @@ public class CommandApi {
         }
         terminalUpgradeBase.terminalUpgradeByFileName(appId, input.getVin(), input.getFilename());
         return new ApiMessage<>(ApiEnum.SUCCESS);
+    }
+
+    /**
+     * GPS自动驾驶控制
+     * @param appId
+     * @param input
+     * @return
+     */
+    @ApiSecurity
+    @ApiOperation(value = "gps自动驾驶控制", notes = "发送GPS自动驾驶控制指令")
+    @PostMapping("gpsAutoDrive")
+    public ApiMessage gpsAutoDriveCtrl(@RequestHeader("appId") String appId, GpsAutoDriveInput input) {
+        logger.info("API事件:GPS自动驾驶控制,APPID:{},车架号:{},行驶指令:{},经度:{},纬度:{}", input.getAppId(), input.getVin(),
+                input.getDriveCmd(), input.getLog(), input.getLat());
+
+        input.setAppId(appId);
+        if (isRateLimit(input.getVin())) {
+            throw new ApiException(ApiEnum.API_RATE_LIMIT);
+        }
+
+        GpsAutoDriveOutput output = autoDriveCmdInf.gpsAutoDriveCtrl(input);
+        return new ApiMessage<>(output);
     }
 }

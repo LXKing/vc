@@ -321,4 +321,49 @@ public class TestCommand {
             response.close();
         }
     }
+
+    @Test
+    public void gpsAutoDriveCtrl() throws Throwable {
+        CloseableHttpClient httpclient = HttpClients.createDefault();//114.55.173.208:7002  127.0.0.1:8888 101.37.178.63
+        HttpPost httpPost = new HttpPost("http://localhost:8888/command/gpsAutoDrive");
+        //httpPost.setHeader("Content-Type", "application/json;charset=utf-8");
+        GpsAutoDriveInput input = new GpsAutoDriveInput();
+        input.setVin("ki6i6678")
+                .setDriveCmd(1)
+                .setLog(0)
+                .setLat(0)
+                .setResultType(2);
+
+        setHeaderWithAuthInfo(httpPost, input, "1000016", "6v03rxubziqojalgtn");
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+        try {
+            System.out.println(response.getStatusLine());
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                String result = IOUtils.toString(entity.getContent(), "UTF-8");
+                System.out.println(result);
+                EntityUtils.consume(entity);
+            }
+        } finally {
+            response.close();
+        }
+    }
+
+    /**
+     * 根据appId、appKey设置请求头部
+     * @param httpPost
+     * @param input
+     * @param appId
+     * @param appKey
+     * @param <T>
+     */
+    private <T extends CommonInput> void setHeaderWithAuthInfo(HttpPost httpPost, T input, String appId, String appKey) {
+        String inputJsonStr = JSON.toJSONString(input);
+        String value = DigestUtils.md5Hex(inputJsonStr);
+        String sign = HmacUtils.hmacSha1Hex(appKey, value);
+        httpPost.addHeader("sign", sign);
+        httpPost.addHeader("appId", appId);
+        httpPost.setEntity(new StringEntity(inputJsonStr, ContentType.APPLICATION_JSON));
+    }
 }
