@@ -39,7 +39,7 @@
 				and csv.csv_vin = #{vin}
 			</if>
 			<if test="days != null">
-				and csc.csc_upload_time >= DATE_SUB(now(), INTERVAL #{days} DAY)
+				and DATE_SUB(now(), INTERVAL #{days} DAY) > csc.csc_upload_time
 			</if>
 			and (csc.csc_status = 0 OR csc.csc_status IS null)
 		</where>
