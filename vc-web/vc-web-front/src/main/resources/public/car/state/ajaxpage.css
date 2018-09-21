@@ -1,0 +1,39 @@
+.ajaxpage{
+	float:right;
+}
+.ajaxpage *{
+	float:left;
+}
+.ajaxpage_num{
+	border:1px solid #609EF3;
+	padding:3px 12px;
+	cursor:pointer;
+	margin:0px 5px;
+	border-radius: 6px;
+}
+.ajaxpage_num_this{
+	background-color:#609EF3;
+	color:white;
+}
+.ajaxpage_up{
+	padding:3px 6px;
+	border:1px solid #609EF3;
+	cursor:pointer;
+	border-radius: 6px;
+	margin-right:4px;
+}
+.ajaxpage_up_over{
+	background-color:#609EF3;
+	color:white;
+}
+.ajaxpage_down{
+	padding:3px 6px;
+	border:1px solid #609EF3;
+	cursor:pointer;
+	border-radius: 6px;
+	margin-left: 4px;
+}
+.ajaxpage_down_over{
+	background-color:#609EF3;
+	color:white;
+}

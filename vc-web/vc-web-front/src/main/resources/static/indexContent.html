@@ -43,18 +43,19 @@
     <script src="js/jquery.min.js?v=2.1.4"></script>
     <script src="/js/url.js"></script>
     <script type="text/javascript">
-        console.log(servUrl)
-        $.ajax({
-            url:servUrl+"/index/car/statistics",
-            type:"get",
-            success:function (data) {
-                $(".carBox").eq(0).children("span:eq(1)").text(data.value.allCar)
-                $(".carBox").eq(1).children("span:eq(1)").text(data.value.onlineCar)
-                $(".carBox").eq(2).children("span:eq(1)").text(data.value.offLine)
-            },
-            error:function(err){
-                console.log(err)
-            }
+        $(function(){
+            $.ajax({
+                url:servUrl+"/index/car/statistics",
+                type:"get",
+                success:function (data) {
+                    $(".carBox").eq(0).children("span:eq(1)").text(data.value.allCar)
+                    $(".carBox").eq(1).children("span:eq(1)").text(data.value.onlineCar)
+                    $(".carBox").eq(2).children("span:eq(1)").text(data.value.offLine)
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            });
         })
     </script>
 </body>

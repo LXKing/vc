@@ -1,10 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="index.css"/>
+    <link rel="stylesheet" type="text/css" href="ajaxpage.css"/>
 </head>
-<body>
-
+<body>ajaxpage
+    <div class="conditionBox clearfix">
+        <div class="condition">
+            <div class="th">vin</div>
+            <div class="td">
+                <div class="ipt-clear">ｘ</div>
+                <input type="text" name="tongyongwuliao" id="vin" value="">
+            </div>
+        </div>
+        <div class="condition">
+            <div class="th">时间</div>
+            <div class="td">
+                <!--<div class="ipt-clear">ｘ</div>
+                <input type="text" name="tongyongwuliao" id="startDate" value="" readonly="readonly">-->
+                <select style="width:150px;height:28px;border:1px solid #cccccc;" id="daysSelect">
+                    <option value ="7">7天以内</option>
+                    <option value ="15">15天以内</option>
+                    <option value="30">30天以内</option>
+                </select>
+            </div>
+        </div>
+        <div class="seachBtn">查询</div>
+    </div>
+    <div class="tableBox">
+        <table border="1" cellspacing="0" cellpadding="0" class="tableNormal">
+            <tr class="width_tr0">
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+                <td width="160"></td>
+            </tr>
+            <tr class="thead">
+                <td>编号</td>
+                <td>接入商</td>
+                <td>车牌号</td>
+                <td>车架号</td>
+                <td>发动机(电机)编号</td>
+                <td>合格证号</td>
+                <td>车型</td>
+                <td>车机设备</td>
+                <td>车身颜色</td>
+                <td>可充电储能系统编码</td>
+                <td>出厂日期</td>
+                <td>地标类型</td>
+                <td>车辆领域</td>
+                <td>车型代码</td>
+                <td>车型备案号</td>
+                <td>内饰颜色</td>
+                <td>状态</td>
+                <td>添加时间</td>
+                <td>修改时间</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div class="pageRun clearfix"></div>
+    <script src="/js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+    <script src="/js/ajaxpage.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var one  = true;
+            var vin = "";
+            var days = 7;
+            function getData(vin,days,page,rows){
+                $.ajax({
+                    url:servUrl+"/car/state/list",
+                    type:"get",
+                    data:{vin:vin,days:days,page:page,rows:rows},
+                    success:function (data) {
+                        console.log(data);
+                        $(".tableNormal tr:gt(1)").remove();
+                        for(var i=0;i<data.data.length;i++){
+                            $(".tableNormal").append("<tr>"+
+                                "<td>"+data.data[i].csvId+"</td>"+                  //编号
+                                "<td>"+data.data[i].csvAccessText+"</td>"+          //接入商
+                                "<td>"+data.data[i].csvCarNo+"</td>"+               //车牌号
+                                "<td>"+data.data[i].csvVin+"</td>"+                 //车架号
+                                "<td>"+data.data[i].csvEngineNo+"</td>"+            //发动机(电机)编号
+                                "<td>"+data.data[i].csvCertific+"</td>"+            //合格证号
+                                "<td>"+data.data[i].csvModel+"</td>"+               //车型
+                                "<td>"+data.data[i].csvMachine+"</td>"+             //车机设备
+                                "<td>"+data.data[i].csvColorCodeText+"</td>"+       //车身颜色
+                                "<td>"+data.data[i].csvBataccuCode+"</td>"+         //可充电储能系统编码
+                                "<td>"+data.data[i].csvProdDate+"</td>"+            //出厂日期
+                                "<td>"+data.data[i].csvLandmark+"</td>"+            //地标类型
+                                "<td>"+data.data[i].csvDomain+"</td>"+              //车辆领域
+                                "<td>"+data.data[i].csvModelCodeFull+"</td>"+       //车型代码
+                                "<td>"+data.data[i].csvModelCodeSimple+"</td>"+     //车型备案号
+                                "<td>"+data.data[i].csvInteriorColorCode+"</td>"+   //内饰颜色
+                                "<td>"+data.data[i].csvStatus+"</td>"+              //状态
+                                "<td>"+data.data[i].csvAddTime+"</td>"+             //添加时间
+                                "<td>"+data.data[i].csvUpdateTime+"</td>"+          //修改时间
+                            "</tr>");
+                        }
+                        if(one){
+                            one = false;
+                            $(".pageRun").ajaxpage({
+                                pagenumber:1,
+                                totalpage:data.data.page.total,
+                                insertnode:function(data){
+                                    getData(vin,days,data-1,10);
+                                }
+                            })
+                        }
+                    },
+                    error:function(err){
+                        console.log(err)
+                    }
+                });
+            }
+            getData("",7,1,10);
+            $(".seachBtn").click(function(){
+                vin = $("#vin").val();
+                days = $("#daysSelect").val();
+                if(vin!=""||days!=""){
+                    getData(vin,days,1,10);
+                }
+            });
+        })
+    </script>
 </body>
 </html>

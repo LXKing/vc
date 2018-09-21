@@ -1,0 +1,123 @@
+/*table公用样式*/
+.tableBox{
+	width:100%;
+	padding-top:10px;
+	overflow:auto;
+}
+.tableNormal{
+	width:100%;
+	border:1px solid #dddddd; 
+	border-width:1px 0px 0px 1px;
+	table-layout: fixed;
+	margin-top:20px;
+}
+.tableNormal tr:nth-child(odd){
+	background-color:white;
+}
+.tableNormal tr.thead{
+	background-color:#2f4050;	
+	color:white;
+}
+td{
+	height:30px;
+	border:1px solid #dddddd; 
+	border-width:0px 1px 1px 0px;
+	text-align:center;
+	padding:0px 10px;
+	font-size: 13px;
+}
+.tableNormal tbody td{
+	text-align:center;
+}
+.width_tr0 td{
+	height:0px;
+	border:0px none;
+}
+.tableNormal tbody td .tableBtn{
+	display: block;
+}
+.tableNormal tbody td.roleName,.tableNormal tbody td.treeTd{
+	text-align: left;
+}
+/*顶部选择部分公用样式*/
+.conditionBox{
+    width:100%;
+    background-color:white;
+    margin:30px 0px 0px 0px;
+    padding-bottom:20px;
+    color: #333333;
+}
+.conditionBox .condition{
+    float: left;
+    margin:20px 12px 0px 15px;
+}
+.conditionBox .condition .th{
+    width:100px;
+    float: left;
+    color: #333333;
+    height:40px;
+    line-height: 40px;
+    overflow: hidden;
+    text-align: right;
+    margin-right:10px;
+}
+.conditionBox .condition .td{
+    float: left;
+    margin:6px 0px 0px 0px;
+    position: relative;
+}
+.conditionBox .condition .or{
+	min-width:40px;
+	text-align:center;
+	height: 40px;
+	line-height: 40px;
+	float:left;
+}
+.conditionBox .condition .td .ipt-clear{
+	width:20px;
+	height:20px;
+	line-height: 20px;
+	text-align: center;
+	color:#666666;
+	/*border: 1px solid #333333;
+	border-radius:0.2rem;*/
+	position: absolute;
+	top:9px;
+	right:30px;
+	font-size:20px;
+	font-weight: bold;
+	cursor: pointer;
+	display:none;
+}
+.conditionBox .condition .td input{
+    width:130px;
+    height:28px;
+    border:1px solid #cccccc;
+    cursor:pointer;
+    text-indent: 6px;
+    padding:0px;
+    color: #333333;
+    background: url("../images/calendar.png") no-repeat 104px center white;
+}
+/*按钮样式*/
+.seachBtn{
+    width: 100px;
+    text-align: center;
+    height: 32px;
+    line-height: 32px;
+    color: white;
+    border-radius:4px;
+    background-color: #18a0e0;
+    float:right;
+    cursor:pointer;
+    margin:24px 24px 0px 0px;
+}
+.seachBtn:hover{
+	opacity:0.8;
+}
+/*翻页位置样式*/
+.pageRun{
+	margin:20px 0px 0px 0px;
+	font-size: 13px;
+}
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}/* Hide from IE Mac */.clearfix {display:block;}/* End hide from IE Mac *//* end of clearfix */
