@@ -8,19 +8,33 @@
 
         }
         .carBox{
-            width:32.3%;
-            height:100px;
-            line-height:100px;
-            padding-left:1%;
+            width:200px;
+            height:130px;
             float:left;
             color:white;
-            background-color:#2f4050;
+            background-color:rgba(13,196,239,1);
+            margin:0px 10px;
+            border-radius:10px;
+        }
+        .carBox div{
+            float: left;
+            font-size: 34px;
+            font-weight: bold;
+            text-indent: 15px;
+            margin-top: 14px;
+            width: 100%;
+        }
+        .carBox span{
+            float:left;
+            width: 100%;
+            text-indent: 15px;
+            margin-top: 30px;
         }
         .bg1{
-            background-color: #607D8B;
+            background-color: rgba(0,168,91,1);
         }
         .bg2{
-            background-color: #9ea6b9;
+            background-color: rgba(255,148,2,1);
         }
         .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}/* Hide from IE Mac */.clearfix {display:block;}/* End hide from IE Mac *//* end of clearfix */
     </style>
@@ -28,16 +42,16 @@
 <body>
     <div class="carList clearfix">
         <div class="carBox">
-            <span>所有车辆:</span>
-            <span></span>
+            <div></div>
+            <span>所有车辆</span>
         </div>
         <div class="carBox bg1">
-            <span>在线车辆:</span>
-            <span></span>
+            <div></div>
+            <span>在线车辆</span>
         </div>
         <div class="carBox bg2">
-            <span>离线车辆:</span>
-            <span></span>
+            <div></div>
+            <span>离线车辆</span>
         </div>
     </div>
     <script src="js/jquery.min.js?v=2.1.4"></script>
@@ -48,9 +62,9 @@
                 url:servUrl+"/index/car/statistics",
                 type:"get",
                 success:function (data) {
-                    $(".carBox").eq(0).children("span:eq(1)").text(data.value.allCar)
-                    $(".carBox").eq(1).children("span:eq(1)").text(data.value.onlineCar)
-                    $(".carBox").eq(2).children("span:eq(1)").text(data.value.offLine)
+                    $(".carBox").eq(0).children("div:eq(0)").text(data.value.allCar)
+                    $(".carBox").eq(1).children("div:eq(0)").text(data.value.onlineCar)
+                    $(".carBox").eq(2).children("div:eq(0)").text(data.value.offLine)
                 },
                 error:function(err){
                     console.log(err)
