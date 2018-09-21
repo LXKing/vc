@@ -59,7 +59,11 @@
             var params = {rows: currSize, page: currPage, allReport: 1};
             params = transferParamsWithSortExport(params, "currentTime");
             var clmsCopy = $.extend(true, [], clms);
-            params.clms = clmsCopy.splice(1, clms.length-2);
+            params.clms = [{field: "csNumber", title: "车机号", width: 140, sort:false}
+                ,{field: "canData", title: "车辆can数据",width:700, sort:false}
+                ,{field: "addTime", title: "添加时间", width: 160, sort:false}
+                ,{field: "canAnalyze", title: "can解析数据", width: 160, sort:false}
+            ];
             params.query = getFormData(this.getQueryForm());
             console.log(JSON.stringify(params));
 

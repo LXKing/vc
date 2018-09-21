@@ -32,6 +32,7 @@
 	</resultMap>
 
 	<select id="getCarListWithTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+		<!--时间段内在线车辆-->
 		select csv.* from cs_vehicle csv left join cs_can csc
 		on csv.csv_id = csc.csc_car
 		<where>

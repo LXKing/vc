@@ -93,15 +93,22 @@ public class CsVehicleServiceImpl extends
     @Override
     public PageInfo<CsVehicle> getCarListWithTime(String vin, Integer days) {
         Map<String, Object> params = new HashMap<>();
-       // params.put("vin", null);
         if (!StringUtils.empty(vin)) {
             params.put("vin", vin);
         }
         params.put("days", days);
         List<CsVehicle> list = vehicleMapper.getCarListWithTime(params);
-        /*if (list == null || list.size() == 0) {
-            return new PageInfo<>(new ArrayList<>());
-        }*/
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<CsVehicle> getAllCarListWithTime(String vin, Integer days) {
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.empty(vin)) {
+            params.put("vin", vin);
+        }
+        params.put("days", days);
+        List<CsVehicle> list = vehicleMapper.getCarListWithTime(params);
+        return list;
     }
 }

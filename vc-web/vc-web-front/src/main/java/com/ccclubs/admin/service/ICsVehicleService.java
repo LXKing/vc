@@ -49,4 +49,14 @@ public interface ICsVehicleService extends BaseService<CsVehicle, Integer> {
      * @author machuanpeng
      */
     PageInfo<CsVehicle> getCarListWithTime(String vin, Integer days);
+    /**
+     * 2018/9/21
+     * 时间段内在线所有辆
+     *
+     * @param vin
+     * @param days
+     * @return java.util.List<com.ccclubs.admin.model.CsVehicle>
+     * @author machuanpeng
+     */
+    List<CsVehicle> getAllCarListWithTime(String vin, Integer days);
 }
