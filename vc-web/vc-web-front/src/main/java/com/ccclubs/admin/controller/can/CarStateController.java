@@ -63,5 +63,4 @@ public class CarStateController {
             data.registResolver(CsVehicleResolver.状态.getResolver());
         }
     }
-
 }
