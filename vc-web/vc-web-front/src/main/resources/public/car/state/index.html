@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="index.css"/>
     <link rel="stylesheet" type="text/css" href="ajaxpage.css"/>
 </head>
-<body>ajaxpage
+<body>
     <div class="conditionBox clearfix">
         <div class="condition">
             <div class="th">vin</div>
@@ -115,25 +115,25 @@
                         $(".tableNormal tr:gt(1)").remove();
                         for(var i=0;i<data.data.length;i++){
                             $(".tableNormal").append("<tr>"+
-                                "<td>"+data.data[i].csvId+"</td>"+                  //编号
-                                "<td>"+data.data[i].csvAccessText+"</td>"+          //接入商
-                                "<td>"+data.data[i].csvCarNo+"</td>"+               //车牌号
-                                "<td>"+data.data[i].csvVin+"</td>"+                 //车架号
-                                "<td>"+data.data[i].csvEngineNo+"</td>"+            //发动机(电机)编号
-                                "<td>"+data.data[i].csvCertific+"</td>"+            //合格证号
-                                "<td>"+data.data[i].csvModel+"</td>"+               //车型
-                                "<td>"+data.data[i].csvMachine+"</td>"+             //车机设备
-                                "<td>"+data.data[i].csvColorCodeText+"</td>"+       //车身颜色
-                                "<td>"+data.data[i].csvBataccuCode+"</td>"+         //可充电储能系统编码
-                                "<td>"+data.data[i].csvProdDate+"</td>"+            //出厂日期
-                                "<td>"+data.data[i].csvLandmark+"</td>"+            //地标类型
-                                "<td>"+data.data[i].csvDomain+"</td>"+              //车辆领域
-                                "<td>"+data.data[i].csvModelCodeFull+"</td>"+       //车型代码
-                                "<td>"+data.data[i].csvModelCodeSimple+"</td>"+     //车型备案号
-                                "<td>"+data.data[i].csvInteriorColorCode+"</td>"+   //内饰颜色
-                                "<td>"+data.data[i].csvStatus+"</td>"+              //状态
-                                "<td>"+data.data[i].csvAddTime+"</td>"+             //添加时间
-                                "<td>"+data.data[i].csvUpdateTime+"</td>"+          //修改时间
+                                "<td>"+(typeof data.data[i].csvId == 'undefined'?'':data.data[i].csvId)+"</td>"+                  //编号
+                                "<td>"+(typeof data.data[i].csvAccessText == 'undefined'?'':data.data[i].csvAccessText)+"</td>"+          //接入商
+                                "<td>"+(typeof data.data[i].csvCarNo == 'undefined'?'':data.data[i].csvCarNo)+"</td>"+               //车牌号
+                                "<td>"+(typeof data.data[i].csvVin == 'undefined'?'':data.data[i].csvVin)+"</td>"+                 //车架号
+                                "<td>"+(typeof data.data[i].csvEngineNo == 'undefined'?'':data.data[i].csvEngineNo)+"</td>"+            //发动机(电机)编号
+                                "<td>"+(typeof data.data[i].csvCertific == 'undefined'?'':data.data[i].csvCertific)+"</td>"+            //合格证号
+                                "<td>"+(typeof data.data[i].csvModel == 'undefined'?'':data.data[i].csvModel)+"</td>"+               //车型
+                                "<td>"+(typeof data.data[i].csvMachine == 'undefined'?'':data.data[i].csvMachine)+"</td>"+             //车机设备
+                                "<td>"+(typeof data.data[i].csvColorCodeText == 'undefined'?'':data.data[i].csvColorCodeText)+"</td>"+       //车身颜色
+                                "<td>"+(typeof data.data[i].csvBataccuCode == 'undefined'?'':data.data[i].csvBataccuCode)+"</td>"+         //可充电储能系统编码
+                                "<td>"+(typeof data.data[i].csvProdDate == 'undefined'?'':data.data[i].csvProdDate)+"</td>"+            //出厂日期
+                                "<td>"+(typeof data.data[i].csvLandmark == 'undefined'?'':data.data[i].csvLandmark)+"</td>"+            //地标类型
+                                "<td>"+(typeof data.data[i].csvDomain == 'undefined'?'':data.data[i].csvDomain)+"</td>"+              //车辆领域
+                                "<td>"+(typeof data.data[i].csvModelCodeFull == 'undefined'?'':data.data[i].csvModelCodeFull)+"</td>"+       //车型代码
+                                "<td>"+(typeof data.data[i].csvModelCodeSimple == 'undefined'?'':data.data[i].csvModelCodeSimple)+"</td>"+     //车型备案号
+                                "<td>"+(typeof data.data[i].csvInteriorColorCode == 'undefined'?'':data.data[i].csvInteriorColorCode)+"</td>"+   //内饰颜色
+                                "<td>"+(typeof data.data[i].csvStatus == 'undefined'?'':data.data[i].csvStatus)+"</td>"+              //状态
+                                "<td>"+(typeof data.data[i].csvAddTime == 'undefined'?'':data.data[i].csvAddTime)+"</td>"+             //添加时间
+                                "<td>"+(typeof data.data[i].csvUpdateTime == 'undefined'?'':data.data[i].csvUpdateTime)+"</td>"+          //修改时间
                             "</tr>");
                         }
                         if(one){
