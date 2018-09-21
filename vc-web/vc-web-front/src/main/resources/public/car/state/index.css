@@ -100,7 +100,7 @@ td{
     background: url("../images/calendar.png") no-repeat 104px center white;
 }
 /*按钮样式*/
-.seachBtn{
+.seachBtn,.exportBtn{
     width: 100px;
     text-align: center;
     height: 32px;
