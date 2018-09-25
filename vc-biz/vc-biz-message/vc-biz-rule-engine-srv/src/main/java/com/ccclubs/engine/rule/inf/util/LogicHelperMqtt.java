@@ -5,7 +5,6 @@ import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES
 import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RT_STATES;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
@@ -14,6 +13,7 @@ import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
@@ -170,9 +170,7 @@ public class LogicHelperMqtt {
         csState.setCssTemperature(new BigDecimal(mqtt_66.getTemperature() & 0xFF));
         // 设置CssCsq
         csState.setCssCsq((short) (mqtt_66.getCsq() & 0xFF));
-        /**
-         * 设置css当前时间
-         */
+        //设置css当前时间
         csState.setCssCurrentTime(new Date(mqtt_66.getTime()));
         // 设置CssRfidDte
         csState.setCssRfidDte(mqtt_66.getRfidDte());
@@ -238,8 +236,7 @@ public class LogicHelperMqtt {
         if (mapping.getState() != null) {
             csState.setCssId(mapping.getState().intValue());
             /**
-             * 校验经纬度
-             * 是否合法
+             * 校验经纬度是否合法
              */
             if (ProtocolTools
                     .isValid(mqtt_66.getLongitude() + mqtt_66.getLongitudeDecimal() * 0.000001,
@@ -257,12 +254,7 @@ public class LogicHelperMqtt {
             // 需要更新的当前状态加入等待队列
             ListOperations opsForList = redisTemplate.opsForList();
             /**
-             * 向
-             * redis
-             * 中
-             * lpush
-             * 数
-             * 据
+             * 向 redis 中 lpush 数 据
              */
             opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             // 发送历史状态到kafka
@@ -275,9 +267,7 @@ public class LogicHelperMqtt {
             }
         } else {
             /**
-             * 如果
-             *      state==null
-             * 设置经纬度后，插入当前状态
+             * 如果 state==null 设置经纬度后，插入当前状态
              */
             csState.setCssLongitude(AccurateOperationUtils
                     .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001)
@@ -328,9 +318,7 @@ public class LogicHelperMqtt {
         // 构造车辆对象
         CsVehicle csVehicle = new CsVehicle();
         /**
-         * 如果
-         * car == null
-         * 车辆对象也设置为空
+         * 如果 car == null 车辆对象也设置为空
          */
         if (mapping.getCar() == null) {
             csVehicle = null;
@@ -370,7 +358,6 @@ public class LogicHelperMqtt {
         csState.setCssKey((byte) mqtt_68_03.getKeyStatus());
         // 设置CssGear
         csState.setCssGear((byte) mqtt_68_03.getGearStatus());
-
         // 设置CssOrder
         csState.setCssOrder(message.getTransId());
         // 设置告警级别
@@ -399,20 +386,12 @@ public class LogicHelperMqtt {
         // 设置充电
         csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
         /**
-         * 根据
-         * 特定条件
-         * 设置
-         *      空调控制器
+         * 根据 特定条件 设置 空调控制器
          */
         int airConditioner = mqtt_68_03.getCcclubs_60().getAirConditionerCircular();
         if (airConditioner == 0) {
             /**
-             * 如果为0
-             *      设置一些相关参数
-             *      CssCircular
-             *      CssPtc
-             *      CssCompres
-             *      CssFan
+             * 如果为0 设置一些相关参数 CssCircular CssPtc CssCompres CssFan
              */
             csState.setCssCircular((byte) 0);
             csState.setCssPtc((byte) 0);
@@ -420,8 +399,7 @@ public class LogicHelperMqtt {
             csState.setCssFan((byte) 0);
         } else {
             /**
-             * 如果不为0
-             *      从协议工具类中设置
+             * 如果不为0 从协议工具类中设置
              */
             csState.setCssCircular((byte) ProtocolTools.getAirConditionerCircular(airConditioner));
             csState.setCssPtc((byte) ProtocolTools.getAirConditionerPtc(airConditioner));
@@ -476,21 +454,24 @@ public class LogicHelperMqtt {
          * 设置CssHandbrake
          */
         csState.setCssHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
-
         /**
-         * 首先
-         *      1. 检查state是否存在
-         *  如果存在=> 校验经纬度
-         *  如果不存在=> 设置经纬度
+         *  高精度经纬度【车辆自身经纬度】
+         */
+        MachineAdditional_HighPrecisionGPS highPrecisionGPS = mqtt_68_03.getCcclubs_60()
+                .getHighPrecisionGPS();
+        if (highPrecisionGPS != null) {
+            csState.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+            csState.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+            csState.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+            csState.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+        }
+        /**
+         * 首先检查state是否存在,存在即更新，不存在不更新
          */
         if (mapping.getState() != null) {
             csState.setCssId(mapping.getState().intValue());
             /**
-             * 校
-             * 验
-             * 经
-             * 纬
-             * 度
+             * 校 验 经 纬 度
              */
             if (ProtocolTools
                     .isValid(mqtt_68_03.getLongitude() * 0.000001,

@@ -320,7 +320,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 logger.error(message.getSimNo() + " 未授权给应用");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
