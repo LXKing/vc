@@ -3,6 +3,7 @@ package com.ccclubs.command.dto;
 import com.ccclubs.frm.validation.constraints.InArray;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @Author: yeanzi
@@ -20,11 +21,11 @@ public class GpsAutoDriveInput extends CommonInput implements java.io.Serializab
     @InArray(range = {1, 2, 3}, message = "行驶指令必须为：1-按经纬度行驶 2-循环行驶 3-暂停")
     private Integer driveCmd;
 
-    @NotNull(message = "经度必填")
-    private Integer log;
+    @Pattern(regexp = "^(([1-9]\\d?)|(1[0-7]\\d))(\\.\\d{1,6})|180|0(\\.\\d{1,6})?$", message = "经度输入不合法")
+    private String log;
 
-    @NotNull(message = "纬度必填")
-    private Integer lat;
+    @Pattern(regexp = "^(([1-8]\\d?)|([1-8]\\d))(\\.\\d{1,6})|90|0(\\.\\d{1,6})?$", message = "纬度输入不合法")
+    private String lat;
 
     public String getVin() {
         return vin;
@@ -44,20 +45,20 @@ public class GpsAutoDriveInput extends CommonInput implements java.io.Serializab
         return this;
     }
 
-    public Integer getLog() {
+    public String getLog() {
         return log;
     }
 
-    public GpsAutoDriveInput setLog(Integer log) {
+    public GpsAutoDriveInput setLog(String log) {
         this.log = log;
         return this;
     }
 
-    public Integer getLat() {
+    public String getLat() {
         return lat;
     }
 
-    public GpsAutoDriveInput setLat(Integer lat) {
+    public GpsAutoDriveInput setLat(String lat) {
         this.lat = lat;
         return this;
     }

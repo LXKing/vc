@@ -56,7 +56,11 @@ public enum ApiEnum {
     UPGRADE_PLUGIN_VERSION_NOT_FOUND(101029, "plugin version info not found", "系统未查询到该车机安装的插件版本信息，请联系管理员录入"),
     UPGRADE_TERMINAL_MODEL_NOT_FOUND(101030, "tbox model info not found", "系统未查询到该车机的终端型号信息，请联系管理员录入"),
     UPGRADE_TERMINAL_TYPE_NOT_FOUND(101031, "tbox type info not found", "系统未查询到该车机的终端类型信息，请联系管理员录入"),
-    REMOTE_RECORD_NOT_FOUND(101032, "remote record [{}] not found", "系统未查询到该远程控制记录[{}]");
+    REMOTE_RECORD_NOT_FOUND(101032, "remote record [{}] not found", "系统未查询到该远程控制记录[{}]"),
+
+    AUTO_DRIVE_LOG_LAT_NEED(101033, "log or lat cannot empty when choosed drive by gps", "GPS自动驾驶，按经纬度驾驶时，经纬度必传"),
+    AUTO_DRIVE_LOG_INVALID(101034, "invalid longitude input", "经度数值输入不合法"),
+    AUTO_DRIVE_LAT_INVALID(101035, "invalid latitude input", "纬度数值输入不合法");
 	private int code;
 	private String msg;
 	private String memo;
