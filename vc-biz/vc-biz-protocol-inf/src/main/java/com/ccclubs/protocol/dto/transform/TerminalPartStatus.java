@@ -18,11 +18,11 @@ public class TerminalPartStatus implements Serializable {
   /**
    * 车辆OBD里程
    */
-  private Integer cssObdMile;
+  private BigDecimal cssObdMile;
   /**
    * 油量
    */
-  private Integer cssOil;
+  private BigDecimal cssOil;
   /**
    * 订单状态
    */
@@ -30,7 +30,7 @@ public class TerminalPartStatus implements Serializable {
   /**
    * 订单里程
    */
-  private Integer cssTradeMile;
+  private BigDecimal cssTradeMile;
   /**
    * 订单开始时间
    */
@@ -115,11 +115,11 @@ public class TerminalPartStatus implements Serializable {
    * */
   private Integer controlStatus;
 
-  public Integer getCssOil() {
+  public BigDecimal getCssOil() {
     return cssOil;
   }
 
-  public void setCssOil(Integer cssOil) {
+  public void setCssOil(BigDecimal cssOil) {
     this.cssOil = cssOil;
   }
 
@@ -147,11 +147,11 @@ public class TerminalPartStatus implements Serializable {
     this.cssTradeStatus = cssTradeStatus;
   }
 
-  public Integer getCssTradeMile() {
+  public BigDecimal getCssTradeMile() {
     return cssTradeMile;
   }
 
-  public void setCssTradeMile(Integer cssTradeMile) {
+  public void setCssTradeMile(BigDecimal cssTradeMile) {
     this.cssTradeMile = cssTradeMile;
   }
 
@@ -171,11 +171,11 @@ public class TerminalPartStatus implements Serializable {
     this.cssCurrentTime = cssCurrentTime;
   }
 
-  public Integer getCssObdMile() {
+  public BigDecimal getCssObdMile() {
     return cssObdMile;
   }
 
-  public void setCssObdMile(Integer cssObdMile) {
+  public void setCssObdMile(BigDecimal cssObdMile) {
     this.cssObdMile = cssObdMile;
   }
 
