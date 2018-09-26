@@ -119,7 +119,6 @@ public class ParseOperationService implements IParseDataService {
             MyBuffer myBuffer = new MyBuffer(tm.getMsgBody());
             //取命令码，四个字节
             int fcCode = myBuffer.getInt();
-            // -
             switch (fcCode) {
                 //远程开门
                 case 0x1000FF00:
@@ -240,7 +239,6 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 //远程鸣笛
                 case 0x1012FF00:
-                    // -
                     String resultJsonW = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -266,7 +264,6 @@ public class ParseOperationService implements IParseDataService {
                     //发动机停止
                 case 0x10170000:
                 case 0x10220010:
-                    // -
                     String resultJsonCommon = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -303,9 +300,7 @@ public class ParseOperationService implements IParseDataService {
                     short fcCodeParams = myBuffer.getShort();
                     // 获取结果
                     short fcCodeResult = myBuffer.getShort();
-                    // -
                     String resultJsonCloseWithParams;
-                    // -
                     resultJsonCloseWithParams = RemoteHelper
                             .getMultipleOperationJsonMessage(commonWriter.mId, 0x10210000,
                                     myBuffer.gets(tm.getMsgBody().length - 4 - 2 - 2),
@@ -325,9 +320,8 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 //语音指令
                 case 0x10240010:
-                    // -
+                    myBuffer.gets(tm.getMsgBody().length - 4 - 2);
                     short fcCodeVoice = myBuffer.getShort();
-                    // -
                     String resultJsonVoice = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -342,11 +336,11 @@ public class ParseOperationService implements IParseDataService {
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
-                //站点下发
+                //站点下发、GPS自动驾驶指令
                 case 0x10260010:
-                    // -
+                    myBuffer.gets(tm.getMsgBody().length - 4 - 2);
                     short fcCodeSite = myBuffer.getShort();
-                    // -
+
                     String resultJsonSite = JSON.toJSONString(
                             CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
                     // 指令结果写入redis
@@ -364,25 +358,25 @@ public class ParseOperationService implements IParseDataService {
                 default:
                     //状态获取
                     CCCLUBS_60 terminalInfo = new CCCLUBS_60();
-                    // -
                     terminalInfo.ReadFromBytes(tm.getMsgBody());
-                    // -
                     TerminalPartStatus terminalPartStatus = new TerminalPartStatus();
                     // terminalPartStatus.setCssNumber(tm.getCarNumber());
                     //电池电量
                     terminalPartStatus.setCssEvBattery(terminalInfo.getSoc());
                     //obd里程
-                    terminalPartStatus.setCssObdMile(terminalInfo.getObdMile().intValue());
+                    terminalPartStatus.setCssObdMile(terminalInfo.getObdMile());
                     //油量
-                    terminalPartStatus.setCssOil(terminalInfo.getOil().intValue());
+                    terminalPartStatus.setCssOil(terminalInfo.getOil());
                     //订单里程
-                    terminalPartStatus.setCssTradeMile(terminalInfo.getTradeMiles().intValue());
+                    terminalPartStatus.setCssTradeMile(terminalInfo.getTradeMiles());
                     //订单状态
                     terminalPartStatus.setCssTradeStatus(terminalInfo.getTradeStatus());
                     //订单开始时间
                     terminalPartStatus.setCssTradeStartTime(terminalInfo.getTradeStartTime() == null ? null : new Date(terminalInfo.getTradeStartTime().longValue()));
                     //订单结束时间
                     terminalPartStatus.setCssTradeEndTime(terminalInfo.getTradeEndTime() == null ? null : new Date(terminalInfo.getTradeEndTime().longValue()));
+                    terminalPartStatus.setTradeInitCard(terminalInfo.getTradeInitCard());
+                    terminalPartStatus.setTradeTakeCard(terminalInfo.getTradeTakeCard());
                     //纬度
                     terminalPartStatus.setCssLatitude(terminalInfo.getTriggerGpsLatitude());
                     //经度
@@ -414,12 +408,21 @@ public class ParseOperationService implements IParseDataService {
                         terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
                         terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
                     }
+                    /**
+                     *  高精度经纬度【车辆自身经纬度】
+                     */
+                    MachineAdditional_HighPrecisionGPS highPrecisionGPS = terminalInfo
+                            .getHighPrecisionGPS();
+                    if (highPrecisionGPS != null) {
+                        terminalPartStatus.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+                        terminalPartStatus.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+                        terminalPartStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+                        terminalPartStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+                    }
                     // 操作成功
                     CommonResult commonResult = CommonResult
                             .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");
-                    // -
                     commonResult.setData(terminalPartStatus);
-                    // -
                     String resultJsonState = JSON.toJSONString(commonResult);
                     // 指令结果写入redis
                     redisHelper.setRemote(String.valueOf(commonWriter.mId), resultJsonState);

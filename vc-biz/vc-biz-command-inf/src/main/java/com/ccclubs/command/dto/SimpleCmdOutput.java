@@ -1,6 +1,7 @@
 package com.ccclubs.command.dto;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 简单指令出参
@@ -49,6 +50,130 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
      * GPS辅助定位，纬度最小值
      */
     private BigDecimal cssLatitudeMin;
+
+    /**
+     * 订单状态
+     */
+    private Integer cssTradeStatus;
+    /**
+     * 订单里程
+     */
+    private BigDecimal cssTradeMile;
+    /**
+     * 订单开始时间
+     */
+    private Date cssTradeStartTime;
+    /**
+     * 订单结束时间
+     */
+    private Date cssTradeEndTime;
+    /**
+     * 初始化业务订单RFID号
+     */
+    private String tradeInitCard;
+    /**
+     * 业务订单RFID号
+     */
+    private String tradeTakeCard;
+    /**
+     * 车辆自身经度
+     */
+    private BigDecimal acuLongitude;
+
+    /**
+     * 车辆自身纬度
+     */
+    private BigDecimal acuLatitude;
+
+    /**
+     * 车辆状态-自动行驶当前状态
+     */
+    private Byte acuVehicleAdState;
+
+    /**
+     * 车辆启动控制方式-自动行驶当前车机指令状态
+     */
+    private Byte vrtVehicleStart;
+
+    public Integer getCssTradeStatus() {
+        return cssTradeStatus;
+    }
+
+    public void setCssTradeStatus(Integer cssTradeStatus) {
+        this.cssTradeStatus = cssTradeStatus;
+    }
+
+    public BigDecimal getCssTradeMile() {
+        return cssTradeMile;
+    }
+
+    public void setCssTradeMile(BigDecimal cssTradeMile) {
+        this.cssTradeMile = cssTradeMile;
+    }
+
+    public Date getCssTradeStartTime() {
+        return cssTradeStartTime;
+    }
+
+    public void setCssTradeStartTime(Date cssTradeStartTime) {
+        this.cssTradeStartTime = cssTradeStartTime;
+    }
+
+    public Date getCssTradeEndTime() {
+        return cssTradeEndTime;
+    }
+
+    public void setCssTradeEndTime(Date cssTradeEndTime) {
+        this.cssTradeEndTime = cssTradeEndTime;
+    }
+
+    public String getTradeInitCard() {
+        return tradeInitCard;
+    }
+
+    public void setTradeInitCard(String tradeInitCard) {
+        this.tradeInitCard = tradeInitCard;
+    }
+
+    public String getTradeTakeCard() {
+        return tradeTakeCard;
+    }
+
+    public void setTradeTakeCard(String tradeTakeCard) {
+        this.tradeTakeCard = tradeTakeCard;
+    }
+
+    public BigDecimal getAcuLongitude() {
+        return acuLongitude;
+    }
+
+    public void setAcuLongitude(BigDecimal acuLongitude) {
+        this.acuLongitude = acuLongitude;
+    }
+
+    public BigDecimal getAcuLatitude() {
+        return acuLatitude;
+    }
+
+    public void setAcuLatitude(BigDecimal acuLatitude) {
+        this.acuLatitude = acuLatitude;
+    }
+
+    public Byte getAcuVehicleAdState() {
+        return acuVehicleAdState;
+    }
+
+    public void setAcuVehicleAdState(Byte acuVehicleAdState) {
+        this.acuVehicleAdState = acuVehicleAdState;
+    }
+
+    public Byte getVrtVehicleStart() {
+        return vrtVehicleStart;
+    }
+
+    public void setVrtVehicleStart(Byte vrtVehicleStart) {
+        this.vrtVehicleStart = vrtVehicleStart;
+    }
 
     public BigDecimal getCssLongitudeAvg() {
         return cssLongitudeAvg;
