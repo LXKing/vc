@@ -2,6 +2,7 @@ package com.ccclubs.engine.rule.inf.util;
 
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
 import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.transform.TerminalStatus;
@@ -144,8 +145,7 @@ public class TransformUtils {
                 : csMachine.getCsmTeNo().trim().toUpperCase());
         //FIXME 数据库字段设计为 Decimal
         terminalStatus.setCssObdMile(mqtt_68_03.getObdMile());
-        terminalStatus.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles());
-        terminalStatus.setCssOrder(message.getTransId());
+
         terminalStatus.setCssPower(mqtt_68_03.getBattery());
 
         terminalStatus.setCssRented(mqtt_68_03.getCcclubs_60().getTradeStatus());
@@ -192,6 +192,28 @@ public class TransformUtils {
             terminalStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
             terminalStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
         }
+        /**
+         * 添加GPS辅助定位
+         */
+        MachineAdditional_GpsAssistStatus gpsAssistStatus = mqtt_68_03.getCcclubs_60().getGpsAssistStatus();
+        if (null != gpsAssistStatus) {
+            terminalStatus.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            terminalStatus.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            terminalStatus.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            terminalStatus.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            terminalStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            terminalStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+        }
+        /**
+         * 订单信息
+         */
+        terminalStatus.setCssMileage(mqtt_68_03.getCcclubs_60().getTradeMiles());
+        terminalStatus.setCssOrder(message.getTransId());
+        terminalStatus.setTradeStartTime(mqtt_68_03.getCcclubs_60().getTradeStartTime());
+        terminalStatus.setTradeEndTime(mqtt_68_03.getCcclubs_60().getTradeEndTime());
+        terminalStatus.setTradeInitCard(mqtt_68_03.getCcclubs_60().getTradeInitCard());
+        terminalStatus.setTradeTakeCard(mqtt_68_03.getCcclubs_60().getTradeTakeCard());
+        terminalStatus.setTradeStatus(mqtt_68_03.getCcclubs_60().getTradeStatus());
         return terminalStatus;
     }
 

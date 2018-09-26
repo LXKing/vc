@@ -13,6 +13,7 @@ import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
 import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
@@ -465,6 +466,34 @@ public class LogicHelperMqtt {
             csState.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
             csState.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
         }
+        /**
+         * 添加GPS辅助定位
+         */
+        MachineAdditional_GpsAssistStatus gpsAssistStatus = mqtt_68_03.getCcclubs_60().getGpsAssistStatus();
+        if (null != gpsAssistStatus) {
+            csState.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            csState.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            csState.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            csState.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            csState.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            csState.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+        }
+        /**
+         * 订单信息
+         */
+        BigDecimal tradeMiles = mqtt_68_03.getCcclubs_60().getTradeMiles();
+        Integer tradeStatus = mqtt_68_03.getCcclubs_60().getTradeStatus();
+        Integer tradeStartTime = mqtt_68_03.getCcclubs_60().getTradeStartTime();
+        Integer tradeEndTime = mqtt_68_03.getCcclubs_60().getTradeEndTime();
+        String tradeInitCard = mqtt_68_03.getCcclubs_60().getTradeInitCard();
+        String tradeTakeCard = mqtt_68_03.getCcclubs_60().getTradeTakeCard();
+        csState.setTradeMiles(tradeMiles);
+        csState.setTradeStatus(tradeStatus);
+        csState.setTradeStartTime(tradeStartTime);
+        csState.setTradeEndTime(tradeEndTime);
+        csState.setTradeInitCard(tradeInitCard);
+        csState.setTradeTakeCard(tradeTakeCard);
+
         /**
          * 首先检查state是否存在,存在即更新，不存在不更新
          */

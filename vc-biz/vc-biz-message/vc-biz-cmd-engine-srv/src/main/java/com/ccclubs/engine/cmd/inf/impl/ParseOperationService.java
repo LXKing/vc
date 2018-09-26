@@ -406,6 +406,17 @@ public class ParseOperationService implements IParseDataService {
                         terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
                         terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
                     }
+                    /**
+                     *  高精度经纬度【车辆自身经纬度】
+                     */
+                    MachineAdditional_HighPrecisionGPS highPrecisionGPS = terminalInfo
+                            .getHighPrecisionGPS();
+                    if (highPrecisionGPS != null) {
+                        terminalPartStatus.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+                        terminalPartStatus.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+                        terminalPartStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+                        terminalPartStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+                    }
                     // 操作成功
                     CommonResult commonResult = CommonResult
                             .create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功");

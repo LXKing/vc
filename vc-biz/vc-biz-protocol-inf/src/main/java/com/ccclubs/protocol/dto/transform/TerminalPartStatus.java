@@ -9,301 +9,351 @@ import java.util.Date;
  */
 public class TerminalPartStatus implements Serializable {
 
-  private static final long serialVersionUID = -6519276463058646695L;
-  /**
-   * 下位机时间
-   */
-  private Long cssCurrentTime;
+    private static final long serialVersionUID = -6519276463058646695L;
+    /**
+     * 下位机时间
+     */
+    private Long cssCurrentTime;
 
-  /**
-   * 车辆OBD里程
-   */
-  private BigDecimal cssObdMile;
-  /**
-   * 油量
-   */
-  private BigDecimal cssOil;
-  /**
-   * 订单状态
-   */
-  private Integer cssTradeStatus;
-  /**
-   * 订单里程
-   */
-  private BigDecimal cssTradeMile;
-  /**
-   * 订单开始时间
-   */
-  private Date cssTradeStartTime;
-  /**
-   * 订单结束时间
-   */
-  private Date cssTradeEndTime;
-  /**
-   * 动力电池电量
-   */
-  private Integer cssEvBattery;
-  /**
-   * 经度，带6位小数
-   */
-  private BigDecimal cssLongitude;
-  /**
-   * 纬度，带6位小数
-   */
-  private BigDecimal cssLatitude;
+    /**
+     * 车辆OBD里程
+     */
+    private BigDecimal cssObdMile;
+    /**
+     * 油量
+     */
+    private BigDecimal cssOil;
+    /**
+     * 订单状态
+     */
+    private Integer cssTradeStatus;
+    /**
+     * 订单里程
+     */
+    private BigDecimal cssTradeMile;
+    /**
+     * 订单开始时间
+     */
+    private Date cssTradeStartTime;
+    /**
+     * 订单结束时间
+     */
+    private Date cssTradeEndTime;
+    /**
+     * 动力电池电量
+     */
+    private Integer cssEvBattery;
+    /**
+     * 经度，带6位小数
+     */
+    private BigDecimal cssLongitude;
+    /**
+     * 纬度，带6位小数
+     */
+    private BigDecimal cssLatitude;
 
-  /**
-   * 车门状态，高WORD 代表 MASK,低 WORD 代表内容
-   */
-  private Short cssDoor;
+    /**
+     * 车门状态，高WORD 代表 MASK,低 WORD 代表内容
+     */
+    private Short cssDoor;
 
-  /**
-   * 发动机状态，1未熄火，2已熄火，0无效
-   */
-  private Integer cssEngine = 0;
-  /**
-   * 在充电(0：未充电或无效，1：慢充，2：快充)
-   */
-  private Integer cssCharging = 0;
-  /**
-   * 灯状态，（1未关，2全关，0无效）
-   */
-  private Integer cssLight = 0;
-  /**
-   * 门锁状态，1未关，2全关，0无效
-   */
-  private Short cssLock = 0;
+    /**
+     * 发动机状态，1未熄火，2已熄火，0无效
+     */
+    private Integer cssEngine = 0;
+    /**
+     * 在充电(0：未充电或无效，1：慢充，2：快充)
+     */
+    private Integer cssCharging = 0;
+    /**
+     * 灯状态，（1未关，2全关，0无效）
+     */
+    private Integer cssLight = 0;
+    /**
+     * 门锁状态，1未关，2全关，0无效
+     */
+    private Short cssLock = 0;
 
-  // ===================================
-  /**
-   * 基站LAC
-   */
-  private Integer cssBaseLAC;
+    // ===================================
+    /**
+     * 基站LAC
+     */
+    private Integer cssBaseLAC;
 
-  /**
-   * 基站CI
-   */
-  private Integer cssBaseCI;
+    /**
+     * 基站CI
+     */
+    private Integer cssBaseCI;
 
-  /**
-   * GPS辅助定位，经度平均值
-   */
-  private BigDecimal cssLongitudeAvg;
-  /**
-   * GPS辅助定位，纬度平均值
-   */
-  private BigDecimal cssLatitudeAvg;
-  /**
-   * GPS辅助定位，经度最大值
-   */
-  private BigDecimal cssLongitudeMax;
-  /**
-   * GPS辅助定位，纬度最大值
-   */
-  private BigDecimal cssLatitudeMax;
-  /**
-   * GPS辅助定位，经度最小值
-   */
-  private BigDecimal cssLongitudeMin;
-  /**
-   * GPS辅助定位，纬度最小值
-   */
-  private BigDecimal cssLatitudeMin;
+    /**
+     * GPS辅助定位，经度平均值
+     */
+    private BigDecimal cssLongitudeAvg;
+    /**
+     * GPS辅助定位，纬度平均值
+     */
+    private BigDecimal cssLatitudeAvg;
+    /**
+     * GPS辅助定位，经度最大值
+     */
+    private BigDecimal cssLongitudeMax;
+    /**
+     * GPS辅助定位，纬度最大值
+     */
+    private BigDecimal cssLatitudeMax;
+    /**
+     * GPS辅助定位，经度最小值
+     */
+    private BigDecimal cssLongitudeMin;
+    /**
+     * GPS辅助定位，纬度最小值
+     */
+    private BigDecimal cssLatitudeMin;
+    /**
+     * 车辆自身经度
+     */
+    private BigDecimal acuLongitude;
 
-  /**
-   * 控制状态
-   * */
-  private Integer controlStatus;
+    /**
+     * 车辆自身纬度
+     */
+    private BigDecimal acuLatitude;
 
-  public BigDecimal getCssOil() {
-    return cssOil;
-  }
+    /**
+     * 车辆状态-自动行驶当前状态
+     */
+    private Byte acuVehicleAdState;
 
-  public void setCssOil(BigDecimal cssOil) {
-    this.cssOil = cssOil;
-  }
+    /**
+     * 车辆启动控制方式-自动行驶当前车机指令状态
+     */
+    private Byte vrtVehicleStart;
+    /**
+     * 控制状态
+     */
+    private Integer controlStatus;
 
-  public Date getCssTradeStartTime() {
-    return cssTradeStartTime;
-  }
+    public BigDecimal getAcuLongitude() {
+        return acuLongitude;
+    }
 
-  public void setCssTradeStartTime(Date cssTradeStartTime) {
-    this.cssTradeStartTime = cssTradeStartTime;
-  }
+    public void setAcuLongitude(BigDecimal acuLongitude) {
+        this.acuLongitude = acuLongitude;
+    }
 
-  public Date getCssTradeEndTime() {
-    return cssTradeEndTime;
-  }
+    public BigDecimal getAcuLatitude() {
+        return acuLatitude;
+    }
 
-  public void setCssTradeEndTime(Date cssTradeEndTime) {
-    this.cssTradeEndTime = cssTradeEndTime;
-  }
+    public void setAcuLatitude(BigDecimal acuLatitude) {
+        this.acuLatitude = acuLatitude;
+    }
 
-  public Integer getCssTradeStatus() {
-    return cssTradeStatus;
-  }
+    public Byte getAcuVehicleAdState() {
+        return acuVehicleAdState;
+    }
 
-  public void setCssTradeStatus(Integer cssTradeStatus) {
-    this.cssTradeStatus = cssTradeStatus;
-  }
+    public void setAcuVehicleAdState(Byte acuVehicleAdState) {
+        this.acuVehicleAdState = acuVehicleAdState;
+    }
 
-  public BigDecimal getCssTradeMile() {
-    return cssTradeMile;
-  }
+    public Byte getVrtVehicleStart() {
+        return vrtVehicleStart;
+    }
 
-  public void setCssTradeMile(BigDecimal cssTradeMile) {
-    this.cssTradeMile = cssTradeMile;
-  }
+    public void setVrtVehicleStart(Byte vrtVehicleStart) {
+        this.vrtVehicleStart = vrtVehicleStart;
+    }
 
-  public Integer getControlStatus() {
-    return controlStatus;
-  }
+    public BigDecimal getCssOil() {
+        return cssOil;
+    }
 
-  public void setControlStatus(Integer controlStatus) {
-    this.controlStatus = controlStatus;
-  }
+    public void setCssOil(BigDecimal cssOil) {
+        this.cssOil = cssOil;
+    }
 
-  public Long getCssCurrentTime() {
-    return cssCurrentTime;
-  }
+    public Date getCssTradeStartTime() {
+        return cssTradeStartTime;
+    }
 
-  public void setCssCurrentTime(Long cssCurrentTime) {
-    this.cssCurrentTime = cssCurrentTime;
-  }
+    public void setCssTradeStartTime(Date cssTradeStartTime) {
+        this.cssTradeStartTime = cssTradeStartTime;
+    }
 
-  public BigDecimal getCssObdMile() {
-    return cssObdMile;
-  }
+    public Date getCssTradeEndTime() {
+        return cssTradeEndTime;
+    }
 
-  public void setCssObdMile(BigDecimal cssObdMile) {
-    this.cssObdMile = cssObdMile;
-  }
+    public void setCssTradeEndTime(Date cssTradeEndTime) {
+        this.cssTradeEndTime = cssTradeEndTime;
+    }
 
-  public Integer getCssEvBattery() {
-    return cssEvBattery;
-  }
+    public Integer getCssTradeStatus() {
+        return cssTradeStatus;
+    }
 
-  public void setCssEvBattery(Integer cssEvBattery) {
-    this.cssEvBattery = cssEvBattery;
-  }
+    public void setCssTradeStatus(Integer cssTradeStatus) {
+        this.cssTradeStatus = cssTradeStatus;
+    }
 
-  public Integer getCssCharging() {
-    return cssCharging;
-  }
+    public BigDecimal getCssTradeMile() {
+        return cssTradeMile;
+    }
 
-  public void setCssCharging(Integer cssCharging) {
-    this.cssCharging = cssCharging;
-  }
+    public void setCssTradeMile(BigDecimal cssTradeMile) {
+        this.cssTradeMile = cssTradeMile;
+    }
 
-  public BigDecimal getCssLongitude() {
-    return cssLongitude;
-  }
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
 
-  public void setCssLongitude(BigDecimal cssLongitude) {
-    this.cssLongitude = cssLongitude;
-  }
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
 
-  public BigDecimal getCssLatitude() {
-    return cssLatitude;
-  }
+    public Long getCssCurrentTime() {
+        return cssCurrentTime;
+    }
 
-  public void setCssLatitude(BigDecimal cssLatitude) {
-    this.cssLatitude = cssLatitude;
-  }
+    public void setCssCurrentTime(Long cssCurrentTime) {
+        this.cssCurrentTime = cssCurrentTime;
+    }
 
-  public Short getCssDoor() {
-    return cssDoor;
-  }
+    public BigDecimal getCssObdMile() {
+        return cssObdMile;
+    }
 
-  public void setCssDoor(Short cssDoor) {
-    this.cssDoor = cssDoor;
-  }
+    public void setCssObdMile(BigDecimal cssObdMile) {
+        this.cssObdMile = cssObdMile;
+    }
 
-  public Integer getCssBaseLAC() {
-    return cssBaseLAC;
-  }
+    public Integer getCssEvBattery() {
+        return cssEvBattery;
+    }
 
-  public void setCssBaseLAC(Integer cssBaseLAC) {
-    this.cssBaseLAC = cssBaseLAC;
-  }
+    public void setCssEvBattery(Integer cssEvBattery) {
+        this.cssEvBattery = cssEvBattery;
+    }
 
-  public Integer getCssBaseCI() {
-    return cssBaseCI;
-  }
+    public Integer getCssCharging() {
+        return cssCharging;
+    }
 
-  public void setCssBaseCI(Integer cssBaseCI) {
-    this.cssBaseCI = cssBaseCI;
-  }
+    public void setCssCharging(Integer cssCharging) {
+        this.cssCharging = cssCharging;
+    }
 
-  public Integer getCssEngine() {
-    return cssEngine;
-  }
+    public BigDecimal getCssLongitude() {
+        return cssLongitude;
+    }
 
-  public void setCssEngine(Integer cssEngine) {
-    this.cssEngine = cssEngine;
-  }
+    public void setCssLongitude(BigDecimal cssLongitude) {
+        this.cssLongitude = cssLongitude;
+    }
 
-  public Integer getCssLight() {
-    return cssLight;
-  }
+    public BigDecimal getCssLatitude() {
+        return cssLatitude;
+    }
 
-  public void setCssLight(Integer cssLight) {
-    this.cssLight = cssLight;
-  }
+    public void setCssLatitude(BigDecimal cssLatitude) {
+        this.cssLatitude = cssLatitude;
+    }
 
-  public Short getCssLock() {
-    return cssLock;
-  }
+    public Short getCssDoor() {
+        return cssDoor;
+    }
 
-  public void setCssLock(Short cssLock) {
-    this.cssLock = cssLock;
-  }
+    public void setCssDoor(Short cssDoor) {
+        this.cssDoor = cssDoor;
+    }
 
-  public BigDecimal getCssLongitudeAvg() {
-    return cssLongitudeAvg;
-  }
+    public Integer getCssBaseLAC() {
+        return cssBaseLAC;
+    }
 
-  public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
-    this.cssLongitudeAvg = cssLongitudeAvg;
-  }
+    public void setCssBaseLAC(Integer cssBaseLAC) {
+        this.cssBaseLAC = cssBaseLAC;
+    }
 
-  public BigDecimal getCssLatitudeAvg() {
-    return cssLatitudeAvg;
-  }
+    public Integer getCssBaseCI() {
+        return cssBaseCI;
+    }
 
-  public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
-    this.cssLatitudeAvg = cssLatitudeAvg;
-  }
+    public void setCssBaseCI(Integer cssBaseCI) {
+        this.cssBaseCI = cssBaseCI;
+    }
 
-  public BigDecimal getCssLongitudeMax() {
-    return cssLongitudeMax;
-  }
+    public Integer getCssEngine() {
+        return cssEngine;
+    }
 
-  public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
-    this.cssLongitudeMax = cssLongitudeMax;
-  }
+    public void setCssEngine(Integer cssEngine) {
+        this.cssEngine = cssEngine;
+    }
 
-  public BigDecimal getCssLatitudeMax() {
-    return cssLatitudeMax;
-  }
+    public Integer getCssLight() {
+        return cssLight;
+    }
 
-  public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
-    this.cssLatitudeMax = cssLatitudeMax;
-  }
+    public void setCssLight(Integer cssLight) {
+        this.cssLight = cssLight;
+    }
 
-  public BigDecimal getCssLongitudeMin() {
-    return cssLongitudeMin;
-  }
+    public Short getCssLock() {
+        return cssLock;
+    }
 
-  public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
-    this.cssLongitudeMin = cssLongitudeMin;
-  }
+    public void setCssLock(Short cssLock) {
+        this.cssLock = cssLock;
+    }
 
-  public BigDecimal getCssLatitudeMin() {
-    return cssLatitudeMin;
-  }
+    public BigDecimal getCssLongitudeAvg() {
+        return cssLongitudeAvg;
+    }
 
-  public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
-    this.cssLatitudeMin = cssLatitudeMin;
-  }
+    public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
+        this.cssLongitudeAvg = cssLongitudeAvg;
+    }
+
+    public BigDecimal getCssLatitudeAvg() {
+        return cssLatitudeAvg;
+    }
+
+    public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
+        this.cssLatitudeAvg = cssLatitudeAvg;
+    }
+
+    public BigDecimal getCssLongitudeMax() {
+        return cssLongitudeMax;
+    }
+
+    public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
+        this.cssLongitudeMax = cssLongitudeMax;
+    }
+
+    public BigDecimal getCssLatitudeMax() {
+        return cssLatitudeMax;
+    }
+
+    public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
+        this.cssLatitudeMax = cssLatitudeMax;
+    }
+
+    public BigDecimal getCssLongitudeMin() {
+        return cssLongitudeMin;
+    }
+
+    public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
+        this.cssLongitudeMin = cssLongitudeMin;
+    }
+
+    public BigDecimal getCssLatitudeMin() {
+        return cssLatitudeMin;
+    }
+
+    public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
+        this.cssLatitudeMin = cssLatitudeMin;
+    }
 }
