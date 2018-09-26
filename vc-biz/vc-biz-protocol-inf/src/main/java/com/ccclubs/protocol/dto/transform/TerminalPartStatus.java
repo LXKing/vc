@@ -132,6 +132,30 @@ public class TerminalPartStatus implements Serializable {
      * 控制状态
      */
     private Integer controlStatus;
+    /**
+     * 初始化业务订单RFID号
+     */
+    String tradeInitCard;
+    /**
+     * 业务订单RFID号
+     */
+    String tradeTakeCard;
+
+    public String getTradeInitCard() {
+        return tradeInitCard;
+    }
+
+    public void setTradeInitCard(String tradeInitCard) {
+        this.tradeInitCard = tradeInitCard;
+    }
+
+    public String getTradeTakeCard() {
+        return tradeTakeCard;
+    }
+
+    public void setTradeTakeCard(String tradeTakeCard) {
+        this.tradeTakeCard = tradeTakeCard;
+    }
 
     public BigDecimal getAcuLongitude() {
         return acuLongitude;

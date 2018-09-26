@@ -375,6 +375,8 @@ public class ParseOperationService implements IParseDataService {
                     terminalPartStatus.setCssTradeStartTime(terminalInfo.getTradeStartTime() == null ? null : new Date(terminalInfo.getTradeStartTime().longValue()));
                     //订单结束时间
                     terminalPartStatus.setCssTradeEndTime(terminalInfo.getTradeEndTime() == null ? null : new Date(terminalInfo.getTradeEndTime().longValue()));
+                    terminalPartStatus.setTradeInitCard(terminalInfo.getTradeInitCard());
+                    terminalPartStatus.setTradeTakeCard(terminalInfo.getTradeTakeCard());
                     //纬度
                     terminalPartStatus.setCssLatitude(terminalInfo.getTriggerGpsLatitude());
                     //经度
