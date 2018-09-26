@@ -12,6 +12,7 @@ import com.ccclubs.command.version.CommandServiceVersion;
 import com.ccclubs.common.validate.AuthValidateHelper;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.exception.ApiException;
+import com.ccclubs.frm.spring.util.LongLatitudeUtil;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.util.ProtocolTools;
 import com.ccclubs.pub.orm.mapper.CsStructMapper;
@@ -98,8 +99,10 @@ public class AutoDriveCmdImpl implements AutoDriveCmdInf {
         CsStructWithBLOBs csStruct = sdao.selectByPrimaryKey(structId);
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
+        int longitude = LongLatitudeUtil.Str2Int(input.getLog());
+        int latitude = LongLatitudeUtil.Str2Int(input.getLat());
         List<Map> values = JSONArray.parseArray(MessageFormatter.
-                arrayFormat("[{\"line\":\"{}\",\"log\":\"{}\",\"lat\":\"{}\"}]", new Object[]{input.getDriveCmd(), input.getLog(), input.getLat()})
+                arrayFormat("[{\"line\":\"{}\",\"log\":\"{}\",\"lat\":\"{}\"}]", new Object[]{input.getDriveCmd(), longitude, latitude})
                 .getMessage(), java.util.Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 

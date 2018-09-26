@@ -23,12 +23,18 @@ import com.ccclubs.frm.spring.annotation.ApiSecurity;
 import com.ccclubs.frm.spring.constant.ApiEnum;
 import com.ccclubs.frm.spring.entity.ApiMessage;
 import com.ccclubs.frm.spring.exception.ApiException;
+import com.ccclubs.frm.spring.util.LongLatitudeUtil;
 import com.ccclubs.terminal.dto.VersionQryInput;
 import com.ccclubs.terminal.dto.VersionQryOutput;
 import com.ccclubs.terminal.inf.state.QueryTerminalInfoInf;
 import com.ccclubs.terminal.inf.upgrade.UpgradeInf;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -537,12 +543,25 @@ public class CommandApi {
     public ApiMessage gpsAutoDriveCtrl(@RequestHeader("appId") String appId, GpsAutoDriveInput input) {
         logger.info("API事件:GPS自动驾驶控制,APPID:{},车架号:{},行驶指令:{},经度:{},纬度:{}", input.getAppId(), input.getVin(),
                 input.getDriveCmd(), input.getLog(), input.getLat());
-
         input.setAppId(appId);
         if (isRateLimit(input.getVin())) {
             throw new ApiException(ApiEnum.API_RATE_LIMIT);
         }
 
+        // 校验参数
+        if (1 == input.getDriveCmd()) {
+            if (Objects.isNull(input.getLog()) || Objects.isNull(input.getLat())) {
+                throw new ApiException(ApiEnum.AUTO_DRIVE_LOG_LAT_NEED);
+            }
+            if (!LongLatitudeUtil.isLONG(input.getLog())) {
+                throw new ApiException(ApiEnum.AUTO_DRIVE_LOG_INVALID);
+            }
+            if (!LongLatitudeUtil.isLA(input.getLat())) {
+                throw new ApiException(ApiEnum.AUTO_DRIVE_LAT_INVALID);
+            }
+        } else {
+            input.setLog("0").setLat("0");
+        }
         GpsAutoDriveOutput output = autoDriveCmdInf.gpsAutoDriveCtrl(input);
         return new ApiMessage<>(output);
     }
