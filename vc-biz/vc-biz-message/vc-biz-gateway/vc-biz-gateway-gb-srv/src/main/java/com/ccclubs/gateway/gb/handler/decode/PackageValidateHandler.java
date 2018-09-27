@@ -242,6 +242,19 @@ public class PackageValidateHandler extends CCClubChannelInboundHandler<GBPackag
                                 lackBytesIndex,
                                 pac.getSourceHexStr());
                     }
+                } else {
+                    /**
+                     * 数据采集时间字段小于6个字节
+                     */
+                    lengthError = true;
+                    ChannelAttributeUtil.getTrace(channel)
+                            .getExpMessageDTO()
+                            .setIndex(0)
+                            .setReason("数据采集时间字段小于6个字节");
+                    LOG.error("车机({})实时数据中数据采集时间读取字节缺少[{}]字节原始数据[{}]",
+                            pac.getHeader().getUniqueNo(),
+                            6 - pacContentLength,
+                            pac.getSourceHexStr());
                 }
                 break;
             case VEHICLE_LOGIN:
