@@ -57,7 +57,6 @@ public class MqMessage {
       setFucCode(buff.get());
       setMsgBody(buff.gets(messageBytes.length - 8 - 8 - 1));
     } catch (Exception e) {
-      e.printStackTrace();
       setErrorMessage("原始数据长度不正确，需要不小于17！");
       logger.error(getErrorMessage() + ":" + Tools.ToHexFormatString(messageBytes));
     }

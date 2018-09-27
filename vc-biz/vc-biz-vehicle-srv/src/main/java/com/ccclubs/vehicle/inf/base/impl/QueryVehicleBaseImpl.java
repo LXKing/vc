@@ -11,6 +11,8 @@ import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.CsVehicleExample;
 import com.ccclubs.vehicle.dto.VehicleBaseInput;
 import com.ccclubs.vehicle.dto.VehicleBaseOutput;
+import com.ccclubs.vehicle.dto.VehicleNearbyInput;
+import com.ccclubs.vehicle.dto.VehicleNearbyOutput;
 import com.ccclubs.vehicle.inf.base.QueryVehicleBaseInf;
 import com.ccclubs.vehicle.version.VehicleServiceVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +53,15 @@ public class QueryVehicleBaseImpl implements QueryVehicleBaseInf {
         result.setProdDate(csVehicle.getCsvProdDate() == null ? null : new SimpleDateFormat("yyyy-MM-dd").format(csVehicle.getCsvProdDate()));
 
         return result;
+    }
+
+    /**
+     * 获取附近的车辆
+     *
+     * @param input
+     */
+    @Override
+    public VehicleNearbyOutput getNearbyCars(VehicleNearbyInput input) {
+        return null;
     }
 }
