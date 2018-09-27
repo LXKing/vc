@@ -133,7 +133,6 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         if (isAuthEvent) {
             return HandleStatus.NEXT;
         }
-
         /**
          * 其他报文，并且为已认证状态：通过
          */
@@ -142,7 +141,8 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         // channel状态是否存在
         if (Objects.nonNull(liveStatus)) {
             // 已认证
-            if (ChannelLiveStatus.ONLINE_REGISTER.equals(liveStatus.getCurrentStatus())) {
+            if (ChannelLiveStatus.ONLINE_REGISTER.equals(liveStatus.getCurrentStatus()) ||
+                    ChannelLiveStatus.OFFLINE_LOGOUT.equals(liveStatus.getCurrentStatus())) {
                 return HandleStatus.NEXT;
             } else {
                 // 未登入
@@ -213,8 +213,6 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
         ChannelAttributeUtil.getStatus(channel)
                 .setCurrentStatus(ChannelLiveStatus.OFFLINE_LOGOUT)
                 .setCloseTime(LocalDateTime.now());
-        // 不存在重复登出的问题
-        terminalConnService.logout(uniqueNo, channel, GatewayType.GB);
         LOG.info("车机[{}]登出成功", uniqueNo);
     }
 }

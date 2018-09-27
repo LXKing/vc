@@ -161,9 +161,11 @@ public class TerminalConnService {
      *      3. 清除redis缓存
      *      4. 发送注销事件
      *      5. 发送注销轨迹事件
+     * @deprecated 终端登出时，服务端不主动踢下线
      * @param uniqueNo
      * @param gatewayType
      */
+    @Deprecated
     public void logout(String uniqueNo, SocketChannel channel, GatewayType gatewayType) {
         // 1. 判断客户端缓存是否存在该连接
         boolean existed = ClientCache.existed(uniqueNo, channel);
