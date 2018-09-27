@@ -14,18 +14,32 @@ import com.ccclubs.mongo.modify.UpdateRemoteService;
 import com.ccclubs.mongo.orm.dao.CsRemoteDao;
 import com.ccclubs.mongo.orm.model.remote.CsRemote;
 import com.ccclubs.protocol.dto.CommonResult;
-import com.ccclubs.protocol.dto.mqtt.*;
+import com.ccclubs.protocol.dto.mqtt.CCCLUBS_03;
+import com.ccclubs.protocol.dto.mqtt.CCCLUBS_60;
+import com.ccclubs.protocol.dto.mqtt.CommonWriter;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
+import com.ccclubs.protocol.dto.mqtt.MqMessage;
+import com.ccclubs.protocol.dto.mqtt.OrderDownStream;
+import com.ccclubs.protocol.dto.mqtt.OrderUpStream;
+import com.ccclubs.protocol.dto.mqtt.OrderUpStreamII;
+import com.ccclubs.protocol.dto.mqtt.RemoteCurtness;
+import com.ccclubs.protocol.dto.mqtt.RemoteOption;
 import com.ccclubs.protocol.dto.transform.TerminalPartStatus;
 import com.ccclubs.protocol.inf.IParseDataService;
-import com.ccclubs.protocol.util.*;
+import com.ccclubs.protocol.util.ConstantUtils;
+import com.ccclubs.protocol.util.MqTagProperty;
+import com.ccclubs.protocol.util.MyBuffer;
+import com.ccclubs.protocol.util.ProtocolTools;
+import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.SrvHost;
+import java.util.Date;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-
-import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 处理远程控制结果
@@ -83,7 +97,8 @@ public class ParseOperationService implements IParseDataService {
         if (headerType == 0x03 || headerType == 0x05 || headerType == 0x0F
                 || headerType == 0x10
                 || headerType == 0x46 || headerType == 0x47
-                || headerType == 0x48 || headerType == 0x49 || headerType == 0x50 || headerType == 0x6F
+                || headerType == 0x48 || headerType == 0x49 || headerType == 0x50
+                || headerType == 0x6F
                 || (headerType & 0xFF) == 0xF0) {// 远程控制
             //远程控制指令
             processRemoteStatus(tm);
@@ -146,8 +161,9 @@ public class ParseOperationService implements IParseDataService {
                             // 转发远程控制指令结果到业务ons
                             transferRemoteStatus(tm, resultJson);
                             // 初始化csRemote
-                            csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJson,
-                                    remoteResult == 0 || remoteResult == 0x00FF);
+                            csRemote = RemoteHelper
+                                    .getRemote(commonWriter.mId, tm.getHexString(), resultJson,
+                                            remoteResult == 0 || remoteResult == 0x00FF);
                             // 更新mongo指令控制记录
                             updateRemoteService.update(csRemote);
                             break;
@@ -170,8 +186,9 @@ public class ParseOperationService implements IParseDataService {
                             // 转发远程控制指令结果到业务ons
                             transferRemoteStatus(tm, resultJson);
                             // 初始化csRemote
-                            csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJson,
-                                    remoteResult == 0 || remoteResult == 0x00FF);
+                            csRemote = RemoteHelper
+                                    .getRemote(commonWriter.mId, tm.getHexString(), resultJson,
+                                            remoteResult == 0 || remoteResult == 0x00FF);
                             // 更新mongo指令控制记录
                             updateRemoteService.update(csRemote);
                             break;
@@ -240,7 +257,8 @@ public class ParseOperationService implements IParseDataService {
                 //远程鸣笛
                 case 0x1012FF00:
                     String resultJsonW = JSON.toJSONString(
-                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE,
+                                    "操作成功"));
                     // 指令结果写入redis
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -248,8 +266,10 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonW);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonW,
-                            byteMsg[21] == 0 && (byteMsg[22] == 0 || (byteMsg[22] & 0xFF) == 0xFF));
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonW,
+                                    byteMsg[21] == 0 && (byteMsg[22] == 0
+                                            || (byteMsg[22] & 0xFF) == 0xFF));
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
@@ -265,7 +285,8 @@ public class ParseOperationService implements IParseDataService {
                 case 0x10170000:
                 case 0x10220010:
                     String resultJsonCommon = JSON.toJSONString(
-                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE,
+                                    "操作成功"));
                     // 指令结果写入redis
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -273,15 +294,18 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonCommon);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonCommon,
-                            byteMsg[21] == 0 && (byteMsg[22] == 0 || (byteMsg[22] & 0xFF) == 0xFF));
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonCommon,
+                                    byteMsg[21] == 0 && (byteMsg[22] == 0
+                                            || (byteMsg[22] & 0xFF) == 0xFF));
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
                 // 批量查询(带参数)
                 case 0x10200000:
                     String resultJsonCommonSelect = JSON.toJSONString(
-                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE,
+                                    "操作成功"));
                     // 指令结果写入redis
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -289,8 +313,9 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonCommonSelect);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonCommonSelect,
-                            true);
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonCommonSelect,
+                                    true);
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
@@ -313,7 +338,8 @@ public class ParseOperationService implements IParseDataService {
                     transferRemoteStatus(tm, resultJsonCloseWithParams);
                     // 初始化csRemote
                     csRemote = RemoteHelper
-                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonCloseWithParams,
+                            .getRemote(commonWriter.mId, tm.getHexString(),
+                                    resultJsonCloseWithParams,
                                     fcCodeResult == 0 || fcCodeResult == 0x00FF);
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
@@ -323,7 +349,8 @@ public class ParseOperationService implements IParseDataService {
                     myBuffer.gets(tm.getMsgBody().length - 4 - 2);
                     short fcCodeVoice = myBuffer.getShort();
                     String resultJsonVoice = JSON.toJSONString(
-                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE,
+                                    "操作成功"));
                     // 指令结果写入redis
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -331,8 +358,9 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonVoice);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonVoice,
-                            (fcCodeVoice == 0 || fcCodeVoice == 0x00FF));
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonVoice,
+                                    (fcCodeVoice == 0 || fcCodeVoice == 0x00FF));
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
@@ -342,7 +370,8 @@ public class ParseOperationService implements IParseDataService {
                     short fcCodeSite = myBuffer.getShort();
 
                     String resultJsonSite = JSON.toJSONString(
-                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE, "操作成功"));
+                            CommonResult.create(commonWriter.mId, true, RemoteHelper.SUCCESS_CODE,
+                                    "操作成功"));
                     // 指令结果写入redis
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -350,15 +379,20 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonSite);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonSite,
-                            (fcCodeSite == 0 || fcCodeSite == 0x00FF));
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonSite,
+                                    (fcCodeSite == 0 || fcCodeSite == 0x00FF));
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
                 default:
                     //状态获取
                     CCCLUBS_60 terminalInfo = new CCCLUBS_60();
-                    terminalInfo.ReadFromBytes(tm.getMsgBody());
+                    try {
+                        terminalInfo.ReadFromBytes(tm.getMsgBody());
+                    } catch (Exception e) {
+                        logger.error("[指令结果报文解析错误][原始报文][{}]", tm.getHexString());
+                    }
                     TerminalPartStatus terminalPartStatus = new TerminalPartStatus();
                     // terminalPartStatus.setCssNumber(tm.getCarNumber());
                     //电池电量
@@ -372,9 +406,13 @@ public class ParseOperationService implements IParseDataService {
                     //订单状态
                     terminalPartStatus.setCssTradeStatus(terminalInfo.getTradeStatus());
                     //订单开始时间
-                    terminalPartStatus.setCssTradeStartTime(terminalInfo.getTradeStartTime() == null ? null : new Date(terminalInfo.getTradeStartTime().longValue()));
+                    terminalPartStatus.setCssTradeStartTime(
+                            terminalInfo.getTradeStartTime() == null ? null
+                                    : new Date(terminalInfo.getTradeStartTime().longValue()));
                     //订单结束时间
-                    terminalPartStatus.setCssTradeEndTime(terminalInfo.getTradeEndTime() == null ? null : new Date(terminalInfo.getTradeEndTime().longValue()));
+                    terminalPartStatus.setCssTradeEndTime(
+                            terminalInfo.getTradeEndTime() == null ? null
+                                    : new Date(terminalInfo.getTradeEndTime().longValue()));
                     terminalPartStatus.setTradeInitCard(terminalInfo.getTradeInitCard());
                     terminalPartStatus.setTradeTakeCard(terminalInfo.getTradeTakeCard());
                     //纬度
@@ -384,7 +422,8 @@ public class ParseOperationService implements IParseDataService {
                     //下位机时间
                     terminalPartStatus.setCssCurrentTime(
                             terminalInfo.getCurrentTime() == null ? System.currentTimeMillis() :
-                                    ProtocolTools.transformToServerTime(terminalInfo.getCurrentTime()));
+                                    ProtocolTools
+                                            .transformToServerTime(terminalInfo.getCurrentTime()));
                     //充电状态
                     terminalPartStatus.setCssCharging(terminalInfo.getTriggerChargeStatus());
                     //门状态
@@ -399,14 +438,21 @@ public class ParseOperationService implements IParseDataService {
                     terminalPartStatus.setControlStatus(terminalInfo.getControlStatus());
 
                     // add at 2018-05-24 by qsxiaogang 添加GPS辅助定位
-                    MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo.getGpsAssistStatus();
+                    MachineAdditional_GpsAssistStatus gpsAssistStatus = terminalInfo
+                            .getGpsAssistStatus();
                     if (null != gpsAssistStatus) {
-                        terminalPartStatus.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
-                        terminalPartStatus.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
-                        terminalPartStatus.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
-                        terminalPartStatus.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
-                        terminalPartStatus.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
-                        terminalPartStatus.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+                        terminalPartStatus
+                                .setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+                        terminalPartStatus
+                                .setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+                        terminalPartStatus
+                                .setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+                        terminalPartStatus
+                                .setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+                        terminalPartStatus
+                                .setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+                        terminalPartStatus
+                                .setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
                     }
                     /**
                      *  高精度经纬度【车辆自身经纬度】
@@ -416,8 +462,10 @@ public class ParseOperationService implements IParseDataService {
                     if (highPrecisionGPS != null) {
                         terminalPartStatus.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
                         terminalPartStatus.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
-                        terminalPartStatus.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
-                        terminalPartStatus.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+                        terminalPartStatus
+                                .setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+                        terminalPartStatus
+                                .setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
                     }
                     // 操作成功
                     CommonResult commonResult = CommonResult
@@ -429,8 +477,9 @@ public class ParseOperationService implements IParseDataService {
                     // 转发远程控制指令结果到业务ons
                     transferRemoteStatus(tm, resultJsonState);
                     // 初始化csRemote
-                    csRemote = RemoteHelper.getRemote(commonWriter.mId, tm.getHexString(), resultJsonState,
-                            true);
+                    csRemote = RemoteHelper
+                            .getRemote(commonWriter.mId, tm.getHexString(), resultJsonState,
+                                    true);
                     // 更新mongo指令控制记录
                     updateRemoteService.update(csRemote);
                     break;
@@ -577,7 +626,8 @@ public class ParseOperationService implements IParseDataService {
                     processOrderModify(message);
                 } else if (commonWriter != null) {
                     // -
-                    CsRemote csRemote = remoteHelper.getRemote(commonWriter, message.getHexString());
+                    CsRemote csRemote = remoteHelper
+                            .getRemote(commonWriter, message.getHexString());
                     // -
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.id),
@@ -591,9 +641,11 @@ public class ParseOperationService implements IParseDataService {
                 // 添加 远程开门，远程关门，允许启动，禁止启动，鸣笛，初始化，远程还车，远程取车 操作反馈
                 if (byteMsg.length == 21) {
                     // -
-                    RemoteOption remoteOption = RemoteOption.readObject(byteMsg, RemoteOption.class);
+                    RemoteOption remoteOption = RemoteOption
+                            .readObject(byteMsg, RemoteOption.class);
                     // -
-                    CsRemote csRemote = remoteHelper.getRemote(remoteOption, message.getHexString());
+                    CsRemote csRemote = remoteHelper
+                            .getRemote(remoteOption, message.getHexString());
                     // -
                     redisHelper
                             .setRemote(String.valueOf(remoteOption.id),
@@ -605,12 +657,14 @@ public class ParseOperationService implements IParseDataService {
                 } else if (byteMsg.length == 21 + 8
                         || byteMsg.length == 21 + 14) {
                     //TODO:新版本，关门反馈，还车反馈
-                    CommonWriter commonWriter = CommonWriter.readObject(byteMsg, CommonWriter.class);
+                    CommonWriter commonWriter = CommonWriter
+                            .readObject(byteMsg, CommonWriter.class);
                     // -
                     CsRemote csRemote =
                             RemoteHelper.getRemote(commonWriter.mId, message.getHexString(),
                                     RemoteHelper.getRemoteJsonMessage(commonWriter, byteMsg),
-                                    byteMsg[21] == 0 && (byteMsg[22] == 0 || (byteMsg[22] & 0xFF) == 0xFF));
+                                    byteMsg[21] == 0 && (byteMsg[22] == 0
+                                            || (byteMsg[22] & 0xFF) == 0xFF));
                     // -
                     redisHelper
                             .setRemote(String.valueOf(commonWriter.mId),
@@ -624,9 +678,10 @@ public class ParseOperationService implements IParseDataService {
                     RemoteCurtness remoteCurtness = RemoteCurtness
                             .readObject(byteMsg, RemoteCurtness.class);
                     // -
-                    CsRemote csRemote = RemoteHelper.getRemote(remoteCurtness.id, message.getHexString(),
-                            RemoteHelper.getRemoteJsonMessage(remoteCurtness.id),
-                            true);
+                    CsRemote csRemote = RemoteHelper
+                            .getRemote(remoteCurtness.id, message.getHexString(),
+                                    RemoteHelper.getRemoteJsonMessage(remoteCurtness.id),
+                                    true);
                     // -
                     redisHelper
                             .setRemote(String.valueOf(remoteCurtness.id),
@@ -704,7 +759,8 @@ public class ParseOperationService implements IParseDataService {
                 // -
                 if (!StringUtils.empty(functions) && functions.contains("#2#")) {
                     csMachine.setCsmFunctions(
-                            functions.replaceAll(",#2#", "").replaceAll("#2#,", "").replaceAll("#2#", ""));
+                            functions.replaceAll(",#2#", "").replaceAll("#2#,", "")
+                                    .replaceAll("#2#", ""));
                     // -
                     csMachine.setCsmUpdateTime(new Date());
                     // -
@@ -742,7 +798,8 @@ public class ParseOperationService implements IParseDataService {
         try {
             // -
             OrderUpStreamII orderUpStream = OrderUpStreamII
-                    .readObject(Tools.HexString2Bytes(message.getHexString()), OrderUpStreamII.class);
+                    .readObject(Tools.HexString2Bytes(message.getHexString()),
+                            OrderUpStreamII.class);
             String jsonString;
             if (orderUpStream.isSuccess()) {
                 //操作成功
@@ -785,18 +842,21 @@ public class ParseOperationService implements IParseDataService {
                     CsRemote csRemote = remoteDao.findById(orderUpStream.mId);
                     if (csRemote != null && !StringUtils.empty(csRemote.getCsrCode())) {
                         OrderDownStream orderDownStream = OrderDownStream
-                                .readObject(Tools.HexString2Bytes(csRemote.getCsrCode()), OrderDownStream.class);
+                                .readObject(Tools.HexString2Bytes(csRemote.getCsrCode()),
+                                        OrderDownStream.class);
                         // 下发的订单号与上行的订单号一致，代表成功
                         if (orderDownStream.mId == orderUpStream.mId) {
                             isSuccess = true;
                             //下发成功
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE, "下发成功"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE,
+                                            "下发成功"));
                         } else {
                             isSuccess = false;
                             //下发失败
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "下发失败"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE,
+                                            "下发失败"));
                         }
                     }
                     break;
@@ -807,25 +867,30 @@ public class ParseOperationService implements IParseDataService {
                         isSuccess = true;
                         //下发成功
                         jsonString = JSON.toJSONString(CommonResult
-                                .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE, "下发成功"));
+                                .create(orderUpStream.mId, isSuccess, RemoteHelper.SUCCESS_CODE,
+                                        "下发成功"));
                     } else {
                         isSuccess = false;
                         if ((resultLow & 1) == 1) {
                             //当前车辆已有订单
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "当前车辆已有订单"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE,
+                                            "当前车辆已有订单"));
                         } else if ((resultLow & 2) == 2) {
                             //有取车
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "有取车"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE,
+                                            "有取车"));
                         } else if ((resultLow & 8) == 8) {
                             //订单号不正确
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "订单号不正确"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE,
+                                            "订单号不正确"));
                         } else {
                             //下发失败
                             jsonString = JSON.toJSONString(CommonResult
-                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE, "下发失败"));
+                                    .create(orderUpStream.mId, isSuccess, RemoteHelper.FAILED_CODE,
+                                            "下发失败"));
                         }
                     }
                     break;
@@ -841,7 +906,8 @@ public class ParseOperationService implements IParseDataService {
                 transferRemoteStatus(message, jsonString);
 
                 CsRemote csRemote = RemoteHelper
-                        .getRemote(orderUpStream.mId, message.getHexString(), jsonString, isSuccess);
+                        .getRemote(orderUpStream.mId, message.getHexString(), jsonString,
+                                isSuccess);
                 updateRemoteService.update(csRemote);
             }
         } catch (Exception e) {
@@ -855,7 +921,8 @@ public class ParseOperationService implements IParseDataService {
     private void transferRemoteStatus(MqMessage message, String jsonString) {
         try {
             // 根据车机号查询车机信息
-            CsMachine csMachine = queryTerminalService.queryCsMachineByCarNumber(message.getCarNumber());
+            CsMachine csMachine = queryTerminalService
+                    .queryCsMachineByCarNumber(message.getCarNumber());
             if (csMachine == null) {
                 return;
             }

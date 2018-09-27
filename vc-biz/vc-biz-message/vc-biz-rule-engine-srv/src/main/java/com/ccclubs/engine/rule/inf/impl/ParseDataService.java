@@ -246,8 +246,11 @@ public class ParseDataService implements IParseDataService {
 
                 case 0x02:
                     CCCLUBS_60 terminalInfo = new CCCLUBS_60();
-                    terminalInfo.ReadFromBytes(message.getMsgBody());
-
+                    try {
+                        terminalInfo.ReadFromBytes(message.getMsgBody());
+                    } catch (Exception e) {
+                        logger.error("[状态数据6802报文解析错误][原始报文][{}]", message.getHexString());
+                    }
                     if (mapping.getState() == null || mapping.getAccess() == null) {
                         return;
                     }
