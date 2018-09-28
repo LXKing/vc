@@ -21,9 +21,9 @@
                 <!--<div class="ipt-clear">ｘ</div>
                 <input type="text" name="tongyongwuliao" id="startDate" value="" readonly="readonly">-->
                 <select style="width:150px;height:28px;border:1px solid #cccccc;" id="daysSelect">
-                    <option value ="7">7天以内</option>
-                    <option value ="15">15天以内</option>
-                    <option value="30">30天以内</option>
+                    <option value ="7">7天</option>
+                    <option value ="15">15天</option>
+                    <option value="30">30天</option>
                 </select>
             </div>
         </div>
@@ -112,7 +112,6 @@
                     type:"get",
                     data:{vin:vin,days:days,page:page,rows:rows},
                     success:function (data) {
-                        console.log(data);
                         $(".tableNormal tr:gt(1)").remove();
                         for(var i=0;i<data.data.length;i++){
                             $(".tableNormal").append("<tr>"+
@@ -141,7 +140,7 @@
                             one = false;
                             $(".pageRun").ajaxpage({
                                 pagenumber:1,
-                                totalpage:data.data.page.total,
+                                totalpage:data.page.total,
                                 insertnode:function(data){
                                     getData(vin,days,data-1,10);
                                 }
@@ -163,8 +162,35 @@
             });
             //导出
             $(".exportBtn").click(function(){
-                alert(1111)
-            })
+                $('.dialog-mask', window.parent.document).show();
+                $('.dialog-insert', window.parent.document).show();
+                $.ajax({
+                    url:servUrl+"/car/state/report",
+                    type:"POST",
+                    data:{vin:vin,days:days},
+                    success:function (data) {
+                        console.log(data);
+                        setTimeout(function(){
+                            $.get(servUrl+"/report/fetch?fileUuid="+data.value,function(res){
+                                console.log(res);
+                                $('.dialog-insert', window.parent.document).find(".tips0").hide();
+                                $('.dialog-insert', window.parent.document).find(".tips1").text(res.message).show();
+                                $('.dialog-insert', window.parent.document).find(".dialog-speed").hide();
+                                if(typeof res.value !="undefined"){
+                                    $('.dialog-insert', window.parent.document).find("a").show().prop("href",res.value);
+                                }
+                            })
+                        },1200)
+                    },
+                    error:function(err){
+                        console.log(err)
+                    }
+                });
+            });
+            $('.dialog-close', window.parent.document).click(function(){
+                $(this).parents(".dialog-insert").hide();
+                $(this).parents(".dialog-insert").prev(".dialog-mask").hide();
+            });
         })
     </script>
 </body>
