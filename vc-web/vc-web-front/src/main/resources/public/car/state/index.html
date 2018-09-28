@@ -190,6 +190,10 @@
             $('.dialog-close', window.parent.document).click(function(){
                 $(this).parents(".dialog-insert").hide();
                 $(this).parents(".dialog-insert").prev(".dialog-mask").hide();
+                $('.dialog-insert', window.parent.document).find(".tips0").show();
+                $('.dialog-insert', window.parent.document).find(".tips1").hide();
+                $('.dialog-insert', window.parent.document).find(".dialog-speed").show();
+                $('.dialog-insert', window.parent.document).find("a").hide()
             });
         })
     </script>
