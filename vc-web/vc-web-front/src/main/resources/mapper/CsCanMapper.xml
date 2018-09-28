@@ -17,6 +17,21 @@
 		<result column="csc_add_time" jdbcType="TIMESTAMP" property="cscAddTime" />
 		<result column="csc_status" jdbcType="TINYINT" property="cscStatus" />
 	</resultMap>
-	
-	
+
+	<select id="getCarCount" parameterType="int" resultType="int">
+		<!--车辆数 parameter(state)为null-->
+		SELECT COUNT(*) FROM cs_can
+		<where>
+			<!--不在线-->
+			<if test="_parameter != null and _parameter==0">
+				DATE_SUB(now(), INTERVAL 5 MINUTE)>csc_upload_time
+			</if>
+			<!--在线-->
+			<if test="_parameter != null and _parameter==1">
+				csc_upload_time >= DATE_SUB(now(), INTERVAL 5 MINUTE)
+			</if>
+			and (csc_status = 0 OR csc_status IS null)
+		</where>
+	</select>
+
 </mapper>
