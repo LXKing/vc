@@ -43,7 +43,6 @@
 <script type="text/javascript">
 	$(function(){
 	    $("body").on("click",".grid_oper_btn",function(){
-	        console.log($(this).parents("tr").find(".laytable-cell-2-canData").text());
             sessionStorage.setItem("canOriginal",$(this).parents("tr").find(".laytable-cell-2-canData").text())
 		});
 	})
