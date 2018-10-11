@@ -1,5 +1,6 @@
 package com.ccclubs.admin.service;
 
+import com.ccclubs.admin.dto.CsVehicleDto;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.frm.base.BaseService;
 import com.ccclubs.pub.orm.page.PageInput;
@@ -58,5 +59,5 @@ public interface ICsVehicleService extends BaseService<CsVehicle, Integer> {
      * @return java.util.List<com.ccclubs.admin.model.CsVehicle>
      * @author machuanpeng
      */
-    List<CsVehicle> getAllCarListWithTime(String vin, Integer days);
+    List<CsVehicleDto> getAllCarListWithTime(String vin, Integer days);
 }

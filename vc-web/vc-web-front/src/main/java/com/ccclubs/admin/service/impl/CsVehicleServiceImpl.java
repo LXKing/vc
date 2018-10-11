@@ -1,5 +1,6 @@
 package com.ccclubs.admin.service.impl;
 
+import com.ccclubs.admin.dto.CsVehicleDto;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.orm.mapper.BackCsVehicleMapper;
 import com.ccclubs.admin.orm.mapper.CsVehicleMapper;
@@ -102,13 +103,13 @@ public class CsVehicleServiceImpl extends
     }
 
     @Override
-    public List<CsVehicle> getAllCarListWithTime(String vin, Integer days) {
+    public List<CsVehicleDto> getAllCarListWithTime(String vin, Integer days) {
         Map<String, Object> params = new HashMap<>();
         if (!StringUtils.empty(vin)) {
             params.put("vin", vin);
         }
         params.put("days", days);
-        List<CsVehicle> list = vehicleMapper.getCarListWithTime(params);
+        List<CsVehicleDto> list = vehicleMapper.getCarListWithTimeReport(params);
         return list;
     }
 }

@@ -268,7 +268,7 @@ public class ReportServiceImpl implements IReportService {
                 workbook.removeSheetAt(workbook.getSheetIndex(sheetName));
                 sheetNumber--;
             }
-            eeu.exportToExcel(workbook, sheetNumber++, sheetName, headers, list, fieldMap);
+            eeu.exportToExcelNew(workbook, sheetNumber++, sheetName, headers, list, fieldMap);
             workbook.write(outPutByte);
             eeu.close();
         } catch (Exception e) {

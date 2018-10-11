@@ -1,5 +1,6 @@
 package com.ccclubs.admin.orm.mapper;
 
+import com.ccclubs.admin.dto.CsVehicleDto;
 import com.ccclubs.frm.base.BaseDAO;
 import com.ccclubs.admin.model.CsVehicle;
 
@@ -33,4 +34,5 @@ public interface CsVehicleMapper extends BaseDAO<CsVehicle, Integer> {
      * @author machuanpeng
      */
     List<CsVehicle> getCarListWithTime(Map<String, Object> params);
+    List<CsVehicleDto> getCarListWithTimeReport(Map<String, Object> params);
 }

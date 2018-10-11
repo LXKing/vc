@@ -38,7 +38,6 @@ public class ExportExcelTemp<T> implements Serializable {
         this.sheetNumber = sheetNumber;
     }
 
-
     public ExportExcelTemp() {
         HSSFWorkbook workbook;
         workbook = new HSSFWorkbook();
@@ -65,7 +64,6 @@ public class ExportExcelTemp<T> implements Serializable {
             setSheetNumber(sheetNumber);
 
         } catch (Exception e) {
-
 
             e.printStackTrace();
         }
@@ -226,7 +224,6 @@ public class ExportExcelTemp<T> implements Serializable {
         }
     }
 
-
     /**
      * @param workbook   工作簿
      * @param sheetNum   (sheet的位置，0表示第一个表格中的第一个sheet)
@@ -266,8 +263,8 @@ public class ExportExcelTemp<T> implements Serializable {
             index++;
             row = sheet.createRow(index);
             T t = null;
-            while (null==t){
-                t=it.next();
+            while (null == t) {
+                t = it.next();
             }
             if (null == srcfield) {
                 srcfield = new Field[headers.length];
@@ -333,6 +330,87 @@ public class ExportExcelTemp<T> implements Serializable {
             }
         }
 
+    }
+
+    /**
+     * 2018/10/11
+     * exportToExcelNew
+     *
+     * @param workbook
+     * @param sheetNum
+     * @param sheetTitle
+     * @param headers
+     * @param dataset
+     * @param fieldMap
+     * @return void
+     * @author machuanpeng
+     */
+    public void exportToExcelNew(HSSFWorkbook workbook, int sheetNum, String sheetTitle, String[] headers, Collection<T> dataset, Map<String,
+            String> fieldMap) throws IllegalAccessException {
+        // 生成一个表格
+        HSSFSheet sheet = workbook.createSheet();
+        workbook.setSheetName(sheetNum, sheetTitle);
+        // 设置表格默认列宽度为20个字节
+        sheet.setDefaultColumnWidth((short) 20);
+        HSSFCellStyle style = getDefStyle(workbook);
+
+        // 产生表格标题行
+        HSSFRow row = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            HSSFCell cell = row.createCell(i);
+            cell.setCellStyle(style);
+            HSSFRichTextString text = new HSSFRichTextString(fieldMap.get(headers[i]));
+            cell.setCellValue(text.toString());
+        }
+
+        // 遍历集合数据，产生数据行
+        Iterator<T> it = dataset.iterator();
+        int index = 0;
+        Field[] srcfield = null;
+        boolean haveResolvers = false;
+        while (it.hasNext()) {
+            index++;
+            row = sheet.createRow(index);
+            T t = null;
+            while (null == t) {
+                t = it.next();
+            }
+            if (null == srcfield) {
+                srcfield = new Field[headers.length];
+                try {
+                    for (int i = 0; i < headers.length; i++) {
+                        String fieldNameTemp = headers[i];
+                        srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+                    }
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            for (short i = 0; i < srcfield.length; i++) {
+                Field field = srcfield[i];
+                String fieldName = field.getName();
+                if ("serialVersionUID".equals(fieldName)
+                        || "dataType".equals(fieldName)
+                        || "resolvers".equals(fieldName)) {
+                    continue;
+                }
+
+                HSSFCell cell = row.createCell(i);
+
+                Object value;
+                field.setAccessible(true);
+                value = field.get(t);
+                String textValue = dealDataToCellString(value);
+                // 如果不是图片数据，就当做富文本简单处理
+                if (textValue != null) {
+                    HSSFRichTextString richString = new HSSFRichTextString(
+                            textValue);
+                    cell.setCellValue(richString);
+                }
+            }
+        }
 
     }
 
@@ -396,6 +474,5 @@ public class ExportExcelTemp<T> implements Serializable {
         return style;
 
     }
-
 
 }
