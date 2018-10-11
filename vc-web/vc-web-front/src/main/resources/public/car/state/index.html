@@ -140,6 +140,7 @@
                             one = false;
                             $(".pageRun").ajaxpage({
                                 pagenumber:1,
+                                totalnumber:data.page.count,
                                 totalpage:data.page.total,
                                 insertnode:function(data){
                                     getData(vin,days,data,10);
