@@ -1,7 +1,9 @@
 package com.ccclubs.phoenix.inf;
 
 import com.ccclubs.phoenix.input.CanParam;
+import com.ccclubs.phoenix.input.CanStateParam;
 import com.ccclubs.phoenix.orm.dto.CanDto;
+import com.ccclubs.phoenix.orm.dto.CanStateDto;
 import com.ccclubs.phoenix.output.CanHistoryOutput;
 
 import java.util.List;
@@ -23,4 +25,14 @@ public interface CanHistoryInf {
 
     //查询车辆状态信息(封装)
     CanHistoryOutput queryListByParam(CanParam param);
+
+    /**
+     * 2018/9/17
+     * queryCanStateDto 查询车辆状态信息详情
+     *
+     * @param param
+     * @return com.ccclubs.phoenix.orm.dto.CanStateDto
+     * @author machuanpeng
+     */
+    CanStateDto queryCanStateDto(CanStateParam param);
 }

@@ -4,16 +4,29 @@ import com.ccclubs.admin.model.HistoryCan;
 import com.ccclubs.admin.model.ReportParam;
 import com.ccclubs.admin.query.HistoryCanQuery;
 import com.ccclubs.admin.service.IHistoryCanService;
+import com.ccclubs.admin.service.IHistoryStateService;
 import com.ccclubs.admin.task.threads.ReportThread;
 import com.ccclubs.admin.util.EvManageContext;
 import com.ccclubs.admin.vo.TableResult;
 import com.ccclubs.admin.vo.VoResult;
+import com.ccclubs.phoenix.orm.dto.CanStateDto;
+import com.ccclubs.protocol.dto.mqtt.can.CanDataTypeI;
+import com.ccclubs.protocol.dto.mqtt.can.CanHelperFactory;
+import com.ccclubs.protocol.inf.ICanData;
+import com.ccclubs.protocol.util.StringUtils;
+import com.ccclubs.protocol.util.Tools;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -34,6 +47,9 @@ public class HistoryCanController {
 
     @Autowired
     ReportThread reportThread;
+
+    @Autowired
+    IHistoryStateService historyStateService;
 
     /**
      * 获取分页列表数据
@@ -59,6 +75,64 @@ public class HistoryCanController {
         return pageInfo;
     }
 
+    /**
+     * 2018/9/14
+     * can解析(走hbase获取)
+     *
+     * @param carNumber 车机号
+     * @param canTime   can记录时间戳
+     * @return com.ccclubs.admin.vo.VoResult<>
+     * @author machuanpeng
+     */
+    @RequestMapping(value = "/canAnalyzeHbase", method = RequestMethod.GET)
+    public VoResult<CanStateDto> canAnalyzeHbase(@RequestParam String carNumber, @RequestParam Long canTime) {
+        CanStateDto historyState = historyCanService.getHistoryStateDetail(carNumber, canTime);
+        VoResult<CanStateDto> result = new VoResult<>();
+        result.setSuccess(true);
+        result.setValue(historyState);
+        return result;
+    }
+
+    /**
+     * 2018/9/17
+     * can解析
+     *
+     * @param canOriginal can原始报文
+     * @return com.ccclubs.admin.vo.VoResult<>
+     * @author machuanpeng
+     */
+    @RequestMapping(value = "/canAnalyze", method = RequestMethod.GET)
+    public VoResult<String> canAnalyze(@RequestParam String canOriginal) {
+        VoResult<String> result = new VoResult<>();
+        if (StringUtils.empty(canOriginal)) {
+            result.setSuccess(false);
+            result.setMessage("can解析需要足够的参数。");
+            return result;
+        }
+        result.setSuccess(true);
+        result.setValue(this.canDataAnalyze(canOriginal));
+        return result;
+    }
+
+    /**
+     * 2018/9/20
+     * can数据解析
+     *
+     * @param canOriginal
+     * @return java.lang.String
+     * @author machuanpeng
+     */
+    private String canDataAnalyze(String canOriginal) {
+        List<ICanData> list = CanHelperFactory.parseCanData(canOriginal);
+        HashMap<String, Map> canList = new HashMap<>();
+        for (ICanData iCanData : list) {
+            if (iCanData instanceof CanDataTypeI) {
+                CanDataTypeI canItem = ((CanDataTypeI) iCanData);
+                canList.put("0x" + Tools.ToHexString((short) canItem.getCanId()), canItem.getMap());
+            }
+        }
+        return canList.toString();
+    }
 
     /**
      * 注册属性内容解析器
@@ -67,7 +141,6 @@ public class HistoryCanController {
         if (data != null) {
         }
     }
-
 
     /**
      * 根据文本检索车辆历史状态信息并导出。
@@ -90,9 +163,9 @@ public class HistoryCanController {
                 reportParam.getOrder());
         list = pageInfo.getData();
 
-
         for (HistoryCan data : list) {
             registResolvers(data);
+            data.setCanAnalyze(this.canDataAnalyze(data.getCanData()));
         }
 
         String uuid = UUID.randomUUID().toString();

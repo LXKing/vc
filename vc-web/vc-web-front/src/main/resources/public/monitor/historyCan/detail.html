@@ -17,41 +17,6 @@
 	</head>
 <body >
 	<div class="form_content">
-		<form class="form-horizontal" id="addform" style="margin:15px;">
-			<div class="form-group" id="conditionId" style="height:80%;">
-				<dl  >
-					<dt>ID：</dt>
-					<dd>
-					<input name="carCanHistoryId" placeholder="请输入ID" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车机号：</dt>
-					<dd>
-					<input name="csNumber" placeholder="请输入车机号" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>车辆can数据：</dt>
-					<dd>
-					<input name="canData" placeholder="请输入车辆can数据" class="form-control" >
-					</dd>
-				</dl>
-				<dl  >
-					<dt>添加时间：</dt>
-					<dd>
-					<input name="addTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
-					</dd>
-				</dl>
-				<dl  >
-					<dt>下位机时间：</dt>
-					<dd>
-					<input name="currentTime" class="form-control layer-date laydate-icon" placeholder="请选择" onclick="laydate({istime:true, format: 'YYYY-MM-DD hh:mm:ss'})">
-					</dd>
-				</dl>
-		</div>
-		
-		</form>
 	</div>
 	
 	<div class="form_footer"></div>
@@ -70,45 +35,17 @@
 	
 	<script type="text/javascript">
 		$(function(){
-			/**
-			 * 表单校验规则配置
- 			 */
-			var validateRuleConfig = {
-			};
-			
-			var define = {
-				form:$("#addform"),
-				url:getServUrl("/monitor/historyCan/add"),
-				validateRuleConfig:validateRuleConfig,
-				valid:function(){
-					return this.form.validate(this.validateRuleConfig);
-				},
-				init:function(option){
-					var o = $.extend(this, option);
-					$(".searchinput").each(function(){
-						$(this).searchinput({});
-					});
-					$(".i-checks").iCheck({checkboxClass: "icheckbox_square-green", radioClass: "iradio_square-green",});
-					$("#saveBtn").click(function(){
-						if(o.valid().form()) {
-							o.submit(o.form);
-						}else{
-							console.log("validate failure!");
-						}
-					});
-				}
-			};
-			
-			define.init();
-			
-			function init(){
-				var url = getServUrl("/monitor/historyCan/detail/")+getQueryString("id");
-				ajaxRequest(url,"GET",{},function(json) {
-					loadFormData(json.value.tbody);
-				});
-			}
-			
-			init();
+            $.ajax({
+                url:servUrl+"/monitor/historyCan/canAnalyze",
+                type:"get",
+            data:{canOriginal:"54363656303937350000000000000000690523059FF5011003000801000800000000AC0301087D0000C8004951000302080D461781470F21070303080F120F4F074F02010304080000440F05000000030508040F190F160F15AC03060800000000000000AC03070800000003E70101AC030808010100AE03DE00AC03090800000000000000AC03100800000000000000AD031108000000000000000103600801000000000000000380084000000C60006000040008E09F0054000C3B000410080120001000000000"},
+                success:function (data) {
+					$(".form_content").text(data.value);
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            })
 		});
 	</script>
 </body>

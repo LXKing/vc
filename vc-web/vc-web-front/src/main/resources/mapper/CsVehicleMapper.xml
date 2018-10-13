@@ -31,6 +31,23 @@
 
 	</resultMap>
 
+	<select id="getCarListWithTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+		<!--时间段内在线车辆-->
+		<!--<![CDATA[-->
+			select csv.* from cs_vehicle csv left join cs_can csc
+			on csv.csv_id = csc.csc_car
+			<where>
+				<if test="vin != null">
+					and csv.csv_vin = #{vin}
+				</if>
+				<if test="days != null">
+					and  DATE_SUB(now(), INTERVAL #{days} DAY) > csc.csc_upload_time
+				</if>
+				and (csc.csc_status = 0 OR csc.csc_status IS null)
+			</where>
+      <!-- ]]>-->
+	</select>
+
 	<update id="unbindTbox" parameterType="com.ccclubs.admin.model.CsVehicle">
 		update cs_vehicle
 		<set>

@@ -1,6 +1,6 @@
 <div class="menubar">
 		<div class="buttoncons">
-			
+
 
 			 <div class="btn-group" title="列">
 			 	<div class="btn-group">
@@ -27,7 +27,7 @@
 				        <li><label><input value="csNumber" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车机号</label></li>
 				        <li><label><input value="canData" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >车辆can数据</label></li>
 				        <li><label><input value="addTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >添加时间</label></li>
-				        <li><label><input value="currentTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >下位机时间</label></li>
+						<li><label><input value="currentTime" checked="checked" type="checkbox" onclick='showHideColumn(this, this.value);' >下位机时间</label></li>
 					</ul>
 				</div>
 			</div>
@@ -35,9 +35,9 @@
 	</div>
 
 <table id="table"></table>
-<!--<div type="text/html" id="gridToolBar" class="gridToolBar" style="display: none;">
+<div type="text/html" id="gridToolBar" class="gridToolBar">
 	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
-</div>-->
+</div>
 
 <script type="text/javascript">
     var currPage=1,currSize=15;
@@ -59,7 +59,11 @@
             var params = {rows: currSize, page: currPage, allReport: 1};
             params = transferParamsWithSortExport(params, "currentTime");
             var clmsCopy = $.extend(true, [], clms);
-            params.clms = clmsCopy.splice(1, clms.length-2);
+            params.clms = [{field: "csNumber", title: "车机号", width: 140, sort:false}
+                ,{field: "canData", title: "车辆can数据",width:700, sort:false}
+                ,{field: "addTime", title: "添加时间", width: 160, sort:false}
+                ,{field: "canAnalyze", title: "can解析数据", width: 160, sort:false}
+            ];
             params.query = getFormData(this.getQueryForm());
             console.log(JSON.stringify(params));
 
@@ -165,6 +169,7 @@
 	  		,{field: "canData", title: "车辆can数据",width:700, sort:false}
 	  		,{field: "addTime", title: "添加时间", width: 160, sort:false}
 	  		,{field: "currentTime", title: "下位机时间", width: 160, sort:false}
+        ,{field: 'operate', title: '操作', width: 120, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
 	var option = {
@@ -177,7 +182,9 @@
 			  url:getServUrl("/monitor/historyCan/list"),
 			  cols:  [clms],
 			  done: function(res, curr, count){
-
+				  for(var a=0;a<res.data.length;a++){
+                      res.data[a].operation = "查看"
+				  }
                   if(curr>res.page.total)
                       curr = res.page.total;
                   currPage = curr;

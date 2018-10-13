@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>xxx</title>
+    <style type="text/css">
+        .carList{
+
+        }
+        .carBox{
+            width:200px;
+            height:130px;
+            float:left;
+            color:white;
+            background-color:rgba(13,196,239,1);
+            margin:0px 10px;
+            border-radius:10px;
+        }
+        .carBox div{
+            float: left;
+            font-size: 34px;
+            font-weight: bold;
+            text-indent: 15px;
+            margin-top: 14px;
+            width: 100%;
+        }
+        .carBox span{
+            float:left;
+            width: 100%;
+            text-indent: 15px;
+            margin-top: 30px;
+        }
+        .bg1{
+            background-color: rgba(0,168,91,1);
+        }
+        .bg2{
+            background-color: rgba(255,148,2,1);
+        }
+        .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}/* Hide from IE Mac */.clearfix {display:block;}/* End hide from IE Mac *//* end of clearfix */
+    </style>
+</head>
+<body>
+    <div class="carList clearfix">
+        <div class="carBox">
+            <div></div>
+            <span>所有车辆</span>
+        </div>
+        <div class="carBox bg1">
+            <div></div>
+            <span>在线车辆</span>
+        </div>
+        <div class="carBox bg2">
+            <div></div>
+            <span>离线车辆</span>
+        </div>
+    </div>
+    <script src="js/jquery.min.js?v=2.1.4"></script>
+    <script src="/js/url.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $.ajax({
+                url:servUrl+"/index/car/statistics",
+                type:"get",
+                success:function (data) {
+                    $(".carBox").eq(0).children("div:eq(0)").text(data.value.allCar)
+                    $(".carBox").eq(1).children("div:eq(0)").text(data.value.onlineCar)
+                    $(".carBox").eq(2).children("div:eq(0)").text(data.value.offLine)
+                },
+                error:function(err){
+                    console.log(err)
+                }
+            });
+        })
+    </script>
+</body>
+</html>
