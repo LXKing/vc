@@ -43,7 +43,7 @@
 <script type="text/javascript">
 	$(function(){
 	    $("body").on("click",".grid_oper_btn",function(){
-            sessionStorage.setItem("canOriginal",$(this).parents("tr").find(".laytable-cell-2-canData").text())
+            sessionStorage.setItem("canOriginal",$(this).parents("tr").find("td[data-field='canData']").children(".layui-table-cell").text())
 		});
 	})
     var currPage=1,currSize=15;
