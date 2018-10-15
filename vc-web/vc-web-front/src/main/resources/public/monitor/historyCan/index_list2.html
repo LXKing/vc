@@ -38,8 +38,14 @@
 <div type="text/html" id="gridToolBar" class="gridToolBar">
 	<a href='javascript:' sctl="canView" class="btn btn-primary btn-outline grid_oper_btn" lay-event="detail" title="查看"><i class="fa fa-file-text"></i></a>
 </div>
+<!--<input type="hidden" id="canOriginal" value="">-->
 
 <script type="text/javascript">
+	$(function(){
+	    $("body").on("click",".grid_oper_btn",function(){
+            sessionStorage.setItem("canOriginal",$(this).parents("tr").find("td[data-field='canData']").children(".layui-table-cell").text())
+		});
+	})
     var currPage=1,currSize=15;
 	var operate = {
 		getGrid:function(){

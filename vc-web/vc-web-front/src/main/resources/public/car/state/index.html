@@ -140,9 +140,10 @@
                             one = false;
                             $(".pageRun").ajaxpage({
                                 pagenumber:1,
+                                totalnumber:data.page.count,
                                 totalpage:data.page.total,
                                 insertnode:function(data){
-                                    getData(vin,days,data-1,10);
+                                    getData(vin,days,data,10);
                                 }
                             })
                         }
@@ -161,6 +162,7 @@
                 }
             });
             //导出
+            var getExportInfo;
             $(".exportBtn").click(function(){
                 $('.dialog-mask', window.parent.document).show();
                 $('.dialog-insert', window.parent.document).show();
@@ -170,17 +172,22 @@
                     data:{vin:vin,days:days},
                     success:function (data) {
                         console.log(data);
-                        setTimeout(function(){
+                        getExportInfo = setInterval(function(){
                             $.get(servUrl+"/report/fetch?fileUuid="+data.value,function(res){
                                 console.log(res);
-                                $('.dialog-insert', window.parent.document).find(".tips0").hide();
-                                $('.dialog-insert', window.parent.document).find(".tips1").text(res.message).show();
-                                $('.dialog-insert', window.parent.document).find(".dialog-speed").hide();
-                                if(typeof res.value !="undefined"){
-                                    $('.dialog-insert', window.parent.document).find("a").show().prop("href",res.value);
+                                if(res.message=="不存在对应的文件，请重新导出。"){
+
+                                }else{
+                                    $('.dialog-insert', window.parent.document).find(".tips0").hide();
+                                    $('.dialog-insert', window.parent.document).find(".tips1").text(res.message).show();
+                                    $('.dialog-insert', window.parent.document).find(".dialog-speed").hide();
+                                    if(typeof res.value !="undefined"){
+                                        $('.dialog-insert', window.parent.document).find("a").show().prop("href",res.value);
+                                    }
+                                    clearInterval(getExportInfo);
                                 }
                             })
-                        },1200)
+                        },5000)
                     },
                     error:function(err){
                         console.log(err)
@@ -193,7 +200,8 @@
                 $('.dialog-insert', window.parent.document).find(".tips0").show();
                 $('.dialog-insert', window.parent.document).find(".tips1").hide();
                 $('.dialog-insert', window.parent.document).find(".dialog-speed").show();
-                $('.dialog-insert', window.parent.document).find("a").hide()
+                $('.dialog-insert', window.parent.document).find("a").hide();
+                clearInterval(getExportInfo);
             });
         })
     </script>

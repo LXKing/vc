@@ -1,9 +1,11 @@
 $.fn.ajaxpage = function(page){
+	console.log(page)
 	var $this = $(this);
 	var $thisName = $this.selector.substring(0,$this.selector.length);
 	var url = page.url;
 	var pagenumber = page.pagenumber;
 	var totalpage =page.totalpage;
+	var totalnumber = page.totalnumber;
 	var insertnode = page.insertnode;
 	$this.html("");
 	if (totalpage<=7)
@@ -36,7 +38,9 @@ $.fn.ajaxpage = function(page){
 						"<div class='ajaxpage_num'>"+totalpage+"</div>"+
 						"<div class='ajaxpage_down'>下一页</div>"+
 					"</div>");
-
+	}
+	if(typeof totalnumber != "undefined"){
+        $("<div class='totalnumber'>共 "+totalnumber+" 条</div>").insertBefore($this.find(".ajaxpage_up"));
 	}
 	$($thisName).find(".ajaxpage_num").click(function(){
 		if(!$(this).hasClass("ajaxpage_num_this"))

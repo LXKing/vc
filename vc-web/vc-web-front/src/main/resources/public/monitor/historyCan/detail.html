@@ -35,10 +35,11 @@
 	
 	<script type="text/javascript">
 		$(function(){
+		    var canOriginal = sessionStorage.getItem("canOriginal");
             $.ajax({
                 url:servUrl+"/monitor/historyCan/canAnalyze",
                 type:"get",
-            data:{canOriginal:"54363656303937350000000000000000690523059FF5011003000801000800000000AC0301087D0000C8004951000302080D461781470F21070303080F120F4F074F02010304080000440F05000000030508040F190F160F15AC03060800000000000000AC03070800000003E70101AC030808010100AE03DE00AC03090800000000000000AC03100800000000000000AD031108000000000000000103600801000000000000000380084000000C60006000040008E09F0054000C3B000410080120001000000000"},
+            data:{canOriginal:canOriginal},
                 success:function (data) {
 					$(".form_content").text(data.value);
                 },

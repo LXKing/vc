@@ -1,5 +1,6 @@
 package com.ccclubs.admin.controller.can;
 
+import com.ccclubs.admin.dto.CsVehicleDto;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.resolver.CsVehicleResolver;
 import com.ccclubs.admin.service.ICsMappingService;
@@ -95,10 +96,10 @@ public class CarStateController {
     @RequestMapping(value = "/report", method = RequestMethod.POST)
     public VoResult<String> getReport(String vin, @RequestParam(defaultValue = "7") Integer days) {
         // 1、查询所有符合条件的车机
-        List<CsVehicle> list = csVehicleService.getAllCarListWithTime(vin, days);
+        List<CsVehicleDto> list = csVehicleService.getAllCarListWithTime(vin, days);
         // 2、车机信息转换填充
-        for (CsVehicle data : list) {
-            registResolvers(data);
+        for (CsVehicleDto data : list) {
+            registDomain(data);
         }
         // 3、要输出的字段
         HashMap<String, String> headerMap = this.getHeaderMap();
@@ -112,6 +113,28 @@ public class CarStateController {
         r.setSuccess(true).setMessage("导出任务已经开始执行，请稍候。");
         r.setValue(uuid);
         return r;
+    }
+
+    void registDomain(CsVehicleDto csVehicleDto) {
+        if (csVehicleDto != null) {
+            if (csVehicleDto.getCsvDomain() == null) {
+                return;
+            }
+            String result = "";
+            String[] sArr = csVehicleDto.getCsvDomain().toString().split(",");
+            for (int i = 0; i < sArr.length; i++) {
+                if (sArr[i].equals("2")) {
+                    result += (i == 0 ? "" : ",") + "公共领域";
+                }
+                if (sArr[i].equals("1")) {
+                    result += (i == 0 ? "" : ",") + "个人领域";
+                }
+                if (sArr[i].equals("0")) {
+                    result += (i == 0 ? "" : ",") + "未知";
+                }
+            }
+            csVehicleDto.setCsvDomainText(result);
+        }
     }
 
     /**
