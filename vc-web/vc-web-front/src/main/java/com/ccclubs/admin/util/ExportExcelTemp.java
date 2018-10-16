@@ -378,9 +378,23 @@ public class ExportExcelTemp<T> implements Serializable {
             if (null == srcfield) {
                 srcfield = new Field[headers.length];
                 try {
+//                    for (int i = 0; i < headers.length; i++) {
+//                        String fieldNameTemp = headers[i];
+//                        srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+//                    }
                     for (int i = 0; i < headers.length; i++) {
                         String fieldNameTemp = headers[i];
-                        srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+                        if (fieldNameTemp.indexOf("Text") > -1) {
+                            // mod by jhy 2018.4.10
+                            if (t.getClass().getSimpleName().startsWith("Ev")) {
+                                srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+                            } else {
+                                haveResolvers = true;
+                                srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp.split("Text")[0]);
+                            }
+                        } else {
+                            srcfield[i] = t.getClass().getDeclaredField(fieldNameTemp);
+                        }
                     }
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
