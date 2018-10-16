@@ -12,4 +12,7 @@ import java.util.List;
 public interface ICsMachineService extends BaseService<CsMachine, Integer>{
 
     void insertBatchSelective(List<CsMachine> list);
+
+    //根据车机号，判断车机设备表中是否存在当前车机
+    Integer getIdByNumber(String number);
 }

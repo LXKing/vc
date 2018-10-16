@@ -1,5 +1,8 @@
 package com.ccclubs.engine.rule.inf.impl;
 
+import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
+import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_SIMNO;
+
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
@@ -16,8 +19,14 @@ import com.ccclubs.frm.logger.VehicleControlLogger;
 import com.ccclubs.frm.spring.util.EnvironmentUtils;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.mongo.modify.UpdateLoggerService;
-import com.ccclubs.protocol.dto.gb.GBMessage;
-import com.ccclubs.protocol.dto.jt808.*;
+import com.ccclubs.protocol.dto.jt808.JT_0100;
+import com.ccclubs.protocol.dto.jt808.JT_01F0;
+import com.ccclubs.protocol.dto.jt808.JT_0200;
+import com.ccclubs.protocol.dto.jt808.JT_0201;
+import com.ccclubs.protocol.dto.jt808.JT_0704;
+import com.ccclubs.protocol.dto.jt808.JT_0900;
+import com.ccclubs.protocol.dto.jt808.JT_0900_can;
+import com.ccclubs.protocol.dto.jt808.T808Message;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.transform.TerminalNotRegister;
 import com.ccclubs.protocol.inf.IMqMessageProcessService;
@@ -26,25 +35,21 @@ import com.ccclubs.protocol.util.ConstantUtils;
 import com.ccclubs.protocol.util.MqTagProperty;
 import com.ccclubs.protocol.util.MqTagUtils;
 import com.ccclubs.protocol.util.StringUtils;
-import com.ccclubs.pub.orm.model.*;
-
-import java.time.LocalDateTime;
+import com.ccclubs.pub.orm.model.CsMachine;
+import com.ccclubs.pub.orm.model.CsState;
+import com.ccclubs.pub.orm.model.CsTerminal;
+import com.ccclubs.pub.orm.model.CsVehicle;
+import com.ccclubs.pub.orm.model.SrvHost;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_CARNUMBER;
-import static com.ccclubs.engine.core.util.RuleEngineConstant.MACHINEMAPPING_SIMNO;
-
 /**
- * 处理网关gateway发送出来的消息
- * 订阅Topic：ser
- * 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0100||JT_0900_01||JT_0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
+ * 处理网关gateway发送出来的消息 订阅Topic：ser 订阅Tag：GB||JT_0200||JT_0201||JT_0704||JT_0100||JT_0900_01||JT_0900_FD||MQTT_41||MQTT_66||MQTT_42||MQTT_64||MQTT_43||MQTT_44||MQTT_45||MQTT_52||MQTT_53||MQTT_60||MQTT_68||MQTT_69||MQTT_6B||MQTT_6C||JT_01F0||JT_7F04
  * 备注：包括808信息，国标信息，分时租赁信息
  */
 public class MqMessageProcessService implements IMqMessageProcessService {
@@ -96,7 +101,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
      */
     @Override
     public void processAliMqMsg(String tag, String upTopic, final byte[] srcByteArray,
-                                final String hexString) {
+            final String hexString) {
         // 默认tag 为分时租赁协议TAG前缀
         if (StringUtils.empty(tag)) {
             tag = MqTagUtils.PROTOCOL_MQTT;
@@ -163,23 +168,28 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                     } else {
                         transferToMq(mapping, msgFromTerminal, MqTagProperty.MQ_TERMINAL_CAN_FD);
                         logicHelperJt808
-                                .saveCanData(mapping, msgFromTerminal, canData, ConstantUtils.NOTIFY_FD);
+                                .saveCanData(mapping, msgFromTerminal, canData,
+                                        ConstantUtils.NOTIFY_FD);
                     }
                 }
             } else if (headerType == 0x01F0) {
                 JT_01F0 updateData = (JT_01F0) msgFromTerminal.getMessageContents();
                 if (updateData != null) {
-                    // 写日志
+                    // 写车机网络日志:通领终端升级
                     updateLoggerService.save(msgFromTerminal.getSimNo(),
+                            "FTP升级指令-" + updateData.getResultString(),
+                            msgFromTerminal.getPacketDescr(), 0L);
+                    logicHelperJt808.transferTboxLog(msgFromTerminal.getSimNo(),
                             "FTP升级指令-" + updateData.getResultString(),
                             msgFromTerminal.getPacketDescr(), 0L);
                 }
                 return;
             } else if (headerType == 0x7F04) {
-                // 写日志
+                // 写车机网络日志:终端CAN过滤表
                 updateLoggerService.save(msgFromTerminal.getSimNo(), "终端CAN过滤表",
                         msgFromTerminal.getPacketDescr(), 0L);
-
+                logicHelperJt808.transferTboxLog(msgFromTerminal.getSimNo(), "终端CAN过滤表",
+                        msgFromTerminal.getPacketDescr(), 0L);
             } else if (headerType == 0x0100) {
                 /**
                  * 原终端注册流程
@@ -217,7 +227,7 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                     newCsTerminal.setCstStatus((byte) 1);
                     newCsTerminal.setCstProvince(String.valueOf(registerData.getProvinceId()));
                     // 终端未授权
-                    //						newCsTerminal.setCstStatus((short) 3);
+                    // newCsTerminal.setCstStatus((short) 3);
                     newCsTerminal.setCstMobile(simNo);
                     newCsTerminal.setCstUpdateTime(now);
                     //
@@ -262,7 +272,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                     .empty(mapping.getNumber())) {
                 loggerBusiness.info(JSON.toJSONString(
                         new TerminalNotRegister(mqMessage.getCarNumber(), "MQTT",
-                                "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ", mqMessage.getHexString())));
+                                "MQTT协议终端 或 808协议含分时租赁插件终端，当前在线，但系统中不存在，请排查原因 ",
+                                mqMessage.getHexString())));
                 return;
             }
 
@@ -293,7 +304,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
             }
             CsVehicle csVehicle = terminalUtils.getCsVehicle(mapping.getCar());
 
-            if (csMachine == null || csVehicle == null || StringUtils.empty(csVehicle.getCsvLandmark())) {
+            if (csMachine == null || csVehicle == null || StringUtils
+                    .empty(csVehicle.getCsvLandmark())) {
                 return;
             }
 
@@ -308,7 +320,6 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                 logger.error(message.getSimNo() + " 未授权给应用");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         }
     }
@@ -328,7 +339,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
             }
             // 终端具备分时租赁功能，不转发，目前按照插件版本>0来判断终端具备分时租赁功能
             CsMachine csMachine = terminalUtils.getMappingMachine(mapping);
-            if (csMachine == null || (csMachine.getCsmTlV2() != null && csMachine.getCsmTlV2() > 0)) {
+            if (csMachine == null || (csMachine.getCsmTlV2() != null
+                    && csMachine.getCsmTlV2() > 0)) {
                 return;
             }
 
@@ -341,7 +353,8 @@ public class MqMessageProcessService implements IMqMessageProcessService {
                     .getMessage(srvHost.getShTopic().trim(),
                             MqTagProperty.MQ_TERMINAL_STATUS + srvHost.getShId(),
                             JSON.toJSONBytes(TransformUtils
-                                    .transform2TerminalStatus(csMachine, mapping.getVin(), csState)));
+                                    .transform2TerminalStatus(csMachine, mapping.getVin(),
+                                            csState)));
 
             if (mqMessage != null) {
                 if (environmentUtils.isProdEnvironment()) {

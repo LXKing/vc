@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
-public class CsVehicleQuery {
-	
+public class CsVehicleQuery implements Cloneable{
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
 	private Integer csvIdEquals;
 	private Integer[] csvIdIn;
 	private Boolean csvIdIsNull;

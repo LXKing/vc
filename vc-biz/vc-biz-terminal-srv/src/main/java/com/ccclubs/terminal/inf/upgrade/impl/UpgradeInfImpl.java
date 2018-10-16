@@ -160,14 +160,14 @@ public class UpgradeInfImpl implements UpgradeInf {
             output.setStatusText(status.getName());
             //只有处于升级中的才显示进度、剩余时间
             if (UpgradeStatus.UPGRADING.getValue().equals(status.getValue())) {
-                //已升级的时间
+                //已升级的时间ms
                 Long passedTime = System.currentTimeMillis() - verUpgradeRecord.getAddTime().getTime();
-                if (passedTime < upgradeTimeout) {
+                if (passedTime < upgradeTimeout * 1000L) {
                     Long percent = (passedTime * 100) / (upgradeTimeout * 1000L);
                     Long leftTime = upgradeTimeout - upgradeTimeout * percent / 100;
                     output.setPercent(percent);
                     output.setLeftTime(leftTime);
-                } else if (passedTime > upgradeTimeout * 2) {
+                } else if (passedTime > upgradeTimeout * 1000L * 2) {
                     //升级超过10min，认为失败
                     output.setStatus(UpgradeStatus.FAILED.getValue());
                     output.setStatusText(UpgradeStatus.FAILED.getName());

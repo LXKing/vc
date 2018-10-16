@@ -52,6 +52,17 @@ public class PhoenixFieldsConsts {
             "cs_vin", "add_time", "current_time", "gb_data", "cs_access",
             "cs_protocol", "gb_type", "cs_verify");
 
+    //车辆状态所有字段列表
+    public static final List<String> carStateAllNewFields = ImmutableList.of("te_number", "current_time", "vin", "te_no", "iccid", "mobile",
+            "access", "add_time", "rent_flg",
+            "warn_code", "rfid", "user_rfid", "obd_miles", "engine_tempe", "total_miles", "speed", "motor_speed",
+            "oil_cost", "power_reserve", "ev_battery", "charging_status", "fuel_miles", "elec_miles", "endur_miles",
+            "tempe", "gps_num", "gps_strength", "gps_valid", "net_strength", "longitude", "latitude", "direction_angle",
+            "circular_mode", "ptc_status", "compre_status", "fan_mode", "saving_mode", "door_status", "engine_status",
+            "key_status", "light_status", "lock_status", "net_type", "base_lac", "base_ci", "cur_order", "gear",
+            "autopilot_status", "handbrake_status", "source_hex"
+    );
+
     //车辆MqttState分时租赁状态数据全部字段列表
     public static final List<String> MQTT_STATE_ALL_FIELDS = ImmutableList.of(
             "VIN", "CURRENT_TIME", "TE_NUMBER", "TE_NO", "ICCID", "MOBILE",
@@ -113,5 +124,8 @@ public class PhoenixFieldsConsts {
             "SOURCE_HEX", "ADD_TIME"
     );
 
-
+    public static final List<String> TBOX_LOG_FIELDS = ImmutableList.of(
+            "VIN", "ADD_TIME", "TE_NUMBER",
+            "LOG_INFO", "ORDER_NO", "SOURCE_HEX"
+    );
 }

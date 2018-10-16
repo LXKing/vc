@@ -1,6 +1,5 @@
 package com.ccclubs.gateway.jt808.process.decoder;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.PacErrorType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
@@ -26,7 +25,7 @@ public class ValidatePacHandler extends CCClubChannelInboundHandler<Package808> 
     public static final Logger LOG = LoggerFactory.getLogger(ValidatePacHandler.class);
 
     @Override
-    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac, PacProcessTrack pacProcessTrack) throws Exception {
+    protected HandleStatus handlePackage(ChannelHandlerContext ctx, Package808 pac) throws Exception {
 
         Integer startIndex = 0;
         Integer validLen = pac.getSourceBuff().readableBytes() -1;

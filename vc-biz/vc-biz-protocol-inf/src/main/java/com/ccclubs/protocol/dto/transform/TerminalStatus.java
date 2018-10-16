@@ -228,6 +228,204 @@ public class TerminalStatus implements Serializable {
      * */
     private Integer cssKey;
 
+    /**
+     * 车辆启动控制状态
+     * */
+    private Integer controlStatus;
+
+    /**
+     * 车辆自身经度
+     */
+    private BigDecimal acuLongitude;
+
+    /**
+     * 车辆自身纬度
+     */
+    private BigDecimal acuLatitude;
+
+    /**
+     * 车辆状态-自动行驶当前状态
+     */
+    private Byte acuVehicleAdState;
+
+    /**
+     * 车辆启动控制方式-自动行驶当前车机指令状态
+     */
+    private Byte vrtVehicleStart;
+
+    /**
+     * GPS辅助定位，经度平均值
+     */
+    private BigDecimal cssLongitudeAvg;
+    /**
+     * GPS辅助定位，纬度平均值
+     */
+    private BigDecimal cssLatitudeAvg;
+    /**
+     * GPS辅助定位，经度最大值
+     */
+    private BigDecimal cssLongitudeMax;
+    /**
+     * GPS辅助定位，纬度最大值
+     */
+    private BigDecimal cssLatitudeMax;
+    /**
+     * GPS辅助定位，经度最小值
+     */
+    private BigDecimal cssLongitudeMin;
+    /**
+     * GPS辅助定位，纬度最小值
+     */
+    private BigDecimal cssLatitudeMin;
+    /**
+     * 订单状态
+     */
+    Integer tradeStatus;
+    /**
+     * 订单开始时间
+     */
+    Integer tradeStartTime;
+    /**
+     * 订单结束时间
+     */
+    Integer tradeEndTime;
+    /**
+     * 初始化业务订单RFID号
+     */
+    String tradeInitCard;
+    /**
+     * 业务订单RFID号
+     */
+    String tradeTakeCard;
+
+    public BigDecimal getCssLongitudeAvg() {
+        return cssLongitudeAvg;
+    }
+
+    public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
+        this.cssLongitudeAvg = cssLongitudeAvg;
+    }
+
+    public BigDecimal getCssLatitudeAvg() {
+        return cssLatitudeAvg;
+    }
+
+    public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
+        this.cssLatitudeAvg = cssLatitudeAvg;
+    }
+
+    public BigDecimal getCssLongitudeMax() {
+        return cssLongitudeMax;
+    }
+
+    public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
+        this.cssLongitudeMax = cssLongitudeMax;
+    }
+
+    public BigDecimal getCssLatitudeMax() {
+        return cssLatitudeMax;
+    }
+
+    public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
+        this.cssLatitudeMax = cssLatitudeMax;
+    }
+
+    public BigDecimal getCssLongitudeMin() {
+        return cssLongitudeMin;
+    }
+
+    public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
+        this.cssLongitudeMin = cssLongitudeMin;
+    }
+
+    public BigDecimal getCssLatitudeMin() {
+        return cssLatitudeMin;
+    }
+
+    public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
+        this.cssLatitudeMin = cssLatitudeMin;
+    }
+
+    public Integer getTradeStatus() {
+        return tradeStatus;
+    }
+
+    public void setTradeStatus(Integer tradeStatus) {
+        this.tradeStatus = tradeStatus;
+    }
+
+    public Integer getTradeStartTime() {
+        return tradeStartTime;
+    }
+
+    public void setTradeStartTime(Integer tradeStartTime) {
+        this.tradeStartTime = tradeStartTime;
+    }
+
+    public Integer getTradeEndTime() {
+        return tradeEndTime;
+    }
+
+    public void setTradeEndTime(Integer tradeEndTime) {
+        this.tradeEndTime = tradeEndTime;
+    }
+
+    public String getTradeInitCard() {
+        return tradeInitCard;
+    }
+
+    public void setTradeInitCard(String tradeInitCard) {
+        this.tradeInitCard = tradeInitCard;
+    }
+
+    public String getTradeTakeCard() {
+        return tradeTakeCard;
+    }
+
+    public void setTradeTakeCard(String tradeTakeCard) {
+        this.tradeTakeCard = tradeTakeCard;
+    }
+
+    public BigDecimal getAcuLongitude() {
+        return acuLongitude;
+    }
+
+    public void setAcuLongitude(BigDecimal acuLongitude) {
+        this.acuLongitude = acuLongitude;
+    }
+
+    public BigDecimal getAcuLatitude() {
+        return acuLatitude;
+    }
+
+    public void setAcuLatitude(BigDecimal acuLatitude) {
+        this.acuLatitude = acuLatitude;
+    }
+
+    public Byte getAcuVehicleAdState() {
+        return acuVehicleAdState;
+    }
+
+    public void setAcuVehicleAdState(Byte acuVehicleAdState) {
+        this.acuVehicleAdState = acuVehicleAdState;
+    }
+
+    public Byte getVrtVehicleStart() {
+        return vrtVehicleStart;
+    }
+
+    public void setVrtVehicleStart(Byte vrtVehicleStart) {
+        this.vrtVehicleStart = vrtVehicleStart;
+    }
+
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
+
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
+
     public Integer getCssKey() {
         return cssKey;
     }

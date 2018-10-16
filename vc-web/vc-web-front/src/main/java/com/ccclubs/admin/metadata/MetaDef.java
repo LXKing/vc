@@ -257,7 +257,7 @@ public class MetaDef {
         @Override
         public <T> T get(Object data) {
             IVerFtpSerService verFtpSerService = AppContext.CTX.getBean(IVerFtpSerService.class);
-            if (null != verFtpSerService && null != verFtpSerService && null != data && !StringUtils.isEmpty(data.toString())) {
+            if (null != verFtpSerService && null != data && !StringUtils.isEmpty(data.toString())) {
                 VerFtpSer record = verFtpSerService.selectByPrimaryKey(data);
 
                 if (null != record) {

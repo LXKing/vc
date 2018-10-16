@@ -41,7 +41,7 @@ public class CanHelperFactory {
    */
   public static List<ICanData> parseCanData(final String canData) {
     // 遍历数据包个数
-    List<ICanData> canDataList = new ArrayList<ICanData>();
+    List<ICanData> canDataList = new ArrayList<>();
     try {
       // 解析Can数据 add at 2016-04-29
       // 第17位为 0x69 为CAN数据

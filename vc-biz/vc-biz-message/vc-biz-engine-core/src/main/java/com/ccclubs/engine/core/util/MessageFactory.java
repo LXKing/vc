@@ -229,7 +229,7 @@ public class MessageFactory {
         } else if (csMachine.getCsmProtocol() == 3L) {
             return car + "/p2p/GID_car@@@" + csMachine.getCsmNumber();
         } else if (csMachine.getCsmProtocol() == 2L) {
-            return protocol + "/" + csMachine.getCsmProtocol() + "/";
+            return protocol + "/jt808/";
         } else if (csMachine.getCsmProtocol() == 1L) {
             if (StringUtils.empty(csMachine.getCsmMqttFlag())) {
                 return COMMOND_DOWN_STREAM_TEMPLATE.replace("{1}", csMachine.getCsmNumber())

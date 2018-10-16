@@ -30,9 +30,9 @@ public class TcpServerConf {
     private static final Logger LOG = Logger.getLogger("TcpServer");
 
     /**
-     * 是否打开报文打印开关
+     * 网关自定义日志开关
      */
-    public static boolean GATEWAY_PRINT_LOG;
+    public static boolean GATEWAY_PRINT_LOG = false;
 
     @Autowired
     private NettyProperties nettyProperties;
@@ -70,8 +70,8 @@ public class TcpServerConf {
             ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
         }
         if (gatewayProperties.isLogPrint()) {
+            LOG.warning("网关自定义日志开关：开启");
             GATEWAY_PRINT_LOG = true;
-            LOG.warning("网关打印输出日志：开启");
         }
 
         ServerBootstrap b = new ServerBootstrap();
@@ -99,6 +99,15 @@ public class TcpServerConf {
         Map<ChannelOption<?>, Object> options = new HashMap<>();
         options.put(ChannelOption.SO_KEEPALIVE, nettyProperties.isKeepAlive());
         options.put(ChannelOption.SO_BACKLOG, nettyProperties.getBacklog());
+
+        /**
+         * 最大发送字节数(256K)
+         */
+        options.put(ChannelOption.SO_SNDBUF, 1024 * 256);
+        /**
+         * 最大接收字节数(2M)
+         */
+        options.put(ChannelOption.SO_RCVBUF, 1024 * 1024 * 2);
         return options;
     }
 

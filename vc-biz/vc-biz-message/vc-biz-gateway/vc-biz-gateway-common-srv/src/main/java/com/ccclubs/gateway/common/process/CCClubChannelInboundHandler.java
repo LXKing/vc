@@ -1,10 +1,9 @@
 package com.ccclubs.gateway.common.process;
 
-import com.ccclubs.gateway.common.bean.track.PacProcessTrack;
 import com.ccclubs.gateway.common.constant.HandleStatus;
 import com.ccclubs.gateway.common.constant.InnerMsgType;
 import com.ccclubs.gateway.common.dto.AbstractChannelInnerMsg;
-import com.ccclubs.gateway.common.util.ChannelAttrbuteUtil;
+import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -28,7 +27,7 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object pac) throws Exception {
-        HandleStatus handleStatus = null;
+        HandleStatus handleStatus = HandleStatus.END;
         // 真正处理消息的方法
         if (Objects.isNull(pac)) {
             // 空消息
@@ -37,16 +36,11 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
             AbstractChannelInnerMsg innerMsg = (AbstractChannelInnerMsg) pac;
             handleStatus = handleInnerMsg(innerMsg);
         } else {
-            PacProcessTrack pacProcessTrack = ChannelAttrbuteUtil.getPacTracker(ctx.channel()).next();
-            // 统计处理器处理用时
-            long startTime = System.nanoTime();
+            ChannelAttributeUtil.getTrace(ctx.channel()).next();
 
             @SuppressWarnings("unchecked")
             T imsg = (T) pac;
-            handleStatus = handlePackage(ctx, imsg, pacProcessTrack);
-
-            long endTime = System.nanoTime();
-            pacProcessTrack.getCurrentHandlerTracker().setUsedTime(endTime - startTime);
+            handleStatus = handlePackage(ctx, imsg);
         }
         switch (handleStatus) {
             // 传递到下一个处理器
@@ -63,7 +57,7 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 
     }
 
-    protected abstract HandleStatus handlePackage(ChannelHandlerContext ctx, T pac, PacProcessTrack pacProcessTrack) throws Exception;
+    protected abstract HandleStatus handlePackage(ChannelHandlerContext ctx, T pac) throws Exception;
 
     protected abstract HandleStatus handleInnerMsg(AbstractChannelInnerMsg innerMsg);
 
@@ -73,11 +67,11 @@ public abstract class CCClubChannelInboundHandler<T> extends ChannelInboundHandl
 
     /**
      * release buffer
-     * @param erroPacBuf
+     * @param errorPacBuf
      */
-    protected void releasePacBuffer(ByteBuf erroPacBuf) {
-        if (Objects.nonNull(erroPacBuf) && erroPacBuf.refCnt() > 0) {
-            ReferenceCountUtil.release(erroPacBuf);
+    protected void releasePacBuffer(ByteBuf errorPacBuf) {
+        if (Objects.nonNull(errorPacBuf) && errorPacBuf.refCnt() > 0) {
+            ReferenceCountUtil.release(errorPacBuf);
         }
     }
 

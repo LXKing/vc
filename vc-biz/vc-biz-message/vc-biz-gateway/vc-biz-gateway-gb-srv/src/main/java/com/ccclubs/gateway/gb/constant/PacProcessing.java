@@ -8,12 +8,17 @@ package com.ccclubs.gateway.gb.constant;
  * 消息处理链路阶段常量
  */
 public enum PacProcessing {
+    /**
+     * 消息处理器编排
+     */
     PROCESS_IDEL(0, "空闲连接处理"),
     PROCESS_DECODR(1, "数据包解码"),
     PROCESS_VALIDATE(2, "数据包校验"),
-    PROCESS_STATISTIC(3, "连接信息统计"),
-    PROCESS_DELIVER(4, "业务处理"),
-    PROCESS_PROTECTER(5, "异常拦截处理");
+    PROCESS_AUTH(3, "数据权限校验"),
+    PROCESS_STATISTIC(4, "连接信息统计"),
+    PROCESS_DELIVER(5, "业务处理"),
+    PROCESS_SEND_OUT(6, "对外发送处理"),
+    PROCESS_PROTECTER(7, "异常拦截处理");
 
     private int code;
     private String des;

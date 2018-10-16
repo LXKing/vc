@@ -2,17 +2,18 @@ phoenix:
   #zookeeper所在主机地址
   #zk_url: hb-proxy-pub-bp11zgdd317e4af0r-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-006.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11zgdd317e4af0r-005.hbase.rds.aliyuncs.com
   #测试地址
-  zk_url: hb-proxy-pub-bp1xa9wgerhn7o1pu-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-002.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-003.hbase.rds.aliyuncs.com
+  # zk_url: hb-proxy-pub-bp1xa9wgerhn7o1pu-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-002.hbase.rds.aliyuncs.com,hb-proxy-pub-bp1xa9wgerhn7o1pu-003.hbase.rds.aliyuncs.com
   #正式地址
 #  zk_url: hb-proxy-pub-bp11x2d97s2oe0b5m-001.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11x2d97s2oe0b5m-002.hbase.rds.aliyuncs.com,hb-proxy-pub-bp11x2d97s2oe0b5m-003.hbase.rds.aliyuncs.com
+  zk_url: hb-proxy-pub-bp1x9t8705l5q04i3-001.hbase.rds.aliyuncs.com
 server:
   port: 11117
 
 spring:
   redis:
-    host: 118.178.229.234
-    port: 63791
-    password: WDnlDnt6f7GuYh
+    host: 172.16.3.134
+    port: 6379
+    password: cjzx2018
     database: 7
   aop:
     proxyTargetClass: true
@@ -23,7 +24,7 @@ dubbo:
   application:
     name: srv
   registry:
-    address: 127.0.0.1:2181
+    address: 118.25.77.128:2181
     protocol: zookeeper
     port: 20660
   protocol:

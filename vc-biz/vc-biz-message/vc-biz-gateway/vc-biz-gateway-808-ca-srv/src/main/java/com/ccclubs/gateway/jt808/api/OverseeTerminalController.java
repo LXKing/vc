@@ -1,10 +1,10 @@
 package com.ccclubs.gateway.jt808.api;
 
 import com.ccclubs.gateway.common.config.TcpServerConf;
+import com.ccclubs.gateway.common.conn.ClientCache;
 import com.ccclubs.gateway.common.vo.response.Error;
 import com.ccclubs.gateway.common.vo.response.OK;
 import com.ccclubs.gateway.common.vo.response.R;
-import com.ccclubs.gateway.jt808.service.ClientCache;
 import com.ccclubs.gateway.jt808.service.RedisConnService;
 import com.ccclubs.gateway.jt808.service.TerOverseeService;
 import com.ccclubs.gateway.jt808.service.TerminalConnService;
@@ -45,26 +45,45 @@ public class OverseeTerminalController {
     @Autowired
     private TerminalConnService terminalConnService;
 
+    /**
+     * 特殊车辆报文监控时【前提是网关开启了PreProcessHandler】
+     *      从监控车辆列表中增加某辆车的监控
+     * @param sim
+     * @return
+     */
     @GetMapping("/add/{sim}")
     public R addVin(@PathVariable("sim") String sim) {
         if (StringUtils.isNotEmpty(sim)) {
             boolean result = vehicleService.put(sim);
             return OK.Statu.SUCCESS_WITH_DATA.build().addData("result", result);
         } else {
-            return Error.Statu.SIM_NOT_EXIST.build();
+            return Error.Statu.UNIQUENO_NOT_EXIST.build();
         }
     }
 
+    /**
+     * 特殊车辆报文监控时【前提是网关开启了PreProcessHandler】
+     *      从监控车辆列表中去除某辆车的监控
+     * @param sim
+     * @return
+     */
     @GetMapping("/remove/{sim}")
     public R removeVin(@PathVariable("sim") String sim) {
         if (StringUtils.isNotEmpty(sim)) {
             vehicleService.remove(sim);
             return OK.Statu.SUCCESS_WITH_DATA.build();
         } else {
-            return Error.Statu.SIM_NOT_EXIST.build();
+            return Error.Statu.UNIQUENO_NOT_EXIST.build();
         }
     }
 
+    /**
+     * 特殊车辆报文监控时【前提是网关开启了PreProcessHandler】
+     *      清除监控列表
+     *      清除redis中808相关缓存
+     * @param auth
+     * @return
+     */
     @GetMapping("/clean/all/{auth}")
     public R removeAllClientCache(@PathVariable("auth")String auth) {
         if ("Andaren".equals(auth)) {
@@ -76,12 +95,21 @@ public class OverseeTerminalController {
         }
     }
 
+    /**
+     * 获取该网关节点中所有连接上的终端sim卡号
+     * @return
+     */
     @GetMapping("/show/all")
     public R shwoAllOversee() {
         Set<String> sims = vehicleService.getAll();
         return OK.Statu.SUCCESS_WITH_DATA.build().addData("sims", sims);
     }
 
+    /**
+     * 在运行时，控制日志打印，主要便于调试
+     * @param status
+     * @return
+     */
     @GetMapping("/log/{status}")
     public R openTcpServerLog(@PathVariable("status") String status) {
         if ("open".equals(status)) {
@@ -97,6 +125,12 @@ public class OverseeTerminalController {
         return OK.Statu.SUCCESS.build();
     }
 
+    /**
+     * 下线所有终端，在网关系统关闭失败时，调用该接口强制所有终端下线
+     * @param admin
+     * @param password
+     * @return
+     */
     @GetMapping("/all/offline/{admin}/{password}")
     @Deprecated
     public R offlineAllClientByApi(@PathVariable("admin") String admin,

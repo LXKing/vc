@@ -31,6 +31,56 @@
 
 	</resultMap>
 
+	<resultMap id="BaseResultMapHandle" extends="BaseResultMap" type="com.ccclubs.admin.dto.CsVehicleDto">
+		<result column="csvAccessText" jdbcType="VARCHAR" property="csvAccessText" />
+		<result column="csvModelText" jdbcType="VARCHAR" property="csvModelText" />
+		<result column="csvMachineText" jdbcType="VARCHAR" property="csvMachineText" />
+		<result column="csvColorCodeText" jdbcType="VARCHAR" property="csvColorCodeText" />
+		<result column="csvLandmarkText" jdbcType="VARCHAR" property="csvLandmarkText" />
+		<result column="csvStatusText" jdbcType="VARCHAR" property="csvStatusText" />
+	</resultMap>
+
+	<select id="getCarListWithTime" parameterType="java.util.Map" resultMap="BaseResultMap">
+		<!--时间段内不在线车辆-->
+		<!--<![CDATA[-->
+		select csv.* from cs_vehicle csv left join cs_can csc
+		on csv.csv_id = csc.csc_car
+		<where>
+			<if test="vin != null">
+				and csv.csv_vin = #{vin}
+			</if>
+			<if test="days != null">
+				and  DATE_SUB(now(), INTERVAL #{days} DAY) > csc.csc_upload_time
+			</if>
+			and (csc.csc_status = 0 OR csc.csc_status IS null)
+		</where>
+		<!-- ]]>-->
+	</select>
+
+	<select id="getCarListWithTimeReport" parameterType="java.util.Map" resultMap="BaseResultMapHandle">
+		<!--时间段内不在线车辆-->
+		<!--<![CDATA[-->
+			select csv.*,srvh.sh_name AS csvAccessText,csm.csm_name AS csvModelText,csma.csm_te_no AS csvMachineText,srvd1.description AS csvColorCodeText,srvd2.description AS csvLandmarkText,srvd3.description AS csvStatusText
+			from cs_vehicle csv left join cs_can csc
+			on csv.csv_id = csc.csc_car
+			LEFT JOIN srv_host srvh ON csv.csv_access=srvh.sh_id
+			LEFT JOIN cs_model csm ON csv.csv_model=csm.csm_id
+			LEFT JOIN cs_machine csma ON csv.csv_machine=csma.csm_id
+			LEFT JOIN srv_dict srvd1 ON srvd1.type='color_code' AND csv.csv_color_code=srvd1.sort
+			LEFT JOIN srv_dict srvd2 ON srvd2.type='landmark' AND csv.csv_landmark=srvd2.sort
+			LEFT JOIN srv_dict srvd3 ON srvd3.type='status' AND csv.csv_status=srvd3.sort
+			<where>
+				<if test="vin != null">
+					and csv.csv_vin = #{vin}
+				</if>
+				<if test="days != null">
+					and  DATE_SUB(now(), INTERVAL #{days} DAY) > csc.csc_upload_time
+				</if>
+				and (csc.csc_status = 0 OR csc.csc_status IS null)
+			</where>
+      <!-- ]]>-->
+	</select>
+
 	<update id="unbindTbox" parameterType="com.ccclubs.admin.model.CsVehicle">
 		update cs_vehicle
 		<set>
