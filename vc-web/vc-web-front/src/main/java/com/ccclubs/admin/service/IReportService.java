@@ -76,6 +76,16 @@ public interface IReportService {
      * @return 已经生成为文件的二进制流。
      */
     ByteArrayOutputStream reportOutputStream(Collection list, Map<String, String> headNameMap);
+    /**
+     * 2018/10/16
+     * reportOutputStreamNew
+     *
+     * @param list        依据条件查询得到的结果（一般为当前页）。
+     * @param headNameMap 需要导出的字段名和对应的中文
+     * @return 已经生成为文件的二进制流。
+     * @author machuanpeng
+     */
+    ByteArrayOutputStream reportOutputStreamNew(Collection list, Map<String, String> headNameMap);
 
     /**
      *

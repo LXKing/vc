@@ -104,7 +104,7 @@ public class ReportUtil {
         //文件路径
         ByteArrayOutputStream bytes;
         logger.info("we start a report process.the file is:" + fileName);
-        bytes = reportService.reportOutputStream(list, headMap);
+        bytes = reportService.reportOutputStreamNew(list, headMap);
         long midTime = System.currentTimeMillis();
         logger.info("report deal data use time(ms):" + (midTime - startTime));
         ossClient.putObject("oss-vc", fileName, new ByteArrayInputStream(bytes.toByteArray()));
