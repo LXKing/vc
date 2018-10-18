@@ -177,7 +177,7 @@ public class QueryTerminalInfoImpl implements QueryTerminalInfoInf {
             default:
                 break;
         }
-
+        output.setCsvModelCodeSimple(csVehicle.getCsvModelCodeSimple());
         return output;
     }
 

@@ -6,7 +6,7 @@ package com.ccclubs.terminal.dto;
  * @author jianghaiyang
  * @create 2017-06-29
  **/
-public class VersionQryOutput implements java.io.Serializable{
+public class VersionQryOutput implements java.io.Serializable {
 
     //是否最新版true：是false:否
     private Boolean isLatest;
@@ -21,6 +21,22 @@ public class VersionQryOutput implements java.io.Serializable{
     private String latestV;
 
     private String filename;
+    /**
+     * 车型备案号
+     */
+    private String csvModelCodeSimple;
+
+    public String getCsvModelCodeSimple() {
+        return csvModelCodeSimple;
+    }
+
+    public void setCsvModelCodeSimple(String csvModelCodeSimple) {
+        if (csvModelCodeSimple == null) {
+            this.csvModelCodeSimple = "";
+        } else {
+            this.csvModelCodeSimple = csvModelCodeSimple;
+        }
+    }
 
     public Boolean getLatest() {
         return isLatest;
