@@ -151,3 +151,10 @@ ThreadPool:
   maximumPoolSize: 200
   keepAliveTime: 60
   dequeCapacity: 2048
+
+# mqtt topic配置
+mqtt:
+  topic:
+    car: car
+    protocol: protocol
+    gid: GID_car
