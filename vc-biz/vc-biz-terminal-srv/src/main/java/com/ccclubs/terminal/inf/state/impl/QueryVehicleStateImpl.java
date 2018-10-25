@@ -89,6 +89,8 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
             throw new ApiException(ApiEnum.VEHICLE_STATE_NOT_FOUND);
         }
         VehicleStateQryOutput output = BeanMapper.map(csState, VehicleStateQryOutput.class);
+        output.setCssVin(input.getVin());
+        output.setCssTeNo(csMachine.getCsmTeNo());
         return output;
     }
 
@@ -110,15 +112,22 @@ public class QueryVehicleStateImpl implements QueryVehicleStateInf {
             if (null == csVehicle.getCsvMachine() || 0 == csVehicle.getCsvMachine()) {
                 continue;
             }
-
+            CsMachine csMachine = queryTerminalService.queryCsMachineByIdFromCache(csVehicle.getCsvMachine());
+            if (null == csMachine) {
+                continue;
+            }
             //Step3.查询状态
-            CsState csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
+            CsState csState = (CsState) redisTemplate.opsForHash()
+                    .get(REDIS_KEY_RT_STATES, csMachine.getCsmNumber());
+            if (null == csState) {
+                csState = queryStateService.queryStateByVehicleId(csVehicle.getCsvId());
+            }
             if (null == csState) {
                 continue;
             }
-            VehicleStateQryOutput vehicleStateQryOutput = new VehicleStateQryOutput();
-            BeanUtils.copyProperties(csState, vehicleStateQryOutput);
+            VehicleStateQryOutput vehicleStateQryOutput = BeanMapper.map(csState, VehicleStateQryOutput.class);
             vehicleStateQryOutput.setCssVin(vin);
+            vehicleStateQryOutput.setCssTeNo(csMachine.getCsmTeNo());
             vehicleStateQryOutputList.add(vehicleStateQryOutput);
         }
         output.setVehicleStateQryOutputList(vehicleStateQryOutputList);

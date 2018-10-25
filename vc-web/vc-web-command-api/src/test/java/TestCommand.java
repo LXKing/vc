@@ -330,8 +330,8 @@ public class TestCommand {
         GpsAutoDriveInput input = new GpsAutoDriveInput();
         input.setVin("ki6i6678")
                 .setDriveCmd(1)
-                .setLog(0)
-                .setLat(0)
+                .setLog("0")
+                .setLat("0")
                 .setResultType(2);
 
         setHeaderWithAuthInfo(httpPost, input, "1000016", "6v03rxubziqojalgtn");
