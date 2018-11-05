@@ -16,3 +16,10 @@ spring:
 
 
       
+server:
+  undertow:
+    accesslog:
+      dir: /var/logs/vc/access
+      enabled: true
+      prefix: api_access.
+      pattern: %t %a %h "%r" %s (%D ms)
