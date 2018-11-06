@@ -16,5 +16,5 @@ server:
     accesslog:
       enabled: true
       directory: /var/logs/vc/access/command
-      prefix: api_access.
+      prefix: api_access
       pattern: '%t %a %h "%r" %s (%D ms)'
