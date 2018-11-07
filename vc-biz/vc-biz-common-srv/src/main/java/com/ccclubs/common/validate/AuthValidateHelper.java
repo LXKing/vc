@@ -6,12 +6,11 @@ import com.ccclubs.common.query.QueryVehicleService;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsVehicle;
 import com.ccclubs.pub.orm.model.SrvHost;
+import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * 数据权限校验服务
@@ -21,6 +20,7 @@ import javax.annotation.Resource;
  **/
 @Component
 public class AuthValidateHelper {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthValidateHelper.class);
 
     @Resource
@@ -38,6 +38,7 @@ public class AuthValidateHelper {
      * @param appId 应用ID
      * @param vin   数据资源标识符 vin
      * @param teNo  数据资源标识符 teNo
+     *
      * @return 有权限返回true，否则返回false
      */
     public boolean validateAuth(String appId, String vin, String teNo) {
@@ -56,11 +57,22 @@ public class AuthValidateHelper {
         if (StringUtils.isNotEmpty(vin)) {
             CsVehicle vehicle = vehicleService.queryVehicleByVin(vin);
             if (null != vehicle) {
-                //E+当做长安出行处理 TODO
-                host.setShId(host.getShId() == 11 ? 3 : host.getShId());
+                switch (host.getShId()) {
+                    //E+当做长安出行处理
+                    case 11:
+                        host.setShId(3);
+                        break;
+                    //国家支撑计划对接当做众车纷享处理
+                    case 18:
+                        host.setShId(1);
+                        break;
+                    default:
+                        break;
+                }
                 //校验车辆数据权限
-                if (host.getShId().intValue() != vehicle.getCsvAccess()) {
-                    LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                if (host.getShId().equals(vehicle.getCsvAccess())) {
+                    LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId,
+                            vin, teNo);
                     return false;
                 }
             }
@@ -68,11 +80,22 @@ public class AuthValidateHelper {
         if (StringUtils.isNotEmpty(teNo)) {
             CsMachine machine = terminalService.queryCsMachineByTeNo(teNo);
             if (null != machine) {
-                //E+当做长安出行处理 TODO
-                host.setShId(host.getShId() == 11 ? 3 : host.getShId());
+                switch (host.getShId()) {
+                    //E+当做长安出行处理
+                    case 11:
+                        host.setShId(3);
+                        break;
+                    //国家支撑计划对接当做众车纷享处理
+                    case 18:
+                        host.setShId(1);
+                        break;
+                    default:
+                        break;
+                }
                 //校验终端数据权限
-                if (host.getShId() != machine.getCsmAccess()) {
-                    LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId, vin, teNo);
+                if (host.getShId().equals(machine.getCsmAccess())) {
+                    LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId,
+                            vin, teNo);
                     return false;
                 }
             }
