@@ -70,7 +70,7 @@ public class AuthValidateHelper {
                         break;
                 }
                 //校验车辆数据权限
-                if (host.getShId().equals(vehicle.getCsvAccess())) {
+                if (host.getShId().intValue() != vehicle.getCsvAccess().intValue()) {
                     LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId,
                             vin, teNo);
                     return false;
@@ -93,7 +93,7 @@ public class AuthValidateHelper {
                         break;
                 }
                 //校验终端数据权限
-                if (host.getShId().equals(machine.getCsmAccess())) {
+                if (host.getShId().intValue() != machine.getCsmAccess().intValue()) {
                     LOGGER.error("validate data auth for appId {} vin {} teNo {} failed", appId,
                             vin, teNo);
                     return false;
