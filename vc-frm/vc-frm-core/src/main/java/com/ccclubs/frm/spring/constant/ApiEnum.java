@@ -49,7 +49,18 @@ public enum ApiEnum {
 	COMMAND_EXECUTE_FAILED(101022, "command execute failed", "指令执行失败"),
 	OLD_VERSION_DETECTED(101023, "Old terminal version detected, please update your terminal to {} or higher", "终端版本过低，请升级到{}以上"),
 	TERMINAL_NOT_ONLINE(101024, "Terminal is not online at current time", "终端当前不在线"),
-	AUTOPILOT_CTRL_ERROR(101025,"autopilot parameter error","自动驾驶相关指令参数异常");
+	AUTOPILOT_CTRL_ERROR(101025,"autopilot parameter error","自动驾驶相关指令参数异常"),
+    UPGRADE_VERSION_NOT_FOUND(101026, "upgrade version info not found", "系统未查询到该车机安装的版本包信息，请联系管理员录入"),
+    UPGRADE_FTP_SERVER_NOT_FOUND(101027, "upgrade ftp server info not found", "版本升级时未查询到ftp服务器信息"),
+    UPGRADE_CURRENT_VERSION_NOT_FOUND(101028, "current version info not found", "版本升级时未查询到当前车机版本信息"),
+    UPGRADE_PLUGIN_VERSION_NOT_FOUND(101029, "plugin version info not found", "系统未查询到该车机安装的插件版本信息，请联系管理员录入"),
+    UPGRADE_TERMINAL_MODEL_NOT_FOUND(101030, "tbox model info not found", "系统未查询到该车机的终端型号信息，请联系管理员录入"),
+    UPGRADE_TERMINAL_TYPE_NOT_FOUND(101031, "tbox type info not found", "系统未查询到该车机的终端类型信息，请联系管理员录入"),
+    REMOTE_RECORD_NOT_FOUND(101032, "remote record [{}] not found", "系统未查询到该远程控制记录[{}]"),
+
+    AUTO_DRIVE_LOG_LAT_NEED(101033, "log or lat cannot empty when choosed drive by gps", "GPS自动驾驶，按经纬度驾驶时，经纬度必传"),
+    AUTO_DRIVE_LOG_INVALID(101034, "invalid longitude input", "经度数值输入不合法"),
+    AUTO_DRIVE_LAT_INVALID(101035, "invalid latitude input", "纬度数值输入不合法");
 	private int code;
 	private String msg;
 	private String memo;

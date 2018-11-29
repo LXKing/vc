@@ -1,9 +1,12 @@
 <div class="menubar">
     <div class="buttoncons">
-
+        <button type="button" class="btn btn-primary  btn-outline" onclick="operate.doRemote();">
+            <i class="glyphicon fa fa-plus-circle"></i>
+            远程控制
+        </button>
 
         <div class="btn-group" title="列">
-            <div class="btn-group">
+            <!--<div class="btn-group">
                 <button data-toggle="dropdown" class="btn btn-default dropdown-toggle btn-outline gridMoreOper"
                         aria-expanded="false">
                     <i class="glyphicon fa fa-cogs"></i>
@@ -16,7 +19,7 @@
                         <a href="javascript:operate.exportData();">数据导出</a>
                     </li>
                 </ul>
-            </div>
+            </div>-->
             <div class="btn-group">
                 <button type="button" class="btn btn-default btn-outline dropdown-toggle" data-toggle="dropdown"
                         aria-expanded="false">
@@ -71,7 +74,7 @@
 
 </div>
 <script type="text/html" id="tlCsrUpdateTime">
-    <div>{{dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss")}}</div>
+    <div>{{d.csrUpdateTime?dateFormat(d.csrUpdateTime, "yyyy-MM-dd HH:mm:ss"):''}}</div>
 </script>
 
 <script type="text/html" id="tlCsrAddTime">
@@ -92,7 +95,16 @@
         query: function () {
             grid.reloadData({where: getFormData(this.getQueryForm())});
         },
-
+      doRemote :function(){
+        showTopWin({
+          type: 2,
+          shade: 0.4,
+          maxmin: true,
+          area: ['770px', '580px'],
+          content: "/monitor/historyRemote/remote.html",
+          zIndex: layer.zIndex //重点1
+        });
+      },
 
         batchDel: function () {
             var o = this;
@@ -131,26 +143,26 @@
 
     var tableId = "TCsRemote";
     var clms = [{checkbox: true}
-        , {field: "csrId", title: "编号", width: 110, sort: true}
-        , {field: "csrAccessText", title: "授权系统", width: 110, sort: true}
-        , {field: "csrHost", title: "子域", width: 110, sort: true}
-        , {field: "csrNumberText", title: "车机号", width: 110, sort: true}
-        , {field: "csrCarText", title: "关联车辆", width: 110, sort: true}
-        , {field: "csrWayText", title: "发送方式", width: 110, sort: true}
-        , {field: "csrTypeText", title: "指令类型", width: 110, sort: true}
-        , {field: "csrCode", title: "控制串码", width: 110, sort: true}
-        , {field: "csrResultCode", title: "返回串码", width: 110, sort: true}
-        , {field: "csrResult", title: "返回结果", width: 110, sort: true}
-        , {field: "csrEditor", title: "操作人", width: 110, sort: true}
+        , {field: "csrId", title: "编号", width: 110, sort: false}
+        , {field: "csrAccessText", title: "授权系统", width: 110, sort: false}
+        , {field: "csrHost", title: "子域", width: 110, sort: false}
+        , {field: "csrNumberText", title: "车机号", width: 110, sort: false}
+        , {field: "csrCarText", title: "关联车辆", width: 110, sort: false}
+        , {field: "csrWayText", title: "发送方式", width: 110, sort: false}
+        , {field: "csrTypeText", title: "指令类型", width: 110, sort: false}
+        , {field: "csrCode", title: "控制串码", width: 110, sort: false}
+        , {field: "csrResultCode", title: "返回串码", width: 110, sort: false}
+        , {field: "csrResult", title: "返回结果", width: 110, sort: false}
+        , {field: "csrEditor", title: "操作人", width: 110, sort: false}
         , {
-            field: "csrUpdateTime", title: "成功时间", width: 110, sort: true, templet: '#tlCsrUpdateTime'
+            field: "csrUpdateTime", title: "成功时间", width: 110, sort: false, templet: '#tlCsrUpdateTime'
         }
         , {
-            field: "csrAddTime", title: "添加时间", width: 110, sort: true, templet: '#tlCsrAddTime'
+            field: "csrAddTime", title: "添加时间", width: 110, sort: false, templet: '#tlCsrAddTime'
         }
-        , {field: "csrStateText", title: "发送状态", width: 110, sort: true}
-        , {field: "csrStatusText", title: "操作结果", width: 110, sort: true}
-        , {field: "csrRemark", title: "备注", width: 110, sort: true}
+        , {field: "csrStateText", title: "发送状态", width: 110, sort: false}
+        , {field: "csrStatusText", title: "操作结果", width: 110, sort: false}
+        , {field: "csrRemark", title: "备注", width: 110, sort: false}
         //,{field: 'operate', title: '操作', width: 40, fixed:'right', toolbar: '#gridToolBar'}
     ];
 
@@ -173,10 +185,7 @@
             countName: "count"
         },
         request: {limitName: "rows"},
-        where: {
-            sidx: "csrAddTime",
-            sord: "desc"
-        }
+        where: getFormData(operate.getQueryForm())
     };
 
     function showHideColumn() {

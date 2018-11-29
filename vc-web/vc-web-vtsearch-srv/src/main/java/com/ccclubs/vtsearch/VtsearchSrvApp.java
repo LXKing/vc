@@ -4,7 +4,6 @@ import com.ccclubs.frm.mybatis.MybatisConfig;
 import com.ccclubs.frm.redis.RedisAutoConfiguration;
 import com.ccclubs.terminal.inf.state.impl.TerminalProp;
 import com.ccclubs.vehicle.inf.base.impl.VehicleProp;
-import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -31,14 +30,12 @@ public class VtsearchSrvApp extends SpringBootServletInitializer {
         return application.sources(VtsearchSrvApp.class);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(VtsearchSrvApp.class, args);
         String[] profiles = ctx.getEnvironment().getActiveProfiles();
         for (String p : profiles) {
             logger.info("Env profile:{}", p);
         }
-
-        //Thread.sleep(100000000000000000L);
     }
 
 }

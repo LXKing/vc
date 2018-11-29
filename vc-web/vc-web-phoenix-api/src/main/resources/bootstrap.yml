@@ -8,3 +8,10 @@ spring:
       name: phoenix-api
       uri: ${spring.cloud.config.uri}
       
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/logs/vc/access/phoenix
+      prefix: api_access
+      pattern: '%t %a %h "%r" %s (%D ms)'

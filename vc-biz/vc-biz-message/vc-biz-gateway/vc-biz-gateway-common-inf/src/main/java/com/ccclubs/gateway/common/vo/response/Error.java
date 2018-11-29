@@ -11,10 +11,10 @@ public class Error extends R {
     public static enum Statu {
 
         /**SIM不存在**/
-        SIM_NOT_EXIST(400100, "SIM不存在"),
+        UNIQUENO_NOT_EXIST(400100, "UNIQUENO对应的终端不存在"),
 
         /**SIM为空**/
-        SIM_EMPTY(400101, "SIM为空"),
+        UNIQUENO_EMPTY(400101, "UNIQUENO为空"),
 
         PARAM_INCORECT_FORMAT(400105, "参数格式不正确"),
 

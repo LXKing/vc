@@ -78,6 +78,13 @@
             <artifactId>vc-biz-quota-model</artifactId>
             <version>${biz.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-command-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-protocol-inf</artifactId>
@@ -86,6 +93,11 @@
         <dependency>
             <groupId>www.ccclubs</groupId>
             <artifactId>vc-biz-phoenix-inf</artifactId>
+            <version>${biz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>www.ccclubs</groupId>
+            <artifactId>vc-biz-upgrade-inf</artifactId>
             <version>${biz.version}</version>
         </dependency>
         <!-- 第三方 -->
@@ -136,11 +148,12 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-        <!--<dependency>
-            <groupId>cn.afterturn</groupId>
-            <artifactId>easypoi-web</artifactId>
-            <version>3.1.0</version>
-        </dependency>-->
+
+      <!--<dependency>
+          <groupId>cn.afterturn</groupId>
+          <artifactId>easypoi-web</artifactId>
+          <version>3.1.0</version>
+      </dependency>-->
     </dependencies>
 
     <build>

@@ -45,11 +45,11 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private BigDecimal cssLatitude;//纬度【小数6位】
 
-    //TODO cssGpsValid GPS有效位
-    //TODO cssGpsCn GPS CN值
-    //TODO cssGpsCount GPS可视卫星数量
+    private Byte cssGpsValid;// GPS有效位
+    private Short cssGpsCn;//  GPS CN值
+    private Short cssGpsCount;// GPS可视卫星数量
 
-    private String cssDir;//方向角度
+    private BigDecimal cssDir;//方向角度
 
     private Byte cssCircular;//循环模式，（0:内循环 1:外循环）
 
@@ -59,8 +59,10 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssFan;//档风量，（0:OFF 1:1档 2:2档 3:3档 4:4档）
 
-    //TODO cssBaseLAC 基站信号 LAC 值
-    //TODO cssBaseCI  基站信号 CI值
+    private Long cssOrder;//当前订单
+
+    private Integer cssBaseLac; // 基站信号 LAC 值
+    private Integer cssBaseCi;//  基站信号 CI值
 
     private Byte cssSaving;//省电模式，（0:标准模式 1:最佳省电 2:极度省电）
 
@@ -76,7 +78,276 @@ public class VehicleStateQryOutput implements java.io.Serializable{
 
     private Byte cssHandbrake;//手刹状态0x0=所有刹车释放；0x1=所有刹车应用；0x2=所有刹车不工作（应用或释放中）；0x3=未知；
 
-    private Integer cssAutopilot;
+    private Integer cssAutopilot;//自动驾驶状态
+
+    private Byte cssKey;//钥匙状态
+
+    /**
+     * 车辆启动控制状态
+     * */
+    private Integer controlStatus;
+
+    /**
+     * 车辆自身经度
+     */
+    private BigDecimal acuLongitude;
+
+    /**
+     * 车辆自身纬度
+     */
+    private BigDecimal acuLatitude;
+
+    /**
+     * 车辆状态-自动行驶当前状态
+     */
+    private Byte acuVehicleAdState;
+
+    /**
+     * 车辆启动控制方式-自动行驶当前车机指令状态
+     */
+    private Byte vrtVehicleStart;
+
+    /**
+     * 订单里程
+     */
+    BigDecimal tradeMiles;
+    /**
+     * 订单状态
+     */
+    Integer tradeStatus;
+    /**
+     * 订单开始时间
+     */
+    Integer tradeStartTime;
+    /**
+     * 订单结束时间
+     */
+    Integer tradeEndTime;
+    /**
+     * 初始化业务订单RFID号
+     */
+    String tradeInitCard;
+    /**
+     * 业务订单RFID号
+     */
+    String tradeTakeCard;
+    /**
+     * GPS辅助定位，经度平均值
+     */
+    private BigDecimal cssLongitudeAvg;
+    /**
+     * GPS辅助定位，纬度平均值
+     */
+    private BigDecimal cssLatitudeAvg;
+    /**
+     * GPS辅助定位，经度最大值
+     */
+    private BigDecimal cssLongitudeMax;
+    /**
+     * GPS辅助定位，纬度最大值
+     */
+    private BigDecimal cssLatitudeMax;
+    /**
+     * GPS辅助定位，经度最小值
+     */
+    private BigDecimal cssLongitudeMin;
+    /**
+     * GPS辅助定位，纬度最小值
+     */
+    private BigDecimal cssLatitudeMin;
+
+    public BigDecimal getCssLongitudeAvg() {
+        return cssLongitudeAvg;
+    }
+
+    public void setCssLongitudeAvg(BigDecimal cssLongitudeAvg) {
+        this.cssLongitudeAvg = cssLongitudeAvg;
+    }
+
+    public BigDecimal getCssLatitudeAvg() {
+        return cssLatitudeAvg;
+    }
+
+    public void setCssLatitudeAvg(BigDecimal cssLatitudeAvg) {
+        this.cssLatitudeAvg = cssLatitudeAvg;
+    }
+
+    public BigDecimal getCssLongitudeMax() {
+        return cssLongitudeMax;
+    }
+
+    public void setCssLongitudeMax(BigDecimal cssLongitudeMax) {
+        this.cssLongitudeMax = cssLongitudeMax;
+    }
+
+    public BigDecimal getCssLatitudeMax() {
+        return cssLatitudeMax;
+    }
+
+    public void setCssLatitudeMax(BigDecimal cssLatitudeMax) {
+        this.cssLatitudeMax = cssLatitudeMax;
+    }
+
+    public BigDecimal getCssLongitudeMin() {
+        return cssLongitudeMin;
+    }
+
+    public void setCssLongitudeMin(BigDecimal cssLongitudeMin) {
+        this.cssLongitudeMin = cssLongitudeMin;
+    }
+
+    public BigDecimal getCssLatitudeMin() {
+        return cssLatitudeMin;
+    }
+
+    public void setCssLatitudeMin(BigDecimal cssLatitudeMin) {
+        this.cssLatitudeMin = cssLatitudeMin;
+    }
+
+    public BigDecimal getTradeMiles() {
+        return tradeMiles;
+    }
+
+    public void setTradeMiles(BigDecimal tradeMiles) {
+        this.tradeMiles = tradeMiles;
+    }
+
+    public Integer getTradeStatus() {
+        return tradeStatus;
+    }
+
+    public void setTradeStatus(Integer tradeStatus) {
+        this.tradeStatus = tradeStatus;
+    }
+
+    public Integer getTradeStartTime() {
+        return tradeStartTime;
+    }
+
+    public void setTradeStartTime(Integer tradeStartTime) {
+        this.tradeStartTime = tradeStartTime;
+    }
+
+    public Integer getTradeEndTime() {
+        return tradeEndTime;
+    }
+
+    public void setTradeEndTime(Integer tradeEndTime) {
+        this.tradeEndTime = tradeEndTime;
+    }
+
+    public String getTradeInitCard() {
+        return tradeInitCard;
+    }
+
+    public void setTradeInitCard(String tradeInitCard) {
+        this.tradeInitCard = tradeInitCard;
+    }
+
+    public String getTradeTakeCard() {
+        return tradeTakeCard;
+    }
+
+    public void setTradeTakeCard(String tradeTakeCard) {
+        this.tradeTakeCard = tradeTakeCard;
+    }
+
+    public Integer getControlStatus() {
+        return controlStatus;
+    }
+
+    public void setControlStatus(Integer controlStatus) {
+        this.controlStatus = controlStatus;
+    }
+
+    public BigDecimal getAcuLongitude() {
+        return acuLongitude;
+    }
+
+    public void setAcuLongitude(BigDecimal acuLongitude) {
+        this.acuLongitude = acuLongitude;
+    }
+
+    public BigDecimal getAcuLatitude() {
+        return acuLatitude;
+    }
+
+    public void setAcuLatitude(BigDecimal acuLatitude) {
+        this.acuLatitude = acuLatitude;
+    }
+
+    public Byte getAcuVehicleAdState() {
+        return acuVehicleAdState;
+    }
+
+    public void setAcuVehicleAdState(Byte acuVehicleAdState) {
+        this.acuVehicleAdState = acuVehicleAdState;
+    }
+
+    public Byte getVrtVehicleStart() {
+        return vrtVehicleStart;
+    }
+
+    public void setVrtVehicleStart(Byte vrtVehicleStart) {
+        this.vrtVehicleStart = vrtVehicleStart;
+    }
+
+    public Long getCssOrder() {
+        return cssOrder;
+    }
+
+    public void setCssOrder(Long cssOrder) {
+        this.cssOrder = cssOrder;
+    }
+
+    public Byte getCssKey() {
+        return cssKey;
+    }
+
+    public void setCssKey(Byte cssKey) {
+        this.cssKey = cssKey;
+    }
+
+
+    public Byte getCssGpsValid() {
+        return cssGpsValid;
+    }
+
+    public void setCssGpsValid(Byte cssGpsValid) {
+        this.cssGpsValid = cssGpsValid;
+    }
+
+    public Short getCssGpsCn() {
+        return cssGpsCn;
+    }
+
+    public void setCssGpsCn(Short cssGpsCn) {
+        this.cssGpsCn = cssGpsCn;
+    }
+
+    public Short getCssGpsCount() {
+        return cssGpsCount;
+    }
+
+    public void setCssGpsCount(Short cssGpsCount) {
+        this.cssGpsCount = cssGpsCount;
+    }
+
+    public Integer getCssBaseLac() {
+        return cssBaseLac;
+    }
+
+    public void setCssBaseLac(Integer cssBaseLac) {
+        this.cssBaseLac = cssBaseLac;
+    }
+
+    public Integer getCssBaseCi() {
+        return cssBaseCi;
+    }
+
+    public void setCssBaseCi(Integer cssBaseCi) {
+        this.cssBaseCi = cssBaseCi;
+    }
 
     public Integer getCssAutopilot() {
         return cssAutopilot;
@@ -222,11 +493,11 @@ public class VehicleStateQryOutput implements java.io.Serializable{
         this.cssLatitude = cssLatitude;
     }
 
-    public String getCssDir() {
+    public BigDecimal getCssDir() {
         return cssDir;
     }
 
-    public void setCssDir(String cssDir) {
+    public void setCssDir(BigDecimal cssDir) {
         this.cssDir = cssDir;
     }
 

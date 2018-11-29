@@ -15,4 +15,10 @@ spring:
 #        enabled: true
 
 
-      
+server:
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: /var/logs/vc/access/vtsearch
+      prefix: api_access
+      pattern: '%t %a %h "%r" %s (%D ms)'

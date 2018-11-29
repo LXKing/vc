@@ -1,20 +1,24 @@
 package com.ccclubs.admin.service.impl;
 
-
+import com.ccclubs.admin.dto.CsVehicleDto;
 import com.ccclubs.admin.model.CsVehicle;
 import com.ccclubs.admin.orm.mapper.BackCsVehicleMapper;
 import com.ccclubs.admin.orm.mapper.CsVehicleMapper;
 import com.ccclubs.admin.service.ICsVehicleService;
 import com.ccclubs.frm.base.CrudService;
+import com.ccclubs.protocol.util.StringUtils;
 import com.ccclubs.pub.orm.page.PageInput;
 import com.ccclubs.pub.orm.vo.VehicleMachineVo;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 车辆信息管理的Service实现
@@ -27,6 +31,8 @@ public class CsVehicleServiceImpl extends
 
     @Resource
     BackCsVehicleMapper backDao;
+    @Autowired
+    CsVehicleMapper vehicleMapper;
 
     @Override
     public int unbindTbox(CsVehicle record) {
@@ -41,6 +47,22 @@ public class CsVehicleServiceImpl extends
     @Override
     public void updateBatchByExampleSelective(List<CsVehicle> list) {
         getDao().updateBatchByExampleSelective(list);
+    }
+
+    @Override
+    public CsVehicle getVehicleInfo(String vin, Integer machineId) {
+
+        if (vin == null && machineId == null) {
+            return null;
+        }
+        CsVehicle csVehicle = new CsVehicle();
+        if (vin != null) {
+            csVehicle.setCsvVin(vin);
+        }
+        if (machineId != null) {
+            csVehicle.setCsvMachine(machineId);
+        }
+        return getDao().selectOne(csVehicle);
     }
 
     /**
@@ -67,5 +89,27 @@ public class CsVehicleServiceImpl extends
     @Override
     public List<VehicleMachineVo> queryVehicleMachineByUser(VehicleMachineVo vo) {
         return backDao.queryVehicleMachineByUser(vo);
+    }
+
+    @Override
+    public PageInfo<CsVehicle> getCarListWithTime(String vin, Integer days) {
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.empty(vin)) {
+            params.put("vin", vin);
+        }
+        params.put("days", days);
+        List<CsVehicle> list = vehicleMapper.getCarListWithTime(params);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<CsVehicleDto> getAllCarListWithTime(String vin, Integer days) {
+        Map<String, Object> params = new HashMap<>();
+        if (!StringUtils.empty(vin)) {
+            params.put("vin", vin);
+        }
+        params.put("days", days);
+        List<CsVehicleDto> list = vehicleMapper.getCarListWithTimeReport(params);
+        return list;
     }
 }

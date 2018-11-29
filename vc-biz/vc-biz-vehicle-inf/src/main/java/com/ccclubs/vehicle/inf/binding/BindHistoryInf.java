@@ -14,5 +14,6 @@ import java.util.List;
  * @Description: 获取车辆绑定历史记录接口！
  */
 public interface BindHistoryInf {
+    //通过车架号获取车机生命周期信息
     List<CarLifeOutput> getBindHistoryByVin(CarLifeInput input);
 }

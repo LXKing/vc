@@ -42,6 +42,7 @@ public class ModelRegisterImpl implements ModelRegisterInf {
     public RegisterOutput vehicleModelRegister(ModelRegisterInput... inputs) {
         RegisterOutput output = new RegisterOutput();
         List<CsModel> passList = new ArrayList<>();
+        //车型注册校验
         boolean validate = validateModelRegister(output, passList, inputs);
         if (validate) {
             modao.batchInsert(passList);
@@ -63,6 +64,7 @@ public class ModelRegisterImpl implements ModelRegisterInf {
         JSONObject outputItem;
         for (ModelRegisterInput input : inputs) {
             outputItem = new JSONObject();
+            //根据车型备案型号条件获取车型xinxi
             CsModel model = queryModelService.queryModelByFlag(input.getCsmFlag());
             if (null == model) {
                 model = new CsModel();

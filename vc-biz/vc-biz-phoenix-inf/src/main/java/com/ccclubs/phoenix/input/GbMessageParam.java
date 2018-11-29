@@ -20,6 +20,8 @@ public class GbMessageParam extends CommonQuery implements Serializable,BasePara
 
     private String vin;
 
+    private String teNumber;
+
     private String startTime;
 
     private String endTime;
@@ -38,12 +40,14 @@ public class GbMessageParam extends CommonQuery implements Serializable,BasePara
 
     @Override
     public String getTeNumber() {
-        return null;
+        return teNumber;
     }
 
     @Override
     public void setTeNumber(String teNumber) {
+        this.teNumber = teNumber;
     }
+
     @Override
     public String getStartTime() {
         return startTime;

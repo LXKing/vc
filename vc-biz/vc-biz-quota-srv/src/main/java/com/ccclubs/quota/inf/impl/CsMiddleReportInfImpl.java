@@ -210,9 +210,13 @@ public class CsMiddleReportInfImpl implements CsMiddleReportInf{
             for (Map map:currentList){
                 csMiddleReport=new CsMiddleReport();
                 String csmrVin=map.get("csmrVin").toString();
-                String csmrNumber=map.get("csmrNumber").toString();
-                String csmrCarNo=null;
                 //
+                String csmrNumber = null;
+                if (map.get("csmrNumber") != null) {
+                    csmrNumber = map.get("csmrNumber").toString();
+                }
+                //
+                String csmrCarNo=null;
                 if(map.get("csmrCarNo")!=null){
                     csmrCarNo =map.get("csmrCarNo").toString();
                 }

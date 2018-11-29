@@ -93,8 +93,8 @@ public class AutopilotInfImpl implements AutopilotInf {
         String cssReq = csStruct.getCssRequest();
         List<Map> requests = JSONArray.parseArray(cssReq, java.util.Map.class);
         List<Map> values = JSONArray.parseArray(MessageFormatter.
-                format("[{\"value\":\"{}\"}]",
-                        getAllValue(voiceIssuedInput))
+                format("[{\"value2\":\"{}\",\"value3\":\"{}\"}]",
+                        voiceIssuedInput.getVoiceType() * 128, voiceIssuedInput.getVoiceNum())
                 .getMessage(), java.util.Map.class);
         Object[] array = ProtocolTools.getArray(requests, values);
 
@@ -166,6 +166,7 @@ public class AutopilotInfImpl implements AutopilotInf {
 
     /**
      * 获取所有值
+     *
      * @param input
      * @return
      */

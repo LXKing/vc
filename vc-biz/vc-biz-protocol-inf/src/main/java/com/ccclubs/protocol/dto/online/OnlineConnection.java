@@ -30,6 +30,16 @@ public class OnlineConnection  implements Serializable {
    */
   private Long msgLastTime;
 
+    /**
+     * 消息类型
+     */
+  private String msgType;
+
+    /**
+     * 原始报文
+     */
+  private String sourceHex;
+
   public OnlineConnection() {
   }
 
@@ -39,6 +49,15 @@ public class OnlineConnection  implements Serializable {
     this.serverIp = serverIp;
     this.msgLastTime = msgLastTime;
   }
+
+    public OnlineConnection(String key, String clientIp, String serverIp, Long msgLastTime, String msgType, String sourceHex) {
+        this.key = key;
+        this.clientIp = clientIp;
+        this.serverIp = serverIp;
+        this.msgLastTime = msgLastTime;
+        this.msgType = msgType;
+        this.sourceHex = sourceHex;
+    }
 
   public String getKey() {
     return key;
@@ -71,4 +90,20 @@ public class OnlineConnection  implements Serializable {
   public void setMsgLastTime(Long msgLastTime) {
     this.msgLastTime = msgLastTime;
   }
+
+    public String getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
+
+    public String getSourceHex() {
+        return sourceHex;
+    }
+
+    public void setSourceHex(String sourceHex) {
+        this.sourceHex = sourceHex;
+    }
 }

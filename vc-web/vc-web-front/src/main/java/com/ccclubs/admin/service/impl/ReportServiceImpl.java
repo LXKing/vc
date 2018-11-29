@@ -151,7 +151,6 @@ public class ReportServiceImpl implements IReportService {
         return baseReportService(headersExit, sheetName, csIndexReportList);
     }
 
-
     /**
      * 实时数据导出核心服务
      *
@@ -203,6 +202,17 @@ public class ReportServiceImpl implements IReportService {
         return reportBaseService(headersExit, sheetName, list, headNameMap);
     }
 
+    @Override
+    public ByteArrayOutputStream reportOutputStreamNew(Collection list, Map<String, String> headNameMap) {
+        String[] headersExit = new String[headNameMap.keySet().size()];
+        int i = 0;
+        for (String headString : headNameMap.keySet()) {
+            headersExit[i++] = headString;
+        }
+        String sheetName = "Data";
+        logger.info("start reportBaseService :" + headNameMap.toString());
+        return reportBaseServiceNew(headersExit, sheetName, list, headNameMap);
+    }
 
     @Override
     public String getFileUrlByUUID(String uuid) {
@@ -220,7 +230,6 @@ public class ReportServiceImpl implements IReportService {
     public Boolean existKey(String key) {
         return redisTemplate.opsForHash().hasKey(Constants.REDIS_KEY_REPORT_FILE_MAP, key);
     }
-
 
     @Deprecated
     private static ByteArrayOutputStream baseReportService(
@@ -269,6 +278,36 @@ public class ReportServiceImpl implements IReportService {
                 sheetNumber--;
             }
             eeu.exportToExcel(workbook, sheetNumber++, sheetName, headers, list, fieldMap);
+            workbook.write(outPutByte);
+            eeu.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                eeu.close();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+        return outPutByte;
+
+    }
+
+    private static ByteArrayOutputStream reportBaseServiceNew(
+            String[] headersExit, String sheetName, Collection list, Map<String, String> fieldMap) {
+        ExportExcelTemp eeu = new ExportExcelTemp();
+        HSSFWorkbook workbook = eeu.getWorkbook();
+        int sheetNumber = eeu.getSheetNumber();
+        //输出流
+        ByteArrayOutputStream outPutByte = new ByteArrayOutputStream();
+        try {
+            String headers[] = headersExit;
+            int exist = workbook.getSheetIndex(sheetName);
+            if (exist == 0) {
+                //存在则删除
+                workbook.removeSheetAt(workbook.getSheetIndex(sheetName));
+                sheetNumber--;
+            }
+            eeu.exportToExcelNew(workbook, sheetNumber++, sheetName, headers, list, fieldMap);
             workbook.write(outPutByte);
             eeu.close();
         } catch (Exception e) {

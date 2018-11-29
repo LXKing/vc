@@ -75,7 +75,7 @@ public class MqAckService implements IMqAckService {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("[通用应答][原始报文]:[{}]", msgFromTerminal.getHexString());
       logger.error(e.getMessage(), e);
     }
   }
@@ -102,7 +102,7 @@ public class MqAckService implements IMqAckService {
         logger.debug("给 " + msg.getCarNumber() + "发送同步时间");
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("[发送同步时间][原始报文]:[{}]", msg.getHexString());
       logger.error(e.getMessage(), e);
     }
   }
@@ -119,7 +119,7 @@ public class MqAckService implements IMqAckService {
       }
 //      logger.info("收到来自 车牌号：" + replay.mCarNum + "，订单号：" + replay.mOrderId + " 取车回复，发送取车确认");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("[发送取车确认][原始报文]:[{}]", msg.getHexString());
       logger.error(e.getMessage(), e);
     }
   }
@@ -137,7 +137,7 @@ public class MqAckService implements IMqAckService {
       }
 //      logger.info("收到来自 车牌号：" + replay.mCarNum + "，订单号：" + replay.mOrderId + " 还车回复，发送还车确认");
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("[发送还车确认][原始报文]:[{}]", msg.getHexString());
       logger.error(e.getMessage(), e);
     }
   }

@@ -12,6 +12,7 @@ public class HistoryGbQuery {
 	
 	private String csVinEquals;
 
+	private String csNumberEquals;
 	
 
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
@@ -35,6 +36,15 @@ public class HistoryGbQuery {
 
 	public String getCsVinEquals() {
 		return this.csVinEquals;
+	}
+
+	public HistoryGbQuery setCsNumberEquals(String csNumberEquals) {
+		this.csNumberEquals = csNumberEquals;
+		return this;
+	}
+
+	public String getCsNumberEquals() {
+		return this.csNumberEquals;
 	}
 
 	public HistoryGbQuery setAddTimeStart(Date addTimeStart){

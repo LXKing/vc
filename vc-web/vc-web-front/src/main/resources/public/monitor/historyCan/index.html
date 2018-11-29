@@ -12,13 +12,56 @@
 		<link href="/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
 		<link rel="stylesheet" href="/layui/css/layui.css?t=1510164124207" media="all">
 		<link href="/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">		<!-- jqgrid-->
-    <link href="/css/cnmain.css" rel="stylesheet">
+		<link href="/css/plugins/daterangepicker/daterangepicker.css?0820" rel="stylesheet">
+   		<link href="/css/cnmain.css" rel="stylesheet">
+		<style type="text/css">
+			.dialogInsert{
+				width:500px;
+				height:300px;
+				position:absolute;
+				top:50%;
+				left:50%;
+				margin:-150px 0px 0px -250px;
+				z-index:99999;
+				background-color:white;
+				border:1px solid #e2e2e2;
+				display:none;
+			}
+			.dialogInsert .dialogInsert-title{
+				width:100%;
+				height:30px;
+				border-bottom:1px solid #e2e2e2;
+			}
+			.dialogInsert .dialogInsert-title span{
+				width:calc(100% - 30px);
+				float:left;
+				line-height:30px;
+				text-indent:6px;
+			}
+			.dialogInsert .dialogInsert-title .close{
+				width:25px;
+				height:30px;
+				float:right;
+				corsur:pointer;
+				text-alian:center;
+				line-height:30px;
+			}
+			.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}.clearfix{display:inline-block;}/* Hide from IE Mac */.clearfix {display:block;}/* End hide from IE Mac *//* end of clearfix */
+		</style>
 	</head>
 
 	<body style="overflow: hidden;">
 		<div class="queryForm_wrapper"></div>
 		<div class="jqGrid_wrapper jqgrid_div"></div>
-		
+		<!--<div class="dialogInsert">-->
+			<!--<div class="dialogInsert-title">-->
+				<!--<span>详情</span>-->
+				<!--<div class="close">Ｘ</div>-->
+			<!--</div>-->
+			<!--<div class="dialogInsert-content">-->
+				<!--1111111111111111111111111122-->
+			<!--</div>-->
+		<!--</div>-->
 		<script src="/js/jquery.min.js?v=2.1.4"></script>
 		<script src="/js/bootstrap.min.js?v=3.3.5"></script>
 		<script src="/js/plugins/jquery-ui/jquery-ui.min.js"></script>
@@ -29,10 +72,12 @@
 		<script src="/js/contabs.min.js"></script>
 		<script src="/js/layer/layer.js"></script>
 		<script src="/js/url.js"></script>
-	<script src="/js/tpui-core.js"></script>
+		<script src="/js/moment.js"></script>
+		<script src="/js/tpui-core.js"></script>
 		<script src="/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
 		<script src="/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
 		<!-- <script src="/layui/layui.all.js?t=1510164124207"></script> -->
+		<script src="/js/plugins/daterangepicker/daterangepicker.js"></script>
 		<script src="/layui/layui.js?t=1510164124207"></script>
 		
 		<script type="text/javascript">

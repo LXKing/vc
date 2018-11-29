@@ -196,6 +196,19 @@ public class StateDTO implements Serializable {
      */
     private Integer handbrake;
 
+    /**
+     * 原始报文
+     */
+    private String sourceHex;
+
+    public String getSourceHex() {
+        return sourceHex;
+    }
+
+    public void setSourceHex(String sourceHex) {
+        this.sourceHex = sourceHex;
+    }
+
     public Date getCurrentTime() {
         return currentTime;
     }

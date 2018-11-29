@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 
-
 /**
  * 此方法用于将查询到的数据进行处理，然后生成表格xls文件，最后存储到oss。
  *
@@ -72,6 +71,40 @@ public class ReportUtil {
 
         }*/
         bytes = reportService.reportOutputStream(list, headMap);
+        long midTime = System.currentTimeMillis();
+        logger.info("report deal data use time(ms):" + (midTime - startTime));
+        ossClient.putObject("oss-vc", fileName, new ByteArrayInputStream(bytes.toByteArray()));
+        //OSS的Object地址由域名、bucketName、object组成，具体格式为：bucketName.endpoint/object。
+        String url = "oss-vc." + "oss-cn-hangzhou.aliyuncs.com" + "/" + fileName;
+
+        reportService.putFileUrlMap(userUuid, url);
+        //logger.info("文件路径：" + url);
+        long endTime = System.currentTimeMillis();
+        logger.info("report use time(ms): " + (endTime - startTime));
+        logger.info("report a file to oss done:" + fileName);
+    }
+
+    /**
+     * 2018/9/21
+     * 数据导出为excel
+     *
+     * @param baseName
+     * @param list
+     * @param headMap
+     * @param userUuid
+     * @return void
+     * @author machuanpeng
+     */
+    public <T> void doReport(String baseName, Collection list, HashMap<String, String> headMap, String userUuid) {
+
+        long startTime = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String dateNowStr = sdf.format(System.currentTimeMillis());
+        String fileName = baseName + "_All_Data" + dateNowStr + ".xls";
+        //文件路径
+        ByteArrayOutputStream bytes;
+        logger.info("we start a report process.the file is:" + fileName);
+        bytes = reportService.reportOutputStreamNew(list, headMap);
         long midTime = System.currentTimeMillis();
         logger.info("report deal data use time(ms):" + (midTime - startTime));
         ossClient.putObject("oss-vc", fileName, new ByteArrayInputStream(bytes.toByteArray()));

@@ -109,7 +109,7 @@ public class ResultHelper {
         } catch (ApiException ex) {
             throw ex;
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }

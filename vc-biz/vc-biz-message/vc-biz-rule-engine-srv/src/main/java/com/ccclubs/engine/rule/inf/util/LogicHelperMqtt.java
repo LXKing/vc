@@ -1,8 +1,10 @@
 package com.ccclubs.engine.rule.inf.util;
 
 
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
+import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RT_STATES;
+
 import com.alibaba.fastjson.JSONObject;
-import com.ccclubs.common.aop.Timer;
 import com.ccclubs.common.modify.UpdateCanService;
 import com.ccclubs.common.modify.UpdateStateService;
 import com.ccclubs.engine.core.util.RuleEngineConstant;
@@ -11,6 +13,8 @@ import com.ccclubs.frm.spring.constant.KafkaConst;
 import com.ccclubs.helper.MachineMapping;
 import com.ccclubs.protocol.dto.mqtt.MQTT_66;
 import com.ccclubs.protocol.dto.mqtt.MQTT_68_03;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_GpsAssistStatus;
+import com.ccclubs.protocol.dto.mqtt.MachineAdditional_HighPrecisionGPS;
 import com.ccclubs.protocol.dto.mqtt.MqMessage;
 import com.ccclubs.protocol.dto.mqtt.can.CanStatusZotye;
 import com.ccclubs.protocol.util.AccurateOperationUtils;
@@ -21,6 +25,9 @@ import com.ccclubs.pub.orm.model.CsCan;
 import com.ccclubs.pub.orm.model.CsMachine;
 import com.ccclubs.pub.orm.model.CsState;
 import com.ccclubs.pub.orm.model.CsVehicle;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,12 +35,6 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.util.Date;
-
-import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES;
 
 /**
  * Created by qsxiaogang on 2017/7/2.
@@ -43,6 +44,7 @@ import static com.ccclubs.frm.spring.constant.RedisConst.REDIS_KEY_RECENT_STATES
  */
 @Component
 public class LogicHelperMqtt {
+
     /**
      * logger
      */
@@ -104,12 +106,11 @@ public class LogicHelperMqtt {
     UpdateCanService updateCanService;
 
     /**
-     * 保存状态数据
-     *  Timer: 该方法受时间记录
+     * 保存状态数据 Timer: 该方法受时间记录
      */
-    @Timer
+    //@Timer
     public void saveStatusData(final MachineMapping mapping, final MqMessage message,
-                               final MQTT_66 mqtt_66) {
+            final MQTT_66 mqtt_66) {
         // 车机对象
         CsMachine csMachine = new CsMachine();
         // 设置access
@@ -141,11 +142,11 @@ public class LogicHelperMqtt {
         csState.setMobile(mapping.getMobile());
         // 设置终端号
         csState.setCssTeNo(mapping.getTeno());
-        // 设置css号码
+        // 设置车机号
         csState.setCssNumber(message.getCarNumber());
         // 设置添加时间
         csState.setCssAddTime(new Date());
-        // 设置cssrented
+        // 设置租赁状态
         csState.setCssRented(String.valueOf(mqtt_66.getCarStatus() & 0xFF));
         // 设置rfid
         csState.setCssRfid(mqtt_66.getRfid());
@@ -161,7 +162,7 @@ public class LogicHelperMqtt {
         csState.setCssEngine((byte) mqtt_66.getEngineStatus());
         // 设置CssKey
         csState.setCssKey((byte) mqtt_66.getKeyStatus());
-        //目前档位信息不对，暂时不用
+        //目前档位信息不对，暂时不用 fixme todo
         // csState.setCssGear(mqtt_66.getGear());
         csState.setCssOrder(message.getTransId());
         // 设置css报警
@@ -170,9 +171,7 @@ public class LogicHelperMqtt {
         csState.setCssTemperature(new BigDecimal(mqtt_66.getTemperature() & 0xFF));
         // 设置CssCsq
         csState.setCssCsq((short) (mqtt_66.getCsq() & 0xFF));
-        /**
-         * 设置css当前时间
-         */
+        //设置css当前时间
         csState.setCssCurrentTime(new Date(mqtt_66.getTime()));
         // 设置CssRfidDte
         csState.setCssRfidDte(mqtt_66.getRfidDte());
@@ -238,29 +237,25 @@ public class LogicHelperMqtt {
         if (mapping.getState() != null) {
             csState.setCssId(mapping.getState().intValue());
             /**
-             * 校验经纬度
-             * 是否合法
+             * 校验经纬度是否合法
              */
             if (ProtocolTools
                     .isValid(mqtt_66.getLongitude() + mqtt_66.getLongitudeDecimal() * 0.000001,
                             mqtt_66.getLatitude() + mqtt_66.getLatitudeDecimal()
                                     * 0.000001)) {
                 csState.setCssLongitude(AccurateOperationUtils
-                        .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
+                        .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001)
+                        .setScale(6,
                                 BigDecimal.ROUND_HALF_UP));
                 csState.setCssLatitude(AccurateOperationUtils
-                        .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
+                        .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001)
+                        .setScale(6,
                                 BigDecimal.ROUND_HALF_UP));
             }
             // 需要更新的当前状态加入等待队列
             ListOperations opsForList = redisTemplate.opsForList();
             /**
-             * 向
-             * redis
-             * 中
-             * lpush
-             * 数
-             * 据
+             * 向 redis 中 lpush 数 据
              */
             opsForList.leftPush(RuleEngineConstant.REDIS_KEY_STATE_UPDATE_QUEUE, csState);
             // 发送历史状态到kafka
@@ -273,12 +268,11 @@ public class LogicHelperMqtt {
             }
         } else {
             /**
-             * 如果
-             *      state==null
-             * 设置经纬度后，插入当前状态
+             * 如果 state==null 设置经纬度后，插入当前状态
              */
             csState.setCssLongitude(AccurateOperationUtils
-                    .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001).setScale(6,
+                    .add(mqtt_66.getLongitude(), mqtt_66.getLongitudeDecimal() * 0.000001)
+                    .setScale(6,
                             BigDecimal.ROUND_HALF_UP));
             csState.setCssLatitude(AccurateOperationUtils
                     .add(mqtt_66.getLatitude(), mqtt_66.getLatitudeDecimal() * 0.000001).setScale(6,
@@ -295,7 +289,8 @@ public class LogicHelperMqtt {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
-
+        //实时状态->redis
+        redisTemplate.opsForHash().put(REDIS_KEY_RT_STATES, csState.getCssNumber(), csState);
         //保存长安状态历史数据30条至redis
         setRentStatesToRedis(csState, csMachine);
     }
@@ -303,9 +298,9 @@ public class LogicHelperMqtt {
     /**
      * 保存新版本状态数据
      */
-    @Timer
+    //@Timer
     public void saveStatusData(MachineMapping mapping, final MqMessage message,
-                               final MQTT_68_03 mqtt_68_03) {
+            final MQTT_68_03 mqtt_68_03) {
         /**
          * 保存状态信息
          */
@@ -324,9 +319,7 @@ public class LogicHelperMqtt {
         // 构造车辆对象
         CsVehicle csVehicle = new CsVehicle();
         /**
-         * 如果
-         * car == null
-         * 车辆对象也设置为空
+         * 如果 car == null 车辆对象也设置为空
          */
         if (mapping.getCar() == null) {
             csVehicle = null;
@@ -366,7 +359,6 @@ public class LogicHelperMqtt {
         csState.setCssKey((byte) mqtt_68_03.getKeyStatus());
         // 设置CssGear
         csState.setCssGear((byte) mqtt_68_03.getGearStatus());
-
         // 设置CssOrder
         csState.setCssOrder(message.getTransId());
         // 设置告警级别
@@ -395,20 +387,12 @@ public class LogicHelperMqtt {
         // 设置充电
         csState.setCssCharging(mqtt_68_03.getCcclubs_60().getTriggerChargeStatus().byteValue());
         /**
-         * 根据
-         * 特定条件
-         * 设置
-         *      空调控制器
+         * 根据 特定条件 设置 空调控制器
          */
         int airConditioner = mqtt_68_03.getCcclubs_60().getAirConditionerCircular();
         if (airConditioner == 0) {
             /**
-             * 如果为0
-             *      设置一些相关参数
-             *      CssCircular
-             *      CssPtc
-             *      CssCompres
-             *      CssFan
+             * 如果为0 设置一些相关参数 CssCircular CssPtc CssCompres CssFan
              */
             csState.setCssCircular((byte) 0);
             csState.setCssPtc((byte) 0);
@@ -416,8 +400,7 @@ public class LogicHelperMqtt {
             csState.setCssFan((byte) 0);
         } else {
             /**
-             * 如果不为0
-             *      从协议工具类中设置
+             * 如果不为0 从协议工具类中设置
              */
             csState.setCssCircular((byte) ProtocolTools.getAirConditionerCircular(airConditioner));
             csState.setCssPtc((byte) ProtocolTools.getAirConditionerPtc(airConditioner));
@@ -472,29 +455,63 @@ public class LogicHelperMqtt {
          * 设置CssHandbrake
          */
         csState.setCssHandbrake(mqtt_68_03.getCcclubs_60().getHandbrake());
+        /**
+         *  高精度经纬度【车辆自身经纬度】
+         */
+        MachineAdditional_HighPrecisionGPS highPrecisionGPS = mqtt_68_03.getCcclubs_60()
+                .getHighPrecisionGPS();
+        if (highPrecisionGPS != null) {
+            csState.setAcuLatitude(highPrecisionGPS.getLatitudeDecimal());
+            csState.setAcuLongitude(highPrecisionGPS.getLongitudeDecimal());
+            csState.setAcuVehicleAdState(highPrecisionGPS.getAcuVehicleAdState());
+            csState.setVrtVehicleStart(highPrecisionGPS.getVrtVehicleStart());
+        }
+        /**
+         * 添加GPS辅助定位
+         */
+        MachineAdditional_GpsAssistStatus gpsAssistStatus = mqtt_68_03.getCcclubs_60().getGpsAssistStatus();
+        if (null != gpsAssistStatus) {
+            csState.setCssLongitudeAvg(gpsAssistStatus.getLongitudeAvgDecimal());
+            csState.setCssLatitudeAvg(gpsAssistStatus.getLatitudeAvgDecimal());
+            csState.setCssLongitudeMax(gpsAssistStatus.getLongitudeMaxDecimal());
+            csState.setCssLatitudeMax(gpsAssistStatus.getLatitudeMaxDecimal());
+            csState.setCssLongitudeMin(gpsAssistStatus.getLongitudeMinDecimal());
+            csState.setCssLatitudeMin(gpsAssistStatus.getLatitudeMinDecimal());
+        }
+        /**
+         * 订单信息
+         */
+        BigDecimal tradeMiles = mqtt_68_03.getCcclubs_60().getTradeMiles();
+        Integer tradeStatus = mqtt_68_03.getCcclubs_60().getTradeStatus();
+        Integer tradeStartTime = mqtt_68_03.getCcclubs_60().getTradeStartTime();
+        Integer tradeEndTime = mqtt_68_03.getCcclubs_60().getTradeEndTime();
+        String tradeInitCard = mqtt_68_03.getCcclubs_60().getTradeInitCard();
+        String tradeTakeCard = mqtt_68_03.getCcclubs_60().getTradeTakeCard();
+        csState.setTradeMiles(tradeMiles);
+        csState.setTradeStatus(tradeStatus);
+        csState.setTradeStartTime(tradeStartTime);
+        csState.setTradeEndTime(tradeEndTime);
+        csState.setTradeInitCard(tradeInitCard);
+        csState.setTradeTakeCard(tradeTakeCard);
 
         /**
-         * 首先
-         *      1. 检查state是否存在
-         *  如果存在=> 校验经纬度
-         *  如果不存在=> 设置经纬度
+         * 首先检查state是否存在,存在即更新，不存在不更新
          */
         if (mapping.getState() != null) {
             csState.setCssId(mapping.getState().intValue());
             /**
-             * 校
-             * 验
-             * 经
-             * 纬
-             * 度
+             * 校 验 经 纬 度
              */
             if (ProtocolTools
-                    .isValid(mqtt_68_03.getLongitude() * 0.000001, mqtt_68_03.getLatitude() * 0.000001)) {
+                    .isValid(mqtt_68_03.getLongitude() * 0.000001,
+                            mqtt_68_03.getLatitude() * 0.000001)) {
                 csState.setCssLongitude(AccurateOperationUtils
-                        .mul(mqtt_68_03.getLongitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
+                        .mul(mqtt_68_03.getLongitude(), 0.000001)
+                        .setScale(6, BigDecimal.ROUND_HALF_UP)
                 );
                 csState.setCssLatitude(AccurateOperationUtils
-                        .mul(mqtt_68_03.getLatitude(), 0.000001).setScale(6, BigDecimal.ROUND_HALF_UP)
+                        .mul(mqtt_68_03.getLatitude(), 0.000001)
+                        .setScale(6, BigDecimal.ROUND_HALF_UP)
                 );
             }
             // 需要更新的当前状态加入等待队列
@@ -540,7 +557,8 @@ public class LogicHelperMqtt {
                 kafkaTemplate.send(kafkaTopicCsState, JSONObject.toJSONString(csState));
             }
         }
-
+        //实时状态->redis
+        redisTemplate.opsForHash().put(REDIS_KEY_RT_STATES, csState.getCssNumber(), csState);
         //保存长安状态历史数据30条至redis
         setRentStatesToRedis(csState, csMachine);
     }
@@ -548,9 +566,9 @@ public class LogicHelperMqtt {
     /**
      * 保存CAN数据
      */
-    @Timer
+    //@Timer
     public void saveCanData(final MachineMapping mapping, MqMessage mqMessage,
-                            CanStatusZotye canZotye) {
+            CanStatusZotye canZotye) {
         /**
          * 构造车机对象
          */
@@ -648,11 +666,10 @@ public class LogicHelperMqtt {
 
     /**
      * 向redis 中设置 运行状态
-     * @param csState
-     * @param csMachine
      */
     private void setRentStatesToRedis(CsState csState, CsMachine csMachine) {
-        if (csState.getCssAccess() == 3 || csState.getCssAccess() == 4 || csState.getCssAccess() == 5) {
+        if (csState.getCssAccess() == 3 || csState.getCssAccess() == 4
+                || csState.getCssAccess() == 5) {
             /**
              * 如果CssAccess为
              * 3：
@@ -671,17 +688,14 @@ public class LogicHelperMqtt {
                 /**
                  * 如果长度大于30，做裁剪
                  */
-                redisTemplate.opsForList().trim(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), 0, 29);
+                redisTemplate.opsForList()
+                        .trim(REDIS_KEY_RECENT_STATES + csMachine.getCsmNumber(), 0, 29);
             }
         }
     }
 
     /**
-     * 根据车机状态
-     * 获取状态dto
-     * @param csState
-     *
-     * @return
+     * 根据车机状态 获取状态dto
      */
     private StateDTO getStateDTO(CsState csState) {
         // 构建dto对象
@@ -834,6 +848,7 @@ public class LogicHelperMqtt {
          * 设置Handbrake
          */
         stateDTO.setHandbrake(csState.getCssHandbrake());
+        stateDTO.setSourceHex(csState.getCssMoData());
         return stateDTO;
     }
 }

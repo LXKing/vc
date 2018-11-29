@@ -42,6 +42,9 @@ public class CommandProcessInfImpl implements CommandProcessInf {
     @Autowired
     QueryTerminalService queryTerminalService;
 
+    @Autowired
+    CommandMessageFactory commandMessageFactory;
+
     private static Logger logger = LoggerFactory.getLogger(CommandProcessInfImpl.class);
 
     /**
@@ -51,7 +54,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
      */
     @Override
     public void dealZdHttpUpdateCommand(CsMachine csMachine, byte[] srcArray) {
-        String downTopic = CommandMessageFactory.getP2pTopic(csMachine);
+        String downTopic = commandMessageFactory.getP2pTopic(csMachine);
         if (StringUtils.empty(downTopic)) {
             return;
         }
@@ -69,7 +72,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
     @Override
     public void dealRemoteCommand(CsMachine csMachine, byte[] srcArray, boolean isUpdate) {
         if (isUpdate) {
-            String downTopic = CommandMessageFactory.getP2pTopic(csMachine);
+            String downTopic = commandMessageFactory.getP2pTopic(csMachine);
             if (StringUtils.empty(downTopic)) {
                 return;
             }
@@ -96,7 +99,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+
             logger.error(e.getMessage(), e);
             throw new ApiException(ApiEnum.SYSTEM_ERROR);
         }
@@ -123,7 +126,7 @@ public class CommandProcessInfImpl implements CommandProcessInf {
      * @param srcArray
      */
     private void sendMessage(CsMachine csMachine, String message, byte[] srcArray) {
-        MqMessage mqMessage = CommandMessageFactory.getP2pMessage(csMachine, message, srcArray);
+        MqMessage mqMessage = commandMessageFactory.getP2pMessage(csMachine, message, srcArray);
         if (mqMessage == null) {
             throw new ApiException(ApiEnum.TERMINAL_PROTOCOL_NOT_SUPPORT);
         }

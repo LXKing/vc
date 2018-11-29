@@ -91,6 +91,7 @@ public class PushVehicleImpl implements PushVehicleInf {
     //TODO:校验日期格式
     // 2、依据 input.getCsvVin() 查找车辆信息
 //    CsModel model = queryModelService.queryModelByFlag(input.getCsvModel());
+      //根据vin码获取车辆信息
     CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getCsvVin().trim());
     if (null == vehicle) {
       // 3、insert 车辆信息
@@ -145,7 +146,7 @@ public class PushVehicleImpl implements PushVehicleInf {
       vehicle.setCsvInteriorColorCode(input.getCsvInteriorColorCode());
       vehicle.setCsvModelCodeFull(input.getCsvModelCode());
       vehicle.setCsvModelCodeSimple(input.getCsvModel());
-
+        //添加车辆信息
       vdao.insertSelective(vehicle);
     } else {
       // 4、更新 车辆信息
@@ -161,6 +162,7 @@ public class PushVehicleImpl implements PushVehicleInf {
       vehicleUpdate.setCsvModelCodeSimple(input.getCsvModel());
 
       vehicleUpdate.setCsvId(vehicle.getCsvId());
+        //更新车辆信息
       vdao.updateByPrimaryKeySelective(vehicleUpdate);
     }
 
@@ -175,7 +177,7 @@ public class PushVehicleImpl implements PushVehicleInf {
       loggerBusiness.info(result);
       pushInput = new ObjectMapper().readValue(result, VehiclePushInput.class);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
       throw new ApiException(ApiEnum.FAIL.code(), "推送内容解密时出错！");
     }
 

@@ -9,8 +9,12 @@ import java.io.Serializable;
  * @create 2018-06-21
  **/
 public class TboxLog implements Serializable {
+    //UUID
+    private String uuid;
     //车架号
     private String vin;
+    //授权系统
+    private Integer access;
     //车机号
     private String teNumber;
     //订单号
@@ -21,6 +25,22 @@ public class TboxLog implements Serializable {
     private String sourceHex;
     //添加时间
     private Long addTime;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Integer getAccess() {
+        return access;
+    }
+
+    public void setAccess(Integer access) {
+        this.access = access;
+    }
 
     public String getVin() {
         return vin;

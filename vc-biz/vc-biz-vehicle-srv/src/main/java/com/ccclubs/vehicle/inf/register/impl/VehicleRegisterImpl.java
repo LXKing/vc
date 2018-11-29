@@ -56,6 +56,7 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
     public RegisterOutput vehicleRegister(String appId, VehicleRegisterInput... inputs) {
         RegisterOutput output = new RegisterOutput();
         List<CsVehicle> passList = new ArrayList<>();
+        //车辆注册校验
         boolean validate = validateVehicleRegister(appId, output, passList, inputs);
         if (validate) {
             vdao.batchInsert(passList);
@@ -83,10 +84,13 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
         //CsMachine machine;
         SrvHost host;
         for (VehicleRegisterInput input : inputs) {
+            //根据车型备案型号条件查询车型
             model = queryModelService.queryModelByFlag(input.getCsvModel());
+            //根据vin码获取车辆信息
             vehicle = queryVehicleService.queryVehicleByVin(input.getCsvVin());
             if (StringUtils.isNotEmpty(input.getCsvCarNo())) {
                 if (StringUtils.isNotEmpty(input.getCsvCarNo().trim())) {
+                    //根据车牌号码查需车辆信息
                     vehicleCarNO = queryVehicleService.queryVehicleByCarNo(input.getCsvCarNo().trim());
                 } else {
                     vehicleCarNO = null;
@@ -94,8 +98,8 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
             } else {
                 vehicleCarNO = null;
             }
-
-            vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
+            //根据发动机号查需车辆信息
+//            vehicleEngineNo = queryVehicleService.queryVehicleByEngineNo(input.getCsvEngineNo().trim());
             //machine = terminalService.queryCsMachineByTeNo(input.getTeNo());
             host = queryAppInfoService.queryHostByAppid(appId);
             outputItem = new JSONObject();
@@ -105,19 +109,23 @@ public class VehicleRegisterImpl implements VehicleRegisterInf {
                 output.getFailure().add(outputItem);
                 continue;
             } else {
-                //重置csvCarNo为null FIXME
-                input.setCsvCarNo(null);
+                if (StringUtils.isBlank(input.getCsvCarNo())) {
+                    input.setCsvCarNo(null);
+                }
             }
 
-            if (null != vehicleEngineNo) {
-                outputItem.put("vin", input.getCsvVin());
-                outputItem.put("errorMsg", "csvEngineNo aready exists");
-                output.getFailure().add(outputItem);
-                continue;
-            } else {
-                //重置CsvEngineNo
-                input.setCsvEngineNo(input.getCsvEngineNo().trim());
-            }
+            /**
+             * 由于车机中心对接，北京平台那边没有维护发动机号，所以这里取消发动机号的校验
+             */
+//            if (null != vehicleEngineNo) {
+//                outputItem.put("vin", input.getCsvVin());
+//                outputItem.put("errorMsg", "csvEngineNo aready exists");
+//                output.getFailure().add(outputItem);
+//                continue;
+//            } else {
+//                //重置CsvEngineNo
+//                input.setCsvEngineNo(input.getCsvEngineNo().trim());
+//            }
 
             if (null == vehicle) {
                 vehicle = new CsVehicle();

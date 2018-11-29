@@ -2,6 +2,7 @@ package com.ccclubs.gateway.common.service;
 
 import com.alibaba.fastjson.JSON;
 import com.ccclubs.gateway.common.config.KafkaProperties;
+import com.ccclubs.gateway.common.config.TcpServerConf;
 import com.ccclubs.gateway.common.dto.KafkaTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,13 @@ public class KafkaService {
                 topic = kafkaProperties.getOversee();
                 break;
                 default:
-                    LOG.error("发现无效的topic: [{}]", task.getTopic());
-                    break;
+                    LOG.error("无效的topic: [{}]", task.getTopic());
+                    throw new IllegalStateException("异常的kafka-topic：" + task.getTopic());
         }
         // 目前只管发送，没有失败重发
         ListenableFuture<SendResult> sendResult = kafkaTemplate.send(topic, task.getKey(), task.getBody());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("[{}]发送kafka消息完成,msg=[{}]", task.getKey(), JSON.toJSONString(task));
+        if (TcpServerConf.GATEWAY_PRINT_LOG) {
+            LOG.info("[{}]发送kafka[{}]消息完成: [{}]", task.getKey(), topic, task.getBody());
         }
         return sendResult;
     }

@@ -33,13 +33,21 @@ public class BindHistoryInfImpl implements BindHistoryInf {
     @Autowired
     QueryTboxBindHisService queryTboxBindHisService;
 
+    /**
+     * 通过车架号获取车机生命周期信息
+     *
+     * @param input
+     * @return
+     */
     @Override
     public List<CarLifeOutput> getBindHistoryByVin(CarLifeInput input) {
         List<CarLifeOutput> carLifeOutputList = null;
+        //根据vin码获取车辆信息
         CsVehicle vehicle = queryVehicleService.queryVehicleByVin(input.getVin());
         if (vehicle == null) {
             throw new ApiException(ApiEnum.VEHICLE_NOT_FOUND);
         }
+        //通过车架号获取车机生命周期信息
         CsTboxBindHisExample csTboxBindHisExample = new CsTboxBindHisExample();
         CsTboxBindHisExample.Criteria criteria = csTboxBindHisExample.createCriteria();
         criteria.andcstbVinEqualTo(input.getVin());
