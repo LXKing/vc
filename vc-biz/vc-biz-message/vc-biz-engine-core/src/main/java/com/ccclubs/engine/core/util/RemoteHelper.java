@@ -141,6 +141,7 @@ public class RemoteHelper {
         switch (operationCode) {
             // 关门
             case 0x10000000:
+            // FC06-锁门（带控制参数）
             case 0x10210000:
                 CCCLUBS_60 terminalInfo = new CCCLUBS_60();
                 terminalInfo.ReadFromBytes(srcArray);
@@ -472,6 +473,16 @@ public class RemoteHelper {
         // 参数获取错误
         if (((value >> 8) & 0x1) == 0x01) {
             stringBuilder.append("参数获取错误");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
+        }
+        // 档位当前不在P档
+        if (((value >> 9) & 0x1) == 0x01) {
+            stringBuilder.append("档位当前不在P档");
+            stringBuilder.append(ConstantUtils.SEPARATOR);
+        }
+        // 未拉起手刹
+        if (((value >> 10) & 0x1) == 0x01) {
+            stringBuilder.append("未拉起手刹");
             stringBuilder.append(ConstantUtils.SEPARATOR);
         }
         return stringBuilder;

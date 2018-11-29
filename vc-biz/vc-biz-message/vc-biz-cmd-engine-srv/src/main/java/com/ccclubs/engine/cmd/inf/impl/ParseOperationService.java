@@ -84,6 +84,18 @@ public class ParseOperationService implements IParseDataService {
     @Resource
     CsRemoteDao remoteDao;
 
+    /*public static void main(String[] args) {
+        //FC06-锁门-带控制参数（0x20c3）
+        String hex = "54363746343231300000000009143EB4061021000022C300FF0314042392C252CA027E00CC020000CE0401FE0000D00203026701026801006901017108071619F701E684177206D1080608C00A7404000026C07601346C01008801009B18071619F701E68417071619F701E68417071619F701E68417";
+        //FC06-锁门-带控制参数（0x6643）
+        String he1 = "54363746343231300000000009143EB40610210000664302000314042392C252CA027E00CC020000CE0401FE0000D00203026701026801006901017108071619F701E684177206D1080608C00A7404000026C07601346C01008801009B18071619F701E68417071619F701E68417071619F701E68417";
+        byte[] messageBytes = Tools.HexString2Bytes(he1);
+        MqMessage mqMessage = new MqMessage();
+        mqMessage.ReadFromBytes(messageBytes);
+        System.out.println(mqMessage.getTransId());
+        new ParseOperationService().processMultipleOperation(mqMessage);
+    }*/
+
     /**
      * 处理消息
      *
@@ -321,7 +333,7 @@ public class ParseOperationService implements IParseDataService {
                     break;
                 // 远程关门(带参数)
                 case 0x10210000:
-                    // 获取参数
+                    // 获取控制参数
                     short fcCodeParams = myBuffer.getShort();
                     // 获取结果
                     short fcCodeResult = myBuffer.getShort();
