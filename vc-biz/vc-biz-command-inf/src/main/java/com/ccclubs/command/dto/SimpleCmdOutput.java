@@ -27,6 +27,10 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
     private Integer cssBaseCI;
     private Integer controlStatus;
     /**
+     * 手刹状态
+     * */
+    private Integer handbrake;
+    /**
      * GPS辅助定位，经度平均值
      */
     private BigDecimal cssLongitudeAvg;
@@ -94,6 +98,14 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
      * 车辆启动控制方式-自动行驶当前车机指令状态
      */
     private Byte vrtVehicleStart;
+
+    public Integer getHandbrake() {
+        return handbrake;
+    }
+
+    public void setHandbrake(Integer handbrake) {
+        this.handbrake = handbrake;
+    }
 
     public Integer getCssTradeStatus() {
         return cssTradeStatus;

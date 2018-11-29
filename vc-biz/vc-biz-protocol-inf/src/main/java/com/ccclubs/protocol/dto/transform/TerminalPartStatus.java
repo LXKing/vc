@@ -133,6 +133,10 @@ public class TerminalPartStatus implements Serializable {
      */
     private Integer controlStatus;
     /**
+     * 手刹状态
+     * */
+    private Integer handbrake;
+    /**
      * 初始化业务订单RFID号
      */
     String tradeInitCard;
@@ -179,6 +183,14 @@ public class TerminalPartStatus implements Serializable {
 
     public void setAcuVehicleAdState(Byte acuVehicleAdState) {
         this.acuVehicleAdState = acuVehicleAdState;
+    }
+
+    public Integer getHandbrake() {
+        return handbrake;
+    }
+
+    public void setHandbrake(Integer handbrake) {
+        this.handbrake = handbrake;
     }
 
     public Byte getVrtVehicleStart() {
