@@ -4,6 +4,7 @@ import com.ccclubs.frm.spring.constant.RedisConst;
 import com.ccclubs.frm.spring.gateway.ConnOnlineStatusEvent;
 import com.ccclubs.gateway.common.bean.event.ConnLiveEvent;
 import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.jt808.constant.msg.UpPacType;
 import com.ccclubs.gateway.jt808.message.pac.Package808;
 import com.ccclubs.gateway.jt808.util.RedisObjectBuilder;
@@ -95,7 +96,7 @@ public class RedisConnService {
                 .put("online", true)
                 .put( "createTime", nowStr)
                 .put( "LastOnlineTime", nowStr)
-                .put( "currentServerIp", channel.localAddress().getHostString())
+                .put( "currentServerIp", ChannelUtils.getLocalAddress(channel))
                 .put( "lastOfflineServerIp", null)
                 // 报文统计信息
                 .put( "packageNum", 0)
@@ -123,7 +124,7 @@ public class RedisConnService {
         operations.put(clientKey, "online", false);
         operations.increment(clientKey, "disconnectTime", 1);
         operations.put(clientKey, "channelIdLongText", null);
-        operations.put(clientKey, "lastOfflineServerIp", channel.localAddress().getHostString());
+        operations.put(clientKey, "lastOfflineServerIp", ChannelUtils.getLocalAddress(channel));
     }
 
     /**

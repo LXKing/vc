@@ -50,7 +50,7 @@ public class AuthticationHandler extends CCClubChannelInboundHandler<GBPackage> 
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         final SocketChannel channel = (SocketChannel) ctx.channel();
         LOG.info("new channel active: ip={}, port={}",
-                channel.remoteAddress().getHostString(),
+                ChannelUtils.getRemoteAddress(channel),
                 channel.remoteAddress().getPort());
 
         ChannelAttributeUtil.getStatus(channel)

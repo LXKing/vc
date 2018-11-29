@@ -4,6 +4,7 @@ import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.Objects;
 
 /**
@@ -39,7 +40,8 @@ public final class ChannelUtils {
     public static String getLocalAddress(SocketChannel channel) {
         Objects.requireNonNull(channel);
 
-        return channel.localAddress().getHostName();
+        InetSocketAddress socketAddress = (InetSocketAddress) channel.localAddress();
+        return socketAddress.getAddress().getHostAddress();
     }
 
     /**
@@ -50,7 +52,8 @@ public final class ChannelUtils {
     public static String getRemoteAddress(SocketChannel channel) {
         Objects.requireNonNull(channel);
 
-        return channel.remoteAddress().getHostName();
+        InetSocketAddress socketAddress = (InetSocketAddress) channel.remoteAddress();
+        return socketAddress.getAddress().getHostAddress();
     }
 
     /**
@@ -75,7 +78,7 @@ public final class ChannelUtils {
             return uniqueNo;
         }
         StringBuilder hostSb = new StringBuilder();
-        hostSb.append(channel.remoteAddress().getHostName())
+        hostSb.append(getRemoteAddress(channel))
                 .append(":")
                 .append(channel.remoteAddress().getPort());
         return hostSb.toString();

@@ -1,6 +1,7 @@
 package com.ccclubs.gateway.common.bean.event;
 
 import com.ccclubs.gateway.common.constant.GatewayType;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.common.util.DateUtil;
 import io.netty.channel.socket.SocketChannel;
 
@@ -54,8 +55,8 @@ public class ConnLiveEvent implements Serializable {
     private String exceptionHex;
 
     public ConnLiveEvent channel(SocketChannel channel) {
-        this.clientIp = channel.remoteAddress().getHostString();
-        this.serverIp = channel.localAddress().getHostString();
+        this.clientIp = ChannelUtils.getRemoteAddress(channel);
+        this.serverIp = ChannelUtils.getLocalAddress(channel);
         return this;
     }
 

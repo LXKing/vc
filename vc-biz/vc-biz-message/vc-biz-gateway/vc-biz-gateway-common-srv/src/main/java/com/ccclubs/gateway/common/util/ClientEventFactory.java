@@ -23,8 +23,8 @@ public final class ClientEventFactory {
         return new ConnOnlineStatusEvent()
                 .setOnline(true)
                 .setTimestamp(System.currentTimeMillis())
-                .setClientIp(channel.remoteAddress().getHostString())
-                .setServerIp(channel.localAddress().getHostString())
+                .setClientIp(ChannelUtils.getRemoteAddress(channel))
+                .setServerIp(ChannelUtils.getLocalAddress(channel))
                 .setGatewayType(gatewayType.getDes())
                 .addUniqueNoByGatewayType(uniqueNo, gatewayType.getDes());
 
@@ -40,8 +40,8 @@ public final class ClientEventFactory {
         return new ConnOnlineStatusEvent()
                 .setOnline(false)
                 .setTimestamp(System.currentTimeMillis())
-                .setClientIp(channel.remoteAddress().getHostString())
-                .setServerIp(channel.localAddress().getHostString())
+                .setClientIp(ChannelUtils.getRemoteAddress(channel))
+                .setServerIp(ChannelUtils.getLocalAddress(channel))
                 .setGatewayType(gatewayType.getDes())
                 .addUniqueNoByGatewayType(uniqueNo, gatewayType.getDes());
     }
