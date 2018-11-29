@@ -8,6 +8,7 @@ import com.ccclubs.gateway.common.constant.GatewayType;
 import com.ccclubs.gateway.common.exception.ClientMappingException;
 import com.ccclubs.gateway.common.exception.OfflineException;
 import com.ccclubs.gateway.common.util.ChannelAttributeUtil;
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +122,7 @@ public class TerminalConnService {
         boolean needSend2RedisAndUpdateStatu = true;
         ConnOnlineStatusEvent event = redisConnService.getOnlineEvent(uniqueNo, GatewayType.GATEWAY_808);
         // 由于读写超时导致的连接断开，如果当前的channel的IP 与 redis 中在线事件中的IP不同，则认为已经上线，不发下线事件
-        if (Objects.nonNull(event) && !channel.localAddress().getHostString().equals(event.getServerIp())) {
+        if (Objects.nonNull(event) && !ChannelUtils.getLocalAddress(channel).equals(event.getServerIp())) {
             needSend2RedisAndUpdateStatu = false;
         }
 

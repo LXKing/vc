@@ -54,7 +54,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         final SocketChannel channel = (SocketChannel) ctx.channel();
         LOG.info("connection established: ip={}, port={}, channelId={}",
-                    channel.remoteAddress().getHostString(),
+                    ChannelUtils.getRemoteAddress(channel),
                     channel.remoteAddress().getPort(),
                     channel.id().asLongText()
                 );
@@ -85,7 +85,7 @@ public class AuthConnectionHandler extends CCClubChannelInboundHandler<Package80
 
         ChannelStatusAttr channelStatusAttr = ChannelAttributeUtil.getStatus(channel);
         LOG.info("connection closing: ip={}, port={}, uniqueNo={}",
-                channel.remoteAddress().getHostString(),
+                ChannelUtils.getRemoteAddress(channel),
                 channel.remoteAddress().getPort(),
                 channelStatusAttr.getUniqueNo()
         );

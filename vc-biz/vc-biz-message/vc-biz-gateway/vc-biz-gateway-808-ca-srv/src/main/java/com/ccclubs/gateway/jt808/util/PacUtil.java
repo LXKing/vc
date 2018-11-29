@@ -1,5 +1,6 @@
 package com.ccclubs.gateway.jt808.util;
 
+import com.ccclubs.gateway.common.util.ChannelUtils;
 import com.ccclubs.gateway.jt808.constant.PackageCons;
 import com.ccclubs.gateway.jt808.constant.PackagePart;
 import com.ccclubs.gateway.jt808.constant.msg.DownPacType;
@@ -208,7 +209,7 @@ public final class PacUtil {
             return uniqueNo;
         }
         StringBuilder hostSb = new StringBuilder();
-        hostSb.append(channel.remoteAddress().getHostName())
+        hostSb.append(ChannelUtils.getRemoteAddress(channel))
                 .append(":")
                 .append(channel.remoteAddress().getPort());
         return hostSb.toString();
