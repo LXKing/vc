@@ -14,7 +14,7 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
      * 当前时间
      */
     private Long cssCurrentTime;
-    private Integer cssObdMile;
+    private BigDecimal cssObdMile;
     private Integer cssEvBattery;
     private BigDecimal cssLongitude;
     private BigDecimal cssLatitude;
@@ -251,11 +251,11 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
         this.cssCurrentTime = cssCurrentTime;
     }
 
-    public Integer getCssObdMile() {
+    public BigDecimal getCssObdMile() {
         return cssObdMile;
     }
 
-    public void setCssObdMile(Integer cssObdMile) {
+    public void setCssObdMile(BigDecimal cssObdMile) {
         this.cssObdMile = cssObdMile;
     }
 
