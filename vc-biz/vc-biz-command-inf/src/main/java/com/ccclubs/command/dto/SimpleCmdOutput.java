@@ -14,7 +14,7 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
      * 当前时间
      */
     private Long cssCurrentTime;
-    private Integer cssObdMile;
+    private BigDecimal cssObdMile;
     private Integer cssEvBattery;
     private BigDecimal cssLongitude;
     private BigDecimal cssLatitude;
@@ -26,6 +26,10 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
     private Integer cssBaseLAC;
     private Integer cssBaseCI;
     private Integer controlStatus;
+    /**
+     * 手刹状态
+     * */
+    private Integer handbrake;
     /**
      * GPS辅助定位，经度平均值
      */
@@ -94,6 +98,14 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
      * 车辆启动控制方式-自动行驶当前车机指令状态
      */
     private Byte vrtVehicleStart;
+
+    public Integer getHandbrake() {
+        return handbrake;
+    }
+
+    public void setHandbrake(Integer handbrake) {
+        this.handbrake = handbrake;
+    }
 
     public Integer getCssTradeStatus() {
         return cssTradeStatus;
@@ -239,11 +251,11 @@ public class SimpleCmdOutput extends CommonOutput implements java.io.Serializabl
         this.cssCurrentTime = cssCurrentTime;
     }
 
-    public Integer getCssObdMile() {
+    public BigDecimal getCssObdMile() {
         return cssObdMile;
     }
 
-    public void setCssObdMile(Integer cssObdMile) {
+    public void setCssObdMile(BigDecimal cssObdMile) {
         this.cssObdMile = cssObdMile;
     }
 
