@@ -7,10 +7,6 @@ spring:
       enable: true
       force: true
 
-api:
-  security:
-      apiId: appKey
-      appId: '{cipher}AIB6DsANDSW8Ehs0L8EcMJe7cjxfzwOP1+onlXhQryApv/JJod3syv1exOHUw/DEBaNdzkb1BqR01PdXs3+mKNxQUNtaY8xqztz3hiJx1S963Ke8pB5yOKwdJ0cDWO11k5Fi16QCCcB6Gxy3ASjLBPpK75iZwQx/paWhSkdCj7Tm7BjE+wnEEYtNTIB/YjXdnjQ1EpC63VDKUAWY6uhNJs0v'
 
 dubbo:
   scan: 

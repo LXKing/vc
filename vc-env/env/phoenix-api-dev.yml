@@ -7,7 +7,7 @@ dubbo:
   application:
     name: api
   registry:
-    address: 118.25.77.128:2181
+    address: 127.0.0.1:2181
     protocol: zookeeper
     #port: 20660
   protocol:
